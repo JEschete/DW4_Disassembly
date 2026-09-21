@@ -1,0 +1,84 @@
+DW4 Control-Flow Conflicts Diagnostic Report
+=============================================
+
+SUMMARY: 18 conflicts remaining after Bank $1C fix (12→0)
+- Bank $11: 10 conflicts (high-density; battle system)
+- Bank $10: 2 conflicts (low-density; party/status services)
+- Banks $0F, $12, $16, $1D, $1E, $1F: 1 conflict each (minimal impact)
+
+STRATEGY: Resolve single-conflict banks first (lowest risk), then tackle Bank $10, then Bank $11.
+
+---
+
+BANK $0F (1 CONFLICT)
+Address: $CE4D
+Context: Fixed engine/kernel bank ($C000-$FFFF); CPU address $CE4D in upper SUROM fixed region
+Diagnosis: Need to verify if this address is in code or data region; check BANK_MAP.md classification
+Next Step: Check content-ranges.tsv for Bank $0F ranges; if $CE4D is in unclassified gap, determine if code/data
+
+---
+
+BANK $12 (1 CONFLICT)
+Address: $84DC
+Context: Battle combatant services
+Diagnosis: Near end of potential battle-system routine pool
+Next Step: Check BANK_MAP.md and content-ranges.tsv; look for known data table boundaries near $84DC
+
+---
+
+BANK $16 (1 CONFLICT)
+Address: $8896
+Context: Status menu
+Diagnosis: Low conflict count suggests minor boundary issue
+Next Step: Check known ranges in content-ranges.tsv
+
+---
+
+BANK $1D (1 CONFLICT)
+Address: $B92C
+Context: Event services
+Diagnosis: Toward end of bank; possibly data/padding
+Next Step: Check known ranges; likely data region causing Ghidra false positive
+
+---
+
+BANK $1E (1 CONFLICT)
+Address: $A9C6
+Context: Map/entity interaction services
+Diagnosis: Unknown; need classification
+Next Step: Check BANK_MAP.md and content-ranges.tsv
+
+---
+
+BANK $1F (1 CONFLICT)
+Address: $C700
+Context: Fixed engine/kernel bank (upper SUROM); shared across all banks
+Diagnosis: CPU address $C700 maps to physical address in $1F bank
+Next Step: This is the kernel; likely legitimate code path with Ghidra boundary error
+
+---
+
+BANK $10 (2 CONFLICTS)
+Addresses: $8B5D, $8B66 (adjacent; likely single-source issue)
+Context: Battle party and status services
+Diagnosis: Both in unclassified code region beyond service directory ($8000-$8080)
+Known ranges: Only $8000-$8080 classified in content-ranges.tsv
+Next Step: Examine specific Ghidra range causing both conflicts; likely single exclusion or boundary fix
+
+---
+
+BANK $11 (10 CONFLICTS)
+Addresses: $8BFC, $9933, $9C68, $AA86, $AC29, $B09C, $B11A, $B19E, $B1CB, $B1F5
+Context: Battle action/state services (highly code-dense)
+Diagnosis: Scattered through unclassified gaps between known data ranges; likely Ghidra boundary misalignments
+Known ranges: Multiple verified data tables at $8FA5-$904A, $908B-$90DB, $A40A-$A63E, $ADC8-$AE0A, $B625-$B960, etc.
+Next Step: Focus on high-impact regions; exclude specific Ghidra false-positive ranges; proceed cautiously to avoid breaking code
+
+---
+
+RECOMMENDATION FOR NEXT SESSION:
+1. Resolve all 6 single-conflict banks (lowest risk)
+2. Resolve Bank $10's 2 conflicts (small scope; adjacent addresses suggest single fix)
+3. Resolve Bank $11's 10 conflicts (requires careful analysis; batch exclusions by region)
+
+Expected outcome: Total conflicts 18 → 0; unblocks data-walk warning triage (199 unsupported opcodes)
