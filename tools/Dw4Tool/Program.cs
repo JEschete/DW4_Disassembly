@@ -112,10 +112,10 @@ internal static class Program
         List<CodeSeed> codeSeeds = LoadCodeSeeds(Path.Combine(projectRoot, "config", "code-seeds.tsv"));
         codeSeeds.AddRange(LoadEntryTableSeeds(
             Path.Combine(projectRoot, "config", "code-entry-tables.tsv"), rom, codeExclusions));
-        codeSeeds.AddRange(LoadGhidraCodeSeeds(
-            Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions));
         codeSeeds.AddRange(LoadFceuxCodeSeeds(
             Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"), rom, codeExclusions));
+        codeSeeds.AddRange(LoadGhidraCodeSeeds(
+            Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions));
         Dictionary<int, BankAnalysis> analyses = CodeAnalyzer.Analyze(
             rom.AsMemory(HeaderSize), codeSeeds, codeExclusions, brkOperandCounts);
         Dictionary<int, List<BankLabel>> effectiveLabels = BuildEffectiveLabels(labels, analyses);
