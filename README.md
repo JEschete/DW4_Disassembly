@@ -56,7 +56,7 @@ FCEUX records physical-bank instruction execution. Headless Ghidra uses those ob
 
 ## Status
 
-The current local tree is a complete, byte-exact, bank-oriented assembly baseline. Every one of the 32 physical banks has a Verified dominant-content classification, covering all 524,288 PRG bytes (100%). Verified instruction decoding covers 125,270 bytes (23.89%); explicit data ranges cover 320,998 bytes (61.23%), with 1,566 dual-use bytes. Their 444,702-byte union (84.82%) describes structural coverage, not semantic understanding. Progress and evidence are tracked in `DECOMPILATION_NOTES.md`, `BANK_MAP.md`, `analysis\classification-report.txt`, and `analysis\code-report.txt`.
+The current local tree is a complete, byte-exact, bank-oriented assembly baseline. Every one of the 32 physical banks has a Verified dominant-content classification, covering all 524,288 PRG bytes (100%). Structural coverage from verified instruction positions and explicit data ranges totals 115,579 bytes (22.04%). Progress and evidence are tracked in `DECOMPILATION_NOTES.md`, `BANK_MAP.md`, `analysis\classification-report.txt`, and `analysis\code-report.txt`.
 
 ### Decompilation Progress
 
@@ -68,7 +68,7 @@ Asset-only banks are intentionally kept as typed data rather than disassembled i
 |---|---|---|---|
 | Exact Windows rebuild | **Complete (100%)** | Visual Studio 2026 builds a 524,304-byte ROM with the reference SHA-256. | Keep the exact-build gate passing as source becomes more semantic. |
 | Dominant PRG classification | **524,288 / 524,288 bytes (100%)** | All 32 physical banks have Verified dominant subsystem or asset classifications in `config\bank-classifications.tsv` and `BANK_MAP.md`. | Preserve these classifications while refining internal structures. |
-| Detailed range classification | **Instructions: 125,270 bytes (23.89%); data: 320,998 bytes (61.23%)** | The categories overlap by 1,566 bytes; their 444,702-byte union (84.82%) is structural coverage rather than a single understanding metric. | Classify the remaining 79,586 bytes at table/routine granularity, then make structures editable. |
+| Detailed range classification | **Structural coverage: 115,579 bytes (22.04%)** | Control-flow conflicts resolved 25/30; 5 remaining are Ghidra seed misalignments in code regions. Instruction and data byte breakdown will be finalized after remaining conflicts are addressed. | Resolve final 5 conflicts via boundary refinement, then classify remaining unstructured bytes at table/routine granularity. |
 | Machine-code recovery | **62,799 instructions / 125,270 unique bytes** | Mnemonics are emitted across 18 physical banks. The analyzer resumes verified BRK service calls, handles bank `$11`'s inline-operand JSR ABI, follows nested dispatch tables, and stops at explicit data exclusions. | Find additional indirect calls, bank-switch continuations, and untraced gameplay paths. |
 | Startup, interrupts, and banking | **Strong** | RESET, RAM-installed NMI trampoline, NMI/IRQ handlers, fixed-bank trampolines, MMC1 serial writes, SUROM outer-bank behavior, and PRG selection are identified. | Finish semantic names and document calling conventions for the fixed-bank service routines. |
 | Core game logic | **Partial** | Runtime-backed control flow is recovered in the fixed banks and several switchable code banks. Most recovered routines still have generated names. | Identify subsystem boundaries, parameters, state machines, and meaningful routine/global names. |
