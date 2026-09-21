@@ -140,3 +140,13 @@ The next phase is to classify warnings in bounded bank-local batches:
 
 Completion for this phase means every warning is classified as verified code, verified data, intentional decoder/data walk, or unresolved investigation item. A zero-warning report is not required if the remaining warnings are evidence-backed data walks.
 
+### Current Warning Inventory
+
+`analysis/unsupported-opcode-triage.tsv` contains one row for every warning in the current report:
+
+- **61 intentional-data-walk**: the generated bank source emits the warning address as a raw `db` byte.
+- **1 verified-content-range**: the warning address is already covered by a verified content range.
+- **81 probable-data-walk**: the trace stopped on an unsupported opcode in an unclassified gap with no generated instruction or data directive at that exact address. These are provisional and must be upgraded to verified ranges or explicit decoder/data-walk evidence before the decompilation is considered semantically complete.
+
+The inventory is grouped by bank as follows: `$08` 5, `$10` 18, `$11` 60, `$12` 8, `$13` 6, `$15` 7, `$18` 11, `$1B` 3, `$1C` 12, `$1E` 10, and `$1F` 3.
+
