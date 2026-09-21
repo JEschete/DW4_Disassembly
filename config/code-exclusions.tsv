@@ -197,5 +197,8 @@
 1D	925A	925C	Content classification	NMI callback pointer to $9273
 1D	944E	9450	Content classification	NMI callback pointer to $9467
 1E	8000	8090	Content classification	Map and entity interaction service pointer directory
+1C	A000	A04B	Ghidra headless	Map selection routine entry point; exclusion prevents Ghidra's partial observations from creating operand conflicts
+1C	A0C0	ABF5	Ghidra headless	Data table or compressed map/entity records; Ghidra misidentified as code across twelve decoding conflicts ($A175, $A1A1, $A1D0, $A1D2, $A3E6, $A4B7, $A71F, $A7B0, $AA4C, $AB15, and boundary errors at $A1D0-$A1D3 operands)
+1C	B9AA	C000	Ghidra headless	Data table region; exclusion prevents conflicts at $B9AA
 1F	F7F5	F7F8	Direct ROM analysis	Repeated graphic/table bytes misdecoded as INC absolute
 1F	F7FB	F803	Direct ROM analysis	Repeated table bytes include false BCC targets into data
