@@ -1,0 +1,23 @@
+# Bank<TAB>Start<TAB>EndExclusive<TAB>Source<TAB>Reason
+08	8000	803C	Direct ROM analysis	30-entry map and tile service directory
+0E	8000	8008	Direct ROM analysis	Four-entry graphics and palette service directory
+10	8000	8080	Direct ROM analysis	64-entry code dispatch table followed by code at $8080
+11	8000	8032	Direct ROM analysis	25-entry code dispatch table; first target is $8032
+11	A40A	A61E	Direct ROM analysis	266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C
+11	8FDC	904A	Direct ROM analysis	55-entry battle handler table selected by the sorted action IDs at $8FA5
+12	8000	8064	Direct ROM analysis	50-entry code dispatch table; first target is $8064
+13	8000	8038	Direct ROM analysis	28-entry code dispatch table; first target is $8038
+13	9100	9110	Direct ROM analysis	Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
+14	8000	8034	Direct ROM analysis	26-entry code dispatch table followed by code at $8034
+14	A40D	A41B	Direct ROM analysis	Seven-entry nested battle presentation dispatch table
+15	8000	8034	Direct ROM analysis	26-entry code dispatch table
+16	8000	8028	Direct ROM analysis	20-entry text and user-interface service directory
+17	8000	804C	Direct ROM analysis	38-entry mixed map-system directory followed by code at $804C
+18	8000	8046	Direct ROM analysis	35-entry mixed bank directory; known data targets are excluded
+19	8000	8014	Direct ROM analysis	Ten-entry mixed map and tileset service directory
+1B	8000	8020	Direct ROM analysis	Sixteen-entry mixed event-service directory and text overlay
+1C	8000	802C	Direct ROM analysis	22-entry mixed map and entity service directory
+1C	AC8A	AD1E	Direct ROM analysis	74-entry map/submap event handler table selected by the key scan at $A010-$A032
+1C	BF4B	BFB1	Direct ROM analysis	51-entry map event handler table consumed by the indirect dispatcher at $AD5F-$AD6D
+1D	8000	802A	Direct ROM analysis	21-entry mixed map-event service directory
+1E	8000	8090	Direct ROM analysis	72-entry map and entity interaction service directory

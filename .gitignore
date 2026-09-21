@@ -1,0 +1,49 @@
+# Copyright boundary: original and rebuilt game images.
+*.[nN][eE][sS]
+*.[rR][oO][mM]
+*.[fF][dD][sS]
+*.[uU][nN][fF]
+*.[uU][nN][iI][fF]
+*.[bB][iI][nN]
+
+# Copyright boundary: ROM-derived source/data and supplied reference captures.
+/src/banks/
+/Resources/
+/analysis/
+/DECOMPILATION_NOTES.md
+/assets/extracted/
+/work/
+/tools/fceux/
+/tools/GhidraNes/
+
+# ROM-hacking patches and emulator-generated data.
+*.[iI][pP][sS]
+*.[bB][pP][sS]
+*.[uU][pP][sS]
+*.[xX][dD][eE][lL][tT][aA]
+*.[cC][dD][lL]
+*.[nN][lL]
+*.[mM][lL][bB]
+*.[sS][yY][mM]
+*.[lL][sS][tT]
+*.[sS][aA][vV]
+*.[sS][rR][mM]
+*.fc[0-9]
+
+# Archives can accidentally contain ROMs or extracted assets.
+*.[zZ][iI][pP]
+*.[7zZ]
+*.[rR][aA][rR]
+
+# Visual Studio, MSBuild, and .NET outputs.
+/build/
+/.vs/
+/DragonWarrior4/
+/x64/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.log
+
+# asm6f.c remains trackable with its bundled permissive LICENSE.txt.

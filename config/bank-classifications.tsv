@@ -1,0 +1,33 @@
+# Bank<TAB>Category<TAB>Confidence<TAB>Reason
+00	HuffmanDialogue	Verified	Dialogue groups $00-$19 and compatibility footer
+01	HuffmanDialogue	Verified	Dialogue groups $1A-$27 and cross-bank continuation
+02	HuffmanDialogue	Verified	Dialogue groups $28-$35 and cross-bank continuation
+03	HuffmanDialogue	Verified	Dialogue groups $36-$40 and cross-bank continuation
+04	HuffmanDialogue	Verified	Dialogue groups $41-$4A and cross-bank continuation
+05	MapEntityData	Verified	Per-map entity, NPC, and event pointers and records
+06	CompressedMonsterGraphics	Verified	Compressed monster graphics selected and decoded by bank $14
+07	CompressedMonsterGraphics	Verified	Compressed monster graphics selected and decoded by bank $14
+08	MapTileSystem	Verified	Map tile services, tilesets, behavior, and tile-definition data
+09	CompressedMapData	Verified	Compressed location map data
+0A	CompressedMapData	Verified	Compressed location map data
+0B	CompressedMapData	Verified	Compressed location and overworld maps with row pointers
+0C	RawMapGraphics	Verified	Raw NES 2bpp map tile graphics
+0D	RawMapCharacterGraphics	Verified	Raw map and character graphics plus padding
+0E	GraphicsPaletteSystem	Verified	Graphics upload, character sprites, and palette data
+0F	LowerFixedEngine	Verified	Lower SUROM fixed engine, interrupts, banking, and map services
+10	BattlePartyServices	Verified	Battle-side party, status, statistic, and reward services
+11	BattleActionServices	Verified	Battle action, combatant-state, and arena services
+12	BattleSetupServices	Verified	Battle setup, monster initialization, and combat services
+13	BattlePresentation	Verified	Battle presentation and state routing
+14	BattleTurnEngine	Verified	Battle turn processing and monster graphics decoder
+15	ItemEffectInventory	Verified	Item/effect scripts, interpreter, and inventory services
+16	TextUiSystem	Verified	Dialogue decoder and text/window user-interface services
+17	MapSystem	Verified	Map services and map-information records
+18	MonsterBattleFont	Verified	Monster records, battle/arena code, and font graphics
+19	MapAssetAudio	Verified	Map and tileset selection services plus audio track pointers, bank selectors, and sequence data
+1A	HuffmanDialogue	Verified	Dialogue groups $4B-$55 and cross-bank continuation
+1B	MapEventText	Verified	Map/event services with dual-use Huffman text streams
+1C	MapEntitySystem	Verified	Map entity/event data, decoder, and services
+1D	MapEventSystem	Verified	Map event, entity placement, movement, and scripted state services
+1E	MapInteractionSystem	Verified	Map interaction, collision, movement, and event services
+1F	UpperFixedEngine	Verified	Upper SUROM fixed engine, interrupts, banking, PPU, and audio services

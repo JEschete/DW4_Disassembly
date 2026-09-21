@@ -1,0 +1,201 @@
+# Bank<TAB>Start<TAB>EndExclusive<TAB>Source<TAB>Reason
+00	8000	C000	Content classification	Huffman-compressed dialogue and compatibility footer; no executable content
+01	8000	C000	Content classification	Huffman-compressed dialogue and compatibility footer; no executable content
+02	8000	C000	Content classification	Huffman-compressed dialogue and compatibility footer; no executable content
+03	8000	C000	Content classification	Huffman-compressed dialogue and compatibility footer; no executable content
+04	8000	C000	Content classification	Huffman-compressed dialogue and compatibility footer; no executable content
+05	8000	C000	Content classification	Per-map entity, NPC, and event pointer/record data
+06	8000	C000	Content classification	Compressed monster graphics consumed by bank $14's bitplane decoder
+07	8000	C000	Content classification	Compressed monster graphics consumed by bank $14's bitplane decoder
+08	8000	803C	Content classification	Map-tile and tileset service pointer directory
+08	8229	822F	Content classification	Graphics-page base pointer table
+08	8ADB	979B	Content classification	Fifty-one 64-byte tilesets
+08	979B	AEE3	Content classification	Auxiliary tile data, increment data, explicit pointers, tile definitions, and animated pointers
+08	B7F7	BE94	Content classification	Map routing pointers, fixed records, variable submap stream, and coordinate records
+08	BF64	C000	Content classification	Padding and compatibility footer
+09	8000	C000	Content classification	Compressed map data
+0A	8000	C000	Content classification	Compressed map data
+0B	8000	C000	Content classification	Compressed map and overworld data with row-pointer tables
+0C	8000	C000	Content classification	Raw map tile graphics
+0D	8000	C000	Content classification	Raw map and character graphics with padding
+0E	8000	8008	Content classification	Graphics and palette service pointer directory
+0E	8091	8097	Content classification	Palette source and destination pointers
+0E	8097	BAD7	Content classification	Character sprite graphics
+0E	BB53	BE13	Content classification	Palette override, lookup, color-set, and color tables
+0E	BF48	C000	Content classification	Padding and compatibility footer
+10	8000	8080	Content classification	Battle and party service pointer directory
+11	8000	8032	Content classification	Battle action and state service pointer directory
+11	811C	811F	Content classification	Three operands for BRK service $62,$23 at $811B
+11	82DB	82DE	Content classification	Three operands for BRK service $01,$6F at $82DA
+11	8325	8328	Content classification	Three operands for BRK service $46,$93 at $8324
+11	8394	8397	Content classification	Three operands for BRK service $3C,$93 at $8393
+11	8447	844A	Content classification	Three operands for BRK service $E4,$D3 at $8446
+11	863F	8642	Content classification	Three operands for BRK service $29,$C3 at $863E
+11	86B6	86B9	Content classification	Three operands for BRK service $64,$63 at $86B5
+11	8813	8816	Content classification	Three operands for BRK service $46,$63 at $8812
+11	8824	885B	Content classification	Directly indexed battle values, state records, flags, masks, and thresholds
+11	8F47	8F4A	Content classification	Three operands for BRK service $E0,$D3 at $8F46
+11	9E2A	9E2D	Content classification	Three operands for BRK service $44,$93 at $9E29
+11	9E48	9E4B	Content classification	Three operands for BRK service $E6,$D3 at $9E47
+11	9DEF	9DF2	Content classification	Three operands for BRK service $2A,$C3 at $9DEE
+11	8F27	8F2A	Content classification	Three operands for BRK service $F2,$D3 at $8F26
+11	B533	B536	Content classification	Three operands for BRK service $3B,$93 at $B532
+11	B88E	B891	Content classification	Three operands for BRK service $E2,$D3 at $B88D
+11	B979	B97C	Content classification	Three operands for BRK service $65,$D3 at $B978
+11	8FA5	904A	Content classification	Sorted battle action IDs and parallel handler pointers
+11	908B	90DB	Content classification	Paired forty-byte battle action ID and result arrays
+11	A40A	A63E	Content classification	Battle-action routine pointers followed by indexed action masks
+11	ADC8	AE0A	Content classification	Battle action IDs and paired parameter records
+11	B625	B651	Content classification	Battle selector and ID remap tables
+11	B936	B960	Content classification	Two directly indexed battle ID arrays
+11	BB55	BB86	Content classification	Battle buffer pointers, lengths, and offsets
+11	BE22	BEB2	Content classification	Nine display records and their selector table
+11	BFB1	C000	Content classification	Padding and compatibility footer
+12	8000	8064	Content classification	Battle setup and combat service pointer directory
+13	8000	8038	Content classification	Battle presentation and state pointer directory
+13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
+14	8000	8034	Content classification	Battle-turn service pointer directory
+14	A40D	A41B	Content classification	Nested battle presentation service pointer directory before dual-use handler bytes at $A41B
+15	8000	98F8	Content classification	Item/effect directory, command streams, and script pointers
+16	8000	8028	Content classification	Text and user-interface service pointer directory
+16	87D8	8892	Content classification	Dialogue Huffman branch tables
+16	8951	8A08	Content classification	Text group pointers and bank thresholds
+16	A4FF	AAF7	Content classification	Text/UI interpreter pointer directories, dispatch tables, and variable records before code at $AAF7
+17	8000	804C	Content classification	Mixed map-system service and data directory
+17	8069	806C	Content classification	Inline operands for fixed-bank BRK service at $8068
+17	80BA	80BC	Content classification	Inline operands for fixed-bank BRK service at $80B9
+17	817A	817C	Content classification	Inline operands for fixed-bank BRK service at $8179
+17	819C	819E	Content classification	Inline operands for fixed-bank BRK service at $819B
+17	81AF	81B1	Content classification	Inline operands for fixed-bank BRK service at $81AE
+17	81BF	81C1	Content classification	Inline operands for fixed-bank BRK service at $81BE
+17	81C5	81D7	Content classification	Nine numeric scale values
+17	81EC	81EE	Content classification	Inline operands for fixed-bank BRK service at $81EB
+17	827D	8286	Content classification	Nine UI lengths
+17	82C3	82C5	Content classification	Inline operands for fixed-bank BRK service at $82C2
+17	82E3	83CD	Content classification	UI string offsets, terminated strings, and pointer tables
+17	840C	840E	Content classification	Inline operands for fixed-bank BRK service at $840B
+17	843F	8441	Content classification	Inline operands for fixed-bank BRK service at $843E
+17	8451	8453	Content classification	Inline operands for fixed-bank BRK service at $8450
+17	868D	868F	Content classification	Inline operands for fixed-bank BRK service at $868C
+17	87E9	87F1	Content classification	Eight-byte OAM template
+17	8828	882A	Content classification	Inline operands for fixed-bank BRK service at $8827
+17	88A0	88A2	Content classification	Inline operands for fixed-bank BRK service at $889F
+17	88B1	88B3	Content classification	Inline operands for fixed-bank BRK service at $88B0
+17	88B4	88B6	Content classification	Inline operands for fixed-bank BRK service at $88B3
+17	88DB	88DD	Content classification	Inline operands for fixed-bank BRK service at $88DA
+17	88EB	88ED	Content classification	Inline operands for fixed-bank BRK service at $88EA
+17	88F4	88F6	Content classification	Inline operands for fixed-bank BRK service at $88F3
+17	8972	8974	Content classification	Inline operands for fixed-bank BRK service at $8971
+17	89F2	89F4	Content classification	Inline operands for fixed-bank BRK service at $89F1
+17	8A4B	8A53	Content classification	Eight-byte OAM template
+17	8A54	8A56	Content classification	Inline operands for fixed-bank BRK service at $8A53
+17	8A6C	8A6E	Content classification	Inline operands for fixed-bank BRK service at $8A6B
+17	8A71	8A73	Content classification	Inline operands for fixed-bank BRK service at $8A70
+17	8A74	8A76	Content classification	Inline operands for fixed-bank BRK service at $8A73
+17	8A7A	8A7C	Content classification	Inline operands for fixed-bank BRK service at $8A79
+17	8A7F	8A81	Content classification	Inline operands for fixed-bank BRK service at $8A7E
+17	8A85	8A87	Content classification	Inline operands for fixed-bank BRK service at $8A84
+17	8A88	8A8A	Content classification	Inline operands for fixed-bank BRK service at $8A87
+17	8A9E	8AA0	Content classification	Inline operands for fixed-bank BRK service at $8A9D
+17	8ABB	8ABD	Content classification	Inline operands for fixed-bank BRK service at $8ABA
+17	8AFB	8AFD	Content classification	Inline operands for fixed-bank BRK service at $8AFA
+17	8B72	8B74	Content classification	Inline operands for fixed-bank BRK service at $8B71
+17	8B94	8B96	Content classification	Inline operands for fixed-bank BRK service at $8B93
+17	8BA7	8BA9	Content classification	Inline operands for fixed-bank BRK service at $8BA6
+17	8BF2	8BF4	Content classification	Inline operands for fixed-bank BRK service at $8BF1
+17	8C43	8C45	Content classification	Inline operands for fixed-bank BRK service at $8C42
+17	8CC1	8CC3	Content classification	Inline operands for fixed-bank BRK service at $8CC0
+17	8CC7	8CC9	Content classification	Inline operands for fixed-bank BRK service at $8CC6
+17	8CCD	8CCF	Content classification	Inline operands for fixed-bank BRK service at $8CCC
+17	8CDA	8CDC	Content classification	Inline operands for fixed-bank BRK service at $8CD9
+17	8D2C	8D2E	Content classification	Inline operands for fixed-bank BRK service at $8D2B
+17	8D32	8D34	Content classification	Inline operands for fixed-bank BRK service at $8D31
+17	8D38	8D3A	Content classification	Inline operands for fixed-bank BRK service at $8D37
+17	8D3B	8D3D	Content classification	Inline operands for fixed-bank BRK service at $8D3A
+17	8D3E	8D43	Content classification	Five UI positions
+17	8D4D	8D4F	Content classification	Inline operands for fixed-bank BRK service at $8D4C
+17	8D53	8D55	Content classification	Inline operands for fixed-bank BRK service at $8D52
+17	8D86	8D88	Content classification	Inline operands for fixed-bank BRK service at $8D85
+17	8DBC	8DBE	Content classification	Inline operands for fixed-bank BRK service at $8DBB
+17	8E4D	8E52	Content classification	Five sprite positions
+17	8E9F	8EA1	Content classification	Inline operands for fixed-bank BRK service at $8E9E
+17	8EA4	8EA9	Content classification	Five display positions
+17	8ECE	8ED6	Content classification	Eight-byte OAM template
+17	8F6F	8F71	Content classification	Inline operands for fixed-bank BRK service at $8F6E
+17	8F75	8F77	Content classification	Inline operands for fixed-bank BRK service at $8F74
+17	9088	91AF	Content classification	Directly consumed UI bit patterns, templates, and tile records
+17	91D0	91D2	Content classification	Inline operands for fixed-bank BRK service at $91CF
+17	91FD	91FF	Content classification	Inline operands for fixed-bank BRK service at $91FC
+17	92C2	92C4	Content classification	Inline operands for fixed-bank BRK service at $92C1
+17	936F	9371	Content classification	Inline operands for fixed-bank BRK service at $936E
+17	9245	9247	Content classification	Inline operands for fixed-bank BRK service at $9244
+17	9248	9266	Content classification	PPU destination address table
+17	9278	92B4	Content classification	UI layout data copied to $0480
+17	92BA	92BC	Content classification	Inline operands for fixed-bank BRK service at $92B9
+17	92D6	92D8	Content classification	Inline operands for fixed-bank BRK service at $92D5
+17	92D9	92F6	Content classification	UI layout data copied to $0480
+17	9307	9309	Content classification	Inline operands for fixed-bank BRK service at $9306
+17	930A	9314	Content classification	UI layout data copied to $048A
+17	932E	9330	Content classification	Inline operands for fixed-bank BRK service at $932D
+17	93DF	93EF	Content classification	PPU setup data copied to $05FC
+17	9432	9446	Content classification	PPU upload descriptor records
+17	944F	9451	Content classification	Inline operands for fixed-bank BRK service at $944E
+17	9452	9BFA	Content classification	CHR-RAM graphics uploaded by bank $17 UI routines
+17	9C04	9C07	Content classification	Inline operands for fixed-bank BRK service at $9C03
+17	9C2C	9C2E	Content classification	Inline operands for fixed-bank BRK service at $9C2B
+17	9C98	9C9A	Content classification	Inline operands for fixed-bank BRK service at $9C97
+17	9CFB	9CFE	Content classification	Three pointer bytes indexed by map UI code
+17	9D0F	9D11	Content classification	Inline operands for fixed-bank BRK service at $9D0E
+17	9D1E	9D20	Content classification	Inline operands for fixed-bank BRK service at $9D1D
+17	9D30	9D32	Content classification	Inline operands for fixed-bank BRK service at $9D2F
+17	9D3A	9D3C	Content classification	Inline operands for fixed-bank BRK service at $9D39
+17	9D3E	9D40	Content classification	Inline operands for fixed-bank BRK service at $9D3D
+17	9DC6	9DD0	Content classification	Ten-value numeric lookup table
+17	9E14	9E16	Content classification	Inline operands for fixed-bank BRK service at $9E13
+17	9E58	9E68	Content classification	Eight little-endian numeric values
+17	9ED7	9EE6	Content classification	Three five-byte map comparison tables
+17	9EF5	9EF7	Content classification	Inline operands for fixed-bank BRK service at $9EF4
+17	9F01	9F03	Content classification	Inline operands for fixed-bank BRK service at $9F00
+17	9F36	9F38	Content classification	Inline operands for fixed-bank BRK service at $9F35
+17	9F4D	9F4F	Content classification	Inline operands for fixed-bank BRK service at $9F4C
+17	9FF7	9FFC	Content classification	Five OAM Y positions
+17	A04A	A050	Content classification	Six OAM X positions
+17	A062	A064	Content classification	Inline operands for fixed-bank BRK service at $A061
+17	A0B7	A0B9	Content classification	Inline operands for fixed-bank BRK service at $A0B6
+17	A141	A143	Content classification	Inline operands for fixed-bank BRK service at $A140
+17	A14B	A15B	Content classification	Map timing values after the overlapping RTS byte
+17	A2B2	A2B4	Content classification	Inline operands for fixed-bank BRK service at $A2B1
+17	A339	A33C	Content classification	Three OAM offsets
+17	A3B8	A4EB	Content classification	OAM offsets, pointers, and six map pattern records
+17	A4EB	A516	Content classification	Map behavior tables, masks, and offsets
+17	A567	A57A	Content classification	OAM coordinate, tile, and attribute lookup tables
+17	A650	A7FE	Content classification	Tile indices, pointers, RLE tile streams, and PPU command data
+17	A881	B08D	Content classification	PPU setup bytes, graphics pointers, and CHR-RAM upload data
+17	B08D	B4AF	Content classification	Map-information pointers and records
+17	B4AF	C000	Content classification	Map-animation setup and command streams, padding, and compatibility footer
+18	8000	8046	Content classification	Mixed battle-data service and record directory
+18	8046	92AA	Direct ROM analysis	214 fixed-size 22-byte monster records
+18	92AA	995A	Direct ROM analysis	107 fixed-size 16-byte monster encounter records
+18	A27B	A813	Content classification	Encounter rates, weights, formations, world grids, map records, and battle data pointer
+18	B83D	BDBD	Direct ROM analysis	One-bitplane font glyph data uploaded by bank $18:$B798
+19	8000	8014	Content classification	Mixed map and tileset service directory
+19	804D	8050	Content classification	Inline operands for fixed-bank BRK service at $804C
+19	806C	806F	Content classification	Inline operands for fixed-bank BRK service at $806B
+19	80C9	80CC	Content classification	Inline operands for fixed-bank BRK service at $80C8
+19	80F2	80F5	Content classification	Inline operands for fixed-bank BRK service at $80F1
+19	810B	C000	Content classification	Map lookup, audio data, padding, and compatibility footer
+1A	8000	C000	Content classification	Huffman-compressed dialogue; no executable content
+1B	8000	8020	Content classification	Map-event service directory; text overlap after $8020 is intentionally executable
+1B	95C9	9E8F	Content classification	Sprite tile IDs, fixed-size layouts, alignment, and NES 2bpp graphics before the dual-use BRK at $9E8F
+1B	BA94	BFD8	Content classification	Dialogue groups $56-$57 before final stream rollover
+1C	8000	96C7	Content classification	Map/entity service directory and structured map, entity, and event data
+1C	ABF5	AD1E	Content classification	Map/submap keys and parallel event handler pointers
+1C	BF4B	C000	Content classification	Map event handler pointers, padding, and compatibility footer
+1D	8000	802A	Content classification	Mixed event-service directory
+1D	90EF	916F	Content classification	Two 64-byte coordinate-delta tables
+1D	921B	922A	Content classification	Fifteen PPU fill widths
+1D	925A	925C	Content classification	NMI callback pointer to $9273
+1D	944E	9450	Content classification	NMI callback pointer to $9467
+1E	8000	8090	Content classification	Map and entity interaction service pointer directory
+1F	F7F5	F7F8	Direct ROM analysis	Repeated graphic/table bytes misdecoded as INC absolute
+1F	F7FB	F803	Direct ROM analysis	Repeated table bytes include false BCC targets into data

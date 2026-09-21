@@ -1,0 +1,287 @@
+# Bank<TAB>Start<TAB>EndExclusive<TAB>Category<TAB>Confidence<TAB>Reason
+00	8000	C000	CompressedText	Verified	Dialogue groups $00-$19 and compatibility footer
+01	8000	C000	CompressedText	Verified	Dialogue groups $1A-$27, group $19 continuation, and compatibility footer
+02	8000	C000	CompressedText	Verified	Dialogue groups $28-$35, group $26 continuation, and compatibility footer
+03	8000	C000	CompressedText	Verified	Dialogue groups $36-$40, group $35 continuation, and compatibility footer
+04	8000	C000	CompressedText	Verified	Dialogue groups $41-$4A, group $40 continuation, and compatibility footer
+05	8000	C000	MapEntityData	Verified	Per-map entity, NPC, and event pointer/record data
+06	8000	C000	CompressedMonsterGraphics	Verified	Compressed monster graphics consumed by bank $14's bitplane decoder
+07	8000	C000	CompressedMonsterGraphics	Verified	Compressed monster graphics consumed by bank $14's bitplane decoder
+08	8000	803C	ServiceDirectory	Verified	Thirty map-tile and tileset service pointers
+08	8229	822F	GraphicsPointers	Verified	Three graphics-page base pointers
+08	8ADB	979B	Tilesets	Verified	Fifty-one 64-byte tilesets
+08	979B	A1BB	MapTileAuxiliaryData	Verified	Runtime-read auxiliary map and tile records reached through the bank $08 service directory
+08	A1BB	A1E5	TilePatterns	Verified	Fourteen three-byte signed increment patterns
+08	A1E5	A28D	SpecialTilePatternData	Verified	Additional signed tile-pattern data between the documented increment and explicit-pointer tables
+08	A28D	A80D	ExplicitTilePointers	Verified	One hundred seventy-six records of four 16-bit graphics pointers
+08	A80D	AEB7	TileDefinitions	Verified	Three-byte logical tile definitions with graphics page, increment pattern, and behavior fields
+08	AEB7	AEE3	AnimatedTilePointers	Verified	Twenty-two 16-bit pointers used by animated tile increment pattern $0E
+08	B7F7	B7F9	MapRoutingPointer	Verified	Little-endian pointer to the per-map routing records at $B7F9
+08	B7F9	B967	MapRoutingRecords	Verified	Seventy-three five-byte per-map records and terminal $FF consumed by bank $08:$B037
+08	B967	B974	MapTransitionRecords	Verified	Two six-byte map transition records and terminal $FF consumed by bank $08:$B145
+08	B974	B976	MapSubmapPointer	Verified	Little-endian pointer to the variable map/submap stream at $B976
+08	B976	BE72	MapSubmapData	Verified	Map-keyed, $FF-delimited variable records consumed by bank $08:$B246-$B4EC
+08	BE72	BE94	MapCoordinateRecords	Verified	Eleven three-byte map/coordinate records and terminal $FF consumed by bank $08:$B61B
+08	BF64	BFD8	Padding	Verified	Contiguous $FF padding after map data
+08	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+09	8000	C000	CompressedMap	Verified	Compressed location map data
+0A	8000	C000	CompressedMap	Verified	Compressed location map data
+0B	8000	C000	CompressedMap	Verified	Compressed location and overworld maps with row-pointer tables
+0C	8000	C000	Graphics	Verified	Raw NES 2bpp map tile graphics
+0D	8000	C000	Graphics	Verified	Raw map and character graphics plus documented padding
+0E	8000	8008	ServiceDirectory	Verified	Four graphics and palette service pointers
+0E	8091	8097	GraphicsPointers	Verified	Three little-endian pointers loaded by bank $0E:$8034-$8075 for palette source and destination
+0E	8097	BAD7	Graphics	Verified	Character sprite graphics
+0E	BB53	BE13	PaletteData	Verified	Map palette override, lookup, color-set, and color tables
+0E	BF48	BFD8	Padding	Verified	Contiguous $FF padding after graphics and palette services
+0E	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+10	8000	8080	ServiceDirectory	Verified	Sixty-four battle and party service pointers
+11	8000	8032	ServiceDirectory	Verified	Twenty-five battle action and state service pointers
+11	811C	811F	InlineServiceOperands	Verified	Three operands consumed by BRK service $62,$23 before code resumes at $811F
+11	82DB	82DE	InlineServiceOperands	Verified	Three operands consumed by BRK service $01,$6F before code resumes at $82DE
+11	8325	8328	InlineServiceOperands	Verified	Three operands consumed by BRK service $46,$93 before the predicate branch at $8328
+11	B88E	B891	InlineServiceOperands	Verified	Three operands consumed by BRK service $E2,$D3 before the direct call at $B891
+11	B979	B97C	InlineServiceOperands	Verified	Three operands consumed by BRK service $65,$D3 before battle transition code resumes at $B97C
+11	8394	8397	InlineServiceOperands	Verified	Three operands consumed by BRK service $3C,$93 before the selector store at $8397
+11	8447	844A	InlineServiceOperands	Verified	Three operands consumed by BRK service $E4,$D3 before the cleanup return at $844A
+11	863F	8642	InlineServiceOperands	Verified	Three operands consumed by BRK service $29,$C3 before mask accumulation resumes at $8642
+11	86B6	86B9	InlineServiceOperands	Verified	Three operands consumed by BRK service $64,$63 before combatant selection resumes at $86B9
+11	8813	8816	InlineServiceOperands	Verified	Three operands consumed by BRK service $46,$63 before the indexed scan resumes at $8816
+11	8824	8827	BattleValueTable	Verified	Three combatant values indexed by bank $11:$84C0
+11	8827	882B	BattleSelectionTable	Verified	Four selection values indexed by bank $11:$83B8
+11	882B	884B	BattleStateRecords	Verified	Four fixed-size eight-byte state records indexed by bank $11:$83D0
+11	884B	8852	BattleActionFlags	Verified	Seven action flags indexed by bank $11:$81B6
+11	8852	8856	BattleShiftMasks	Verified	Four shift masks indexed by bank $11:$8679
+11	8856	885B	BattleThresholds	Verified	Five thresholds indexed by bank $11:$86A2
+11	8F47	8F4A	InlineServiceOperands	Verified	Three operands consumed by BRK service $E0,$D3 before the next service resumes at $8F4A
+11	9E2A	9E2D	InlineServiceOperands	Verified	Three operands consumed by BRK service $44,$93 before the next service resumes at $9E2D
+11	9E48	9E4B	InlineServiceOperands	Verified	Three operands consumed by BRK service $E6,$D3 before the return at $9E4B
+11	9DEF	9DF2	InlineServiceOperands	Verified	Three operands consumed by BRK service $2A,$C3 before the direct call to $9E5C
+11	8F27	8F2A	InlineServiceOperands	Verified	Three operands consumed by BRK service $F2,$D3 before the direct jump to $BDBC
+11	B533	B536	InlineServiceOperands	Verified	Three operands consumed by BRK service $3B,$93 before battle selection resumes at $B536
+11	8FA5	8FDC	BattleActionIds	Verified	Fifty-five sorted battle action IDs searched by bank $11:$8DF5
+11	8FDC	904A	BattleHandlerPointers	Verified	Fifty-five little-endian handler pointers selected by bank $11:$8E00-$8E0B
+11	908B	90B3	BattleActionIds	Verified	Forty action IDs searched by bank $11:$907B
+11	90B3	90DB	BattleActionResults	Verified	Forty parallel result values selected by bank $11:$9087
+11	A40A	A61E	BattleActionPointers	Verified	Two hundred sixty-six little-endian bank-local routine pointers consumed by bank $11:$8CFC-$8D0C
+11	A61E	A63E	BattleActionMasks	Verified	Thirty-two indexed battle-action mask bytes consumed by bank $11:$8CC1/$8CDF
+11	ADC8	ADDE	BattleActionIds	Verified	Twenty-two action IDs searched by bank $11:$ADA6
+11	ADDE	AE0A	BattleActionParameters	Verified	Twenty-two two-byte parameter records indexed by bank $11:$ADBA/$ADC1
+11	BFB1	BFD8	Padding	Verified	Contiguous $FF padding after battle services
+11	B625	B629	BattleSelectionTable	Verified	Four selector values indexed by bank $11:$B56F
+11	B629	B651	BattleIdRemap	Verified	Forty battle IDs indexed by bank $11:$B5A3
+11	B936	B951	BattleIdTable	Verified	Twenty-seven battle IDs indexed by bank $11:$B8C6
+11	B951	B960	BattleIdTable	Verified	Fifteen alternate battle IDs indexed by bank $11:$B8C0
+11	BB55	BB6B	BattleBufferPointers	Verified	Eleven little-endian source pointers indexed by bank $11:$BAE8
+11	BB6B	BB76	BattleBufferLengths	Verified	Eleven buffer lengths indexed by bank $11:$BAF6
+11	BB76	BB7B	BattleBufferOffsets	Verified	Five source offsets indexed by bank $11:$BA8B
+11	BB7B	BB80	BattleBufferLengths	Verified	Five copy lengths indexed by bank $11:$BA90
+11	BB80	BB86	BattleBufferPointers	Verified	Three little-endian source pointers consumed by bank $11:$BA09/$BA51/$BA64
+11	BE22	BEA9	BattleDisplayRecords	Verified	Nine fixed-size fifteen-byte display records copied by bank $11:$BD76
+11	BEA9	BEB2	BattleDisplaySelectors	Verified	Nine selector bytes indexed by bank $11:$BD2E
+11	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+12	8000	8064	ServiceDirectory	Verified	Fifty battle setup and combat service pointers
+13	8000	8038	ServiceDirectory	Verified	Twenty-eight battle presentation and state pointers
+13	90EC	9100	BattleFieldOffsets	Verified	Twenty field offsets indexed by bank $13:$8F2F/$8F3A/$A50B/$A53C
+13	9100	9110	BattleArithmeticPointers	Verified	Eight little-endian arithmetic handler pointers consumed by bank $13:$8F93-$8F9F
+14	8000	8034	ServiceDirectory	Verified	Twenty-six battle-turn service pointers
+14	A40D	A41B	ServiceDirectory	Verified	Seven-entry nested battle presentation dispatch table
+14	B2D5	B398	MonsterIdMap	Verified	Monster identifier ordering table consumed by bank $14:$9F0F/$9F1C
+14	B398	B3B1	MonsterGraphicsBankBitmap	Verified	Twenty-five-byte MSB-first bitmap selecting graphics bank $06 or $07
+14	B3B1	B77B	MonsterGraphicsDescriptors	Verified	One hundred ninety-four five-byte graphics descriptor records
+15	8000	8034	ServiceDirectory	Verified	Twenty-six item, effect-script, and inventory service pointers
+15	8034	9640	EffectScripts	Verified	Table-driven item and field-effect command streams
+15	9640	98F8	ScriptPointers	Verified	Pointers into item and field-effect command streams
+16	8000	8028	ServiceDirectory	Verified	Twenty text and user-interface service pointers
+16	87D8	8892	HuffmanTree	Verified	Two 93-byte dialogue Huffman branch tables
+16	8951	8A08	TextPointers	Verified	Eighty-eight group pointers and seven bank thresholds
+16	A4FF	A501	TextUiPointerBase	Verified	Little-endian $A501 base pointer indexed by bank $16:$955F-$957F
+16	A501	A5E3	TextUiRecordPointers	Verified	One hundred thirteen nondecreasing little-endian pointers into $A7AB-$AAEF
+16	A5E3	A5E9	TextUiCommandDirectory	Verified	Two command-set pointers and two doubled-index thresholds consumed by bank $16:$9882/$BE97
+16	A5E9	A735	TextUiCommandPointers	Verified	Two nondecreasing command pointer arrays selected through the directory at $A5E3
+16	A735	A7AB	TextUiDispatchTables	Verified	Pointer, limit, and handler dispatch tables consumed by bank $16:$9790-$97AF/$A4DE-$A4FD
+16	A7AB	AAF7	TextUiRecordData	Verified	Variable text and UI interpreter records selected by the 113-entry pointer table; final record starts at $AAEF
+17	8000	804C	ServiceDirectory	Verified	Thirty-eight-entry mixed map-system directory
+17	8069	806C	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank BRK service at $8068
+17	80BA	80BC	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $80B9
+17	817A	817C	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8179
+17	819C	819E	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $819B
+17	81AF	81B1	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $81AE
+17	81BF	81C1	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $81BE
+17	81C5	81D7	NumericLookupTable	Verified	Nine little-endian scale values consumed by bank $17:$80E7/$82AD
+17	81EC	81EE	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $81EB
+17	827D	8286	UiLengthTable	Verified	Nine lengths consumed by bank $17:$826C
+17	82C3	82C5	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $82C2
+17	82E3	82EC	UiStringOffsets	Verified	Nine offsets indexing the terminated UI strings at $82EC
+17	82EC	83A9	UiStrings	Verified	Nine terminated UI strings selected through the offset table at $82E3
+17	83A9	83BB	UiPointerTable	Verified	Nine pointers consumed by bank $17:$8262/$828C
+17	83BB	83CD	UiPointerTable	Verified	Nine pointers consumed after the fixed-bank service at $82C2
+17	840C	840E	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $840B
+17	843F	8441	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $843E
+17	8451	8453	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8450
+17	868D	868F	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $868C
+17	87E9	87F1	OamTemplate	Verified	Eight bytes copied to OAM shadow by bank $17:$8787
+17	8828	882A	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8827
+17	88A0	88A2	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $889F
+17	88B1	88B3	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $88B0
+17	88B4	88B6	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $88B3
+17	88DB	88DD	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $88DA
+17	88EB	88ED	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $88EA
+17	88F4	88F6	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $88F3
+17	8972	8974	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8971
+17	89F2	89F4	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $89F1
+17	8A4B	8A53	OamTemplate	Verified	Eight bytes copied to OAM shadow by bank $17:$8A3F
+17	8A54	8A56	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A53
+17	8A6C	8A6E	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A6B
+17	8A71	8A73	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A70
+17	8A74	8A76	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A73
+17	8A7A	8A7C	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A79
+17	8A7F	8A81	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A7E
+17	8A85	8A87	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A84
+17	8A88	8A8A	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A87
+17	8A9E	8AA0	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8A9D
+17	8ABB	8ABD	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8ABA
+17	8AFB	8AFD	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8AFA
+17	8B72	8B74	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8B71
+17	8B94	8B96	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8B93
+17	8BA7	8BA9	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8BA6
+17	8BF2	8BF4	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8BF1
+17	8C43	8C45	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8C42
+17	8CC1	8CC3	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8CC0
+17	8CC7	8CC9	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8CC6
+17	8CCD	8CCF	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8CCC
+17	8CDA	8CDC	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8CD9
+17	8D2C	8D2E	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D2B
+17	8D32	8D34	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D31
+17	8D38	8D3A	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D37
+17	8D3B	8D3D	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D3A
+17	8D3E	8D43	UiPositionTable	Verified	Five UI positions indexed by bank $17:$8CB7/$8D43
+17	8D4D	8D4F	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D4C
+17	8D53	8D55	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D52
+17	8D86	8D88	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8D85
+17	8DBC	8DBE	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8DBB
+17	8E4D	8E52	UiPositionTable	Verified	Five sprite positions indexed by bank $17:$8E40
+17	8E9F	8EA1	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8E9E
+17	8EA4	8EA9	UiPositionTable	Verified	Five display positions indexed by bank $17:$8E7B
+17	8ECE	8ED6	OamTemplate	Verified	Eight bytes copied to OAM shadow by bank $17:$8EB4
+17	8F6F	8F71	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8F6E
+17	8F75	8F77	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $8F74
+17	9088	909A	UiBitPatterns	Verified	Nine two-byte bit patterns consumed by bank $17:$8FC0
+17	909A	90C4	UiLayoutData	Verified	Forty-two bytes copied to UI state at $04B0 by bank $17:$8F42
+17	90C4	90EE	UiLayoutData	Verified	Forty-two bytes copied to UI state at $0480 by bank $17:$8CDF
+17	90EE	9118	UiLayoutData	Verified	Forty-two bytes copied to UI state at $0480 by bank $17:$8CEF
+17	9118	9142	UiLayoutData	Verified	Forty-two bytes copied to UI state at $0480 by bank $17:$8CFF
+17	9142	9172	UiTileRecords	Verified	Four twelve-byte tile records consumed by bank $17:$9002
+17	9172	9196	UiTileRecords	Verified	Three twelve-byte tile records consumed by bank $17:$9038
+17	9196	91AF	UiTileRecords	Verified	Five five-byte tile records consumed by bank $17:$9072
+17	91D0	91D2	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $91CF
+17	91FD	91FF	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $91FC
+17	92C2	92C4	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $92C1
+17	936F	9371	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $936E
+17	9245	9247	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9244
+17	9248	9266	PpuAddressTable	Verified	Fifteen little-endian PPU addresses consumed by bank $17:$9215-$9234
+17	9278	92B4	UiLayoutData	Verified	Sixty bytes copied to UI state at $0480 by bank $17:$91E7
+17	92BA	92BC	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $92B9
+17	92D6	92D8	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $92D5
+17	92D9	92F6	UiLayoutData	Verified	Twenty-nine bytes copied to UI state at $0480 by bank $17:$92CA
+17	9307	9309	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9306
+17	930A	9314	UiLayoutData	Verified	Ten bytes copied to UI state at $048A by bank $17:$92FD
+17	932E	9330	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $932D
+17	93DF	93EF	PpuSetupData	Verified	Sixteen bytes copied to $05FC-$060B before UI graphics upload
+17	9432	9446	PpuUploadDescriptors	Verified	Four five-byte PPU destination, source pointer, and block-count records
+17	944F	9451	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $944E
+17	9452	9BFA	Graphics	Verified	One thousand nine hundred sixty bytes uploaded to CHR RAM by bank $17:$93AA/$93EF
+17	9C04	9C07	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank BRK service at $9C03
+17	9C2C	9C2E	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9C2B
+17	9C98	9C9A	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9C97
+17	9CFB	9CFE	UiPointerBytes	Verified	Three overlapping pointer bytes indexed by bank $17:$9CE3/$9CF0
+17	9D0F	9D11	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D0E
+17	9D1E	9D20	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D1D
+17	9D30	9D32	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D2F
+17	9D3A	9D3C	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D39
+17	9D3E	9D40	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D3D
+17	9DC6	9DD0	NumericLookupTable	Verified	Ten descending values used by the map UI timing routines
+17	9E14	9E16	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9E13
+17	9E58	9E68	NumericLookupTable	Verified	Eight little-endian values indexed by bank $17:$9E37/$9E40
+17	9ED7	9EE6	MapComparisonTables	Verified	Three five-byte index tables consumed by bank $17:$9EB8-$9EC7
+17	9EF5	9EF7	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9EF4
+17	9F01	9F03	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9F00
+17	9F36	9F38	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9F35
+17	9F4D	9F4F	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9F4C
+17	9FF7	9FFC	OamPositionTable	Verified	Five OAM Y positions indexed by bank $17:$9FCF
+17	A04A	A050	OamPositionTable	Verified	Six OAM X positions indexed by bank $17:$A03A
+17	A062	A064	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $A061
+17	A0B7	A0B9	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $A0B6
+17	A141	A143	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $A140
+17	A14A	A15B	MapTimingTable	Verified	Seventeen timing values indexed by bank $17:$A11A; first byte is also the preceding RTS
+17	A2B2	A2B4	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $A2B1
+17	A339	A33C	OamOffsetTable	Verified	Three OAM offsets indexed by bank $17:$A2CC/$A317
+17	A3B8	A3C1	OamOffsetTable	Verified	Three three-byte OAM offset vectors consumed by bank $17:$A35C-$A387
+17	A3C1	A3CB	PointerTable	Verified	Five pointers selected through bank $17:$A3A9
+17	A3CB	A4EB	MapPatternRecords	Verified	Six contiguous fixed-size 48-byte map pattern records; five are addressed by the pointer table
+17	A4EB	A509	MapBehaviorTables	Verified	Six five-byte behavior tables selected by map object and column
+17	A509	A516	MapMaskTables	Verified	Two four-byte map masks followed by five offsets consumed by bank $17:$A399
+17	A567	A57A	OamLookupTables	Verified	OAM coordinates, tile rows, and attributes consumed by map UI routines
+17	A650	A66F	MapTileIndices	Verified	Thirty-one tile-pattern indices consumed by bank $17:$A5A6
+17	A66F	A68B	PointerTable	Verified	Fourteen pointers into the run-length tile streams
+17	A68B	A703	RleTileData	Verified	Fourteen zero-terminated count/value tile streams
+17	A703	A712	MapRowTiles	Verified	Fourteen row tile values and zero terminator consumed by bank $17:$A5CC
+17	A712	A7D8	PpuCommandData	Verified	Address-prefixed, $FF-terminated PPU command records consumed by bank $17:$A5EE
+17	A7D8	A7FE	PpuAttributeData	Verified	Thirty-eight bytes copied to PPU attribute memory by bank $17:$A622
+17	A881	A899	PpuSetupData	Verified	Twenty-four bytes copied to $05FD-$0614 before the graphics upload
+17	A899	A89D	GraphicsPointers	Verified	Two little-endian source pointers for the bank $17 PPU upload routine
+17	A89D	B08D	Graphics	Verified	Two thousand thirty-two bytes uploaded to CHR RAM by bank $17:$A7FE-$A874
+17	B08D	B4AF	MapInfo	Verified	Seventy-three map pointers and map-information records
+17	B4AF	B4C1	MapAnimationSetup	Verified	Eighteen-byte setup block preceding the directory-addressed map animation streams
+17	B4C1	BEE5	MapAnimationCommands	Verified	Thirty-three directory-addressed command streams with loop pointers; runtime-read and never executed
+17	BEE5	BFD8	Padding	Verified	Contiguous $FF padding after map animation data
+17	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+18	8000	8046	ServiceDirectory	Verified	Thirty-five-entry mixed battle-data directory
+18	8046	92AA	MonsterRecords	Verified	Two hundred fourteen 22-byte monster records
+18	92AA	995A	EncounterRecords	Verified	One hundred seven 16-byte records; two control bytes and two seven-entry lists containing monster IDs $00-$D5 or $FF
+18	A27B	A28B	EncounterRateTables	Verified	Two eight-byte time-period encounter-rate tables selected by bank $18:$9CBC-$9CC9
+18	A28B	A28D	Padding	Verified	Two zero alignment bytes before encounter weight data
+18	A28D	A31D	EncounterWeights	Verified	One hundred forty-four encounter-selection weights consumed by bank $18:$9DBB-$9EFF
+18	A31D	A34C	EncounterLookups	Verified	Formation-size, selector, and offset lookup tables consumed by bank $18:$9CAC-$9EAE/$A0DE
+18	A34C	A464	BattleFormations	Verified	Thirty-five eight-byte battle formation records selected by bank $18:$A1AD-$A1E4
+18	A464	A474	EncounterThresholds	Verified	Two eight-byte encounter threshold tables consumed by bank $18:$9F08-$9F1C
+18	A474	A4BD	MapEncounterStrides	Verified	Seventy-three map-indexed record strides consumed by bank $18:$A087-$A0A0
+18	A4BD	A7BD	WorldEncounterGrids	Verified	Three 256-byte world encounter-zone grids selected through pointers at $A241/$A243/$A245
+18	A73D	A811	MapEncounterRecords	Verified	Two overlapping map-keyed streams; nine records end at $A778 and twenty-three records end at $A810
+18	A811	A813	BattleDataPointer	Verified	Little-endian $ADAF pointer consumed by bank $18:$A876-$A87C
+18	B83D	BDBD	FontGraphics	Verified	One-bitplane lowercase, symbol, uppercase, and digit glyphs
+19	8000	8014	ServiceDirectory	Verified	Ten-entry mixed map and tileset service directory
+19	804D	8050	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $x3 BRK service at $804C
+19	806C	806F	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $x3 BRK service at $806B
+19	80C9	80CC	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $xB BRK service at $80C8
+19	80F2	80F5	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $xB BRK service at $80F1
+19	810B	814E	MapAssetLookups	Verified	Map, submap, chapter, and tileset lookup tables consumed by bank $19:$8026-$810A
+19	814E	82FE	AudioTrackPointers	Verified	Fifty-four eight-byte records containing four audio channel sequence pointers
+19	82FE	8334	AudioTrackBanks	Verified	Fifty-four per-track external sequence-bank selectors consumed by the fixed audio engine
+19	8334	BF7E	AudioData	Verified	Audio sequence, instrument, envelope, and effect data consumed through fixed-bank audio pointers
+19	BF7E	BFD8	Padding	Verified	Contiguous $FF padding before compatibility footer
+19	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+1A	8000	C000	CompressedText	Verified	Dialogue groups $4B-$55 and group $4A continuation
+1B	8000	8020	ServiceDirectory	Verified	Event-service directory also consumed by text group $55
+1B	8000	832F	CompressedText	Verified	Group $55 continuation from bank $1A; bytes after $801F are intentionally dual-use
+1B	95C9	95E0	SpriteTileIds	Verified	Twenty-three OAM tile IDs consumed by bank $1B:$94EB-$95A7
+1B	95E0	968F	SpriteLayouts	Verified	Seven 25-byte sprite layouts selected by 25 * (type - 4) at bank $1B:$9485-$9493
+1B	968F	9690	Padding	Verified	Zero-byte alignment before 16-byte NES tile records
+1B	9690	9E90	Graphics	Verified	One hundred twenty-eight raw NES 2bpp tiles; final zero byte is also the BRK opcode at $9E8F
+1B	A0FE	A65F	CompressedText	Verified	Final group $57 continuation after stream rollover
+1B	BA94	BFD8	CompressedText	Verified	Dialogue groups $56-$57 before final rollover
+1C	8000	802C	ServiceDirectory	Verified	Twenty-two-entry mixed map and entity service directory
+1C	802C	96C7	MapEntityData	Verified	Structured map, entity, and event data before runtime-observed decoder code
+1C	ABF5	AC8A	MapSubmapKeys	Verified	Seventy-four two-byte map/submap keys plus terminal $FF scanned by bank $1C:$A010-$A027
+1C	AC8A	AD1E	MapEventPointers	Verified	Seventy-four little-endian handler pointers selected by bank $1C:$A028-$A032
+1C	BF4B	BFB1	MapEventPointers	Verified	Fifty-one little-endian map event handler pointers consumed by bank $1C:$AD5F-$AD6D
+1C	BFB1	BFD8	Padding	Verified	Contiguous $FF padding after map event handlers
+1C	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+1D	8000	802A	ServiceDirectory	Verified	Mixed event-service directory
+1D	90EF	916F	MapMotionDeltas	Verified	Two 64-byte coordinate-delta tables indexed by bank $1D:$90C1/$939C
+1D	921B	922A	PpuBlankWidths	Verified	Fifteen PPU fill widths indexed by bank $1D:$91F6/$9204
+1D	925A	925C	NmiCallbackPointer	Verified	Little-endian $9273 callback installed at $0503-$0504 by bank $1D:$9240
+1D	944E	9450	NmiCallbackPointer	Verified	Little-endian $9467 callback installed at $0503-$0504 by bank $1D:$9441
+1E	8000	8090	ServiceDirectory	Verified	Seventy-two map and entity interaction service pointers
+1F	F7F5	F7F8	Data	Verified	Repeated table bytes previously misdecoded as code
+1F	F7FB	F803	Data	Verified	Repeated table bytes previously misdecoded as code

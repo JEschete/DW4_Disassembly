@@ -1,0 +1,196 @@
+# Bank<TAB>CPU address<TAB>end exclusive or -<TAB>source<TAB>reason
+10	8080	-	Direct ROM analysis	Wrapper immediately following the 64-entry bank service directory
+0E	8008	8091	Supplied ROM map	Documented code region $8008-$8090
+0E	BAF7	BB53	Supplied ROM map	Documented map-palette code region $BAF7-$BB52
+0F	C001	C004	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 00
+0F	C004	C007	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 01
+0F	C007	C00A	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 02
+0F	C00A	C00D	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 03
+0F	C00D	C010	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 04
+0F	C010	C013	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 05
+0F	C013	C016	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 06
+0F	C016	C019	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 07
+0F	C019	C01C	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 08
+0F	C01C	C01F	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 09
+0F	C01F	C022	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0A
+0F	C022	C025	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0B
+0F	C025	C028	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0C
+0F	C028	C02B	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0D
+0F	C02B	C02E	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0E
+0F	C02E	C031	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0F
+0F	C031	C034	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 10
+0F	C034	C037	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 11
+0F	C037	C03A	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 12
+0F	C03A	C03D	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 13
+0F	C408	-	CPU vector	Lower-half IRQ/BRK vector target
+0F	C15A	-	Direct ROM analysis	Lower-half NMI body installed at RAM $0502
+0F	E9AD	-	Supplied ROM map	Map-data bank selection routine at headerless ROM offset $3E9AD
+0F	FFD8	-	CPU vector	Lower-half RESET vector target
+1F	C001	C004	Direct ROM analysis	Fixed-bank JMP trampoline 00
+1F	C004	C007	Direct ROM analysis	Fixed-bank JMP trampoline 01
+1F	C007	C00A	Direct ROM analysis	Fixed-bank JMP trampoline 02
+1F	C00A	C00D	Direct ROM analysis	Fixed-bank JMP trampoline 03
+1F	C00D	C010	Direct ROM analysis	Fixed-bank JMP trampoline 04
+1F	C010	C013	Direct ROM analysis	Fixed-bank JMP trampoline 05
+1F	C013	C016	Direct ROM analysis	Fixed-bank JMP trampoline 06
+1F	C016	C019	Direct ROM analysis	Fixed-bank JMP trampoline 07
+1F	C019	C01C	Direct ROM analysis	Fixed-bank JMP trampoline 08
+1F	C01C	C01F	Direct ROM analysis	Fixed-bank JMP trampoline 09
+1F	C01F	C022	Direct ROM analysis	Fixed-bank JMP trampoline 0A
+1F	C022	C025	Direct ROM analysis	Fixed-bank JMP trampoline 0B
+1F	C025	C028	Direct ROM analysis	Fixed-bank JMP trampoline 0C
+1F	C028	C02B	Direct ROM analysis	Fixed-bank JMP trampoline 0D
+1F	C02B	C02E	Direct ROM analysis	Fixed-bank JMP trampoline 0E
+1F	C02E	C031	Direct ROM analysis	Fixed-bank JMP trampoline 0F
+1F	C031	C034	Direct ROM analysis	Fixed-bank JMP trampoline 10
+1F	C034	C037	Direct ROM analysis	Fixed-bank JMP trampoline 11
+1F	C037	C03A	Direct ROM analysis	Fixed-bank JMP trampoline 12
+1F	C03A	C03D	Direct ROM analysis	Fixed-bank JMP trampoline 13
+1F	C408	-	CPU vector	IRQ/BRK vector target
+1F	C15A	-	Direct ROM analysis	NMI body installed as JMP $C15A at RAM vector $0502
+1F	FFD8	-	CPU vector	RESET vector target
+19	8014	8017	Direct ROM scan	JMP to fixed trampoline $C01C
+19	8017	801A	Direct ROM scan	JMP to fixed trampoline $C01F
+19	801A	801D	Direct ROM scan	JMP to fixed trampoline $C022
+19	801D	8020	Direct ROM scan	JMP to fixed trampoline $C025
+19	8020	8023	Direct ROM scan	JMP to fixed trampoline $C028
+19	8023	8026	Direct ROM scan	JMP to fixed trampoline $C02B
+19	8050	-	Direct ROM analysis	Resume after three-byte inline BRK service at $804C
+19	806F	-	Direct ROM analysis	Resume after three-byte inline BRK service at $806B
+19	80CC	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80C8
+19	80F5	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80F1
+1B	A4D7	-	Direct ROM scan	JSR to fixed trampoline $C00A
+1B	A7BE	-	Direct ROM scan	JSR to fixed trampoline $C03A
+1B	ACA0	-	Direct ROM scan	JSR to fixed trampoline $C031
+1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
+1B	B55A	-	Direct ROM scan	JSR to fixed trampoline $C034
+1D	8E15	-	Direct ROM scan	JSR to fixed trampoline $C02E
+1D	9273	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $925A
+1D	9467	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $944E
+1D	9CB4	-	Direct ROM scan	JMP to fixed trampoline $C010
+1D	A176	-	Direct ROM scan	JSR to fixed trampoline $C007
+1D	ADD8	-	Direct ROM scan	JSR to fixed trampoline $C016
+1D	ADDC	-	Direct ROM scan	JSR to fixed trampoline $C004
+1D	B99B	-	Direct ROM scan	JSR to fixed trampoline $C001
+1E	8554	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	8557	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	8589	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	858C	-	Direct ROM scan	JSR to fixed trampoline $C013
+1E	86F3	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	86F6	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	86FC	-	Direct ROM scan	JSR to fixed trampoline $C013
+1E	872C	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	8730	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	891C	-	Direct ROM scan	JSR to fixed trampoline $C001
+1E	9090	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	9097	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	90AB	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	90AF	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	9592	-	Direct ROM scan	JSR to fixed trampoline $C00A
+1E	AABE	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	AAC1	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	AAC4	-	Direct ROM scan	JSR to fixed trampoline $C010
+17	9C07	-	Direct ROM analysis	Resume after three-byte inline BRK service at $9C03
+17	806C	-	Direct ROM analysis	Resume after three-byte inline BRK service at $8068
+17	9247	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9244
+17	92BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92B9
+17	92D8	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92D5
+17	9309	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9306
+17	9330	-	Direct ROM analysis	Resume after two-byte inline BRK service at $932D
+17	9346	-	Direct ROM analysis	Routine called from bank $17:$923D
+17	9446	-	Direct ROM analysis	Coherent UI service routine immediately after PPU descriptor table
+17	9451	-	Direct ROM analysis	Resume after two-byte inline BRK service at $944E
+17	82C5	-	Direct ROM analysis	Resume after two-byte inline BRK service at $82C2
+17	83CD	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
+17	83DA	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
+17	840E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $840B
+17	8441	-	Direct ROM analysis	Resume after two-byte inline BRK service at $843E
+17	8453	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8450
+17	80BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $80B9
+17	817C	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8179; jumps directly to $8654
+17	819E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $819B
+17	81B1	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81AE
+17	81C1	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81BE
+17	81EE	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81EB
+17	868F	-	Direct ROM analysis	Resume after two-byte inline BRK service at $868C
+17	882A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8827
+17	88A2	-	Direct ROM analysis	Resume after two-byte inline BRK service at $889F
+17	88B3	-	Direct ROM analysis	Second consecutive BRK service after $88B0
+17	88B6	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88B3
+17	88DD	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88DA
+17	88ED	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88EA
+17	8974	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8971
+17	88F6	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88F3
+17	89F4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $89F1
+17	8A53	-	Direct ROM analysis	BRK-backed minigame service routine after the OAM template
+17	8A56	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A53
+17	8A6E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A6B
+17	8A73	-	Direct ROM analysis	Consecutive BRK service after the continuation at $8A6E
+17	8A76	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A73
+17	8A7C	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A79
+17	8A81	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A7E
+17	8A87	-	Direct ROM analysis	Consecutive BRK service after the continuation at $8A81
+17	8A8A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A87
+17	8AA0	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A9D
+17	8ABD	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8ABA
+17	8AFD	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8AFA
+17	8B74	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8B71
+17	8B96	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8B93
+17	8BA9	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8BA6
+17	8BF4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8BF1
+17	8C24	-	Direct ROM analysis	Coherent numeric conversion routine called through adjacent code
+17	8C45	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8C42
+17	8CC3	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8CC0
+17	8CC9	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8CC6
+17	8CCF	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8CCC
+17	8CDC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8CD9
+17	8D2E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D2B
+17	8D34	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D31
+17	8D3A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D37
+17	8D3D	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D3A
+17	8D4F	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D4C
+17	8D55	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D52
+17	8D5D	-	Direct ROM analysis	Coherent selector routine targeting $8D6E
+17	8D88	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8D85
+17	8DBE	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8DBB
+17	8DE5	-	Direct ROM analysis	Input handler called by bank $17:$8D97
+17	8EA1	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8E9E
+17	8EA9	-	Direct ROM analysis	UI initializer called by bank $17:$8D88
+17	8F42	-	Direct ROM analysis	UI template copier reached from bank $17:$8D55
+17	8F71	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8F6E
+17	8F77	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8F74
+17	91D2	-	Direct ROM analysis	Resume after two-byte inline BRK service at $91CF
+17	91FF	-	Direct ROM analysis	Resume after two-byte inline BRK service at $91FC
+17	92C4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92C1
+17	9371	-	Direct ROM analysis	Resume after two-byte inline BRK service at $936E
+17	9C2E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9C2B
+17	9C9A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9C97
+17	9D11	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D0E
+17	9D20	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D1D
+17	9D32	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D2F
+17	9D3C	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D39
+17	9D3D	-	Direct ROM analysis	Second BRK service selected by the branch at $9D27
+17	9D40	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D3D
+17	9D41	-	Direct ROM analysis	Map UI scan routine adjacent to the service-return stub
+17	9D56	-	Direct ROM analysis	Map UI routine called directly from $9D70
+17	9DE6	-	Direct ROM analysis	Map UI update routine adjacent to verified code
+17	9E16	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9E13
+17	9E68	-	Direct ROM analysis	Arithmetic helper called by map UI update routine
+17	9EF7	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9EF4
+17	9F03	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9F00
+17	9F38	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9F35
+17	9F4F	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9F4C
+17	9F52	-	Direct ROM analysis	Map UI sprite routine called directly from $9E16
+17	9F58	-	Direct ROM analysis	Alternate signed-direction entry for the sprite movement routine
+17	9FC5	-	Direct ROM analysis	Alternate entry decrements the object index before the OAM writer
+17	849F	-	Direct ROM analysis	Single-byte return stub adjacent to the map-system update routines
+17	A022	-	Direct ROM analysis	Map UI setup helper called directly from $9E11
+17	A05E	-	Direct ROM analysis	Verified fallthrough map UI service sequence
+17	A064	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A061
+17	A099	-	Direct ROM analysis	Verified fallthrough path when fixed status byte is zero
+17	A0B9	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A0B6
+17	A143	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A140
+17	A160	-	Direct ROM analysis	Verified fallthrough path from $A15B
+17	A1BE	-	Direct ROM analysis	Verified fallthrough path from $A1B9
+17	A254	-	Direct ROM analysis	Verified branch path in map UI initialization
+17	A2B4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A2B1

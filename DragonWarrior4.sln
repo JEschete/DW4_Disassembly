@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12201.205
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DragonWarrior4", "DragonWarrior4.vcxproj", "{5A043478-33B3-4F70-947A-8A2B65A5B8A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "asm6f", "tools\asm6f\asm6f.vcxproj", "{83161BB3-C408-4C4D-BD83-6143746506AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dw4Tool", "tools\Dw4Tool\Dw4Tool.csproj", "{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A043478-33B3-4F70-947A-8A2B65A5B8A1}.Debug|x64.ActiveCfg = Debug|x64
+		{5A043478-33B3-4F70-947A-8A2B65A5B8A1}.Debug|x64.Build.0 = Debug|x64
+		{5A043478-33B3-4F70-947A-8A2B65A5B8A1}.Release|x64.ActiveCfg = Release|x64
+		{5A043478-33B3-4F70-947A-8A2B65A5B8A1}.Release|x64.Build.0 = Release|x64
+		{83161BB3-C408-4C4D-BD83-6143746506AD}.Debug|x64.ActiveCfg = Debug|x64
+		{83161BB3-C408-4C4D-BD83-6143746506AD}.Debug|x64.Build.0 = Debug|x64
+		{83161BB3-C408-4C4D-BD83-6143746506AD}.Release|x64.ActiveCfg = Release|x64
+		{83161BB3-C408-4C4D-BD83-6143746506AD}.Release|x64.Build.0 = Release|x64
+		{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

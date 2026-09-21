@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5A043478-33B3-4F70-947A-8A2B65A5B8A1}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <RootNamespace>DragonWarrior4</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)build\Debug\</OutDir>
+    <IntDir>$(ProjectDir)build\Debug\obj\DragonWarrior4\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)build\Release\</OutDir>
+    <IntDir>$(ProjectDir)build\Release\obj\DragonWarrior4\</IntDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="tools\asm6f\asm6f.vcxproj">
+      <Project>{83161BB3-C408-4C4D-BD83-6143746506AD}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="tools\Dw4Tool\Dw4Tool.csproj">
+      <Project>{0F6CAEE6-D979-4E38-95D1-B391576EC8C2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\dragon-warrior-iv.asm" />
+    <None Include="src\banks\bank_*.asm" />
+    <None Include="src\constants\hardware.inc" />
+    <None Include="src\constants\ram.inc" />
+    <None Include="analysis\classification-report.txt" />
+    <None Include="analysis\code-report.txt" />
+    <None Include="config\bank-classifications.tsv" />
+    <None Include="config\code-entry-tables.tsv" />
+    <None Include="config\code-exclusions.tsv" />
+    <None Include="config\content-ranges.tsv" />
+    <None Include="config\code-seeds.tsv" />
+    <None Include="config\labels.tsv" />
+    <None Include="BANK_MAP.md" />
+    <None Include="DECOMPILATION_NOTES.md" />
+    <None Include="README.md" />
+    <None Include="tools\da65\da65.exe" />
+    <None Include="tools\da65\LICENSE.txt" />
+  </ItemGroup>
+  <Target Name="BuildRom" AfterTargets="Build">
+    <MakeDir Directories="$(ProjectDir)build\$(Configuration)" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="&quot;$(ProjectDir)build\$(Configuration)\tools\asm6f.exe&quot; -l &quot;src\dragon-warrior-iv.asm&quot; &quot;build\$(Configuration)\Dragon Warrior IV (USA).nes&quot; &quot;build\$(Configuration)\Dragon Warrior IV (USA).lst&quot;" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="&quot;$(ProjectDir)build\$(Configuration)\tools\dw4tool\Dw4Tool.exe&quot; verify &quot;build\$(Configuration)\Dragon Warrior IV (USA).nes&quot; --exact" />
+  </Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
