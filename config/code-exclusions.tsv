@@ -54,6 +54,16 @@
 11	BE22	BEB2	Content classification	Nine display records and their selector table
 11	BFB1	C000	Content classification	Padding and compatibility footer
 12	8000	8064	Content classification	Battle setup and combat service pointer directory
+11	8BFC	8BFD	Content classification	Operand byte in middle of loop; Ghidra misidentifies as entry
+11	9933	9934	Content classification	Low byte of jsr operand at $9932
+11	9C68	9C69	Content classification	Operand byte of branch instruction at $9C5F
+11	AA86	AA87	Content classification	Operand byte of branch instruction at $AA6B
+11	AC29	AC2A	Content classification	Operand byte of branch instruction at $AC21
+11	B09C	B09D	Content classification	Operand byte of branch instruction at $B08E
+11	B11A	B11B	Content classification	Operand byte of branch instruction at $B0F4
+11	B19E	B19F	Content classification	Operand byte of jmp instruction at $B197
+11	B1CB	B1CC	Content classification	Operand byte of branch instruction at $B1C4
+11	B1F5	B1F6	Content classification	Operand byte of branch instruction at $B1F4
 13	8000	8038	Content classification	Battle presentation and state pointer directory
 13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
 14	8000	8034	Content classification	Battle-turn service pointer directory
