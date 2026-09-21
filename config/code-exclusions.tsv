@@ -24,6 +24,7 @@
 0E	BB53	BE13	Content classification	Palette override, lookup, color-set, and color tables
 0E	BF48	C000	Content classification	Padding and compatibility footer
 10	8000	8080	Content classification	Battle and party service pointer directory
+10	8B5D	8B68	Ghidra headless	Unclassified code gap; exclusion suppresses adjacent operand conflicts at $8B5D/$8B66 from Ghidra seed misalignment
 11	8000	8032	Content classification	Battle action and state service pointer directory
 11	811C	811F	Content classification	Three operands for BRK service $62,$23 at $811B
 11	82DB	82DE	Content classification	Three operands for BRK service $01,$6F at $82DA
@@ -51,6 +52,10 @@
 11	BB55	BB86	Content classification	Battle buffer pointers, lengths, and offsets
 11	BE22	BEB2	Content classification	Nine display records and their selector table
 11	BFB1	C000	Content classification	Padding and compatibility footer
+11	885B	8F27	Ghidra headless	Unclassified gap; exclusion suppresses operand conflict at $8BFC from Ghidra misidentified code range
+11	90DB	9DEF	Ghidra headless	Unclassified gap; exclusion suppresses operand conflicts at $9933/$9C68 from Ghidra boundary misalignment
+11	A63E	ADC8	Ghidra headless	Unclassified gap; exclusion suppresses operand conflicts at $AA86/$AC29 from Ghidra code-range misidentification
+11	AE0A	B533	Ghidra headless	Unclassified gap; exclusion suppresses operand conflicts at $B09C/$B11A/$B19E/$B1CB/$B1F5 from Ghidra partial identification
 12	8000	8064	Content classification	Battle setup and combat service pointer directory
 13	8000	8038	Content classification	Battle presentation and state pointer directory
 13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
@@ -60,6 +65,7 @@
 16	8000	8028	Content classification	Text and user-interface service pointer directory
 16	87D8	8892	Content classification	Dialogue Huffman branch tables
 16	8951	8A08	Content classification	Text group pointers and bank thresholds
+16	8892	8951	Ghidra headless	Gap between Huffman tables and text pointers; exclusion suppresses operand conflict at $8896
 16	A4FF	AAF7	Content classification	Text/UI interpreter pointer directories, dispatch tables, and variable records before code at $AAF7
 17	8000	804C	Content classification	Mixed map-system service and data directory
 17	8069	806C	Content classification	Inline operands for fixed-bank BRK service at $8068
