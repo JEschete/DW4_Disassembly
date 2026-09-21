@@ -12,17 +12,26 @@ $conflicts = @()
 
 # Extract conflict list from code-report.txt
 $reportText = Get-Content $ReportPath -Raw
-$section = $reportText -match '(?s)Control-flow conflicts:(.+?)Unsupported opcodes' | ForEach-Object { $matches[1] }
+$sectionMatch = [regex]::Match($reportText, '(?s)Control-flow conflicts:(.+?)Unsupported opcodes')
+if (-not $sectionMatch.Success) {
+    throw "could not locate the control-flow conflict section in $ReportPath"
+}
+$section = $sectionMatch.Groups[1].Value
 
-# Parse each conflict
-$section -split '\n' | Where-Object { $_ -match '^\s+\$([A-F0-9]+):\s+control flow' } | ForEach-Object {
-    if ($_ -match 'bank \$([0-9A-F]{2}):') {
-        $bank = $matches[1]
+# Parse each conflict. Bank headers and conflict addresses are separate lines,
+# so retain the most recent bank while walking the report section.
+$currentBank = ""
+$sectionLines = $section -split "`r?`n"
+for ($index = 0; $index -lt $sectionLines.Count; $index++) {
+    $line = $sectionLines[$index]
+    if ($line -match '^\s*bank \$([0-9A-F]{2}):') {
+        $currentBank = $matches[1]
+        continue
     }
-    if ($_ -match '\$([A-F0-9]{4}):') {
+    if ($line -match '^\s*\$([A-F0-9]{4}):') {
         $addr = $matches[1]
-        $conflicts += @{
-            Bank = $bank
+        $conflicts += [pscustomobject]@{
+            Bank = $currentBank
             Address = $addr
             Opcode = "?"
             Context = ""
@@ -41,7 +50,7 @@ $conflicts | Group-Object Bank | Sort-Object Name | ForEach-Object {
 }
 
 Write-Output ""
-Write-Output "=== SAMPLE: BANK 1C CONFLICTS ==="
-$conflicts | Where-Object { $_.Bank -eq "1C" } | ForEach-Object {
+Write-Output "=== KNOWN GHIDRA ARTIFACTS ==="
+$conflicts | Where-Object { $_.Bank -in @("0F", "1D", "1E") } | ForEach-Object {
     Write-Output "  `$$($_.Address)"
 }

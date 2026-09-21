@@ -29,23 +29,21 @@ Remaining 15 conflicts are from explicit seeds, FCEUX, and forward-traced target
 **Approach**: Excluded data-heavy regions (`$A000-$A04B`, `$A0C0-$ABF5`, `$B9AA-$C000`)
 **Status**: Complete; Bank $1C is 79% data, exclusions are justified
 
-### Bank $11: 10 conflicts → 🔍 IN PROGRESS
+### Bank $11: 10 conflicts → ✅ RESOLVED
 **Conflicts**: $8BFC, $9933, $9C68, $AA86, $AC29, $B09C, $B11A, $B19E, $B1CB, $B1F5
 **Context**: Battle action/state services (highly code-dense)
 **Known ranges**: 44 documented data ranges (BattleActionIds, BattleHandlerPointers, etc.)
 **Unclassified gaps**: Conflicts cluster in 4 gap regions
 
-**Investigation needed**:
-- Sample disassembly around each conflict address
-- Determine if gap contains code or data
-- If code: identify entry point; if data: add range to content-ranges.tsv
-- Check which seed (Ghidra vs. FCEUX) causes each conflict
+**Finding**: All ten conflicts were operand bytes of branch, JSR, or JMP instructions. Ghidra misidentified those operand bytes as entry points.
 
-### Bank $10: 2 conflicts → 🔍 IN PROGRESS
+**Resolution**: Added targeted operand-byte exclusions to `config/code-exclusions.tsv` and verified that no Bank $11 conflicts remain.
+
+### Bank $10: 2 conflicts → ✅ RESOLVED
 **Conflicts**: $8B5D (operand of ora instruction), $8B66 (inline data byte)
 **Pattern**: `jsr $8C18` followed by inline operand bytes
 **Root cause**: Ghidra or FCEUX seed landing on inline operand
-**Fix approach**: Document inline operands in content-ranges.tsv
+**Resolution**: Added targeted exclusions for the JSR service operands and verified that no Bank $10 conflicts remain.
 
 **Example disassembly**:
 ```
@@ -63,15 +61,19 @@ $8B67: rts
 **Status**: Ghidra false positive; eliminated when Ghidra disabled
 **Action**: Accept as known Ghidra limitation or investigate further
 
-### Bank $12: 1 conflict ($84DC) → 🔍 TO INVESTIGATE
+### Bank $12: 1 conflict ($84DC) → ✅ RESOLVED
 **Context**: Battle setup/combat services
 **Known range**: Only $8000-$8064 (service directory)
-**Conflict location**: 2,780 bytes downstream in unclassified space
+**Finding**: `$84DC` is an operand byte of the branch at `$84CE`.
 
-### Bank $16: 1 conflict ($8896) → 🔍 TO INVESTIGATE
+**Resolution**: Added a targeted exclusion and verified that the conflict is gone.
+
+### Bank $16: 1 conflict ($8896) → ✅ RESOLVED
 **Context**: Text/menu services
 **Gap**: Between Huffman tree ($87D8-$8892) and text pointers ($8951-$8A08)
-**Conflict location**: Exactly at gap boundary ($8896)
+**Finding**: `$8896` is the operand byte of the branch at `$8895`.
+
+**Resolution**: Added a targeted exclusion and verified that the conflict is gone.
 
 ### Bank $1D: 1 conflict ($B92C) → ⚠️ GHIDRA ONLY
 **Status**: Ghidra false positive; eliminated when Ghidra disabled
@@ -81,44 +83,60 @@ $8B67: rts
 **Status**: Ghidra false positive; eliminated when Ghidra disabled
 **Action**: Accept as known Ghidra limitation
 
-### Bank $1F: 1 conflict ($C700) → 🔍 IN PROGRESS
+### Bank $1F: 1 conflict ($C700) → ✅ RESOLVED
 **Context**: Fixed engine/kernel bank
 **Known ranges**: Only high-address data ($F7F5-$F7F8, $F7FB-$F803)
-**Conflict location**: $C700 is in main kernel code region, far from known ranges
+**Finding**: `$C700` is an operand byte that Ghidra misidentified as an entry point.
+
+**Resolution**: Added a targeted exclusion and verified that the conflict is gone.
 
 ---
 
 ## Recommended Next Actions
 
-### Phase 1: Accept Ghidra Limitations (Quick Win)
-- 3 conflicts ($0F:$CE4D, $1D:$B92C, $1E:$A9C6) are Ghidra-only false positives
+### Phase 1: Accept Ghidra Limitations ✅
+- 3 conflicts ($0F:$CE4C, $1D:$B92C, $1E:$A9C6) are Ghidra-only false positives
 - Document as "Known Ghidra static analysis limitations"
 - Accept 18 → 15 conflict reduction if we disable Ghidra (trade-off: lose 10% code coverage)
 - **Recommendation**: Keep Ghidra enabled for coverage; document these 3 as acceptable artifacts
 
-### Phase 2: Fix Bank $10 Inline Operands (Medium Effort)
-- Add content-ranges entries for inline operand bytes after `jsr` instructions
-- This documents the inline ABI and marks those bytes as data
-- Should reduce conflicts at $8B5D and $8B66
+### Phase 2: Fix Bank $10 Inline Operands ✅
+- Added targeted exclusions for inline operand bytes after `jsr` instructions
+- Conflicts at `$8B5D` and `$8B66` are resolved
 
-### Phase 3: Investigate Bank $11, $12, $16, $1F Gaps (High Effort)
-- For each conflict address, extract ROM disassembly context
-- Classify each gap as code or data
-- If code: determine legitimate entry point and add to code-entry-tables.tsv
-- If data: add to content-ranges.tsv
-- If Ghidra seed: adjust boundary or filter seed
+### Phase 3: Investigate Bank $11, $12, $16, $1F Gaps ✅
+- Sampled each conflict in generated assembly
+- Classified every conflict as an operand-byte collision
+- Added targeted exclusions to `config/code-exclusions.tsv`
+- Verified the report contains no conflicts in these banks
 
-### Phase 4: Accept Remaining Conflicts as Artifacts (If No Targeted Fix)
-- Document conflicts that represent legitimate forward-trace or computed-jump collisions
-- These are acceptable costs of multi-source seed analysis
-- Implement optional flag to suppress them from reports
+### Phase 4: Accept Remaining Conflicts as Artifacts ✅
+- Document the three Ghidra-only conflicts as known static-analysis limitations
+- Keep them visible in reports so future seed improvements can be measured
+- Do not suppress them with broad exclusions
 
 ---
 
 ## Metrics Post-Investigation
 
 - **Baseline (Session Start)**: 30 conflicts
-- **Current State**: 18 conflicts
-- **Target**: 12 conflicts (only known data-heavy regions)
-- **Acceptable Trade-Off**: 15 conflicts if Ghidra disabled (gain confidence, lose coverage)
+- **Current State**: 3 conflicts, all Ghidra-only artifacts
+- **Target**: 3 conflicts while retaining Ghidra's approximately 6,000-instruction coverage contribution
+- **Acceptable Trade-Off**: 15 conflicts if Ghidra is disabled, with approximately 10% less recovered instruction coverage
+
+---
+
+## Next Phase: Unsupported-Opcode And Data-Walk Triage
+
+The conflict backlog is complete enough to move on. The current report contains 143 unsupported-opcode/data-walk warnings, including 60 in Bank $11. These warnings are not automatically defects: many are expected when a control-flow path enters compressed data, inline service operands, or an untyped table.
+
+The next phase is to classify warnings in bounded bank-local batches:
+
+1. Check each warning against `config/content-ranges.tsv` and `config/code-exclusions.tsv`.
+2. If the warning is in data, add or refine the smallest verified range.
+3. If it is in executable code, identify the missing entry point or indirect target before adding a seed.
+4. If it is a legitimate decoder/data walk, record the reason and leave the bytes out of code coverage.
+5. Re-run extraction and the exact ROM build after each batch.
+
+Completion for this phase means every warning is classified as verified code, verified data, intentional decoder/data walk, or unresolved investigation item. A zero-warning report is not required if the remaining warnings are evidence-backed data walks.
 
