@@ -161,10 +161,6 @@ Bank	ReferencedAddress	ConsumerAddress	Mnemonic	AddressingMode
 12	8252	81FB	lda	AbsoluteY
 12	8252	820E	lda	AbsoluteY
 12	8262	8215	lda	AbsoluteY
-12	848D	82FE	lda	Absolute
-12	848E	8303	lda	Absolute
-12	848F	8376	lda	AbsoluteX
-12	8490	837B	lda	AbsoluteX
 12	85AB	84D0	jsr	Absolute
 12	85BC	8566	lda	AbsoluteY
 12	85C6	857C	lda	AbsoluteY
@@ -246,15 +242,12 @@ Bank	ReferencedAddress	ConsumerAddress	Mnemonic	AddressingMode
 13	B7BD	8CC9	lda	AbsoluteX
 13	B7D7	8CD2	lda	AbsoluteX
 13	B74D	91FB	lda	AbsoluteX
-13	B80B	9279	lda	AbsoluteX
 13	94CC	927F	lda	AbsoluteX
 13	94DC	92C1	lda	AbsoluteY
 13	94DB	92D2	lda	AbsoluteY
-13	B80B	9316	lda	AbsoluteX
 13	94CC	931C	lda	AbsoluteX
 13	94DB	9341	lda	AbsoluteX
 13	91BB	9451	lda	AbsoluteX
-13	B80B	A46A	lda	AbsoluteY
 13	94CC	A470	lda	AbsoluteX
 13	A624	A5BB	lda	Absolute
 13	A625	A5C0	lda	Absolute
@@ -274,8 +267,6 @@ Bank	ReferencedAddress	ConsumerAddress	Mnemonic	AddressingMode
 13	B5D9	B5C7	lda	AbsoluteX
 13	B62F	B622	cmp	AbsoluteX
 13	B64D	B62B	lda	AbsoluteX
-13	B80B	B683	lda	AbsoluteX
-13	B80B	B693	lda	AbsoluteX
 13	B736	B699	lda	AbsoluteX
 13	B803	B6C2	lda	AbsoluteX
 13	BDCF	BD77	inc	AbsoluteX
@@ -338,8 +329,6 @@ Bank	ReferencedAddress	ConsumerAddress	Mnemonic	AddressingMode
 14	AF1D	AF03	cmp	AbsoluteX
 14	AF41	AF08	lda	AbsoluteX
 14	AF2F	AF15	cmp	AbsoluteX
-14	BE4F	BDEF	ldy	AbsoluteX
-14	BE4F	BE3A	lda	AbsoluteY
 15	A476	A443	lda	AbsoluteX
 15	B1B3	B176	lda	AbsoluteY
 15	B1D1	B183	lda	AbsoluteY

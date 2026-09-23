@@ -68,6 +68,7 @@
 12	99A0	9AF7	Content classification	Pointer and count delimited battle setup pattern tables
 12	9B80	9B88	Content classification	Eight bounded battle position masks
 12	9BDD	9BFD	Content classification	OAM motion sequence and signed coordinate deltas
+12	8A36	8EAD	Content classification	Pointer-selected setup maps and parser-consumed battle setup records before code resumes at $8EAD
 12	84DC	84DD	Content classification	Operand byte of branch instruction at $84CE
 12	85AB	85AC	Control-flow analysis	Speculative path enters the high operand byte of STA $4860,Y at $85A9
 12	96A6	96A7	Ghidra headless	Ghidra starts at the operand byte of STA $6E at $96A5 and overlaps verified code at $96A7
@@ -93,8 +94,10 @@
 13	8DFF	8E00	Ghidra headless	Ghidra starts at the low operand byte of the verified JSR $8198 at $8DFE; fallthrough resumes at LDY #$00 at $8E01
 13	9C20	9C21	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $8C at $9C1F, creating overlapping decodes through $9C25
 13	A102	A103	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $94 at $A101; fallthrough resumes at LDA $7C at $A103
+13	B80B	B90B	Content classification	Directly indexed 256-byte battle presentation lookup table before code at $B90B
 14	8000	8034	Content classification	Battle-turn service pointer directory
 14	A40D	A41B	Content classification	Nested battle presentation service pointer directory before dual-use handler bytes at $A41B
+14	BE4F	BFD8	Content classification	Monster graphics destination offsets, special embedded compressed stream, and trailing padding
 15	8000	98F8	Content classification	Item/effect directory, command streams, and script pointers
 15	BB1A	BBCE	Content classification	Three parallel 30-entry item/effect lookup tables
 16	8000	8028	Content classification	Text and user-interface service pointer directory

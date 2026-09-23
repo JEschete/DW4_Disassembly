@@ -1094,14 +1094,13 @@ Seeds:
   bank $12:$BDC9 | Entry pointer table | Bank $12 pointer at $805E: 50-entry code dispatch table; first target is $8064
   bank $12:$BE4E | Entry pointer table | Bank $12 pointer at $8060: 50-entry code dispatch table; first target is $8064
   bank $12:$BECD | Entry pointer table | Bank $12 pointer at $8062: 50-entry code dispatch table; first target is $8064
-  bank $12:$8AC1 | Entry pointer table | Bank $12 pointer at $8491: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$83E2 | Entry pointer table | Bank $12 pointer at $8493: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$83EE | Entry pointer table | Bank $12 pointer at $8495: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$83E8 | Entry pointer table | Bank $12 pointer at $8497: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$8405 | Entry pointer table | Bank $12 pointer at $8499: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$8424 | Entry pointer table | Bank $12 pointer at $849B: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$8428 | Entry pointer table | Bank $12 pointer at $849D: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
-  bank $12:$8424 | Entry pointer table | Bank $12 pointer at $849F: Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$83E2 | Entry pointer table | Bank $12 pointer at $8493: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$83EE | Entry pointer table | Bank $12 pointer at $8495: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$83E8 | Entry pointer table | Bank $12 pointer at $8497: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$8405 | Entry pointer table | Bank $12 pointer at $8499: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$8424 | Entry pointer table | Bank $12 pointer at $849B: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$8428 | Entry pointer table | Bank $12 pointer at $849D: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+  bank $12:$8424 | Entry pointer table | Bank $12 pointer at $849F: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
   bank $12:$A4B4 | Entry pointer table | Bank $12 pointer at $A541: Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1
   bank $12:$A4C0 | Entry pointer table | Bank $12 pointer at $A543: Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1
   bank $12:$A4C9 | Entry pointer table | Bank $12 pointer at $A545: Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1
@@ -2142,7 +2141,7 @@ Seeds:
   bank $15:$AEBC | Entry pointer table | Bank $15 pointer at $95C9: Command $01 callback operand parsed from a pointer-delimited effect script
   bank $15:$A99A | Entry pointer table | Bank $15 pointer at $9604: Command $00 callback operand parsed from a pointer-delimited effect script
   bank $15:$B017 | Entry pointer table | Bank $15 pointer at $963F: Command $00 callback operand parsed from a pointer-delimited effect script and overlapping the script pointer table boundary
-  Ghidra headless observations: 50733 instruction starts
+  Ghidra headless observations: 50723 instruction starts
   FCEUX runtime observations: 16553 instruction starts
 
 Coverage:
@@ -2151,7 +2150,7 @@ Coverage:
   bank $0F: 6163 instructions, 12688 bytes, 0 warnings
   bank $10: 6819 instructions, 12812 bytes, 22 warnings
   bank $11: 6199 instructions, 11361 bytes, 60 warnings
-  bank $12: 5718 instructions, 11244 bytes, 8 warnings
+  bank $12: 5708 instructions, 11225 bytes, 7 warnings
   bank $13: 6102 instructions, 12648 bytes, 5 warnings
   bank $14: 5413 instructions, 10592 bytes, 0 warnings
   bank $15: 4094 instructions, 8125 bytes, 18 warnings
@@ -2165,13 +2164,13 @@ Coverage:
   bank $1E: 6356 instructions, 12787 bytes, 14 warnings
   bank $1F: 5634 instructions, 11682 bytes, 3 warnings
 
-Warnings: 177 total
+Warnings: 176 total
 
 Control-flow conflicts: 1
   bank $10: 1
     $BBEB: control flow enters an existing instruction operand
 
-Unsupported opcodes / probable data walks: 176
+Unsupported opcodes / probable data walks: 175
   bank $11: 60
     $8A2C: unsupported opcode $89; path stopped
     $8AF6: unsupported opcode $23; path stopped
@@ -2327,9 +2326,8 @@ Unsupported opcodes / probable data walks: 176
     $A908: unsupported opcode $73; path stopped
     $AC92: unsupported opcode $DF; path stopped
     $ACF8: unsupported opcode $02; path stopped
-  bank $12: 8
+  bank $12: 7
     $84E1: unsupported opcode $04; path stopped
-    $8AD1: unsupported opcode $2B; path stopped
     $9C91: unsupported opcode $63; path stopped
     $9EA9: unsupported opcode $03; path stopped
     $ADF5: unsupported opcode $FF; path stopped

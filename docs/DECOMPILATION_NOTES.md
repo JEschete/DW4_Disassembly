@@ -887,3 +887,18 @@ These intervals remain unclassified at table/routine granularity. Their containi
 - the final 524,304-byte ROM matches SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`
 
 The current totals, per-bank backlog, and semantic completion definition now live only in [STATUS.md](STATUS.md). The gate deliberately does not inflate semantic coverage by guessing.
+
+## Largest Unclassified Block Pass - 2026-09-22
+
+Bank `$14:$A111-$A3F0` is exactly 46 aligned 16-byte NES 2bpp tiles. A standard planar render produces coherent mirrored forms, expected blank tiles, and multi-tile artwork rather than the high-entropy noise seen when compressed streams are rendered directly. This satisfies the graphics-evidence rule even though no static pointer or captured runtime read currently identifies the consumer.
+
+The range is now typed as raw battle graphics. Detailed classification increased by 736 bytes to 503,805 / 524,288 (96.09%), leaving 20,483 bytes in 703 ranges. The exact-ROM completion gate continues to pass.
+
+The descending pass then established four additional data domains:
+
+- Bank `$10:$BD2A-$BF53` is the compressed monster stream selected for monster ID `$B1` by descriptor `$14:$B726`; `$BF54-$BFD7` is contiguous `$FF` padding.
+- Bank `$12:$8A36-$8EAC` contains two 139-byte selector maps addressed through `$848F`, followed by variable setup records parsed from pointer `$8BBC`. Correcting the nested handler table from `$8491` to seven entries at `$8493` removed the false executable target at `$8AC1`.
+- Five special monster descriptors select bank `$14` and stream pointer `$BE53`; `$BE4F-$BE52` holds four consumed destination offsets, `$BE53-$BFCF` is compressed graphics, and `$BFD0-$BFD7` is padding.
+- Bank `$13:$B80B-$B90A` is a full 256-byte battle-presentation lookup page with several direct indexed consumers and verified code beginning at `$B90B`.
+
+Together these classifications reduced the original backlog by 3,174 bytes. Detailed coverage is now 506,243 / 524,288 (96.56%), leaving 18,045 bytes in 696 ranges. The completion gate still reproduces the exact ROM.

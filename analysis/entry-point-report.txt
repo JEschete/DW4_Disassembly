@@ -3,11 +3,11 @@ Every declared table is read as contiguous, non-overlapping two-byte little-endi
 
 Declared tables: 77
 Explicit pointer fields: 126
-Pointer entries: 1955
-Executable targets decoded: 1871 / 1871
+Pointer entries: 1954
+Executable targets decoded: 1870 / 1870
 excluded-data: 53
 fixed-bank-code: 2
-local-bank-code: 1869
+local-bank-code: 1868
 non-code-value: 17
 unsupported-target-value: 13
 vector-data-value: 1
@@ -875,8 +875,7 @@ Bank $12:$8000-$8063 (50 entries)
   $8060 -> bank $12:$BE4E [local-bank-code, decoded]
   $8062 -> bank $12:$BECD [local-bank-code, decoded]
 
-Bank $12:$8491-$84A0 (8 entries)
-  $8491 -> bank $12:$8AC1 [local-bank-code, decoded]
+Bank $12:$8493-$84A0 (7 entries)
   $8493 -> bank $12:$83E2 [local-bank-code, decoded]
   $8495 -> bank $12:$83EE [local-bank-code, decoded]
   $8497 -> bank $12:$83E8 [local-bank-code, decoded]

@@ -12,7 +12,7 @@
 11	A40A	A61E	Direct ROM analysis	266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C
 11	8FDC	904A	Direct ROM analysis	55-entry battle handler table selected by the sorted action IDs at $8FA5
 12	8000	8064	Direct ROM analysis	50-entry code dispatch table; first target is $8064
-12	8491	84A1	Direct ROM analysis	Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+12	8493	84A1	Direct ROM analysis	Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
 12	A541	A553	Direct ROM analysis	Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1
 12	A9ED	AA0D	Direct ROM analysis	Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643
 12	AACA	AAD4	Direct ROM analysis	Five-entry battle setup handler table selected by values below five and dispatched at $AAB7-$AAC7

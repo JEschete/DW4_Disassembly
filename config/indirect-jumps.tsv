@@ -8,7 +8,7 @@
 11	8CAA	registered	11:A40A-A61E	Battle-action dispatch table
 11	8D0A	registered	11:A40A-A61E	Battle-action dispatch table
 11	8E0B	registered	11:8FDC-904A	Sorted battle-handler table
-12	83DF	registered	12:8491-84A1	Eight-entry battle-setup handler table
+12	83DF	registered	12:8493-84A1	Seven-entry battle-setup handler table selected only for nonzero three-bit values
 12	A4B1	registered	12:A541-A553	Nine-entry setup-operation handler table
 12	A643	registered	12:A9ED-AA0D	Sixteen-entry battle-setup event table
 12	AAC7	registered	12:AACA-AAD4	Five-entry bounded battle-setup handler table

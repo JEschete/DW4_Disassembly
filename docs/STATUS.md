@@ -7,24 +7,24 @@ This document is the authoritative human-readable status snapshot. Generated tot
 ## Current Metrics
 
 Reassemblable assembly: 100% (verified: build reproduces SHA-256 373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A)
-Detailed semantic classification: 95.95% (503,069 / 524,288)
-Remaining unclassified: 21,219 bytes in 704 ranges
-Verified instruction bytes: 156,004 (29.76%)
-Explicitly ranged data bytes: 347,698 (66.32%)
-Dual-use code/data overlap: 633 bytes (0.12%)
-Meaningfully named routines: 78/3,992 (1.95%)
-Semantic contracts: 35/3,992 (0.88%)
+Detailed semantic classification: 96.56% (506,243 / 524,288)
+Remaining unclassified: 18,045 bytes in 696 ranges
+Verified instruction bytes: 155,985 (29.75%)
+Explicitly ranged data bytes: 350,914 (66.93%)
+Dual-use code/data overlap: 656 bytes (0.13%)
+Meaningfully named routines: 78/3,991 (1.95%)
+Semantic contracts: 35/3,991 (0.88%)
 Pointer recovery, indirect-jump audit, and unsupported-opcode disposition: 100%
 Control-flow conflicts: 1/1 audited intentional overlap
 Structured asset encoders: 0/5 complete
 
-All-bank entry-point pass: 1,955 pointer entries across 77 declared tables/ranges, mixed records, text/UI
-escape handlers, and 126 explicit pointer fields. All 1,871 executable targets decode (1,869 local-bank plus
+All-bank entry-point pass: 1,954 pointer entries across 77 declared tables/ranges, mixed records, text/UI
+escape handlers, and 126 explicit pointer fields. All 1,870 executable targets decode (1,868 local-bank plus
 two fixed-bank), and all 42 currently decoded indirect jumps have reviewed dispositions.
 
 The completion gate (scripts\verify-completion.ps1) passes end to end: 143/143 original warnings plus 45
-additional recovered-path warnings classified; 1,955 pointers typed; 1,871/1,871 executable targets decoded;
-42/42 indirect jumps audited; 1/1 control-flow conflicts audited; 3,992 routine interfaces; 35 semantic
+additional recovered-path warnings classified; 1,954 pointers typed; 1,870/1,870 executable targets decoded;
+42/42 indirect jumps audited; 1/1 control-flow conflicts audited; 3,991 routine interfaces; 35 semantic
 contracts; 26 asset slices; 15 save fields; 12 runtime assertions across 9 paths; exact ROM match.
 
 ## Completion Definition
@@ -63,14 +63,15 @@ Add editing tools and begin intentional gameplay changes.
 
 ## Largest Unclassified Blocks
 
-No traced consumer yet:
-    $14:$A111-$A3F0 (736)   exactly 46 x 16 bytes; consistent with raw NES tiles, unconfirmed
-    $10:$BD43-$BFD7 (661)   bank tail, no decoded instruction references it
-    $12:$8AD1-$8D04 (564)
-    $14:$BE4F-$BFD7 (393)   only the four-entry index at $BE4F has a traced consumer
-    $12:$8D75-$8EAC (312)
-    $13:$B7E8-$B90A (291)
+Current exact intervals, largest first:
     $13:$BBCE-$BCE9 (284)
+    $12:$BED2-$BFD7 (262)
+    $16:$B307-$B3FB (245)
+    $16:$B85E-$B94F (242)
+    $16:$AC0F-$ACFE (240)
+    $13:$BD97-$BE80 (234)
+    $16:$BEF0-$BFD7 (232)
+    $13:$B96F-$BA4D (223)
 
 
 ## Audited Conflict

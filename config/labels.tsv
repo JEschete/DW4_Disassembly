@@ -103,7 +103,11 @@
 11	BFD8	Bank11_CompatibilityFooter	Data	Repeated reset stub, title signature, metadata, and vectors
 12	8000	Bank12_BattleSetupDirectory	Table	50 little-endian battle setup and combat service pointers with two null entries
 12	8064	Bank12_BattleSetupServices	Code	Initializes battle RAM, party combatants, monster state, and battle presentation
-12	8491	Bank12_BattleSetupHandlerPointers	Table	Eight handlers selected from three-bit setup fields and dispatched through $83DF
+12	848D	Bank12_BattleSetupDataPointers	Table	Parser base $8BBC followed by selector-map bases $8A36 and $8AC1
+12	8493	Bank12_BattleSetupHandlerPointers	Table	Seven handlers selected from nonzero three-bit setup fields and dispatched through $83DF
+12	8A36	Bank12_BattleSetupSelectorMapA	Table	First setup selector map indexed by $8B
+12	8AC1	Bank12_BattleSetupSelectorMapB	Table	Second setup selector map indexed by $8B
+12	8BBC	Bank12_BattleSetupRecords	Data	Variable records parsed by $82FC-$8367
 12	A541	Bank12_BattleSetupOperationPointers	Table	Nine setup operation handlers dispatched through $A4B1
 12	A9ED	Bank12_BattleSetupEventPointers	Table	Sixteen event handlers parallel to the IDs at $AA0D
 12	AA0D	Bank12_BattleSetupEventIds	Table	Sixteen event IDs selecting the handler table at $A9ED
@@ -122,8 +126,10 @@
 13	A747	Bank13_BattleEffectRecordPointers	Table	Four pointers to terminated battle-effect record lists
 13	A74F	Bank13_BattleEffectRecords	Data	Four-byte battle-effect records terminated by $FF
 13	90EC	Bank13_BattleFieldOffsets	Table	Field offsets followed by eight arithmetic handler pointers
+13	B80B	Bank13_BattlePresentationLookup	Table	Full 256-byte directly indexed battle presentation lookup table
 14	8000	Bank14_BattleTurnDirectory	Table	26 little-endian battle-turn service pointers
 14	8034	Bank14_BattleTurnEngine	Code	Turn orchestration and per-combatant battle-state processing
+14	A111	Bank14_RawBattleGraphics	Graphics	Forty-six aligned raw NES 2bpp battle tiles
 14	A40D	Bank14_BattlePresentationSubdirectory	Table	Seven little-endian pointers to nested battle presentation handlers
 14	9712	Bank14_DecodeMonsterGraphicsBitplanes	Code	Decodes compressed monster streams into two 16-byte NES bitplanes at $0650/$0660 and rearranges output at $0670
 14	9F26	Bank14_SelectMonsterGraphicsBank	Code	Selects graphics bank $06/$07 from monster ID, with special embedded-graphics overrides
@@ -134,6 +140,9 @@
 14	B398	Bank14_MonsterGraphicsBankBitmap	Table	25-byte MSB-first bitmap selecting physical bank $06 or $07 for monster IDs $00-$C1
 14	B3B1	Bank14_MonsterGraphicsDescriptors	Table	194 five-byte records: chunk count, stream pointer, and two layout bytes
 14	B77B	Bank14_CompressedGraphicsStreams	CompressedGraphics	Pointer-selected bank-local graphics streams ending before code at $BD00
+14	BE4F	Bank14_GraphicsDestinationOffsets	Table	Four destination offsets used while rearranging decoded monster graphics
+14	BE53	Bank14_SpecialMonsterGraphics	CompressedGraphics	Embedded stream shared by five special monster IDs with distinct layout bytes
+14	BFD0	Bank14_GraphicsPadding	Padding	Eight $FF bytes before the compatibility footer
 15	8000	Bank15_ItemEffectDirectory	Table	26 little-endian item, effect-script, and inventory service pointers with one null entry
 15	8034	Bank15_EffectScripts	Script	Table-driven item and field-effect command streams
 15	9640	Bank15_EffectScriptPointers	Table	Pointers into the item and field-effect command streams

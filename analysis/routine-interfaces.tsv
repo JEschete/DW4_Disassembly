@@ -1133,12 +1133,12 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	82FC	BattleSetupServices_Entry_82FC	Direct call from $12:$81CE	A	A,P	$00,$02,$03,$04	
 12	8370	BattleSetupServices_Entry_8370	Direct call from $12:$82BF	A,X	A,P,X	$00,$01,$F9,$FA,$FD,$FE,$FF	$83D3,$C813
 12	83D3	BattleSetupServices_Entry_83D3	Direct call from $12:$8390; Direct call from $12:$839E	A,X	A,P,X	$02,$03	
-12	83E2	BattleSetupServices_Entry_83E2	Pointer $12:$8493 (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A	A,P,X	$02	$83E8,$842C
-12	83E8	BattleSetupServices_Entry_83E8	Direct call from $12:$83E2; Pointer $12:$8497 (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		P		
-12	83EE	BattleSetupServices_Entry_83EE	Pointer $12:$8495 (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A	A,P,X	$02	$8405,$842C
-12	8405	BattleSetupServices_Entry_8405	Direct call from $12:$83EE; Pointer $12:$8499 (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A,X	A,P,X	$02	
-12	8424	BattleSetupServices_Entry_8424	Pointer $12:$849B (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF); Pointer $12:$849F (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		A,P		
-12	8428	BattleSetupServices_Entry_8428	Pointer $12:$849D (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		P		
+12	83E2	BattleSetupServices_Entry_83E2	Pointer $12:$8493 (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A	A,P,X	$02	$83E8,$842C
+12	83E8	BattleSetupServices_Entry_83E8	Direct call from $12:$83E2; Pointer $12:$8497 (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		P		
+12	83EE	BattleSetupServices_Entry_83EE	Pointer $12:$8495 (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A	A,P,X	$02	$8405,$842C
+12	8405	BattleSetupServices_Entry_8405	Direct call from $12:$83EE; Pointer $12:$8499 (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A,X	A,P,X	$02	
+12	8424	BattleSetupServices_Entry_8424	Pointer $12:$849B (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF); Pointer $12:$849F (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		A,P		
+12	8428	BattleSetupServices_Entry_8428	Pointer $12:$849D (Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)		P		
 12	842C	BattleSetupServices_Entry_842C	Direct call from $12:$83FC; Direct call from $12:$854D; Direct call from $12:$874D	A	A,P		
 12	84B2	BattleSetupServices_Entry_84B2	Pointer $12:$8006 (50-entry code dispatch table; first target is $8064)	A	A,P		
 12	8536	BattleSetupServices_Entry_8536	Direct call from $12:$8516		P		
@@ -1167,7 +1167,6 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	8A0A	BattleSetupServices_Entry_8A0A	Direct call from $12:$8982; Pointer $12:$803E (50-entry code dispatch table; first target is $8064)	A	A,P	$0500,$0505	
 12	8A1A	BattleSetupServices_Entry_8A1A	Direct call from $12:$897A	A	P	$16	$C5DE
 12	8A22	BattleSetupServices_Entry_8A22	Direct call from $12:$8949; Direct call from $12:$896F	A,X	A,P,X	$0203+X,$0508	
-12	8AC1	BattleSetupServices_Entry_8AC1	Pointer $12:$8491 (Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF)	A,X	A,P		
 12	8EAD	InitializeChapterSaveState	Pointer $12:$802E (50-entry code dispatch table; first target is $8064)	A,X,Y	A,P,X,Y	($79),Y,$00,$01,$02,$03,$04,$05,$06,$07,$07C6,$07C7,$07C8,$08,$09,$6001+X,$6002+X,$6003+X,$610E+X,$6157,$6158,$6159,$615A,$615B,$6165+Y,$616A,$616A+Y,$618E,$62E7,$62E8,$62E9,$72,$77,$79,$7A	$C81D,$C827
 12	90EC	BattleSetupServices_Entry_90EC	Pointer $12:$805A (50-entry code dispatch table; first target is $8064)	A	A,P		
 12	91DD	BattleSetupServices_Entry_91DD	Direct call from $12:$8854	A	A,P,X		

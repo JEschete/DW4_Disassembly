@@ -54,6 +54,8 @@
 10	AAA6	AB06	BattleRecordOperationPointers	Verified	Forty-eight handler pointers selected by the battle-record index in $6E59
 10	B499	B49B	PointerTableAddress	Verified	Little-endian address $B49B loaded by the battle-effect dispatcher
 10	B49B	B58B	BattleEffectPointers	Verified	120 handler pointers selected by the battle effect ID in $0B
+10	BD2A	BF54	CompressedMonsterGraphics	Verified	Monster ID $B1 descriptor at bank $14:$B726 selects bank $10 and points to $BD2A; the verified bitplane decoder consumes the stream before $FF padding
+10	BF54	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 10	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 11	8000	8032	ServiceDirectory	Verified	Twenty-five battle action and state service pointers
 11	811C	811F	InlineServiceOperands	Verified	Three operands consumed by BRK service $62,$23 before code resumes at $811F
@@ -100,7 +102,11 @@
 11	BFB1	BFD8	Padding	Verified	Contiguous $FF padding after battle services
 11	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
 12	8000	8064	ServiceDirectory	Verified	Fifty battle setup and combat service pointers
-12	8491	84A1	BattleSetupHandlerPointers	Verified	Eight little-endian handlers selected by nonzero three-bit fields at bank $12:$838C-$839E and dispatched at $83DF
+12	848D	8493	BattleSetupDataPointers	Verified	Pointer $8BBC parsed by $82FC-$8367 followed by map bases $8A36/$8AC1 selected through $848F,X at $8370-$8389
+12	8493	84A1	BattleSetupHandlerPointers	Verified	Seven little-endian handlers selected by nonzero three-bit fields at bank $12:$838C-$839E and dispatched at $83DF
+12	8A36	8AC1	BattleSetupSelectorMapA	Verified	Indexed from base $8A36 through the first pointer selected by $8A bit zero and offset by $8B at $8370-$8389
+12	8AC1	8BBC	BattleSetupSelectorMapB	Verified	Indexed from base $8AC1 through the second pointer selected by $8A bit zero and offset by $8B at $8370-$8389
+12	8BBC	8EAD	BattleSetupRecords	Verified	Variable records parsed from pointer $8BBC by $82FC-$8367 before verified code resumes at $8EAD
 12	98D2	98F6	BattleSetupLookupTables	Verified	Three parallel twelve-byte arrays indexed by Y below $0C at $98B1, $98B6, and $98C4
 12	9911	991A	BattleSetupParameters	Verified	Three three-byte parameter records selected by offsets $00, $03, and $06 in the setup loop at $98F8
 12	9926	993E	BattleSetupTemplate	Verified	Twenty-four bytes copied in reverse by the Y=$18 loop at $991C-$9923
@@ -132,9 +138,11 @@
 13	A636	A696	BattlePresentationCallbackPointers	Verified	Four 12-entry callback tables indexed by doubled selector $0D
 13	A747	A74F	BattleEffectRecordPointers	Verified	Four little-endian record pointers selected by offsets $00,$02,$04,$06 stored at $75F1 by bank $13:$A6C6-$A6D4
 13	A74F	A797	BattleEffectRecords	Verified	Four pointer-selected lists of four-byte effect records terminated by $FF and decoded by bank $13:$A703-$A73B
+13	B80B	B90B	BattlePresentationLookup	Verified	Full 256-byte table directly indexed at $9279/$9316/$A46A/$B683/$B693 and bounded by verified code at $B90B
 13	BA4E	BBCB	BattlePresentationTables	Verified	Parallel lookup tables whose bases $BA4E, $BA6C, $BA70, $BA74, $BAA5, $BAD5, $BB06, $BB22, $BB3F, $BB49 and the seven-byte records $BB53-$BB99 are each read by traced indexed consumers
 13	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 14	8000	8034	ServiceDirectory	Verified	Twenty-six battle-turn service pointers
+14	A111	A3F1	Graphics	Verified	Forty-six aligned 16-byte NES 2bpp battle tiles with coherent mirrored forms, blank tiles, and multi-tile artwork
 14	A40D	A41B	ServiceDirectory	Verified	Seven-entry nested battle presentation dispatch table
 14	AA66	AB23	BattleAttributeArrays	Verified	Three parallel 63-entry arrays indexed by X and read at $AA43 ($AA66), $AA48 ($AAA5), and $AA4D ($AAE4)
 14	AB23	ABA1	PointerTable	Verified	Sixty-three record pointers read through the doubled index at $AA56-$AA5E into $06/$07 before $AFEA
@@ -149,6 +157,9 @@
 14	B398	B3B1	MonsterGraphicsBankBitmap	Verified	Twenty-five-byte MSB-first bitmap selecting graphics bank $06 or $07
 14	B3B1	B77B	MonsterGraphicsDescriptors	Verified	One hundred ninety-four five-byte graphics descriptor records
 14	B77B	BD00	CompressedGraphicsStreams	Verified	Pointer-selected compressed graphics streams bounded by the 81-entry directory at $B1BA; code begins at $BD00
+14	BE4F	BE53	GraphicsDestinationOffsets	Verified	Four destination offsets consumed at $BDEF and $BE3A while rearranging decoded monster graphics
+14	BE53	BFD0	CompressedMonsterGraphics	Verified	Special monster IDs $14,$2E,$3F,$B2,$C0 select bank $14 and descriptors point to this $19-chunk stream with layout variants
+14	BFD0	BFD8	Padding	Verified	Eight contiguous $FF bytes after the embedded graphics stream and before the compatibility footer
 14	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 15	8000	8034	ServiceDirectory	Verified	Twenty-six item, effect-script, and inventory service pointers
 15	8034	9640	EffectScripts	Verified	Table-driven item and field-effect command streams

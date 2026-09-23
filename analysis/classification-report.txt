@@ -23,11 +23,11 @@ Detailed per bank:
   bank $0D: 16384 detailed (100.00%); code     0; data 16384; overlap    0
   bank $0E: 16137 detailed ( 98.49%); code   319; data 15818; overlap    0
   bank $0F: 15158 detailed ( 92.52%); code 12688; data  2477; overlap    7
-  bank $10: 14559 detailed ( 88.86%); code 12810; data  1750; overlap    1
+  bank $10: 15220 detailed ( 92.90%); code 12810; data  2434; overlap   24
   bank $11: 15396 detailed ( 93.97%); code 11359; data  4037; overlap    0
-  bank $12: 13546 detailed ( 82.68%); code 11243; data  2314; overlap   11
-  bank $13: 13813 detailed ( 84.31%); code 12646; data  1174; overlap    7
-  bank $14: 14679 detailed ( 89.59%); code 10592; data  4087; overlap    0
+  bank $12: 14674 detailed ( 89.56%); code 11224; data  3461; overlap   11
+  bank $13: 14069 detailed ( 85.87%); code 12646; data  1430; overlap    7
+  bank $14: 15808 detailed ( 96.48%); code 10592; data  5216; overlap    0
   bank $15: 15727 detailed ( 95.99%); code  8125; data  7603; overlap    1
   bank $16: 12884 detailed ( 78.64%); code 10549; data  2335; overlap    0
   bank $17: 16384 detailed (100.00%); code  6540; data  9845; overlap    1
@@ -40,11 +40,11 @@ Detailed per bank:
   bank $1E: 15300 detailed ( 93.38%); code 12779; data  2533; overlap   12
   bank $1F: 14508 detailed ( 88.55%); code 11682; data  2878; overlap   52
 
-Verified instruction bytes: 156004 / 524288 (29.76%)
-Explicitly ranged data bytes: 347698 / 524288 (66.32%)
-Dual-use code/data overlap bytes: 633 / 524288 (0.12%)
-Detailed classification union: 503069 / 524288 (95.95%)
-Unclassified PRG bytes: 21219 / 524288 (4.05%)
+Verified instruction bytes: 155985 / 524288 (29.75%)
+Explicitly ranged data bytes: 350914 / 524288 (66.93%)
+Dual-use code/data overlap bytes: 656 / 524288 (0.13%)
+Detailed classification union: 506243 / 524288 (96.56%)
+Unclassified PRG bytes: 18045 / 524288 (3.44%)
 
 Unclassified ranges:
   bank $08:$80B3-$80B6 (4 bytes)
@@ -213,7 +213,6 @@ Unclassified ranges:
   bank $10:$BCC9-$BCE7 (31 bytes)
   bank $10:$BCEF-$BD0D (31 bytes)
   bank $10:$BD13-$BD27 (21 bytes)
-  bank $10:$BD43-$BFD7 (661 bytes)
   bank $11:$85F1-$85F5 (5 bytes)
   bank $11:$8A2C-$8A37 (12 bytes)
   bank $11:$8AF6-$8B16 (33 bytes)
@@ -293,17 +292,12 @@ Unclassified ranges:
   bank $11:$BC53-$BC58 (6 bytes)
   bank $11:$BCC7-$BCF0 (42 bytes)
   bank $12:$8252-$8269 (24 bytes)
-  bank $12:$848D-$8490 (4 bytes)
   bank $12:$84A1-$84A8 (8 bytes)
   bank $12:$84E1-$8504 (36 bytes)
   bank $12:$85AB-$85C9 (31 bytes)
   bank $12:$8614-$861A (7 bytes)
   bank $12:$86A1-$86A3 (3 bytes)
   bank $12:$8741-$8744 (4 bytes)
-  bank $12:$8A36-$8AC0 (139 bytes)
-  bank $12:$8AD1-$8D04 (564 bytes)
-  bank $12:$8D06-$8D72 (109 bytes)
-  bank $12:$8D75-$8EAC (312 bytes)
   bank $12:$9135-$91DC (168 bytes)
   bank $12:$9285-$92AC (40 bytes)
   bank $12:$9548-$9555 (14 bytes)
@@ -375,7 +369,7 @@ Unclassified ranges:
   bank $13:$B6E0-$B717 (56 bytes)
   bank $13:$B736-$B7AF (122 bytes)
   bank $13:$B7BA-$B7E2 (41 bytes)
-  bank $13:$B7E8-$B90A (291 bytes)
+  bank $13:$B7E8-$B80A (35 bytes)
   bank $13:$B96F-$BA4D (223 bytes)
   bank $13:$BBCE-$BCE9 (284 bytes)
   bank $13:$BCEF-$BD74 (134 bytes)
@@ -403,12 +397,10 @@ Unclassified ranges:
   bank $14:$9ADB-$9ADC (2 bytes)
   bank $14:$A019-$A01A (2 bytes)
   bank $14:$A02A-$A02D (4 bytes)
-  bank $14:$A111-$A3F0 (736 bytes)
   bank $14:$A621-$A67E (94 bytes)
   bank $14:$AA36-$AA42 (13 bytes)
   bank $14:$AEB7-$AECC (22 bytes)
   bank $14:$AF1D-$AFA7 (139 bytes)
-  bank $14:$BE4F-$BFD7 (393 bytes)
   bank $15:$9B03-$9B08 (6 bytes)
   bank $15:$9C82-$9C91 (16 bytes)
   bank $15:$9CFC-$9D13 (24 bytes)
