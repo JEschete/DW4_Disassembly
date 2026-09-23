@@ -76,6 +76,7 @@
 12	A997	A998	Ghidra headless	Ghidra starts at the relative operand of the verified BEQ $A9C5 at $A996; fallthrough resumes at CPX #$44 at $A998
 12	B0A5	B0A6	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $FE at $B0A4; fallthrough resumes at STA $FF at $B0A6
 12	B1C8	B1C9	Ghidra headless	Ghidra starts at the high operand byte of the verified LDA $B1E7,X at $B1C6, creating overlapping decodes at $B1C8 and $B1CA
+12	BF68	BFD8	Content classification	Contiguous $FF padding before the compatibility footer
 11	8BFC	8BFD	Content classification	Operand byte in middle of loop; Ghidra misidentifies as entry
 11	9933	9934	Content classification	Low byte of jsr operand at $9932
 11	9C68	9C69	Content classification	Operand byte of branch instruction at $9C5F

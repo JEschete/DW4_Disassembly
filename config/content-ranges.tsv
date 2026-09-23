@@ -121,6 +121,7 @@
 12	AACA	AAD4	BattleSetupHandlerPointers	Verified	Five handler pointers selected by values below five at bank $12:$AAB7
 12	B67A	B6BC	MapTransitionHandlerPointers	Verified	Thirty-three handler pointers selected by the parallel ID list at $B6BC
 12	B6BC	B6DE	MapTransitionIds	Verified	Thirty-three map-transition IDs followed by the $FF search terminator
+12	BF68	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 12	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 13	8000	8038	ServiceDirectory	Verified	Twenty-eight battle presentation and state pointers
 13	8078	8088	BattleStateHandlerPointers	Verified	Eight little-endian handler pointers selected by doubled state $75E8 after the explicit range check against eight at bank $13:$80E4

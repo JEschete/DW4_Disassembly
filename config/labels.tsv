@@ -112,6 +112,7 @@
 12	A9ED	Bank12_BattleSetupEventPointers	Table	Sixteen event handlers parallel to the IDs at $AA0D
 12	AA0D	Bank12_BattleSetupEventIds	Table	Sixteen event IDs selecting the handler table at $A9ED
 12	8EAD	InitializeChapterSaveState	Code	Clears save work state and initializes chapter-dependent party records
+12	BF68	Bank12_BattleSetupPadding	Padding	Contiguous $FF padding before the compatibility footer
 13	8000	Bank13_BattlePresentationDirectory	Table	28 little-endian battle presentation and state service pointers
 13	8038	Bank13_BattlePresentationServices	Code	Battle state routing, combatant animation, and presentation services
 13	8078	Bank13_BattleStateHandlerPointers	Table	Eight state-selected handler pointers dispatched through bank $13:$805B
