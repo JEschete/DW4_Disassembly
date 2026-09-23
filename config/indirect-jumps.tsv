@@ -20,7 +20,6 @@
 13	9171	registered	13:91CD-91F1	Special battle-action handler table
 13	A589	registered	13:A636-A696	Four battle-presentation callback tables
 13	A744	registered	13:A74F-A797	Callback fields in terminated four-byte battle-effect records
-13	BBCB	hardware-open-bus	CPU:44E1-44E2	Service-directory trap jumps through unmapped expansion-space/open-bus bytes
 14	8364	registered	14:A40D-A41B	Seven-entry nested battle-presentation table
 15	9C60	registered	15:8034-9641	Command $00/$01 callback operands parsed from all 346 bounded effect scripts
 16	80B2	registered	16:80C4-80EA	Nineteen-entry text/UI command handler table

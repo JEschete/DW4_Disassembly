@@ -164,6 +164,8 @@ Seeds:
   bank $1B:$B55A | Direct ROM scan | JSR to fixed trampoline $C034
   bank $1C:$A010 | Runtime and direct call analysis | Runtime-executed map/submap key dispatcher called directly from bank $1C:$9EAE
   bank $1C:$A0C6 | Direct call analysis | Map-event routine called directly from bank $1C:$A0AA
+  bank $1C:$B83A | Direct ROM analysis | Coherent adjacent map-entity initialization and transition routine family after RTS $B839 and before the registered service at $B8F5
+  bank $1C:$B8CD | Direct ROM analysis | Standalone map-coordinate initializer after the terminal jump at $B8CA and ending with RTS at $B8DD
   bank $1C:$BDD2 | Entry pointer analysis | BRK-backed map-event handler targeted by pointer $1C:$BFA5
   bank $1C:$BED3 | Direct call analysis | BRK-backed map-event helper called directly from bank $1C:$AE03/$AE13
   bank $1C:$BED6 | Direct call analysis | BRK-backed map-event helper called or jumped to from bank $1C:$AE40/$AEF9
@@ -267,6 +269,15 @@ Seeds:
   bank $1F:$C03A-$C03C | Direct ROM analysis | Fixed-bank JMP trampoline 13
   bank $1F:$C15A | Direct ROM analysis | NMI body installed as JMP $C15A at RAM vector $0502
   bank $1F:$C408 | CPU vector | IRQ/BRK vector target
+  bank $1F:$CE09 | Direct ROM analysis | Coherent fixed-bank event routine immediately after RTS $CE08 with calls into the adjacent CFxx helper family
+  bank $1F:$CE80 | Direct ROM analysis | Coherent fixed-bank event helper after the terminal jump at $CE7D and before RTS $CEBD
+  bank $1F:$CEBE | Direct ROM analysis | Coherent selector routine after RTS $CEBD indexing the eleven-byte table at $CEF8
+  bank $1F:$CF03 | Direct ROM analysis | Coherent adjacent event-condition routine after the selector table at $CEF8-$CF02
+  bank $1F:$CF38 | Direct ROM analysis | Compact BRK-backed event predicate called by the recovered helper at $CE9E
+  bank $1F:$CF41 | Direct ROM analysis | Coherent chapter and coordinate event helper called by the recovered helper at $CEA1
+  bank $1F:$CF56 | Direct ROM analysis | Compact BRK-backed event helper called by recovered routines at $CE31/$CE80
+  bank $1F:$CF5F | Direct ROM analysis | Coherent fixed-bank event-state update routine called by the recovered routine at $CE39
+  bank $1F:$F11C | Inline service continuation | Coherent fixed-bank routine resumes after the two operands consumed by BRK service $12,$DF at $F119 and returns at $F19A
   bank $1F:$F271 | Direct ROM analysis | Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662
   bank $1F:$F29E | Direct ROM analysis | Coherent routine after the $F29C stream pointer that copies $7608-$760B into $52-$55 and returns at $F2B2
   bank $1F:$F2B3 | Direct ROM analysis | Coherent routine calling $F293 before JMP $C727 at $F2B7, immediately preceding the $F2BB stream
@@ -1185,12 +1196,6 @@ Seeds:
   bank $13:$83F4 | Entry pointer table | Bank $13 pointer at $8024: 28-entry code dispatch table; first target is $8038
   bank $13:$A797 | Entry pointer table | Bank $13 pointer at $8026: 28-entry code dispatch table; first target is $8038
   bank $13:$B462 | Entry pointer table | Bank $13 pointer at $8028: 28-entry code dispatch table; first target is $8038
-  bank $13:$BBCB | Entry pointer table | Bank $13 pointer at $802A: 28-entry code dispatch table; first target is $8038
-  bank $13:$BCEA | Entry pointer table | Bank $13 pointer at $802C: 28-entry code dispatch table; first target is $8038
-  bank $13:$BE81 | Entry pointer table | Bank $13 pointer at $8030: 28-entry code dispatch table; first target is $8038
-  bank $13:$BEA8 | Entry pointer table | Bank $13 pointer at $8032: 28-entry code dispatch table; first target is $8038
-  bank $13:$BF21 | Entry pointer table | Bank $13 pointer at $8034: 28-entry code dispatch table; first target is $8038
-  bank $13:$BF65 | Entry pointer table | Bank $13 pointer at $8036: 28-entry code dispatch table; first target is $8038
   bank $13:$8074 | Entry pointer table | Bank $13 pointer at $8078: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
   bank $13:$AFF0 | Entry pointer table | Bank $13 pointer at $807A: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
   bank $13:$AF97 | Entry pointer table | Bank $13 pointer at $807C: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
@@ -1489,16 +1494,120 @@ Seeds:
   bank $16:$8332 | Entry pointer table | Bank $16 pointer at $80E4: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
   bank $16:$821C | Entry pointer table | Bank $16 pointer at $80E6: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
   bank $16:$81EA | Entry pointer table | Bank $16 pointer at $80E8: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
-  bank $16:$AAF7 | Entry pointer table | Bank $16 pointer at $A5EB: Primary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$ABFF | Entry pointer table | Bank $16 pointer at $A607: Primary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$ACFF | Entry pointer table | Bank $16 pointer at $A619: Primary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$ADF0 | Entry pointer table | Bank $16 pointer at $A633: Primary text/UI escape handler at the fourth command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$AEBF | Entry pointer table | Bank $16 pointer at $A641: Primary text/UI escape handler at the fifth command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$AFD8 | Entry pointer table | Bank $16 pointer at $A64D: Primary text/UI escape handler at the sixth command-pointer low-byte wrap, dispatched through $9841/$987F
+  bank $16:$AAF7 | Entry pointer table | Bank $16 pointer at $A5EB: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB2F | Entry pointer table | Bank $16 pointer at $A5ED: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB3A | Entry pointer table | Bank $16 pointer at $A5EF: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB60 | Entry pointer table | Bank $16 pointer at $A5F1: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB68 | Entry pointer table | Bank $16 pointer at $A5F3: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB70 | Entry pointer table | Bank $16 pointer at $A5F5: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB82 | Entry pointer table | Bank $16 pointer at $A5F7: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AB8B | Entry pointer table | Bank $16 pointer at $A5F9: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABAD | Entry pointer table | Bank $16 pointer at $A5FB: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABC7 | Entry pointer table | Bank $16 pointer at $A5FD: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABDB | Entry pointer table | Bank $16 pointer at $A5FF: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABE3 | Entry pointer table | Bank $16 pointer at $A601: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABEB | Entry pointer table | Bank $16 pointer at $A603: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABF3 | Entry pointer table | Bank $16 pointer at $A605: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ABFF | Entry pointer table | Bank $16 pointer at $A607: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AC07 | Entry pointer table | Bank $16 pointer at $A609: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AC0F | Entry pointer table | Bank $16 pointer at $A60B: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AC52 | Entry pointer table | Bank $16 pointer at $A60D: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AC5C | Entry pointer table | Bank $16 pointer at $A60F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AC7F | Entry pointer table | Bank $16 pointer at $A611: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ACC3 | Entry pointer table | Bank $16 pointer at $A613: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ACD0 | Entry pointer table | Bank $16 pointer at $A615: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ACDF | Entry pointer table | Bank $16 pointer at $A617: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ACFF | Entry pointer table | Bank $16 pointer at $A619: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD0A | Entry pointer table | Bank $16 pointer at $A61B: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD10 | Entry pointer table | Bank $16 pointer at $A61D: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD2E | Entry pointer table | Bank $16 pointer at $A61F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD4A | Entry pointer table | Bank $16 pointer at $A621: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD58 | Entry pointer table | Bank $16 pointer at $A623: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD5B | Entry pointer table | Bank $16 pointer at $A625: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD5E | Entry pointer table | Bank $16 pointer at $A627: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD61 | Entry pointer table | Bank $16 pointer at $A629: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AD87 | Entry pointer table | Bank $16 pointer at $A62B: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ADCC | Entry pointer table | Bank $16 pointer at $A62D: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ADDA | Entry pointer table | Bank $16 pointer at $A62F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ADE8 | Entry pointer table | Bank $16 pointer at $A631: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$ADF0 | Entry pointer table | Bank $16 pointer at $A633: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE00 | Entry pointer table | Bank $16 pointer at $A635: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE06 | Entry pointer table | Bank $16 pointer at $A637: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE32 | Entry pointer table | Bank $16 pointer at $A639: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE54 | Entry pointer table | Bank $16 pointer at $A63B: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE76 | Entry pointer table | Bank $16 pointer at $A63D: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AE95 | Entry pointer table | Bank $16 pointer at $A63F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AEBF | Entry pointer table | Bank $16 pointer at $A641: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AF02 | Entry pointer table | Bank $16 pointer at $A643: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AF57 | Entry pointer table | Bank $16 pointer at $A645: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AF65 | Entry pointer table | Bank $16 pointer at $A647: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AF70 | Entry pointer table | Bank $16 pointer at $A649: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AF78 | Entry pointer table | Bank $16 pointer at $A64B: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$AFD8 | Entry pointer table | Bank $16 pointer at $A64D: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B014 | Entry pointer table | Bank $16 pointer at $A64F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B021 | Entry pointer table | Bank $16 pointer at $A651: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B037 | Entry pointer table | Bank $16 pointer at $A653: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B0FA | Entry pointer table | Bank $16 pointer at $A68D: Primary text/UI escape handler at the seventh command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$B1F9 | Entry pointer table | Bank $16 pointer at $A6E3: Secondary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
-  bank $16:$B2AB | Entry pointer table | Bank $16 pointer at $A6EB: Secondary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
+  bank $16:$B1C1 | Entry pointer table | Bank $16 pointer at $A6DF: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B1D8 | Entry pointer table | Bank $16 pointer at $A6E1: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B1F9 | Entry pointer table | Bank $16 pointer at $A6E3: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B24A | Entry pointer table | Bank $16 pointer at $A6E5: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B24F | Entry pointer table | Bank $16 pointer at $A6E7: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B278 | Entry pointer table | Bank $16 pointer at $A6E9: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B2AB | Entry pointer table | Bank $16 pointer at $A6EB: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B307 | Entry pointer table | Bank $16 pointer at $A6ED: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B342 | Entry pointer table | Bank $16 pointer at $A6EF: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
+  bank $16:$B37F | Entry pointer table | Bank $16 pointer at $A6F1: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B3FC | Entry pointer table | Bank $16 pointer at $A703: Secondary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
+  bank $16:$B4B5 | Entry pointer table | Bank $16 pointer at $A73B: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B4BE | Entry pointer table | Bank $16 pointer at $A73D: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B4C8 | Entry pointer table | Bank $16 pointer at $A73F: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B4D2 | Entry pointer table | Bank $16 pointer at $A741: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B4DC | Entry pointer table | Bank $16 pointer at $A743: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B503 | Entry pointer table | Bank $16 pointer at $A745: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B513 | Entry pointer table | Bank $16 pointer at $A747: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B516 | Entry pointer table | Bank $16 pointer at $A749: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B537 | Entry pointer table | Bank $16 pointer at $A74B: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B53A | Entry pointer table | Bank $16 pointer at $A74D: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B53D | Entry pointer table | Bank $16 pointer at $A74F: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B547 | Entry pointer table | Bank $16 pointer at $A751: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B55A | Entry pointer table | Bank $16 pointer at $A753: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B573 | Entry pointer table | Bank $16 pointer at $A755: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B58F | Entry pointer table | Bank $16 pointer at $A757: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B5B1 | Entry pointer table | Bank $16 pointer at $A75B: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B61A | Entry pointer table | Bank $16 pointer at $A75D: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B621 | Entry pointer table | Bank $16 pointer at $A75F: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B624 | Entry pointer table | Bank $16 pointer at $A761: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B631 | Entry pointer table | Bank $16 pointer at $A763: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B635 | Entry pointer table | Bank $16 pointer at $A765: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B640 | Entry pointer table | Bank $16 pointer at $A767: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B64F | Entry pointer table | Bank $16 pointer at $A769: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B652 | Entry pointer table | Bank $16 pointer at $A76B: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B71F | Entry pointer table | Bank $16 pointer at $A76D: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B725 | Entry pointer table | Bank $16 pointer at $A76F: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B72C | Entry pointer table | Bank $16 pointer at $A771: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B736 | Entry pointer table | Bank $16 pointer at $A773: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B73D | Entry pointer table | Bank $16 pointer at $A775: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+  bank $16:$B74A | Entry pointer table | Bank $16 pointer at $A777: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B762 | Entry pointer table | Bank $16 pointer at $A77B: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B772 | Entry pointer table | Bank $16 pointer at $A77D: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B79F | Entry pointer table | Bank $16 pointer at $A77F: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B7A2 | Entry pointer table | Bank $16 pointer at $A781: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B7A5 | Entry pointer table | Bank $16 pointer at $A783: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B7B6 | Entry pointer table | Bank $16 pointer at $A785: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+  bank $16:$B7BD | Entry pointer table | Bank $16 pointer at $A787: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
+  bank $16:$B881 | Entry pointer table | Bank $16 pointer at $A78F: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
+  bank $16:$B89F | Entry pointer table | Bank $16 pointer at $A791: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
+  bank $16:$B8C1 | Entry pointer table | Bank $16 pointer at $A793: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B8D0 | Entry pointer table | Bank $16 pointer at $A795: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B8D5 | Entry pointer table | Bank $16 pointer at $A797: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B8DD | Entry pointer table | Bank $16 pointer at $A799: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B92B | Entry pointer table | Bank $16 pointer at $A79B: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B943 | Entry pointer table | Bank $16 pointer at $A79D: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B94F | Entry pointer table | Bank $16 pointer at $A79F: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B988 | Entry pointer table | Bank $16 pointer at $A7A3: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B9BE | Entry pointer table | Bank $16 pointer at $A7A7: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B9E1 | Entry pointer table | Bank $16 pointer at $A7A9: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
   bank $17:$804C | Entry pointer table | Bank $17 pointer at $8000: 38-entry mixed map-system directory followed by code at $804C
   bank $17:$9BFA | Entry pointer table | Bank $17 pointer at $8004: 38-entry mixed map-system directory followed by code at $804C
   bank $17:$89A7 | Entry pointer table | Bank $17 pointer at $804A: 38-entry mixed map-system directory followed by code at $804C
@@ -2141,7 +2250,7 @@ Seeds:
   bank $15:$AEBC | Entry pointer table | Bank $15 pointer at $95C9: Command $01 callback operand parsed from a pointer-delimited effect script
   bank $15:$A99A | Entry pointer table | Bank $15 pointer at $9604: Command $00 callback operand parsed from a pointer-delimited effect script
   bank $15:$B017 | Entry pointer table | Bank $15 pointer at $963F: Command $00 callback operand parsed from a pointer-delimited effect script and overlapping the script pointer table boundary
-  Ghidra headless observations: 50723 instruction starts
+  Ghidra headless observations: 50611 instruction starts
   FCEUX runtime observations: 16553 instruction starts
 
 Coverage:
@@ -2151,26 +2260,30 @@ Coverage:
   bank $10: 6819 instructions, 12812 bytes, 22 warnings
   bank $11: 6199 instructions, 11361 bytes, 60 warnings
   bank $12: 5708 instructions, 11225 bytes, 7 warnings
-  bank $13: 6102 instructions, 12648 bytes, 5 warnings
+  bank $13: 6052 instructions, 12553 bytes, 1 warnings
   bank $14: 5413 instructions, 10592 bytes, 0 warnings
   bank $15: 4094 instructions, 8125 bytes, 18 warnings
-  bank $16: 5106 instructions, 10549 bytes, 2 warnings
+  bank $16: 5665 instructions, 11681 bytes, 5 warnings
   bank $17: 3174 instructions, 6540 bytes, 0 warnings
   bank $18: 2352 instructions, 4680 bytes, 4 warnings
   bank $19: 121 instructions, 235 bytes, 0 warnings
   bank $1B: 3335 instructions, 6889 bytes, 2 warnings
-  bank $1C: 3504 instructions, 7276 bytes, 27 warnings
+  bank $1C: 3581 instructions, 7430 bytes, 27 warnings
   bank $1D: 5380 instructions, 10959 bytes, 9 warnings
   bank $1E: 6356 instructions, 12787 bytes, 14 warnings
-  bank $1F: 5634 instructions, 11682 bytes, 3 warnings
+  bank $1F: 5794 instructions, 12015 bytes, 4 warnings
 
 Warnings: 176 total
 
-Control-flow conflicts: 1
+Control-flow conflicts: 3
   bank $10: 1
     $BBEB: control flow enters an existing instruction operand
+  bank $16: 1
+    $B84A: control flow enters an existing instruction operand
+  bank $1F: 1
+    $CE50: control flow enters an existing instruction operand
 
-Unsupported opcodes / probable data walks: 175
+Unsupported opcodes / probable data walks: 173
   bank $11: 60
     $8A2C: unsupported opcode $89; path stopped
     $8AF6: unsupported opcode $23; path stopped
@@ -2334,12 +2447,11 @@ Unsupported opcodes / probable data walks: 175
     $BE57: unsupported opcode $12; path stopped
     $BEAF: unsupported opcode $14; path stopped
     $BECF: unsupported opcode $63; path stopped
-  bank $13: 5
-    $B7E8: unsupported opcode $FF; path stopped
-    $BCEF: unsupported opcode $FB; path stopped
-    $BED4: unsupported opcode $22; path stopped
-    $BF2A: unsupported opcode $1B; path stopped
-    $BF6B: unsupported opcode $DF; path stopped
+  bank $16: 4
+    $B0FC: unsupported opcode $34; path stopped
+    $B40C: unsupported opcode $0B; path stopped
+    $B871: unsupported opcode $03; path stopped
+    $B8A1: unsupported opcode $3C; path stopped
   bank $18: 4
     $B624: unsupported opcode $FF; path stopped
     $B65C: unsupported opcode $AB; path stopped
@@ -2353,9 +2465,8 @@ Unsupported opcodes / probable data walks: 175
     $F6D3: unsupported opcode $F7; path stopped
     $F791: unsupported opcode $92; path stopped
     $F793: unsupported opcode $1F; path stopped
-  bank $16: 2
-    $B0FC: unsupported opcode $34; path stopped
-    $B40C: unsupported opcode $0B; path stopped
   bank $1B: 2
     $8F25: unsupported opcode $E2; path stopped
     $A100: unsupported opcode $FB; path stopped
+  bank $13: 1
+    $B7E8: unsupported opcode $FF; path stopped

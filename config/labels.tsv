@@ -38,6 +38,7 @@
 08	B974	Bank08_MapSubmapPointer	Table	Pointer to variable map/submap records
 08	B976	Bank08_MapSubmapData	Data	Map-keyed variable records decoded by the bank $08 parser
 08	BE72	Bank08_MapCoordinateRecords	Data	Eleven map and coordinate triplets
+08	BE94	Bank08_MapDisplayRecords	Data	Twenty-six fixed eight-byte records selected by mixed directory entry $8036
 08	BF64	Bank08_MapPadding	Padding	Contiguous $FF padding after map data
 08	BFD8	Bank08_CompatibilityFooter	Data	Repeated reset stub, title signature, metadata, and vectors
 09	8000	Bank09_MapData	Data	Map data begins with Keeleon submap 0
@@ -120,6 +121,8 @@
 13	89B4	Bank13_BattleCharacterRecordBase	Table	Little-endian $7274 base for 30-byte battle-character records
 13	89CB	Bank13_BattleCharacterRecordPointers	Table	Twenty-one pointers into SRAM battle-character records
 13	8A1E	Bank13_BattleSlotRecordPointers	Table	Ten pointers selected by the bounded active-slot scan
+13	8AEF	Bank13_BattlePresentationValuesA	Table	Fifty-three values indexed by a selector below $35
+13	8B24	Bank13_BattlePresentationValuesB	Table	One hundred three values indexed by a selector below $67
 13	8599	Bank13_BattleActionHandlerBasePointer	Table	Little-endian base of the action-ID-indexed handler table at $8B8B
 13	8B8B	Bank13_BattleActionHandlerPointers	Table	One hundred four battle-action handlers dispatched through $8509
 13	91A9	Bank13_SpecialBattleActionIds	Table	Eighteen action IDs searched by battle presentation routing
@@ -128,6 +131,9 @@
 13	A74F	Bank13_BattleEffectRecords	Data	Four-byte battle-effect records terminated by $FF
 13	90EC	Bank13_BattleFieldOffsets	Table	Field offsets followed by eight arithmetic handler pointers
 13	B80B	Bank13_BattlePresentationLookup	Table	Full 256-byte directly indexed battle presentation lookup table
+13	B967	Bank13_BattlePresentationStateLookup	Table	Directly indexed battle presentation state values through $BA4D
+13	BBCB	Bank13_BattlePresentationCommands	Script	Seven directory-delimited battle-presentation command streams
+13	BFA7	Bank13_BattlePresentationPadding	Padding	Contiguous $FF padding before the compatibility footer
 14	8000	Bank14_BattleTurnDirectory	Table	26 little-endian battle-turn service pointers
 14	8034	Bank14_BattleTurnEngine	Code	Turn orchestration and per-combatant battle-state processing
 14	A111	Bank14_RawBattleGraphics	Graphics	Forty-six aligned raw NES 2bpp battle tiles
@@ -173,6 +179,10 @@
 16	A6DF	Bank16_TextUiCommandPointersSecondary	Table	Second command pointer array
 16	A735	Bank16_TextUiDispatchTables	Table	Nested pointer, limit, and handler tables
 16	A7AB	Bank16_TextUiRecordData	Script	Variable records consumed by the text/UI interpreter
+16	B03C	Bank16_PrimaryCommandData	Data	Pointer-delimited primary text/UI command records
+16	B37B	Bank16_SecondaryCommandLookupA	Table	Four bounded secondary-command selector values
+16	B3A3	Bank16_SecondaryCommandLookupB	Table	Five bounded secondary-command selector values
+16	B3A8	Bank16_SecondaryCommandData	Data	Pointer-delimited secondary text/UI command records
 17	8000	Bank17_MapSystemDirectory	Table	38-entry mixed map-system directory with one null entry
 17	804C	Bank17_MapSystemServices	Code	Map display, navigation, and map-information services
 17	806C	Bank17_MapSystemInitialize	Code	Continuation after the three-byte inline service at $8068
@@ -390,6 +400,9 @@
 1F	C408	IrqHandler	Code	IRQ/BRK vector target
 1F	C543	InitializeOamShadow	Code	Fills the 256-byte OAM shadow page with $F7
 1F	C575	ClearNametables	Code	Writes zero to eight 256-byte PPU data blocks
+1F	EC85	Bank1F_AudioPeriodTable	Table	Ninety-six little-endian audio period values
+1F	CEF8	Bank1F_EventSelectorIds	Table	Eleven selector values consumed by the bounded event loop
+1F	F19B	Bank1F_UiTemplate	Data	Forty-eight-byte template copied to $0480-$04AF with a twelve-byte executable overlap
 1F	C813	AddByteToPointer	Code	Adds A to the little-endian zero-page pointer selected by X
 1F	C81D	AddWordToPointer	Code	Adds Y:A to the little-endian zero-page pointer selected by X
 1F	C827	MultiplyPointerWord	Code	Multiplies the little-endian zero-page word selected by X by A in place

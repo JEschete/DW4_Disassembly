@@ -45,16 +45,14 @@
 15	8000	8034	Direct ROM analysis	26-entry code dispatch table
 16	8000	8028	Direct ROM analysis	20-entry text and user-interface service directory
 16	80C4	80EA	Direct ROM analysis	Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
-16	A5EB	A5ED	Direct ROM analysis	Primary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A607	A609	Direct ROM analysis	Primary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A619	A61B	Direct ROM analysis	Primary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A633	A635	Direct ROM analysis	Primary text/UI escape handler at the fourth command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A641	A643	Direct ROM analysis	Primary text/UI escape handler at the fifth command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A64D	A64F	Direct ROM analysis	Primary text/UI escape handler at the sixth command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A5E9	A655	Direct ROM analysis	Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
 16	A68D	A68F	Direct ROM analysis	Primary text/UI escape handler at the seventh command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A6E3	A6E5	Direct ROM analysis	Secondary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
-16	A6EB	A6ED	Direct ROM analysis	Secondary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A6DF	A6F3	Direct ROM analysis	Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
 16	A703	A705	Direct ROM analysis	Secondary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A73B	A777	Direct ROM analysis	Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
+16	A777	A787	Direct ROM analysis	Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+16	A787	A793	Direct ROM analysis	Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
+16	A793	A7AB	Direct ROM analysis	Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
 17	8000	804C	Direct ROM analysis	38-entry mixed map-system directory followed by code at $804C
 18	8000	8046	Direct ROM analysis	35-entry mixed bank directory; known data targets are excluded
 19	8000	8014	Direct ROM analysis	Ten-entry mixed map and tileset service directory

@@ -22,6 +22,7 @@
 08	B974	B976	MapSubmapPointer	Verified	Little-endian pointer to the variable map/submap stream at $B976
 08	B976	BE72	MapSubmapData	Verified	Map-keyed, $FF-delimited variable records consumed by bank $08:$B246-$B4EC
 08	BE72	BE94	MapCoordinateRecords	Verified	Eleven three-byte map/coordinate records and terminal $FF consumed by bank $08:$B61B
+08	BE94	BF64	MapDisplayRecords	Verified	Twenty-six fixed eight-byte map records selected by mixed directory entry $8036 and bounded by contiguous padding at $BF64
 08	BF64	BFD8	Padding	Verified	Contiguous $FF padding after map data
 08	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
 08	B66A	B66D	InlineServiceOperands	Verified	Three operands consumed by BRK service $07,$EB at $B669; all decoded call sites use a one-byte parameter before a branch
@@ -129,6 +130,8 @@
 13	89B4	89B6	BattleCharacterRecordBase	Verified	Little-endian $7274 base used by bank $13:$899C-$89B3 to select 30-byte battle-character records
 13	89CB	89F5	BattleCharacterRecordPointers	Verified	Twenty-one little-endian SRAM record pointers indexed by a doubled selector at bank $13:$89B6-$89CA
 13	8A1E	8A32	BattleSlotRecordPointers	Verified	Ten little-endian pointers selected after the bounded ten-slot scan at bank $13:$89F5-$8A1D
+13	8AEF	8B24	BattlePresentationValues	Verified	Fifty-three values directly indexed by X in the loop bounded below $35 at bank $13:$B302-$B31B
+13	8B24	8B8B	BattlePresentationValues	Verified	One hundred three values indexed only after the explicit CMP #$67 guard at bank $13:$8977-$899B
 13	8B8B	8C5B	BattleActionHandlerPointers	Verified	One hundred four little-endian handlers indexed by twice the battle action ID and dispatched through bank $13:$8509
 13	8D8F	8D91	BattleRecordBasePointer	Verified	Little-endian $7600 base pointer loaded by bank $13:$8D86-$8D8C and offset by $81 times $003A
 13	90EC	9100	BattleFieldOffsets	Verified	Twenty field offsets indexed by bank $13:$8F2F/$8F3A/$A50B/$A53C
@@ -140,7 +143,10 @@
 13	A747	A74F	BattleEffectRecordPointers	Verified	Four little-endian record pointers selected by offsets $00,$02,$04,$06 stored at $75F1 by bank $13:$A6C6-$A6D4
 13	A74F	A797	BattleEffectRecords	Verified	Four pointer-selected lists of four-byte effect records terminated by $FF and decoded by bank $13:$A703-$A73B
 13	B80B	B90B	BattlePresentationLookup	Verified	Full 256-byte table directly indexed at $9279/$9316/$A46A/$B683/$B693 and bounded by verified code at $B90B
+13	B967	BA4E	BattlePresentationLookup	Verified	Directly indexed lookup base used at $8902/$9204/$A599/$A79E/$AD6B/$ADE1/$AEDC/$B302 and bounded by the next consumed table at $BA4E
 13	BA4E	BBCB	BattlePresentationTables	Verified	Parallel lookup tables whose bases $BA4E, $BA6C, $BA70, $BA74, $BAA5, $BAD5, $BB06, $BB22, $BB3F, $BB49 and the seven-byte records $BB53-$BB99 are each read by traced indexed consumers
+13	BBCB	BFA7	BattlePresentationCommands	Verified	Seven streams bounded by the final service-directory targets $BBCB/$BCEA/$BDE3/$BE81/$BEA8/$BF21/$BF65; uses the verified $F8-$FE animation command vocabulary with $FE loop pointers and $FD terminators
+13	BFA7	BFD8	Padding	Verified	Contiguous $FF padding after the final battle-presentation command stream and before the compatibility footer
 13	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 14	8000	8034	ServiceDirectory	Verified	Twenty-six battle-turn service pointers
 14	A111	A3F1	Graphics	Verified	Forty-six aligned 16-byte NES 2bpp battle tiles with coherent mirrored forms, blank tiles, and multi-tile artwork
@@ -189,6 +195,10 @@
 16	A5E9	A735	TextUiCommandPointers	Verified	Two nondecreasing command pointer arrays selected through the directory at $A5E3
 16	A735	A7AB	TextUiDispatchTables	Verified	Pointer, limit, and handler dispatch tables consumed by bank $16:$9790-$97AF/$A4DE-$A4FD
 16	A7AB	AAF7	TextUiRecordData	Verified	Variable text and UI interpreter records selected by the 113-entry pointer table; final record starts at $AAEF
+16	B03C	B1C1	TextUiCommandDataPrimary	Verified	Pointer-delimited primary command records selected for doubled indices at or above $6C by $9882-$98B0 and interpreted at $9844-$9879; $B0FA is intentional dual-use code
+16	B37B	B37F	TextUiCommandLookup	Verified	Four values indexed after the secondary command handler at $B342 bounds its selector below four
+16	B3A3	B3A8	TextUiCommandLookup	Verified	Five values indexed by the bounded selector returned through $B747 in the secondary command handler at $B37F
+16	B3A8	B4B6	TextUiCommandDataSecondary	Verified	Pointer-delimited secondary command records selected for doubled indices at or above $14 by $9882-$98B0 and interpreted at $9844-$9879; $B3FC is intentional dual-use code
 16	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 17	8000	804C	ServiceDirectory	Verified	Thirty-eight-entry mixed map-system directory
 17	8069	806C	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank BRK service at $8068
@@ -530,9 +540,13 @@
 1E	BF59	BFD7	MapInteractionRecords	Verified	Twenty-five five-byte map/submap/X/Y/action records followed by $FF, scanned in five-byte steps by bank $1E:$B4DB-$B516
 1E	BFD7	BFD8	Padding	Verified	Single $FF byte between the map interaction record terminator and compatibility footer
 1E	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
+1F	EC85	ED45	AudioPeriodTable	Verified	Ninety-six little-endian period values indexed after note normalization at $ED4B-$ED67 and read at $EBC5/$EC63
+1F	CEF8	CF03	EventSelectorIds	Verified	Eleven selector values compared by the X=$00-$0A loop at $CEBE-$CED0
 1F	DEA5	DEA9	MapObjectOperationPointers	Verified	Two handler pointers selected by the map-object operation parameter
 1F	DF02	DF64	MapObjectCommandPointers	Verified	Forty-nine low command handler pointers
 1F	DF64	DF7A	MapObjectHighCommandPointers	Verified	Eleven high-bit command handler pointers
+1F	F11A	F11C	InlineServiceOperands	Verified	Two operands consumed by BRK service $12,$DF before fixed-bank code resumes at $F11C
+1F	F19B	F1CB	UiTemplate	Verified	Forty-eight bytes copied in reverse from $F19B-$F1CA to $0480-$04AF by the bounded X=$2F loop at $F10E; final twelve bytes intentionally overlap code at $F1BF
 1F	F29C	F29E	PointerTable	Verified	Source pointer $F2BB loaded into $49/$4A at $F274-$F27C
 1F	F2BB	F3FB	PpuNametableStream	Verified	Stream addressed through the $F29C pointer and consumed via ($49),Y by the decoder at $D319-$D394
 1F	F47B	FDFB	Graphics	Verified	152 contiguous 16-byte NES 2bpp tiles ending before code at $FDFB; callback $F9F0 is intentional dual use

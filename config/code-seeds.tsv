@@ -161,6 +161,8 @@
 1B	B55A	-	Direct ROM scan	JSR to fixed trampoline $C034
 1C	A010	-	Runtime and direct call analysis	Runtime-executed map/submap key dispatcher called directly from bank $1C:$9EAE
 1C	A0C6	-	Direct call analysis	Map-event routine called directly from bank $1C:$A0AA
+1C	B83A	-	Direct ROM analysis	Coherent adjacent map-entity initialization and transition routine family after RTS $B839 and before the registered service at $B8F5
+1C	B8CD	-	Direct ROM analysis	Standalone map-coordinate initializer after the terminal jump at $B8CA and ending with RTS at $B8DD
 1C	BDD2	-	Entry pointer analysis	BRK-backed map-event handler targeted by pointer $1C:$BFA5
 1C	BED3	-	Direct call analysis	BRK-backed map-event helper called directly from bank $1C:$AE03/$AE13
 1C	BED6	-	Direct call analysis	BRK-backed map-event helper called or jumped to from bank $1C:$AE40/$AEF9
@@ -264,6 +266,15 @@
 1F	C03A	C03D	Direct ROM analysis	Fixed-bank JMP trampoline 13
 1F	C15A	-	Direct ROM analysis	NMI body installed as JMP $C15A at RAM vector $0502
 1F	C408	-	CPU vector	IRQ/BRK vector target
+1F	CE09	-	Direct ROM analysis	Coherent fixed-bank event routine immediately after RTS $CE08 with calls into the adjacent CFxx helper family
+1F	CE80	-	Direct ROM analysis	Coherent fixed-bank event helper after the terminal jump at $CE7D and before RTS $CEBD
+1F	CEBE	-	Direct ROM analysis	Coherent selector routine after RTS $CEBD indexing the eleven-byte table at $CEF8
+1F	CF03	-	Direct ROM analysis	Coherent adjacent event-condition routine after the selector table at $CEF8-$CF02
+1F	CF38	-	Direct ROM analysis	Compact BRK-backed event predicate called by the recovered helper at $CE9E
+1F	CF41	-	Direct ROM analysis	Coherent chapter and coordinate event helper called by the recovered helper at $CEA1
+1F	CF56	-	Direct ROM analysis	Compact BRK-backed event helper called by recovered routines at $CE31/$CE80
+1F	CF5F	-	Direct ROM analysis	Coherent fixed-bank event-state update routine called by the recovered routine at $CE39
+1F	F11C	-	Inline service continuation	Coherent fixed-bank routine resumes after the two operands consumed by BRK service $12,$DF at $F119 and returns at $F19A
 1F	F271	-	Direct ROM analysis	Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662
 1F	F29E	-	Direct ROM analysis	Coherent routine after the $F29C stream pointer that copies $7608-$760B into $52-$55 and returns at $F2B2
 1F	F2B3	-	Direct ROM analysis	Coherent routine calling $F293 before JMP $C727 at $F2B7, immediately preceding the $F2BB stream

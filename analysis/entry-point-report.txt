@@ -1,15 +1,15 @@
 Dragon Warrior IV entry-point and pointer-boundary audit
 Every declared table is read as contiguous, non-overlapping two-byte little-endian entries.
 
-Declared tables: 77
+Declared tables: 75
 Explicit pointer fields: 126
-Pointer entries: 1954
-Executable targets decoded: 1870 / 1870
-excluded-data: 53
+Pointer entries: 2066
+Executable targets decoded: 1968 / 1968
+excluded-data: 62
 fixed-bank-code: 2
-local-bank-code: 1868
+local-bank-code: 1966
 non-code-value: 17
-unsupported-target-value: 13
+unsupported-target-value: 18
 vector-data-value: 1
 
 Bank $08:$8000-$803B (30 entries)
@@ -40,7 +40,7 @@ Bank $08:$8000-$803B (30 entries)
   $8030 -> bank $08:$8ADB [excluded-data]
   $8032 -> bank $08:$A80D [excluded-data]
   $8034 -> bank $08:$B304 [local-bank-code, decoded]
-  $8036 -> bank $08:$BE94 [unsupported-target-value]
+  $8036 -> bank $08:$BE94 [excluded-data]
   $8038 -> bank $08:$B725 [local-bank-code, decoded]
   $803A -> bank $08:$8097 [local-bank-code, decoded]
 
@@ -977,13 +977,13 @@ Bank $13:$8000-$8037 (28 entries)
   $8024 -> bank $13:$83F4 [local-bank-code, decoded]
   $8026 -> bank $13:$A797 [local-bank-code, decoded]
   $8028 -> bank $13:$B462 [local-bank-code, decoded]
-  $802A -> bank $13:$BBCB [local-bank-code, decoded]
-  $802C -> bank $13:$BCEA [local-bank-code, decoded]
-  $802E -> bank $13:$BDE3 [unsupported-target-value]
-  $8030 -> bank $13:$BE81 [local-bank-code, decoded]
-  $8032 -> bank $13:$BEA8 [local-bank-code, decoded]
-  $8034 -> bank $13:$BF21 [local-bank-code, decoded]
-  $8036 -> bank $13:$BF65 [local-bank-code, decoded]
+  $802A -> bank $13:$BBCB [excluded-data]
+  $802C -> bank $13:$BCEA [excluded-data]
+  $802E -> bank $13:$BDE3 [excluded-data]
+  $8030 -> bank $13:$BE81 [excluded-data]
+  $8032 -> bank $13:$BEA8 [excluded-data]
+  $8034 -> bank $13:$BF21 [excluded-data]
+  $8036 -> bank $13:$BF65 [excluded-data]
 
 Bank $13:$8078-$8087 (8 entries)
   $8078 -> bank $13:$8074 [local-bank-code, decoded]
@@ -1718,35 +1718,143 @@ Bank $16:$80C4-$80E9 (19 entries)
   $80E6 -> bank $16:$821C [local-bank-code, decoded]
   $80E8 -> bank $16:$81EA [local-bank-code, decoded]
 
-Bank $16:$A5EB-$A5EC (1 entries)
+Bank $16:$A5E9-$A654 (54 entries)
+  $A5E9 -> bank $16:$AAEF [excluded-data]
   $A5EB -> bank $16:$AAF7 [local-bank-code, decoded]
-
-Bank $16:$A607-$A608 (1 entries)
+  $A5ED -> bank $16:$AB2F [local-bank-code, decoded]
+  $A5EF -> bank $16:$AB3A [local-bank-code, decoded]
+  $A5F1 -> bank $16:$AB60 [local-bank-code, decoded]
+  $A5F3 -> bank $16:$AB68 [local-bank-code, decoded]
+  $A5F5 -> bank $16:$AB70 [local-bank-code, decoded]
+  $A5F7 -> bank $16:$AB82 [local-bank-code, decoded]
+  $A5F9 -> bank $16:$AB8B [local-bank-code, decoded]
+  $A5FB -> bank $16:$ABAD [local-bank-code, decoded]
+  $A5FD -> bank $16:$ABC7 [local-bank-code, decoded]
+  $A5FF -> bank $16:$ABDB [local-bank-code, decoded]
+  $A601 -> bank $16:$ABE3 [local-bank-code, decoded]
+  $A603 -> bank $16:$ABEB [local-bank-code, decoded]
+  $A605 -> bank $16:$ABF3 [local-bank-code, decoded]
   $A607 -> bank $16:$ABFF [local-bank-code, decoded]
-
-Bank $16:$A619-$A61A (1 entries)
+  $A609 -> bank $16:$AC07 [local-bank-code, decoded]
+  $A60B -> bank $16:$AC0F [local-bank-code, decoded]
+  $A60D -> bank $16:$AC52 [local-bank-code, decoded]
+  $A60F -> bank $16:$AC5C [local-bank-code, decoded]
+  $A611 -> bank $16:$AC7F [local-bank-code, decoded]
+  $A613 -> bank $16:$ACC3 [local-bank-code, decoded]
+  $A615 -> bank $16:$ACD0 [local-bank-code, decoded]
+  $A617 -> bank $16:$ACDF [local-bank-code, decoded]
   $A619 -> bank $16:$ACFF [local-bank-code, decoded]
-
-Bank $16:$A633-$A634 (1 entries)
+  $A61B -> bank $16:$AD0A [local-bank-code, decoded]
+  $A61D -> bank $16:$AD10 [local-bank-code, decoded]
+  $A61F -> bank $16:$AD2E [local-bank-code, decoded]
+  $A621 -> bank $16:$AD4A [local-bank-code, decoded]
+  $A623 -> bank $16:$AD58 [local-bank-code, decoded]
+  $A625 -> bank $16:$AD5B [local-bank-code, decoded]
+  $A627 -> bank $16:$AD5E [local-bank-code, decoded]
+  $A629 -> bank $16:$AD61 [local-bank-code, decoded]
+  $A62B -> bank $16:$AD87 [local-bank-code, decoded]
+  $A62D -> bank $16:$ADCC [local-bank-code, decoded]
+  $A62F -> bank $16:$ADDA [local-bank-code, decoded]
+  $A631 -> bank $16:$ADE8 [local-bank-code, decoded]
   $A633 -> bank $16:$ADF0 [local-bank-code, decoded]
-
-Bank $16:$A641-$A642 (1 entries)
+  $A635 -> bank $16:$AE00 [local-bank-code, decoded]
+  $A637 -> bank $16:$AE06 [local-bank-code, decoded]
+  $A639 -> bank $16:$AE32 [local-bank-code, decoded]
+  $A63B -> bank $16:$AE54 [local-bank-code, decoded]
+  $A63D -> bank $16:$AE76 [local-bank-code, decoded]
+  $A63F -> bank $16:$AE95 [local-bank-code, decoded]
   $A641 -> bank $16:$AEBF [local-bank-code, decoded]
-
-Bank $16:$A64D-$A64E (1 entries)
+  $A643 -> bank $16:$AF02 [local-bank-code, decoded]
+  $A645 -> bank $16:$AF57 [local-bank-code, decoded]
+  $A647 -> bank $16:$AF65 [local-bank-code, decoded]
+  $A649 -> bank $16:$AF70 [local-bank-code, decoded]
+  $A64B -> bank $16:$AF78 [local-bank-code, decoded]
   $A64D -> bank $16:$AFD8 [local-bank-code, decoded]
+  $A64F -> bank $16:$B014 [local-bank-code, decoded]
+  $A651 -> bank $16:$B021 [local-bank-code, decoded]
+  $A653 -> bank $16:$B037 [local-bank-code, decoded]
 
 Bank $16:$A68D-$A68E (1 entries)
   $A68D -> bank $16:$B0FA [local-bank-code, decoded]
 
-Bank $16:$A6E3-$A6E4 (1 entries)
+Bank $16:$A6DF-$A6F2 (10 entries)
+  $A6DF -> bank $16:$B1C1 [local-bank-code, decoded]
+  $A6E1 -> bank $16:$B1D8 [local-bank-code, decoded]
   $A6E3 -> bank $16:$B1F9 [local-bank-code, decoded]
-
-Bank $16:$A6EB-$A6EC (1 entries)
+  $A6E5 -> bank $16:$B24A [local-bank-code, decoded]
+  $A6E7 -> bank $16:$B24F [local-bank-code, decoded]
+  $A6E9 -> bank $16:$B278 [local-bank-code, decoded]
   $A6EB -> bank $16:$B2AB [local-bank-code, decoded]
+  $A6ED -> bank $16:$B307 [local-bank-code, decoded]
+  $A6EF -> bank $16:$B342 [local-bank-code, decoded]
+  $A6F1 -> bank $16:$B37F [local-bank-code, decoded]
 
 Bank $16:$A703-$A704 (1 entries)
   $A703 -> bank $16:$B3FC [local-bank-code, decoded]
+
+Bank $16:$A73B-$A776 (30 entries)
+  $A73B -> bank $16:$B4B5 [local-bank-code, decoded]
+  $A73D -> bank $16:$B4BE [local-bank-code, decoded]
+  $A73F -> bank $16:$B4C8 [local-bank-code, decoded]
+  $A741 -> bank $16:$B4D2 [local-bank-code, decoded]
+  $A743 -> bank $16:$B4DC [local-bank-code, decoded]
+  $A745 -> bank $16:$B503 [local-bank-code, decoded]
+  $A747 -> bank $16:$B513 [local-bank-code, decoded]
+  $A749 -> bank $16:$B516 [local-bank-code, decoded]
+  $A74B -> bank $16:$B537 [local-bank-code, decoded]
+  $A74D -> bank $16:$B53A [local-bank-code, decoded]
+  $A74F -> bank $16:$B53D [local-bank-code, decoded]
+  $A751 -> bank $16:$B547 [local-bank-code, decoded]
+  $A753 -> bank $16:$B55A [local-bank-code, decoded]
+  $A755 -> bank $16:$B573 [local-bank-code, decoded]
+  $A757 -> bank $16:$B58F [local-bank-code, decoded]
+  $A759 -> bank $16:$B59C [unsupported-target-value]
+  $A75B -> bank $16:$B5B1 [local-bank-code, decoded]
+  $A75D -> bank $16:$B61A [local-bank-code, decoded]
+  $A75F -> bank $16:$B621 [local-bank-code, decoded]
+  $A761 -> bank $16:$B624 [local-bank-code, decoded]
+  $A763 -> bank $16:$B631 [local-bank-code, decoded]
+  $A765 -> bank $16:$B635 [local-bank-code, decoded]
+  $A767 -> bank $16:$B640 [local-bank-code, decoded]
+  $A769 -> bank $16:$B64F [local-bank-code, decoded]
+  $A76B -> bank $16:$B652 [local-bank-code, decoded]
+  $A76D -> bank $16:$B71F [local-bank-code, decoded]
+  $A76F -> bank $16:$B725 [local-bank-code, decoded]
+  $A771 -> bank $16:$B72C [local-bank-code, decoded]
+  $A773 -> bank $16:$B736 [local-bank-code, decoded]
+  $A775 -> bank $16:$B73D [local-bank-code, decoded]
+
+Bank $16:$A777-$A786 (8 entries)
+  $A777 -> bank $16:$B74A [local-bank-code, decoded]
+  $A779 -> bank $16:$B75C [unsupported-target-value]
+  $A77B -> bank $16:$B762 [local-bank-code, decoded]
+  $A77D -> bank $16:$B772 [local-bank-code, decoded]
+  $A77F -> bank $16:$B79F [local-bank-code, decoded]
+  $A781 -> bank $16:$B7A2 [local-bank-code, decoded]
+  $A783 -> bank $16:$B7A5 [local-bank-code, decoded]
+  $A785 -> bank $16:$B7B6 [local-bank-code, decoded]
+
+Bank $16:$A787-$A792 (6 entries)
+  $A787 -> bank $16:$B7BD [local-bank-code, decoded]
+  $A789 -> bank $16:$B83A [unsupported-target-value]
+  $A78B -> bank $16:$B867 [unsupported-target-value]
+  $A78D -> bank $16:$B874 [unsupported-target-value]
+  $A78F -> bank $16:$B881 [local-bank-code, decoded]
+  $A791 -> bank $16:$B89F [local-bank-code, decoded]
+
+Bank $16:$A793-$A7AA (12 entries)
+  $A793 -> bank $16:$B8C1 [local-bank-code, decoded]
+  $A795 -> bank $16:$B8D0 [local-bank-code, decoded]
+  $A797 -> bank $16:$B8D5 [local-bank-code, decoded]
+  $A799 -> bank $16:$B8DD [local-bank-code, decoded]
+  $A79B -> bank $16:$B92B [local-bank-code, decoded]
+  $A79D -> bank $16:$B943 [local-bank-code, decoded]
+  $A79F -> bank $16:$B94F [local-bank-code, decoded]
+  $A7A1 -> bank $16:$B974 [unsupported-target-value]
+  $A7A3 -> bank $16:$B988 [local-bank-code, decoded]
+  $A7A5 -> bank $16:$B9AF [unsupported-target-value]
+  $A7A7 -> bank $16:$B9BE [local-bank-code, decoded]
+  $A7A9 -> bank $16:$B9E1 [local-bank-code, decoded]
 
 Bank $17:$8000-$804B (38 entries)
   $8000 -> bank $17:$804C [local-bank-code, decoded]

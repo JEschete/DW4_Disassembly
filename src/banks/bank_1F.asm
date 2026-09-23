@@ -1988,17 +1988,33 @@ UpperFixedEngine_Entry_CDDC:
 UpperFixedEngine_Branch_CE08:
         rts                                     ; CE08 60                       `
 ; ----------------------------------------------------------------------------
-        db   $C9,$00,$D0,$43,$A5,$41,$10,$6F ; CE09 C9 00 D0 43 A5 41 10 6F  ...C.A.o
-        db   $A5,$44,$8D,$A0,$6F,$A5,$45,$8D ; CE11 A5 44 8D A0 6F A5 45 8D  .D..o.E.
-        db   $C0,$6F,$AD,$27,$05,$F0,$11,$30 ; CE19 C0 6F AD 27 05 F0 11 30  .o.'...0
-        db   $0C,$8D,$15,$05,$00,$00,$EF,$00 ; CE21 0C 8D 15 05 00 00 EF 00  ........
-        db   $04,$EF,$4C,$31,$CE,$20,$72,$CE ; CE29 04 EF 4C 31 CE 20 72 CE  ..L1. r.
-        db   $20,$56,$CF,$00,$00,$BF,$B0,$0E ; CE31 20 56 CF 00 00 BF B0 0E   V......
-        db   $20,$5F,$CF,$20,$BE,$CE,$B0,$09 ; CE39 20 5F CF 20 BE CE B0 09   _. ....
-        db   $20,$8D,$CF,$4C,$4A,$CE,$20,$56 ; CE41 20 8D CF 4C 4A CE 20 56   ..LJ. V
-        db   $CF,$20,$A9                     ; CE49 CF 20 A9                 . .
+UpperFixedEngine_Entry_CE09:
+        cmp     #$00                            ; CE09 C9 00                    ..
+        bne     $CE50                           ; CE0B D0 43                    .C
+        lda     $41                             ; CE0D A5 41                    .A
+        bpl     UpperFixedEngine_Entry_CE80     ; CE0F 10 6F                    .o
+        lda     PlayerLocalX                    ; CE11 A5 44                    .D
+        sta     $6FA0                           ; CE13 8D A0 6F                 ..o
+        lda     PlayerLocalY                    ; CE16 A5 45                    .E
+        sta     $6FC0                           ; CE18 8D C0 6F                 ..o
+        lda     $0527                           ; CE1B AD 27 05                 .'.
+        beq     UpperFixedEngine_Branch_CE31    ; CE1E F0 11                    ..
+        bmi     UpperFixedEngine_Branch_CE2E    ; CE20 30 0C                    0.
+        sta     $0515                           ; CE22 8D 15 05                 ...
+        brk                                     ; CE25 00                       .
+        db   $00,$EF,$00,$04,$EF,$4C,$31,$CE ; CE26 00 EF 00 04 EF 4C 31 CE  .....L1.
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CE2E:
+        jsr     UpperFixedEngine_Entry_CE72     ; CE2E 20 72 CE                  r.
+UpperFixedEngine_Branch_CE31:
+        jsr     UpperFixedEngine_Entry_CF56     ; CE31 20 56 CF                  V.
+        brk                                     ; CE34 00                       .
+        db   $00,$BF,$B0,$0E,$20,$5F,$CF,$20 ; CE35 00 BF B0 0E 20 5F CF 20  .... _.
+        db   $BE,$CE,$B0,$09,$20,$8D,$CF,$4C ; CE3D BE CE B0 09 20 8D CF 4C  .... ..L
+        db   $4A,$CE,$20,$56,$CF,$20,$A9     ; CE45 4A CE 20 56 CF 20 A9     J. V. .
 ; ----------------------------------------------------------------------------
         dec     $104C                           ; CE4C CE 4C 10                 .L.
+LCE50 = $+ 1
         cpy     #$AA                            ; CE4F C0 AA                    ..
         lda     $3C                             ; CE51 A5 3C                    .<
         and     #$0F                            ; CE53 29 0F                    ).
@@ -2020,60 +2036,165 @@ UpperFixedEngine_Branch_CE69:
         bne     UpperFixedEngine_Branch_CE68    ; CE6B D0 FB                    ..
         lda     $0527                           ; CE6D AD 27 05                 .'.
         bpl     UpperFixedEngine_Branch_CE68    ; CE70 10 F6                    ..
+UpperFixedEngine_Entry_CE72:
         lda     #$00                            ; CE72 A9 00                    ..
         sta     $0527                           ; CE74 8D 27 05                 .'.
         lda     $0593                           ; CE77 AD 93 05                 ...
         ldx     $0594                           ; CE7A AE 94 05                 ...
-        jmp     UpperFixedEngine_Branch_D207    ; CE7D 4C 07 D2                 L..
+        jmp     UpperFixedEngine_Entry_D207     ; CE7D 4C 07 D2                 L..
 ; ----------------------------------------------------------------------------
-        db   $20,$56,$CF,$AD,$27,$05,$F0,$12 ; CE80 20 56 CF AD 27 05 F0 12   V..'...
-        db   $8D,$15,$05,$00,$09,$FB,$A9,$20 ; CE88 8D 15 05 00 09 FB A9 20  .......
-        db   $8D,$34,$05,$00,$00,$EF,$00,$04 ; CE90 8D 34 05 00 00 EF 00 04  .4......
-        db   $EF,$60,$20,$03,$CF,$20,$38,$CF ; CE98 EF 60 20 03 CF 20 38 CF  .` .. 8.
-        db   $20,$41,$CF,$20,$A9,$CE,$4C,$10 ; CEA0 20 41 CF 20 A9 CE 4C 10   A. ..L.
-        db   $C0,$AD,$00,$C0,$29,$40,$D0,$06 ; CEA8 C0 AD 00 C0 29 40 D0 06  ....)@..
-        db   $A5,$14,$29,$08,$F0,$07,$BA,$8E ; CEB0 A5 14 29 08 F0 07 BA 8E  ..).....
-        db   $1B,$05,$00,$00,$8F             ; CEB8 1B 05 00 00 8F           .....
+UpperFixedEngine_Entry_CE80:
+        jsr     UpperFixedEngine_Entry_CF56     ; CE80 20 56 CF                  V.
+        lda     $0527                           ; CE83 AD 27 05                 .'.
+        beq     UpperFixedEngine_Branch_CE9A    ; CE86 F0 12                    ..
+        sta     $0515                           ; CE88 8D 15 05                 ...
+        brk                                     ; CE8B 00                       .
+        db   $09,$FB,$A9,$20,$8D,$34,$05,$00 ; CE8C 09 FB A9 20 8D 34 05 00  ... .4..
+        db   $00,$EF,$00,$04,$EF,$60         ; CE94 00 EF 00 04 EF 60        .....`
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CE9A:
+        jsr     UpperFixedEngine_Entry_CF03     ; CE9A 20 03 CF                  ..
+        jsr     UpperFixedEngine_Entry_CF38     ; CE9D 20 38 CF                  8.
+        jsr     UpperFixedEngine_Entry_CF41     ; CEA0 20 41 CF                  A.
+        jsr     UpperFixedEngine_Entry_CEA9     ; CEA3 20 A9 CE                  ..
+        jmp     FixedTrampoline05               ; CEA6 4C 10 C0                 L..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CEA9:
+        lda     $C000                           ; CEA9 AD 00 C0                 ...
+        and     #$40                            ; CEAC 29 40                    )@
+        bne     UpperFixedEngine_Branch_CEB6    ; CEAE D0 06                    ..
+        lda     ButtonsPressed                  ; CEB0 A5 14                    ..
+        and     #$08                            ; CEB2 29 08                    ).
+        beq     UpperFixedEngine_Branch_CEBD    ; CEB4 F0 07                    ..
+UpperFixedEngine_Branch_CEB6:
+        tsx                                     ; CEB6 BA                       .
+        stx     $051B                           ; CEB7 8E 1B 05                 ...
+        brk                                     ; CEBA 00                       .
+        db   $00,$8F                         ; CEBB 00 8F                    ..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CEBD:
         rts                                     ; CEBD 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$9E,$05,$A2,$00,$29,$7F,$DD ; CEBE AD 9E 05 A2 00 29 7F DD  .....)..
-        db   $F8,$CE,$F0,$07,$E8,$E0,$0B,$90 ; CEC6 F8 CE F0 07 E8 E0 0B 90  ........
-        db   $F6,$18,$60,$E0,$06,$F0,$1E,$E0 ; CECE F6 18 60 E0 06 F0 1E E0  ..`.....
-        db   $08,$F0,$0D,$E0,$09,$F0,$09     ; CED6 08 F0 0D E0 09 F0 09     .......
+UpperFixedEngine_Entry_CEBE:
+        lda     $059E                           ; CEBE AD 9E 05                 ...
+        ldx     #$00                            ; CEC1 A2 00                    ..
+        and     #$7F                            ; CEC3 29 7F                    ).
+UpperFixedEngine_Branch_CEC5:
+        cmp     Bank1F_EventSelectorIds,x       ; CEC5 DD F8 CE                 ...
+        beq     UpperFixedEngine_Branch_CED1    ; CEC8 F0 07                    ..
+        inx                                     ; CECA E8                       .
+        cpx     #$0B                            ; CECB E0 0B                    ..
+        bcc     UpperFixedEngine_Branch_CEC5    ; CECD 90 F6                    ..
+        clc                                     ; CECF 18                       .
+        rts                                     ; CED0 60                       `
 ; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CED1:
+        cpx     #$06                            ; CED1 E0 06                    ..
+        beq     UpperFixedEngine_Branch_CEF3    ; CED3 F0 1E                    ..
+        cpx     #$08                            ; CED5 E0 08                    ..
+        beq     UpperFixedEngine_Branch_CEE6    ; CED7 F0 0D                    ..
+        cpx     #$09                            ; CED9 E0 09                    ..
+        beq     UpperFixedEngine_Branch_CEE6    ; CEDB F0 09                    ..
         cpx     #$0A                            ; CEDD E0 0A                    ..
         beq     UpperFixedEngine_Branch_CEEE    ; CEDF F0 0D                    ..
         brk                                     ; CEE1 00                       .
-        db   $0D,$EF,$38,$60,$00,$1B,$EF,$20 ; CEE2 0D EF 38 60 00 1B EF 20  ..8`...
-        db   $BE,$CE,$38,$60                 ; CEEA BE CE 38 60              ..8`
+        db   $0D,$EF,$38,$60                 ; CEE2 0D EF 38 60              ..8`
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CEE6:
+        brk                                     ; CEE6 00                       .
+        db   $1B,$EF,$20,$BE,$CE,$38,$60     ; CEE7 1B EF 20 BE CE 38 60     .. ..8`
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CEEE:
         brk                                     ; CEEE 00                       .
-        db   $21,$EF,$38,$60,$00,$09,$BF,$38 ; CEEF 21 EF 38 60 00 09 BF 38  !.8`...8
-        db   $60,$06,$07,$08,$09,$25,$26,$0A ; CEF7 60 06 07 08 09 25 26 0A  `....%&.
-        db   $0C                             ; CEFF 0C                       .
+        db   $21,$EF,$38,$60                 ; CEEF 21 EF 38 60              !.8`
 ; ----------------------------------------------------------------------------
-        ora     $0B                             ; CF00 05 0B                    ..
-        db   $0F,$AD,$15,$05,$C9,$02,$F0,$2D ; CF02 0F AD 15 05 C9 02 F0 2D  .......-
-        db   $AE,$40,$71,$AC,$41,$71,$BD,$40 ; CF0A AE 40 71 AC 41 71 BD 40  .@q.Aq.@
-        db   $6F,$29,$7F,$C9,$06,$F0,$12,$C9 ; CF12 6F 29 7F C9 06 F0 12 C9  o)......
-        db   $07,$D0,$1A,$B9,$40,$6F,$29,$7F ; CF1A 07 D0 1A B9 40 6F 29 7F  ....@o).
-        db   $C9,$06,$F0,$11,$C6,$42,$4C,$34 ; CF22 C9 06 F0 11 C6 42 4C 34  .....BL4
-        db   $CF,$B9,$40,$6F,$29,$7F,$C9,$07 ; CF2A CF B9 40 6F 29 7F C9 07  ..@o)...
-        db   $F0,$03,$00,$01,$EF,$60,$00,$10 ; CF32 F0 03 00 01 EF 60 00 10  .....`..
-        db   $87,$90,$03,$00,$06,$EF,$60,$AD ; CF3A 87 90 03 00 06 EF 60 AD  ......`.
-        db   $5A,$61,$C9,$03,$D0,$0D,$A5,$43 ; CF42 5A 61 C9 03 D0 0D A5 43  Za.....C
-        db   $C9,$67,$D0,$07,$A2,$03,$A9,$AB ; CF4A C9 67 D0 07 A2 03 A9 AB  .g......
-        db   $20,$07,$D2,$60,$AD,$15,$05,$D0 ; CF52 20 07 D2 60 AD 15 05 D0   ..`....
-        db   $03,$00,$16,$EF,$60,$A5,$46,$85 ; CF5A 03 00 16 EF 60 A5 46 85  ....`.F.
-        db   $47,$AD,$40,$71,$29,$E0,$85,$46 ; CF62 47 AD 40 71 29 E0 85 46  G.@q)..F
-        db   $A2,$00,$C5,$47,$F0,$0D,$00,$00 ; CF6A A2 00 C5 47 F0 0D 00 00  ...G....
-        db   $87,$90,$03,$00,$1C,$EF,$00,$0A ; CF72 87 90 03 00 1C EF 00 0A  ........
-        db   $EF,$A2,$10,$AD,$7D,$62,$29,$EF ; CF7A EF A2 10 AD 7D 62 29 EF  ....}b).
-        db   $8D,$7D,$62,$8A,$0D,$7D,$62,$8D ; CF82 8D 7D 62 8A 0D 7D 62 8D  .}b..}b.
-        db   $7D,$62,$60,$00,$02,$EF,$60     ; CF8A 7D 62 60 00 02 EF 60     }b`...`
+UpperFixedEngine_Branch_CEF3:
+        brk                                     ; CEF3 00                       .
+        db   $09,$BF,$38,$60                 ; CEF4 09 BF 38 60              ..8`
+Bank1F_EventSelectorIds:
+        db   $06,$07,$08,$09,$25,$26,$0A,$0C ; CEF8 06 07 08 09 25 26 0A 0C  ....%&..
+        db   $05,$0B,$0F                     ; CF00 05 0B 0F                 ...
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CF03:
+        lda     $0515                           ; CF03 AD 15 05                 ...
+        cmp     #$02                            ; CF06 C9 02                    ..
+        beq     UpperFixedEngine_Branch_CF37    ; CF08 F0 2D                    .-
+        ldx     $7140                           ; CF0A AE 40 71                 .@q
+        ldy     $7141                           ; CF0D AC 41 71                 .Aq
+        lda     $6F40,x                         ; CF10 BD 40 6F                 .@o
+        and     #$7F                            ; CF13 29 7F                    ).
+        cmp     #$06                            ; CF15 C9 06                    ..
+        beq     UpperFixedEngine_Branch_CF2B    ; CF17 F0 12                    ..
+        cmp     #$07                            ; CF19 C9 07                    ..
+        bne     UpperFixedEngine_Branch_CF37    ; CF1B D0 1A                    ..
+        lda     $6F40,y                         ; CF1D B9 40 6F                 .@o
+        and     #$7F                            ; CF20 29 7F                    ).
+        cmp     #$06                            ; CF22 C9 06                    ..
+        beq     UpperFixedEngine_Branch_CF37    ; CF24 F0 11                    ..
+        dec     PlayerWorldX                    ; CF26 C6 42                    .B
+        jmp     UpperFixedEngine_Branch_CF34    ; CF28 4C 34 CF                 L4.
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CF2B:
+        lda     $6F40,y                         ; CF2B B9 40 6F                 .@o
+        and     #$7F                            ; CF2E 29 7F                    ).
+        cmp     #$07                            ; CF30 C9 07                    ..
+        beq     UpperFixedEngine_Branch_CF37    ; CF32 F0 03                    ..
+UpperFixedEngine_Branch_CF34:
+        brk                                     ; CF34 00                       .
+        db   $01,$EF                         ; CF35 01 EF                    ..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CF37:
+        rts                                     ; CF37 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CF38:
+        brk                                     ; CF38 00                       .
+        db   $10,$87,$90,$03,$00,$06,$EF,$60 ; CF39 10 87 90 03 00 06 EF 60  .......`
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CF41:
+        lda     SaveCurrentChapterMinus1        ; CF41 AD 5A 61                 .Za
+        cmp     #$03                            ; CF44 C9 03                    ..
+        bne     UpperFixedEngine_Branch_CF55    ; CF46 D0 0D                    ..
+        lda     PlayerWorldY                    ; CF48 A5 43                    .C
+        cmp     #$67                            ; CF4A C9 67                    .g
+        bne     UpperFixedEngine_Branch_CF55    ; CF4C D0 07                    ..
+        ldx     #$03                            ; CF4E A2 03                    ..
+        lda     #$AB                            ; CF50 A9 AB                    ..
+        jsr     UpperFixedEngine_Entry_D207     ; CF52 20 07 D2                  ..
+UpperFixedEngine_Branch_CF55:
+        rts                                     ; CF55 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CF56:
+        lda     $0515                           ; CF56 AD 15 05                 ...
+        bne     UpperFixedEngine_Branch_CF5E    ; CF59 D0 03                    ..
+        brk                                     ; CF5B 00                       .
+        db   $16,$EF                         ; CF5C 16 EF                    ..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CF5E:
+        rts                                     ; CF5E 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_CF5F:
+        lda     $46                             ; CF5F A5 46                    .F
+        sta     $47                             ; CF61 85 47                    .G
+        lda     $7140                           ; CF63 AD 40 71                 .@q
+        and     #$E0                            ; CF66 29 E0                    ).
+        sta     $46                             ; CF68 85 46                    .F
+        ldx     #$00                            ; CF6A A2 00                    ..
+        cmp     $47                             ; CF6C C5 47                    .G
+        beq     UpperFixedEngine_Branch_CF7D    ; CF6E F0 0D                    ..
+        brk                                     ; CF70 00                       .
+        db   $00,$87,$90,$03,$00,$1C,$EF,$00 ; CF71 00 87 90 03 00 1C EF 00  ........
+        db   $0A,$EF,$A2,$10                 ; CF79 0A EF A2 10              ....
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_CF7D:
+        lda     $627D                           ; CF7D AD 7D 62                 .}b
+        and     #$EF                            ; CF80 29 EF                    ).
+        sta     $627D                           ; CF82 8D 7D 62                 .}b
+        txa                                     ; CF85 8A                       .
+        ora     $627D                           ; CF86 0D 7D 62                 .}b
+        sta     $627D                           ; CF89 8D 7D 62                 .}b
+        rts                                     ; CF8C 60                       `
+; ----------------------------------------------------------------------------
+        db   $00,$02,$EF,$60                 ; CF8D 00 02 EF 60              ...`
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Entry_CF91:
         lda     $7000                           ; CF91 AD 00 70                 ..p
@@ -2432,7 +2553,7 @@ UpperFixedEngine_Entry_D1FD:
 ; ----------------------------------------------------------------------------
         rts                                     ; D206 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Branch_D207:
+UpperFixedEngine_Entry_D207:
         jsr     UpperFixedEngine_Entry_D1FD     ; D207 20 FD D1                  ..
 UpperFixedEngine_Entry_D20A:
         jsr     UpperFixedEngine_Entry_D218     ; D20A 20 18 D2                  ..
@@ -5942,7 +6063,7 @@ UpperFixedEngine_Branch_EBB4:
         cmp     #$FF                            ; EBBE C9 FF                    ..
         beq     UpperFixedEngine_Branch_EB95    ; EBC0 F0 D3                    ..
         jsr     UpperFixedEngine_Entry_ED4B     ; EBC2 20 4B ED                  K.
-        lda     $EC85,x                         ; EBC5 BD 85 EC                 ...
+        lda     Bank1F_AudioPeriodTable,x       ; EBC5 BD 85 EC                 ...
         sta     $10                             ; EBC8 85 10                    ..
         sta     $A2                             ; EBCA 85 A2                    ..
         lda     $EC86,x                         ; EBCC BD 86 EC                 ...
@@ -6023,7 +6144,7 @@ UpperFixedEngine_Entry_EC59:
         cmp     #$FF                            ; EC5C C9 FF                    ..
         beq     $EC7E                           ; EC5E F0 1E                    ..
         jsr     UpperFixedEngine_Entry_ED4B     ; EC60 20 4B ED                  K.
-        lda     $EC85,x                         ; EC63 BD 85 EC                 ...
+        lda     Bank1F_AudioPeriodTable,x       ; EC63 BD 85 EC                 ...
         sta     $10                             ; EC66 85 10                    ..
         lda     $EC86,x                         ; EC68 BD 86 EC                 ...
         sta     $11                             ; EC6B 85 11                    ..
@@ -6037,19 +6158,11 @@ UpperFixedEngine_Entry_EC59:
         rts                                     ; EC7E 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$04,$08,$0C,$04,$0C         ; EC7F 00 04 08 0C 04 0C        ......
-; ----------------------------------------------------------------------------
-LEC86 = $+ 1
-        beq     UpperFixedEngine_Branch_EC8E    ; EC85 F0 07                    ..
-        ror     $1207,x                         ; EC87 7E 07 12                 ~..
-        db   $07,$AD,$06,$43                 ; EC8A 07 AD 06 43              ...C
-; ----------------------------------------------------------------------------
-UpperFixedEngine_Branch_EC8E:
-        asl     $F3                             ; EC8E 06 F3                    ..
-        ora     $9D                             ; EC90 05 9D                    ..
-        ora     $4C                             ; EC92 05 4C                    .L
-        ora     $00                           ; EC94 05 00                    ..
-        ora     $B8                             ; EC96 05 B8                    ..
-        db   $04,$75,$04,$34,$04             ; EC98 04 75 04 34 04           .u.4.
+Bank1F_AudioPeriodTable:
+        db   $F0                             ; EC85 F0                       .
+        db   $07,$7E,$07,$12,$07,$AD,$06,$43 ; EC86 07 7E 07 12 07 AD 06 43  .~.....C
+        db   $06,$F3,$05,$9D,$05,$4C,$05,$00 ; EC8E 06 F3 05 9D 05 4C 05 00  .....L..
+        db   $05,$B8,$04,$75,$04,$34,$04     ; EC96 05 B8 04 75 04 34 04     ...u.4.
         db   $F8                             ; EC9D F8                       .
         db   $03,$BF,$03,$89,$03,$56,$03,$26 ; EC9E 03 BF 03 89 03 56 03 26  .....V.&
         db   $03,$F9,$02,$CE,$02,$A6,$02,$80 ; ECA6 03 F9 02 CE 02 A6 02 80  ........
@@ -6606,28 +6719,95 @@ UpperFixedEngine_Entry_F104:
         sta     $04F2                           ; F10B 8D F2 04                 ...
         ldx     #$2F                            ; F10E A2 2F                    ./
 UpperFixedEngine_Branch_F110:
-        lda     $F19B,x                         ; F110 BD 9B F1                 ...
+        lda     Bank1F_UiTemplate,x             ; F110 BD 9B F1                 ...
         sta     $0480,x                         ; F113 9D 80 04                 ...
         dex                                     ; F116 CA                       .
         bpl     UpperFixedEngine_Branch_F110    ; F117 10 F7                    ..
         brk                                     ; F119 00                       .
-        db   $12,$DF,$20,$EC,$C8,$20,$2E,$F1 ; F11A 12 DF 20 EC C8 20 2E F1  .. .. ..
-        db   $20,$58,$F1,$20,$82,$F1,$20,$90 ; F122 20 58 F1 20 82 F1 20 90   X. .. .
-        db   $F1,$4C,$1C,$F1,$A9,$0B,$85,$00 ; F12A F1 4C 1C F1 A9 0B 85 00  .L......
-        db   $A9,$0C,$85,$01,$A2,$05,$8A,$48 ; F132 A9 0C 85 01 A2 05 8A 48  .......H
-        db   $A9,$00,$20,$5A,$C6,$E6,$00,$E6 ; F13A A9 00 20 5A C6 E6 00 E6  .. Z....
-        db   $00,$68,$AA,$CA,$D0,$F0,$AD,$5A ; F142 00 68 AA CA D0 F0 AD 5A  .h.....Z
-        db   $61,$0A,$69,$0B,$85,$00,$A9,$81 ; F14A 61 0A 69 0B 85 00 A9 81  a.i.....
-        db   $20,$5A,$C6,$4C,$2D,$C6,$A5,$14 ; F152 20 5A C6 4C 2D C6 A5 14   Z.L-...
-        db   $0A,$90,$0E,$AD,$5A,$61,$C9,$04 ; F15A 0A 90 0E AD 5A 61 C9 04  ....Za..
-        db   $F0,$07,$EE,$5A,$61,$20,$7A,$F1 ; F162 F0 07 EE 5A 61 20 7A F1  ...Za z.
-        db   $60,$0A,$90,$0B,$AD,$5A,$61,$F0 ; F16A 60 0A 90 0B AD 5A 61 F0  `....Za.
-        db   $06,$CE,$5A,$61,$20,$7A,$F1,$60 ; F172 06 CE 5A 61 20 7A F1 60  ..Za z.`
-        db   $20,$2E,$F1,$A2,$0A,$4C,$0C,$C9 ; F17A 20 2E F1 A2 0A 4C 0C C9   ....L..
-        db   $A5,$14,$4A,$90,$08,$68,$68,$00 ; F182 A5 14 4A 90 08 68 68 00  ..J..hh.
-        db   $85,$FB,$AD,$5A,$61,$60,$A5,$14 ; F18A 85 FB AD 5A 61 60 A5 14  ...Za`..
-        db   $29,$02,$F0,$04,$68,$68,$A9,$06 ; F192 29 02 F0 04 68 68 A9 06  )...hh..
-        db   $60                             ; F19A 60                       `
+        db   $12,$DF                         ; F11A 12 DF                    ..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F11C:
+        jsr     UpperFixedEngine_Entry_C8EC     ; F11C 20 EC C8                  ..
+        jsr     UpperFixedEngine_Entry_F12E     ; F11F 20 2E F1                  ..
+        jsr     UpperFixedEngine_Entry_F158     ; F122 20 58 F1                  X.
+        jsr     UpperFixedEngine_Entry_F182     ; F125 20 82 F1                  ..
+        jsr     UpperFixedEngine_Entry_F190     ; F128 20 90 F1                  ..
+        jmp     UpperFixedEngine_Entry_F11C     ; F12B 4C 1C F1                 L..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F12E:
+        lda     #$0B                            ; F12E A9 0B                    ..
+        sta     $00                           ; F130 85 00                    ..
+        lda     #$0C                            ; F132 A9 0C                    ..
+        sta     $01                             ; F134 85 01                    ..
+        ldx     #$05                            ; F136 A2 05                    ..
+UpperFixedEngine_Branch_F138:
+        txa                                     ; F138 8A                       .
+        pha                                     ; F139 48                       H
+        lda     #$00                            ; F13A A9 00                    ..
+        jsr     UpperFixedEngine_Entry_C65A     ; F13C 20 5A C6                  Z.
+        inc     $00                           ; F13F E6 00                    ..
+        inc     $00                           ; F141 E6 00                    ..
+        pla                                     ; F143 68                       h
+        tax                                     ; F144 AA                       .
+        dex                                     ; F145 CA                       .
+        bne     UpperFixedEngine_Branch_F138    ; F146 D0 F0                    ..
+        lda     SaveCurrentChapterMinus1        ; F148 AD 5A 61                 .Za
+        asl     a                               ; F14B 0A                       .
+        adc     #$0B                            ; F14C 69 0B                    i.
+        sta     $00                           ; F14E 85 00                    ..
+        lda     #$81                            ; F150 A9 81                    ..
+        jsr     UpperFixedEngine_Entry_C65A     ; F152 20 5A C6                  Z.
+        jmp     UpperFixedEngine_Entry_C62D     ; F155 4C 2D C6                 L-.
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F158:
+        lda     ButtonsPressed                  ; F158 A5 14                    ..
+        asl     a                               ; F15A 0A                       .
+        bcc     UpperFixedEngine_Branch_F16B    ; F15B 90 0E                    ..
+        lda     SaveCurrentChapterMinus1        ; F15D AD 5A 61                 .Za
+        cmp     #$04                            ; F160 C9 04                    ..
+        beq     UpperFixedEngine_Branch_F16B    ; F162 F0 07                    ..
+        inc     SaveCurrentChapterMinus1        ; F164 EE 5A 61                 .Za
+        jsr     UpperFixedEngine_Entry_F17A     ; F167 20 7A F1                  z.
+        rts                                     ; F16A 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_F16B:
+        asl     a                               ; F16B 0A                       .
+        bcc     UpperFixedEngine_Branch_F179    ; F16C 90 0B                    ..
+        lda     SaveCurrentChapterMinus1        ; F16E AD 5A 61                 .Za
+        beq     UpperFixedEngine_Branch_F179    ; F171 F0 06                    ..
+        dec     SaveCurrentChapterMinus1        ; F173 CE 5A 61                 .Za
+        jsr     UpperFixedEngine_Entry_F17A     ; F176 20 7A F1                  z.
+UpperFixedEngine_Branch_F179:
+        rts                                     ; F179 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F17A:
+        jsr     UpperFixedEngine_Entry_F12E     ; F17A 20 2E F1                  ..
+        ldx     #$0A                            ; F17D A2 0A                    ..
+        jmp     UpperFixedEngine_Entry_C90C     ; F17F 4C 0C C9                 L..
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F182:
+        lda     ButtonsPressed                  ; F182 A5 14                    ..
+        lsr     a                               ; F184 4A                       J
+        bcc     UpperFixedEngine_Branch_F18F    ; F185 90 08                    ..
+        pla                                     ; F187 68                       h
+        pla                                     ; F188 68                       h
+        brk                                     ; F189 00                       .
+        db   $85,$FB,$AD,$5A,$61             ; F18A 85 FB AD 5A 61           ...Za
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Branch_F18F:
+        rts                                     ; F18F 60                       `
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_F190:
+        lda     ButtonsPressed                  ; F190 A5 14                    ..
+        and     #$02                            ; F192 29 02                    ).
+        beq     UpperFixedEngine_Branch_F19A    ; F194 F0 04                    ..
+        pla                                     ; F196 68                       h
+        pla                                     ; F197 68                       h
+        lda     #$06                            ; F198 A9 06                    ..
+UpperFixedEngine_Branch_F19A:
+        rts                                     ; F19A 60                       `
+; ----------------------------------------------------------------------------
+Bank1F_UiTemplate:
         db   $86,$85,$85,$85,$49,$4F,$32,$43 ; F19B 86 85 85 85 49 4F 32 43  ....IO2C
         db   $85,$85,$85,$89,$84,$00,$00,$00 ; F1A3 85 85 85 89 84 00 00 00  ........
         db   $00,$00,$00,$00,$00,$00,$00,$88 ; F1AB 00 00 00 00 00 00 00 88  ........

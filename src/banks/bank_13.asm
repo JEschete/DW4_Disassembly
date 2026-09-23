@@ -1357,7 +1357,7 @@ BattlePresentation_Branch_88F6:
         bcc     BattlePresentation_Branch_8923  ; 88FC 90 25                    .%
         lda     $B328,x                         ; 88FE BD 28 B3                 .(.
         tay                                     ; 8901 A8                       .
-        lda     $B967,y                         ; 8902 B9 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,y; 8902 B9 67 B9           .g.
         and     #$1F                            ; 8905 29 1F                    ).
         cmp     $02                           ; 8907 C5 02                    ..
         beq     BattlePresentation_Branch_890D  ; 8909 F0 02                    ..
@@ -1369,7 +1369,7 @@ BattlePresentation_Branch_890D:
         jsr     BattlePresentation_Entry_B930   ; 8912 20 30 B9                  0.
         bcc     BattlePresentation_Branch_8923  ; 8915 90 0C                    ..
 BattlePresentation_Branch_8917:
-        lda     $8AEF,y                         ; 8917 B9 EF 8A                 ...
+        lda     Bank13_BattlePresentationValuesA,y; 8917 B9 EF 8A               ...
         clc                                     ; 891A 18                       .
         adc     $94                             ; 891B 65 94                    e.
         sta     $94                             ; 891D 85 94                    ..
@@ -1439,7 +1439,7 @@ BattlePresentation_Branch_8980:
         cmp     #$67                            ; 8984 C9 67                    .g
         bcs     BattlePresentation_Branch_8994  ; 8986 B0 0C                    ..
         tax                                     ; 8988 AA                       .
-        lda     $8B24,x                         ; 8989 BD 24 8B                 .$.
+        lda     Bank13_BattlePresentationValuesB,x; 8989 BD 24 8B               .$.
         adc     $94                             ; 898C 65 94                    e.
         sta     $94                             ; 898E 85 94                    ..
         bcc     BattlePresentation_Branch_8994  ; 8990 90 02                    ..
@@ -1665,6 +1665,7 @@ BattlePresentation_Branch_8AED:
         sec                                     ; 8AED 38                       8
         rts                                     ; 8AEE 60                       `
 ; ----------------------------------------------------------------------------
+Bank13_BattlePresentationValuesA:
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AEF 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AF7 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AFF 01 01 01 01 01 01 01 01  ........
@@ -1672,6 +1673,7 @@ BattlePresentation_Branch_8AED:
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8B0F 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8B17 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01             ; 8B1F 01 01 01 01 01           .....
+Bank13_BattlePresentationValuesB:
         db   $00,$00,$00,$00,$00,$00,$00,$00 ; 8B24 00 00 00 00 00 00 00 00  ........
         db   $00,$00,$00,$01,$00,$00,$00,$00 ; 8B2C 00 00 00 01 00 00 00 00  ........
         db   $00,$02,$00,$00,$00,$00,$00,$03 ; 8B34 00 02 00 00 00 00 00 03  ........
@@ -2502,7 +2504,7 @@ BattlePresentation_Branch_91F9:
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_9201:
         ldx     $75D3                           ; 9201 AE D3 75                 ..u
-        lda     $B967,x                         ; 9204 BD 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,x; 9204 BD 67 B9           .g.
         and     #$1F                            ; 9207 29 1F                    ).
         cmp     #$1F                            ; 9209 C9 1F                    ..
         bne     BattlePresentation_Branch_920F  ; 920B D0 02                    ..
@@ -2928,15 +2930,14 @@ BattlePresentation_Entry_9477:
         db   $02,$01,$00,$05,$04,$03,$08,$07 ; 94CC 02 01 00 05 04 03 08 07  ........
         db   $06,$0B,$0A,$09,$0E,$0D,$0C     ; 94D4 06 0B 0A 09 0E 0D 0C     .......
         db   $4C                             ; 94DB 4C                       L
-        db   $35,$33,$4C,$19                 ; 94DC 35 33 4C 19              53L.
-        db   $4D,$00,$66,$4C,$35,$4C,$35,$26 ; 94E0 4D 00 66 4C 35 4C 35 26  M.fL5L5&
-        db   $4D,$00,$66,$5A,$33,$40,$33,$26 ; 94E8 4D 00 66 5A 33 40 33 26  M.fZ3@3&
-        db   $33,$00,$33,$5A,$33,$5A,$33,$33 ; 94F0 33 00 33 5A 33 5A 33 33  3.3Z3Z33
-        db   $33,$00,$33,$5A,$28,$4D,$26,$26 ; 94F8 33 00 33 5A 28 4D 26 26  3.3Z(M&&
-        db   $26,$00,$26,$5A,$28,$5A,$28,$39 ; 9500 26 00 26 5A 28 5A 28 39  &.&Z(Z(9
-        db   $26,$00,$26,$80,$00,$6D,$00,$33 ; 9508 26 00 26 80 00 6D 00 33  &.&..m.3
-        db   $00,$00,$00,$80,$00,$80,$00,$5A ; 9510 00 00 00 80 00 80 00 5A  .......Z
-        db   $00,$00,$00                     ; 9518 00 00 00                 ...
+        db   $35,$33,$4C,$19,$4D,$00,$66,$4C ; 94DC 35 33 4C 19 4D 00 66 4C  53L.M.fL
+        db   $35,$4C,$35,$26,$4D,$00,$66,$5A ; 94E4 35 4C 35 26 4D 00 66 5A  5L5&M.fZ
+        db   $33,$40,$33,$26,$33,$00,$33,$5A ; 94EC 33 40 33 26 33 00 33 5A  3@3&3.3Z
+        db   $33,$5A,$33,$33,$33,$00,$33,$5A ; 94F4 33 5A 33 33 33 00 33 5A  3Z333.3Z
+        db   $28,$4D,$26,$26,$26,$00,$26,$5A ; 94FC 28 4D 26 26 26 00 26 5A  (M&&&.&Z
+        db   $28,$5A,$28,$39,$26,$00,$26,$80 ; 9504 28 5A 28 39 26 00 26 80  (Z(9&.&.
+        db   $00,$6D,$00,$33,$00,$00,$00,$80 ; 950C 00 6D 00 33 00 00 00 80  .m.3....
+        db   $00,$80,$00,$5A,$00,$00,$00     ; 9514 00 80 00 5A 00 00 00     ...Z...
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_951B:
         jsr     BattlePresentation_Entry_91EF   ; 951B 20 EF 91                  ..
@@ -5321,7 +5322,7 @@ BattlePresentation_Entry_A58D:
         sta     $0C                             ; A592 85 0C                    ..
         jsr     BattlePresentation_Entry_A5AA   ; A594 20 AA A5                  ..
         bcc     BattlePresentation_Branch_A5A8  ; A597 90 0F                    ..
-        lda     $B967,y                         ; A599 B9 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,y; A599 B9 67 B9           .g.
         and     #$1F                            ; A59C 29 1F                    ).
         sec                                     ; A59E 38                       8
         sbc     $75DC                           ; A59F ED DC 75                 ..u
@@ -5546,7 +5547,7 @@ BattlePresentation_Entry_A797:
         tya                                     ; A79A 98                       .
         pha                                     ; A79B 48                       H
         sty     $01                             ; A79C 84 01                    ..
-        lda     $B967,x                         ; A79E BD 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,x; A79E BD 67 B9           .g.
         pha                                     ; A7A1 48                       H
         and     #$80                            ; A7A2 29 80                    ).
         sta     $00                           ; A7A4 85 00                    ..
@@ -6354,7 +6355,7 @@ BattlePresentation_Branch_AD5E:
         bcc     BattlePresentation_Branch_AD86  ; AD65 90 1F                    ..
         cpy     #$12                            ; AD67 C0 12                    ..
         bcs     BattlePresentation_Branch_AD86  ; AD69 B0 1B                    ..
-        lda     $B967,y                         ; AD6B B9 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,y; AD6B B9 67 B9           .g.
         and     #$1F                            ; AD6E 29 1F                    ).
         pha                                     ; AD70 48                       H
         jsr     BattlePresentation_Entry_86D6   ; AD71 20 D6 86                  ..
@@ -6412,7 +6413,7 @@ BattlePresentation_Branch_ADDA:
         lda     $0D                             ; ADDA A5 0D                    ..
         jsr     BattlePresentation_Entry_9304   ; ADDC 20 04 93                  ..
         ldx     $0D                             ; ADDF A6 0D                    ..
-        lda     $B967,x                         ; ADE1 BD 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,x; ADE1 BD 67 B9           .g.
         and     #$60                            ; ADE4 29 60                    )`
         cmp     #$40                            ; ADE6 C9 40                    .@
         bcs     BattlePresentation_Branch_ADF6  ; ADE8 B0 0C                    ..
@@ -6553,7 +6554,7 @@ BattlePresentation_Branch_AECA:
 BattlePresentation_Branch_AED7:
         jsr     BattlePresentation_Entry_A5AA   ; AED7 20 AA A5                  ..
         bcc     BattlePresentation_Branch_AEE7  ; AEDA 90 0B                    ..
-        lda     $B967,y                         ; AEDC B9 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,y; AEDC B9 67 B9           .g.
         and     #$1F                            ; AEDF 29 1F                    ).
         cmp     $7B                             ; AEE1 C5 7B                    .{
         bcc     BattlePresentation_Branch_AEE7  ; AEE3 90 02                    ..
@@ -7095,13 +7096,13 @@ BattlePresentation_Branch_B2F9:
         stx     $94                             ; B2FE 86 94                    ..
         stx     $95                             ; B300 86 95                    ..
 BattlePresentation_Branch_B302:
-        lda     $B967,x                         ; B302 BD 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,x; B302 BD 67 B9           .g.
         and     #$1F                            ; B305 29 1F                    ).
         cmp     $00                           ; B307 C5 00                    ..
         beq     BattlePresentation_Branch_B30D  ; B309 F0 02                    ..
         bcs     BattlePresentation_Branch_B318  ; B30B B0 0B                    ..
 BattlePresentation_Branch_B30D:
-        lda     $8AEF,x                         ; B30D BD EF 8A                 ...
+        lda     Bank13_BattlePresentationValuesA,x; B30D BD EF 8A               ...
         adc     $94                             ; B310 65 94                    e.
         sta     $94                             ; B312 85 94                    ..
         bcc     BattlePresentation_Branch_B318  ; B314 90 02                    ..
@@ -7815,18 +7816,15 @@ BattlePresentation_Entry_B953:
         txa                                     ; B956 8A                       .
         pha                                     ; B957 48                       H
         ldx     $6E10                           ; B958 AE 10 6E                 ..n
-        lda     $B967,x                         ; B95B BD 67 B9                 .g.
+        lda     Bank13_BattlePresentationStateLookup,x; B95B BD 67 B9           .g.
         sta     $6E10                           ; B95E 8D 10 6E                 ..n
         pla                                     ; B961 68                       h
         tax                                     ; B962 AA                       .
         lda     $6E10                           ; B963 AD 10 6E                 ..n
         rts                                     ; B966 60                       `
 ; ----------------------------------------------------------------------------
-        ldx     #$A4                            ; B967 A2 A4                    ..
-        tax                                     ; B969 AA                       .
-        cpy     $C6                             ; B96A C4 C6                    ..
-        dex                                     ; B96C CA                       .
-        sbc     $E8                             ; B96D E5 E8                    ..
+Bank13_BattlePresentationStateLookup:
+        db   $A2,$A4,$AA,$C4,$C6,$CA,$E5,$E8 ; B967 A2 A4 AA C4 C6 CA E5 E8  ........
         db   $EF,$A2,$C5,$E8,$CB,$C2,$C4,$C8 ; B96F EF A2 C5 E8 CB C2 C4 C8  ........
         db   $A4,$EF,$AF,$A4,$C7,$E1,$C3,$C3 ; B977 A4 EF AF A4 C7 E1 C3 C3  ........
         db   $A3,$C3,$C4,$A5,$A0,$22,$04,$A3 ; B97F A3 C3 C4 A5 A0 22 04 A3  ....."..
@@ -7910,194 +7908,142 @@ BattlePresentation_Entry_B953:
         db   $FF,$FF,$FF,$FF,$80,$80,$80,$80 ; BBB9 FF FF FF FF 80 80 80 80  ........
         db   $80,$80,$80,$C8,$C8,$C8,$C8,$C8 ; BBC1 80 80 80 C8 C8 C8 C8 C8  ........
         db   $C8,$C8                         ; BBC9 C8 C8                    ..
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BBCB:
-        jmp     ($44E1)                         ; BBCB 6C E1 44                 l.D
-; ----------------------------------------------------------------------------
-        db   $EE,$F0,$FB,$00,$FE,$D4,$BC,$FE ; BBCE EE F0 FB 00 FE D4 BC FE  ........
-        db   $87,$BC,$ED,$B3,$EE,$F0,$75,$8C ; BBD6 87 BC ED B3 EE F0 75 8C  ......u.
-        db   $0B,$C0,$06,$EE,$D0,$2A,$E9,$2A ; BBDE 0B C0 06 EE D0 2A E9 2A  .....*.*
-        db   $EE,$A0,$2A,$E9,$2A,$EE,$70,$2A ; BBE6 EE A0 2A E9 2A EE 70 2A  ..*.*.p*
-        db   $E9,$2A,$E8,$FF,$F9,$E4,$FB,$00 ; BBEE E9 2A E8 FF F9 E4 FB 00  .*......
-        db   $ED,$00,$FE,$87,$BC,$77,$98,$15 ; BBF6 ED 00 FE 87 BC 77 98 15  .....w..
-        db   $21,$25,$77,$A4,$21,$6C,$8C,$0B ; BBFE 21 25 77 A4 21 6C 8C 0B  !%w.!l..
-        db   $25,$2C,$6C,$06,$25,$77,$8C,$04 ; BC06 25 2C 6C 06 25 77 8C 04  %,l.%w..
-        db   $B7,$0B,$2C,$FB,$FE,$F9,$E6,$FB ; BC0E B7 0B 2C FB FE F9 E6 FB  ..,.....
-        db   $00,$EE,$D0,$65,$98,$12,$FA,$08 ; BC16 00 EE D0 65 98 12 FA 08  ...e....
-        db   $FA,$E1,$1A,$ED,$FF,$EE,$D0,$7C ; BC1E FA E1 1A ED FF EE D0 7C  .......|
-        db   $98,$0C,$26,$2A,$6A,$A4,$12,$7C ; BC26 98 0C 26 2A 6A A4 12 7C  ..&*j..|
-        db   $8C,$08,$26,$2A,$6A,$98,$0C,$7C ; BC2E 8C 08 26 2A 6A 98 0C 7C  ..&*j..|
-        db   $8C,$08,$26,$75,$B0,$18,$1F,$2F ; BC36 8C 08 26 75 B0 18 1F 2F  ..&u.../
-        db   $24,$68,$98,$0C,$28,$24,$7A,$A4 ; BC3E 24 68 98 0C 28 24 7A A4  $h..($z.
-        db   $12,$68,$8C,$08,$28,$24,$7A,$98 ; BC46 12 68 8C 08 28 24 7A 98  .h..($z.
-        db   $0C,$73,$8C,$08,$1D,$6F,$B0,$18 ; BC4E 0C 73 8C 08 1D 6F B0 18  .s...o..
-        db   $7A,$C8,$24,$76,$98,$0C,$70,$B0 ; BC56 7A C8 24 76 98 0C 70 B0  z.$v..p.
-        db   $18,$EE,$D0,$ED,$00,$E1,$44,$FB ; BC5E 18 EE D0 ED 00 E1 44 FB  ......D.
-        db   $00,$FE,$74,$BC,$FB,$01,$FE,$74 ; BC66 00 FE 74 BC FB 01 FE 74  ..t....t
-        db   $BC,$F9,$F4,$FE,$CE,$BB,$70,$86 ; BC6E BC F9 F4 FE CE BB 70 86  ......p.
-        db   $04,$25,$25,$25,$49,$25,$49,$49 ; BC76 04 25 25 25 49 25 49 49  .%%%I%II
-        db   $25,$49,$49,$25,$94,$8C,$0C,$25 ; BC7E 25 49 49 25 94 8C 0C 25  %II%...%
-        db   $FD,$EE,$D0,$65,$98,$0C,$FA,$08 ; BC86 FD EE D0 65 98 0C FA 08  ...e....
-        db   $FA,$EE,$F0,$7C,$98,$15,$26,$2A ; BC8E FA EE F0 7C 98 15 26 2A  ...|..&*
-        db   $6A,$A4,$21,$EE,$D0,$7C,$8C,$0B ; BC96 6A A4 21 EE D0 7C 8C 0B  j.!..|..
-        db   $26,$2A,$EE,$F0,$6A,$98,$15,$7C ; BC9E 26 2A EE F0 6A 98 15 7C  &*..j..|
-        db   $8C,$0B,$26,$F9,$E4,$75,$98,$15 ; BCA6 8C 0B 26 F9 E4 75 98 15  ..&..u..
-        db   $1F,$23,$63,$A4,$21,$75,$8C,$0B ; BCAE 1F 23 63 A4 21 75 8C 0B  .#c.!u..
-        db   $1F,$23,$63,$98,$15,$6E,$8C,$0B ; BCB6 1F 23 63 98 15 6E 8C 0B  .#c..n..
-        db   $2A,$7C,$98,$15,$26,$2A,$6A,$A4 ; BCBE 2A 7C 98 15 26 2A 6A A4  *|..&*j.
-        db   $21,$7C,$8C,$0B,$26,$2A,$6A,$98 ; BCC6 21 7C 8C 0B 26 2A 6A 98  !|..&*j.
-        db   $15,$7C,$8C,$0B,$26,$FD,$7F,$86 ; BCCE 15 7C 8C 0B 26 FD 7F 86  .|..&...
-        db   $04,$30,$49,$2C,$28,$49,$24,$20 ; BCD6 04 30 49 2C 28 49 24 20  .0I,(I$
-        db   $49,$1C,$18,$49,$14,$49,$66,$8C ; BCDE 49 1C 18 49 14 49 66 8C  I..I.If.
-        db   $0C,$FB,$00,$FD                 ; BCE6 0C FB 00 FD              ....
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BCEA:
-        sbc     ($3E,x)                         ; BCEA E1 3E                    .>
-        inc     $F7F0                           ; BCEC EE F0 F7                 ...
-        db   $FB,$F8,$FE,$D4,$BC,$F8,$52,$86 ; BCEF FB F8 FE D4 BC F8 52 86  ......R.
-        db   $03,$FE,$CF,$BD,$FE,$CC,$BD,$FA ; BCF7 03 FE CF BD FE CC BD FA  ........
-        db   $05,$FA,$57,$86,$03,$FB,$05,$FE ; BCFF 05 FA 57 86 03 FB 05 FE  ..W.....
-        db   $CF,$BD,$FE,$CC,$BD,$FB,$00,$52 ; BD07 CF BD FE CC BD FB 00 52  .......R
-        db   $86,$03,$FE,$CF,$BD,$FE,$CC,$BD ; BD0F 86 03 FE CF BD FE CC BD  ........
-        db   $ED,$B3,$F7,$EE,$F0,$15,$EE,$D0 ; BD17 ED B3 F7 EE F0 15 EE D0  ........
-        db   $1F,$E9,$15,$EE,$90,$1F,$EE,$70 ; BD1F 1F E9 15 EE 90 1F EE 70  .......p
-        db   $15,$EE,$50,$1F,$E9,$15,$E9,$1F ; BD27 15 EE 50 1F E9 15 E9 1F  ..P.....
-        db   $E8,$FF,$F9,$E4,$FB,$00,$ED,$00 ; BD2F E8 FF F9 E4 FB 00 ED 00  ........
-        db   $F8,$EE,$F0,$52,$86,$03,$FE,$CF ; BD37 F8 EE F0 52 86 03 FE CF  ...R....
-        db   $BD,$FE,$CC,$BD,$FA,$05,$FA,$57 ; BD3F BD FE CC BD FA 05 FA 57  .......W
-        db   $86,$03,$FB,$05,$FE,$CF,$BD,$FE ; BD47 86 03 FB 05 FE CF BD FE  ........
-        db   $CC,$BD,$FB,$00,$52,$86,$03,$FE ; BD4F CC BD FB 00 52 86 03 FE  ....R...
-        db   $CF,$BD,$FE,$CC,$BD,$59,$86,$03 ; BD57 CF BD FE CC BD 59 86 03  .....Y..
-        db   $FB,$07,$FE,$CF,$BD,$FE,$CC,$BD ; BD5F FB 07 FE CF BD FE CC BD  ........
-        db   $FB,$05,$52,$86,$03,$FE,$CF,$BD ; BD67 FB 05 52 86 03 FE CF BD  ..R.....
-        db   $FE,$CC,$BD,$FB,$00,$52         ; BD6F FE CC BD FB 00 52        .....R
-; ----------------------------------------------------------------------------
-        stx     $03                             ; BD75 86 03                    ..
-        inc     $BDCF,x                         ; BD77 FE CF BD                 ...
-        inc     $BDCC,x                         ; BD7A FE CC BD                 ...
-        sta     $0C,x                           ; BD7D 95 0C                    ..
-        sty     $54,x                           ; BD7F 94 54                    .T
-        sty     $60,x                           ; BD81 94 60                    .`
+Bank13_BattlePresentationCommands:
+        db   $6C,$E1,$44,$EE,$F0,$FB,$00,$FE ; BBCB 6C E1 44 EE F0 FB 00 FE  l.D.....
+        db   $D4,$BC,$FE,$87,$BC,$ED,$B3,$EE ; BBD3 D4 BC FE 87 BC ED B3 EE  ........
+        db   $F0,$75,$8C,$0B,$C0,$06,$EE,$D0 ; BBDB F0 75 8C 0B C0 06 EE D0  .u......
+        db   $2A,$E9,$2A,$EE,$A0,$2A,$E9,$2A ; BBE3 2A E9 2A EE A0 2A E9 2A  *.*..*.*
+        db   $EE,$70,$2A,$E9,$2A,$E8,$FF,$F9 ; BBEB EE 70 2A E9 2A E8 FF F9  .p*.*...
+        db   $E4,$FB,$00,$ED,$00,$FE,$87,$BC ; BBF3 E4 FB 00 ED 00 FE 87 BC  ........
+        db   $77,$98,$15,$21,$25,$77,$A4,$21 ; BBFB 77 98 15 21 25 77 A4 21  w..!%w.!
+        db   $6C,$8C,$0B,$25,$2C,$6C,$06,$25 ; BC03 6C 8C 0B 25 2C 6C 06 25  l..%,l.%
+        db   $77,$8C,$04,$B7,$0B,$2C,$FB,$FE ; BC0B 77 8C 04 B7 0B 2C FB FE  w....,..
+        db   $F9,$E6,$FB,$00,$EE,$D0,$65,$98 ; BC13 F9 E6 FB 00 EE D0 65 98  ......e.
+        db   $12,$FA,$08,$FA,$E1,$1A,$ED,$FF ; BC1B 12 FA 08 FA E1 1A ED FF  ........
+        db   $EE,$D0,$7C,$98,$0C,$26,$2A,$6A ; BC23 EE D0 7C 98 0C 26 2A 6A  ..|..&*j
+        db   $A4,$12,$7C,$8C,$08,$26,$2A,$6A ; BC2B A4 12 7C 8C 08 26 2A 6A  ..|..&*j
+        db   $98,$0C,$7C,$8C,$08,$26,$75,$B0 ; BC33 98 0C 7C 8C 08 26 75 B0  ..|..&u.
+        db   $18,$1F,$2F,$24,$68,$98,$0C,$28 ; BC3B 18 1F 2F 24 68 98 0C 28  ../$h..(
+        db   $24,$7A,$A4,$12,$68,$8C,$08,$28 ; BC43 24 7A A4 12 68 8C 08 28  $z..h..(
+        db   $24,$7A,$98,$0C,$73,$8C,$08,$1D ; BC4B 24 7A 98 0C 73 8C 08 1D  $z..s...
+        db   $6F,$B0,$18,$7A,$C8,$24,$76,$98 ; BC53 6F B0 18 7A C8 24 76 98  o..z.$v.
+        db   $0C,$70,$B0,$18,$EE,$D0,$ED,$00 ; BC5B 0C 70 B0 18 EE D0 ED 00  .p......
+        db   $E1,$44,$FB,$00,$FE,$74,$BC,$FB ; BC63 E1 44 FB 00 FE 74 BC FB  .D...t..
+        db   $01,$FE,$74,$BC,$F9,$F4,$FE,$CE ; BC6B 01 FE 74 BC F9 F4 FE CE  ..t.....
+        db   $BB,$70,$86,$04,$25,$25,$25,$49 ; BC73 BB 70 86 04 25 25 25 49  .p..%%%I
+        db   $25,$49,$49,$25,$49,$49,$25,$94 ; BC7B 25 49 49 25 49 49 25 94  %II%II%.
+        db   $8C,$0C,$25,$FD,$EE,$D0,$65,$98 ; BC83 8C 0C 25 FD EE D0 65 98  ..%...e.
+        db   $0C,$FA,$08,$FA,$EE,$F0,$7C,$98 ; BC8B 0C FA 08 FA EE F0 7C 98  ......|.
+        db   $15,$26,$2A,$6A,$A4,$21,$EE,$D0 ; BC93 15 26 2A 6A A4 21 EE D0  .&*j.!..
+        db   $7C,$8C,$0B,$26,$2A,$EE,$F0,$6A ; BC9B 7C 8C 0B 26 2A EE F0 6A  |..&*..j
+        db   $98,$15,$7C,$8C,$0B,$26,$F9,$E4 ; BCA3 98 15 7C 8C 0B 26 F9 E4  ..|..&..
+        db   $75,$98,$15,$1F,$23,$63,$A4,$21 ; BCAB 75 98 15 1F 23 63 A4 21  u...#c.!
+        db   $75,$8C,$0B,$1F,$23,$63,$98,$15 ; BCB3 75 8C 0B 1F 23 63 98 15  u...#c..
+        db   $6E,$8C,$0B,$2A,$7C,$98,$15,$26 ; BCBB 6E 8C 0B 2A 7C 98 15 26  n..*|..&
+        db   $2A,$6A,$A4,$21,$7C,$8C,$0B,$26 ; BCC3 2A 6A A4 21 7C 8C 0B 26  *j.!|..&
+        db   $2A,$6A,$98,$15,$7C,$8C,$0B,$26 ; BCCB 2A 6A 98 15 7C 8C 0B 26  *j..|..&
+        db   $FD,$7F,$86,$04,$30,$49,$2C,$28 ; BCD3 FD 7F 86 04 30 49 2C 28  ....0I,(
+        db   $49,$24,$20,$49,$1C,$18,$49,$14 ; BCDB 49 24 20 49 1C 18 49 14  I$ I..I.
+        db   $49,$66,$8C,$0C,$FB,$00,$FD,$E1 ; BCE3 49 66 8C 0C FB 00 FD E1  If......
+        db   $3E,$EE,$F0,$F7,$FB,$F8,$FE,$D4 ; BCEB 3E EE F0 F7 FB F8 FE D4  >.......
+        db   $BC,$F8,$52,$86,$03,$FE,$CF,$BD ; BCF3 BC F8 52 86 03 FE CF BD  ..R.....
+        db   $FE,$CC,$BD,$FA,$05,$FA,$57,$86 ; BCFB FE CC BD FA 05 FA 57 86  ......W.
+        db   $03,$FB,$05,$FE,$CF,$BD,$FE,$CC ; BD03 03 FB 05 FE CF BD FE CC  ........
+        db   $BD,$FB,$00,$52,$86,$03,$FE,$CF ; BD0B BD FB 00 52 86 03 FE CF  ...R....
+        db   $BD,$FE,$CC,$BD,$ED,$B3,$F7,$EE ; BD13 BD FE CC BD ED B3 F7 EE  ........
+        db   $F0,$15,$EE,$D0,$1F,$E9,$15,$EE ; BD1B F0 15 EE D0 1F E9 15 EE  ........
+        db   $90,$1F,$EE,$70,$15,$EE,$50,$1F ; BD23 90 1F EE 70 15 EE 50 1F  ...p..P.
+        db   $E9,$15,$E9,$1F,$E8,$FF,$F9,$E4 ; BD2B E9 15 E9 1F E8 FF F9 E4  ........
+        db   $FB,$00,$ED,$00,$F8,$EE,$F0,$52 ; BD33 FB 00 ED 00 F8 EE F0 52  .......R
+        db   $86,$03,$FE,$CF,$BD,$FE,$CC,$BD ; BD3B 86 03 FE CF BD FE CC BD  ........
+        db   $FA,$05,$FA,$57,$86,$03,$FB,$05 ; BD43 FA 05 FA 57 86 03 FB 05  ...W....
+        db   $FE,$CF,$BD,$FE,$CC,$BD,$FB,$00 ; BD4B FE CF BD FE CC BD FB 00  ........
+        db   $52,$86,$03,$FE,$CF,$BD,$FE,$CC ; BD53 52 86 03 FE CF BD FE CC  R.......
+        db   $BD,$59,$86,$03,$FB,$07,$FE,$CF ; BD5B BD 59 86 03 FB 07 FE CF  .Y......
+        db   $BD,$FE,$CC,$BD,$FB,$05,$52,$86 ; BD63 BD FE CC BD FB 05 52 86  ......R.
+        db   $03,$FE,$CF,$BD,$FE,$CC,$BD,$FB ; BD6B 03 FE CF BD FE CC BD FB  ........
+        db   $00,$52,$86,$03,$FE,$CF,$BD,$FE ; BD73 00 52 86 03 FE CF BD FE  .R......
+        db   $CC,$BD,$95,$0C,$94,$54,$94,$60 ; BD7B CC BD 95 0C 94 54 94 60  .....T.`
         db   $53,$98,$15,$13,$0F,$65,$A4,$21 ; BD83 53 98 15 13 0F 65 A4 21  S....e.!
         db   $53,$8C,$0B,$13,$0F,$65,$98,$15 ; BD8B 53 8C 0B 13 0F 65 98 15  S....e..
-        db   $5E,$8C,$0B                     ; BD93 5E 8C 0B                 ^..
-; ----------------------------------------------------------------------------
-        php                                     ; BD96 08                       .
-        db   $64,$B0,$2D,$0E,$12,$52,$C8,$45 ; BD97 64 B0 2D 0E 12 52 C8 45  d.-..R.E
-        db   $58,$98,$15,$1A,$57,$B0,$2D,$12 ; BD9F 58 98 15 1A 57 B0 2D 12  X...W.-.
-        db   $5E,$98,$15,$F7,$EE,$D0,$FB,$00 ; BDA7 5E 98 15 F7 EE D0 FB 00  ^.......
-        db   $FE,$BD,$BD,$FB,$01,$FE,$BD,$BD ; BDAF FE BD BD FB 01 FE BD BD  ........
-        db   $F9,$F4,$F8,$FE,$EA,$BC,$13,$17 ; BDB7 F9 F4 F8 FE EA BC 13 17  ........
-        db   $13,$17,$49,$13,$49,$49,$17,$49 ; BDBF 13 17 49 13 49 49 17 49  ..I.II.I
-        db   $49,$13,$49,$17,$FD             ; BDC7 49 13 49 17 FD           I.I..
-        db   $95,$86,$03                     ; BDCC 95 86 03                 ...
-        db   $54,$86,$03,$09,$07,$09,$49,$07 ; BDCF 54 86 03 09 07 09 49 07  T.....I.
-        db   $09,$49,$07,$09,$49,$07,$54,$8C ; BDD7 09 49 07 09 49 07 54 8C  .I..I.T.
-        db   $0A,$52,$06,$FD,$F7,$FB,$07,$FE ; BDDF 0A 52 06 FD F7 FB 07 FE  .R......
-        db   $D4,$BC,$F8,$FE,$69,$BE,$73,$8C ; BDE7 D4 BC F8 FE 69 BE 73 8C  ....i.s.
-        db   $0C,$C6,$09,$BE,$07,$C6,$05,$BE ; BDEF 0C C6 09 BE 07 C6 05 BE  ........
-        db   $03,$C6,$03,$BE,$02,$C6,$02,$BC ; BDF7 03 C6 03 BE 02 C6 02 BC  ........
-        db   $0C,$C6,$09,$BC,$07,$C6,$05,$BC ; BDFF 0C C6 09 BC 07 C6 05 BC  ........
-        db   $03,$C6,$03,$BC,$02,$C6,$02,$FE ; BE07 03 C6 03 BC 02 C6 02 FE  ........
-        db   $69,$BE,$6C,$86,$03,$2A,$FA,$10 ; BE0F 69 BE 6C 86 03 2A FA 10  i.l..*..
-        db   $F9,$1F,$28,$FA,$10,$FB,$6E,$98 ; BE17 F9 1F 28 FA 10 FB 6E 98  ..(...n.
-        db   $15,$FA,$08,$FA,$6E,$0C,$94,$54 ; BE1F 15 FA 08 FA 6E 0C 94 54  ....n..T
-        db   $94,$60,$49,$49,$49,$94,$30,$7C ; BE27 94 60 49 49 49 94 30 7C  .`III.0|
-        db   $98,$15,$26,$2A,$6A,$A4,$21,$7C ; BE2F 98 15 26 2A 6A A4 21 7C  ..&*j.!|
-        db   $8C,$09,$26,$2A,$6A,$98,$15,$7C ; BE37 8C 09 26 2A 6A 98 15 7C  ..&*j..|
-        db   $8C,$09,$71,$98,$15,$6A,$8C,$09 ; BE3F 8C 09 71 98 15 6A 8C 09  ..q..j..
-        db   $26,$31,$F7,$FB,$00,$FE,$5A,$BE ; BE47 26 31 F7 FB 00 FE 5A BE  &1....Z.
-        db   $FB,$01,$FE,$5A,$BE,$F9,$F4,$F8 ; BE4F FB 01 FE 5A BE F9 F4 F8  ...Z....
-        db   $FE,$E3,$BD,$28,$2D,$28,$2D,$49 ; BE57 FE E3 BD 28 2D 28 2D 49  ...(-(-I
-        db   $28,$49,$49,$2D,$49,$49,$28,$49 ; BE5F 28 49 49 2D 49 49 28 49  (II-II(I
-        db   $2D,$FD,$6E,$98,$0C,$FA,$08,$FA ; BE67 2D FD 6E 98 0C FA 08 FA  -.n.....
-        db   $6E,$86,$03,$26,$FA,$20,$F9,$1F ; BE6F 6E 86 03 26 FA 20 F9 1F  n..&. ..
-        db   $28,$FA,$10,$FB,$23,$26,$FA,$10 ; BE77 28 FA 10 FB 23 26 FA 10  (...#&..
-        db   $FB,$FD                         ; BE7F FB FD                    ..
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BE81:
-        sbc     ($1C,x)                         ; BE81 E1 1C                    ..
-        inc     $4DF0                           ; BE83 EE F0 4D                 ..M
-        tya                                     ; BE86 98                       .
-        rts                                     ; BE87 60                       `
-; ----------------------------------------------------------------------------
-        db   $02,$02,$02,$4D,$98,$60,$FA,$28 ; BE88 02 02 02 4D 98 60 FA 28  ...M.`.(
-        db   $FA,$94,$60,$49,$4D,$18,$FA,$41 ; BE90 FA 94 60 49 4D 18 FA 41  ..`IM..A
-        db   $FB,$94,$48,$94,$60,$FA,$07,$FB ; BE98 FB 94 48 94 60 FA 07 FB  ..H.`...
-        db   $4D,$18,$FA,$10,$FB,$FE,$8B,$BE ; BEA0 4D 18 FA 10 FB FE 8B BE  M.......
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BEA8:
-        stx     $E1,y                           ; BEA8 96 E1                    ..
-        rol     $0673,x                         ; BEAA 3E 73 06                 >s.
-        lsr     a                               ; BEAD 4A                       J
-        lsr     a                               ; BEAE 4A                       J
-        and     #$28                            ; BEAF 29 28                    )(
-        lsr     a                               ; BEB1 4A                       J
-        lsr     a                               ; BEB2 4A                       J
-        and     #$26                            ; BEB3 29 26                    )&
-        eor     #$49                            ; BEB5 49 49                    II
-        eor     #$76                            ; BEB7 49 76                    Iv
-        rol     a                               ; BEB9 2A                       *
-        sei                                     ; BEBA 78                       x
-        asl     $76                             ; BEBB 06 76                    .v
-        clc                                     ; BEBD 18                       .
-        sta     $12,x                           ; BEBE 95 12                    ..
-        sei                                     ; BEC0 78                       x
-        asl     $76                             ; BEC1 06 76                    .v
-        clc                                     ; BEC3 18                       .
-        sta     $08,x                           ; BEC4 95 08                    ..
-        lsr     a                               ; BEC6 4A                       J
-        and     $4A2B                           ; BEC7 2D 2B 4A                 -+J
-        and     $302E                           ; BECA 2D 2E 30                 -.0
-        rol     $2B2D                           ; BECD 2E 2D 2B                 .-+
-        and     #$28                            ; BED0 29 28                    )(
-        rol     $24                             ; BED2 26 24                    &$
-        db   $22,$21,$1F,$1D,$1C,$1A,$18,$16 ; BED4 22 21 1F 1D 1C 1A 18 16  "!......
-        db   $15,$F9,$CC,$5E,$98,$08,$94,$48 ; BEDC 15 F9 CC 5E 98 08 94 48  ...^...H
-        db   $94,$60,$78,$B0,$00,$2B,$78,$06 ; BEE4 94 60 78 B0 00 2B 78 06  .`x..+x.
-        db   $4A,$4A,$2B,$7B,$18,$2D,$73,$06 ; BEEC 4A 4A 2B 7B 18 2D 73 06  JJ+{.-s.
-        db   $4A,$4A,$29,$76,$30,$26,$73,$06 ; BEF4 4A 4A 29 76 30 26 73 06  JJ)v0&s.
-        db   $4A,$4A,$26,$76,$18,$28,$6F,$06 ; BEFC 4A 4A 26 76 18 28 6F 06  JJ&v.(o.
-        db   $4A,$4A,$28,$71,$30,$21,$71,$06 ; BF04 4A 4A 28 71 30 21 71 06  JJ(q0!q.
-        db   $4A,$4A,$24,$78,$18,$24,$73,$06 ; BF0C 4A 4A 24 78 18 24 73 06  JJ$x.$s.
-        db   $4A,$4A,$24,$6C,$30,$28,$78,$60 ; BF14 4A 4A 24 6C 30 28 78 60  JJ$l0(x`
-        db   $F9,$C8,$FE,$A9,$BE             ; BF1C F9 C8 FE A9 BE           .....
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BF21:
-        sbc     ($3E,x)                         ; BF21 E1 3E                    .>
-        inc     $94E0                           ; BF23 EE E0 94                 ...
-        tya                                     ; BF26 98                       .
-        brk                                     ; BF27 00                       .
-        db   $1A,$49,$1B,$49,$1C,$49,$1D,$49 ; BF28 1A 49 1B 49 1C 49 1D 49  .I.I.I.I
-        db   $1C,$B1,$06,$49,$18,$13,$15,$10 ; BF30 1C B1 06 49 18 13 15 10  ...I....
-        db   $F9,$EB,$94,$18,$26,$FA,$07,$FC ; BF38 F9 EB 94 18 26 FA 07 FC  ....&...
-        db   $26,$26,$26,$26,$25,$25,$25,$25 ; BF40 26 26 26 26 25 25 25 25  &&&&%%%%
-        db   $24,$24,$23,$23,$22,$22,$21,$21 ; BF48 24 24 23 23 22 22 21 21  $$##""!!
-        db   $20,$20,$1F,$1F,$1E,$1E,$1D,$1D ; BF50 20 20 1F 1F 1E 1E 1D 1D    ......
-        db   $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C ; BF58 1C 1C 1C 1C 1C 1C 1C 1C  ........
-        db   $F9,$DE,$FE,$21,$BF             ; BF60 F9 DE FE 21 BF           ...!.
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_BF65:
-        inc     $BF96,x                         ; BF65 FE 96 BF                 ...
-        inc     $BF96,x                         ; BF68 FE 96 BF                 ...
+        db   $5E,$8C,$0B,$08,$64,$B0,$2D,$0E ; BD93 5E 8C 0B 08 64 B0 2D 0E  ^...d.-.
+        db   $12,$52,$C8,$45,$58,$98,$15,$1A ; BD9B 12 52 C8 45 58 98 15 1A  .R.EX...
+        db   $57,$B0,$2D,$12,$5E,$98,$15,$F7 ; BDA3 57 B0 2D 12 5E 98 15 F7  W.-.^...
+        db   $EE,$D0,$FB,$00,$FE,$BD,$BD,$FB ; BDAB EE D0 FB 00 FE BD BD FB  ........
+        db   $01,$FE,$BD,$BD,$F9,$F4,$F8,$FE ; BDB3 01 FE BD BD F9 F4 F8 FE  ........
+        db   $EA,$BC,$13,$17,$13,$17,$49,$13 ; BDBB EA BC 13 17 13 17 49 13  ......I.
+        db   $49,$49,$17,$49,$49,$13,$49,$17 ; BDC3 49 49 17 49 49 13 49 17  II.II.I.
+        db   $FD,$95,$86,$03,$54,$86,$03,$09 ; BDCB FD 95 86 03 54 86 03 09  ....T...
+        db   $07,$09,$49,$07,$09,$49,$07,$09 ; BDD3 07 09 49 07 09 49 07 09  ..I..I..
+        db   $49,$07,$54,$8C,$0A,$52,$06,$FD ; BDDB 49 07 54 8C 0A 52 06 FD  I.T..R..
+        db   $F7,$FB,$07,$FE,$D4,$BC,$F8,$FE ; BDE3 F7 FB 07 FE D4 BC F8 FE  ........
+        db   $69,$BE,$73,$8C,$0C,$C6,$09,$BE ; BDEB 69 BE 73 8C 0C C6 09 BE  i.s.....
+        db   $07,$C6,$05,$BE,$03,$C6,$03,$BE ; BDF3 07 C6 05 BE 03 C6 03 BE  ........
+        db   $02,$C6,$02,$BC,$0C,$C6,$09,$BC ; BDFB 02 C6 02 BC 0C C6 09 BC  ........
+        db   $07,$C6,$05,$BC,$03,$C6,$03,$BC ; BE03 07 C6 05 BC 03 C6 03 BC  ........
+        db   $02,$C6,$02,$FE,$69,$BE,$6C,$86 ; BE0B 02 C6 02 FE 69 BE 6C 86  ....i.l.
+        db   $03,$2A,$FA,$10,$F9,$1F,$28,$FA ; BE13 03 2A FA 10 F9 1F 28 FA  .*....(.
+        db   $10,$FB,$6E,$98,$15,$FA,$08,$FA ; BE1B 10 FB 6E 98 15 FA 08 FA  ..n.....
+        db   $6E,$0C,$94,$54,$94,$60,$49,$49 ; BE23 6E 0C 94 54 94 60 49 49  n..T.`II
+        db   $49,$94,$30,$7C,$98,$15,$26,$2A ; BE2B 49 94 30 7C 98 15 26 2A  I.0|..&*
+        db   $6A,$A4,$21,$7C,$8C,$09,$26,$2A ; BE33 6A A4 21 7C 8C 09 26 2A  j.!|..&*
+        db   $6A,$98,$15,$7C,$8C,$09,$71,$98 ; BE3B 6A 98 15 7C 8C 09 71 98  j..|..q.
+        db   $15,$6A,$8C,$09,$26,$31,$F7,$FB ; BE43 15 6A 8C 09 26 31 F7 FB  .j..&1..
+        db   $00,$FE,$5A,$BE,$FB,$01,$FE,$5A ; BE4B 00 FE 5A BE FB 01 FE 5A  ..Z....Z
+        db   $BE,$F9,$F4,$F8,$FE,$E3,$BD,$28 ; BE53 BE F9 F4 F8 FE E3 BD 28  .......(
+        db   $2D,$28,$2D,$49,$28,$49,$49,$2D ; BE5B 2D 28 2D 49 28 49 49 2D  -(-I(II-
+        db   $49,$49,$28,$49,$2D,$FD,$6E,$98 ; BE63 49 49 28 49 2D FD 6E 98  II(I-.n.
+        db   $0C,$FA,$08,$FA,$6E,$86,$03,$26 ; BE6B 0C FA 08 FA 6E 86 03 26  ....n..&
+        db   $FA,$20,$F9,$1F,$28,$FA,$10,$FB ; BE73 FA 20 F9 1F 28 FA 10 FB  . ..(...
+        db   $23,$26,$FA,$10,$FB,$FD,$E1,$1C ; BE7B 23 26 FA 10 FB FD E1 1C  #&......
+        db   $EE,$F0,$4D,$98,$60,$02,$02,$02 ; BE83 EE F0 4D 98 60 02 02 02  ..M.`...
+        db   $4D,$98,$60,$FA,$28,$FA,$94,$60 ; BE8B 4D 98 60 FA 28 FA 94 60  M.`.(..`
+        db   $49,$4D,$18,$FA,$41,$FB,$94,$48 ; BE93 49 4D 18 FA 41 FB 94 48  IM..A..H
+        db   $94,$60,$FA,$07,$FB,$4D,$18,$FA ; BE9B 94 60 FA 07 FB 4D 18 FA  .`...M..
+        db   $10,$FB,$FE,$8B,$BE,$96,$E1,$3E ; BEA3 10 FB FE 8B BE 96 E1 3E  .......>
+        db   $73,$06,$4A,$4A,$29,$28,$4A,$4A ; BEAB 73 06 4A 4A 29 28 4A 4A  s.JJ)(JJ
+        db   $29,$26,$49,$49,$49,$76,$2A,$78 ; BEB3 29 26 49 49 49 76 2A 78  )&IIIv*x
+        db   $06,$76,$18,$95,$12,$78,$06,$76 ; BEBB 06 76 18 95 12 78 06 76  .v...x.v
+        db   $18,$95,$08,$4A,$2D,$2B,$4A,$2D ; BEC3 18 95 08 4A 2D 2B 4A 2D  ...J-+J-
+        db   $2E,$30,$2E,$2D,$2B,$29,$28,$26 ; BECB 2E 30 2E 2D 2B 29 28 26  .0.-+)(&
+        db   $24,$22,$21,$1F,$1D,$1C,$1A,$18 ; BED3 24 22 21 1F 1D 1C 1A 18  $"!.....
+        db   $16,$15,$F9,$CC,$5E,$98,$08,$94 ; BEDB 16 15 F9 CC 5E 98 08 94  ....^...
+        db   $48,$94,$60,$78,$B0,$00,$2B,$78 ; BEE3 48 94 60 78 B0 00 2B 78  H.`x..+x
+        db   $06,$4A,$4A,$2B,$7B,$18,$2D,$73 ; BEEB 06 4A 4A 2B 7B 18 2D 73  .JJ+{.-s
+        db   $06,$4A,$4A,$29,$76,$30,$26,$73 ; BEF3 06 4A 4A 29 76 30 26 73  .JJ)v0&s
+        db   $06,$4A,$4A,$26,$76,$18,$28,$6F ; BEFB 06 4A 4A 26 76 18 28 6F  .JJ&v.(o
+        db   $06,$4A,$4A,$28,$71,$30,$21,$71 ; BF03 06 4A 4A 28 71 30 21 71  .JJ(q0!q
+        db   $06,$4A,$4A,$24,$78,$18,$24,$73 ; BF0B 06 4A 4A 24 78 18 24 73  .JJ$x.$s
+        db   $06,$4A,$4A,$24,$6C,$30,$28,$78 ; BF13 06 4A 4A 24 6C 30 28 78  .JJ$l0(x
+        db   $60,$F9,$C8,$FE,$A9,$BE,$E1,$3E ; BF1B 60 F9 C8 FE A9 BE E1 3E  `......>
+        db   $EE,$E0,$94,$98,$00,$1A,$49,$1B ; BF23 EE E0 94 98 00 1A 49 1B  ......I.
+        db   $49,$1C,$49,$1D,$49,$1C,$B1,$06 ; BF2B 49 1C 49 1D 49 1C B1 06  I.I.I...
+        db   $49,$18,$13,$15,$10,$F9,$EB,$94 ; BF33 49 18 13 15 10 F9 EB 94  I.......
+        db   $18,$26,$FA,$07,$FC,$26,$26,$26 ; BF3B 18 26 FA 07 FC 26 26 26  .&...&&&
+        db   $26,$25,$25,$25,$25,$24,$24,$23 ; BF43 26 25 25 25 25 24 24 23  &%%%%$$#
+        db   $23,$22,$22,$21,$21,$20,$20,$1F ; BF4B 23 22 22 21 21 20 20 1F  #""!!  .
+        db   $1F,$1E,$1E,$1D,$1D,$1C,$1C,$1C ; BF53 1F 1E 1E 1D 1D 1C 1C 1C  ........
+        db   $1C,$1C,$1C,$1C,$1C,$F9,$DE,$FE ; BF5B 1C 1C 1C 1C 1C F9 DE FE  ........
+        db   $21,$BF,$FE,$96,$BF,$FE,$96,$BF ; BF63 21 BF FE 96 BF FE 96 BF  !.......
         db   $DF,$05,$2E,$FA,$07,$FC,$2E,$2E ; BF6B DF 05 2E FA 07 FC 2E 2E  ........
         db   $2E,$2E,$2E,$2E,$2E,$2E,$2D,$2D ; BF73 2E 2E 2E 2E 2E 2E 2D 2D  ......--
         db   $2C,$2C,$2B,$2B,$2A,$2A,$29,$29 ; BF7B 2C 2C 2B 2B 2A 2A 29 29  ,,++**))
         db   $28,$28,$27,$27,$26,$26,$26,$26 ; BF83 28 28 27 27 26 26 26 26  ((''&&&&
         db   $25,$25,$23,$23,$25,$25,$F9,$DE ; BF8B 25 25 23 23 25 25 F9 DE  %%##%%..
-        db   $FE,$65,$BF                     ; BF93 FE 65 BF                 .e.
-        db   $6A,$98,$08,$B8,$0E,$FA,$05,$F8 ; BF96 6A 98 08 B8 0E FA 05 F8  j.......
-        db   $B5,$08,$49,$B7,$06,$1B,$1A,$15 ; BF9E B5 08 49 B7 06 1B 1A 15  ..I.....
-        db   $FD,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFA6 FD FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFAE FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFB6 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFBE FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC6 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFCE FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$78,$EE,$DF,$BF,$4C,$8E ; BFD6 FF FF 78 EE DF BF 4C 8E  ..x...L.
-        db   $FF,$80,$20,$44,$52,$41,$47,$4F ; BFDE FF 80 20 44 52 41 47 4F  .. DRAGO
-        db   $4E,$20,$51,$55,$45,$53,$54,$20 ; BFE6 4E 20 51 55 45 53 54 20  N QUEST
-        db   $49,$56,$00,$00,$00,$00,$48,$04 ; BFEE 49 56 00 00 00 00 48 04  IV....H.
-        db   $01,$0E,$07,$9E,$D8,$BF,$D8,$BF ; BFF6 01 0E 07 9E D8 BF D8 BF  ........
-        db   $D8,$BF                         ; BFFE D8 BF                    ..
+        db   $FE,$65,$BF,$6A,$98,$08,$B8,$0E ; BF93 FE 65 BF 6A 98 08 B8 0E  .e.j....
+        db   $FA,$05,$F8,$B5,$08,$49,$B7,$06 ; BF9B FA 05 F8 B5 08 49 B7 06  .....I..
+        db   $1B,$1A,$15,$FD                 ; BFA3 1B 1A 15 FD              ....
+Bank13_BattlePresentationPadding:
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFA7 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFAF FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFB7 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFBF FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC7 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFCF FF FF FF FF FF FF FF FF  ........
+        db   $FF,$78,$EE,$DF,$BF,$4C,$8E,$FF ; BFD7 FF 78 EE DF BF 4C 8E FF  .x...L..
+        db   $80,$20,$44,$52,$41,$47,$4F,$4E ; BFDF 80 20 44 52 41 47 4F 4E  . DRAGON
+        db   $20,$51,$55,$45,$53,$54,$20,$49 ; BFE7 20 51 55 45 53 54 20 49   QUEST I
+        db   $56,$00,$00,$00,$00,$48,$04,$01 ; BFEF 56 00 00 00 00 48 04 01  V....H..
+        db   $0E,$07,$9E,$D8,$BF,$D8,$BF,$D8 ; BFF7 0E 07 9E D8 BF D8 BF D8  ........
+        db   $BF                             ; BFFF BF                       .
 Bank13_End:

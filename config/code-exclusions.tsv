@@ -12,6 +12,7 @@
 08	8ADB	979B	Content classification	Fifty-one 64-byte tilesets
 08	979B	AEE3	Content classification	Auxiliary tile data, increment data, explicit pointers, tile definitions, and animated pointers
 08	B7F7	BE94	Content classification	Map routing pointers, fixed records, variable submap stream, and coordinate records
+08	BE94	BF64	Content classification	Twenty-six fixed eight-byte map records selected by mixed directory entry $8036
 08	BF64	C000	Content classification	Padding and compatibility footer
 08	B66A	B66D	Content classification	Three operands for BRK service $07,$EB at $B669
 09	8000	C000	Content classification	Compressed map data
@@ -88,6 +89,7 @@
 11	B1CB	B1CC	Content classification	Operand byte of branch instruction at $B1C4
 11	B1F5	B1F6	Content classification	Operand byte of branch instruction at $B1F4
 13	8000	8038	Content classification	Battle presentation and state pointer directory
+13	8AEF	8B8B	Content classification	Two explicitly bounded battle-presentation lookup arrays before the action-handler pointer table
 13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
 13	8594	8595	Ghidra headless	Ghidra starts at the relative operand of the verified BEQ $8592 at $8593; fallthrough resumes at $8595
 13	85B7	85B8	Ghidra headless	Ghidra starts at the immediate operand of the verified CMP #$09 at $85B6; fallthrough resumes at BCS $85E8 at $85B8
@@ -96,6 +98,8 @@
 13	9C20	9C21	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $8C at $9C1F, creating overlapping decodes through $9C25
 13	A102	A103	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $94 at $A101; fallthrough resumes at LDA $7C at $A103
 13	B80B	B90B	Content classification	Directly indexed 256-byte battle presentation lookup table before code at $B90B
+13	B967	BA4E	Content classification	Directly indexed battle presentation lookup table misidentified as code by the Ghidra range ending at $B96F
+13	BBCB	BFD8	Content classification	Seven directory-delimited battle-presentation command streams followed by contiguous $FF padding
 14	8000	8034	Content classification	Battle-turn service pointer directory
 14	A40D	A41B	Content classification	Nested battle presentation service pointer directory before dual-use handler bytes at $A41B
 14	BE4F	BFD8	Content classification	Monster graphics destination offsets, special embedded compressed stream, and trailing padding
@@ -369,6 +373,8 @@
 1C	AB15	AB16	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1C	B9AA	B9AB	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1F	F7F5	F7F8	Direct ROM analysis	Repeated graphic/table bytes misdecoded as INC absolute
+1F	EC85	ED45	Content classification	Ninety-six little-endian audio period values; Ghidra misidentifies the leading table bytes as code
+1F	CEF8	CF03	Content classification	Eleven selector values consumed by the bounded loop at $CEBE
 1F	C700	C701	Content classification	Operand byte in kernel code region; Ghidra misidentifies as entry point
 10	BFD8	C000	Content classification	Compatibility footer matching bank $1C
 12	BFD8	C000	Content classification	Compatibility footer matching bank $1C

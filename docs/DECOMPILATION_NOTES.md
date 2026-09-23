@@ -901,4 +901,15 @@ The descending pass then established four additional data domains:
 - Five special monster descriptors select bank `$14` and stream pointer `$BE53`; `$BE4F-$BE52` holds four consumed destination offsets, `$BE53-$BFCF` is compressed graphics, and `$BFD0-$BFD7` is padding.
 - Bank `$13:$B80B-$B90A` is a full 256-byte battle-presentation lookup page with several direct indexed consumers and verified code beginning at `$B90B`.
 
-Together these classifications reduced the original backlog by 3,174 bytes. Detailed coverage is now 506,243 / 524,288 (96.56%), leaving 18,045 bytes in 696 ranges. The completion gate still reproduces the exact ROM.
+At that checkpoint, these classifications had reduced the original backlog by 3,174 bytes and raised detailed coverage to 506,243 / 524,288 (96.56%).
+
+## Instruction And Data Recovery Pass - 2026-09-22
+
+The next pass raised detailed coverage by another 4,237 bytes, from 96.56% to 97.37%:
+
+- Verified instruction bytes increased by 1,524, from 155,985 to 157,509. Registering the bounded bank `$16` command-handler tables recovered normal text/UI handlers; direct seeds recovered bank `$1C:$B83A-$B8F4`, fixed-bank event helpers around `$CE09-$CF90`, and the BRK continuation at `$F11C-$F19A`.
+- Explicitly ranged data increased by 2,738 bytes, from 350,914 to 353,652. New domains include bank `$08` display records, bank `$13` lookup arrays and presentation command streams, bank `$16` command data, the fixed-bank audio period table, and the dual-use UI template at `$F19B`.
+- Dual-use overlap increased from 656 to 681 bytes. New reviewed overlaps occur at bank `$16:$B84A`, bank `$1F:$CE50`, and the `$F19B-$F1CA` template/code region.
+- Several false instruction paths were removed, including bank `$13` command streams and the lookup table beginning at `$B967`; this reduced decoded indirect jumps from 42 to 41 and recovered-path warning cases from 45 to 42.
+
+Cumulative unclassified PRG fell by 7,411 bytes from the original 21,219-byte checkpoint to 13,808 bytes in 708 ranges. The completion gate passes with 2,066 typed pointers, 1,968/1,968 executable targets decoded, 41/41 indirect jumps audited, 3/3 control-flow conflicts audited, and exact ROM reproduction.

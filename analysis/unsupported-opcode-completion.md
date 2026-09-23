@@ -1,12 +1,12 @@
 ﻿# Unsupported Opcode Completion
 
-All 143 warnings from the original analyzer inventory remain classified. 131 remain in the current report, 12 disappeared after mixed pointer-table values stopped being seeded as executable targets, and 44 additional warnings exposed by later control-flow recovery are also classified.
+All 143 warnings from the original analyzer inventory remain classified. 131 remain in the current report, 12 disappeared after mixed pointer-table values stopped being seeded as executable targets, and 42 additional warnings exposed by later control-flow recovery are also classified.
 
 | Classification | Count |
 |---|---:|
-| intentional-data-walk | 166 |
+| intentional-data-walk | 162 |
 | mixed-directory-data-target | 12 |
-| verified-content-range | 9 |
+| verified-content-range | 11 |
 
 ## Resolved Analyzer Warnings
 

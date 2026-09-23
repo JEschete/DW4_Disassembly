@@ -7,24 +7,24 @@ This document is the authoritative human-readable status snapshot. Generated tot
 ## Current Metrics
 
 - Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
-- Detailed semantic classification: 96.56% (506,243 / 524,288)
-- Remaining unclassified: 18,045 bytes in 696 ranges
-- Verified instruction bytes: 155,985 (29.75%)
-- Explicitly ranged data bytes: 350,914 (66.93%)
-- Dual-use code/data overlap: 656 bytes (0.13%)
-- Meaningfully named routines: 78/3,991 (1.95%)
-- Semantic contracts: 35/3,991 (0.88%)
+- Detailed semantic classification: 97.37% (510,480 / 524,288)
+- Remaining unclassified: 13,808 bytes in 708 ranges
+- Verified instruction bytes: 157,509 (30.04%)
+- Explicitly ranged data bytes: 353,652 (67.45%)
+- Dual-use code/data overlap: 681 bytes (0.13%)
+- Meaningfully named routines: 78/4,120 (1.89%)
+- Semantic contracts: 35/4,120 (0.85%)
 - Pointer recovery, indirect-jump audit, and unsupported-opcode disposition: 100%
-- Control-flow conflicts: 1/1 audited intentional overlap
+- Control-flow conflicts: 3/3 audited intentional overlaps
 - Structured asset encoders: 0/5 complete
 
-All-bank entry-point pass: 1,954 pointer entries across 77 declared tables/ranges, mixed records, text/UI
-escape handlers, and 126 explicit pointer fields. All 1,870 executable targets decode (1,868 local-bank plus
-two fixed-bank), and all 42 currently decoded indirect jumps have reviewed dispositions.
+All-bank entry-point pass: 2,066 pointer entries across 75 declared tables/ranges, mixed records, text/UI
+escape handlers, and 126 explicit pointer fields. All 1,968 executable targets decode (1,966 local-bank plus
+two fixed-bank), and all 41 currently decoded indirect jumps have reviewed dispositions.
 
-The completion gate (`scripts\verify-completion.ps1`) passes end to end: 143/143 original warnings plus 45
-additional recovered-path warnings classified; 1,954 pointers typed; 1,870/1,870 executable targets decoded;
-42/42 indirect jumps audited; 1/1 control-flow conflicts audited; 3,991 routine interfaces; 35 semantic
+The completion gate (`scripts\verify-completion.ps1`) passes end to end: 143/143 original warnings plus 42
+additional recovered-path warnings classified; 2,066 pointers typed; 1,968/1,968 executable targets decoded;
+41/41 indirect jumps audited; 3/3 control-flow conflicts audited; 4,120 routine interfaces; 35 semantic
 contracts; 26 asset slices; 15 save fields; 12 runtime assertions across 9 paths; exact ROM match.
 
 ## Completion Definition
@@ -64,18 +64,21 @@ Semantic assembly is done only when there are:
 
 Current exact intervals, largest first:
 
-- `$13:$BBCE-$BCE9` (284 bytes)
-- `$12:$BED2-$BFD7` (262 bytes)
-- `$16:$B307-$B3FB` (245 bytes)
-- `$16:$B85E-$B94F` (242 bytes)
-- `$16:$AC0F-$ACFE` (240 bytes)
-- `$13:$BD97-$BE80` (234 bytes)
-- `$16:$BEF0-$BFD7` (232 bytes)
-- `$13:$B96F-$BA4D` (223 bytes)
+- `$0E:$BE13-$BEE9` (215 bytes)
+- `$12:$B977-$BA3D` (199 bytes)
+- `$18:$AD9F-$AE4E` (176 bytes)
+- `$12:$9135-$91DC` (168 bytes)
+- `$13:$9481-$951A` (154 bytes)
+- `$1C:$AE46-$AEDE` (153 bytes)
+- `$16:$B687-$B71E` (152 bytes)
+- `$12:$BED2-$BF67` (150 bytes)
 
-## Audited Conflict
+## Audited Conflicts
 
-Control-flow conflict (1/1 audited): bank `$10:$BBEB` is intentional dual-entry code. The BRK-service path
-falls through at `$BBEA` as `EOR #$A5`, while the explicit `JMP` at `$BBE4` enters that operand byte at `$BBEB` as
-`LDA $75`. `config\control-flow-conflicts.tsv` records the disposition, and the completion gate enforces exact
-parity between that ledger and analyzer output.
+All three conflicts are intentional dual-entry code:
+
+- Bank `$10:$BBEB`: BRK-service fallthrough decodes `EOR #$A5`; an explicit jump enters the operand as `LDA $75`.
+- Bank `$16:$B84A`: normal flow executes `STA $03C9`; a handler branch enters its operand as `CMP #$03`.
+- Bank `$1F:$CE50`: fallthrough executes `CPY #$AA`; a branch enters its operand as `TAX`.
+
+`config\control-flow-conflicts.tsv` records each disposition, and the completion gate enforces exact parity.
