@@ -1,9 +1,11 @@
 param(
-    [string]$Rom = 'F:\NES\Dragon Warrior IV (USA).nes'
+    [string]$Rom
 )
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'common.ps1')
+$Rom = Resolve-Dw4RomPath $Rom
 Push-Location $projectRoot
 try {
     & dotnet run --project tools\Dw4Tool\Dw4Tool.csproj --configuration Release -- asset-verify $Rom $projectRoot

@@ -158,7 +158,9 @@ internal static class Program
         string da65Path = Path.Combine(projectRoot, "tools", "da65", "da65.exe");
         if (!File.Exists(da65Path))
         {
-            throw new FileNotFoundException("the project-local da65 executable was not found", da65Path);
+            throw new FileNotFoundException(
+                "da65 was not found; initialize submodules and run scripts\\ensure-da65.ps1",
+                da65Path);
         }
 
         Directory.CreateDirectory(bankDirectory);
@@ -994,7 +996,7 @@ internal static class Program
                 {
                     TextMessage primary = groups[0].Messages[index];
                     string ids = string.Join('/', groups.Select(group => $"${group.Messages[index].Id:X4}"));
-                    output.AppendLine($"; Text {ids}: {primary.Text}");
+                    output.AppendLine($"; Text {ids}: {primary.Text}".TrimEnd());
                 }
             }
 

@@ -1,10 +1,14 @@
 param(
-    [string]$Rom = 'F:\NES\Dragon Warrior IV (USA).nes'
+    [string]$Rom,
+    [string]$GhidraHome
 )
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$ghidraHome = 'C:\Tools\Base\Analysis\Ghidra\12.1.3'
+. (Join-Path $PSScriptRoot 'common.ps1')
+$Rom = Resolve-Dw4RomPath $Rom
+$GhidraHome = Resolve-Dw4GhidraHome $GhidraHome
+$ghidraHome = $GhidraHome
 $headless = Join-Path $ghidraHome 'support\analyzeHeadless.bat'
 $workRoot = Join-Path $projectRoot 'work\ghidra'
 $scriptPath = Join-Path $PSScriptRoot 'ghidra'

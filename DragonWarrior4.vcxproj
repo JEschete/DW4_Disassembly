@@ -60,11 +60,16 @@
     <None Include="config\indirect-jumps.tsv" />
     <None Include="config\code-seeds.tsv" />
     <None Include="config\labels.tsv" />
-    <None Include="BANK_MAP.md" />
-    <None Include="DECOMPILATION_NOTES.md" />
+    <None Include="docs\ARCHITECTURE.md" />
+    <None Include="docs\BANK_MAP.md" />
+    <None Include="docs\BUILDING.md" />
+    <None Include="docs\DECOMPILATION_NOTES.md" />
+    <None Include="docs\README.md" />
+    <None Include="docs\STATUS.md" />
+    <None Include="docs\TOOLCHAIN.md" />
     <None Include="README.md" />
-    <None Include="tools\da65\da65.exe" />
-    <None Include="tools\da65\LICENSE.txt" />
+    <None Include="scripts\common.ps1" />
+    <None Include="scripts\ensure-da65.ps1" />
   </ItemGroup>
   <Target Name="BuildRom" AfterTargets="Build">
     <MakeDir Directories="$(ProjectDir)build\$(Configuration)" />

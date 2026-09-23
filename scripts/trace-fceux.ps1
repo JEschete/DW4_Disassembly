@@ -1,16 +1,20 @@
 param(
-    [string]$Rom = 'F:\NES\Dragon Warrior IV (USA).nes',
+    [string]$Rom,
     [ValidateRange(60, 36000)]
     [int]$Frames = 1800,
     [ValidateSet('startup', 'banking', 'menus', 'maps', 'battle', 'text', 'save-load', 'audio', 'graphics', 'explore', 'buttons', 'wander', 'hunt-assets', 'seek-world')]
-    [string]$Profile = 'explore',
-    [switch]$Visible
+    [string]$TraceMode = 'explore',
+    [switch]$Visible,
+    [string]$Fceux,
+    [string]$FceuxConfig
 )
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$fceux = Join-Path $projectRoot 'tools\fceux\fceux64.exe'
-$baseConfig = 'C:\Tools\Systems\NES\Emulators\FCEUX-2.6.6\fceux.cfg'
+. (Join-Path $PSScriptRoot 'common.ps1')
+$Rom = Resolve-Dw4RomPath $Rom
+$fceux = Resolve-Dw4FceuxPath $Fceux
+$baseConfig = Resolve-Dw4FceuxConfig $FceuxConfig $fceux
 $luaScript = Join-Path $PSScriptRoot 'fceux\trace-dw4.lua'
 $workRoot = Join-Path $projectRoot 'work\fceux'
 $workingRom = Join-Path $workRoot 'input.nes'
@@ -53,16 +57,18 @@ $luaWriteOutput = $sessionWriteOutputPath.Replace('\', '/')
 $luaDone = (Join-Path $workRoot 'trace.done').Replace('\', '/')
 $luaApiLog = $apiLogPath.Replace('\', '/')
 $luaScreenshot = $screenshotPath.Replace('\', '/')
+$luaBootstrap = (Join-Path $workRoot 'lua-bootstrap.txt').Replace('\', '/')
 $launcherHeader = @"
 DW4_TRACE_CONFIG_DATA = {
     frames = $Frames,
-    profile = '$Profile',
+    profile = '$TraceMode',
     output = '$luaOutput',
     read_output = '$luaReadOutput',
     write_output = '$luaWriteOutput',
     done = '$luaDone',
     api_log = '$luaApiLog',
-    screenshot = '$luaScreenshot'
+    screenshot = '$luaScreenshot',
+    bootstrap = '$luaBootstrap'
 }
 "@
 Set-Content -LiteralPath $traceLauncherPath -Value $launcherHeader -Encoding ASCII

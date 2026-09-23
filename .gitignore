@@ -4,17 +4,19 @@
 *.[fF][dD][sS]
 *.[uU][nN][fF]
 *.[uU][nN][iI][fF]
-*.[bB][iI][nN]
 
-# Copyright boundary: ROM-derived source/data and supplied reference captures.
-/src/banks/
+# Copyright boundary: extracted assets and supplied reference captures.
 /Resources/
-/analysis/
-/DECOMPILATION_NOTES.md
 /assets/extracted/
 /work/
 /tools/fceux/
 /tools/GhidraNes/
+/tools/da65/
+/analysis/ghidra-shards/
+
+# Generated analysis artifacts that are not durable project evidence.
+/analysis/*.log
+/analysis/*.png
 
 # ROM-hacking patches and emulator-generated data.
 *.[iI][pP][sS]

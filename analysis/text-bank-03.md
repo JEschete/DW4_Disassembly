@@ -1,0 +1,390 @@
+# Dragon Warrior IV Text - Physical Bank $03
+
+Bank `$03:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 11; messages: 352.
+
+## Group `$36` at `$00:833C`
+
+- `$06C0`: Poor Taloon!'<4F>Because his cave opened a pathway between countries,the monsters are after him.
+- `$06C1`: One,Two,One,Two,La,La,La...
+- `$06C2`: I heard the monsters destroyed the Hero who was to save the world.'<4F>Don't worry,we will save the world.
+- `$06C3`: We have nothing to fear.
+- `$06C4`: These people visit many places.I can make lots of money by following them.
+- `$06C5`: It's hopeless!'<4F>I hear the Hero who was to defeat the Ruler of Evil was destroyed.
+- `$06C6`: There's a legend in this country.'<4F>When a great evil arises,a Hero will emerge.
+- `$06C7`: This is King Branca's chamber.
+- `$06C8`: A wedding is being held at the Castle.
+- `$06C9`: If you want to go to the wedding,enter the Coliseum through the small doors on the left or right.
+- `$06CA`: Long ago,black clouds drifted into the eastern sky.'<4F>Soon after,I heard the Hero who was to save the world died.
+- `$06CB`: I'm here because I heard this shop has many unique goods.
+- `$06CC`: This is the Coliseum,where the wedding is.
+- `$06CD`: The King's chamber is upstairs.
+- `$06CE`: I didn't know the Princess had someone she loved.'<4F>It's nice she could marry him.
+- `$06CF`: Far east of Branca there is a big desert.'<4F>Even ships are for sale at the port town south of the desert.
+- `$06D0`: Somewhere in this world the Ruler of Evil is about to resurrect.
+- `$06D1`: I hear the man named Taloon crossed the eastern desert.'<4F>Even if he did it for wealth,I still think he's brave.
+- `$06D2`: This is the Castle Kitchen.
+- `$06D3`: Our King is at the wedding.
+- `$06D4`: According to old books,the Ruler of Evil seemed to have been the being who achieved the highest level of evolution.'<4F>Fearing his overwhelming power,the good forces in this world imprisoned him.
+- `$06D5`: This is the dressing room of the King and the Princess.
+- `$06D6`: It's always nice to watch weddings.
+- `$06D7`: Oh,now I want to get married too!
+- `$06D8`: How long does this wedding last?
+- `$06D9`: Oh,come on! Just grab her and kiss her!
+- `$06DA`: Whinny'
+- `$06DB`: He,He,He! I'll eat them,and you'll be next.
+- `$06DC`: Welcome to Aneaux,a spa town.
+- `$06DD`: Have you seen the armor kept at the House of Healing? Isn't it impressive?
+- `$06DE`: Yes,I feel relieved.My son brought me to this spa.
+- `$06DF`: The Port Town of Konenber is far south of here.
+
+## Group `$37` at `$00:87B5`
+
+- `$06E0`: Ruvas the Soldier was a great man.'<4F>Many years ago,when monsters terrorized this town,he fought with them...'<4F>and perished along with the last monster in the final battle.
+- `$06E1`: Hmm...I think that Ruvas's Armor is fake.'<4F>Someone switched the real armor with the fake?
+- `$06E2`: A ghost appears at the graveyard.Do you believe it?
+- `$06E3`: The spa waters here are known to make your skin silky.'<4F>Should I try to make my skin even more beautiful?
+- `$06E4`: Well,I just wanted to do something nice for the old geezer,so I brought him here.
+- `$06E5`: This is Konenber,a port town.
+- `$06E6`: The locked room over there must remain closed.
+- `$06E7`: Some fell in despair after the monsters sank the ships....I pity them.
+- `$06E8`: Deep in the mountains,north of faraway Branca,they just discovered a village rampaged by monsters.'<4F>The people of Santeem,across the sea,vanished without a trace....'<4F>Do these events have some connection to the rumor the Ruler of Evil will resurrect?
+- `$06E9`: Move! Please! You are blocking the dockhand's way.
+- `$06EA`: Whose ship is this? Looks quite expensive.
+- `$06EB`: Wow! What a big ship!
+- `$06EC`: A new ship is useless here.You can't sail out of the harbor because the lighthouse is causing havoc.
+- `$06ED`: What? Who's the owner of the ship? Go ask my boss!
+- `$06EE`: This is a wharf.We're building a new ship.
+- `$06EF`: Taloon said he wanted to go south.'<4F>A sailing expert who has a priceless map lives on a southern continent,in a town called Mintos.
+- `$06F0`: When can we sail? The cargo will rot soon.
+- `$06F1`: Children are always restless!
+- `$06F2`: Hurray! It's a ship! Hurray!
+- `$06F3`: I'm frustrated because we can't sail.'<4F>If I were a lot stronger,I'd go wipe out the monsters in the eastern lighthouse....
+- `$06F4`: I'm the captain of this ship.I want to sail too.'<4F>However,when a ship leaves the shore,the lighthouse shines eerily and makes the sea rage violently.
+- `$06F5`: The last ship to leave here was sailing south.They say the Princess of Santeem was on board.'<4F>I bet she was a beauty.
+- `$06F6`: Welcome! Stay here!
+- `$06F7`: We still have some good rooms available today.
+- `$06F8`: This is the Town of Mintos.'<4F>Old Howden,a mentor for aspiring merchants,lives here.
+- `$06F9`: Old Howden was an adventurer.'<4F>The many treasures he discovered enabled him to start a business.Now he's tremendously successful.
+- `$06FA`: Gurz...Gurz...
+- `$06FB`: I'm a merchant's daughter.I have to study business.
+- `$06FC`: Old Howden's stories are quite instructive.'<4F>Don't sell things,sell hearts! I'm struck with admiration by this idea!
+- `$06FD`: I took Old Howden's quiz too....'<4F>I still don't have the answer.Oh,I want that Treasure Map!
+- `$06FE`: I became gravely ill when I was little.'<4F>My grandfather from Soretta brought me a root of Padequia.It cured me completely.
+- `$06FF`: Aren't we good children? We're helping with the housework.
+
+## Group `$38` at `$00:8D87`
+
+- `$0700`: <4E>Cristo:'Oooh...Oooh...'
+- `$0701`: Welcome to Soretta Castle! Please come in.
+- `$0702`: <4E>No response...<44>Seems to be just a scarecrow.
+- `$0703`: You came from Mintos? My married daughter lives there.
+- `$0704`: This is King Soretta's chamber.
+- `$0705`: Hi,it's you again! Don't you remember? We met at Branca Castle.'<4F>Sorry we couldn't let you join us then because we were full.
+- `$0706`: I'm traveling to save the world from the hands of the Ruler of Evil.
+- `$0707`: Princess Alena,back there,joined us.'<4F>We've accompanied her to this cave.
+- `$0708`: A short while ago,we caught a suspicious,traveling soldier sneaking into the Castle.'<4F>As soon as his interrogation by the counselor is over,he'll be taken to the King.'<4F>His life will probably be over then.Unlucky man....
+- `$0709`: <4E><44>'I know the mechanism to open the entrance is at the bottom of a treasure chest,but...Hmm...'
+- `$070A`: You defeated Keeleon? Oh,no! Spare me,please!'<4F>The abominable Balzack is in Santeem Castle! I've given you valuable information,haven't I?
+- `$070B`: Kiii! We monsters have taken over Santeem Castle!'<4F>The King of this Castle is Balzack!
+- `$070C`: That Balzack! Who does he think he is?'<4F>I wouldn't work for him if it wasn't for Necrosaro's order.KiKii!
+- `$070D`: I'm not a bad Slime.I came to see my friend,Meena the cat,because I was concerned about her.'<4F>Meena says the King of Santeem had a strange power.'<4F>She says you should talk to a person in Surene who can tell you more.
+- `$070E`: Meow,Meow,Meow!
+- `$070F`: Legend was that Santeem's former Kings could foretell the future.'<4F>If that's true,the present King may have that same power.
+- `$0710`: My grandfather was the tutor of the King of Santeem.'<4F>He's very proud of that.
+- `$0711`: This happened when the King was still a child.'<4F>He woke up in the middle of the night and begged me...'<4F>to put up a signpost to help his daughter who was in trouble.'<4F>Let me see...where did I put it up?...what did it say?...I can't remember.
+- `$0712`: Oh,Edgar's daughter! It's me,Orin!'<4F>Listen to me.'<4F>The object of your revenge,Balzack,seems to be under the protection of Necrosaro.'<4F>By using the Secret of Evolution,Necrosaro intends to make the monsters even more powerful.'<4F>We have to destroy the Secret of Evolution before he succeeds!'<4F>Your late father,Edgar,would have wished this also.
+- `$0713`: I'm Orin.I was a pupil of Edgar the alchemist.'<4F>I wonder how Edgar's daughters are doing....
+- `$0714`: I found Orin as I was escaping from Keeleon Castle.'<4F>I thought he was dead from his terrible wounds.'<4F>When the soldiers closed in on me,he suddenly rose and fought....'<4F>I owe him my life! Blush...
+- `$0715`: This is Seaside Village.
+- `$0716`: Our ancestors were pirates.'<4F>Many years ago they settled on the land...'<4F>leaving the treasures they'd stolen deep behind a water cascade somewhere in this world....'<4F>They say among the treasures was the ultimate weapon,the Metal Babble Sword.
+- `$0717`: This is the graveyard of our pirate ancestors.'<4F>This graveyard is submerged by water each night,like a man drowning in the sea.
+- `$0718`: I hear that long ago this village possessed the Stone of Drought which could stop even the flow of a water cascade.
+- `$0719`: My slothful husband! Sleeping is all he does! What's he thinking?
+- `$071A`: Being in the trade,my husband knows much about tools.
+- `$071B`: Here in Stancia,we have an old legend about Zenithian Castle.'<4F>The scholar at our Castle knows the legend well.
+- `$071C`: La,Di,La...Your Beautiful Face,Reflecting On Water...'<4F>Excuse me...EXCUSE ME! We're having a rendezvous.Don't intrude!
+- `$071D`: Welcome to Stancia,a waterway town.
+- `$071E`: I must cook a meal before my husband returns.
+- `$071F`: The Zenithians always look after us.
+
+## Group `$39` at `$00:9553`
+
+- `$0720`: I've reached this far searching for the Zenithian Helm.'<4F>I've heard the King here has it.
+- `$0721`: Sorry,the eatery only opens at night.
+- `$0722`: This is Stancia Castle's entrance.
+- `$0723`: I'm here to keep monsters out of the Castle.'<4F>The monsters are getting smarter,so I must watch carefully.
+- `$0724`: I want to go to Zenithian Castle.'<4F>Yet I don't think I can find all of the Zenithian weapons and armor.'<4F>I heard,however,the Zenithian Shield was once at Burland Castle....
+- `$0725`: In this country,we have an old legend about Zenithian Castle.'<4F>Whoever obtains the Zenithian Armor,Helm,Shield,and Sword will be allowed into Zenithia.'<4F>Only the Helm has been handed down in our royal family.
+- `$0726`: If there's really a master of dragons in Zenithian Castle,someone should go ask him...'<4F>to destroy the Ruler of Evil and other monsters.
+- `$0727`: My mother used to tell me when I was little...'<4F>there was a castle above the clouds,and the master of dragons lived there.
+- `$0728`: They say monsters took over the Castle of the southern country of Santeem.'<4F>I don't blame the King for wanting to laugh away his fears.
+- `$0729`: I hate weapons and armor.They're so heavy!'<4F>We must be prepared for the monsters' attack,though.
+- `$072A`: To see the King,go up these stairs.
+- `$072B`: Everyone here has been gloomy since the monsters appeared.'<4F>That's why the King issued the proclamation even though he knew he would be laughed at.
+- `$072C`: What's black and white and red all over? A penguin falling down the stairs! Isn't that funny?
+- `$072D`: If you can make the King laugh,you'll receive any reward you want.Go for it!
+- `$072E`: The King issued such a strange proclamation.I wonder what he's up to.
+- `$072F`: I believe my father had a good reason for his actions,but....
+- `$0730`: You are wiping out the monsters? I admire you!
+- `$0731`: I'm Pocos.'<4F>You can have a strange dream at my inn! Isn't that exciting?
+- `$0732`: Gardenbur Castle is surrounded by rocky mountains.There used to be a cave which led through the mountains.'<4F>A volcanic eruption blocked the cave with lava.'<4F>The Magma Staff might be able to melt a pathway through the mountains....
+- `$0733`: Welcome to Gardenbur Castle.
+- `$0734`: Only women live in this Castle.Our Queen is a very beautiful woman.
+- `$0735`: We guard as well as any men!
+- `$0736`: I haven't been able to leave since the volcanic eruption....'<4F>What? A passage is now open? Hmm...should I be happy or what?
+- `$0737`: Aha! Travelers!'<4F>A passage must be open now.That's good.
+- `$0738`: The rumor is that the Ruler of Evil will resurrect at last.
+- `$0739`: The Ruler of Evil must be male.If I'm right,he may have a weakness for girls.
+- `$073A`: I prefer a strong man,no matter how he looks.
+- `$073B`: This is the Queen's dressing room.'<4F>Don't touch those beautiful dresses with your dirty hands!
+- `$073C`: The Queen speaks harshly,but she's actually tender hearted.'<4F>She would have enjoyed a commoner's life if she hadn't been born into the royal family.I feel sorry for her.
+- `$073D`: This is an old story.When the Queen's grandmother was young...'<4F>she received something called the Zenithian Shield from Burland's King.
+- `$073E`: I'm studying the rumors related to the Ruler of Evil.'<4F>The resurrection of the Ruler of Evil...the prophecy of the maturing Hero who shall defeat him...'<4F>Master Dragon in Zenithia...'<4F>and the baby born to a celestial nymph in Branca....'<4F>I'm beginning to understand the meaning of all these stories....
+- `$073F`: Believe me! I haven't stolen any clothes!
+
+## Group `$3A` at `$00:9C92`
+
+- `$0740`: I can't tell anyone I lost a fight to a woman soldier....
+- `$0741`: This is Rosaville where we Dwarves live.
+- `$0742`: Some time ago,an old man came and opened a shop.'<4F>Humans sure know how to run a business.
+- `$0743`: An elf called Rosa used to live in this village.'<4F>Her teardrops turned into rubies.'<4F>Some humans began treating her badly in order to make her cry all the time.
+- `$0744`: Sob...Sob...Poor Rosa.'<4F>If Saro hadn't rescued her,the humans would have devastated her.
+- `$0745`: I came here searching for an elf who sheds ruby teardrops.'<4F>I'll be rich if I can capture the elf!
+- `$0746`: This is a place for Dwarves and animals.'<4F>You humans are not welcome.Please leave.
+- `$0747`: Will the Ruler of Evil destroy us Dwarves if he resurrects? I'm worried....
+- `$0748`: Neigh! Don't worry.Saro will take care of it.Neigh!
+- `$0749`: Bow,Wow! Saro made me smarter.'<4F>I can speak man's language!
+- `$074A`: Meow...Meow...I have to thank Saro.'<4F>The Secret of Evolution is nice!
+- `$074B`: Saro made this tower.'<4F>They say he had a secret chamber built somewhere inside it...'<4F>and has been hiding something precious there.
+- `$074C`: The world is about to be obliterated by the monsters.'<4F>The ruler of the monsters is Saro.'<4F>He's renamed himself Necrosaro and intends to use the Secret of Evolution to become even more formidable.'<4F>Please,stop Saro...no Necrosaro.'<4F>I don't want him to continue on this evil path...'<4F>even if it means ending his life...Sob...Sob...'<44><49> obtains Ruby Teardrops!<44>However,they crumble silently away....
+- `$074D`: This is Dire Palace,the monsters' castle!
+- `$074E`: Poor humans! Without wings,they can't fly!'<4F>But I hear they used to fly in things called balloons.
+- `$074F`: Necrosaro's been busily traveling all over the world lately.'<4F>The day we take over the world from mankind seems near.
+- `$0750`: What are you doing here?'<4F>You'll be late for the meeting.'<4F>Hurry to the meeting room on the second floor.
+- `$0751`: Sniff...Sniff...I smell humans....
+- `$0752`: Huff...Huff...I'll become thin by running....
+- `$0753`: I'm thin so I'll be the last to be eaten.
+- `$0754`: I don't care what happens to others!'<4F>As long as I survive!
+- `$0755`: What are you doing there? Get in quickly!'<4F>Necrosaro will be here any minute.
+- `$0756`: Your seat is behind mine.'<4F>Say hello to everyone,then sit in your seat and be quiet.
+- `$0757`: Hmm...could it be possible that the Hero,who we thought we'd destroyed,is alive?
+- `$0758`: Maybe the Secret of Evolution is perfected.
+- `$0759`: Long ago,Esturk,the Ruler of Evil,reached the final phase of evolution.'<4F>Fearing his formidable power,the celestial master imprisoned him underground.
+- `$075A`: Santeem's King is unlucky!'<4F>His dream revealed that men would inadvertently aid Esturk's resurrection...'<4F>and he tried to stop the excavation at Aktemto.That's probably why he was crushed by the evil force.'<4F>Even we monsters didn't guess Esturk was imprisoned there.
+- `$075B`: He,He,He! Today's main dish is Human Stew.
+- `$075C`: I'm hungry....
+- `$075D`: Hmm...I still don't get it.Where does the food go when skeleton monsters eat?
+- `$075E`: My co-workers struck upon something extraordinary!'<4F>But monsters suddenly raided the mine and...Cough...Cough...
+- `$075F`: Oh,my....The end has come!
+
+## Group `$3B` at `$00:A339`
+
+- `$0760`: This is Aktemto,a mining town.Actually,it used to be....You'd better flee!
+- `$0761`: Monsters! Monsters are coming! Help!
+- `$0762`: Darn! This is a maze! I'm lost....
+- `$0763`: Kiii! Have to find Esturk the Great at once.
+- `$0764`: Finally! I've struck upon a hoard of treasure! Gasp!
+- `$0765`: We're Esturk the Great's servants.We've lived for eons.'<4F>He made us immortal.'<4F>As long as he lives,so shall we!
+- `$0766`: Welcome to Riverton,a riverside town.
+- `$0767`: Long ago,men flew in vessels.'<4F>It's said the Ruler of Evil stole the essential component of the vessels.'<4F>It was probably buried along with him.
+- `$0768`: I saw it!'<4F>The giant statue upstream walked!
+- `$0769`: They say the monsters' castle is on this island.'<4F>No one has ever returned from the castle.
+- `$076A`: <4E>No response.<43>No one seems to be in.
+- `$076B`: My husband doesn't listen to my stories.
+- `$076C`: This is Gottside,the closest town to Zenithia.
+- `$076D`: Esturk who came back to life was destroyed by the Hero as prophesied.'<4F>But the next Esturk is about to be born!
+- `$076E`: It's an awful thing!'<4F>They say the monster called Necrosaro has perfected the Secret of Evolution.
+- `$076F`: According to rumors,Necrosaro began using the Secret of Evolution deep underground.
+- `$0770`: I'm afraid!'<4F>With the Golden Bracelet,the Secret of Evolution will be even more devastating than before.
+- `$0771`: I know it.'<4F>Only hatred drives Necrosaro now.'<4F>Unless stopped now,he'll evolve into the most horrible being.
+- `$0772`: I'm a prophet.'<4F>The prophesy that Esturk would come back to life and be destroyed by the Hero was true.'<4F>But I know of no prophesy for the future thereafter.
+- `$0773`: I hear that somewhere on this island there's a tower leading to Zenithia.
+- `$0774`: Not everyone who climbs the tower to Zenithia can enter Zenithia.'<4F>It's said only those who possess all of the Zenithian weapons and armor can enter....
+- `$0775`: The person sleeping there fell down from the sky.
+- `$0776`: This is the closest island to Zenithia.'<4F>But it's also close to the world of darkness.'<4F>There's a formidably perilous cave on the west side of this island.
+- `$0777`: <4E>No one is inside.
+- `$0778`: This is Elfville.
+- `$0779`: Monsters began living in the world tree.
+- `$077A`: Bark,Bark! The giant tree in this village is a world tree.
+- `$077B`: This world tree has many leaves.'<4F>You will find the leaves very useful.
+- `$077C`: You're embarking on a difficult journey,aren't you?'<4F>I called your wagon here with the Baron's Horn.
+- `$077D`: Crackle...Crackle....Don't proceed any further!
+- `$077E`: It's been ages since the last time I saw humans!'<4F>You must watch out!'<4F>They say long ago the Ruler of Evil's palace existed somewhere around here.
+- `$077F`: I'm searching for the Zenithian Armor.'<4F>I suspect it's in the nearby cave.
+
+## Group `$3C` at `$00:A8DD`
+
+- `$0780`: It's said that the great ones catch teardrops in their hands.'<4F>Journey carefully.
+- `$0781`: Soretta Castle is in the far south.
+- `$0782`: You're going to embark on a dangerous journey,right?'<4F>I called your wagon by using the Baron's Horn.
+- `$0783`: Creeek...Creeek...
+- `$0784`: I'm guarding the treasure under Balzack's order.Leave immediately! Crackle...Crackle...
+- `$0785`: Welcome back,Ragnar! I see you haven't progressed much.'<4F>You must find the cause of the disappearances at once.'<44>
+- `$0786`: Welcome back,Ragnar!'<4F>I can see you've found something.'<4F>Hmm...Flying Shoes? I see....'<4F>Anyway...rescue the children at once.'<44>
+- `$0787`: A splendid castle,always....'<4F>I wish to be a royal soldier.Say...can you take me along?
+- `$0788`: Really!? I shall follow you then.
+- `$0789`: Gasp...Gasp...too tough for an old man.Go on alone,please.
+- `$078A`: I understand.Sorry I bothered you.
+- `$078B`: Want to buy something? If so,go outside and talk to me from across the counter.
+- `$078C`: Ragnar,did you know?'<4F>Some doors aren't locked.They open without a key.
+- `$078D`: I'm Flora.My husband,Alex,hasn't returned from his last trip.'<4F>Tell me if you see him!
+- `$078E`: What? Alex is in Izmit Village? Caught stealing?'<4F>Take me there,please!
+- `$078F`: Alex will return,won't he?
+- `$0790`: Ragnar,I'm on my way to Izmit Village too.
+- `$0791`: I'm in trouble...I'm lost....
+- `$0792`: What? You can take me to the exit? No thanks! I can find the way out myself!
+- `$0793`: I'm Healie.I'm a Healer,but I dream of becoming human.'<4F>If I make friends with humans,perhaps I'll become one.Take me along.
+- `$0794`: Hurray! Thanks!'<44><4E>Healie joined the Party!<43><55><40>
+- `$0795`: No? If you change your mind,come back again,OK?
+- `$0796`: Hmm...is that so? Very well!'<4F>I'll go tell the King about the Ruler of Evil and the Hero.'<4F>Return these children to their mothers.Farewell!
+- `$0797`: Oh,Ragnar! I found the old well by chance and came this far.'<4F>The monsters in this tower are very tough!'<4F>I should have let Healie whom I met in the well join me.
+- `$0798`: <4E><44>'I envy you.'
+- `$0799`: <4E><44>Ragnar remembers his comrade's words.
+- `$079A`: Ra...Ragnar...I'm nearing my end....Listen well....
+- `$079B`: <4E><44>'Somewhere in this world,the Ruler of Evil is about to resurrect.'<4F>Also,according to a prophecy,the Hero who shall defeat him is now growing up.'<4F>The evil ones intend to destroy the Hero while he or she is growing and still weak.'<4F>Ragnar,save all children....
+- `$079C`: You fool! As you wish,I'll smash you to bits.
+- `$079D`: Ragnar! Good work.Say...'<4F>will you let me take credit for saving the children?
+- `$079E`: I was only kidding.You're so naive.
+- `$079F`: What? You already saved the children? Yeaaaah!
+
+## Group `$3D` at `$00:AE67`
+
+- `$07A0`: What's wrong,Alena? You still insist on going out?
+- `$07A1`: Never! Why are you so reckless?
+- `$07A2`: Good,you understand! That's more like it.You can go to your room,now.
+- `$07A3`: You returned,Alena!'<4F>You don't have to explain.I know you'll go out again even if I try to stop you.'<4F>Remember one thing,though.Never venture into lands where I can't look out for you.
+- `$07A4`: Oh,Alena! How tragic....I feared this would happen....
+- `$07A5`: The King only says these things because he is concerned about you.Please understand.
+- `$07A6`: Thank goodness.You returned safely.
+- `$07A7`: Oh,no.Princess....We must revive her at any cost.
+- `$07A8`: This is Santeem Castle.
+- `$07A9`: The chambers of the King and the Princess are upstairs.
+- `$07AA`: <4E>Brey:'Princess! Why are you such a tomboy?'<44>Brey:'Your late mother was so refined.'<44>Brey:'As your tutor I feel responsible for how you've turned out.'
+- `$07AB`: Her reckless acts shame us.'<4F>Oops,Princess!? Excuse me....
+- `$07AC`: Oh,Princess...! How terrible....
+- `$07AD`: The King is already asleep.
+- `$07AE`: Oh,Princess.I'm fixing the wall.Can you wait awhile?
+- `$07AF`: I requested that the wall in the Princess' chamber be fixed.
+- `$07B0`: <4E><44>'Don't ever kick the wall again,please.'
+- `$07B1`: By the King's order,I can't let you pass.
+- `$07B2`: Please return to your chamber.
+- `$07B3`: Ah,Princess! You look well.
+- `$07B4`: The King moans late at night.I wonder if he's having nightmares....
+- `$07B5`: Welcome to Surene Town.
+- `$07B6`: My fellow merchants said the Princess left on a journey.Oops! That's supposed be a secret.OK?
+- `$07B7`: I'm Marone the poet.'<4F>Blue Sky,Wandering Clouds,La,La,La...
+- `$07B8`: Shining Crescent,Glittering Stars,La,La,La...
+- `$07B9`: Marone's songs are always lovely!
+- `$07BA`: Go north then east.You'll find a small mountain village.
+- `$07BB`: I fell in love with her.I wish she'd marry me.
+- `$07BC`: I'm sorry.I can't.I'm too old for you.
+- `$07BD`: Hmm...you're a woman,yet you've embarked on a dangerous journey.'<4F>I recommend you build your strength around this town first.
+- `$07BE`: I hear singing.I think I'll sleep soundly.
+- `$07BF`: That Marone! He's lucky.'<4F>I wish I could sing like him....
+
+## Group `$3E` at `$00:B2CC`
+
+- `$07C0`: The chief's daughter,Nina,is to be offered.'<4F>My son was going to marry her....
+- `$07C1`: No! I won't let them offer you.If we run away....
+- `$07C2`: I must offer my daughter,Nina,to save the village.'<4F>Isn't there anyone strong enough to put an end to the monster?
+- `$07C3`: Oh! You will?'<4F>If that's true,please go see the shaman!
+- `$07C4`: I understand....
+- `$07C5`: You plan to destroy the monster? It only appears when given offerings.'<4F>Are you willing to be given as an offering?
+- `$07C6`: You are? Please wait awhile.The offering litter will arrive soon.
+- `$07C7`: No one wants to die.By the way...'<44>
+- `$07C8`: Please be careful.
+- `$07C9`: Everyone appreciates what you've done.Anyway...'<44>
+- `$07CA`: This is Frenor.The Princess of Santeem is here.I'll go see her.
+- `$07CB`: You came to see the Princess? She's upstairs in the inn.
+- `$07CC`: I wonder why the Princess is here.
+- `$07CD`: I wish to get acquainted with the Princess.
+- `$07CE`: Since she's a princess,I thought she'd be prettier.
+- `$07CF`: Welcome to our inn...'<4F>however,a princess is staying here,so I can't really welcome you....
+- `$07D0`: Do you know where my dog is?
+- `$07D1`: My goodness! The Princess was kidnapped!
+- `$07D2`: Why was she kidnapped?
+- `$07D3`: I hope she's alright.
+- `$07D4`: Any princess would be an attractive target for the wicked.
+- `$07D5`: Weep...'<44>
+- `$07D6`: My dog,Kit,brought this letter.I'll read it.'<4F>To get the Princess back unharmed,bring the village treasure,the Golden Bracelet,to the graveyard tomorrow night.'<4F>What's this?
+- `$07D7`: The Princess was a fake.I knew a real princess wouldn't come to a town like this.
+- `$07D8`: By the way,a bazaar is held at an oasis in the southern desert.'<4F>If you're heading south,you should visit it.
+- `$07D9`: I offered my savings to the Princess...'<4F>but she refused.They say she was a fake,but she wasn't a crook.
+- `$07DA`: A bazaar is held in the southern desert,right?
+- `$07DB`: You gave the Golden Bracelet to the kidnappers.Hmm....'<4F>I hope nothing bad will happen.
+- `$07DC`: I can't sleep.On nights like this,I remember my old days.'<4F>I used to live in an eastern town of Endor.I often went to the tournament.
+- `$07DD`: Oh,<49>! How's the King? I've been very worried....
+- `$07DE`: Sorry,we're closed for today.
+- `$07DF`: Birdsong Nectar? This shop once had some.'<4F>You might get some in the western tower where they say elves visit.
+
+## Group `$3F` at `$00:B77C`
+
+- `$07E0`: This is the Travel Door to Endor.'<4F>The King told me not to let the Princess pass.
+- `$07E1`: The messenger delivered the King's permission.You can pass now.
+- `$07E2`: ..................'
+- `$07E3`: How terrible! He can't speak!'<4F>This must be kept a secret,but if he remains like this....'<4F>Yes,I know! Goz,the old man who lives in the backyard shed,may know a remedy.
+- `$07E4`: The King keeps peace in this country.Don't let others know.
+- `$07E5`: The King hasn't spoken to me in a while.Is anything wrong?
+- `$07E6`: The King lost his voice!?'<4F>I know Marone,the poet,damaged his throat once.'<4F>Now he has the loveliest voice in the country.He may know what to do.
+- `$07E7`: Yes,I'm Marone.Why is my voice so lovely?'<4F>I think taking Birdsong Nectar,an elfin medicine,helped.'<4F>I found it in a desert bazaar during a trip.La,La,La...
+- `$07E8`: Continue your journey safely.'<4F>I'll think about the dreams I had.'<4F>I think I had another dream besides those nightmares,but I can't remember it....
+- `$07E9`: How fortunate! The dreams the King had worry me,however....
+- `$07EA`: The King has spoken to me.What a lovely voice he has!
+- `$07EB`: This is the country of Endor.The Castle is in the east.
+- `$07EC`: Guarding is hard.
+- `$07ED`: How delicious!
+- `$07EE`: It's tough to create a menu every night.
+- `$07EF`: You're here for the tournament too? I believe...'<4F>the King has a motive for attracting the strong in this way.
+- `$07F0`: My daughter is always looking at the sky these days.What's got into her?
+- `$07F1`: Have you been to the underground casino? I won today!
+- `$07F2`: I dedicate to you this song of glory...An Iron Claw on the Right Hand,La,La,La...
+- `$07F3`: Sss...Sss...
+- `$07F4`: Grzz...Grzz...there! Necrosaro! Mumble...Mumble...
+- `$07F5`: A fighter called Necrosaro is advancing in the tournament.What a malevolent name....
+- `$07F6`: This is a poker table.Would you like to play?
+- `$07F7`: Drop by any time.
+- `$07F8`: Welcome! The King of Santeem told me about you.'<4F>I admire that you're concerned over this doomed world and are embarking on a journey to prove your strength!'<4F>I have a request.Win the tournament.'<4F>To tell the truth,I'm regretting what I've promised....
+- `$07F9`: <4E><44>'<49>,please revive Princess Alena at once!'
+- `$07FA`: My father proclaimed that the tournament's winner will marry me.'<4F>If the winner is a woman,I won't be required to marry.'<4F>Please enter and win the tournament.
+- `$07FB`: <4E><44>'Princess Alena,I envy you for being so free.'
+- `$07FC`: The King has made a terrible promise.Would you listen to the Princess' story?
+- `$07FD`: To enter the Castle at night,you must evade sentries.
+- `$07FE`: Only those registered can enter the tournament.Obtain permission from the King
+- `$07FF`: The King has given only Princess Alena permission to enter.However,you're not properly equipped.
+
+## Group `$40` at `$00:BD2B`
+
+- `$0800`: Princess Alena.The best of luck to you.
+- `$0801`: Thanks to you,I won't have to marry someone I despise.'<4F>If Princess Alena was a man...'<4F>What am I saying...please forget what I've said.
+- `$0802`: How strong Princess Alena is! I'm impressed.
+- `$0803`: Now the tournament is over,the Coliseum is closed.
+- `$0804`: After Necrosaro vanished,monsters stopped appearing.
+- `$0805`: Necrosaro...vanished,a mysterious man.
+- `$0806`: Congratulations on your victory!
+- `$0807`: I'm happy for the Princess.
+- `$0808`: Isn't there anyone who wants to buy my shop and do business here?
+- `$0809`: Oh,you're Princess Alena!'<4F>You've been the talk of us merchants.
+- `$080A`: <4E>Neta:'Go out and head west.Don't be a sleepy-head.Have a nice day.'
+- `$080B`: <4E>Neta:'You're back.Are you tired?'<44>
+- `$080C`: <4E>Neta:'Rest well.Good night.'
+- `$080D`: <4E>Neta:'Wake up,darling.It's morning.'
+- `$080E`: <4E><44>Neta:'Here's your lunch.Have a good day.'
+- `$080F`: <4E>Neta:'I hope we have our own shop someday.'<44>Neta:'You're not the type to work for others forever.'<44>Neta:'That's why I married you.Of course that wasn't the only reason...Tee,Hee...'
+- `$0810`: <4E>Neta:'Forgot something? Work hard...smack!'
+- `$0811`: <4E>Neta:'Welcome home.You worked late today.'<44>
+- `$0812`: Grandpa Tom wishes everyday for his vagabond son's safe return.
+- `$0813`: Welcome to the Town of Lakanaba.
+- `$0814`: <4E><44>'Oh,it's you,Taloon.I didn't have to greet you!'
+- `$0815`: <4E>Tom:'Taloon,I'm old and my limbs are getting weak.'<44>
+- `$0816`: <4E>Tom:'I'll pay you to take me to the House of Healing.Will you?'
+- `$0817`: <4E>Tom:'Push me!'
+- `$0818`: <4E>Tom:'That's too bad.'
+- `$0819`: <4E>Tom:'Come on,son.You can push better than that!'
+- `$081A`: <4E>Tom:'I'm finally at the House of Healing.Thanks so much.Here's your reward!'<44>Taloon received <47> gold piece<4C>.
+- `$081B`: <4E>Tom:'My son was a fool to leave the town.He never writes.'<44>Tom:'I wonder what he's doing?'
+- `$081C`: Taloon,have you heard of the Iron Safe?
+- `$081D`: You'd better get the Iron Safe before you go south.
+- `$081E`: A guest said the Iron Safe might be in a northern cave.'<4F>I also heard it should protect your money even when you're defeated by monsters.
+- `$081F`: Work hard and soon you might own a shop like mine.

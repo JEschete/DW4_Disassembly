@@ -1,0 +1,495 @@
+# Dragon Warrior IV Text - Physical Bank $02
+
+Bank `$02:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 14; messages: 448.
+
+## Group `$28` at `$00:83E3`
+
+- `$0500`: You came to see the King?
+- `$0501`: If so,proceed through this door.
+- `$0502`: Then you came for the tournament,correct? Proceed through one of the two small doors on either side.
+- `$0503`: Have you been to the north already?
+- `$0504`: You reached a wrecked bridge? Who did such a terrible thing?
+- `$0505`: Even if you want to go,you can't,right?
+- `$0506`: How are you doing? Winning?
+- `$0507`: Good.Let it ride.Got it? Let it ride!
+- `$0508`: Luck may come soon.Wait it out,OK?
+- `$0509`: I'm so tired! Hey brother,how's it going? Are you making money?
+- `$050A`: That's good.
+- `$050B`: Well,keep trying!
+- `$050C`: Welcome! How would you like a map of the world?
+- `$050D`: Funny,I thought I had some more.They're gone.Hmm....
+- `$050E`: Are you sure? Well,come back any time.
+- `$050F`: This is a village that even time has left behind.'<4F>Are you familiar with the legend of the Sandglass of Regression?
+- `$0510`: I see....
+- `$0511`: The legend says the Sandglass of Regression can reverse time slightly.
+- `$0512`: Are you the one who wants to know about the Sandglass of Regression?
+- `$0513`: Our ancestors used it in battle.'<4F>You use it to reverse time after a wrong move in battle.'<4F>It's not essential you own it,but it may come in handy.
+- `$0514`: Very well.Feel free to stay.
+- `$0515`: The world won't come to an end.'<4F>Tell me I'm right,please!
+- `$0516`: You're so considerate...Sob...Sob...
+- `$0517`: Sob...Sob...
+- `$0518`: Aha! You monsters! Oops...I was just dreaming....
+- `$0519`: Worry for my missing child makes sleep impossible....Please find my child....
+- `$051A`: The King is asleep.
+- `$051B`: Stay at an inn tonight and come back tomorrow.
+- `$051C`: Hmm...the more I compare,the more similarity I find.'<4F>The present weather resembles that of past times when monsters reigned.
+- `$051D`: Ho hum...guarding isn't fun.
+- `$051E`: I'll go to sleep.I'm happiest when I go to sleep.
+- `$051F`: We're closed for today.Come back tomorrow.
+
+## Group `$29` at `$00:879C`
+
+- `$0520`: Hmm...something awful may be happening somewhere.
+- `$0521`: Monsters seem to be getting stronger.
+- `$0522`: The woman of this house is waiting for her missing husband to return.How sad....
+- `$0523`: Weep...I want to go to the bathroom,but I'm too scared!
+- `$0524`: How long will she wait? She should give up hope and marry me.
+- `$0525`: We were just talking about the incidents.'<4F>I believe the children know something.
+- `$0526`: Don't worry,Principal.'<4F>Children always have secrets.
+- `$0527`: Can kids really vanish before your eyes? It's impossible!
+- `$0528`: They say the man in the underground jail is named Alex.He's my pal.
+- `$0529`: My wife says Pocos was playing with some funny shoes when he vanished....
+- `$052A`: What? I'm not snooping!'<4F>Keep quiet,and I'll tell you something.'<4F>I saw the man in the underground jail before...in the Castle Town of Burland...maybe.'<4F>Why don't you go back there?
+- `$052B`: I'm a traveler.I'm going to take a bath.Please leave.
+- `$052C`: Alex,let's play again tomorrow.Mumble...Mumble...
+- `$052D`: Our son vanished too!'<4F>Who's doing this? What do they want?
+- `$052E`: Yes,I'm Alex...monsters are coming! I'm scared!
+- `$052F`: Sss...Sss...
+- `$0530`: I feel anxious.I can't sleep.
+- `$0531`: Yum...Yum...I'm hungry.
+- `$0532`: Gurg...Gurg...Princess...oh,no...Mumble...Mumble...
+- `$0533`: We were just speaking of the Princess.
+- `$0534`: The Princess is leaving on a journey? Of course,I won't tell anyone.'<4F>I'm known to be tight-lipped.Heh,Heh,Heh!
+- `$0535`: Now I can take care of my business.Thanks.
+- `$0536`: Thanks for everything.
+- `$0537`: Thanks.Have a safe journey.
+- `$0538`: I think I've seen you before....'<4F>Was it at the Castle? I can't remember.
+- `$0539`: You don't look like commoners.'<4F>Aren't you of noble birth?
+- `$053A`: I was right.You're the Princess' Party!
+- `$053B`: OK...if you say so.
+- `$053C`: Whew! I'm tired.Come back tomorrow.
+- `$053D`: Grzz...Grzz...
+- `$053E`: We travel from place to place giving bazaars like this.
+- `$053F`: On nights like this,when I can see the stars clearly,I get homesick.
+
+## Group `$2A` at `$00:8BAE`
+
+- `$0540`: Grzz...Grzz...
+- `$0541`: I'm Ragnar,a soldier from Burland.I'm searching for the Hero.'<4F>...guess you wouldn't understand what I'm talking about....Excuse me.
+- `$0542`: Look! A shooting star!'<4F>I hope it's not a bad omen.
+- `$0543`: I'm grateful I had another peaceful day.
+- `$0544`: Meals after hard work taste great.
+- `$0545`: I'm not full yet.
+- `$0546`: This is the Castle Town of Endor.
+- `$0547`: Sss...Sss...
+- `$0548`: You want to buy the shop? No,you'd better not.You don't have business experience.
+- `$0549`: The tournament is only held during the day.Come back again.
+- `$054A`: Grzz...Grzz...
+- `$054B`: How many soldiers have been done in by Necrosaro!'<4F>It's like an extermination.
+- `$054C`: The King and the Princess are both asleep.
+- `$054D`: I have to clean here.Clean...Clean...
+- `$054E`: I bet Necrosaro will be the winner.He looks mean!
+- `$054F`: I just don't like that man called Necrosaro.
+- `$0550`: I can't keep up with women's silly talk.
+- `$0551`: Umm...Umm...Zzz...Zzz...
+- `$0552`: Sss...Sss...
+- `$0553`: Zzz...Zzz...
+- `$0554`: Welcome home,daddy! Yes,I've been a good boy.'<4F>When I grow up,I'll work as hard as you and let you two live in comfort!
+- `$0555`: Let's hope the world won't end.'<4F>Without the world,you won't have any business.
+- `$0556`: You may not enter the Castle at night!
+- `$0557`: It's late.Come back tomorrow.
+- `$0558`: Prince! Prince! Oh no! Where is he?
+- `$0559`: They say the monsters began appearing because the Ruler of Evil is about to revive.
+- `$055A`: You must have the King's permission to own a shop in this town.'<4F>It's not easy to get his permission.
+- `$055B`: I was sure that Necrosaro would win the tournament....
+- `$055C`: I think Necrosaro disappeared from the tournament because he had more important things to do.
+- `$055D`: I hear the Hero,who will save this world,is growing up somewhere.
+- `$055E`: There's a rumor that the Ruler of Evil will revive....'<4F>I just don't know what to believe....
+- `$055F`: Greetings! Eat and sing! Forget your problems!
+
+## Group `$2B` at `$00:8F94`
+
+- `$0560`: Hey! Aren't you Edgar's daughters?'<4F>Did he succeed in turning iron into gold?'<4F>If he did,he could become a king.
+- `$0561`: I wonder why Edgar was murdered by his pupil,Balzack....
+- `$0562`: Alchemy? Yes,I know.Isn't it a method of turning iron into gold?
+- `$0563`: Good food after work is the best! Ah,so delicious!
+- `$0564`: Zzz...I strive to save the injured...Zzz...
+- `$0565`: Let's dance and enjoy the music!
+- `$0566`: Many girls are summoned to the feasts held almost every night at Keeleon Castle.'<4F>No girl ever returns from there!
+- `$0567`: Curses! Where did Lynn go?'<4F>She's been summoned to Keeleon Castle.
+- `$0568`: He came back and fell asleep while I was out looking for him.Where was he?
+- `$0569`: Zzz...Zzz...that cave has a secret...Zzz...Zzz...
+- `$056A`: I hope you find Balzack,the object of your revenge,soon.
+- `$056B`: People like you shouldn't come here.
+- `$056C`: What? Is this a Pufpuf room? I can't tell you.
+- `$056D`: This was Lynn's room.Where is she now?
+- `$056E`: <4E>Master:'The Castle people are summoning girls to the Castle.They say they are having feasts there.'<44>Master:'Where's the Castle? It's far north from here beyond Kievs.'
+- `$056F`: I'm a new dancer.'<4F>I'll try to become as popular as Mara,the former star here.
+- `$0570`: Wow! I love watching the show up close!
+- `$0571`: This crowd! Don't they have anything better to do?
+- `$0572`: I bought the cheapest ticket...I didn't know I'd be stuck in the back!
+- `$0573`: Yeee Haaaa!
+- `$0574`: The man behind me is noisy.'<4F>Can't he act like a gentleman?
+- `$0575`: I can't see a thing! The post blocks my view!
+- `$0576`: Watching dance relaxes me....
+- `$0577`: The new King of Keeleon's taxation is severe.'<4F>I have to work late every day.Grumble...Grumble...
+- `$0578`: Uuur...Uuur...
+- `$0579`: I heard an awful rumor on my way here.'<4F>The new King of Keeleon has allied himself with the evil ones.
+- `$057A`: The old man next to me talks in his sleep.I can't sleep.
+- `$057B`: Zzz...Zzz...Ah...Ah-choo!...Zzz...Zzz...
+- `$057C`: My grandpa is here again.'<4F>Endor must be dear to him,but we can't see Endor from here....
+- `$057D`: Zzz...Zzz...
+- `$057E`: Zzz...Zzz...
+- `$057F`: Our father used to work in this country's mine.'<4F>We came here to see him,but he died before our arrival.'<4F>What should I tell my little brother,Pipin? Sob...
+
+## Group `$2C` at `$00:9435`
+
+- `$0580`: Zzz...Zzz....Father,it's me,Pipin! Mumble...Mumble...
+- `$0581`: Welcome! Eat and sing! Have a good time!
+- `$0582`: I'm Joy.Let's dance!
+- `$0583`: It's hard to keep up with all the orders.
+- `$0584`: Where's my order? Where is it?
+- `$0585`: I hear a princess won the tournament in Endor.
+- `$0586`: This is the grave of my wife,Helga.'<4F>Dear Helga,the time of our reunion seems to be nearing....
+- `$0587`: I don't feel good.I need a rest.Come back tomorrow.Cough...Cough...
+- `$0588`: My grandpa is an expert in gunpowder manufacturing,but it's prohibited now.
+- `$0589`: Zzz...Zzz...
+- `$058A`: Cough...Cough...
+- `$058B`: Cough...Cough...That mine should yield more gold.'<4F>I won't give up...Cough...Cough...
+- `$058C`: A curse on those who raid our ruins....Crackle...Crackle...
+- `$058D`: The King is asleep.
+- `$058E`: Doze...'
+- `$058F`: An old man stands by the pond every night.'<4F>It's creepy!
+- `$0590`: Oh,that old man started rambling nonsense again.
+- `$0591`: The wedding is only held during the day.
+- `$0592`: It's our custom to continue weddings for several days.'<4F>Come back tomorrow.
+- `$0593`: Necrosaro was a monster...he disappeared in the middle of...
+- `$0594`: Ho,Ho,Ho! I never expected the Princess to marry so young.'<4F>Now I've lost my place to sleep.Ho,Ho,Ho!
+- `$0595`: Mia...I love you...Zzz...Zzz...
+- `$0596`: Sss...Sss...Father,I'm sorry...Sss...Sss
+- `$0597`: Cleaning up is hard work.Don't bother me.
+- `$0598`: A merchant named Taloon stopped by this town.'<4F>He had lots of money and was talking about buying a ship.What an ambitious man!
+- `$0599`: Waaa...I'm scared...Monsters are here...Zzz...Zzz...
+- `$059A`: That spa must have been really good for him.He's sleeping like a baby.
+- `$059B`: This wharf is closed at night.
+- `$059C`: My ship...Zzz...Zzz...
+- `$059D`: Are you searching for someone? I saw an unusual group of three people.'<4F>It was a princess and her escorts.They said they were after a man called Necrosaro.
+- `$059E`: Taloon is a fine example of an arms merchant!'<4F>He plans to travel the world in his own ship to search for legendary weapons.
+- `$059F`: Sure...a sea voyage is nice....
+
+## Group `$2D` at `$00:9857`
+
+- `$05A0`: I wish I could save enough money to buy my own ship too...'<4F>but I spend too much! Why?
+- `$05A1`: If you have love,an age difference doesn't matter.Is there really such a proverb?
+- `$05A2`: My husband! He thinks too much.'<4F>That's why he's growing bald!
+- `$05A3`: Starboard the Helm! Just joking!
+- `$05A4`: Mumble...Mumble...The ship is sailing out...Grzz...Grzz...
+- `$05A5`: Huh? I fell asleep.That old man's stories are boring.
+- `$05A6`: Ah,<4B>Ah,<4B>Ah...'<4F>Ah-choo! It gets chilly at night.
+- `$05A7`: <4E>Howden:'I opened an inn,hoping to meet travelers who had information that would help me uncover the secret of the Treasure Map.'<44>Howden:'I've made enough money already.I don't need any more treasure.'
+- `$05A8`: Old Howden's success began when he opened an inn here.
+- `$05A9`: My hometown is in the far reaches of this land.It's a village with a small castle.'<4F>I wonder if they still grow Padequia.
+- `$05AA`: I remember that a short time ago,a rugged man named Ragnar was in this town.
+- `$05AB`: This is Soretta Castle.The King is already asleep.
+- `$05AC`: Zzz...Zzz...I'm happy just to have a roof over my head.
+- `$05AD`: I'm in love.Blush...
+- `$05AE`: Taloon!'<4F>It's me,Tom's son.Your wife sold me this house.'<4F>I'm determined to become a great merchant like you.
+- `$05AF`: The tide always rises like this at night and submerges the beach.
+- `$05B0`: Is there really a castle above the clouds?
+- `$05B1`: Grzz...Grzz...
+- `$05B2`: His appetite is amazing!
+- `$05B3`: Working on my boat shop makes me hungry.Where's my meal?
+- `$05B4`: Where did the shaman go?
+- `$05B5`: Umm...I can't come up with a good joke.'<4F>Why does the King want a hearty laugh in these troubled times anyway?
+- `$05B6`: Customers are gloomy these days.
+- `$05B7`: No matter what,we'll all be destroyed by someone called the Ruler of Evil.'<4F>What good will my work do anyway?
+- `$05B8`: I hope the time when we can all laugh heartily will come soon.
+- `$05B9`: Zzz...Zzz...Laugh and grow fat...Mumble...Mumble...
+- `$05BA`: Why did the deer cross the road? Because the chicken was on vacation! Not bad,right?
+- `$05BB`: The King is already asleep.
+- `$05BC`: Which cave should we explore next?'<4F>I'll talk with Pocos.
+- `$05BD`: We close the gate at night for safety.'<4F>Come back tomorrow.
+- `$05BE`: Zzz...Zzz.Cry harder! Shed ruby teardrops! Mumble...Mumble...
+- `$05BF`: A young monster called Saro used to live in this village.'<4F>He left the village determined to rule the world.'<4F>He was gentle to Rosa,though.
+
+## Group `$2E` at `$00:9D52`
+
+- `$05C0`: Can we really make flying vessels?
+- `$05C1`: According to old books,the essential component of the flying vessels was kept in a sturdy canister.
+- `$05C2`: I'm too tired from work.'<4F>I don't want to hear her silly talk about a giant statue that walks.
+- `$05C3`: I hear the Golden Bracelet,which was for sale,was stolen by monsters.'<4F>What will they do with such a thing?
+- `$05C4`: Crackle...Crackle....You may go if you want to....'<4F>But I'm sure your ship will be sent to the bottom of the sea....
+- `$05C5`: Oh,no! The ship is sinking! Mumble...Mumble...
+- `$05C6`: The sky looks ominous!'<4F>I'm afraid the Ruler of Evil is about to resurrect!
+- `$05C7`: <4E>No answer.<43>Seems to be a corpse.
+- `$05C8`: Meow...'
+- `$05C9`: Zzz...Zzz...
+- `$05CA`: Sss...Sss...
+- `$05CB`: Doze...Doze...
+- `$05CC`: Grzz...Grzz...
+- `$05CD`: Sss...Sss...
+- `$05CE`: Umm...Umm...
+- `$05CF`: Gurg...Gurg...
+- `$05D0`: Sss...Sss...
+- `$05D1`: You can record your progress at any House of Healing.'<4F>Wherever you go,find one...'<4F>and record your progress on the Imperial Scrolls of Honor.
+- `$05D2`: Our King is truly admirable.
+- `$05D3`: This is the King of Burland's chamber.
+- `$05D4`: The sky makes me uneasy these days.
+- `$05D5`: Don't fall behind the other soldiers.
+- `$05D6`: Hey,Ragnar,still here?'<4F>Haven't the others already left for Izmit Village?
+- `$05D7`: I hear that monsters which only appeared at night are now appearing during the day.Troubled times,aren't they?
+- `$05D8`: We came from Izmit Village.
+- `$05D9`: If you get injured,return to a town and rest at an inn.
+- `$05DA`: For long trips,take along Medical Herbs.
+- `$05DB`: This is Burland Castle.
+- `$05DC`: I won't let anyone suspicious pass!
+- `$05DD`: Monsters have been around for some time.They may be the cause of the recent disappearances of children.
+- `$05DE`: If you keep walking outside,night will fall.
+- `$05DF`: Oh,Ragnar,I'm researching something.
+
+## Group `$2F` at `$00:A0F2`
+
+- `$05E0`: This is the Castle Town of Burland.
+- `$05E1`: Burland's King is good-natured and keeps taxes low.'<4F>Unfortunately he can't spend much on your equipment.'<4F>Accumulate gold to buy more powerful weapons and armor.'<4F>Be sure to equip yourself with them after you buy them.
+- `$05E2`: Izmit Village is on the coast beyond the cave west of this Castle.
+- `$05E3`: Even though they're strong,monsters can't enter towns.
+- `$05E4`: <4E><44>'But why do children vanish?'
+- `$05E5`: You may find out something at Izmit Village.
+- `$05E6`: Is it true that children are vanishing?'<4F>I'm not a kid anymore,so I guess I'm safe.
+- `$05E7`: Welcome to Izmit Village.
+- `$05E8`: I'm a traveling prophetess.I can see the future.'<4F>A chosen one will soon appear somewhere in this world.
+- `$05E9`: The man in jail stole some bread.Seems he lost his memory....'<4F>He acts like a child.He must have been through some ordeal.
+- `$05EA`: Soldier,please find my child!'<4F>He vanished like smoke before my eyes.
+- `$05EB`: This is a school.
+- `$05EC`: Hey,Ragnar,it's you.You came to this village too.'<4F>The tower west of here looks suspicious.I wonder how we can get in.
+- `$05ED`: Wait! Stop!
+- `$05EE`: No way!
+- `$05EF`: You're a soldier.That's great!'<4F>I'll be a royal soldier someday.
+- `$05F0`: Don't interrupt.I'm studying!
+- `$05F1`: The missing child? Pocos of the inn?'<4F>He flew away into the sky.
+- `$05F2`: Welcome,Soldier.I'm teaching now.'<4F>Perhaps we can talk at night.
+- `$05F3`: Get me out,sir.I was hungry and took some bread.That's all I did.Sob...
+- `$05F4`: Help me,sir! They say I'm the Hero and treat me badly!
+- `$05F5`: I have no business with a lowly royal soldier!
+- `$05F6`: Mother,he saved me.
+- `$05F7`: How can I ever thank you?
+- `$05F8`: Hurray! Hurray!
+- `$05F9`: Thank you so much.'<4F>Remember me? I'm the mother who begged you to save my child at Burland Castle.
+- `$05FA`: Hey,Ragnar! I'm impressed.
+- `$05FB`: Now,I can teach without worry.Thank you.
+- `$05FC`: I decided.I'll be a soldier too.
+- `$05FD`: It's not true that the Ruler of Evil will resurrect,is it?
+- `$05FE`: You're so strong!
+- `$05FF`: You're a true soldier.Keep it up!
+
+## Group `$30` at `$00:A521`
+
+- `$0600`: What? Our child has returned? Th...Thank you.
+- `$0601`: Oh! You've found the vanished children! Th...Thank you.
+- `$0602`: The man in jail went home with his wife.They told me to thank you for them.
+- `$0603`: If I were young,we could have fought together....What a pity.
+- `$0604`: Thank you.Now we can live without fear.
+- `$0605`: We can let our kids outside now,can't we? Thank you.
+- `$0606`: Yeah! Yeah! I can play outside tomorrow.
+- `$0607`: I'm indebted to you for my husband's safe return.Thank you.
+- `$0608`: You're that soldier! It's me,Alex.Thanks for saving me.
+- `$0609`: Hurry! The King is waiting!
+- `$060A`: I am counting on your good work,Ragnar.
+- `$060B`: What are you waiting for? Go.Go now.
+- `$060C`: Let's go slow,Ragnar.Let's go slow....
+- `$060D`: <4E>Cristo:'Princess Alena,your tutor,Brey,told me you plan to go out alone.'<44>Cristo:'That's so reckless!'<44>Cristo:'If something happens to you,I...I mean the King will be devastated.'
+- `$060E`: Something ominous is approaching from the eastern sky.'<4F>I hope nothing terrible will happen to our Castle.
+- `$060F`: I must cook meals.I'm so busy.
+- `$0610`: I hear the Princess is a real tomboy.'<4F>I'd like to see her in person.Heh,Heh...
+- `$0611`: He's a nice man,but he has a big mouth.
+- `$0612`: I'm so hungry.When will the food be ready?
+- `$0613`: If the Princess leaves the Castle,she may fall into evil hands.
+- `$0614`: Hurray! You came to beat the monster,right?
+- `$0615`: This is Tempe,a cursed village.'<4F>If my daughter hadn't been born here,she'd still be alive.
+- `$0616`: Some time ago a monster moved into the northern wood.'<4F>He threatens to destroy the village if we don't offer him young girls.
+- `$0617`: I can't leave my parents....
+- `$0618`: How tragic...that couples must be separated.
+- `$0619`: Uhh,Nina,uhh....
+- `$061A`: I'll never forget what you've done!
+- `$061B`: You're so strong! Hmm...you're traveling to prove your strength.'<4F>I suggest you enter the tournament at Endor in the east.'<4F>You can go to Endor from the shrine southwest of here.
+- `$061C`: Hurray! The monster's gone!
+- `$061D`: We're getting married.
+- `$061E`: I'd given up hope....Thank you so much.
+- `$061F`: The item shop has opened again.Tempe will come back to life.'<4F>Thank you.
+
+## Group `$31` at `$00:A988`
+
+- `$0620`: If you go east after leaving the woods,you will reach Frenor.
+- `$0621`: The innkeeper entertained the Princess' Party lavishly.'<4F>I might offer her my small savings too.
+- `$0622`: The Golden Bracelet was our treasure.'<4F>It caused too much conflict among us and was finally hidden away in the southern cave.
+- `$0623`: Oh,no! Princess!
+- `$0624`: Gasp! I'm hurt.
+- `$0625`: Bow,Wow!
+- `$0626`: I can't believe it! May...I mean the Princess was kidnapped.
+- `$0627`: Would you rescue the Princess? If you succeed,you'll be handsomely rewarded.
+- `$0628`: This is the Town of Frenor.
+- `$0629`: Neigh!'
+- `$062A`: Rumor is there's a shrine,far east of here,which leads to Endor.
+- `$062B`: Would you like these rare jars? Take a look.
+- `$062C`: Try our delicious meals.You'll love them,I guarantee!
+- `$062D`: I bought too many things.They're so heavy.
+- `$062E`: They say a tournament is going on in Endor.
+- `$062F`: If you go to Endor,watch the tournament.
+- `$0630`: The door is locked.I can't go upstairs.
+- `$0631`: The King told me.You can pass.
+- `$0632`: Be careful on your journey.
+- `$0633`: There should be a Travel Door to Santeem around here,but I can't find it.
+- `$0634`: Welcome to the Castle Town of Endor.
+- `$0635`: Do you know? A tournament will be held in the Castle.
+- `$0636`: My worthless husband! Where is he?
+- `$0637`: Hello! Please enjoy our meals.
+- `$0638`: I lost again.What should I tell my wife?
+- `$0639`: Many people are in Endor to see the tournament.
+- `$063A`: Look! The clouds are moving swiftly to the west.What's happening?
+- `$063B`: Are you asking if the shop downstairs is closed?'<4F>I'm old and plan to retire after selling it....'<44>
+- `$063C`: Is there someone who wants to start a business here?
+- `$063D`: Welcome to the Casino.'<4F>Only coins can be used here.Please purchase coins from the Coin Seller in the back.
+- `$063E`: Alright! Via a Double-or-Nothing,I now have 16 coins instead of 8! I'm hooked!
+- `$063F`: I'm out of luck today.
+
+## Group `$32` at `$00:AD54`
+
+- `$0640`: You can exchange your coins with items at the Exchange Counter to the right.
+- `$0641`: No matter how much you win,you won't be able to cash in coins.'<4F>It's wise to gamble only with the money you won't need.
+- `$0642`: No! My day's wages are gone! Weep...
+- `$0643`: If you go straight down this corridor,you'll come to a big building.It's the Coliseum.
+- `$0644`: This is the Coliseum where the tournament is held.
+- `$0645`: The King is upstairs.
+- `$0646`: Monsters began appearing in Endor recently.'<4F>Our King started the tournament to attract the strong....
+- `$0647`: If you enter the tournament,watch out for the man called Necrosaro.'<4F>He is immensely strong and utterly merciless.
+- `$0648`: The tournament's winner will marry our Princess.'<4F>I sympathize with her.
+- `$0649`: The King here is rash and does whatever comes to his mind.He worries everyone.
+- `$064A`: This is the King of Endor's chamber.
+- `$064B`: Necrosaro....What an unlucky name.
+- `$064C`: I have to wipe the table clean.Wipe...Wipe...
+- `$064D`: We have many things to wash.How busy!
+- `$064E`: I'm afraid that the Princess will end up marrying the man called Necrosaro.
+- `$064F`: Watch out for Necrosaro!
+- `$0650`: To enter the tournament,take the left stairs.To just watch it,use the ones on the right.
+- `$0651`: The fighting arena is upstairs.Once you're up there,there's no retreat.
+- `$0652`: This is a shortcut to the outside of the Castle.Use it if you're in a hurry.
+- `$0653`: Shut up! Don't talk to me!'<4F>I'm terribly sorry...I'm jittery before my fight.
+- `$0654`: Hmm...terrifying...Necrosaro's strength is beyond our comprehension.
+- `$0655`: I'm sure Necrosaro will be the winner.
+- `$0656`: I just love this excitement!
+- `$0657`: Excuse me! You're blocking my view!
+- `$0658`: I wouldn't fight like that! No,not that way! Go,yeah,go like this!
+- `$0659`: I'm watching this.Don't talk to me now.
+- `$065A`: The man behind me is so noisy....
+- `$065B`: Do you know? The winner of the tournament is a young woman.
+- `$065C`: It seems the tournament is over.
+- `$065D`: Really? You're Princess Alena? Congratulations! Have anything you want.It's on me!
+- `$065E`: Maybe I ought to get an autograph!
+- `$065F`: After Necrosaro vanished,monsters stopped appearing.
+
+## Group `$33` at `$00:B1AF`
+
+- `$0660`: Isn't there someone who wants to start a business here?
+- `$0661`: Mumble...Mumble...see you later,daddy....
+- `$0662`: The innkeeper said he wanted to talk to you.
+- `$0663`: Bow,Wow.
+- `$0664`: Do you want to talk to my husband? He's working now.Come back at night.
+- `$0665`: What is this cave? I can't get a treasure chest!
+- `$0666`: A short while ago water suddenly poured down from above.I almost drowned!'<4F>But I survived that ordeal and got to the treasure chests.Sorry!
+- `$0667`: You came to find the Iron Safe too?'<4F>I think that rolling boulder has something to do with it.
+- `$0668`: I hear that foxes who like to trick people live around here.Watch out for them.
+- `$0669`: Hi,Traveler! Want to dance with me?
+- `$066A`: I'm da Gardi,an architect.This girl won't let me go....'<4F>I decided to marry her and stay in this village.Ha,Ha,Ha.
+- `$066B`: Why don't you stay in this village too?'<4F>Yelp,Yelp!'<4F>Oops,I caught a cold?
+- `$066C`: Welcome to Bonmalmo Castle.
+- `$066D`: I hear there are foxes around here who trick people.'<4F>A dog could get rid of them.
+- `$066E`: So you came from Lakanaba,eh? A man from Lakanaba is imprisoned in the Castle.'<4F>To speak to him,you must evade the guards.
+- `$066F`: We can't get to Endor because the bridge is broken.'<4F>Da Gardi,an architect,should be able to repair it easily....
+- `$0670`: Where's da Gardi? Isn't he back yet?'<4F>We can't invade Endor until he repairs the bridge!
+- `$0671`: Yelp,Yelp!
+- `$0672`: I heard the prisoner from Lakanaba escaped.'<4F>Oh well,he was such a small time criminal,nobody cares.
+- `$0673`: An architect named da Gardi just arrived.'<4F>I'm sure he'll fix the bridge soon!
+- `$0674`: How skilled da Gardi is! He came here and repaired the bridge in no time.'<4F>Now I can invade Endor.Ha,Ha,Ha!
+- `$0675`: Look how swiftly the clouds rush across the sky!'<4F>Something dreadful may be happening somewhere....
+- `$0676`: So you came here to make money.'<4F>There are many ways to make money here,I guess.
+- `$0677`: Did you know that a tournament was held at the Castle recently?
+- `$0678`: The monsters disappeared shortly after the tournament,but they came back again.'<4F>What's going on?
+- `$0679`: Look how swiftly the clouds rush across the sky!'<4F>Something dreadful may be happening somewhere....
+- `$067A`: What a shop! How long must I wait?
+- `$067B`: Alright,Daddy! You finally own a shop!
+- `$067C`: A man named Necrosaro was about to win the tournament.'<4F>But he suddenly disappeared.I wonder why.
+- `$067D`: Our King meets with all types of people.Watch your manners in front of him.
+- `$067E`: Once,long ago,there was a sword called the Zenithian Sword.'<4F>Whoever possessed it was able to ascend into the sky.
+- `$067F`: I hear that a man named da Gardi repaired many bridges.
+
+## Group `$34` at `$00:B73A`
+
+- `$0680`: Are you the grocer? What? You're an arms merchant? Don't you know this is a kitchen?
+- `$0681`: I'm Ragnar,a soldier of Burland.'<4F>I came here hoping that the person I've been looking for might be at the tournament....'<4F>But it's over and the Casino also seems to be closed for a while.
+- `$0682`: Heave ho,Heave ho,Dig and Dig...'<4F>They say the Casino in Endor reopened.I'll go there soon!
+- `$0683`: Dig and Dig and Dig and Dig...
+- `$0684`: This is the country of Santeem.No outsiders can enter.You better go back.
+- `$0685`: It's said that somewhere in this world,there's a sword called the Zenithian Sword.'<4F>Find it and give it to someone with a noble heart to save this world!
+- `$0686`: We're going to Endor.
+- `$0687`: Endor has a casino and an eatery.We can find jobs there!
+- `$0688`: Sorry,the eatery opens at night.
+- `$0689`: Though it was only for a short time,I enjoyed working with you.I hope you succeed in your pursuit of revenge.
+- `$068A`: This is a theater.The Master is in the basement waiting room.
+- `$068B`: I don't know who you're looking for.There's no one here but me.Get out!
+- `$068C`: I hear Edgar,an alchemist in Kievs,was murdered by his pupil,Balzack.'<4F>What? You're his daughters? Oh,I feel so sorry for you.
+- `$068D`: This is Monbaraba,a town of music and dance.The Village of Kievs is in the north.
+- `$068E`: I hear Lynn from the eatery ran away.She was so popular.
+- `$068F`: That Lynn! Where did she go? I'll punish her if I find her!
+- `$0690`: Oh,so you're searching for the man who murdered your father.
+- `$0691`: <4E>Lynn:'Don't tell anyone I'm here.I don't want to go to the Castle!'<44>Lynn:'I heard that a coup broke out at Keeleon and the King was overthrown.'<44>Lynn:'The new King,calling himself an alchemist,is performing horrible experiments.'
+- `$0692`: Zzz...Zzz...
+- `$0693`: No one's downstairs? My husband has gone somewhere again!
+- `$0694`: <4E>Master:'So...you're finally leaving.I think it's a good idea to return to Kievs once in a while.'<44>Master:'Don't forget to visit your father's grave.Take care....'
+- `$0695`: Bow,Wow,Wow!
+- `$0696`: Neigh!'
+- `$0697`: Brrr!'
+- `$0698`: You've come to this cave looking for the Sphere of Silence,haven't you?'<4F>I've come from Monbaraba.I think you'd better give up.
+- `$0699`: <4E><44>'I just can't find a way downstairs.'
+- `$069A`: This is the Great Keeleon Castle.
+- `$069B`: Though this Castle's Counsel is haughty,he's a coward.'<4F>Try making a big noise by his room.'<4F>He'll run screaming into the King's room.
+- `$069C`: I believe only the Counsel knows where the King's room is.'<4F>Follow him and you may find it,but be careful.
+- `$069D`: Where's my grandpa?
+- `$069E`: There's a big coliseum in Endor across this sea....'<4F>I used to fight in the coliseum when I was young.I long for those days....
+- `$069F`: Sorry,we're not open yet.
+
+## Group `$35` at `$00:BCF3`
+
+- `$06A0`: I'm Joy.Thanks for coming to see me.'<4F>But we open only at night.
+- `$06A1`: Gwoon,Gwoon.
+- `$06A2`: <4E><44>A letter is held in one hand.'<4F>Dear Father:<43>How are you? Are you coming back soon? Little Pipin misses you a lot.We're thinking of visiting you soon....
+- `$06A3`: Foul gas began welling out of the mine and made many people sick.
+- `$06A4`: This place,once a bustling town,is doomed.'<4F>My wife died here too....
+- `$06A5`: You'd better flee at once or you'd end up like that person there.
+- `$06A6`: Cough...Cough...Don't enter the mine if you cherish your life.'<4F>When the foul gas began welling out of the mine,monsters began appearing....Cough...Cough...
+- `$06A7`: Watch out.Many monsters lurk here.
+- `$06A8`: Many of my buddies died.Cough...Cough...
+- `$06A9`: The poisonous gas or the monsters...I don't care.I'll continue until I find the gold.Dig and Dig and Dig and Dig...
+- `$06AA`: This ship's destination is Endor.I'm excited!
+- `$06AB`: I hear some people tried to destroy the King of Keeleon.
+- `$06AC`: My fellow merchant,Taloon,has opened a shop in Endor.I'm on my way to congratulate him.
+- `$06AD`: When will this ship sail? Be patient.'<4F>Why don't you talk with the passengers and the captain?
+- `$06AE`: I'm Pipin.'<4F>We came to this country to see our father.But my sister says we're going back.I don't understand.
+- `$06AF`: Oh,Joy! Why can't you...?'<4F>Darn! I could marry another girl! Weep...Weep...
+- `$06B0`: This ship carries with it the memories of many different people.'<4F>I don't know what you've been through,but cheer up.'<4F>Good things will come if you live....
+- `$06B1`: Doze...Doze...
+- `$06B2`: Wait! You can't escape!
+- `$06B3`: Hi,<49>,taking a walk? It's a beautiful day,isn't it?
+- `$06B4`: I'm a traveling poet.I was lost in the mountains and found this village.'<4F>I didn't know there was a village deep in these mountains.
+- `$06B5`: A poet wandered into this village last night.'<4F>Against village rules,I let him in.'<4F>I hope it won't cause trouble.
+- `$06B6`: <49>,today I'll teach you how to cast a spell called Zap.'<4F>You look hungry.I'll teach you after lunch.
+- `$06B7`: Ha! Bonk!'<57><4F>Ha,Ha,Ha! <49>,you must always guard yourself.Mastery of swordsmanship is harder than it appears.Understand?
+- `$06B8`: <4E>Celia:'Good morning,<49>! It feels so good to rest like this!'<44>Celia:'<49>,I hope we can stay friends forever.'
+- `$06B9`: Hi,<49>,this is a cellar.
+- `$06BA`: Who are you? Are you a traveler? This is a woodsman's shack.'<4F>You look so gloomy.I hate gloomy kids.'<4F>Get off this mountain right away! You can go to the Castle.
+- `$06BB`: Hey,wait! Look at your outfit! You can't travel like that.'<4F>Take those things in the jars over there!
+- `$06BC`: This is Branca Castle.
+- `$06BD`: Our King is upstairs.
+- `$06BE`: Once a celestial maiden came down to the heart of the northern mountains.'<4F>She fell in love with a young woodsman,and they had a baby.'<4F>Where is the baby now? Oh,it's just a fairy tale.
+- `$06BF`: Thanks to the cave Taloon made,now we can get to Endor in the far west.

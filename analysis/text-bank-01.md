@@ -1,0 +1,495 @@
+# Dragon Warrior IV Text - Physical Bank $01
+
+Bank `$01:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 14; messages: 448.
+
+## Group `$1A` at `$00:8026`
+
+- `$0340`: 'You have a critical eye! You'll be a good merchant! Thanks.'
+- `$0341`: 'It's getting late.Let's close for the day.Thanks for working.'<4F>Here are your wages for today.'<44>Taloon receives <47> gold piece<4C>!<4F>See you tomorrow.'
+- `$0342`: Alex:'...the secret playground is 4 steps to the south and then 4 steps to the east of the village signpost.'<44>Alex:'Something may be there.You'd better check it out.'<43>Flora:'Be careful,Soldier.'
+- `$0343`: 'Ragnar! Welcome back!'<4F>You must take the children to Izmit Village.'<4F>I will hear your story later.Go now,Ragnar.'<44>
+- `$0344`: 'Ragnar! Welcome back!'<4F>I'm truly impressed with your accomplishment.'<4F>I'm proud of having a soldier like you!'<4F>I will give you a reward.Name anything you want.'<4F>What? You want to go on a journey?'<44>Ragnar:'.........'<4F>You intend to find and protect the Hero who is still a child....'<4F>I see....You'll have my full support!'<4F>Ragnar,this is a farewell gift from me.Take it!'<44>
+- `$0345`: 'Ragnar,have a safe journey!'
+- `$0346`: Thus,Ragnar left on a journey in search of the Hero....
+- `$0347`: 'Get in the offering litter,please.'
+- `$0348`: 'Don't ever litter the litter.'<4F>This is no time for puns,Shaman.'<4F>Right.Sorry....'
+- `$0349`: Taloon reads the Prince's Letter.<4F>Dear Mia,<43>   Princess of Endor:<43>Many days have passed,yet I haven't been able to tell my father about us.'<4F>Worse still,my father seems to be planning to invade Endor.'<4F>We must stop him.Please inform your father of this and....'<44>
+- `$034A`: 'This is Jail! You can't talk to the prisoners! Leave!'
+- `$034B`: 'Who are you?'
+- `$034C`: But the Princess of Endor isn't here.
+- `$034D`: The news of the monster's demise spread through the village like wildfire.<44>And a new day began....
+- `$034E`: '<49>! I've been looking for you.'<4F>Return to the Castle immediately! The King is in trouble!'
+- `$034F`: 'It's awful.The King can't speak!'
+- `$0350`: 'You can exchange coins for items at this Exchange Counter.'<44>
+- `$0351`: '<49> has <47> coin<4C> now.Would you like to get items?'
+- `$0352`: 'What would you like?'
+- `$0353`: 'The <48>? Is that correct?'
+- `$0354`: 'We'll keep the rest of the coins for you.Come again.'
+- `$0355`: 'This is the Coin Seller.'<44>
+- `$0356`: '<49> has <47> coin<4C> now.'
+- `$0357`: '<47> coin<4C>?'<44>
+- `$0358`: 'Thank you.Good luck!'
+- `$0359`: 'Sorry but you don't have enough money.'<44>
+- `$035A`: 'Thank you very much.'
+- `$035B`: Thus Taloon finally gets his own shop and calls for his family.
+- `$035C`: Neta:'How wonderful! This is our shop! It's a dream come true!'<44>Neta:'I'll work hard from now on!'<44>Neta:'Let's work together to make this the world's greatest shop!'<44>Neta:'I love you...Smack!'
+- `$035D`: <49> can't be equipped with the <48>.
+- `$035E`: There's no door here.
+- `$035F`: King:'..........<4B><4B>Un? <4B><4B>Ah...<4B>Ah...<4B><4B> Oh! <4B>I <4B>I can speak!<4B><4B> I can speak!'<4F>You did....I thank you.'<4F>I had terrible dreams.'<4F>A big monster came out of the Evil World and was destroying everything.'<4F>At first,I intended to keep them to myself,but I kept having the same dreams over and over again.'<4F>I became worried,so I decided to tell the Counsel about them.Then I lost my voice.'<4F>Something terrible may be about to happen....'<4F>I won't stop you anymore.Travel the world and see what's happening.'<4F>Brey and Cristo,I place Alena's safety in your hands!'
+
+## Group `$1B` at `$00:8708`
+
+- `$0360`: The lock doesn't turn.
+- `$0361`: There's no key.
+- `$0362`: 'I see you've brought what we want.Give it to me now!'
+- `$0363`: 'I got it! Here's the Princess.Bye!'
+- `$0364`: 'Don't you want the Princess back alive? Give it to me!'
+- `$0365`: 'Thanks for rescuing me.I've learned a lesson.'<4F>I'm not really a princess.My name is May.I'm just an actress.'<4F>I got carried away because people treated me nicely when I pretended to be a princess....'
+- `$0366`: 'I'll join my companions now.'<4F>It's not much,but I'll give you this Thief's Key.'<44>
+- `$0367`: Thereafter,the fake princess,May,and her companions disappeared.<44>And a new day began....
+- `$0368`: 'The King says you can pass now.'
+- `$0369`: 'Be very careful on your journey.'
+- `$036A`: Reed:'You can't carry any more things.Come back after selling or discarding some.'
+- `$036B`: Neta:'Welcome home,darling.Have you brought more merchandise?'
+- `$036C`: Neta:'Then come over here....'
+- `$036D`: Neta:'Before receiving the merchandise,I'll give you the proceeds from yesterday's sales.'<44>Taloon receives <47> gold piece<4C>!<44>
+- `$036E`: Neta:'What shall I put up for sale?'
+- `$036F`: Neta:'The <48>? I'll sell it for <47> gold piece<4C>! Is that OK?'
+- `$0370`: Neta:'Alright,I'll put it up for sale.'<44>
+- `$0371`: Neta:'Anything else for sale?'
+- `$0372`: Neta:'You don't want to sell it? Keep it then.'<44>
+- `$0373`: Neta:'I think the <48> is too valuable to sell.You'd better keep it.'<44>
+- `$0374`: Neta:'We're through stocking,right? Would you like to see what we have for sale?'
+- `$0375`: Neta:'I'll try hard to get good prices.You work hard too.Smack!'
+- `$0376`: Neta:'We don't have any merchandise! Bring some soon.'
+- `$0377`: Neta:'I'm sorry....'<44>Neta:'I haven't been able to keep up with you.Our inventory is full.'<44>Neta:'Would you like to see what we have for sale?'
+- `$0378`: Strom:'My 5 days have passed.I'll leave now.'<44>Strom:'Take care! Bye!'
+- `$0379`: Laurent:'Sorry,my 5 days have passed.I must go.Farewell!'
+- `$037A`: <49> pushes the button on the wall.<44>The door opens.
+- `$037B`: <49> puts the treasure back where it was.
+- `$037C`: Thus Taloon left for the east in search of legendary weapons and treasures.<44>To collect every weapon and to become the world's greatest arms merchant was his dream.
+- `$037D`: 'Yeek! You're humans.Lita,we're leaving now!'<4F>Yes,sister.'<4F>Oops,I dropped the medicine!'<4F>Don't worry about it.Hurry!'
+- `$037E`: Cristo:'Princess,I'll cheer you on from here.'
+- `$037F`: Brey:'The best of luck to you!'
+
+## Group `$1C` at `$00:8C1B`
+
+- `$0380`: King:'Welcome,Princess Alena! You must defeat 5 opponents to go on to the final match!'<44>King:'Necrosaro is the only one who has defeated 5 opponents so far.'<44>King:'Good luck!'
+- `$0381`: 'Princess Alena defeated <50>!'<44>
+- `$0382`: 'The next opponent is <50>!'
+- `$0383`: 'Princess Alena has defeated 5 opponents!'<44>King:'Congratulations,Princess Alena!'<44>King:'The final match is next.Call Necrosaro.'
+- `$0384`: King:'Where is he? Bring Necrosaro now!'
+- `$0385`: King:'What? Necrosaro is missing? Hmm....'<44>King:'.........'<44>King:'We can't wait for him forever.'<44>King:'I declare Princess Alena the winner of this tournament!'
+- `$0386`: Brey:'Princess,good going!'
+- `$0387`: Cristo:'Princess Alena,congratulations on your victory!'
+- `$0388`: Brey:'How strange! What happened?'
+- `$0389`: Cristo:'Where's everybody? Hello? Is anyone here?'<44><4E>But there was no reply....
+- `$038A`: 'There's a slot machine? Will you play?'
+- `$038B`: What did the dreams of the King of Santeem mean?<43>...the mysterious Necrosaro,why did he suddenly disappear?<44>...and what befell the people of Santeem?<44>Determined to solve these mysteries,Princess Alena's Party embarked on another journey....
+- `$038C`: 
+- `$038D`: 'That's worth <47> gold piece<4C>.Is that alright?'
+- `$038E`: 'You've come to the Castle so late at night.'<4F>I can't allow you here.Leave now!'
+- `$038F`: 'Princess Alena,return to Santeem Castle immediately! G <4B>Gasp!'<51>
+- `$0390`: Alena kicks through the wall.
+- `$0391`:   Congratulations!<43>    Prince Reed<43>        and<43>   Princess Mia!
+- `$0392`: A voice is heard out of nowhere....<44><4E>'Chosen Ones. It's not the time to   give up.'<44><4E>'I shall revive you. Open your eyes....'<44>
+- `$0393`: 
+- `$0394`: There was a small,nameless village deep in the mountains far east of Endor.<44>The villagers lived quietly.They never left the village or let outsiders enter.<44>Only the villagers were supposed to know of the village's existence.<43>But...<44>
+- `$0395`: 'It's done.'
+- `$0396`: '<49>,my dear child.Take this lunch to your father at the pond.He's fishing.'<4F>Greet everyone you pass,OK?'
+- `$0397`: 'Monsters finally found this village! They'll be here any second!'
+- `$0398`: 'Oh,no! <49>,flee now! Don't worry about me.'
+- `$0399`: 'Follow me!'
+- `$039A`: 'We'll stop the monsters! Take <49> to a safe place!'
+- `$039B`: Celia:'<49>! If anything happens to you,I....'<44>Celia:'Hide! Hurry! I'll be there soon!'
+- `$039C`: 'Those monsters! They found <49>!'<4F>We only needed a little more time to make <49> the great Hero.'<4F>This way,<49>! Come!'
+- `$039D`: 'Yahoo!'<43><4B>'Shake more!'<43><4B>'Ahooo!'<43><4B>
+- `$039E`: <49> checked inside the jar.<44>
+- `$039F`: There were stairs.
+
+## Group `$1D` at `$00:9186`
+
+- `$03A0`: Mia:'Oh,Reed! I have to tell my father! Father!'
+- `$03A1`: King:'I heard the news,Mia.'<44>King:'You do not need to worry.'<44>King:'Taloon is the name,isn't it? Would you take this scroll to the King of Bonmalmo?'<44>Taloon receives the Royal Scroll!<43><56><44>King:'Please hurry.'
+- `$03A2`: Taloon reads the Royal Scroll.<4F>Dear Friend,<43>   King of Bonmalmo:<43>Please listen to what I must say.'<4F>It appears that my daughter,Mia,and your son,Reed,are in love.'<4F>They don't have to marry now,but I do look forward to their marriage....<43>   The King of Endor'<44>
+- `$03A3`: But the King of Bonmalmo isn't here!
+- `$03A4`: King:'Oh,is that so?'<44>King:'If my son,Reed,marries the Princess of Endor,he'll be the next king of Endor.'<44>King:'I won't have to invade Endor.'<44>King:'I appreciate what you've done.I'll dispatch a messenger right away.You can go now.'
+- `$03A5`: It's locked!<44>But Orin breaks the lock.
+- `$03A6`: 'What a failure,Balzack! What can we tell Necrosaro?'<43><4B>
+- `$03A7`: Balzack:'Keeleon,please don't tell this to Necrosaro.'<44>Keeleon:'Don't worry.I can't let you die now.'<44>Keeleon:'You,Edgar's daughters! Come! I'll fight you.'
+- `$03A8`: 'Are you awake? You were terribly injured.Cough...Cough...'
+- `$03A9`: 'A jailbreak!'<44>Orin:'They've found us! Hurry!'
+- `$03AA`: Orin:'I'll stop them.Run! Now!'
+- `$03AB`: 'The ship arrived at Endor!'
+- `$03AC`: This is how Mara and Nara,without fulfilling their wish,left their home country.<44>What are the small lights which will help them?<44>Their new journey to search for them has just begun.
+- `$03AD`: 'Tov,always obey Taloon.'
+- `$03AE`: Tom:'I'm finally here.Thanks.This is for you.'<44><4E>Taloon receives <47> gold piece<4C>!
+- `$03AF`: '<49>,you're already strong!'<44>
+- `$03B0`: 'Prince,you shouldn't talk with such a lowly commoner!'
+- `$03B1`: 'Leave now!'
+- `$03B2`: 'I'm da Gardi.What happened?'<4F>When I woke up,the village was gone....'<4F>That's right!'<4F>I was supposed to go to Bonmalmo Castle....I have to go now.Excuse me!'
+- `$03B3`: There's a button.Do you want to push it?
+- `$03B4`: 'Welcome back,<49>!'<44>
+- `$03B5`: <49> checks inside the drawer.<44>
+- `$03B6`: <49> checks the book shelf.<44>
+- `$03B7`: No important books are found.
+- `$03B8`: <49> reads the sign post.<44>
+- `$03B9`: <49> obtains <47> gold piece<4C>.
+- `$03BA`: <49>'s Party obtains <47> gold piece<4C>.
+- `$03BB`: <49>,not being one of the Chosen Ones,doesn't know what to do!<44>
+- `$03BC`: Can't move this way!<44>
+- `$03BD`: Use TACTICS Command to change members.
+- `$03BE`: The story up to this point will be saved on the Imperial Scrolls of Honor.Is that alright?
+- `$03BF`: If you don't save,you'll begin from the last point you saved in Chapter <47> again.Is that alright?
+
+## Group `$1E` at `$00:9715`
+
+- `$03C0`:  <49>,<49>,<43> <49>,<49>,<43><40>
+- `$03C1`:  <49>,<49>,<43> <49>,<43><40>
+- `$03C2`: <44>'It seems I can't be equipped with this.'
+- `$03C3`: <44>'It seems I can be equipped with this.'
+- `$03C4`: !
+- `$03C5`: 'Over here is a weapon shop and an armor shop.You can buy your equipment here.'
+- `$03C6`: Taloon:'Now let's head south!'<44>Taloon:'I hear an old sea expert who has a valuable map lives in the Town of Mintos down south.'<43><4B>
+- `$03C7`: Taloon:'Oh! I don't know who you are,but you've come at right time!'<44>Taloon:'I want to extinguish the Evil Fire burning in this lighthouse.'<44>Taloon:'But powerful monsters have been preventing me from going any farther.'<44>Taloon:'Will you extinguish the Evil Fire for me?'
+- `$03C8`: Taloon:'I beg you,please!'
+- `$03C9`: Taloon:'I thank you!'<44>
+- `$03CA`: Taloon:'The Fire of Serenity burned in this lighthouse until recently.'<44>Taloon:'They say a remnant of it still burns somewhere in this lighthouse.'<44>Taloon:'It should be able to extinguish the Evil Fire.'<44>Taloon:'Shall I repeat this?'
+- `$03CB`: <49>,paralyzed,can't move.
+- `$03CC`: <49> checks the oven.<44>
+- `$03CD`: <49> checks the sink.<44>
+- `$03CE`: <49> checks the grave.<44>
+- `$03CF`: '<49> now has...'<4F>no coin.'<4F>When you have coins,come back.'
+- `$03D0`:    The Tournament<43>     Held Now!
+- `$03D1`:      Dangerous!<43>     Stay Away!
+- `$03D2`:        WANTED!<43>  The Gas Canister!<43><41>        The Item Shop
+- `$03D3`:   A Desert Bazaar<43>     Now Open!
+- `$03D4`:      The Winner of<43>    The Tournament:<43><41>     Princess Alena!
+- `$03D5`:    Wait a Minute!<43> You Need to Upgrade<43>   Your Equipment!<43><41>     Surene's Guild of<43>     Arms Merchants
+- `$03D6`: 'Zenithian Castle is high up in the sky.Master Dragon lives there.'<4F>Master Dragon is so strong.Long ago,he imprisoned the Ruler of Evil in darkness.'<4F>I think the people of Stancia in the northern sea can tell you more about Zenithian Castle.'
+- `$03D7`:      Keep off<43>  the Flower Bed!
+- `$03D8`:   The House of Edgar,<43>      Alchemist
+- `$03D9`: Report the Sighting of<43>  Suspicious People!<43><41>   The King of Burland
+- `$03DA`:     Bridges Belong<43>     to Everyone.<43>Do Not Vandalize Them.
+- `$03DB`:         East to<43> The Village of Tempe
+- `$03DC`:     Do Not Play<43>    in the Woods.
+- `$03DD`: 'You don't have enough coins for the <48>.'<44>
+- `$03DE`: '<49>,the time I've feared has come.'<4F>We didn't tell you this before,but we are not your true parents.'<4F>We want to explain,but we have no time....You must hide now.'
+- `$03DF`: 'Oh no! The monsters are coming! We must fight!'
+
+## Group `$1F` at `$00:9C17`
+
+- `$03E0`: 'Listen well,<49>.The monsters seek to end your life! You are a threat to them.'<4F>Born with a hidden power,you have the potential to become strong enough to destroy any evil being.'<4F>But you're still weak.Escape and survive! Understand?'
+- `$03E1`: Celia:'<49>....I've enjoyed growing up with you....'<44>
+- `$03E2`: Celia:'<49>,you're so cute I've always thought of you as my little sister....'<44>
+- `$03E3`: Celia:'Don't worry.I won't let them take your life.'<44>
+- `$03E4`: Celia chants Transform.
+- `$03E5`: Celia transforms into an exact replica of <49>!<44>Celia:'Goodbye,<49>....'
+- `$03E6`: The monsters' voices are heard from outside.<44>'Necrosaro,we've destroyed <49> the Hero!'<44>Necrosaro:'Well done! Everyone,return to our base!'
+- `$03E7`: 'Kekiki! Burn! <4B>Burn!'<4F>The Evil Fire will sink all the ships.Kekiki!'<4F>Ha! <4B>Who's there?'
+- `$03E8`: 'Kekiki! You fools!'<4F>You've come at the right moment.I'll throw you into this Evil Fire as kindling! Kekiki!'
+- `$03E9`: <49> throws the <48> in the fire!
+- `$03EA`: There's a button on the bottom of the treasure chest! Do you want to push it?
+- `$03EB`: Moreover<44>
+- `$03EC`: The door looks sturdy,but it might break with the combined force of 3 people!
+- `$03ED`: Alena:'You found the Padequia Root?'<44>Alena:'I couldn't find it myself and returned empty handed.I'm grateful!'<44>
+- `$03EE`: Alena:'Quick! Cristo needs the Padequia!'
+- `$03EF`: <49> grinds the Padequia Root and gives it to Cristo!<44>
+- `$03F0`: 'Please wait! I'm sorry but I eavesdropped on your conversation.'<4F>I didn't know that <49> was the Hero who will save the world!'<44>
+- `$03F1`: 'A man named Ragnar,searching for the Hero,once stayed at this inn.'<4F>Ragnar said he was going to a country named Keeleon in the far west....'
+- `$03F2`: This door doesn't seem to open.
+- `$03F3`: 'You've come to save us!'<4F>We've been waiting for you...'<4F>to fall into the Evil World!'
+- `$03F4`: But the strange force works and contains <50>!
+- `$03F5`: Nara:'Help!'
+- `$03F6`: The monster chants Return!
+- `$03F7`: Mara:'<49>,you've come to rescue us! That's what you thought I would say....'<44>Mara:'You won't fool us again.You're not <49>! We'll fight you this time!'<44>Nara:'Wait sis! I think this is really <49>.I can tell.'<44>
+- `$03F8`: Mara:'Really? Then answer this.Was Nara at the Casino in Endor?'
+- `$03F9`: Mara:'I was right! This is a monster!'<44>Nara:'I still think it's <49>.<43><49>,it's you,isn't it?'<44>
+- `$03FA`: Mara:'Hmm...you may be right.'<44>Nara:'Sorry we doubted you.We've been chased by your imposter for so long....'<44>Mara:'Let's go now!'
+- `$03FB`: <49> can't be equipped with any more things.
+- `$03FC`: 'Congratulations! You're the 1000th person to travel through this tunnel since its opening!'<4F>You'll receive a terrific prize from the King of Endor.'<4F>It's 2000 coins you can use at the Casino in Endor!'<44>
+- `$03FD`: 'It'll be deposited at the Casino under your name! Congratulations!'
+- `$03FE`:        North to<43> The Village of Kievs
+- `$03FF`: The Evil Fire ceases and the Fire of Serenity starts burning!
+
+## Group `$20` at `$00:A251`
+
+- `$0400`: Soldier:'Quiet!'<44>Ragnar:'You can't stop me!'
+- `$0401`: Ragnar:'Aren't you the Hero's companions?'<44>Ragnar:'I want to see the Hero now!'
+- `$0402`: Ragnar:'I've finally found the Hero I've been searching for!'<44>Ragnar:'You fit the description I heard at the House of Prophecy!'<44>Ragnar:'I hear the ones in this room belong to the evil force which plans to destroy the world.'<44>Ragnar:'Let's defeat them and reveal the source of evil which drives them!'<44>Ragnar:'Let's go inside!'
+- `$0403`: Soldier:'Intruders!'
+- `$0404`: Ragnar:'I'll handle them! You take care of the monster!'
+- `$0405`: 'I...I'm defeated....Who are you?'<4F>Are you the Hero who is prophesied to destroy the Ruler of Evil?'<4F>You can't be! I heard Necrosaro destroyed the Hero....<4B>Gasp!'<43><4B><51>
+- `$0406`: 'It...<4B>It's impossible! My body,supposedly invincible,is terribly wounded....'<4F>But as long as the Secret of Evolution exists,I will never fall....I will...I will...<4B>Gasp!'<43><4B>
+- `$0407`: 'The experiment seems to have failed.We must report to Necrosaro....'
+- `$0408`: 'The Golden Bracelet is necessary to perfect the Secret of Evolution.'<4F>It's said the Golden Bracelet amplifies the evil force!'
+- `$0409`: 'When we obtain the Golden Bracelet and perfect the Secret of Evolution...'<4F>our time,the time of the evil force,will come! Ha,Ha,Ha!'
+- `$040A`: 'Nooo! Monsters!'
+- `$040B`: 'Yeek! Get away from me!'
+- `$040C`: 'You monsters! I'll take care of you!'
+- `$040D`: 'Auugh! My end has come!'
+- `$040E`: 'Yuk! Help!'
+- `$040F`: 'What are you?'
+- `$0410`: 'I'm not afraid of monsters!'
+- `$0411`: 'Oh,my...Fuuf!'
+- `$0412`: 'Oh,no! Monsters are in the town! This is the end!'
+- `$0413`: 'You bold monsters! Come!'
+- `$0414`: 'Eiiyaa! Monsters!'
+- `$0415`: 'Monsters! Help! Someone,help!'
+- `$0416`: 'Someone,help me!'
+- `$0417`: 'Don't come near me!'
+- `$0418`: 'Yiee! I have some money.Spare me!'
+- `$0419`: 'Don't come any closer or I'll bash you!'
+- `$041A`: 'Garrru!'
+- `$041B`: 'Gyanyanya!'
+- `$041C`: 'Snrrt!'
+- `$041D`: 'You! Bonk,Bonk...'
+- `$041E`: 'Uh! I...I'd better run!'
+- `$041F`: 'Please spare us!'
+
+## Group `$21` at `$00:A689`
+
+- `$0420`: 'Ooops!'
+- `$0421`: Panon:'Well,seems my task is over.'<44>Panon:'I'll resume my wandering.'<44>Panon:'Goodbye,<49>.I wish you success!'<44>
+- `$0422`: Panon left the Party!
+- `$0423`: 'A monster!'<4F>Huh? <4B>Healie is the name?'<4F>Sorry but I can't sell you anything....'
+- `$0424`: <49> doesn't seem to want to carry it.
+- `$0425`: 'No way!'<4F>I don't deal with monsters!'
+- `$0426`: <49> doesn't seem to want to sell it.
+- `$0427`: 'Bye....'
+- `$0428`: Cristo's complexion returns to normal at once,and he recovers!<44>Cristo:'Umm...Ha! <4B>Princess!'
+- `$0429`: 'You may wager these winnings on the next match.Do you want to?'
+- `$042A`: But the King is asleep....
+- `$042B`: 'But you don't seem to be able to carry that much money.'
+- `$042C`: '<49> should return to the wagon.'
+- `$042D`: <44>'1 coin costs <47> gold piece<4C>.How many do you want?'
+- `$042E`: 'Wait a second! You can't travel like that.'<4F>You'd better take the things from those jars in that room!'
+- `$042F`: <44>Alena:'You're fine,Cristo.'<44>Cristo:'I'm ashamed.I'm the one who should be looking after you.'<44>Alena:'Don't worry,Cristo.Now let's resume our journey to find Necrosaro!'<44>
+- `$0430`: Alena:'What's the matter? <4B>Huh? <4B><49> too...Necrosaro....'<44>
+- `$0431`: 'I need to make sure.'<4F>The Imperial Scrolls of Honor won't be updated.Do you still want to end?'
+- `$0432`: 
+- `$0433`: 'If that's the case,continue your quest.'<44>
+- `$0434`: <49> has fallen into a deep sleep....<43>Seems to have begun dreaming....<4B><4B>
+- `$0435`: <4E>Saro:'Rosa,have you<43> been a good girl?'<43><4E>Rosa:'Saro....'<44><4E>Saro:'Rosa,I've<43> decided to<43> exterminate all of<43> mankind.'<44><4E>Saro:'The world will<43> soon see its end.'<44><4E>Saro:'Until my<43> ambition is<43> fulfilled,you stay<43> here....'<44>
+- `$0436`: <4E>Rosa:'Wait,Saro!'<44><4E>Rosa:'.........'<44>
+- `$0437`: <4E>Rosa:'Someone...someone<43> must stop Saro!'<44><4E>Rosa:'Or the world<43> will cease to exist....'<44><4E>Rosa:'Please.... Someone.... Listen to me....'
+- `$0438`: <4E>Rosa:'Someone.... Listen to me....'<43><4B><4B>
+- `$0439`: 'You bold thieves!'<4F>You're under arrest! Come!'
+- `$043A`: 'Get out! The Queen will see you.'
+- `$043B`: 'I'm the Queen of this country.I judge all accused.'<4F>You're accused of stealing the prophetess's Bronze Amulet.'<4F>Do you admit you stole it?'
+- `$043C`: 'Don't try to get away with a lighter sentence by simply confessing.'<4F>You're on trial.You must tell the truth.'<4F>I ask you again.Did you steal the Bronze Amulet?'
+- `$043D`: 'The prophetess says she saw you steal it.'<4F>Do you still insist you didn't steal it?'
+- `$043E`: 'Then who stole the Bronze Amulet?'<4F>If you insist you're falsely accused,I'll give you a chance to find the real thief.'<4F>However,I'll have to keep one of you as a hostage.'<4F>Soldiers! Put one of them into jail!'<4F>Go find the thief now!'
+- `$043F`: 'That's different from what you said!'<4F>I'll ask you again.'<44>
+
+## Group `$22` at `$00:AC48`
+
+- `$0440`: 'We've taken <50> as hostage.'<44>
+- `$0441`: 'To change the hostage,talk to me.'
+- `$0442`: 'Do you want to change the hostage?'
+- `$0443`: 'Who will be the hostage?'
+- `$0444`: 'Mercy on me! I admit my wrongdoing!'
+- `$0445`: 'Splendid,<49>!'<4F>The Queen ordered me to follow you.'<4F>She instructed me to offer assistance if necessary.'<4F>I'll take him to the Castle.'<4F><49>,you return to the Castle.Bye!'
+- `$0446`: 'Yummm! A delicious looking human!'
+- `$0447`: 'You jail breaker!'
+- `$0448`: 'You crook!'
+- `$0449`: Saro:'Everyone! Something terrible has just happened at Aktemto!'<44>Saro:'Esturk,the Ruler of Evil,seems to have revived!'<44>Saro:'It seems men dug too deep and reached the Evil World.'<44>Saro:'We must go to Aktemto now! We'll bring Esturk the Great to our Castle!'<44><58><4B>Necrosaro chants Return!
+- `$044A`: 'Thieves! Help!'
+- `$044B`: 'Huh? It's you!'<44>'No way! You can't catch me!'
+- `$044C`: <49>
+- `$044D`: 'We've taken <49> as hostage.'
+- `$044E`: 'I believe <49> is indispensable to you....'<4F>I'll take someone else.'
+- `$044F`: 'No! I...<4B>I'm not tasty!'
+- `$0450`: 'I'm too skinny.I know the person in the next room will taste better.'
+- `$0451`: 'Help! <4B>Somebody help me!'
+- `$0452`: Stairs appear before you.
+- `$0453`: <49> plays the Flute of Uncovering.
+- `$0454`: You can't talk this way!<44>Use TACTICS Command to change members.
+- `$0455`: 'Huh? It's you!'<4F>No! <4B>You won't catch me!'
+- `$0456`: Necrosaro:'I can't believe it! Esturk the Great was destroyed!'<44>Necrosaro:'According to the prophecy,only the Hero,a descendant of Zenithians,is capable of defeating the Ruler!'<44>Necrosaro:'Are you...are you the...!?'
+- `$0457`: 'Necrosaro! We have bad news!'<4F>Your Rosa,the elfin girl,has been abducted by humans!'<44>Necrosaro:'What?'<44>Necrosaro:'Curses! Everyone! We must return to our base!'
+- `$0458`: <50> goes out ahead and gets in the wagon!
+- `$0459`: Alena:'Brey! You're back safely!'<44>
+- `$045A`: Alena:'I couldn't find the Padequia Root.'
+- `$045B`: Alena:'What? You found the Padequia Root?'<44>Alena:'I tried myself but couldn't find it.I'm impressed,Brey!'<44>
+- `$045C`: <49>:'.........!'<44>
+- `$045D`: Cristo:'I heard Necrosaro destroyed the Hero's village.Is <49> the...?'<44>Alena:'Really? Then we should journey together.'<44>Alena's party joined the Hero's Party!<43><55><44>They go out ahead and get in the wagon.
+- `$045E`: Brey:'Princess,about that....'<44>Alena:'What? <4B>Are you sure? Someone else is also searching for Necrosaro?'<44>
+- `$045F`: Alena:'I'd like to see them.Would you please bring them?'
+
+## Group `$23` at `$00:B174`
+
+- `$0460`: Alena:'Brey told me that <49> is searching for Necrosaro.Is that right?'<44>
+- `$0461`: A voice is heard....<4F>This is Zenithian Tower.Only those who are eligible can enter....'<4F>Leave!'
+- `$0462`: A mysterious force revives Lucia!<44>
+- `$0463`: Lucia:'Thanks to you,I'm back in Zenithian Castle!'<44>Lucia:'I have to let everyone know I'm back.'<44>Lucia:'See you later!'
+- `$0464`: 'Kekiki! You shouldn't turn your back on an enemy,you fool!'
+- `$0465`: 'Gasp!'<43><51><4B>
+- `$0466`: <41>One of the shields seems to have broken....
+- `$0467`: 'Uggg....How devastated Necrosaro was after losing Rosa!'<4F>All mankind deserves to be exterminated....Glory to Necrosaro! <4B>Gasp!'<43><51><4B>
+- `$0468`: 'Kkkk....You're good,I admit....'<4F>Enjoy your moment of glory.'<4F>But remember the ever evolving Necrosaro will destroy you all.'<4F>Wa,Ha,Ha! <4B>Gufff!'<43><51><4B>
+- `$0469`: 'How I regret....'<4F>My curse on you....<4B>Gafff!'<43><51><4B>
+- `$046A`: 'Gaahhh...!'<4F>Who are you? I'm Necrosaro.I have just awoke as the Ruler of Evil.'<4F>Urrggg...! Can't remember anything....'<4F>But I know what I need to do.'<4F>Gawaaa...! I must exterminate you all!'
+- `$046B`: 'Guaarrr...!'<4F>Is this my end? I'm burning...my body is melting away....'<4F>Ugrrr.........!'
+- `$046C`: <49> receives the Fire of Serenity from <49> and throws it into the fire.
+- `$046D`: Lucia:'Come here,Doran!'
+- `$046E`: Lucia:'Take Doran with you.He'll be a good help.'<44>
+- `$046F`: Doran joined the Party!<43><55><44>
+- `$0470`: Doran goes out ahead and gets in the wagon!<44>
+- `$0471`: Lucia:'Good luck to you all!'
+- `$0472`: 'Ahh! <4B>It's mother! Hurray!'
+- `$0473`: Please place your wager.You can bet from 1 to 100 coins.
+- `$0474`: Select the cards you want to HOLD.Then press DEAL.
+- `$0475`: Congratulations! You've won <47> coin<4C>.
+- `$0476`: If you win,you will get <47> coin<4C>.
+- `$0477`: Will you try Double-or-Nothing No.<47>?
+- `$0478`: Select a higher card than this from the 4 cards.
+- `$0479`: It's a tie! Try again.
+- `$047A`: Sorry,you've lost.
+- `$047B`: Do you want to play again?
+- `$047C`: You don't have any coins.Please come back after buying some.
+- `$047D`: 'Alena,do you want to use your Medical Herb before the next match?'
+- `$047E`: 'Do you want to use more Medical Herb?'
+- `$047F`: 'Alena,you don't have any Medical Herb!'<44>
+
+## Group `$24` at `$00:B60C`
+
+- `$0480`: 'Step right up! Witness the breathtaking fights among monsters from all countries!'<4F>Pick the winning monster,and you'll rake in the coins!'<44>
+- `$0481`: 'For each fight,you can bet from 1 to 50 coins.How much do you want to wager?'
+- `$0482`: 'You don't have enough coins.Come back after buying more.'
+- `$0483`: 'Gufff!'
+- `$0484`: 'On <50>,
+- `$0485`: 'Are you leaving? Come back again!'
+- `$0486`: <49> comes out the winner!
+- `$0487`: 'Sorry,you've lost.'<44>
+- `$0488`: 'Congratulations! You've won <47> coin<4C>.'<44>
+- `$0489`: 'Here's the next fight's monsters and their odds.Which monster do you want bet on?'
+- `$048A`: 'You can't pass up this fight.Which monster do you want to bet on?'
+- `$048B`: To insert a coin,press UP on the Control Pad.To start,press the A Button.
+- `$048C`: If you press the A Button,the reels will stop spinning starting from left to right.
+- `$048D`: 'Oh,Soldier,please find our children!'<4F>They're alive! I know it!'
+- `$048E`: 'Bye...real princess....'
+- `$048F`: Do you want to play the slot machine one more time?<43>      YES   NO<40>
+- `$0490`: <44>'I don't think this will produce any special effect when used as item in battle.'
+- `$0491`: <44>'Furthermore,I think this will produce some special effect when used as item in battle.'
+- `$0492`: <44>'You should be able to defeat any monster by penetrating its vital spot with this.'
+- `$0493`: <44>'So this is the Zenithian Sword! I was expecting something more spectacular....'
+- `$0494`: <44>'Look at it glow! This sword is something,after all!'
+- `$0495`: <44>'What cute clothes!'
+- `$0496`: <44>'Equipped with this,I think you'll lessen damage from fires.'
+- `$0497`: <44>'Equipped with this,I think you'll lessen damage from spells.'
+- `$0498`: <44>'I don't know what to tell you.'
+- `$0499`: <44>'Equipped with this,I think you'll lesson the chance of being confused.'
+- `$049A`: <44>'Should increase Agility.'
+- `$049B`: <44>'Should increase Luck.'
+- `$049C`: <44>'Must be a medicine.'
+- `$049D`: <44>'Should repel weak monsters.'
+- `$049E`: <44>'This flies you to the destination of your choice!'
+- `$049F`: <44>'This revives anyone!'
+
+## Group `$25` at `$00:BA1C`
+
+- `$04A0`: <44>'This ends paralysis!'
+- `$04A1`: <44>'I think this restores MP.'
+- `$04A2`: <44>'I think this restores everyone's HP at once.'
+- `$04A3`: <44>'I think this produces some special effect if used in battle.'
+- `$04A4`: <44>'I think this releases a scent monsters love.'
+- `$04A5`: <44>'But it seems it can only be used effectively once a day.'
+- `$04A6`: <44>'I think this increases Strength.'
+- `$04A7`: <44>'This increases the Maximum HP!'
+- `$04A8`: <44>'This increases the Maximum MP!'
+- `$04A9`: <44>'Hmm...A mysterious object.'
+- `$04AA`: <44>'Looks delicious! I'm sure you'll feel better if you eat this.'
+- `$04AB`: <44>'What awful hand writing! Only I can read something like this.Ehem!'
+- `$04AC`: <44>'Phew! I can't stand it!'
+- `$04AD`: 'I'm Ruvas.They called the armor I wore the Zenithian Armor.'<4F>Somebody stole it.'
+- `$04AE`: 'Oh,you've found my armor!'<4F>I'll give it to you.Use it to save the world!'
+- `$04AF`: Hector:'Excuse me,everyone!'<44>Hector:'I know I must take over my father's inn someday.'<44>Hector:'I've decided to study management under Old Howden.'<44>Hector:'Goodbye,Primrose! Goodbye,everyone! Best of luck!'<44>Hector left the Party!
+- `$04B0`: 'I'm Master Dragon.I oversee the world from this Castle.'<44>
+- `$04B1`: <49> revives!<44>
+- `$04B2`: 'The friendship which has grown among you during this journey is so firm,no one can ruin it.'<4F><49>,I assure you.'
+- `$04B3`: 'I collect Small Medals from all over the world.'<4F>I reward those who bring them to me.'
+- `$04B4`: 'I collect Small Medals from all over the world.'<44>
+- `$04B5`: 'You brought some Small Medals? You can give them to me.'<44>
+- `$04B6`: 'I'm keeping your <47> Small Medal<4C>.Is there anything you want?'
+- `$04B7`: 'What do you want?'
+- `$04B8`: 'The <48>.Is that correct?'
+- `$04B9`: 'Sorry but I can't give you that unless you bring more Small Medals.'<44>
+- `$04BA`: 'You want the <48>,right?'<44>
+- `$04BB`: 'Who will take it?'
+- `$04BC`: 'Very well.I will give you some choices.'<44>
+- `$04BD`: 'But <49> can't carry any more things.'<4F>Will anyone else take it?'
+- `$04BE`: 'Do you want anything else?'
+- `$04BF`: 'Come back anytime!'
+
+## Group `$26` at `$00:BE35`
+
+- `$04C0`: '<49>,the Hero,a Zenithian and human descendant!'<4F>Thanks to you and your friends,the Secret of Evolution,along with Necrosaro,has been driven deep down into the abyss of the world.'<4F>With the threat gone,peace will rule the world again!'<4F>The Eight Chosen Ones! I thank each one of you.'<4F>Ragnar,your performance was splendid.'<4F>Alena,you've performed with bravery and courage.'<4F>Brey and Cristo,I commend your devotion to Alena and your contribution to the quest.'<4F>Mara and Nara,I'm sure your father would be proud of you!'<4F>Taloon,continue to benefit the world and its people with your genius in trade.'<4F>And <49>!'<4F>You've proven to be an extraordinary leader! You won't have to return to the earth.'<4F>I shall allow you to live with us in this Zenithian Castle.'<4F>Eh? <4B>What's wrong?'<4F>You wish to return to the earth with them? Hmm....'<4F>Very well.I'll honor your wish.'<44>
+- `$04C1`: The Giant Statue,Colossus,begins moving!
+- `$04C2`: It seems the combined strength of 3 people is necessary to break the door open.
+- `$04C3`: There is a lever.Do you want to pull it?
+- `$04C4`: 'The ones you saw upstairs were our imposters.'<4F>There's no hope of escape...'<4F>for YOU!'
+- `$04C5`: 'The next fight will begin shortly.Do you want to play again?'
+- `$04C6`: But the Leaf of World Tree doesn't come off!
+- `$04C7`: 'Since you've won over 10000 coins,we must stop now.'
+- `$04C8`: Hector:'Hello! It's me,Hector!'<4F>Hector:'See? I'm working hard!'<44>
+- `$04C9`: <50>:'.........'
+- `$04CA`: You can't pass up this fight.
+- `$04CB`: 'DO NOT PROCEED ANY FURTHER....LEAVE....'<44>
+- `$04CC`:  <47> coin<4C>,right?<43> Now watch the fight.'
+- `$04CD`: Cristo:'I'd like to meet too.'
+- `$04CE`: 'Cry! Shed Ruby Teardrops!'<4F>Cry harder! Harder!'
+- `$04CF`: Necrosaro:'Rosa!'<44>Necrosaro:'You! What have you done to her?'
+- `$04D0`: Rosa:'Sa...<4B>Sar...<4B>Saro...<4B>you've...<4B>come for me....'<44>Rosa:'Please listen to my last words....'<44>Rosa:'Give...please...give up your obsession and come with me....Aaah!'
+- `$04D1`: Necrosaro:'R...Rosa!'<44>Necrosaro:'.........'<44>Necrosaro:'Those humans! I will let them suffer for this! I promise!'
+- `$04D2`: 'Princess Alena,I thank you for winning!'<4F>I know your father,the King of Santeem,will be proud of you.'<4F>Perhaps you should return home and let him know you're alive and well.'
+- `$04D3`: 'This is my horse,Primrose.Everyone,be nice to her,OK?'<4F>Let's go!'
+- `$04D4`: A voice is heard....<4F>This is Zenithian Castle.Only those who are eligible can enter.'<4F>Leave!'
+- `$04D5`: 'You can't take any more coins.'<4F>We look forward to your next visit.'
+- `$04D6`: <41><41>
+- `$04D7`:  <49>,<49>,
+- `$04D8`: 
+- `$04D9`: 
+- `$04DA`: 
+- `$04DB`: 
+- `$04DC`: 
+- `$04DD`: 
+- `$04DE`: 
+- `$04DF`: 
+
+## Group `$27` at `$00:83E3`
+
+- `$04E0`: uee:pip the Castle immediately! The King is in trouble!'
+- `$04E1`: 'It's awful.The King can't speak!'
+- `$04E2`: 'You can exchange coins for items at this Exchange Counter.'<44>
+- `$04E3`: '<49> has <47> coin<4C> now.Would you like to get items?'
+- `$04E4`: 'What would you like?'
+- `$04E5`: 'The <48>? Is that correct?'
+- `$04E6`: 'We'll keep the rest of the coins for you.Come again.'
+- `$04E7`: 'This is the Coin Seller.'<44>
+- `$04E8`: '<49> has <47> coin<4C> now.'
+- `$04E9`: '<47> coin<4C>?'<44>
+- `$04EA`: 'Thank you.Good luck!'
+- `$04EB`: 'Sorry but you don't have enough money.'<44>
+- `$04EC`: 'Thank you very much.'
+- `$04ED`: Thus Taloon finally gets his own shop and calls for his family.
+- `$04EE`: Neta:'How wonderful! This is our shop! It's a dream come true!'<44>Neta:'I'll work hard from now on!'<44>Neta:'Let's work together to make this the world's greatest shop!'<44>Neta:'I love you...Smack!'
+- `$04EF`: <49> can't be equipped with the <48>.
+- `$04F0`: There's no door here.
+- `$04F1`: King:'..........<4B><4B>Un? <4B><4B>Ah...<4B>Ah...<4B><4B> Oh! <4B>I <4B>I can speak!<4B><4B> I can speak!'<4F>You did....I thank you.'<4F>I had terrible dreams.'<4F>A big monster came out of the Evil World and was destroying everything.'<4F>At first,I intended to keep them to myself,but I kept having the same dreams over and over again.'<4F>I became worried,so I decided to tell the Counsel about them.Then I lost my voice.'<4F>Something terrible may be about to happen....'<4F>I won't stop you anymore.Travel the world and see what's happening.'<4F>Brey and Cristo,I place Alena's safety in your hands!'
+- `$04F2`: en nte lock doesn't turn.
+- `$04F3`: There's no key.
+- `$04F4`: 'I see you've brought what we want.Give it to me now!'
+- `$04F5`: 'I got it! Here's the Princess.Bye!'
+- `$04F6`: 'Don't you want the Princess back alive? Give it to me!'
+- `$04F7`: 'Thanks for rescuing me.I've learned a lesson.'<4F>I'm not really a princess.My name is May.I'm just an actress.'<4F>I got carried away because people treated me nicely when I pretended to be a princess....'
+- `$04F8`: 'I'll join my companions now.'<4F>It's not much,but I'll give you this Thief's Key.'<44>
+- `$04F9`: Thereafter,the fake princess,May,and her companions disappeared.<44>And a new day began....
+- `$04FA`: 'The King says you can pass now.'
+- `$04FB`: 'Be very careful on your journey.'
+- `$04FC`: Reed:'You can't carry any more things.Come back after selling or discarding some.'
+- `$04FD`: Neta:'Welcome home,darling.Have you brought more merchandise?'
+- `$04FE`: Neta:'Then come over here....'
+- `$04FF`: Neta:'Before receiving the merchandise,I'll give you the proceeds from yesterday's sales.'<44>Taloon receives <47> gold piece<4C>!<44>

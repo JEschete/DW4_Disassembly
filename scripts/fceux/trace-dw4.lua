@@ -1,8 +1,6 @@
-local bootstrap_path = "D:/Dev/Decomp/DragonWarrior4/work/fceux/lua-bootstrap.txt"
-local bootstrap = io.open(bootstrap_path, "w")
-if bootstrap then bootstrap:write("loaded\n") end
-
 local config = assert(DW4_TRACE_CONFIG_DATA, "DW4_TRACE_CONFIG_DATA is not set")
+local bootstrap = config.bootstrap and io.open(config.bootstrap, "w") or nil
+if bootstrap then bootstrap:write("loaded\n") end
 if bootstrap then bootstrap:write("config=embedded\n") end
 if bootstrap then bootstrap:close() end
 FCEU.speedmode("maximum")

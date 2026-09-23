@@ -1,0 +1,355 @@
+# Dragon Warrior IV Text - Physical Bank $04
+
+Bank `$04:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 10; messages: 320.
+
+## Group `$41` at `$00:81CF`
+
+- `$0820`: Taloon,you'll go south if you get the Iron Safe,won't you?'<4F>I hear a big castle called Endor is in the south.You'll make a lot of money there.
+- `$0821`: I see.You want to be the world's greatest arms merchant.'<4F>You need to gain experience in fighting too.'<4F>Good arms merchants should know how to use weapons properly.
+- `$0822`: <4E>Tom:'The dog in the backyard is my son's.He only obeys my son.'<44>Tom:'That's why I keep him caged.'
+- `$0823`: What? You want to own a shop?'<4F>You should go to Endor and buy one there.Then you can call for your family....'<4F>Nice to have a dream,eh?
+- `$0824`: Hello,Traveler! Are you lost?
+- `$0825`: Oh,that's too bad.Why don't you stay here tonight?
+- `$0826`: Sleep well!
+- `$0827`: Really? Well,have a good trip!
+- `$0828`: This is an armor shop.Since the monsters began roaming around,everyone has been buying armor.'<4F>I've nothing left to sell you.
+- `$0829`: We're short of armor in this Castle.'<4F>How about selling me some of yours?
+- `$082A`: That's too bad.
+- `$082B`: But you don't have any armor.Come back when you have some.
+- `$082C`: What do you want to sell?
+- `$082D`: Thanks,but we have enough weapons and other things.'<44>
+- `$082E`: The <48>? I'll pay <47> gold piece<4C> for it.Is that OK?
+- `$082F`: Alright,it's done.'<44>
+- `$0830`: Too bad.
+- `$0831`: If you sell that,you'll be in big trouble! I shouldn't buy that from you.'<44>
+- `$0832`: Do you have anything else to sell?
+- `$0833`: Alright,if you get more armor,come back.
+- `$0834`: Endor is south of here.I went there once,before the bridge crumbled.'<4F>I met an old man there who wanted to sell his shop.
+- `$0835`: Endor is a wealthy country.'<4F>Our King is determined to conquer it.
+- `$0836`: This is our Prince's room.People like you are not welcome here.Get out!
+- `$0837`: <4E>Reed:'I'm Reed,this country's Prince.'<44>Reed:'Assuming you're a traveling merchant,I've a favor to ask you....'<44>
+- `$0838`: <4E>Reed:'Meet me at night in the weapon shop's backyard.'
+- `$0839`: <4E>Reed:'Oh,here you are! It's me,Prince Reed.'<44>Reed:'I'd like you to go to Endor as soon as the bridge is repaired.'<44>Reed:'And hand this letter to the Princess of Endor.'<44>
+- `$083A`: <4E>Taloon received the letter!<43><56><44>
+- `$083B`: <4E>Reed:'I'm counting on you!'
+- `$083C`: <4E>Reed:'Please take the letter to the Princess of Endor as soon as the bridge is repaired.I'm counting on you.'
+- `$083D`: That man over there is a petty thief.'<4F>I think he's from Lakanaba.
+- `$083E`: I don't see that man there anymore.
+- `$083F`: Hey,Taloon! It's me! That's right,I'm the son of Grandpa Tom.'<4F>How stupid I was to get caught and sent to prison.No more thieving for me.'<4F>You're a merchant,right? Would you get me a Wing of Wyvern?
+
+## Group `$42` at `$00:8737`
+
+- `$0840`: <4E><44>'Oh,you already have one.Could I have it? I'll make it up to you when I return to my town.'
+- `$0841`: Come on! Give it to me.
+- `$0842`: Thanks a lot! Don't worry,I'll work hard when I return to the town.'<4F>I'll see you then,OK?'<44>Tom's son hurled the Wing of Wyvern!
+- `$0843`: Grandpa Tom's son is back! How wonderful!
+- `$0844`: <4E>Tom:'Oh,Taloon.My son's returned! Thank you.I'm so glad!'<44>
+- `$0845`: <4E>Tom:'I'm so grateful.'<44>Tom:'It must have been fate that led you to my son.'
+- `$0846`: Taloon,have you been to Endor?
+- `$0847`: I bet it's a bustling place.
+- `$0848`: Is the bridge still down?'<4F>I heard da Gardi went to fix it.What happened?
+- `$0849`: Ah-choo! A fox tricked me out of all my armor.'<4F>Someone else was also tricked by foxes.What was his name? I think it sounded like da Gardi....
+- `$084A`: <4E>Tom:'My son says he'll work hard.I'm so relieved to hear that.'<44>Tom:'My son? He's in the backyard by the dog cage.'
+- `$084B`: Taloon! It's me,Tom's son! Thanks so much for everything!'<4F>Yes,I'll reward you.'<4F>What? You just want to borrow my dog,Tov? No problem.'<4F>He loves to hunt foxes.I'm sure he'll be a great help.
+- `$084C`: No! Help! I hate dogs!'<4F>It's too late...my supernatural power is....
+- `$084D`: Yelp,Yelp! I'm sorry.Please let me go.I won't play tricks anymore.
+- `$084E`: Don't be so cruel! Forgive me!
+- `$084F`: Thanks! Here,let me give you this armor in appreciation.'<44>
+- `$0850`: <4E><44>'Yelp,Yelp! Bye now!'
+- `$0851`: Are you a merchant who has done business with us before?
+- `$0852`: Then you came to sell the King something.'<4F>We don't deal with new merchants unless they've got something extraordinary.You should forget it.
+- `$0853`: I hear magnificent treasures are in the cave,but many terrible monsters live there.'<4F>Why don't you hire me as your guardsman for 400 gold pieces for 5 days?
+- `$0854`: But I hate dogs! Return him and come back.
+- `$0855`: But you don't have enough money.Come back when you do.
+- `$0856`: Oh,you do? Alright! I'll go anywhere with you.'<44>Strom joined the Party!<43><55><40>
+- `$0857`: Oh well.If you change your mind,come see me.
+- `$0858`: Are you a merchant too? Did you come here for the Silver Statue?
+- `$0859`: Me too.I'm certain it will fetch a great price.
+- `$085A`: Oops! Forget what I said then.Ha,Ha,Ha.
+- `$085B`: Mumble...Mumble....If the Silver Statue is in the cave,he should just go get it....'<4F>My husband is such a coward.
+- `$085C`: I've trained myself to cast some spells.'<4F>How about hiring me for 600 gold pieces for 5 days?
+- `$085D`: Oh,you don't seem to have enough money.When you do,please come back.
+- `$085E`: Oh,you do? Let's go then.'<44>Laurent joined the Party!<43><55><40>
+- `$085F`: Well,if you change your mind,please come see me.
+
+## Group `$43` at `$00:8CD6`
+
+- `$0860`: I heard that people disappeared from Santeem in the west.What happened to them?
+- `$0861`: Is there anyone who has the King's permission to do business and wants to buy my shop?
+- `$0862`: How about buying my shop for 35000 gold pieces?
+- `$0863`: That's too bad.
+- `$0864`: But you don't have enough money.Don't tease me.
+- `$0865`: You do? Alright,from now on,you're the owner of this shop.
+- `$0866`: <4E>Neta:'Are you tired already? It's still early,but you want to sleep?'
+- `$0867`: <4E>Neta:'I'll stay at the shop and you bring in the merchandise,OK?'<44>Neta:'When you speak to me over this counter,I'll take the goods you bring and put them up for sale.'
+- `$0868`: Our family has been wealthy for a long time,and my husband is a collector of valuable things.'<4F>Still,we can't use up all our money.He,He,He.
+- `$0869`: I love to collect antiques.'<4F>I hear the Silver Statue exists somewhere.
+- `$086A`: <4E><44>'I want it.I don't care what it costs.'
+- `$086B`: Wait a minute! Isn't that the Silver Statue in your hand?!'<4F>I'll pay 20000...no,25000 gold pieces for it! Will you sell it to me?
+- `$086C`: Thank you so much!
+- `$086D`: No? If you change your mind,come back anytime and sell it to me.
+- `$086E`: The Silver Statue is beautiful.'<4F>...by the way,I hear there once was a sword called the Zenithian Sword.
+- `$086F`: Now the tournament is over,this place will be closed for a while.
+- `$0870`: You aren't allowed to enter.Leave!
+- `$0871`: I see you're an arms merchant.I hear there are many powerful weapons these days.'<4F>The soldiers in this Castle are still using copper swords.It's a shame....
+- `$0872`: The King has so many responsibilities.He doesn't have time to worry about our weapons.
+- `$0873`: Are you here to deliver weapons and armor to the King?
+- `$0874`: Then I'll take your Broad Sword and Half Plate Armor.
+- `$0875`: <50> Broad Sword<4C>!
+- `$0876`: <47> suit<4C> of Half Plate Armor!
+- `$0877`: I've made a record of the delivery.'<44>
+- `$0878`: What? You haven't brought anything yet?'<44>
+- `$0879`: The rest of the order is...'<44>
+- `$087A`: Keep bringing them.
+- `$087B`: Great! You filled the order.You'll be paid as promised.'<44>Taloon received 60000 gold pieces!<44>
+- `$087C`: I appreciate your effort.I wish you good luck in your business.
+- `$087D`: When you fill the order,you'll be paid 60000 gold pieces.'<4F>You can buy them in other towns if you want.Do your best.
+- `$087E`: Ho,Ho,Ho.You made a tremendous amount of money.'<4F>Use it wisely.
+- `$087F`: What? Do you want to stop for today?
+
+## Group `$44` at `$00:91E6`
+
+- `$0880`: Thanks.Let me add up your earnings for today.'<4F>Here are your wages.'<44>Taloon received <47> gold piece<4C>!<44>
+- `$0881`: See you tomorrow.
+- `$0882`: Then go back to work.'<4F>See me when you're done for the day,OK?
+- `$0883`: <4E>Mia:'You came from Lakanaba? That must mean the bridge was repaired!'
+- `$0884`: <4E>Mia:'My father probably has a good idea.I always trust him.'
+- `$0885`: <4E>Mia:'I can marry Reed! It's like a dream!'<44>Mia:'Taloon is your name,is it not? Thank you so much.I'm so grateful.'
+- `$0886`: I commend you for traveling so far to see me.'<4F>Hmm...you want my permission to own a shop here in Endor?
+- `$0887`: I heard your request.I'll think about it.You can leave now.
+- `$0888`: Oh,that's good.Too many people have been making the same request.
+- `$0889`: Give this letter to the King of Bonmalmo.'<4F>It's not the time for us humans to be fighting each other.'<4F>Help prevent the war,and I'll give you permission to own a shop.
+- `$088A`: Taloon! Welcome back!'<4F>I received the message from the King of Bonmalmo.'<4F>Thanks for your help.As promised,I give you permission to own a shop.
+- `$088B`: Taloon,keep up the good work,not only for yourself but for the world and all its people.'<4F>Remember to report to me when you open a shop.
+- `$088C`: Taloon! I hear you own a shop now.'<4F>How about taking a big order from me?'<4F>I want you to collect weapons and armor for my soldiers and deliver them to the people downstairs.'<4F>My order is 7 Broad Swords and 7 suits of Half Plate Armor!
+- `$088D`: Thanks for providing the weapons and armor to my soldiers.'<4F>By the way,have you heard of the Zenithian Sword?'<4F>I hear it's the most powerful sword in the world.It can even break rocks,they say.'<4F>I wish I could get it....
+- `$088E`: My son,Reed,will be the next King of Endor.Ha,Ha,Ha!
+- `$088F`: <4E>Reed:'I heard  the story from my father.If you happen to go to Endor,please tell Mia that...'<44>Reed:'I'm looking forward to our marriage!'
+- `$0890`: The monsters are getting stronger these days.Many castles are buying many weapons and armor.'<44>
+- `$0891`: I envy you for being an arms merchant.You must be making tons of money.
+- `$0892`: I began digging a cave to go to an eastern port town.'<4F>I dreamt of owning a ship and retrieving all the treasures of the world.'<4F>But I ran out of money and I'm getting old too.'<4F>If there were 60000 more gold pieces,the excavation could be started again.Would you like to carry on my dream?
+- `$0893`: Too bad....
+- `$0894`: Are you sure? Then you must own a shop first.Everything starts there.
+- `$0895`: You do? Then I'll wait for you to bring me 60000 gold pieces.
+- `$0896`: You do? Yes,I've received 60000 gold pieces.'<44>
+- `$0897`: I'll use this money to hire people and restart the excavation.Be assured it'll be finished.
+- `$0898`: Taloon.Look,I started the excavation again.'<4F>When it's done,I'll send a message to your house.It will be soon.
+- `$0899`: Hi,Taloon! You came here to return my dog?
+- `$089A`: Good boy,Tov.Now,go back to your cage.'<44>
+- `$089B`: I wish you the best of luck,Taloon.
+- `$089C`: Well,come back whenever you feel like returning my dog.I'll be here.
+- `$089D`: Do you want to work here? Sorry,I don't need any new workers.
+- `$089E`: You now own a shop in Endor? That's great!
+- `$089F`: I heard you bought a shop in Endor.Congratulations! You're the most successful person from our town.
+
+## Group `$45` at `$00:98E1`
+
+- `$08A0`: <4E>Neta:'Hello,darling.I just received a message that the cave was completed.'<44>Neta:'I didn't understand what it meant....'<44>Neta:'Are you leaving on a journey again?'
+- `$08A1`: <4E>Neta:'Hello,darling.What? A message? No,I haven't received any.'<44>Neta:'Anyway,aren't you a little tired of working?'<44>Neta:'I hear the Casino reopened.Why don't you go there and relax?'
+- `$08A2`: <4E>Neta:'Alright,I won't say anything.'
+- `$08A3`: <4E><44>Neta:'You're always chasing dreams....'<44>Neta:'But that's what I love about you.'<44>Neta:'Why don't you go? I'll be waiting for your return.'
+- `$08A4`: <4E>Neta:'You don't have to lie to me....'<4F>Neta:'I've heard about the Zenithian Sword too.You want to search for it,right?
+- `$08A5`: Taloon! The cave is finished!'<4F>Carry on my dream and collect as many treasures as possible.
+- `$08A6`: I'm traveling the world in search of a legendary sword.'<4F>If you go through the cave and reach an eastern country,you may find out something about it.
+- `$08A7`: Many people go through this cave hoping to fulfill their dreams.'<4F>Taloon,I wish you good luck on your journey.
+- `$08A8`: The stage is downstairs.
+- `$08A9`: <4E><44>'Mara! I thought you left town.You're back!'
+- `$08AA`: Mara!'<4F>I'm so excited to talk with you.
+- `$08AB`: Oh,Mara! You are...no!
+- `$08AC`: Mara,it's you! I heard you quit,but you're back.I'm glad!
+- `$08AD`: I want to be on stage too....
+- `$08AE`: This is the Village of Kievs.
+- `$08AF`: <4E><44>'You must be Edgar's daughters! You're back!'
+- `$08B0`: You're Edgar's daughters!'<4F>I can't accept money from you.You're from this village.'<4F>There's no charge.Would you like to stay?
+- `$08B1`: Rest well.
+- `$08B2`: Good morning.Have a safe journey.
+- `$08B3`: I see.Be careful on your journey.
+- `$08B4`: It's a shame a man like Edgar was betrayed by his pupil.'<4F>Say,didn't Edgar have another pupil? Orin...that's his name,I think.'<4F>He was terribly injured too.Where is he now?
+- `$08B5`: Isn't that you,Orin? You're alive.Glad to see you again!
+- `$08B6`: How long has it been since Edgar died?'<4F>The stray puppy Nara took in back then has grown up.
+- `$08B7`: Hey,it's you,Nara! Isn't it nice to be back in your hometown?
+- `$08B8`: Oh,Mara!'<4F>I told you not to seek revenge....
+- `$08B9`: I despise Balzack! He became Edgar's pupil to steal his invention.
+- `$08BA`: <4E><44>'By the way,this is a secret....'<4F>Orin,Edgar's other pupil,is hiding in the cave west of this village.'<4F>Orin may know Balzack's whereabouts....
+- `$08BB`: Rumor is Edgar failed to make gold.'<4F>But he made an extraordinary discovery.Ah...the Secret of Evolution...that's it.
+- `$08BC`: Don't hurt me! I'm not a bad Slime!'<44>
+- `$08BD`: Do you know? Orin used to break open locked doors.
+- `$08BE`: Huh? Mara and Nara! It's me,Orin!'<4F>You're after revenge? I've been recovering,dreaming of revenge too.'<4F>Balzack allied himself with the evil ones and gained great magic powers.'<4F>But the Sphere of Silence should help you overcome his magic powers!'<44>
+- `$08BF`: Oh,you already have it!'<44>
+
+## Group `$46` at `$00:9F1F`
+
+- `$08C0`: I'll accompany you.Let's go!'<44>Orin joined the Party!<43><55><40>
+- `$08C1`: Where's the King's chamber? I don't know.'<4F>They say the new King is always in the secret chamber.
+- `$08C2`: He,He,He.I won't let you go.He,He,He.
+- `$08C3`: No! I'll be caught! Huff,Huff.
+- `$08C4`: Strange...I hear voices below.
+- `$08C5`: Good food,dance,and song....Isn't this place like paradise?
+- `$08C6`: Indulging in ultimate luxury is allowed here.'<4F>I'm so H<4B>A<4B>P<4B>P<4B>Y!
+- `$08C7`: Wa,Ha,Ha! I'll catch you!
+- `$08C8`: Get out of my way! I'll be caught! Eee,Eee...
+- `$08C9`: I'm this Castle's scholar of magic.'<4F>What type of magic? I wouldn't tell you.Ha,Ha,Ha.
+- `$08CA`: Mumble...Mumble...Bring more girls!'<44>
+- `$08CB`: In order to complete the Secret of Evolution,the essence of girls' youth is needed....
+- `$08CC`: This Castle's Counsel is a nervous type.'<4F>Some time ago,the man who made a big sound by the Counsel's room was thrown into jail in the port town.'<4F>Where's the port town? It's on the shore north of this Castle.
+- `$08CD`: This is the House of Prophecy.'<44>
+- `$08CE`: The man you seek revenge upon is protected by a tremendous evil force.'<4F>Worry not.'<4F>I see you are protected by radiant lights....'<4F>They are small and frail now,but more lights will join them and they'll fuse into one powerful force.'<4F>Be patient.When you are sunk in the depths of despair...'<4F>then shall your true journey begin.
+- `$08CF`: This is Haville,a port town where ships bound for Endor depart.
+- `$08D0`: The regulation has become more strict since the new King took over Keeleon.'<4F>It's very difficult to get boarding passes these days.
+- `$08D1`: Ships don't leave at night.Come back during the day.
+- `$08D2`: You can't get boarding passes anymore.Only those who obtained them in the former King's time have them.'<4F>The next ship may be the last one to leave this town.
+- `$08D3`: I fell in love with a girl! I'll marry her.'<4F>Who's she? Her name is Joy! Hee ha!
+- `$08D4`: I'm happy! Yes,HAPPY!
+- `$08D5`: Really? You're on a journey of revenge? The object of your revenge is named Balzack?!'<4F>The name of Keeleon's new King is also...I think...Balzack....No,must be someone else.
+- `$08D6`: This is Jail.Those who disobey the King of Keeleon are put here.
+- `$08D7`: I didn't disobey the King.'<4F>I just accidentally ignited gunpowder near the room of the Castle's Counsel....'<4F>The gunpowder? I got it at Aktemto Mine when I was working there.
+- `$08D8`: I hear the Sphere of Silence can contain the magic spells of your opponent.
+- `$08D9`: This is Aktemto,a mining town.It's not safe to live here anymore.
+- `$08DA`: The Castle prohibited gunpowder manufacturing.'<4F>If you need gunpowder,take some of what's left in the mine.Cough...Cough...
+- `$08DB`: You've come for gunpowder? It's in the jar.'<4F>But it's damp and may not work except to make a loud noise.
+- `$08DC`: Do you have a Boarding Pass? If not,I can't let you aboard.
+- `$08DD`: You brought a Boarding Pass.Hurry! The ship will sail soon.
+- `$08DE`: The cabins are downstairs.
+- `$08DF`: I'm the captain.We'll sail soon.Wait in your cabin.
+
+## Group `$47` at `$00:A570`
+
+- `$08E0`: Once the ship leaves,you won't be able to come back to this country.'<4F>Do you have anything you should take care of before leaving? Can we sail now?
+- `$08E1`: Well then,let's sail.Raise the Anchor!
+- `$08E2`: In that case,go finish what you have to do.We'll wait for you.
+- `$08E3`: I won't tell my brother,Pipin,what happened to our father...'<4F>until he's old enough to bear agony and despair....
+- `$08E4`: I'm the Counsel.'<4F>This is my room.Leave now or I'll have you put in jail.
+- `$08E5`: What are you doing here? Get away!
+- `$08E6`: Wh...Who are you? This is King Balzack's room.
+- `$08E7`: I remember.You're Edgar's daughters.'<4F>You came here to avenge your father.Yes,I'm Balzack.'<4F>Edgar tried to destroy the Secret of Evolution which he accidentally discovered.'<4F>What a fool.With it,he could have ruled the world....'<4F>Look at me! At my strength! At my superior body!
+- `$08E8`: Cough...Cough...I'm nearing my end.I wanted to escape from this country,but I ran out of strength.'<4F>You're still young.I'll give you my Boarding Pass.It's in the chest in the back.'<4F>Escape for me and live....
+- `$08E9`: <4E>Orin:'I...I don't think I can accompany you anymore.'<44>Orin:'I know you regret what happened,but leave this country now and build up your strength.'<44>Orin:'I'll be wishing you...a safe journey...<4B>Gasp!'<43><53><40>
+- `$08EA`: Deliver the lunch,then you can have yours,OK?
+- `$08EB`: Thank you! Do you want your lunch?
+- `$08EC`: OK,sit there.I'll make it.
+- `$08ED`: OK,why don't you go and play outside?
+- `$08EE`: This is the entrance to the village.I guard this entrance so no strangers can enter.'<4F><49>,do you want to go outside?
+- `$08EF`: You're not ready to go out yet.You must be much stronger.
+- `$08F0`: That's good.You must be much stronger to go out.
+- `$08F1`: You brought me lunch,<49>?'<44>
+- `$08F2`: What? You ate my lunch? Oh,goodness!'<44>
+- `$08F3`: <49>,you're already 17 years old,entering adulthood.'<44>
+- `$08F4`: Listen,<49>,you must always be righteous and strong,whatever happens.
+- `$08F5`: It's you again! Stay here tonight if you want to!
+- `$08F6`: Are you going to sleep forever? Get out of here!
+- `$08F7`: What? You think I'm rude but have a soft heart?'<4F>Oh,c'mon! Get lost!
+- `$08F8`: I hear a famous fortuneteller is staying in Endor.'<4F>I want to consult her.
+- `$08F9`: How do you like our dance? We're imitating the moves of the famous dancer in Endor.'<4F>She told me she was searching for the Hero with her little sister.
+- `$08FA`: We're traveling the world to defeat the monsters.'<4F>Do you want to join our party?
+- `$08FB`: Oh,sorry! Our party is full.'<4F>You should find your own allies.
+- `$08FC`: Alright.See you then.
+- `$08FD`: Walking at night feels so good.
+- `$08FE`: Whenever I see the moon's reflection on the water,I remember this.'<4F>Long ago,a woodsman's family lived in the northern woods.'<4F>The son met a beautiful girl in the woods and fell in love with her.'<4F>One day he was struck by lightning and died.'<4F>His father is still a woodsman and lives alone in the mountains.
+- `$08FF`: You're not a member of that four-member party that was just here?'<4F>Many people,claiming they can defeat the monsters,come to see the King.
+
+## Group `$48` at `$00:ABE6`
+
+- `$0900`: I hear the Princess of Endor and the Prince of Bonmalmo are getting married.I'm envious.
+- `$0901`: Welcome! So you are traveling to save the world too.'<4F>Your name is <49>? A good name!'<4F>I'll tell you what you must do.'<4F>Prevent the resurrection of the Ruler of Evil at any cost.'<44>
+- `$0902`: <49>,I wish you luck!
+- `$0903`: It must be hard for a girl like you,but I wish you luck,<49>!
+- `$0904`: This cave connects Endor and Branca.
+- `$0905`: What a great man Taloon is to have dug a cave like this.
+- `$0906`: If you ever meet Taloon,tell him this old man is worried about him.
+- `$0907`: Taloon! You're alive! Good to see you again.
+- `$0908`: My husband,Taloon,is on a journey to search for a legendary sword.'<4F>It's rumored that the monsters are chasing him.'<4F>I hope he's traveling with someone strong.
+- `$0909`: Oh,dear! It's you! Welcome home!'<4F>Don't worry about me.I'll be here when you return after fulfilling your dream.
+- `$090A`: I saw a girl walking down to the Casino.What a beauty!
+- `$090B`: I love to dine with a beautiful girl.
+- `$090C`: They were right! Her predictions come true.'<4F>Why don't you let her tell your fortune.
+- `$090D`: Thanks to Nara,I now know how I should live my life.'<4F>Everyone has their own destiny.
+- `$090E`: <4E>Nara:'Would you like to hear your fortune for just 10 gold pieces?'
+- `$090F`: <4E>Nara:'A fortune is like moonlight in the darkness.If you change your mind,come see me.'
+- `$0910`: <4E>Nara:'Alright,I'll tell your fortune.'<44>Nara:'I see seven lights around you.'<44>Nara:'They are small now,but they will soon grow...what?'<44>Nara:'You are the Hero!'<44>Nara:'I've been searching for you,the one with the untapped power to defeat the evil ones.'<44>Nara joined the Party!<43><55><44>Nara:'Let's go.My sister,Mara,should be at the Casino.'
+- `$0911`: It's wonderful that the Princess of Endor and the Prince of Bonmalmo got married.'<4F>At least,we must avoid conflict among ourselves.
+- `$0912`: The wedding was magnificent!
+- `$0913`: <4E>Mara:'Be quiet! I can't concentrate!'<44>Mara:'I'll recover my losses and surprise my little sister,Nara.'
+- `$0914`: <4E>Nara:'I knew you'd be here!'<43>Mara:'Uh-oh!'<44>Nara:'You spend all the money I earn on gambling! We're broke!'<44>Mara:'I'm sorry....'<44>
+- `$0915`: <4E>Mara:'Huh? Who is this?'<44>
+- `$0916`: <4E>Nara:'This is the Hero we've been searching for.'<44>Mara:'How nice! You can take care of us from now on,right?'<44>Mara joined the Party!<43><55><44>Mara:'Let's go!'
+- `$0917`: <4E>Mara:'Whose ghost is this?'<44>
+- `$0918`: You shouldn't be here.Jump off from there and get out!
+- `$0919`: Because my father is away,we can't get our stock replenished.That's why my mother started a vault business.
+- `$091A`: Did you know that Necrosaro who was in the tournament was not human?'<4F>It's just a rumor,but I thought he was too strong to be a human.
+- `$091B`: <4E><44>'At least this marriage was a good thing.'
+- `$091C`: There's a waiting room in the back for the bride and bridegroom.
+- `$091D`: You came to see the wedding? Go up the stairs on the right.
+- `$091E`: There's a rumor a man named Taloon crossed the eastern desert with a caravan.
+- `$091F`: Huh? Haven't I seen you before?
+
+## Group `$49` at `$00:B25F`
+
+- `$0920`: You want to go east?'<4F>I'm afraid you won't be able to cross the desert without a wagon.
+- `$0921`: <4E><44>'Really? The wedding is going on? I wanted to attend too.'
+- `$0922`: You're traveling to save the world? You want the wagon? No.I don't trust you.'<4F>Leave me alone!
+- `$0923`: Never come back!
+- `$0924`: You just don't get it,do you?'<4F>I used to travel like you.'<4F>One day I heard of a cave where the world's most valuable treasure was hidden.'<4F>I went to the cave with my best friend.'<4F>I trusted him,but he betrayed me and...Darn....'<4F>I just can't trust anyone anymore! Go away!
+- `$0925`: Have you talked to the wagon's owner? I'm his father.'<4F>He once went to an eastern cave with his friend.'<4F>Only my son returned,unconscious and injured,on his horse,Primrose....'<4F>He changed after that.He doesn't trust anyone.'<4F>What happened in that cave,I wonder....
+- `$0926`: It's too bad.A wagon is essential for crossing the desert,but the owner is....
+- `$0927`: You again? Ha? Wh...What's that gem?'<4F>Why? Looking at it seems to purify my mind....The Symbol of Faith....'<4F>I got it! The most valuable treasure has been none other than trusting each other!'<4F>I've been wrong.'<4F>Let me join your Party.Of course we can take the wagon.'<44>Hector joined the Party!<43><55><44>Hector:'Shall we go now?'
+- `$0928`: My son seems to have straightened out.Thanks.Look after him,will you?
+- `$0929`: South of this desert,lies Konenber,a port town.
+- `$092A`: Hello there! Your first time in this town? Shall I show you around?
+- `$092B`: Alright.Follow me!
+- `$092C`: You're sure? By the way,you'd better avoid this inn.It's not good.
+- `$092D`: I'm going to bathe in the spa pool.
+- `$092E`: Do you want to come with me to bathe? You're not afraid of the water,are you? Just jump in!'<4F>Look at those muscles! Did you inherit them from your father or your mother?
+- `$092F`: Sorry,we open at night.
+- `$0930`: A ship is being built at the wharf.It's the big building to the left.
+- `$0931`: Darn,my ship is gone! The lighthouse in the east is responsible.'<4F>Since the monsters took over the lighthouse,it's been emanating an evil light that sinks ships.
+- `$0932`: I don't feel like opening my shop these days.'<4F>A port town without ships! What a joke!
+- `$0933`: You're unfortunate.Until recently,ships used to sail out of here.
+- `$0934`: How would you like to marry me?
+- `$0935`: You're so naive.I was only kidding!
+- `$0936`: Wh...Who are you? I...I was only telling her an old proverb.
+- `$0937`: !!'
+- `$0938`: I'm sorry.I was tempted but...'<4F>I haven't stolen anything yet.Forgive me.
+- `$0939`: Please,show me mercy.
+- `$093A`: Thank you! I'll tell you something in gratitude.'<44>
+- `$093B`: You can exchange Small Medals for items.
+- `$093C`: The eastern lighthouse was invaded by monsters recently.'<4F>Since then,it's been shining evil lights on the sea.
+- `$093D`: Why isn't Taloon back? The ship's almost finished.'<4F>I hope the monsters at the lighthouse haven't got him.
+- `$093E`: I'm worried.'<4F>We're building this ship for Taloon,but he's so rash.'<4F>He went to the lighthouse to destroy the monsters who are making sailing impossible.
+- `$093F`: <4E>Taloon:'It's you! I was looking at the sea.'<44>Taloon:'Yes,the ship will be completed soon.I'll wait for you to return with good news.'
+
+## Group `$4A` at `$00:B904`
+
+- `$0940`: You'll do that for Taloon?...defeat the monsters at the lighthouse? Be careful,OK?
+- `$0941`: <4E><44>'It seems he couldn't do it,and he's back in town.'
+- `$0942`: <4E>Taloon:'Thank you! The evil lights are gone,and the sea is so calm now.'<44>Taloon:'And the ship is finally finished!'<44>Taloon:'I've one favor to ask of you.Monsters are after me.'<44>Taloon:'I'd feel safer being with strong people like you.'<44>Taloon:'Let me join you.Let's travel together all over the world!'
+- `$0943`: <4E>Taloon:'Why not? Come on.'
+- `$0944`: <4E>Taloon:'I appreciate it! Let's leave right away.'<44>Taloon joined the Party!<43><55><44>Taloon:'Starboard the Helm!'
+- `$0945`: Incredible! You defeated the monsters at the lighthouse?
+- `$0946`: We can't always judge people by their looks,but you're somebody special,aren't you?
+- `$0947`: As I thought.I could tell!
+- `$0948`: Don't be so modest? I can tell.
+- `$0949`: My ship remains sunken.Weep...
+- `$094A`: The eastern lighthouse has returned to normal.'<4F>Thanks to you,ships can now leave.
+- `$094B`: You defeated the monsters at the lighthouse? Th...Thank you!
+- `$094C`: Many hardships may be ahead of you.'<4F>Don't ever give up hope....
+- `$094D`: I remember fondly my days building Taloon's ship.
+- `$094E`: Kiii...Kiii...Where's Taloon?'<4F>I've been waiting to ambush him.I heard he was coming to this lighthouse....'<4F>He must have gotten scared and headed back to town!'<4F>I'll go there and get him! Kiii...Kiii...'<44>
+- `$094F`: <4E>No response.<43>Seems unconscious.
+- `$0950`: The chancellor staying at the big inn fell ill.'<4F>The legendary herbal medicine,Padequia,should cure him....
+- `$0951`: <4E>Howden:'What? Are you asking if I'm the old man who's an expert on the seas?'
+- `$0952`: <4E>Howden:'You idiot! I'm not only an expert on the seas but on the whole world also.'<44>Howden:'Come back again!'
+- `$0953`: <4E>Howden:'I'm impressed...I'm not only an expert on the seas but on the whole world also.'<44>Howden:'You seem promising.'<44>Howden:'What do you say? Would you like to take my quiz?'
+- `$0954`: <4E>Howden:'I see.That's too bad.'
+- `$0955`: <4E>Howden:'Here's the quiz.What's most important in business?'<44><49>:'.........?'<44>Howden:'Mmm....Well Done! Don't say anything...yes,Silence Is Golden!'<44><49>:'???'<44>Howden:'I'll give you the Treasure Map.'<44>Howden:'I discovered it when I was young but haven't been able to uncover its secret....'<44>Howden:'Please accept it!'<44>
+- `$0956`: <4E><49> received the Treasure Map!<43><56><44>
+- `$0957`: <4E>Howden:'Perhaps you can reveal the secret of this Treasure Map.Good luck!'
+- `$0958`: <4E>Howden:'I really meant it,but you can't carry any more things! Come back again.'
+- `$0959`: There's a small country called Soretta in the very eastern reaches of this land.'<4F>When I told this to the Princess at the inn,she darted out.
+- `$095A`: <4E>Brey:'One of my traveling companions is gravely ill.'<44>Brey:'Our mistress,Princess Alena,went to get medicine alone.I'm very worried....'<44>Brey:'You look kind.'<44>Brey:'Will you find Princess Alena and help her?'
+- `$095B`: <4E>Brey:'That's very thoughtful of you.I'll accompany you!'<44>Brey joined the Party!<43><55><44>Brey:'I must ask the people of this inn to take care of Cristo.'<44>Brey:'I'll meet you outside later.'
+- `$095C`: <4E>Brey:'As I feared....'
+- `$095D`: This is Soretta,the country known for growing Padequia,the cure-all herb.
+- `$095E`: <4E><44>'Well,at least it used to be....
+- `$095F`: I'm a farmer,just a ploughman,Hey! Been plowing fields for thirty years,Hey! Ho!'<44>

@@ -1,4 +1,10 @@
-Current status:
+# Project Status
+
+Last verified: 2026-09-22
+
+This document is the authoritative human-readable status snapshot. Generated totals come from `../analysis/`; completion policy is enforced by `../verify-completion.cmd`.
+
+## Current Metrics
 
 Reassemblable assembly: 100% (verified: build reproduces SHA-256 373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A)
 Detailed semantic classification: 95.95% (503,069 / 524,288)
@@ -21,7 +27,9 @@ additional recovered-path warnings classified; 1,955 pointers typed; 1,871/1,871
 42/42 indirect jumps audited; 1/1 control-flow conflicts audited; 3,992 routine interfaces; 35 semantic
 contracts; 26 asset slices; 15 save fields; 12 runtime assertions across 9 paths; exact ROM match.
 
-The docs define "semantic assembly done" as:
+## Completion Definition
+
+Semantic assembly is done only when there are:
     Zero unclassified byte ranges.
     Zero generated routine-entry names.
     Complete reviewed routine contracts.
@@ -30,6 +38,8 @@ The docs define "semantic assembly done" as:
     Deterministic end-to-end runtime scenarios for all nine domains.
     Continued exact-ROM reproduction.
 
+
+## Work Priorities
 
 Recover entry points and indirect calls: complete for all currently decoded indirect jumps; rerun the audit whenever new code paths appear.
 Type mixed-bank records and pointer boundaries: directly classifies data and often reveals dispatch targets.
@@ -40,6 +50,8 @@ Verify RAM/save behavior: can reveal initialization tables and save routines, bu
 Meaningful naming and routine contracts: aid investigation but do not increase byte coverage directly.
 Exact-ROM rebuild gate: adds no coverage, but remains mandatory for every change.
 
+## Long-Term Direction
+
 Finish semantic disassembly and content typing.
 Build lossless asset decoders and encoders.
 Define engine-neutral game-state and content schemas.
@@ -49,7 +61,9 @@ Build one vertical slice in the chosen engine.
 Add editing tools and begin intentional gameplay changes.
 
 
-Largest remaining unclassified blocks (no traced consumer yet):
+## Largest Unclassified Blocks
+
+No traced consumer yet:
     $14:$A111-$A3F0 (736)   exactly 46 x 16 bytes; consistent with raw NES tiles, unconfirmed
     $10:$BD43-$BFD7 (661)   bank tail, no decoded instruction references it
     $12:$8AD1-$8D04 (564)
@@ -58,6 +72,8 @@ Largest remaining unclassified blocks (no traced consumer yet):
     $13:$B7E8-$B90A (291)
     $13:$BBCE-$BCE9 (284)
 
+
+## Audited Conflict
 
 Control-flow conflict (1/1 audited): bank $10:$BBEB is intentional dual-entry code. The BRK-service path
 falls through at $BBEA as EOR #$A5, while the explicit JMP at $BBE4 enters that operand byte at $BBEB as

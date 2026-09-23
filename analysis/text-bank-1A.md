@@ -1,0 +1,390 @@
+# Dragon Warrior IV Text - Physical Bank $1A
+
+Bank `$1A:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 11; messages: 352.
+
+## Group `$4B` at `$00:8071`
+
+- `$0960`: Padequia roots? The drought five years ago destroyed them all.'<4F>That's why I now grow carrots,radishes,and such.
+- `$0961`: Looking for someone? Hmm...some time ago,a girl named Alena was here.'<4F>She had three men with her.One was rugged and another snobbish.
+- `$0962`: The extinction of Padequia devastated this country's economy.We can't make this country prosper no matter how hard we work.'<4F>Poor King....
+- `$0963`: I'm the King of this country.It's been some time since the extinction of Padequia.'<4F>The record states the former King kept a Padequia Seed in the southern cave as a precaution against catastrophe....'<4F>Unfortunately,monsters now lurk in the cave,and we can't get in.'<4F>Sorry,I can't help you.If I had the Padequia Seed,I could....
+- `$0964`: Grzz...Grzz...You Monsters of the Southern Cave! Mumble...Mumble...
+- `$0965`: Night fishing is the best kind of fishing.'<4F>Some time ago I almost caught a Giant Octopod! I'm not lying!
+- `$0966`: You came to see the King? Our King is out working in the fields.'<4F>This country is so poor even the King must work.
+- `$0967`: <4E>Alena:'You're looking for Padequia too?'<44>Alena:'Sorry,but we'll get the Padequia Seed first!'
+- `$0968`: <4E>Alena:'Hey,it's you,Brey! What are you doing here?'<44>
+- `$0969`: <4E>Alena:'What? You're looking for the Padequia Seed with them?'<44>
+- `$096A`: <4E>Alena:'You shouldn't have worried.'<44>Alena:'We'll find the Padequia Seed and save Cristo!'
+- `$096B`: Huh? <4B>Ohhhhhh! The Padequia Seed.It is indeed! Finally...'<4F>Hurry! Plant the seed in this field! Yes,Padequia grows instantly.'<44><49> plants the Padequia Seed in the field.<44>
+- `$096C`: <4E>A Padequia bud shoots out instantly!<4F>Thank you! Our country is saved!'<4F>Take this Padequia Root.'<44><49> obtained the Padequia Root!<43><56><40>
+- `$096D`: What? You've found the Padequia Seed? The King will be overjoyed to hear that!'<4F>Please come back again tomorrow morning!
+- `$096E`: I'll grow Padequia from now on.Hey! Ho!
+- `$096F`: You've found the Padequia Seed? Amazing!
+- `$0970`: Thank you for retrieving the Padequia Seed.'<4F>I'm sure this country will thrive again.
+- `$0971`: Cheers for Padequia! I'll work even harder in the fields from now on! Cheers!
+- `$0972`: Ouch! A Man O'War stung me!
+- `$0973`: You saved us! This country will be fine.
+- `$0974`: <4E>Brey:'We'll never forget what you've done for us.Thank you!'
+- `$0975`: If you sail straight to the west,you'll reach Keeleon Castle.
+- `$0976`: Taloon! I went to Endor too,but...'<4F>I lost all my money at the Casino....Sob...
+- `$0977`: What do you want? It's so late.
+- `$0978`: Hello! Taloon! You look wonderful!
+- `$0979`: <4E><44>'The news that you purchased a ship has reached this town.What a feat!'
+- `$097A`: Taloon! It's me,Tom's son.'<4F>I decided to work hard and asked the boss to hire me.
+- `$097B`: Please save the world.
+- `$097C`: <4E><44>'Taloon! Grandpa Tom appreciates what you've done.'<4F>Of course,I appreciate it too....Blush...
+- `$097D`: Want to buy something?'<4F>If you want weapons,go to the shop upstairs.
+- `$097E`: Taloon! How is your business in Endor?
+- `$097F`: Keep it up! You have a cute wife.
+
+## Group `$4C` at `$00:86EA`
+
+- `$0980`: What? You're traveling in search of a legendary sword? Hmm...
+- `$0981`: Oh! Taloon! How can I ever thank you?'<44>Tom:'My son is working hard and is married now.'
+- `$0982`: <4E>Tom:'Thanks to one man,my son changed and began working.'
+- `$0983`: <4E>Tom:'Hey,Hey! Where do you intend to take me?'
+- `$0984`: <4E>Tom:'Doze...Doze...'
+- `$0985`: I hear that the people of the Castle in the western country of Santeem are still missing.
+- `$0986`: I'm a soldier from Santeem.I was guarding the shrine on the other side.'<4F>Our Princess Alena was saying someone called Necrosaro was suspicious....
+- `$0987`: <4E><44>'Oh,my goodness! It's you,Princess! You're alright....Weep...'
+- `$0988`: <4E><44>'If you don't want any trouble,leave immediately!'
+- `$0989`: I'm a traveler named Healie.'<44>
+- `$098A`: Please rescue Ragnar in the Castle!'<4F>You can sneak in if you have a Magic Key.
+- `$098B`: <4E><44>'You may find out something in Haville,a northern port town.'
+- `$098C`: After the gypsy sisters fled by ship,the King's regulations became even more strict.'<4F>We may never see another ship leave this port.
+- `$098D`: <4E><44>'The last ship to leave this port left some time ago.'
+- `$098E`: No more ships are in service.
+- `$098F`: Magic Keys? Such bizarre things...'<4F>DO EXIST! Unfortunately I don't have one.'<4F>They say alchemists could make one easily.'<4F>I remember alchemists used to live in the southern village,Kievs.
+- `$0990`: It seems true that the Ruler of Evil will revive soon.'<4F>I'm afraid we won't be able to take a walk at night anymore.
+- `$0991`: Joy is too pretty for my brother.I'll marry her!
+- `$0992`: King Balzack of Keeleon appears even less often than before.'<4F>Good for me,I can take it easy.
+- `$0993`: I'm here to see Joy,the girl who gave my brother the cold shoulder.'<4F>I'll convince her how good he is!
+- `$0994`: Another visitor? Many visitors come to see the prisoners these days....
+- `$0995`: King Balzack of Keeleon seems to have a hidden master.'<4F>According to rumor,he's not human.
+- `$0996`: <4E><44>'When I told this to a soldier called Ragnar,he left quickly.'
+- `$0997`: Is the House of Prophecy still on the shore?
+- `$0998`: Ragnar,a soldier from Burland,came searching for the Hero.'<4F>I told him what the Hero looks like.'<4F>The lights are glowing even more radiantly.Your encounter may take place soon.
+- `$0999`: The time has come....'<4F>Now that you,the Chosen Ones,have converged,you shall be able to defeat evil.'<4F>Your enemy is the resurrecting Ruler of Evil...whose name is Es....'<4F>Gasp!'<4F>.........
+- `$099A`: This is Aktemto,a mining town.'<4F>The man who was at the graveyard passed away too....
+- `$099B`: Hack...Hack...will I be alive tomorrow?
+- `$099C`: Dig,Dig,Dig...
+- `$099D`: I'm a traveling merchant.'<4F>Until recently,I held a desert bazaar in the country of Santeem.'<4F>Now that the bazaar is over,I'm on my way to Monbaraba in the south.'<4F>Well,allow me to do business with you.'<44>
+- `$099E`: The Alchemist,Edgar,was assassinated for trying to destroy something called the Secret of Evolution.'<4F>Evolution is how man evolved from apes or something like that,right?'<4F>I wonder what will become of us if we keep evolving!
+- `$099F`: I saw a Slime in the village.'<4F>Porta the dog is chasing it barking.
+
+## Group `$4D` at `$00:8D75`
+
+- `$09A0`: My Mara!'<44>
+- `$09A1`: My dear Nara!'<44>
+- `$09A2`: You're alright.'<44>
+- `$09A3`: What? A Magic Key? Edgar's pupil Orin had one.
+- `$09A4`: Oh,my! Porta the dog is very fond of you.'<4F>Or maybe it's just that you smell like a Slime.'<4F>You chatted with a Slime recently?
+- `$09A5`: I remembered! Edgar had a secret laboratory somewhere else.'<4F>If I remember correctly,it's in the western cave.I think you'll find a Magic Key there.
+- `$09A6`: I came because I heard the secret laboratory of an alchemist was here....
+- `$09A7`: Each time a new King is crowned,the terror in this country intensifies.
+- `$09A8`: Sometimes I see smoke in the far distance.Am I seeing things?
+- `$09A9`: Ha! What are you?
+- `$09AA`: I'm Keeleon.I rule this country now,not King Balzack.'<44>
+- `$09AB`: Huh? <4B>You! You were chasing Balzack to seek revenge!'<4F>Too bad,Balzack isn't here anymore...Ha,Ha,Ha!'<44>
+- `$09AC`: This will be a fun way to pass time.I'll show you how inferior humans are.'<4F>Regret being born with such fragile bodies!
+- `$09AD`: Toaaaaaah! <57><4B>Ugahh!
+- `$09AE`: You wicked...<57><4B>Ouch!
+- `$09AF`: Eeeyaah!<57><4B>
+- `$09B0`: Eeee! <57><4B>Hurry! I'll take care of this.You'll go to Keeleon!
+- `$09B1`: Ha? What have I been doing all this time?
+- `$09B2`: <4E>Ragnar:'Very impressive!'<44>Ragnar:'Hero,let's fight together to save the world!'<44>Ragnar joined the Party!<43><55><44>Ragnar went ahead first and got in the wagon!
+- `$09B3`: <4E><44>'That's not true anymore.'
+- `$09B4`: Please tell Ragnar that I wish him the best of luck in his journey...'<4F>and I,Healie,thank him greatly....Farewell!
+- `$09B5`: Thank you very much.Peace will come to this country too.
+- `$09B6`: Forgive me.Bow,Wow!
+- `$09B7`: I won't forgive you even if you turn around 100 times!
+- `$09B8`: Strange...I don't hear a voice from downstairs anymore.
+- `$09B9`: Huh? I was about to become the next subject of an experiment in the Secret of Evolution?'<4F>What's the Secret of Evolution,anyway?
+- `$09BA`: Hey! Step aside!
+- `$09BB`: I was chased around too much.I won't forget that.
+- `$09BC`: He,He,He.I've done something you won't like....'<4F>The Secret of Evolution is already in the hands of Necrosaro.
+- `$09BD`: Young girls look healthy...Zzz...Zzz...
+- `$09BE`: Kiii! I'm hungry!'<4F>That Balzack drives me hard.'<4F>Blame him,not me! Kiii!
+- `$09BF`: Edgar's daughter! You've come! I didn't expect to fight with you again!'<4F>Look at me! I've changed beyond recognition,haven't I? I'm Balzack!'<44>
+
+## Group `$4E` at `$00:926C`
+
+- `$09C0`: I've already reached the ultimate form of evolution! My body is like a super-being's.'<44>
+- `$09C1`: Even Necrosaro the Master...no that Necrosaro is no match for me.'<4F>Come! You foolish,weak humans!
+- `$09C2`: This is Surene.It used to be the Castle Town of Santeem.
+- `$09C3`: Monsters started living in Santeem Castle.How terrible....
+- `$09C4`: <4E><44>'To find out why the people disappeared,Princess Alena...'<4F>is searching for the man called Necrosaro....La,La,La...
+- `$09C5`: I'm Marone the poet.'<4F>I dedicate this requiem to the vanished people of Santeem.<53>'<44>
+- `$09C6`: <4E>Nurse:'Stop,Marone! The people of Santeem are still alive!'
+- `$09C7`: <4E>Nurse:'I'm worried....Where have the people of Santeem been taken?'
+- `$09C8`: I'm a traveling prophetess from Branca.'<4F>In far away Branca,they tell a story of a celestial woman who fell in love with a young woodsman.'<4F>She came down from the sky.'<4F>Do you believe anyone really lives up in the sky?
+- `$09C9`: Weep...Weep...neither the kind King nor the people of Santeem live here anymore....
+- `$09CA`: I want to comfort this Nurse...'<4F>but I'm not eloquent nor can I sing like Marone.How unbearable....
+- `$09CB`: Sss...Sss...
+- `$09CC`: Princess Alena! How nice to see you again!'<44>
+- `$09CD`: I used to be a soldier of Santeem.'<4F>One day the King tried to tell his people the meaning of his dreams.'<4F>I left the Castle to run an errand that morning....'<4F>The counselor had said that the King would talk about the Ruler of Evil.
+- `$09CE`: Uuun...Uuun...
+- `$09CF`: I practiced singing so that I could sing as beautifully as Marone.'<4F>Ready? Here it goes....'<44><54><40>
+- `$09D0`: Uuun...Uuun...I beg you.Don't let him sing,please....
+- `$09D1`: This is the Village of Tempe.
+- `$09D2`: <4E><44>'Wow! It's the young woman who defeated the monster some time ago.'
+- `$09D3`: Oh,you're...thank you very much for saving the village!
+- `$09D4`: Until recently,a monster terrorized this village....'<4F>A pretty woman appeared one day and defeated him.
+- `$09D5`: Let's hope for the peace of this world.
+- `$09D6`: I'm expecting a child.'<4F>This village will be a lively place.
+- `$09D7`: I'll have to work hard for my baby too!
+- `$09D8`: My daughter,Nina,will soon have a child.'<4F>I'll do everything to keep peace in this village until the child is grown.
+- `$09D9`: They say monsters are now living in Santeem Castle.I'm worried....
+- `$09DA`: I can't sleep.'<4F>How true is the rumor that the Ruler of Evil will resurrect?
+- `$09DB`: This is the Town of Frenor.
+- `$09DC`: There was once a kidnapping in this town.'<4F>The kidnappers took the Golden Bracelet as ransom.
+- `$09DD`: The Golden Bracelet was this town's treasure.'<4F>It must have fetched a great price.What a waste!
+- `$09DE`: A terribly injured man was brought here recently by a woman.'<4F>He must still be at the inn.
+- `$09DF`: The old graveyard keeper knows a lot about the Golden Bracelet.
+
+## Group `$4F` at `$00:982D`
+
+- `$09E0`: Do you wish to hear about the Golden Bracelet?
+- `$09E1`: Don't be so ignorant.You'd better listen.'<44>
+- `$09E2`: The Golden Bracelet is a tool used in magic and alchemy.'<4F>It's said to possess the power to amplify the force of darkness and create the undulation of evil energy.'<4F>Therefore,it could cause a catastrophe if misused.
+- `$09E3`: I'm not sure how effective ordinary weapons and armor will be against the evil monster.
+- `$09E4`: Have you seen the wedding in Endor? I bet it's gorgeous.
+- `$09E5`: In the far eastern country of Branca they tell this story.'<4F>A celestial nymph from the sky fell in love with a young woodsman,and soon they were expecting a child.'<4F>If it's true,what do you think has become of the child?
+- `$09E6`: The wedding must be going on in Endor now.
+- `$09E7`: The King is at Prince Reed's wedding.
+- `$09E8`: I raised Prince Reed.'<4F>I'm sure he'll become a great king....
+- `$09E9`: We used to buy armor here,but we won't have to do that anymore.'<4F>From now on we can import as much armor as we want from Endor.
+- `$09EA`: This is Jail.You'd better leave or you'll be thrown into it.
+- `$09EB`: Darn! It's so boring!
+- `$09EC`: I'm working.Come back at night if you want to talk!
+- `$09ED`: You've come to accept the King's challenge,haven't you?'<4F>You can only enter the Castle by boat.Good luck!
+- `$09EE`: You came because you saw the King's proclamation?
+- `$09EF`: Whoever makes the King laugh heartily will receive any reward they desire.
+- `$09F0`: I saw a funny jester in a town I once visited.His name was Panon,I think.'<4F>He'll probably be able to make the King laugh....Where could he be now?
+- `$09F1`: What should you do when you have a problem? Ignore it because it won't go away!?
+- `$09F2`: I couldn't make him laugh a bit.Shoot! I'll try again!
+- `$09F3`: Don't talk to me! I'm next.
+- `$09F4`: I became nervous in front of the King and forgot my joke!'<4F>I hate myself!
+- `$09F5`: <4E>King:'Welcome! Your name is <49>?'<44>King:'Make me laugh.'<44>King:'What's the matter? Hurry!'<44>
+- `$09F6`: <4E><49> told many jokes.<44>Alas,the King didn't laugh.<44>King:'You're not funny....Come back with better jokes.'
+- `$09F7`: <4E>Panon:'Allow me to speak.I can't make you laugh.'<44>King:'...?'<44>Panon:'However,I believe the people who brought me here surely can!'<44>Panon:'Please give them the Zenithian Helm.'<44>Panon:'They will save the world and bring the days when everyone will be able to laugh without worry.'<44>King:'Hmm...'<44>King:'Panon! You perceived my true intention!'<44>King:'The reason I issued the proclamation was to cheer up this country.'<44>King:'I thought if I brought lots of funny entertainers here,they would make my people happy.'<44>King:'But I've realized you can't cheer up people who have lost hope.'<44>King:'Your request is well taken.I place all my hope in you!'<44>
+- `$09F8`: <4E>King:'Take this Zenithian Helm!'<44><49> received the Zenithian Helm!<43><56><40>
+- `$09F9`: <4E>King:'...I really meant it,but you can't carry any more things!'<44>King:'Come back to receive it!'
+- `$09FA`: <4E>King:'I'll be waiting anxiously for the day to come when all people will be able to laugh wholeheartedly!'<44>King:'Until then,I'll keep issuing the proclamation.'
+- `$09FB`: The King must be outraged that I didn't take Lynn to the Castle.'<4F>Tell no one that I'm hiding here,OK?
+- `$09FC`: I heard Lynn got safely out of this town with the shaman.'<4F>They must be living happily together somewhere....
+- `$09FD`: Ha,Ha,Ha....Panon's show last night was really hilarious.
+- `$09FE`: Did you come here across the sea? If so,did you see the rocky,mountainous island where the monsters are said to live?
+- `$09FF`: No one who has gone to the island has ever returned.You'd better stay away.
+
+## Group `$50` at `$00:9FE9`
+
+- `$0A00`: I hear there's a big island rimmed by rocky mountains in the far eastern sea.'<4F>They say there's a castle of monsters on the island.
+- `$0A01`: Panon,a funny jester,is here now.'<4F>Go to the theater at night if you want to talk to him.
+- `$0A02`: Despite many rumors,the Ruler of Evil still hasn't resurrected!'<4F>I dare him to come back to life!
+- `$0A03`: I didn't get my turn today either....'<4F>When will I debut?
+- `$0A04`: Mumble...Mumble...tonight is the night I'll appear on stage....
+- `$0A05`: Mumble...Mumble...I could open many doors with a Magic Key....
+- `$0A06`: Lynn,who used to live here,must now be living happily somewhere else.
+- `$0A07`: Sorry.I'm seeing this person now.Come back later.
+- `$0A08`: I've become pretty popular with girls since I came here.Ha,Ha,Ha!
+- `$0A09`: You have companions? You must come alone.
+- `$0A0A`: You want to work here? Don't.'<4F>Pufpuf is not easy to master.
+- `$0A0B`: This is a Pufpuf room.Would you like to try Pufpuf?
+- `$0A0C`: Too bad....Come back again.
+- `$0A0D`: I'll start.'<4F>Pufpuf...Pufpuf...'<4F><49>:'..........'<4F>Pufrin...Pufrin...'<4F><49>:'???'<4F>Pufrico...Sooya!'<4F>It's over.'<4F>Now you've been through Pufpuf therapy,you'll be popular with girls.'<4F>Be confident from now on,OK?
+- `$0A0E`: It's you,Mara!'<4F>Did you avenge your father? I see....Best of luck to you!
+- `$0A0F`: Thanks to Panon,our shows have sold out every night.Heh,Heh...
+- `$0A10`: Will I ever have my turn on stage? I'm discouraged.
+- `$0A11`: <4E>Panon:'Are you travelers? I'm performing tonight.By all means,please come!'
+- `$0A12`: <4E>Panon:'What? Come with you?'
+- `$0A13`: <4E>Panon:'Hmm...I must have been hearing things.'
+- `$0A14`: <4E>Panon:'I see.The King of Stancia has the Zenithian Helm you'll need for your journey....'<44>Panon:'And to get it,you'll need my talent....'<44>Panon:'By any chance,do you intend to go to Zenithian Castle? No,you don't have to tell me.'<44>Panon:'I understand.I'll accompany you.'<44>Panon joined the Party!<43><55><44>Panon went ahead first and got into the wagon.
+- `$0A15`: <4E>Panon:'Hello,you've come at the right moment.'<44>Panon:'I have a tale to tell.'<44>Panon:'Would you hold the edge of my coat? Yes,that's right.Are you ready?'<44>Panon:'Get your hands off my tail!'
+- `$0A16`: <4E>Panon:'You want to talk?'<44>Panon:'Not now,please.See me in the dressing room tomorrow around noon.'
+- `$0A17`: Wa,Ha,Ha! Panon is sure funny.
+- `$0A18`: Gya,Ha,Ha! My belly hurts from laughing!
+- `$0A19`: Phuff,Phuff,Phuff! Laughing like this every night is the secret of long life.
+- `$0A1A`: I'll use that joke someday!
+- `$0A1B`: Yaaeee,Ha,Ha!
+- `$0A1C`: It's difficult to replace Panon.'<4F>I've no choice.I must resume the old singing and dancing revue....
+- `$0A1D`: I'll try to become as popular as Panon who used to be the star performer here.
+- `$0A1E`: This town has the best singing and dancing revue there is!
+- `$0A1F`: We can't hear Panon's stories anymore.Too bad....
+
+## Group `$51` at `$00:A5DE`
+
+- `$0A20`: Panon's stories were funny,but I enjoy dance too.
+- `$0A21`: That dancer was so cute! I want to see her again!
+- `$0A22`: Our guests say they had the same strange dream here.'<4F>The word spread,and no one will stay here.What should I do?
+- `$0A23`: When I stay at this inn,I keep having the same dream.'<4F>It's creepy!
+- `$0A24`: Welcome to Izmit Village.'<4F>Everyone here is talking about the strange dream.'<4F>You should talk to the people before you stay at the inn.
+- `$0A25`: Aren't you Ragnar? Glad to see you looking so great!
+- `$0A26`: You're Ragnar's companions?'<4F>You'd better stay at the inn too.
+- `$0A27`: Hmm...everyone has the same dream....It's quite strange.
+- `$0A28`: This is a school.
+- `$0A29`: I came to pick up my child.Shouldn't school be over soon?
+- `$0A2A`: Please don't interrupt our studies.
+- `$0A2B`: Know what? Pocos,the innkeeper's son,once flew into the sky!
+- `$0A2C`: The kid in front of me always turns around.I can't concentrate!
+- `$0A2D`: Why do interesting things only happen to Pocos? He's lucky.
+- `$0A2E`: First the kidnapping of children,now the strange dream....'<4F>When will we ever be able to live in peace?
+- `$0A2F`: Worries never cease,do they?
+- `$0A30`: I'm making dessert for my child.'<4F>I love being a mother!
+- `$0A31`: Doze...Doze...
+- `$0A32`: I forget all my worries when I look at my child's sleeping face.
+- `$0A33`: In the south,beyond this cave,stands Burland Castle.'<4F>You knew? You're really somebody,aren't you?
+- `$0A34`: Do you know...there's a key which even unlocks jail doors made of iron bars?'<4F>They say the queen of a certain castle has it.'<4F>What? A queen means a woman king!
+- `$0A35`: I'm surprised!'<4F>I hear that some people are gathering Zenithian weapons and armor in order to get to Zenithia.
+- `$0A36`: Perhaps,the Ruler of Evil has resurrected at last!
+- `$0A37`: I'm staying home alone.Aren't I a good child?
+- `$0A38`: I owe my present happiness to Ragnar.'<4F>I wonder where he is now.
+- `$0A39`: Ragnar! Thanks for what you did.'<4F>I'm now living happily with Alex.
+- `$0A3A`: The stars are shining....Look! Our stars!'<4F>Oops,you're not Alex.How embarrassing....
+- `$0A3B`: Oh,Soldier! It's me,Alex.'<4F>Thanks for saving me.
+- `$0A3C`: I'm Alex.'<4F>I lost my memory once,but now I'm living happily with my wife.
+- `$0A3D`: Oh,Ragnar! Welcome back!'<4F>I'm glad you've found the Hero.'<44>
+- `$0A3E`: I learned recently that the Zenithian Shield was once in this Castle.'<4F>It seems that in my grandfather's time,the shield was given to the Queen of Gardenbur.'<4F>Gardenbur is the Castle which rises from the heart of the eastern mountains.'<4F>What were my grandfather's intentions? I wonder....
+- `$0A3F`: <4E><44>'You already have it? Good!'
+
+## Group `$52` at `$00:AB42`
+
+- `$0A40`: I hear you can have a strange dream in Izmit Village.
+- `$0A41`: Ragnar! Glad to see you're fine.
+- `$0A42`: Aren't you Ragnar's companions? Please tell him I wish him the best of luck in his journey.Blush...
+- `$0A43`: Hey,Ragnar! You're still here? What a dunce!
+- `$0A44`: This is the Castle's treasure chamber.
+- `$0A45`: Hmm...I got it!'<4F>The Ruler of Evil must be the monster that completed the ultimate evolutionary step.'<4F>It's written that Master Dragon,fearing the evolved monster's incredible power,imprisoned him underground.'<4F>Now the Ruler of Evil is about to resurrect.'<4F>We must inform Master Dragon immediately!
+- `$0A46`: Have you heard the story from the old man in the next room?
+- `$0A47`: How can we find Master Dragon?'<4F>Perhaps,we don't need to find him because he should know it by now if he's really a master.
+- `$0A48`: Then come back after you hear it.
+- `$0A49`: Oh,Ragnar! Glad to see you in good spirits.
+- `$0A4A`: The King is upstairs.
+- `$0A4B`: Master Dragon lives in Zenithian Castle....'<4F>It's just an old man's silly talk.
+- `$0A4C`: I heard the Zenithian Shield was once in this Castle.'<4F>I also heard the King of Stancia had the Zenithian Helm.'<4F>I wonder if he still has it....
+- `$0A4D`: I like it outside!'<44>
+- `$0A4E`: I'm taking a break!
+- `$0A4F`: I'm the only man living in this Castle.'<4F>Phhh,Phhh,Phhh.You envy me,don't you? By the way....'<44>
+- `$0A50`: I've been studying the art of prophecy.'<4F>The Queen,recognizing my talent,gave me the Bronze Amulet.'<4F>It's my treasure!
+- `$0A51`: What? I didn't hear you.I'm busy now.
+- `$0A52`: You must be travelers.'<4F>We've had peace because we've been cut off from the outside world....'<4F>Leave immediately.
+- `$0A53`: The Queen is very strict.Watch your manners.
+- `$0A54`: Yawn....I'm bored.Where's the excitement?
+- `$0A55`: Hello! Why don't you check the drawer? You'll find something.
+- `$0A56`: <4E><50>:'I'm counting on you.Catch the thief.'
+- `$0A57`: <4E><50>:'I'm counting on you.Get me out of here soon.'
+- `$0A58`: Have I seen a suspicious man? Well,I saw a snobbish looking person running south.
+- `$0A59`: That Bronze Amulet is my treasure.Return it to me,please.
+- `$0A5A`: Where do I think the thief may be?'<4F>If I were the thief,I'd hide in a cave.
+- `$0A5B`: Believing in your innocence,I gave you a chance to find the thief.'<4F>Do not betray my faith in you.Go now.
+- `$0A5C`: <4E>Seems sound asleep....<44>He's holding the Bronze Amulet against his chest.
+- `$0A5D`: Darn!'
+- `$0A5E`: Actually,I've believed in your innocence from the beginning.'<4F>I could tell by the look in your eyes.
+- `$0A5F`: <49>,you found the thief!'<4F>The soldier who returned first,informed me.'<44>
+
+## Group `$53` at `$00:B098`
+
+- `$0A60`: Use this key to get your companion out of jail.'<44>
+- `$0A61`: <4E><49> obtained the Final Key!<43><56><4F>Also,take the Zenithian Shield from this Castle's basement.It's yours.'<44>
+- `$0A62`: My people told me that you're on journey to defeat the Ruler of Evil.'<4F>I also heard monsters used to live south of here in Rosaville.'<4F>You may find out something there.I suggest you visit Rosaville.
+- `$0A63`: I meant it,but you don't seem to be able to carry anymore things.Come back again.
+- `$0A64`: Phew...I love breaks!'<44>
+- `$0A65`: The Queen returned the Bronze Amulet to me.'<4F>I'm sorry I suspected you even for a moment....'<4F>Forgive me.
+- `$0A66`: You caught the real thief?'<4F>I'm glad for you.
+- `$0A67`: You're leaving,aren't you? I'll miss you....'<4F>What am I saying?
+- `$0A68`: What a bungle I made!'<4F>Those three basements in this Castle I heard about....'<4F>I couldn't find them either....I hate myself....
+- `$0A69`: <4E><50>:'You caught the thief? Good! Let me out of here then!'
+- `$0A6A`: <4E><50>:'You proved our innocence? Please let me out of here then!'
+- `$0A6B`: <4E><50>:'Good to be out! Let's leave!'
+- `$0A6C`: <4E><50>:'I'm relieved! Shall we leave now?'
+- `$0A6D`: I'm not lying!'<4F>At night,a beautiful girl looks out a window of that tower.
+- `$0A6E`: I won't let you pass! You're finished!
+- `$0A6F`: I won't let you treat Rosa badly!'<4F>What? You're not here to hurt her? Then I'll tell you something.'<4F>It's said the Staff of Transform is in a royal crypt on the cape southwest of Endor.'<4F>I think if you use it,you'll be able to sneak into the monsters' castle.
+- `$0A70`: <4E><44>Alas,it was a skeleton monster.<44>
+- `$0A71`: Don't wake me up! I'm sleepy.Mumble...Mumble...
+- `$0A72`: Yeek! Let me go!'<4F>What? You used the Staff of Transform to assume the monsters' shapes? I'm relieved....
+- `$0A73`: It's surprising you came out of this Castle alive.'<4F>I got it! You used the Staff of Transform to assume the monsters' shapes,right?
+- `$0A74`: I knew it!
+- `$0A75`: I heard the Staff of Transform is kept in a royal crypt in the Endor area.
+- `$0A76`: I have to hurry.Can't be late for the meeting.
+- `$0A77`: Phew! I made it.
+- `$0A78`: Necrosaro,who has long been absent,has returned....'<4F>Why?
+- `$0A79`: As prophesied,Esturk has resurrected!'<4F>Our time has come at last!
+- `$0A7A`: What are you doing here? You should be at Aktemto!'<4F>You know Aktemto is on the cape northwest of Keeleon Castle,don't you?
+- `$0A7B`: Esturk the Great has emerged from underground!'<4F>If Necrosaro perfects the Secret of Evolution...'<4F>even the celestial master won't meddle with us! Ha,Ha,Ha!
+- `$0A7C`: Don't get any closer!'<4F>Esturk the Great is reviving!'<4F>Leave now!
+- `$0A7D`: Leave! Now!
+- `$0A7E`: You won't? I have no choice then!
+- `$0A7F`: The humans who were here took the elfin girl in the tower somewhere.
+
+## Group `$54` at `$00:B635`
+
+- `$0A80`: Blub...Blub...Poor Rosa.'<4F>She was hiding from humans but was found again.
+- `$0A81`: Rosa was captured!'<4F>They took her towards Izmit.
+- `$0A82`: Necrosaro hasn't returned from Aktemto.'<4F>What happened to him?
+- `$0A83`: I heard a bad rumor....'<4F>Esturk the Great resurrected but was destroyed by the Hero.I don't believe it!
+- `$0A84`: Something is wrong! No one returns from Aktemto.
+- `$0A85`: I hear Rosa the Elf,Necrosaro's beloved,was abducted by humans.'<4F>Necrosaro will be furious if he hears this.
+- `$0A86`: Hello! How would you like a flying vessel?
+- `$0A87`: I wish to say that,but I don't have any yet.'<4F>It's almost complete.All I need is a gas lighter than air.
+- `$0A88`: How frustrating! If only we had a gas lighter than air,we could fly!
+- `$0A89`: May I take a look at that strange canister you're holding?
+- `$0A8A`: Why not?
+- `$0A8B`: Wow! There's gas inside!'<4F>This could be....'<4F>Could you possibly give me this canister?
+- `$0A8C`: But,please....
+- `$0A8D`: I appreciate it! Come back tomorrow,won't you?'<4F>I think I'll be able to give you something wonderful!
+- `$0A8E`: Welcome back! I finally completed a flying balloon!'<4F>I'll give you the first one.It's outside!<43><56><40>
+- `$0A8F`: The gas from the canister is essential for flying balloons.'<4F>Now I can make many balloons!
+- `$0A90`: I can't believe there's a castle up in the sky.
+- `$0A91`: Even a balloon won't be able to take you high above the sky to Zenithia.'<4F>But if you use it to survey the world,you may find a way to Zenithia.
+- `$0A92`: What happened to <50>? Must see <50> at once!
+- `$0A93`: <50>! I've been waiting for you.'<4F>Go see Master Dragon now.'<4F>Or the world will be obliterated!
+- `$0A94`: What could that be? I hear voices from the top of the tree.
+- `$0A95`: I think I hear someone calling for help.'<4F>They're saying to come up in groups of three....
+- `$0A96`: I don't hear any more voices....
+- `$0A97`: Oh,you completed the rescue? I'm glad.
+- `$0A98`: Please help me.'<4F>I'm Lucia.I came here to collect the leaves of world trees...'<4F>but was attacked by monsters.They broke my wings.'<4F>Would you take me back to Zenithian Castle?
+- `$0A99`: You must think it's dangerous to go to Zenithian Castle.
+- `$0A9A`: Oh,you will!'<44>
+- `$0A9B`: Your group is full now.'<4F>I'll wait until you come back with fewer companions.
+- `$0A9C`: To enter Zenithian Tower,you must be equipped with all of the Zenithian weapons and armor.'<44>
+- `$0A9D`: I feel it.The Zenithian Sword is hidden somewhere in this tree.'<44>
+- `$0A9E`: Shall we leave?'<44>Lucia joined the Party!<43><55><4B>
+- `$0A9F`: This is Zenithian Castle.
+
+## Group `$55` at `$00:BB5D`
+
+- `$0AA0`: This is Master Dragon's castle.
+- `$0AA1`: I hear something horribly evil is coming to life on earth.
+- `$0AA2`: I wonder how many hundreds of years it's been since wingless people came here.
+- `$0AA3`: It was terrifying!'<4F>The evil undulation rose from the earth beneath us and then penetrated the clouds.
+- `$0AA4`: Twirl...Twirl...
+- `$0AA5`: <4E>Lita:'Huh!'
+- `$0AA6`: Humans! Lita,don't talk to them!'<44>Lita:'I won't,sister.Huh!'
+- `$0AA7`: I'm Master Dragon.I rule this Castle.'<4F>I oversee the world from this place.'<4F>I already know what brought you here.'<4F>Unfortunately even I cannot stop Necrosaro's ultimate evolution....'<4F>I'm not as omnipotent as you might expect.'<4F>By the way,humans are curious creatures.'<4F>Inherently weak humans can do miraculous things at times.'<4F>I'll place my hope in you!'<44>
+- `$0AA8`: <49> comes back to life!<44>
+- `$0AA9`: <49>,the Hero,a Zenithian and human descendant!'<4F>You might be able to defeat the ultimate evil form.'<4F>I bestow upon you the power of my hope!'<44>
+- `$0AAA`: <4E>The Zenithian Sword starts to glow fiercely!
+- `$0AAB`: <49>,go now!'<4F>Beneath this Castle is the entrance to the world of darkness.'<4F>That Zenithian Sword will be a tremendous help to you.
+- `$0AAC`: You can't read any of those books,can you?'<4F>Ask those two to read for you.
+- `$0AAD`: Do you wish to read this book?
+- `$0AAE`: About the Secret of Evolution.Ehem...'<4F>The Secret of Evolution is a method to distort the natural evolutionary processes.'<4F>Through the use of this method,unnatural beings may be created.'<4F>The Secret of Evolution is the source of all evil things.'<4F>It must not be handed down to future generations.Bury it deep underground....'<4F>...says the book.'<4F>But ages later,it was rediscovered.'<4F>The rancor of those affected by it may have led to the rediscovery.
+- `$0AAF`: Very well....Perhaps later....
+- `$0AB0`: The History of a Battle.Ehem...'<4F>Long ago,Esturk,the Ruler of Evil,created a terrible thing,the Secret of Evolution.'<4F>Esturk used it to evolve into a super being.'<4F>Upon discovering this,the Zenithians,joined by Master Dragon,fought against Esturk.'<4F>After a long battle,Esturk was imprisoned deep underground.'<4F>DoeseeielehaeeeufdE
+- `$0AB1`: niTysnspieeeeer gssyt. oenou aour wy dt leesfutleIeedeeeeelutleIeef e ea'
+- `$0AB2`: es eye...eeeasIpsldee<49>oaonksneeweectme ea  Mfe leuhnsteeQaesAa fe Kcsneeenue,.me ealysa'oeeal'otmslal'm'olsveaslnfeneeeladAlaeeasIpste lee eeunrEneheyfeeethtleeeneteeeeoop e eeeie eeee.'nleaelesdgeea urr ee n<47>e<4E>feaa'lla  .'e<4E>feecl eWe.' oen ! es ilisne.'asIpsldeensoaonsftoeee  ueaaleecl easIpssngensoaonsfeweenasgoosse''e.' eelen.'nuac us tle nsasnfervbnsfewee feeshaluiestasnte  ofaulnseseeeshaluieeaG5gfa.'awaIsl!e ms...sl!sglesleeeseee'a.'eyfeeveee'a.'e Daecewf'aae f: Nunennee leezeo'nfeeves'esollfnfeeilst enfeeeses'esoloie,sg tweeehsngI' tweeehg.'a
+- `$0AB3`: g tweeehsng uW leW
+- `$0AB4`: goensieansssenoste lenelt,esooe
+- `$0AB5`: enosldeess sgoen<4F>esooe
+- `$0AB6`: en<49>g tweeehsngI' tweeehsngI' tweeehsngI'veaseuienuguesoee e!W'tlscetono ou  tls do'ae epnyuu  t eaweanli'leehgiea aleealskssenosea le,m!ne
+- `$0AB7`: oeehlee<4F>ft.'auesInsfugensm!ne
+- `$0AB8`: oel'ee<4F>fkesveKeywAfaeslaaueeilee!seKe ueenfefeee<44>yel'ee!seAeI'iorr ee IyedeeansnsaehfeW
+- `$0AB9`: goensieaneffa<49>giaMgees ee.' eu  leeyf l eeh efseeee
+- `$0ABA`: eolfseefe Hefeleee
+- `$0ABB`: eolfseefseclleleeeheulfseefwHefeleeeheulfseef.'clleleeeheulfseefaoeiseeleee eeolfseefteclleleee eeolfseeftoeiseeleee'ulfseefIclleleee'ulfseefhsnlleleesgnielseelelsseleleeste'efsee.'nezfefeesfaffelefpsflefees.''seelezeoseldeeesN.'HgezesgfdeeeebsfHgelelzfdeeen<4B>gsn lnefeolldeeenlwlHgnlfn.'ldeeee eu eHgaeeis.'ldeeengcesn lIsesgfdeeee engsn l eegzfdeees.' fHgwefs.'ldeeee ee'Hgtl.'cez eeee 
+- `$0ABC`: tesKeseaeu e
+- `$0ABD`: neeee.'nseue ee e etgz eees.'
+- `$0ABE`: eue ee s e'e
+- `$0ABF`: neeeege

@@ -1,0 +1,915 @@
+# Dragon Warrior IV Text - Physical Bank $00
+
+Bank `$00:$8000-$BFD7` contains part of the Huffman-compressed dialogue stream. The game decodes symbols through the binary tree at bank `$16:$87D8/$8835`. Symbol `$46` terminates each message. The stream rolls between physical text banks at CPU `$BFD8`.
+
+Decoded groups: 26; messages: 832.
+
+## Group `$00` at `$00:8000`
+
+- `$0000`: The wagon isn't here.
+- `$0001`: Not enough MP.
+- `$0002`: <49> doesn't have an item.
+- `$0003`: <49> is cursed and can't change equipment.
+- `$0004`: But there's no escape!
+- `$0005`: <49> appears.
+- `$0006`: A miss!<43>No damage to <49>.
+- `$0007`: A miss!<43>No damage to <49>.<43><40>
+- `$0008`: <49> was defeated.
+- `$0009`: The foes were defeated.
+- `$000A`: <49> disappeared.
+- `$000B`: The foes disappeared.
+- `$000C`: <49> gains <47> Experience Point<4C>.
+- `$000D`: Each gains <47> Experience Point<4C>.
+- `$000E`: Spells don't reach <49>!
+- `$000F`: The spell bounces off the wall of lights!
+- `$0010`: But spells are contained.
+- `$0011`: <49> is paralyzed.
+- `$0012`: <49> wakes up.
+- `$0013`: <49> is asleep.
+- `$0014`: <49> is confused.
+- `$0015`: <49> expires from exhaustion.<43><40>
+- `$0016`: <47> Damage Point<4C> to <49>!
+- `$0017`: <49> gets <47> Damage Point<4C>!
+- `$0018`: Doesn't work on <49>!
+- `$0019`: <49> doesn't pass away!
+- `$001A`: But nothing happens!
+- `$001B`: <49> passes away!
+- `$001C`: <49> explodes into bits!
+- `$001D`: <49> runs away!
+- `$001E`: <49>'s Party runs away!
+- `$001F`: But <49> is asleep!<4B>
+
+## Group `$01` at `$00:81B6`
+
+- `$0020`: But <49> is paralyzed!<4B>
+- `$0021`: But <49> is confused.<4B>
+- `$0022`: <49>'s body emanates eerie lights!<4B>
+- `$0023`: <49> rolls over!
+- `$0024`: <49> is shaking with laughter!
+- `$0025`: <49> is writhing after tripping.
+- `$0026`: <49> can't get out of the hole!<4B>
+- `$0027`: <49> freezes in fear!<4B>
+- `$0028`: <49>:'Can I have some coins,<49>? Huh? Isn't this a casino?'<43><4B><4B><4B>
+- `$0029`: <49> scrambles into the wagon!
+- `$002A`: <49> shoves <49>'s ghost into the wagon!<4B>
+- `$002B`: <49> jumps out of the wagon!
+- `$002C`: <49> drags out <49>'s ghost from the wagon.<4B>
+- `$002D`: <49> holds the <48>!
+- `$002E`: <49> is on guard!
+- `$002F`: <49> comes to help!
+- `$0030`: <49> calls for reinforcements!
+- `$0031`: But no help arrives!
+- `$0032`: <49> is assessing the situation.
+- `$0033`: <49> is flustered.
+- `$0034`: <49> is building up power.
+- `$0035`: <49> takes a deep breath!
+- `$0036`: <49> meditates silently.<4B><4B>
+- `$0037`: <49>'s wounds heal rapidly!<4B>
+- `$0038`: <49>'s expression changes!<4B>
+- `$0039`: <49> gets serious!<4B>
+- `$003A`: <49> looks scared!<4B>
+- `$003B`: <49> uses up its last ounce of power!<4B>
+- `$003C`: !? The <49>s...<4B>
+- `$003D`: <49> dances a strange dance!
+- `$003E`: <49>'s MP is lowered by <47> point<4C>!
+- `$003F`: Freezing waves shoot out from <49>'s fingers!<4B>
+
+## Group `$02` at `$00:83B5`
+
+- `$0040`: 
+- `$0041`: Turns into <49>!
+- `$0042`: <49> is jerked away!
+- `$0043`: <49> is defeated!
+- `$0044`: <49> tries a body attack!<4B>
+- `$0045`: <49> gives a hideous,shrieking roar!<4B>
+- `$0046`: It doesn't work on <49>!
+- `$0047`: <49> cowers!
+- `$0048`: Eerie mists stream out of <49> and engulf the area!<4B><4B>
+- `$0049`: <49> is attacked but is saved by <49>!<4B>
+- `$004A`: <49> falls unconscious!
+- `$004B`: But nothing happens here!
+- `$004C`: <49> attacks!
+- `$004D`: A terrific blow!
+- `$004E`: A terrible blow!
+- `$004F`: The Poison Needle penetrates <49>'s vital spot!<4B>
+- `$0050`: A hypnotic song is heard from somewhere....
+- `$0051`: A bolt of lightning shoots out from the staff!<4B>
+- `$0052`: Fireballs gush out from the staff!<4B>
+- `$0053`: Eerie mists surround the enemy!<4B>
+- `$0054`: A fireball shoots out from the tip of the staff!<4B>
+- `$0055`: The sword gives a ghastly groan!<4B>
+- `$0056`: Blinding lights shine upon <49>.<4B>
+- `$0057`: <49> becomes more confused!
+- `$0058`: But the situation hasn't changed at all!
+- `$0059`: <49> doesn't revive!
+- `$005A`: <49> dodges the breath!
+- `$005B`: But pulled back by a strange force!<4B>
+- `$005C`: A blizzard roars out of the sword!
+- `$005D`: A blaze streams out of the sword!
+- `$005E`: Mysterious sounds reverberate!
+- `$005F`: Strange smells fill the area!
+
+## Group `$03` at `$00:85D6`
+
+- `$0060`: <44>
+- `$0061`: <49> didn't get it!
+- `$0062`: <49> eludes nimbly!
+- `$0063`: <49> wasn't watching!
+- `$0064`: <49> jumps back!
+- `$0065`: But is jumped over!
+- `$0066`: <49> shoves <49> into the wagon!
+- `$0067`: <49> drags out <49> from the wagon!
+- `$0068`: <49> bumps into the ceiling!
+- `$0069`: <49>'s Party bumps into the ceiling!
+- `$006A`: Alena defeated <49>!
+- `$006B`: <49> was defeated.
+- `$006C`: <49> is brought down!
+- `$006D`: But <49> is in the wagon!
+- `$006E`: But <49> isn't alive!
+- `$006F`: There's no one in the wagon!
+- `$0070`: <49> starts reading Tarot Cards!
+- `$0071`: But <49> can't read Tarot Cards!
+- `$0072`: Nara draws the Card of <50>!
+- `$0073`: The blinding lights of Justice shine upon the enemy!
+- `$0074`: <49>'s morale is boosted!
+- `$0075`: Evil mists pour from the Card and engulf the area!
+- `$0076`: Glittering Thor attacks Nara's group!
+- `$0077`: <49> draws the Card of Perfection!
+- `$0078`: The moonlight illuminates the enemy!
+- `$0079`: The sunlight shines upon the allies!
+- `$007A`: A blood-freezing chill attacks Nara!
+- `$007B`: The mirror reflects the image of an iron chunk!
+- `$007C`: Together,<49>'s Party starts a raging blaze!
+- `$007D`: Together,<49>'s Party summons mysterious mists!
+- `$007E`: 'Oh,calling it quits? You don't mind losing your wager?'
+- `$007F`: 'This battle is terminated.'
+
+## Group `$04` at `$00:8813`
+
+- `$0080`: 'Please enjoy the next battle.'
+- `$0081`: 'You're leaving,aren't you?'
+- `$0082`: 'Attention please!'<44>'We call this match a draw due to overtime.'<44>'Your wagers will be returned.Enjoy the next match!'
+- `$0083`: <49> was a mirage.<4B>
+- `$0084`: <49>'s Party was defeated!
+- `$0085`: The Linguar splits!<4B>
+- `$0086`: Necrosaro's arm disappears!<4B>
+- `$0087`: Necrosaro's head disappears!<4B>
+- `$0088`: Necrosaro's belly writhes grotesquely....<4B>
+- `$0089`: Necrosaro chants Bounce!<4B>
+- `$008A`: <49> emerges the winner!<4B>
+- `$008B`: 
+- `$008C`: 
+- `$008D`: 
+- `$008E`: 
+- `$008F`: 
+- `$0090`: 
+- `$0091`: 
+- `$0092`: 
+- `$0093`: 
+- `$0094`: 
+- `$0095`: 
+- `$0096`: 
+- `$0097`: 
+- `$0098`: 
+- `$0099`: 
+- `$009A`: 
+- `$009B`: 
+- `$009C`: 
+- `$009D`: 
+- `$009E`: 
+- `$009F`: 
+
+## Group `$05` at `$00:8915`
+
+- `$00A0`: <49> emits a fireball!
+- `$00A1`: <49> emits scorching gas!
+- `$00A2`: <49> emits a violent blaze!
+- `$00A3`: <49> emits a freezing wind!
+- `$00A4`: <49> emits a blizzard!
+- `$00A5`: <49> emits a gleaming,icy gust of wind!
+- `$00A6`: <49> emits gales of sweet breath!
+- `$00A7`: <49> falls asleep!
+- `$00A8`: <49> emits poison gas!
+- `$00A9`: <49> is poisoned!
+- `$00AA`: <49> emits gales of scorching breath!
+- `$00AB`: <49> is paralyzed!
+- `$00AC`: <49> is dazed!<4B>
+- `$00AD`: <49> slams its body into <49>!<4B>
+- `$00AE`: <49> trips and falls!<4B>
+- `$00AF`: Fortunately there's no injury!<4B>
+- `$00B0`: <49> raises the <48> overhead!
+- `$00B1`: <49> raises a hand overhead!<4B>
+- `$00B2`: <49>:'I'm a Slime.He,He,He....'<43><4B><4B>
+- `$00B3`: <49>:'I'm a Slime.Te,He,He....'<43><4B><4B>
+- `$00B4`: <49> throws away the <48>!
+- `$00B5`: <49> brandishes a weapon!
+- `$00B6`: Loses control and falls!<4B>
+- `$00B7`: <47> Damage Point<4C>!
+- `$00B8`: <49> cheers on <49>!<4B>
+- `$00B9`: <49>:'Hip,Hip,Hurray <49>!'<43><4B>
+- `$00BA`: <49> starts crying!<4B>
+- `$00BB`: <49>:'I want to go home! Sob...Sob...'<43><4B>
+- `$00BC`: <49> grabs and throws away <49>!<4B>
+- `$00BD`: <49>:'KIEEEE!'
+- `$00BE`: <49> starts testing strength by breaking the stones nearby!<4B><4B>
+- `$00BF`: <49> picks up and throws a stone!<4B>
+
+## Group `$06` at `$00:8915`
+
+- `$00C0`: <49> emits a fireball!
+- `$00C1`: <49> emits scorching gas!
+- `$00C2`: <49> emits a violent blaze!
+- `$00C3`: <49> emits a freezing wind!
+- `$00C4`: <49> emits a blizzard!
+- `$00C5`: <49> emits a gleaming,icy gust of wind!
+- `$00C6`: <49> emits gales of sweet breath!
+- `$00C7`: <49> falls asleep!
+- `$00C8`: <49> emits poison gas!
+- `$00C9`: <49> is poisoned!
+- `$00CA`: <49> emits gales of scorching breath!
+- `$00CB`: <49> is paralyzed!
+- `$00CC`: <49> is dazed!<4B>
+- `$00CD`: <49> slams its body into <49>!<4B>
+- `$00CE`: <49> trips and falls!<4B>
+- `$00CF`: Fortunately there's no injury!<4B>
+- `$00D0`: <49> raises the <48> overhead!
+- `$00D1`: <49> raises a hand overhead!<4B>
+- `$00D2`: <49>:'I'm a Slime.He,He,He....'<43><4B><4B>
+- `$00D3`: <49>:'I'm a Slime.Te,He,He....'<43><4B><4B>
+- `$00D4`: <49> throws away the <48>!
+- `$00D5`: <49> brandishes a weapon!
+- `$00D6`: Loses control and falls!<4B>
+- `$00D7`: <47> Damage Point<4C>!
+- `$00D8`: <49> cheers on <49>!<4B>
+- `$00D9`: <49>:'Hip,Hip,Hurray <49>!'<43><4B>
+- `$00DA`: <49> starts crying!<4B>
+- `$00DB`: <49>:'I want to go home! Sob...Sob...'<43><4B>
+- `$00DC`: <49> grabs and throws away <49>!<4B>
+- `$00DD`: <49>:'KIEEEE!'
+- `$00DE`: <49> starts testing strength by breaking the stones nearby!<4B><4B>
+- `$00DF`: <49> picks up and throws a stone!<4B>
+
+## Group `$07` at `$00:8915`
+
+- `$00E0`: <49> emits a fireball!
+- `$00E1`: <49> emits scorching gas!
+- `$00E2`: <49> emits a violent blaze!
+- `$00E3`: <49> emits a freezing wind!
+- `$00E4`: <49> emits a blizzard!
+- `$00E5`: <49> emits a gleaming,icy gust of wind!
+- `$00E6`: <49> emits gales of sweet breath!
+- `$00E7`: <49> falls asleep!
+- `$00E8`: <49> emits poison gas!
+- `$00E9`: <49> is poisoned!
+- `$00EA`: <49> emits gales of scorching breath!
+- `$00EB`: <49> is paralyzed!
+- `$00EC`: <49> is dazed!<4B>
+- `$00ED`: <49> slams its body into <49>!<4B>
+- `$00EE`: <49> trips and falls!<4B>
+- `$00EF`: Fortunately there's no injury!<4B>
+- `$00F0`: <49> raises the <48> overhead!
+- `$00F1`: <49> raises a hand overhead!<4B>
+- `$00F2`: <49>:'I'm a Slime.He,He,He....'<43><4B><4B>
+- `$00F3`: <49>:'I'm a Slime.Te,He,He....'<43><4B><4B>
+- `$00F4`: <49> throws away the <48>!
+- `$00F5`: <49> brandishes a weapon!
+- `$00F6`: Loses control and falls!<4B>
+- `$00F7`: <47> Damage Point<4C>!
+- `$00F8`: <49> cheers on <49>!<4B>
+- `$00F9`: <49>:'Hip,Hip,Hurray <49>!'<43><4B>
+- `$00FA`: <49> starts crying!<4B>
+- `$00FB`: <49>:'I want to go home! Sob...Sob...'<43><4B>
+- `$00FC`: <49> grabs and throws away <49>!<4B>
+- `$00FD`: <49>:'KIEEEE!'
+- `$00FE`: <49> starts testing strength by breaking the stones nearby!<4B><4B>
+- `$00FF`: <49> picks up and throws a stone!<4B>
+
+## Group `$08` at `$00:8915`
+
+- `$0100`: <49> emits a fireball!
+- `$0101`: <49> emits scorching gas!
+- `$0102`: <49> emits a violent blaze!
+- `$0103`: <49> emits a freezing wind!
+- `$0104`: <49> emits a blizzard!
+- `$0105`: <49> emits a gleaming,icy gust of wind!
+- `$0106`: <49> emits gales of sweet breath!
+- `$0107`: <49> falls asleep!
+- `$0108`: <49> emits poison gas!
+- `$0109`: <49> is poisoned!
+- `$010A`: <49> emits gales of scorching breath!
+- `$010B`: <49> is paralyzed!
+- `$010C`: <49> is dazed!<4B>
+- `$010D`: <49> slams its body into <49>!<4B>
+- `$010E`: <49> trips and falls!<4B>
+- `$010F`: Fortunately there's no injury!<4B>
+- `$0110`: <49> raises the <48> overhead!
+- `$0111`: <49> raises a hand overhead!<4B>
+- `$0112`: <49>:'I'm a Slime.He,He,He....'<43><4B><4B>
+- `$0113`: <49>:'I'm a Slime.Te,He,He....'<43><4B><4B>
+- `$0114`: <49> throws away the <48>!
+- `$0115`: <49> brandishes a weapon!
+- `$0116`: Loses control and falls!<4B>
+- `$0117`: <47> Damage Point<4C>!
+- `$0118`: <49> cheers on <49>!<4B>
+- `$0119`: <49>:'Hip,Hip,Hurray <49>!'<43><4B>
+- `$011A`: <49> starts crying!<4B>
+- `$011B`: <49>:'I want to go home! Sob...Sob...'<43><4B>
+- `$011C`: <49> grabs and throws away <49>!<4B>
+- `$011D`: <49>:'KIEEEE!'
+- `$011E`: <49> starts testing strength by breaking the stones nearby!<4B><4B>
+- `$011F`: <49> picks up and throws a stone!<4B>
+
+## Group `$09` at `$00:8B13`
+
+- `$0120`: It hits <49>!<4B>
+- `$0121`: <47> Damage Point<4C>!
+- `$0122`: It misses <49>!
+- `$0123`: <49> begins a lecture!<4B>
+- `$0124`: <49>:'Be good to travelers....'<43><4B><4B>
+- `$0125`: <49>:'Can you tell me the way to Aliahan?'<43><4B><4B>
+- `$0126`: <49> doesn't respond!<4B>
+- `$0127`: <49> takes off the <48>!
+- `$0128`: <49> is charmed by <49>!<4B><4B>
+- `$0129`: <49> screams!<4B>
+- `$012A`: <49>:'Yeek! Stop! Please stop!'<43><4B>
+- `$012B`: <49>:'Where am I? Who am I?'<43><4B>
+- `$012C`: <49> is predicting who will win!<4B>
+- `$012D`: <49> joins the battle!
+- `$012E`: <49> grasps at <49>!<4B>
+- `$012F`: <49> is bounced off!<4B>
+- `$0130`: <49> blows a kiss!<4B>
+- `$0131`: <49> is happy!<4B>
+- `$0132`: <49> digs a trap!<4B>
+- `$0133`: <49> falls into a trap!<4B>
+- `$0134`: <49> chants Explo<4B>d<4B>e<4B>...
+- `$0135`: ...but can't remember the rest of the spell!<4B>
+- `$0136`: <49>:'What was I supposed to do?'<43><4B><4B>
+- `$0137`: <49> jumps back into the wagon!
+- `$0138`: <49> throws 1 gold piece!
+- `$0139`: <49> starts counting money!<4B>
+- `$013A`: <49>:'One,Two....The total is <47> gold piece<4C>.That's seems right.'<43><4B><4B>
+- `$013B`: <49> starts a business!<4B>
+- `$013C`: <49>:'Would you like this <48>? I'll give you a discount.'<43><4B><4B>
+- `$013D`: <49> is scared!<4B>
+- `$013E`: <49> is barking weirdly!<4B>
+- `$013F`: <49> trembles!<4B>
+
+## Group `$0A` at `$00:8D1A`
+
+- `$0140`: <49> body slams into <49>!
+- `$0141`: <49> passes through it and disappears somewhere!<4B><4B>
+- `$0142`: <49> can't move a single muscle!<4B>
+- `$0143`: But the body doesn't follow and can't do a thing!<4B><4B>
+- `$0144`: <49> suddenly shouts!
+- `$0145`: <49> starts singing a lullaby.
+- `$0146`: <49> leaps on <49>!
+- `$0147`: <49> catches <49> off guard and steals a treasure chest!<4B><40>
+- `$0148`: <49>:'Calm down,everybody!'<43><4B><4B>
+- `$0149`: Calmed down by <49>,the foes withdraw.<4B><4B>
+- `$014A`: Calmed down by <49>,<49> withdraws.<4B><4B>
+- `$014B`: The foes become even more infuriated!<4B>
+- `$014C`: <49> becomes even more infuriated!<4B>
+- `$014D`: <49> makes an awful pun!<4B>
+- `$014E`: <49> shakes with laughter!
+- `$014F`: <49> chants Upper!
+- `$0150`: <49> trips!
+- `$0151`: At that instant,a weapon hits <49>!<4B>
+- `$0152`: <49> grabs and throws sand on the ground!<4B>
+- `$0153`: The sand gets in <49>'s eyes!
+- `$0154`: <49> starts slamming with its body!
+- `$0155`: Traveling merchants appear out of nowhere!<4B><4B>
+- `$0156`: The merchant army attacks!
+- `$0157`: The merchants vanish.<4B>
+- `$0158`: <49> wiggles a finger in a circle!
+- `$0159`: <49> becomes dizzy!
+- `$015A`: 
+- `$015B`: <49> sweeps legs!
+- `$015C`: <49> trips!
+- `$015D`: The foes turn into a Metal Slime!
+- `$015E`: <49> casts <4A>!
+- `$015F`: <49>'s Party casts <4A> together!
+
+## Group `$0B` at `$00:8F3B`
+
+- `$0160`: But not all 4 members are here!
+- `$0161`: <49>'s MP isn't sufficient!
+- `$0162`: The <4A> isn't cast!
+- `$0163`: But <49> quickly covers its mouth!<4B>
+- `$0164`: <49> fails to cast <4A>!<4B>
+- `$0165`: <49> is put to sleep!
+- `$0166`: <49> falls asleep!
+- `$0167`: <49> is defeated!
+- `$0168`: <49>'s Defense Power is lowered by <47> point<4C>!
+- `$0169`: <49>'s Defense Power goes down <47> point<4C>!
+- `$016A`: <49>'s Defense Power goes up <47> point<4C>!
+- `$016B`: <49>'s wounds heal!
+- `$016C`: <49> revives!
+- `$016D`: But the spell is nullified!
+- `$016E`: <49> is sent into the lights.<43><40>
+- `$016F`: <49>'s spells are contained!
+- `$0170`: <49>'s spells are contained!
+- `$0171`: <49> is surrounded by mirages!
+- `$0172`: <49> throws a Boomerang at <49>!
+- `$0173`: <49> becomes confused!
+- `$0174`: <49> turns back into its original form!
+- `$0175`: <49> assumes the shape of <49>!
+- `$0176`: The area grows even darker!
+- `$0177`: <49> turns into a giant dragon!<4B>
+- `$0178`: <49> is robbed of <47> MP point<4C>!
+- `$0179`: <49> is robbed of <47> MP point<4C>!
+- `$017A`: <49> becomes ironized!<4B>
+- `$017B`: <49>'s group becomes ironized!<4B>
+- `$017C`: A radiant wall of lights appears before <49>!<4B>
+- `$017D`: A violet fog surrounds <49>!<4B>
+- `$017E`: <49>'s Agility goes up <47> point<4C>!
+- `$017F`: A thin cloth of lights encloses <49>'s Party!<4B>
+
+## Group `$0C` at `$00:915D`
+
+- `$0180`: <49>'s Attack Power doubles!<4B>
+- `$0181`: <49>'s numbness wears off!
+- `$0182`: <49> wakes up!
+- `$0183`: <49> sucks up <47> MP point<4C>!<4B>
+- `$0184`: <49> calls the most fearful thing!<4B><4B>
+- `$0185`: <49> falls unconscious!
+- `$0186`: An eerie fog appears out of nowhere and engulfs the area!<4B><4B>
+- `$0187`: The morale of <49>'s Party is boosted!<4B><4B>
+- `$0188`: Time stops!
+- `$0189`: Time restarts!
+- `$018A`: A hideous grumble is heard out of nowhere!<4B><4B>
+- `$018B`: <49>'s MP is gone!
+- `$018C`: 'Chance! <4B>Chance! <4B>Chance....'
+- `$018D`: <49>'s voice echoes through the area in vain.<4B><4B>
+- `$018E`: A giant bird appears out of nowhere and carries off <49>'s Party in its big claws!<4B><4B><4B>
+- `$018F`: An earthquake hits!
+- `$0190`: The tremor makes standing impossible!
+- `$0191`: Cracks run through the ground!
+- `$0192`: <49> falls into a crack!
+- `$0193`: A mountainous giant,laughing hideously,appears!<4B><4B>
+- `$0194`: The giant attacks!
+- `$0195`: The giant withdraws laughing!
+- `$0196`: <49> turns into a Metal Slime!
+- `$0197`: Time reverses!
+- `$0198`: Blinding lights engulf the area,and a snow white dragon appears!<4B><4B>
+- `$0199`: The dragon carries off the foes!<4B>
+- `$019A`: The dragon carries off <49>!<4B>
+- `$019B`: <49> thinks if the battle is won,twice the usual amount of money can be made!<4B>
+- `$019C`: A blinding light shines upon <49>!<4B>
+- `$019D`: <49> turns into a glittering dragon!<4B>
+- `$019E`: <49> uses the <48>!
+- `$019F`: <49> puts on the <48>!
+
+## Group `$0D` at `$00:93D7`
+
+- `$01A0`: <49> already has the <48> on!
+- `$01A1`: <49> flings up the <48>!
+- `$01A2`: The effect of the spell on <49> wears off!<4B>
+- `$01A3`: <49> turns back into its original form!<4B>
+- `$01A4`: <49> raises the <48> overhead.<43><40>
+- `$01A5`: <49> is blown away!
+- `$01A6`: The poison leaves <49>'s body!
+- `$01A7`: <49> scatters the <48>!
+- `$01A8`: <49> hurls the <48> into the sky!<4B>
+- `$01A9`: But the <48> hits the ceiling and falls back.<4B>
+- `$01AA`: <49> grinds the Leaf of World Tree and gives it to <49>!<4B>
+- `$01AB`: <49> puts the <48> on a finger and meditates.<4B>
+- `$01AC`: <49>'s MP is restored by <47> point<4C>!
+- `$01AD`: <44>The ring silently crumbles away!
+- `$01AE`: <49> gives the <48> to a companion!
+- `$01AF`: <49> blows the <48>.
+- `$01B0`: <49> takes out the <48>.
+- `$01B1`: <49> is pleased!
+- `$01B2`: 
+- `$01B3`: <49>'s Strength goes up <47> point<4C>!
+- `$01B4`: <49>'s Agility goes up <47> point<4C>!
+- `$01B5`: <49>'s Luck goes up <47> point<4C>!
+- `$01B6`: <49>'s Maximum HP goes up <47> point<4C>!
+- `$01B7`: <49>'s Maximum MP goes up <47> point<4C>!
+- `$01B8`: <49> looks into the <48>!
+- `$01B9`: The mirror reflects the image of <49>.
+- `$01BA`: The true image of <49> who is disguised as <49> is seen!<4B><4B>
+- `$01BB`: <49>'s Agility doubles!
+- `$01BC`: 
+- `$01BD`: <49> comes to!
+- `$01BE`: <49> crawls out of the pit!
+- `$01BF`: <49>'s Party is demolished!
+
+## Group `$0E` at `$00:95F5`
+
+- `$01C0`: 
+- `$01C1`: 
+- `$01C2`: <49> walks away downcast!
+- `$01C3`: Gained <47> gold piece<4C>!
+- `$01C4`: <49> finds <47> additional gold piece<4C>!
+- `$01C5`: The foes leave a treasure chest behind!
+- `$01C6`: <49> leaves a treasure chest behind!
+- `$01C7`: <49> has a treasure chest!<44>
+- `$01C8`: The foes have a treasure chest!<44>
+- `$01C9`: <49> opens the treasure chest!<44>
+- `$01CA`: mun
+- `$01CB`: 
+- `$01CC`: Sorry to inform you but Adventure Log <47> has been erased.
+- `$01CD`: Bank <47>
+- `$01CE`: Fank <47>
+- `$01CF`: p1 <47>
+- `$01D0`: Oops! No damage to <49>.<43><40>
+- `$01D1`: Wow! <49> splits!
+- `$01D2`: <49>'s Level goes up!
+- `$01D3`: <44>Strength goes up <47> point<4C>!
+- `$01D4`: <44>Agility goes up <47> point<4C>!
+- `$01D5`: <44>Vitality goes up <47> point<4C>!
+- `$01D6`: <44>Intelligence goes up <47> point<4C>!
+- `$01D7`: <44>Luck goes up <47> point<4C>!
+- `$01D8`: <44>The Maximum HP goes up <47> point<4C>!
+- `$01D9`: <44>The Maximum MP goes up <47> point<4C>!
+- `$01DA`: <44>Learns the spell,<4A>!
+- `$01DB`: The foes attack before you're ready!<4B>
+- `$01DC`: <49> attacks before you're ready!<4B>
+- `$01DD`: The foes suddenly attack!<4B>
+- `$01DE`: <49> suddenly attacks!<4B>
+- `$01DF`: But the foes haven't seen you!<4B>
+
+## Group `$0F` at `$00:97D8`
+
+- `$01E0`: But <49> hasn't seen you!<4B>
+- `$01E1`: But the foes are bewildered!<4B>
+- `$01E2`: But <49> is bewildered!<4B>
+- `$01E3`: <49> diverts the foes' attention and lets the Party flee!<4B><4B>
+- `$01E4`: <49> diverts <49>'s attention and lets the Party flee!<4B><4B>
+- `$01E5`: <49>'s Party becomes ironized,impervious to attack!<4B>
+- `$01E6`: <49> becomes ironized,impervious to attack!<4B>
+- `$01E7`: <49> smiles affectionately.
+- `$01E8`: The body is immobile due to a curse!
+- `$01E9`: <49> is smiling!
+- `$01EA`: <49> throws away the <48>!
+- `$01EB`: The foes are bewildered!
+- `$01EC`: <49> is bewildered!
+- `$01ED`: <49>'s Party is perplexed!
+- `$01EE`: <49> is perplexed!
+- `$01EF`: <49> flees!
+- `$01F0`: <49> builds up power!
+- `$01F1`: <49> uses a Medical Herb!
+- `$01F2`: <49> gives the Leaf of World Tree to <49>!
+- `$01F3`: <49> hurls the Wing of Wyvern into the sky!
+- `$01F4`: <49> swings the Sword of Lethargy!
+- `$01F5`: <49> swings the Staff of Thunder!
+- `$01F6`: <49> throws the Boomerang!
+- `$01F7`: <49> holds the Shield of Strength overhead!
+- `$01F8`: <49> holds the Sphere of Silence overhead!
+- `$01F9`: The effect of Ironize on <49>'s Party wears off!
+- `$01FA`: The effect of Ironize on <49> wears off!
+- `$01FB`: 
+- `$01FC`: 
+- `$01FD`: 
+- `$01FE`: 
+- `$01FF`: 
+
+## Group `$10` at `$00:99D7`
+
+- `$0200`: 'This is an item shop! What would you like to do?'
+- `$0201`: 'What would you like?'
+- `$0202`: 'I'm afraid you don't have enough money to buy that.'
+- `$0203`: 'The <48>,right? Thank you.'<44>
+- `$0204`: 'Who's going to take this?'
+- `$0205`: 'But <49> can't carry any more things.'<44>
+- `$0206`: 'Come back after reducing the number of things you're carrying.'
+- `$0207`: 'Shall I give this to someone else?'
+- `$0208`: '<49> can't use this.Do you still want it?'
+- `$0209`: '<49> is in the wagon? I'll deliver it to the wagon then.'
+- `$020A`: 'I'll put this in <49>'s Tool Bag then.'
+- `$020B`: 'Here you go,<49>!'
+- `$020C`: <49> doesn't seem to want to leave things.
+- `$020D`: 'Whose items can you sell me?'
+- `$020E`: 'Huh? <49> has no items.'
+- `$020F`: 'What can you sell me?'
+- `$0210`: 'The <48>? Hmm....'<44>
+- `$0211`: 'It's hard to appraise that.'<4F>I think you'd better not sell or discard things like that.'
+- `$0212`: 'I'll pay <47> gold piece<4C> for that.Is that OK?'
+- `$0213`: 'Oh,you changed your mind? Too bad....'
+- `$0214`: 'Thank you for selling it to me.'
+- `$0215`: 'I'll get the item from <49> in the wagon then.'
+- `$0216`: It won't come off due to a curse!<4F>I can't buy it then.'
+- `$0217`: 
+- `$0218`: 'Oh,you changed your mind.'
+- `$0219`: 'Anything else?'
+- `$021A`: 'Please come back again!'
+- `$021B`: 'Welcome to the House of Healing.What can I do for you?'
+- `$021C`: 'Welcome to the House of Healing.It's so late at night.What do you need?'
+- `$021D`: 'Who is to be treated?'
+- `$021E`: 'But <49> is not afflicted by poison.'
+- `$021F`: 'Now I'll administer the antidote to <49>.'
+
+## Group `$11` at `$00:9CB6`
+
+- `$0220`: 'Whose curse is to be lifted?'
+- `$0221`: 'But <49> is not afflicted by a curse.'
+- `$0222`: 'Please be quiet.I shall remove this abominable curse from <49>....'
+- `$0223`: 'Who is to be revived?'
+- `$0224`: 'You must be kidding! <49> is alive!'
+- `$0225`: 'Please be quiet.'<44>
+- `$0226`: 'I shall bring back the wandering spirit of <49> to this world....'
+- `$0227`: 'Very well,you want me to save your progress.'
+- `$0228`: 'Tell me all you've achieved so far.'<4F>Then I shall write it down on the Imperial Scrolls of Honor.Is that alright?'
+- `$0229`: 'I certainly recorded your progress.'<4F>Are you continuing your quest?'
+- `$022A`: 'I can see....'<44>
+- `$022B`: 'You changed your mind.'<4F>Very well.Are you continuing your quest?'
+- `$022C`: 'Can I do anything else for you?'
+- `$022D`: 'Very well.Travel safely.Come back anytime.'
+- `$022E`: 'The fee is <47> gold piece<4C>.Is that alright?'
+- `$022F`: 'I'm sorry,but you don't have enough money to pay for our service.'<4F>Come back again when you have enough money.'
+- `$0230`: 'Very well,you don't want our service.'<4F>If you change your mind,come back anytime.'
+- `$0231`: 'Good afternoon! Welcome to the Wayfarer's Inn.'
+- `$0232`: 'Welcome to the Wayfarer's Inn.You must be very tired from your long journey.'
+- `$0233`: <44>'One night's stay is <47> gold piece<4C>.Would you like to stay?'
+- `$0234`: 'Farewell.Do come again.'
+- `$0235`: 'I'm sorry,but you don't have enough money.'<4F>Please come again when you do.'
+- `$0236`: 'Enjoy your stay.'
+- `$0237`: 'Good morning.Have a safe journey.'
+- `$0238`: 'This is a vault where you can leave items and money for safe keeping.How may I help you?'
+- `$0239`: 'Very well.What do you want to leave?'
+- `$023A`: 'You'd like to leave money? You can leave money in 1000 gold-piece increments.How much would you like to leave?'
+- `$023B`: 'I'm sorry to inform you,but you don't seem to have that much.'
+- `$023C`: '<47> gold pieces.Very well.I'll take good care of it.'
+- `$023D`: 'Who's going to leave something?'
+- `$023E`: 'But <49> doesn't seem to have anything.'
+- `$023F`: 'What would you like to leave?'
+
+## Group `$12` at `$00:A0C7`
+
+- `$0240`: 'The <48>?'<4F>When you pick it up,there will be a charge of 10 gold pieces.Is that alright?'
+- `$0241`: Due to a curse,the <48> won't come off.<4F>I can't keep such an item.How creepy....'
+- `$0242`: 'I'll take good care of it.'
+- `$0243`: 'Will you leave other items?'
+- `$0244`: 'What would you like to pick up?'
+- `$0245`: 'Money? I'm not keeping any of your money.'
+- `$0246`: 'I'm keeping <47> gold pieces for you.How much do you want?'
+- `$0247`: 'Sorry,but you didn't leave that much money.'
+- `$0248`: 'Very well.Here you are.'
+- `$0249`: 'What? You didn't leave anything....'
+- `$024A`: 'Which item shall I return to you?'
+- `$024B`: 'The <48>? I charge 10 gold pieces.Is that alright?'
+- `$024C`: 'Hmm...you don't have enough money.I can't return the item.'
+- `$024D`: 'Would you like to take out your money first?'
+- `$024E`: 'Who'll carry this?'
+- `$024F`: '<49> doesn't seem to be able to carry any more things.'<44>
+- `$0250`: 'First reduce the number of items by leaving some here or by selling or<43>discarding them.'
+- `$0251`: 'Would someone else carry this?'
+- `$0252`: '<49> can't be equipped with the <48>.Is that alright?'
+- `$0253`: 'I'll deliver this to the wagon.'
+- `$0254`: 'Alright,I'll give this to <49>'s ghost.'
+- `$0255`: 'Alright,I'll put this in <49>'s Tool Bag.'
+- `$0256`: 'I'll return this to you.'
+- `$0257`: 'You changed your mind.'<44>
+- `$0258`: 'Anything else?'
+- `$0259`: 'Have a safe journey.'
+- `$025A`: 'This is a weapon shop.What would you like to do?'
+- `$025B`: 'What do you want?'
+- `$025C`: 'The <48>? You don't have enough money for that.'
+- `$025D`: 'The <48>? Thank you.'<44>
+- `$025E`: 'Who shall take this?'
+- `$025F`: 'Sorry,but <49> can't carry any more things.'<44>
+
+## Group `$13` at `$00:A3F2`
+
+- `$0260`: 'I can't sell you this unless you reduce the number of items you're carrying by selling or discarding some.'
+- `$0261`: 'Does someone else want to take this?'
+- `$0262`: '<49> can't be equipped with this.Is that alright?'
+- `$0263`: 'Alright,I'll deliver this to <49> in the wagon.'
+- `$0264`: 'Alright,I'll give this to <49>'s ghost.'
+- `$0265`: 'Alright,I'll put this in <49>'s Tool Bag.'
+- `$0266`: 'Here you go,<49>.'
+- `$0267`: 'Whose belongings would you like to sell?'
+- `$0268`: 'Are you kidding? <49> doesn't have anything.'
+- `$0269`: 'What would you like to sell?'
+- `$026A`: 'The <48>?'
+- `$026B`: Taloon:'I'm counting on you.I'll be waiting for you in the port town.'
+- `$026C`: 'Hmm...this is my honest advice....'<4F>I think you'd better keep that.'
+- `$026D`: 'I'll pay <47> gold piece<4C> for it.Is that alright?'
+- `$026E`: 'That's too bad.'
+- `$026F`: 'Thank you.'
+- `$0270`: 'I'll get the item from <49> in the wagon.'
+- `$0271`: Due to a curse,it won't come off your arm.<4F>Too bad....'
+- `$0272`: 'Drop by again!'
+- `$0273`: 'This is an armor shop.What do you want to do?'
+- `$0274`: 'What would you like to buy?'
+- `$0275`: 'The <48>? Sorry,but you don't have enough money.'
+- `$0276`: 'The <48>? Thank you.'<44>
+- `$0277`: 'Who will take it?'
+- `$0278`: 'But <49> has too many things already.'<44>
+- `$0279`: 'Why don't you reduce the number of things you're carrying by selling or discarding some?'
+- `$027A`: 'The <48>?'<44>
+- `$027B`: 'Does anyone else want to take this?'
+- `$027C`: '<49> can't be equipped with this.Do you still want it?'
+- `$027D`: 'I'll deliver this to <49> in the wagon.'
+- `$027E`: 'I'll put this in <49>'s Tool Bag.'
+- `$027F`: 'Here you go,<49>.'
+
+## Group `$14` at `$00:A701`
+
+- `$0280`: 'Whose belongings would you like to sell?'
+- `$0281`: '<49> doesn't seem to have anything.'
+- `$0282`: 'What would you like to sell?'
+- `$0283`: <44>
+- `$0284`: 'I'd like to buy that....'<44>'But I don't think you should sell such a valuable item.'
+- `$0285`: 
+- `$0286`: 'I'll pay <47> gold piece<4C> for that.Is that acceptable?'
+- `$0287`: 'That's too bad....'
+- `$0288`: 'Thank you.'
+- `$0289`: 'Then I'll get it from <49> in the wagon.'
+- `$028A`: Due to a curse,it won't come off!<43>'How scary!'<43>'Let's call off this deal.'
+- `$028B`: 'Then I'll give it to <49>'s ghost.'
+- `$028C`: 'Is there anything else?'
+- `$028D`: 'Thank you for your business.Come back again.'
+- `$028E`: 'Then I'll give it to <49>'s ghost.'
+- `$028F`: 'Anything else?'
+- `$0290`: 'I'm terribly sorry,but the vault is full,and I can't take any more things.'
+- `$0291`: '<47> gold piece<4C>?'
+- `$0292`: 'I'm terribly sorry,but I can't keep any more of your money.'
+- `$0293`: 'A good rest should invigorate you for tomorrow.Rest well.'<44>
+- `$0294`: Turn off the power while holding the RESET Button in.<44>If you turn off the power without holding the RESET Button in,you may lose all that is recorded in the Imperial Scrolls of Honor!
+- `$0295`: <49> checks the wall.<44>There's a button.<44>Would you like to press it?
+- `$0296`: A message is carved in the floor.<4F>To Those Who Travel in Search of Treasure:<43>Return the treasure you've stolen to this place.'<4F>Then the exit way will appear....'<44>Do you want to return the Iron Safe?
+- `$0297`: But the treasure chest is empty....
+- `$0298`: Finds the <48>!<44>
+- `$0299`: The treasure chest is a Mimic!
+- `$029A`: The treasure chest is a Man-Eater Chest!
+- `$029B`: But <49> can't carry any more things.
+- `$029C`: But <49>'s Party can't carry any more things.
+- `$029D`: <44>Do you want to discard something?
+- `$029E`: Who'll discard something?
+- `$029F`: What do you want to discard?
+
+## Group `$15` at `$00:AA8D`
+
+- `$02A0`: <49> obtains the <48>.
+- `$02A1`: <49> gives up the <48>.
+- `$02A2`: <49>'s Party gives up the <48>.
+- `$02A3`: <49> discards the <48> and obtains the <48>.
+- `$02A4`: <49> takes the <48> away from <49>'s ghost and gives the <48> to the ghost.
+- `$02A5`: <49> takes the <48> from <49>'s Tool Bag and puts the <48> in it.
+- `$02A6`: But nothing is found.
+- `$02A7`: <49> searches the area around feet.<44>
+- `$02A8`: <49> jumps off the ship and dives into the sea.
+- `$02A9`: But <49> can't carry anything.
+- `$02AA`: <49> isn't carrying anything.
+- `$02AB`: Unable to move,<49> can't use the item.
+- `$02AC`: Unable to move,<49> can't check the item.
+- `$02AD`: Being lifeless,<49> can't use the item.
+- `$02AE`: Being lifeless,<49> can't check the item.
+- `$02AF`: <49> discards the <48>.
+- `$02B0`: <49> takes the <48> from <49>'s Tool Bag and discards it.
+- `$02B1`: <49> takes the <48> from <49>'s ghost and discards it.
+- `$02B2`: <49> hands the <48> to <49>.
+- `$02B3`: <49> puts the <48> in <49>'s Tool Bag.
+- `$02B4`: <49> gives the <48> to <49>'s ghost.
+- `$02B5`: <49> takes the <48> from <49>'s Tool Bag.
+- `$02B6`: <49> takes the <48> from <49>'s Tool Bag and puts it in <49>'s Tool Bag.
+- `$02B7`: <49> takes the <48> from <49>'s Tool Bag and gives it to <49>'s ghost.
+- `$02B8`: <49> takes the <48> from <49>'s ghost.
+- `$02B9`: <49> takes the <48> from <49>'s ghost and puts it in <49>'s Tool Bag.
+- `$02BA`: <49> takes the <48> from <49>'s ghost and gives it to <49>'s ghost.
+- `$02BB`: <49> holds the <48> in the other hand.
+- `$02BC`: <49> takes the <48> from <49>'s Tool Bag and returns it to <49>'s Tool Bag.
+- `$02BD`: <49> takes the <48> from <49>'s ghost and returns it to <49>'s ghost.
+- `$02BE`: Do you want to discard the <48>?
+- `$02BF`: But <49> has no one to hand things to.
+
+## Group `$16` at `$00:AD71`
+
+- `$02C0`: <49> can't use spells.
+- `$02C1`: <49> doesn't know a spell which can be used while moving.
+- `$02C2`: Not enough MP!
+- `$02C3`: <49> chants <4A>!
+- `$02C4`: <49> bumps into the ceiling!
+- `$02C5`: But nothing happens.
+- `$02C6`: A red light glows in the treasure chest.
+- `$02C7`: A yellow light glows in the treasure chest.
+- `$02C8`: A blue light glows in the treasure chest.
+- `$02C9`: The treasure chest seems to be empty.
+- `$02CA`: <49>'s wounds heal!
+- `$02CB`: <49>'s numbness goes away!
+- `$02CC`: The poison leaves <49>'s body!
+- `$02CD`: <49> revives!
+- `$02CE`: <49> doesn't revive!
+- `$02CF`: Being lifeless,<49> can't cast spells.
+- `$02D0`: Being paralyzed,<49> can't cast spells.
+- `$02D1`: <49>'s Party isn't carrying anything.
+- `$02D2`: You shouldn't throw that away!
+- `$02D3`: <49> appraises the <48>.
+- `$02D4`: <44>'Hmm...must be a weapon.'
+- `$02D5`: <44>'Hmm...must be armor.'
+- `$02D6`: <44>'Hmm...must be a shield.'
+- `$02D7`: <44>'Hmm...must be a cap or helmet.'
+- `$02D8`: <44>'Hmm...must be an item.'
+- `$02D9`: <44>'A shop should pay <47> gold piece<4C> for this.'
+- `$02DA`: <44>'What an awesome object!'
+- `$02DB`: <44>'No store is likely to be able to appraise the value of this.'
+- `$02DC`: Doesn't come off due to a curse!
+- `$02DD`: <44>'Doesn't seem to be cursed.'
+- `$02DE`: <44>'It seems that this can only be used once.'
+- `$02DF`: <44>'It seems that this can be used time after time.'
+
+## Group `$17` at `$00:AFC2`
+
+- `$02E0`: <44>'It seems that anyone can be equipped with this.'
+- `$02E1`: <44>'The following can be equipped with this:<43><40>
+- `$02E2`:  <49>.'
+- `$02E3`:  <49> and <49>.'
+- `$02E4`:  <49>,<49><43> and <49>.'
+- `$02E5`: <44>'I don't think any of us can be equipped with this.'
+- `$02E6`: <49> throws the Boomerang.
+- `$02E7`: <49> administers the <48> to the King.
+- `$02E8`: <49> wears the <48>.
+- `$02E9`: Started flying high up into the sky.<4B>
+- `$02EA`: The <48> is cursed.
+- `$02EB`: <44>
+- `$02EC`: 'Come this way....'
+- `$02ED`: 'If you go that way,you'll go back....'
+- `$02EE`: 'Not that way....'
+- `$02EF`: <44>'It seems that only I can be equipped with this.'
+- `$02F0`: There's no one in that direction.
+- `$02F1`: 'Bow,Wow,Wow!'
+- `$02F2`: But MP isn't increased more.
+- `$02F3`: 'You're late.Come in the shop.Quick!'
+- `$02F4`: 'Come this way,you brat!'<43>'Let me go! I don't want to go!'
+- `$02F5`: 'Help! Help me!'
+- `$02F6`: The wounds of <49> and the others heal.
+- `$02F7`: 'This is an item shop.They don't carry souvenirs,though.'
+- `$02F8`: 'Here lies Ruvas the Soldier who saved this town.'
+- `$02F9`: 'And this is....Excuse me.'<4F>Nurse,I'd like to show that to them.'<44>Nurse:'Of course.'
+- `$02FA`: 'This is the armor they believe Ruvas wore.'<4F>They say this armor has a very mysterious power.'
+- `$02FB`: 'And this is the Aneaux Spa.Very refreshing after a long journey.'
+- `$02FC`: 'By the way,have you decided where to stay tonight?'<4F>I recommend this inn.The people are courteous and the price is reasonable.Well,I must go now.Bye.'
+- `$02FD`: 'No! Let me go! Help! Someone!'
+- `$02FE`: 'Stop! <4B>Or the Princess will be harmed!'
+- `$02FF`: 'Quiet! Necrosaro will arrive shortly!'
+
+## Group `$18` at `$00:B2D2`
+
+- `$0300`: This is a story about royal soldiers of a small country called Burland.<44>One of the royal soldiers is you,Ragnar.<44>One morning,the King summons all the soldiers to the Castle court....<44>
+- `$0301`: 'The King will speak to you.Listen carefully.'
+- `$0302`: 'Everyone,at ease.'<4F>You must have heard the rumor that children have been vanishing recently.'<4F>The mothers from Izmit Village came to me in tears this morning begging for help.'<4F>As the King of this country,I cannot ignore this problem any longer.'<4F>Find the cause of these disappearances and report to me! Go,my soldiers!'
+- `$0303`: 'Sir,help me!'
+- `$0304`: Flora:'It's you,isn't it?'<43>Alex:'Who are you,ma'am?'<44>Flora:'Don't you recognize me? I'm Flora,your wife!'<43>Alex:'.........'<44>Flora:'Don't you even remember this? Smack!'<43>Alex:'.........'<44>Alex:'...Flora!'<43>Flora:'Yes,it's me!'<44>Alex:'What came over me? I must have lost my mind in fear after being attacked by monsters.'<44>Alex:'Soldier,thanks for finding me.'<44>Alex:'I remember...hearing this from some children...'<44>
+- `$0305`: Somewhere,long ago,there was a very tomboyish princess named Alena.<44>The King was constantly upset by her behavior.One morning,he summoned the Princess to his chamber....<4F>Princess! Princess Alena! Your father wants to see you!'<44>
+- `$0306`: 'Alena,your tutor informed me you're planning a journey to test your strength.'<4F>I forbid it.You're the Princess of this country.'<4F>I won't allow you to venture into the outside world where monsters lurk!'<4F>Never go outside this Castle! Is that clear? That's all!'
+- `$0307`: 'Who are you?'
+- `$0308`: Alena inspects the wall.<44>It seems the wall,repaired with flimsy boards,can be broken through by kicking.<44>Do you want to kick it?
+- `$0309`: Nothing special is found.
+- `$030A`: Brey:'Princess! It's reckless to journey alone! If you're determined,I'll accompany you!'<44>Cristo:'I,your humble servant,will accompany you also,Princess! Let's go now.'<44>Brey and Cristo joined the Party!<43><55><40>
+- `$030B`: You can't get off here.
+- `$030C`: Alena woke up in bed.<44>
+- `$030D`: Cristo:'Princess! You're awake! How are you?'<44>
+- `$030E`: Brey:'I'm so sorry you didn't win....'<44>
+- `$030F`: Cristo:'They say you can use Medical Herbs even during battles....'<44>
+- `$0310`: Brey:'In any case,you must become stronger.Shall we go,Princess?'<44>
+- `$0311`: The story you're about to witness is about two beautiful sisters who travel,seeking to avenge their father.<44>Mara,the older sister,is a dancer.Nara,the younger one,is a fortuneteller.<44>The story begins in Monbaraba,a town of song and dance.<44>
+- `$0312`: 'Mara! You're the best!'<43>'Yahoo!'<43>'I love you,Mara!'
+- `$0313`: Nara:'Good performance,sis.Did you see him?'<44>Mara:'No.I didn't see a cute guy in the audience today either.'<44>Nara:'No,I mean him.Our sworn enemy,Balzack!'<44>Mara:'Oh,right.No,I didn't see him either.'<44>Nara:'I see....'
+- `$0314`: Master:'Don't be so discouraged.If you continue traveling,someday you'll find him.'<44>Master:'Here,I'll pay you up through today.Thanks for performing for us.'<44>
+- `$0315`: Mara and Nara receive 100 gold pieces!<44>Master:'You're so popular.I want you to stay longer,but I don't want to interfere with your pursuit of revenge.'<44>Master:'Rest well tonight and leave in the morning.Have a safe journey.'
+- `$0316`: Nara:'Good morning,sis.Shall we leave now?'
+- `$0317`: '<49>,you'll need <47> more Experience Point<4C> to reach the next level.'<44>
+- `$0318`: 'I wish you a safe journey.'
+- `$0319`: The effect of Repel wears off.
+- `$031A`: The effect of the Fairy Water wears off.
+- `$031B`: <49> looks at the sign post.<44>But it's the wrong side.<43>Can't read the message.
+- `$031C`: This is Lakanaba,a small town far north of Endor.<44>A man named Taloon lives in this town.<44>He works for someone now,but his dream is to become the world's greatest arms merchant someday.<44>
+- `$031D`: 'Stand there.Customers will come to you.'<4F>I'll pay you on commission so work hard.'<4F>I'll be downstairs.'
+- `$031E`: Neta:'Wake up.You must go to the shop soon or the boss will scold you again.'<44>Neta:'Darling!'<43><4B>
+- `$031F`: Neta:'You're up at last.Here's your lunch.'<44>Neta:'Go out and head west.Don't be a sleepy-head,OK? Have a nice day.'<43><4B>
+
+## Group `$19` at `$00:BBD8`
+
+- `$0320`: 'I can't believe I lost....'<4F>I'm sure other monsters will seek out and destroy the Hero....'<4F>All mankind will eventually be offered up to the Ruler of Evil.I'll see you in the Evil World....<4B>Gasp!'<43><4B>
+- `$0321`: 'Hurray! Thank you,sir!'<4F>We can go home,right? I heard you can go home if you jump from the top.'
+- `$0322`: 'Oh! I'm glad you're back safely.'
+- `$0323`: 'Don't stand there.Come around here.'<4F>Or are you here as a customer today?'
+- `$0324`: 'Oh,I see.'<44>
+- `$0325`: 'If that's the case,come here quickly.'
+- `$0326`: 'I've been waiting for you.You've come to work,right?'
+- `$0327`: <50> was carried to the wagon.
+- `$0328`: 'I see.I know you want to try many things.'<4F>No problem.Do what you want.If you want to work here again,come back.'
+- `$0329`: 'Is this a weapon shop?'
+- `$032A`: 'No? Sorry I bothered you.'
+- `$032B`: 'Can you show me things for sale?'
+- `$032C`: 'What are you? Show them to me.'
+- `$032D`: 'I'll take the <48>.The price is <47> gold piece<4C>,right?'
+- `$032E`: 'You like kidding people,don't you?'
+- `$032F`: 'I made a good purchase.Thanks,I'll come again.'
+- `$0330`: 'You'll give me a discount!? How much is the <48>? How about <47> gold piece<4C>?'
+- `$0331`: 'What? You raised the price? The <48> is <47> gold piece<4C> starting today?'
+- `$0332`: 'I've no choice.I'll pay it.Thanks a lot!'
+- `$0333`: 'If that's the case,I won't buy it.Bye!'
+- `$0334`: 'Huh? You don't seem to have brought anything back today.'
+- `$0335`: 'Oops,I don't have enough money for that.'<4F>Sorry,I'll be back.'
+- `$0336`: 'Excuse me,but I have too many things.'<4F>I'll sell or discard them somewhere.See you.'
+- `$0337`: 'Hmm...I can't be equipped with this.Can you still sell it to me?'
+- `$0338`: 'Thanks a lot.I'll give this to my friend.Bye now.'
+- `$0339`: 'I knew it....Sorry I bothered you.'
+- `$033A`: 'KiKeee!'<43><4B>
+- `$033B`: 'No? Sorry I bothered you.'
+- `$033C`: 'I have a weapon to sell.Will you buy it?'
+- `$033D`: 'I see.I'll try other places then.'
+- `$033E`: 'It's the <48>.How about paying <47> gold piece<4C> for it?'
+- `$033F`: 'You don't want it...I see.I'll try other places.'

@@ -1,0 +1,2 @@
+# Generated reports preserve empty trailing TSV columns and empty decoded text.
+analysis/** whitespace=-trailing-space
