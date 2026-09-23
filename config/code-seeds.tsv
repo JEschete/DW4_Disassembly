@@ -1,5 +1,4 @@
 # Bank<TAB>CPU address<TAB>end exclusive or -<TAB>source<TAB>reason
-10	8080	-	Direct ROM analysis	Wrapper immediately following the 64-entry bank service directory
 0E	8008	8091	Supplied ROM map	Documented code region $8008-$8090
 0E	BAF7	BB53	Supplied ROM map	Documented map-palette code region $BAF7-$BB52
 0F	C001	C004	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 00
@@ -22,96 +21,35 @@
 0F	C034	C037	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 11
 0F	C037	C03A	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 12
 0F	C03A	C03D	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 13
-0F	C408	-	CPU vector	Lower-half IRQ/BRK vector target
 0F	C15A	-	Direct ROM analysis	Lower-half NMI body installed at RAM $0502
+0F	C408	-	CPU vector	Lower-half IRQ/BRK vector target
 0F	E9AD	-	Supplied ROM map	Map-data bank selection routine at headerless ROM offset $3E9AD
 0F	FFD8	-	CPU vector	Lower-half RESET vector target
-1F	C001	C004	Direct ROM analysis	Fixed-bank JMP trampoline 00
-1F	C004	C007	Direct ROM analysis	Fixed-bank JMP trampoline 01
-1F	C007	C00A	Direct ROM analysis	Fixed-bank JMP trampoline 02
-1F	C00A	C00D	Direct ROM analysis	Fixed-bank JMP trampoline 03
-1F	C00D	C010	Direct ROM analysis	Fixed-bank JMP trampoline 04
-1F	C010	C013	Direct ROM analysis	Fixed-bank JMP trampoline 05
-1F	C013	C016	Direct ROM analysis	Fixed-bank JMP trampoline 06
-1F	C016	C019	Direct ROM analysis	Fixed-bank JMP trampoline 07
-1F	C019	C01C	Direct ROM analysis	Fixed-bank JMP trampoline 08
-1F	C01C	C01F	Direct ROM analysis	Fixed-bank JMP trampoline 09
-1F	C01F	C022	Direct ROM analysis	Fixed-bank JMP trampoline 0A
-1F	C022	C025	Direct ROM analysis	Fixed-bank JMP trampoline 0B
-1F	C025	C028	Direct ROM analysis	Fixed-bank JMP trampoline 0C
-1F	C028	C02B	Direct ROM analysis	Fixed-bank JMP trampoline 0D
-1F	C02B	C02E	Direct ROM analysis	Fixed-bank JMP trampoline 0E
-1F	C02E	C031	Direct ROM analysis	Fixed-bank JMP trampoline 0F
-1F	C031	C034	Direct ROM analysis	Fixed-bank JMP trampoline 10
-1F	C034	C037	Direct ROM analysis	Fixed-bank JMP trampoline 11
-1F	C037	C03A	Direct ROM analysis	Fixed-bank JMP trampoline 12
-1F	C03A	C03D	Direct ROM analysis	Fixed-bank JMP trampoline 13
-1F	C408	-	CPU vector	IRQ/BRK vector target
-1F	C15A	-	Direct ROM analysis	NMI body installed as JMP $C15A at RAM vector $0502
-1F	FFD8	-	CPU vector	RESET vector target
-19	8014	8017	Direct ROM scan	JMP to fixed trampoline $C01C
-19	8017	801A	Direct ROM scan	JMP to fixed trampoline $C01F
-19	801A	801D	Direct ROM scan	JMP to fixed trampoline $C022
-19	801D	8020	Direct ROM scan	JMP to fixed trampoline $C025
-19	8020	8023	Direct ROM scan	JMP to fixed trampoline $C028
-19	8023	8026	Direct ROM scan	JMP to fixed trampoline $C02B
-19	8050	-	Direct ROM analysis	Resume after three-byte inline BRK service at $804C
-19	806F	-	Direct ROM analysis	Resume after three-byte inline BRK service at $806B
-19	80CC	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80C8
-19	80F5	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80F1
-1B	A4D7	-	Direct ROM scan	JSR to fixed trampoline $C00A
-1B	A7BE	-	Direct ROM scan	JSR to fixed trampoline $C03A
-1B	ACA0	-	Direct ROM scan	JSR to fixed trampoline $C031
-1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
-1B	B55A	-	Direct ROM scan	JSR to fixed trampoline $C034
-1D	8E15	-	Direct ROM scan	JSR to fixed trampoline $C02E
-1D	9273	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $925A
-1D	9467	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $944E
-1D	9CB4	-	Direct ROM scan	JMP to fixed trampoline $C010
-1D	A176	-	Direct ROM scan	JSR to fixed trampoline $C007
-1D	ADD8	-	Direct ROM scan	JSR to fixed trampoline $C016
-1D	ADDC	-	Direct ROM scan	JSR to fixed trampoline $C004
-1D	B99B	-	Direct ROM scan	JSR to fixed trampoline $C001
-1E	8554	-	Direct ROM scan	JSR to fixed trampoline $C010
-1E	8557	-	Direct ROM scan	JSR to fixed trampoline $C007
-1E	8589	-	Direct ROM scan	JSR to fixed trampoline $C007
-1E	858C	-	Direct ROM scan	JSR to fixed trampoline $C013
-1E	86F3	-	Direct ROM scan	JSR to fixed trampoline $C010
-1E	86F6	-	Direct ROM scan	JSR to fixed trampoline $C007
-1E	86FC	-	Direct ROM scan	JSR to fixed trampoline $C013
-1E	872C	-	Direct ROM scan	JSR to fixed trampoline $C016
-1E	8730	-	Direct ROM scan	JSR to fixed trampoline $C004
-1E	891C	-	Direct ROM scan	JSR to fixed trampoline $C001
-1E	9090	-	Direct ROM scan	JSR to fixed trampoline $C016
-1E	9097	-	Direct ROM scan	JSR to fixed trampoline $C004
-1E	90AB	-	Direct ROM scan	JSR to fixed trampoline $C016
-1E	90AF	-	Direct ROM scan	JSR to fixed trampoline $C004
-1E	9592	-	Direct ROM scan	JSR to fixed trampoline $C00A
-1E	AABE	-	Direct ROM scan	JSR to fixed trampoline $C010
-1E	AAC1	-	Direct ROM scan	JSR to fixed trampoline $C010
-1E	AAC4	-	Direct ROM scan	JSR to fixed trampoline $C010
-17	9C07	-	Direct ROM analysis	Resume after three-byte inline BRK service at $9C03
+10	8080	-	Direct ROM analysis	Wrapper immediately following the 64-entry bank service directory
+12	97A9	-	Direct ROM analysis	Coherent battle setup routine block immediately after RTS $97A8 and before service entry $9BFD
+12	986B	-	Direct ROM analysis	Coherent nested countdown routine ending at RTS $9886 before the existing entry at $9887
+12	9D6D	-	Direct ROM analysis	Coherent BRK-based battle setup routine after RTS $9D6C with a local call to $9D7A
+15	BBD4	-	Overlapping continuation	STA $DA begins on the third operand of BRK service $62,$33 at $BBD1
+16	9CBF	-	Direct ROM analysis	Four-byte compare-and-return routine immediately after the UI metric tables
+16	9CD7	-	Direct ROM analysis	Coherent text/UI routine block immediately after RTS $9CD6 and before decoded entry $9F58
+16	9EE7	-	Direct ROM analysis	Coherent text/UI selection routine block immediately after indexed lookup tables
+16	9FB6	-	Direct ROM analysis	Coherent text/UI routine family after the terminal jump at $9FB3 with bounded loops and local helper calls
+16	9FBB	9FBD	Direct ROM analysis	Alternate LDA #$20 entry joining the main text/UI routine at $9FBD
+16	A0E1	A0E8	Direct ROM analysis	Dormant helper after the terminal JMP at $A0DE; calls $9FB6, invokes BRK service $03,$E7, and returns
 17	806C	-	Direct ROM analysis	Resume after three-byte inline BRK service at $8068
-17	9247	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9244
-17	92BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92B9
-17	92D8	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92D5
-17	9309	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9306
-17	9330	-	Direct ROM analysis	Resume after two-byte inline BRK service at $932D
-17	9346	-	Direct ROM analysis	Routine called from bank $17:$923D
-17	9446	-	Direct ROM analysis	Coherent UI service routine immediately after PPU descriptor table
-17	9451	-	Direct ROM analysis	Resume after two-byte inline BRK service at $944E
-17	82C5	-	Direct ROM analysis	Resume after two-byte inline BRK service at $82C2
-17	83CD	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
-17	83DA	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
-17	840E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $840B
-17	8441	-	Direct ROM analysis	Resume after two-byte inline BRK service at $843E
-17	8453	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8450
 17	80BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $80B9
 17	817C	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8179; jumps directly to $8654
 17	819E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $819B
 17	81B1	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81AE
 17	81C1	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81BE
 17	81EE	-	Direct ROM analysis	Resume after two-byte inline BRK service at $81EB
+17	82C5	-	Direct ROM analysis	Resume after two-byte inline BRK service at $82C2
+17	83CD	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
+17	83DA	-	Direct ROM analysis	Coherent UI update routine adjacent to verified pointer tables
+17	840E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $840B
+17	8441	-	Direct ROM analysis	Resume after two-byte inline BRK service at $843E
+17	8453	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8450
+17	849F	-	Direct ROM analysis	Single-byte return stub adjacent to the map-system update routines
 17	868F	-	Direct ROM analysis	Resume after two-byte inline BRK service at $868C
 17	882A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8827
 17	88A2	-	Direct ROM analysis	Resume after two-byte inline BRK service at $889F
@@ -119,8 +57,8 @@
 17	88B6	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88B3
 17	88DD	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88DA
 17	88ED	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88EA
-17	8974	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8971
 17	88F6	-	Direct ROM analysis	Resume after two-byte inline BRK service at $88F3
+17	8974	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8971
 17	89F4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $89F1
 17	8A53	-	Direct ROM analysis	BRK-backed minigame service routine after the OAM template
 17	8A56	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8A53
@@ -161,8 +99,17 @@
 17	8F77	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8F74
 17	91D2	-	Direct ROM analysis	Resume after two-byte inline BRK service at $91CF
 17	91FF	-	Direct ROM analysis	Resume after two-byte inline BRK service at $91FC
+17	9247	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9244
+17	92BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92B9
 17	92C4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92C1
+17	92D8	-	Direct ROM analysis	Resume after two-byte inline BRK service at $92D5
+17	9309	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9306
+17	9330	-	Direct ROM analysis	Resume after two-byte inline BRK service at $932D
+17	9346	-	Direct ROM analysis	Routine called from bank $17:$923D
 17	9371	-	Direct ROM analysis	Resume after two-byte inline BRK service at $936E
+17	9446	-	Direct ROM analysis	Coherent UI service routine immediately after PPU descriptor table
+17	9451	-	Direct ROM analysis	Resume after two-byte inline BRK service at $944E
+17	9C07	-	Direct ROM analysis	Resume after three-byte inline BRK service at $9C03
 17	9C2E	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9C2B
 17	9C9A	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9C97
 17	9D11	-	Direct ROM analysis	Resume after two-byte inline BRK service at $9D0E
@@ -183,7 +130,6 @@
 17	9F52	-	Direct ROM analysis	Map UI sprite routine called directly from $9E16
 17	9F58	-	Direct ROM analysis	Alternate signed-direction entry for the sprite movement routine
 17	9FC5	-	Direct ROM analysis	Alternate entry decrements the object index before the OAM writer
-17	849F	-	Direct ROM analysis	Single-byte return stub adjacent to the map-system update routines
 17	A022	-	Direct ROM analysis	Map UI setup helper called directly from $9E11
 17	A05E	-	Direct ROM analysis	Verified fallthrough map UI service sequence
 17	A064	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A061
@@ -194,3 +140,131 @@
 17	A1BE	-	Direct ROM analysis	Verified fallthrough path from $A1B9
 17	A254	-	Direct ROM analysis	Verified branch path in map UI initialization
 17	A2B4	-	Direct ROM analysis	Resume after two-byte inline BRK service at $A2B1
+19	8014	8017	Direct ROM scan	JMP to fixed trampoline $C01C
+19	8017	801A	Direct ROM scan	JMP to fixed trampoline $C01F
+19	801A	801D	Direct ROM scan	JMP to fixed trampoline $C022
+19	801D	8020	Direct ROM scan	JMP to fixed trampoline $C025
+19	8020	8023	Direct ROM scan	JMP to fixed trampoline $C028
+19	8023	8026	Direct ROM scan	JMP to fixed trampoline $C02B
+19	8050	-	Direct ROM analysis	Resume after three-byte inline BRK service at $804C
+19	806F	-	Direct ROM analysis	Resume after three-byte inline BRK service at $806B
+19	80CC	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80C8
+19	80F5	-	Direct ROM analysis	Resume after three-byte inline BRK service at $80F1
+1B	A4D7	-	Direct ROM scan	JSR to fixed trampoline $C00A
+1B	A7BE	-	Direct ROM scan	JSR to fixed trampoline $C03A
+1B	ACA0	-	Direct ROM scan	JSR to fixed trampoline $C031
+1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
+1B	AD25	-	Direct ROM analysis	Coherent dormant handler ending with RTI at $AD39; branches and BRK continuations stay within the bounded block
+1B	AD3A	-	Direct ROM analysis	Coherent dormant handler ending with RTS at $AD48 after three-byte BRK service $2A,$CB,$40
+1B	B0B0	-	Direct ROM analysis	Coherent dormant sibling of the active eight-call loop at $B05E, ending with RTS at $B0DB
+1B	B0E7	-	Direct ROM analysis	Coherent decrementing sibling of $B0DC, ending with JMP $B511 at $B0EF
+1B	B55A	-	Direct ROM scan	JSR to fixed trampoline $C034
+1C	A010	-	Runtime and direct call analysis	Runtime-executed map/submap key dispatcher called directly from bank $1C:$9EAE
+1C	A0C6	-	Direct call analysis	Map-event routine called directly from bank $1C:$A0AA
+1C	BDD2	-	Entry pointer analysis	BRK-backed map-event handler targeted by pointer $1C:$BFA5
+1C	BED3	-	Direct call analysis	BRK-backed map-event helper called directly from bank $1C:$AE03/$AE13
+1C	BED6	-	Direct call analysis	BRK-backed map-event helper called or jumped to from bank $1C:$AE40/$AEF9
+1C	BF12	-	Direct call analysis	Routine called or jumped to directly from bank $1C:$AFF7/$B0C5/$B169/$B6EF
+1C	BF14	-	Direct call analysis	Alternate entry jumped to or called directly from bank $1C:$ADED/$B616/$B63A
+1C	BF16	-	Direct call analysis	Alternate entry called directly from bank $1C:$B26E
+1C	BF25	-	Direct call analysis	Entity-coordinate helper called directly from bank $1C:$B15F
+1C	BF37	-	Direct call analysis	Entity-coordinate initializer called directly from bank $1C:$B922/$B94B
+1C	BF46	-	Direct call analysis	BRK-backed helper called directly from bank $1C:$AF6C/$AFBA/$B107/$B149/$B1BF
+1D	8E15	-	Direct ROM scan	JSR to fixed trampoline $C02E
+1D	9273	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $925A
+1D	9467	-	Direct ROM analysis	NMI callback address installed through the little-endian pointer at $944E
+1D	9616	-	Direct ROM analysis	Coherent dormant OAM/state update routine after RTS $9615 and ending at RTS $9696
+1D	9CB4	-	Direct ROM scan	JMP to fixed trampoline $C010
+1D	9D9D	9DA4	Inline service continuation	Nested BRK service $1F,$CB followed by JMP $9E20 in the $9D99 event path
+1D	9E05	9E20	Inline service continuation	Countdown/wait and clear loops after BRK service $05,$DF at $9E02, falling into decoded code at $9E20
+1D	9E53	-	Direct ROM analysis	Coherent coordinate-driven map-event routine with local calls at $9F51/$9F79
+1D	9F8F	-	Direct ROM analysis	Coherent 24-byte graphics copy helper ending at RTS $9FB0
+1D	A176	-	Direct ROM scan	JSR to fixed trampoline $C007
+1D	A2A8	A2AA	Inline service continuation	Conditional branch resumes after BRK service $0E,$EB,$04 at $A2A4
+1D	A2AA	-	Direct ROM analysis	Dormant event branch skipped by BRK service $0E,$EB at $A2A4; calls local helper $A2F3 and rejoins at $A296
+1D	A7E8	A801	Inline service continuation	Nested service and entity-flag update path after BRK service $0E,$DB,$F7 at $A7E4
+1D	ADD8	-	Direct ROM scan	JSR to fixed trampoline $C016
+1D	ADDC	-	Direct ROM scan	JSR to fixed trampoline $C004
+1D	AE0C	AE11	Inline service continuation	PLA/restore/return tail after BRK service $00,$DB,$7F at $AE08
+1D	B2AC	B2CD	Inline service continuation	Nested BRK service $62,$23,$40 path restoring $51 and returning before entry $B2CD
+1D	B78A	-	Inline service continuation	Coherent map-event code resumes after BRK service $52,$73 at $B787 and rejoins decoded code at $B893
+1D	B8A2	B8BB	Inline service continuation	Entity update and return-to-parser path after BRK service $0D,$87 at $B89F
+1D	B99B	-	Direct ROM scan	JSR to fixed trampoline $C001
+1D	B9D5	B9DE	Direct ROM analysis	WaitForNmi loop polling $0513 between the bounded delay table and entry $B9DE
+1D	BA1A	-	Inline service continuation	Sprite-command setup resumes after BRK service $09,$EF at $BA17 and rejoins decoded code at $BA60
+1E	83EC	-	Direct ROM analysis	Coherent entity-operation routine called from the nearby handler at $835D and branching to decoded code at $84B6
+1E	83FE	-	Direct ROM analysis	Adjacent BRK-driven entity handler after RTS $83FD with local helper calls and branches to $84B6
+1E	8554	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	8557	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	8589	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	858C	-	Direct ROM scan	JSR to fixed trampoline $C013
+1E	86F3	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	86F6	-	Direct ROM scan	JSR to fixed trampoline $C007
+1E	86FC	-	Direct ROM scan	JSR to fixed trampoline $C013
+1E	872C	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	8730	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	891C	-	Direct ROM scan	JSR to fixed trampoline $C001
+1E	8B4C	-	Direct ROM analysis	Coherent map-animation routine family after the terminal JMP at $8B49, ending before lookup data at $8BCE
+1E	8B59	8B5B	Direct ROM analysis	Dormant LDA #$00 initializer skipped by the forced branch at $8B57
+1E	8BB4	-	Direct ROM analysis	Coherent map-animation table initializer after RTS $8BB3; loop ends at RTS $8BD0
+1E	9090	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	9097	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	90AB	-	Direct ROM scan	JSR to fixed trampoline $C016
+1E	90AF	-	Direct ROM scan	JSR to fixed trampoline $C004
+1E	9592	-	Direct ROM scan	JSR to fixed trampoline $C00A
+1E	96B1	-	Inline service continuation	Coherent map initialization code resumes after BRK service $29,$73 at $96AE and returns at $9798
+1E	96B7	-	Direct ROM analysis	Adjacent map-state initialization routine after RTS $96B6; calls the decoded service entry at $9799
+1E	AABE	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	AAC1	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	AAC4	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	B3F3	-	Direct ROM analysis	Coherent map-interaction routine block immediately after the entry at $B3ED
+1E	B5B6	-	Inline service continuation	Code resumes after the three operands consumed by BRK service $65,$23 at $B5B2
+1E	B79C	-	Direct ROM analysis	Coherent story-flag helper block calling the decoded bit-selector at $B779
+1E	B7CA	-	Direct ROM analysis	Coherent map-interaction routine block immediately after RTS $B7C9 and before decoded entry $BAD7
+1E	B807	-	Direct ROM analysis	Coherent map-interaction handler family after the terminal JMP at $B804 and branching into existing code at $BA04
+1E	B81B	-	Direct ROM analysis	Coherent adjacent map-interaction handler after RTS $B81A
+1E	B830	-	Direct ROM analysis	Coherent BRK-based map-interaction handler after RTS $B82F
+1E	B868	-	Direct ROM analysis	Coherent BRK-based handler falling into the decoded carry-return block at $B87A
+1E	B86F	B874	Direct ROM analysis	Dormant alternate BRK path skipped by the forced branch at $B86D and rejoining at $B874
+1E	B87C	-	Direct ROM analysis	Coherent map-interaction handler after the carry-return block at $B87A-$B87B
+1E	B8AD	-	Direct ROM analysis	Coherent map-interaction handler after the terminal failure jump at $B8AA
+1E	B8D5	-	Direct ROM analysis	Compact two-service map-interaction handler after RTS $B8D4
+1E	B8DD	-	Direct ROM analysis	Coherent parameterized map-interaction handler after RTS $B8DC
+1E	B8F7	-	Direct ROM analysis	Independent parameterized map-interaction handler after RTS $B8F6
+1E	B90A	-	Direct ROM analysis	Coherent adjacent map-interaction handler after RTS $B909
+1E	B917	-	Direct ROM analysis	Coherent map-condition handler after RTS $B916 and ending through shared failure jumps
+1E	B930	B945	Direct ROM analysis	Dormant alternate path skipped by the forced branch at $B92E and rejoining shared success/failure code
+1E	B94B	-	Direct ROM analysis	Coherent map-condition handler after the shared failure jumps and converging on success code at $B9A9
+1E	B964	-	Direct ROM analysis	Dormant parallel condition handler skipped by the forced branch at $B962
+1E	B97D	-	Direct ROM analysis	Final dormant condition handler converging on the shared success path at $B9A3
+1E	B9B1	-	Direct ROM analysis	Coherent map-interaction handler after RTS $B9B0
+1E	B9D1	-	Direct ROM analysis	Coherent chapter-specific map handler after RTS $B9D0 and converging on existing code at $BA04/$BA0E
+1E	B9ED	BA04	Direct ROM analysis	Dormant chapter-specific alternate skipped by the forced branch at $B9EB and rejoining at $BA0E
+1E	BAFF	BB07	Inline service continuation	Code resumes after BRK service $07,$6F,$43 at $BAFB and tail-jumps to $BB52
+1E	BBA6	BBAA	Direct ROM analysis	Dormant selector branch skipped by the forced branch at $BBA4 and rejoining the dispatch tail at $BB9B
+1F	C001	C004	Direct ROM analysis	Fixed-bank JMP trampoline 00
+1F	C004	C007	Direct ROM analysis	Fixed-bank JMP trampoline 01
+1F	C007	C00A	Direct ROM analysis	Fixed-bank JMP trampoline 02
+1F	C00A	C00D	Direct ROM analysis	Fixed-bank JMP trampoline 03
+1F	C00D	C010	Direct ROM analysis	Fixed-bank JMP trampoline 04
+1F	C010	C013	Direct ROM analysis	Fixed-bank JMP trampoline 05
+1F	C013	C016	Direct ROM analysis	Fixed-bank JMP trampoline 06
+1F	C016	C019	Direct ROM analysis	Fixed-bank JMP trampoline 07
+1F	C019	C01C	Direct ROM analysis	Fixed-bank JMP trampoline 08
+1F	C01C	C01F	Direct ROM analysis	Fixed-bank JMP trampoline 09
+1F	C01F	C022	Direct ROM analysis	Fixed-bank JMP trampoline 0A
+1F	C022	C025	Direct ROM analysis	Fixed-bank JMP trampoline 0B
+1F	C025	C028	Direct ROM analysis	Fixed-bank JMP trampoline 0C
+1F	C028	C02B	Direct ROM analysis	Fixed-bank JMP trampoline 0D
+1F	C02B	C02E	Direct ROM analysis	Fixed-bank JMP trampoline 0E
+1F	C02E	C031	Direct ROM analysis	Fixed-bank JMP trampoline 0F
+1F	C031	C034	Direct ROM analysis	Fixed-bank JMP trampoline 10
+1F	C034	C037	Direct ROM analysis	Fixed-bank JMP trampoline 11
+1F	C037	C03A	Direct ROM analysis	Fixed-bank JMP trampoline 12
+1F	C03A	C03D	Direct ROM analysis	Fixed-bank JMP trampoline 13
+1F	C15A	-	Direct ROM analysis	NMI body installed as JMP $C15A at RAM vector $0502
+1F	C408	-	CPU vector	IRQ/BRK vector target
+1F	F271	-	Direct ROM analysis	Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662
+1F	F29E	-	Direct ROM analysis	Coherent routine after the $F29C stream pointer that copies $7608-$760B into $52-$55 and returns at $F2B2
+1F	F2B3	-	Direct ROM analysis	Coherent routine calling $F293 before JMP $C727 at $F2B7, immediately preceding the $F2BB stream
+1F	FFD8	-	CPU vector	RESET vector target

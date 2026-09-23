@@ -1,0 +1,13 @@
+# Bank<TAB>Address<TAB>Opcode<TAB>Classification<TAB>Category<TAB>Reason
+08	$BE94	$1C	mixed-directory-data-target	UnsupportedTargetValue	Directory entry $8036 points to a data record whose first byte is not an official 6502 opcode; the target is retained as typed data.
+10	$BC7E	$64	mixed-directory-data-target	UnsupportedTargetValue	Directory entry $805E points to a data record whose first byte is not an official 6502 opcode; the target is retained as typed data.
+10	$BCEC	$FB	mixed-directory-data-target	UnsupportedTargetValue	Directory entry $8078 points into the operand of the verified EOR #$FB instruction at $BCEB and is not an executable entry.
+10	$BD1F	$F7	mixed-directory-data-target	UnsupportedTargetValue	Directory entry $807C points to a data record whose first byte is not an official 6502 opcode; the target is retained as typed data.
+13	$BDE3	$F7	mixed-directory-data-target	UnsupportedTargetValue	Directory entry $802E points to a data record whose first byte is not an official 6502 opcode; the target is retained as typed data.
+18	$B40D	$02	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $802C selects non-code record data.
+18	$B48F	$02	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $8030 selects non-code record data.
+18	$B525	$02	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $802E selects non-code record data.
+18	$B5C2	$02	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $800E selects non-code record data.
+18	$B655	$FB	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $8042 selects non-code record data.
+18	$BDBD	$7B	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $8034 selects post-font record data at the verified font boundary.
+18	$BEEE	$F7	mixed-directory-data-target	UnsupportedTargetValue	Mixed battle-data directory entry $8038 selects non-code record data.

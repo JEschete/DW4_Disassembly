@@ -1,0 +1,13 @@
+# Path<TAB>Source<TAB>Bank<TAB>Start<TAB>EndExclusive<TAB>Evidence
+startup	exec	1F	C03D	C15A	RESET initialization through mapper setup
+banking	exec	1F	FF91	FFD8	SUROM PRG and outer-bank selection
+menus	exec	16	8028	874C	Text and window user-interface services
+maps	exec	08	803C	B7F7	Map tile, routing, and tileset services
+battle	exec	10	8080	BC7E	Battle party and combat services
+text	exec	16	874C	87D8	Text-group selection and Huffman symbol decoding
+save-load	exec	12	8EAD	90A9	Persistent chapter/save-state initialization path
+save-load	write	-	6000	6300	Observed persistent SRAM mutation
+audio	exec	1F	E771	E790	Audio sequence reader
+audio	read	19	814E	BF7E	Track pointers, bank selectors, and sequence data
+graphics	read	0C	8000	C000	Raw NES 2bpp map graphics
+graphics	read	0D	8000	BE44	Raw map and character graphics

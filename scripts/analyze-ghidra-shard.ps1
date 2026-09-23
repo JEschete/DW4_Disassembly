@@ -15,6 +15,7 @@ $scriptPath = Join-Path $PSScriptRoot 'ghidra'
 $seedPath = Join-Path $projectRoot 'config\code-seeds.tsv'
 $runtimeSeedPath = Join-Path $projectRoot 'analysis\fceux-exec.tsv'
 $entryTablePath = Join-Path $projectRoot 'config\code-entry-tables.tsv'
+$entryPointerPath = Join-Path $projectRoot 'config\code-entry-pointers.tsv'
 $exclusionPath = Join-Path $projectRoot 'config\code-exclusions.tsv'
 $outputPath = Join-Path $projectRoot "analysis\ghidra-shards\$Shard.tsv"
 $workingRom = Join-Path $workRoot 'input.nes'
@@ -33,7 +34,7 @@ if ($bankValues.Count -eq 0) {
 }
 $bankList = $bankValues -join '_'
 
-foreach ($required in @($Rom, $headless, $seedPath, $runtimeSeedPath, $entryTablePath, $exclusionPath)) {
+foreach ($required in @($Rom, $headless, $seedPath, $runtimeSeedPath, $entryTablePath, $entryPointerPath, $exclusionPath)) {
     if (-not (Test-Path -LiteralPath $required)) {
         throw "Required file not found: $required"
     }
@@ -63,7 +64,7 @@ $arguments = @(
     '-scriptPath', $scriptPath,
     '-preScript', 'CreateDw4Memory.java', $workingRom,
     '-preScript', 'SeedBankCode.java', $seedPath, $runtimeSeedPath, $bankList,
-    '-preScript', 'SeedEntryTables.java', $entryTablePath, $exclusionPath, $bankList,
+    '-preScript', 'SeedEntryTables.java', $entryTablePath, $entryPointerPath, $exclusionPath, $bankList,
     '-postScript', 'ExportBankCode.java', $outputPath, $exclusionPath, $bankList,
     '-analysisTimeoutPerFile', '600',
     '-deleteProject'

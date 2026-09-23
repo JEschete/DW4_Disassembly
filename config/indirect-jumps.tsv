@@ -1,0 +1,43 @@
+# Bank<TAB>Address<TAB>Disposition<TAB>Source<TAB>Reason
+0F	D8B7	registered	0F:DF02-DF64	Low map-object command table with explicit out-of-range fallback to entry zero
+0F	D8C8	registered	0F:DF64-DF7A	High-bit map-object command table
+0F	DEA2	registered	0F:DEA5-DEA9	Two-entry map-object operation table
+10	823B	registered	10:9E30-9F12	Battle-action handler table selected by $6E0B
+10	A680	registered	10:AAA6-AB06	Battle-record operation table selected by $6E59
+10	B496	registered	10:B49B-B58B	Battle-effect handler table selected by $0B
+11	8CAA	registered	11:A40A-A61E	Battle-action dispatch table
+11	8D0A	registered	11:A40A-A61E	Battle-action dispatch table
+11	8E0B	registered	11:8FDC-904A	Sorted battle-handler table
+12	83DF	registered	12:8491-84A1	Eight-entry battle-setup handler table
+12	A4B1	registered	12:A541-A553	Nine-entry setup-operation handler table
+12	A643	registered	12:A9ED-AA0D	Sixteen-entry battle-setup event table
+12	AAC7	registered	12:AACA-AAD4	Five-entry bounded battle-setup handler table
+12	AF2D	registered	12:B67A-B6BC	Thirty-three map-transition handlers parallel to terminated IDs
+12	BDC9	static-trap	1F:F0EE-F0F0	Service-directory target jumps through fixed ROM operand bytes to unsupported $8D06
+13	8071	registered	13:8078-8088	Eight-entry battle-state handler table
+13	8509	registered	13:8B8B-8C5B	Battle-action handler table
+13	8F9F	registered	13:9100-9110	Eight-entry arithmetic handler table loaded into $00/$01 at $8F95-$8F9D and dispatched by JMP ($0000)
+13	9171	registered	13:91CD-91F1	Special battle-action handler table
+13	A589	registered	13:A636-A696	Four battle-presentation callback tables
+13	A744	registered	13:A74F-A797	Callback fields in terminated four-byte battle-effect records
+13	BBCB	hardware-open-bus	CPU:44E1-44E2	Service-directory trap jumps through unmapped expansion-space/open-bus bytes
+14	8364	registered	14:A40D-A41B	Seven-entry nested battle-presentation table
+15	9C60	registered	15:8034-9641	Command $00/$01 callback operands parsed from all 346 bounded effect scripts
+16	80B2	registered	16:80C4-80EA	Nineteen-entry text/UI command handler table
+16	9841	registered	16:A5E9-A735	Ten page-wrap escape handlers from the primary and secondary command arrays
+16	987F	registered	16:A5E9-A735	Ten page-wrap escape handlers from the primary and secondary command arrays
+1B	AB0A	registered	1B:AC5B-AC65	Five-entry chapter event handler table
+1C	A032	registered	1C:AC8A-AD1E	Seventy-four map/submap event handlers selected through the parallel key table
+1C	AD6B	registered	1C:BF4B-BFB1	Fifty-one-entry map-event handler table
+1D	96CE	registered	1D:96D1-96DF	Seven-entry map/submap handler table
+1D	98AD	registered	1D:B62A-B72A	Low-half map-event handler table
+1D	98BA	registered	1D:B72A-B73E	High-half map-event handler table
+1E	A496	registered	1E:A499-A4A3	Five-entry chapter map-interaction handler table
+1E	B476	registered	1E:BC3D-BC4D	Eight signed map-event handlers selected through the count-bounded key table
+1E	B54D	registered	1E:BC62-BC7A	Twelve map-object handlers selected through the count-bounded ID table
+1E	BB2B	registered	1E:BBAE-BBB6	Four map-interaction handlers selected through the parallel key table
+1F	D8B7	registered	1F:DF02-DF64	Low map-object command table with explicit out-of-range fallback to entry zero
+1F	D8C8	registered	1F:DF64-DF7A	High-bit map-object command table
+1F	DEA2	registered	1F:DEA5-DEA9	Two-entry map-object operation table
+1F	FB8E	false-positive-data	1F:FA5D-FCFA	Linear decode inside raw NES graphics data
+1F	FD00	false-positive-data	1F:FCFA-FD6B	Linear decode inside raw NES graphics data

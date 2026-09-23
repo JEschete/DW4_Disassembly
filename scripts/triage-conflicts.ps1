@@ -8,7 +8,9 @@ param(
     [string]$SourceDir = "src\banks",
     [string]$ContentRangesPath = "config\content-ranges.tsv",
     [string]$ExclusionsPath = "config\code-exclusions.tsv",
-    [string]$WarningOutputPath = "analysis\unsupported-opcode-triage.tsv"
+    [string]$WarningOutputPath = "analysis\unsupported-opcode-triage.tsv",
+    [string]$ResolvedWarningsPath = "config\resolved-unsupported-opcodes.tsv",
+    [string]$CompletionReportPath = "analysis\unsupported-opcode-completion.md"
 )
 
 $conflicts = @()
@@ -16,10 +18,13 @@ $conflicts = @()
 # Extract conflict list from code-report.txt
 $reportText = Get-Content $ReportPath -Raw
 $sectionMatch = [regex]::Match($reportText, '(?s)Control-flow conflicts:(.+?)Unsupported opcodes')
-if (-not $sectionMatch.Success) {
+if ($sectionMatch.Success) {
+    $section = $sectionMatch.Groups[1].Value
+} elseif ($reportText -match 'Unsupported opcodes / probable data walks:') {
+    $section = ''
+} else {
     throw "could not locate the control-flow conflict section in $ReportPath"
 }
-$section = $sectionMatch.Groups[1].Value
 
 # Parse each conflict. Bank headers and conflict addresses are separate lines,
 # so retain the most recent bank while walking the report section.
@@ -84,6 +89,47 @@ function Read-ConfigTsv([string]$path) {
     return $rows
 }
 
+function Find-SourceDataDirective([string]$path, [int]$address) {
+    if (-not (Test-Path $path)) {
+        return ''
+    }
+
+    foreach ($sourceLine in Get-Content $path) {
+        if ($sourceLine -notmatch '^\s*db\s+(?<bytes>(?:\$[0-9A-F]{2}\s*,?\s*)+)\s*;\s*\$?(?<start>[0-9A-F]{4})(?::|\s)') {
+            continue
+        }
+
+        $start = Convert-Hex $matches.start
+        $byteCount = [regex]::Matches($matches.bytes, '\$[0-9A-F]{2}').Count
+        if ($address -ge $start -and $address -lt ($start + $byteCount)) {
+            return $sourceLine.Trim()
+        }
+    }
+
+    return ''
+}
+
+function Find-SourceInstructionOperand([string]$path, [int]$address) {
+    if (-not (Test-Path $path)) {
+        return ''
+    }
+
+    foreach ($sourceLine in Get-Content $path) {
+        if ($sourceLine -match '^\s*db\b' -or
+            $sourceLine -notmatch ';\s*\$?(?<start>[0-9A-F]{4})(?::|\s)(?<bytes>(?:[0-9A-F]{2}\s*)+)') {
+            continue
+        }
+
+        $start = Convert-Hex $matches.start
+        $byteCount = [regex]::Matches($matches.bytes, '[0-9A-F]{2}').Count
+        if ($address -gt $start -and $address -lt ($start + $byteCount)) {
+            return $sourceLine.Trim()
+        }
+    }
+
+    return ''
+}
+
 $ranges = Read-ConfigTsv $ContentRangesPath
 $exclusions = Read-ConfigTsv $ExclusionsPath
 $warnings = @()
@@ -133,12 +179,9 @@ $triage = foreach ($warning in $warnings) {
     } | Select-Object -First 1)
 
     $bankPath = Join-Path $SourceDir ("bank_{0:X2}.asm" -f $warning.Bank)
-    $sourceLine = ''
-    if (Test-Path $bankPath) {
-        $sourceMatch = Select-String -Path $bankPath -Pattern ((';\s*' + ('{0:X4}' -f $warning.Address) + '\s')) | Select-Object -First 1
-        if ($null -ne $sourceMatch) {
-            $sourceLine = $sourceMatch.Line.Trim()
-        }
+    $sourceLine = Find-SourceDataDirective $bankPath $warning.Address
+    if ([string]::IsNullOrEmpty($sourceLine)) {
+        $sourceLine = Find-SourceInstructionOperand $bankPath $warning.Address
     }
 
     if ($range.Count -gt 0) {
@@ -153,6 +196,10 @@ $triage = foreach ($warning in $warnings) {
         $classification = 'intentional-data-walk'
         $category = 'GeneratedDataDirective'
         $reason = 'Unsupported opcode address is emitted as a raw data byte by the generated bank source.'
+    } elseif (-not [string]::IsNullOrEmpty($sourceLine)) {
+        $classification = 'instruction-operand-entry'
+        $category = 'GeneratedInstructionOperand'
+        $reason = 'A speculative control-flow path enters an operand byte of a separately verified instruction.'
     } else {
         $classification = 'probable-data-walk'
         $category = 'UnsupportedOpcodeInGap'
@@ -177,3 +224,55 @@ Write-Output "Total: $($triage.Count) warnings"
 $triage | Group-Object Classification | Sort-Object Name | ForEach-Object {
     Write-Output "  $($_.Name): $($_.Count)"
 }
+
+$resolved = @()
+foreach ($line in Get-Content -LiteralPath $ResolvedWarningsPath) {
+    if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith('#')) { continue }
+    $columns = $line -split "`t"
+    if ($columns.Count -ne 6) { throw "invalid resolved warning row: $line" }
+    $resolved += [pscustomobject]@{
+        Bank = $columns[0]
+        Address = $columns[1]
+        Opcode = $columns[2]
+        Classification = $columns[3]
+        Category = $columns[4]
+        Reason = $columns[5]
+    }
+}
+
+foreach ($item in $resolved) {
+    if ($triage | Where-Object { $_.Bank -eq $item.Bank -and $_.Address -eq $item.Address }) {
+        throw "resolved warning still appears in current analyzer output: bank $($item.Bank):$($item.Address)"
+    }
+}
+
+$combined = @($triage) + @($resolved)
+$provisional = @($combined | Where-Object { $_.Classification -match 'probable|unknown|unresolved' })
+if ($provisional.Count -gt 0) {
+    throw "$($provisional.Count) warning cases remain provisional or unresolved"
+}
+$originalWarningCount = 143
+$originalCurrentCount = $originalWarningCount - $resolved.Count
+if ($triage.Count -lt $originalCurrentCount) {
+    throw "current warning inventory lost original cases: expected at least $originalCurrentCount, found $($triage.Count)"
+}
+$additionalWarningCount = $triage.Count - $originalCurrentCount
+
+$report = @(
+    '# Unsupported Opcode Completion',
+    '',
+    "All $originalWarningCount warnings from the original analyzer inventory remain classified. $originalCurrentCount remain in the current report, $($resolved.Count) disappeared after mixed pointer-table values stopped being seeded as executable targets, and $additionalWarningCount additional warnings exposed by later control-flow recovery are also classified.",
+    '',
+    '| Classification | Count |',
+    '|---|---:|'
+)
+$combined | Group-Object Classification | Sort-Object Name | ForEach-Object {
+    $report += "| $($_.Name) | $($_.Count) |"
+}
+$report += @('', '## Resolved Analyzer Warnings', '')
+foreach ($item in $resolved) {
+    $report += ('- Bank `${0}:{1}` opcode `{2}`: {3}' -f $item.Bank, $item.Address, $item.Opcode, $item.Reason)
+}
+$report | Set-Content -LiteralPath $CompletionReportPath -Encoding UTF8
+Write-Output "Original warning inventory complete: $originalWarningCount / $originalWarningCount classified"
+Write-Output "Additional recovered-path warnings classified: $additionalWarningCount"

@@ -158,6 +158,18 @@ internal static class CodeAnalyzer
 
                     address += 1 + operandCount;
                     zeroFlag = null;
+
+                    // A bounded observation window must not sever the verified inline-operand
+                    // service ABI. Imported Ghidra blocks end immediately after a BRK because
+                    // Ghidra treats it as terminal, so the operands the service consumes always
+                    // fall outside the block. The service returns to the byte after its operands,
+                    // so resume there without the window's bound.
+                    if (endExclusive is not null && address >= endExclusive)
+                    {
+                        Enqueue(bank, address, endExclusive: null, followTargets);
+                        return;
+                    }
+
                     continue;
                 }
 

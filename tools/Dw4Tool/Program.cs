@@ -26,6 +26,9 @@ internal static class Program
                 "extract" => Extract(args),
                 "inspect" => Inspect(args),
                 "verify" => Verify(args),
+                "asset-export" => AssetTool.Export(args),
+                "asset-import" => AssetTool.Import(args),
+                "asset-verify" => AssetTool.Verify(args),
                 _ => Usage()
             };
         }
@@ -42,6 +45,9 @@ internal static class Program
         Console.WriteLine("  Dw4Tool inspect <rom>");
         Console.WriteLine("  Dw4Tool extract <rom> <project-root>");
         Console.WriteLine("  Dw4Tool verify <rom> [--exact]");
+        Console.WriteLine("  Dw4Tool asset-export <rom> <project-root> <output-directory>");
+        Console.WriteLine("  Dw4Tool asset-import <base-rom> <project-root> <input-directory> <output-rom>");
+        Console.WriteLine("  Dw4Tool asset-verify <rom> <project-root>");
         return 2;
     }
 
@@ -110,15 +116,42 @@ internal static class Program
             Path.Combine(projectRoot, "config", "bank-classifications.tsv"));
         Dictionary<ushort, int> brkOperandCounts = BuildBrkOperandCounts(rom, contentRanges);
         List<CodeSeed> codeSeeds = LoadCodeSeeds(Path.Combine(projectRoot, "config", "code-seeds.tsv"));
-        codeSeeds.AddRange(LoadEntryTableSeeds(
-            Path.Combine(projectRoot, "config", "code-entry-tables.tsv"), rom, codeExclusions));
+        EntryTableLoadResult entryTables = LoadEntryTableSeeds(
+            Path.Combine(projectRoot, "config", "code-entry-tables.tsv"),
+            Path.Combine(projectRoot, "config", "code-entry-pointers.tsv"),
+            rom,
+            codeExclusions,
+            contentRanges);
+        codeSeeds.AddRange(entryTables.Seeds);
         codeSeeds.AddRange(LoadFceuxCodeSeeds(
             Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"), rom, codeExclusions));
         codeSeeds.AddRange(LoadGhidraCodeSeeds(
             Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions));
         Dictionary<int, BankAnalysis> analyses = CodeAnalyzer.Analyze(
             rom.AsMemory(HeaderSize), codeSeeds, codeExclusions, brkOperandCounts);
-        Dictionary<int, List<BankLabel>> effectiveLabels = BuildEffectiveLabels(labels, analyses);
+        WriteEntryPointReport(
+            Path.Combine(projectRoot, "analysis", "entry-point-report.txt"),
+            entryTables.Entries,
+            analyses);
+        WriteRoutineContractReport(
+            Path.Combine(projectRoot, "analysis", "routine-contracts.md"),
+            LoadRoutineContracts(Path.Combine(projectRoot, "config", "routine-contracts.tsv")),
+            labels,
+            analyses);
+        Dictionary<(int Bank, int Address), SortedSet<string>> routineTargets = BuildRoutineTargets(
+            codeSeeds,
+            entryTables.Entries,
+            analyses);
+        Dictionary<int, List<BankLabel>> effectiveLabels = BuildEffectiveLabels(
+            labels,
+            analyses,
+            bankClassifications,
+            routineTargets.Keys.ToHashSet());
+        WriteRoutineInterfaceReport(
+            Path.Combine(projectRoot, "analysis", "routine-interfaces.tsv"),
+            routineTargets,
+            effectiveLabels,
+            analyses);
         Dictionary<int, string> constants = LoadConstants(Path.Combine(projectRoot, "src", "constants"));
         string bankDirectory = Path.Combine(projectRoot, "src", "banks");
         string workDirectory = Path.Combine(projectRoot, "work", "da65");
@@ -154,6 +187,10 @@ internal static class Program
         WriteClassificationReport(
             Path.Combine(projectRoot, "analysis", "classification-report.txt"),
             bankClassifications,
+            contentRanges,
+            analyses);
+        WriteUnclassifiedReferenceReport(
+            Path.Combine(projectRoot, "analysis", "unclassified-references.tsv"),
             contentRanges,
             analyses);
         TextDecoder.WriteReports(Path.Combine(projectRoot, "analysis"), textGroups);
@@ -232,27 +269,37 @@ internal static class Program
 
     private static Dictionary<int, List<BankLabel>> BuildEffectiveLabels(
         Dictionary<int, List<BankLabel>> labels,
-        IReadOnlyDictionary<int, BankAnalysis> analyses)
+        IReadOnlyDictionary<int, BankAnalysis> analyses,
+        IReadOnlyList<BankClassification> bankClassifications,
+        IReadOnlySet<(int Bank, int Address)> routineTargets)
     {
         Dictionary<int, List<BankLabel>> result = Enumerable.Range(0, PrgBankCount)
             .ToDictionary(bank => bank, bank => labels.TryGetValue(bank, out List<BankLabel>? bankLabels)
                 ? new List<BankLabel>(bankLabels)
                 : []);
-
+        Dictionary<int, string> subsystemNames = bankClassifications.ToDictionary(
+            classification => classification.Bank,
+            classification => classification.Category);
         foreach ((int bank, BankAnalysis analysis) in analyses)
         {
             HashSet<int> labeledAddresses = result[bank].Select(label => label.Address).ToHashSet();
-            foreach (int address in analysis.LabelAddresses
+            IEnumerable<int> effectiveTargets = analysis.LabelAddresses.Concat(
+                routineTargets.Where(target => target.Bank == bank).Select(target => target.Address));
+            foreach (int address in effectiveTargets
                 .Where(address => analysis.Instructions.ContainsKey(address - CodeAnalyzer.CpuBase(bank)))
+                .Distinct()
                 .Order())
             {
                 if (labeledAddresses.Add(address))
                 {
+                    string role = routineTargets.Contains((bank, address)) ? "Entry" : "Branch";
                     result[bank].Add(new BankLabel(
                         address,
-                        $"Bank{bank:X2}_Code_{address:X4}",
+                        $"{subsystemNames[bank]}_{role}_{address:X4}",
                         "Code",
-                        "Verified entry point or control-flow target"));
+                        role == "Entry"
+                            ? "Verified entry point recovered from a typed pointer table"
+                            : "Verified internal control-flow target"));
                 }
             }
 
@@ -352,6 +399,36 @@ internal static class Program
         }
 
         return seeds;
+    }
+
+    private static List<RoutineContract> LoadRoutineContracts(string path)
+    {
+        List<RoutineContract> contracts = [];
+        foreach (string line in File.ReadLines(path))
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+            {
+                continue;
+            }
+
+            string[] columns = line.Split('\t');
+            if (columns.Length != 9)
+            {
+                throw new InvalidDataException($"invalid routine contract: {line}");
+            }
+
+            contracts.Add(new RoutineContract(
+                int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                columns[2],
+                columns[3],
+                columns[4],
+                columns[5],
+                columns[6],
+                columns[7],
+                columns[8]));
+        }
+        return contracts;
     }
 
     private static List<CodeExclusion> LoadCodeExclusions(string path)
@@ -483,13 +560,17 @@ internal static class Program
         return classifications;
     }
 
-    private static List<CodeSeed> LoadEntryTableSeeds(
-        string path,
-        ReadOnlySpan<byte> rom,
-        IReadOnlyList<CodeExclusion> exclusions)
+    private static EntryTableLoadResult LoadEntryTableSeeds(
+        string tablePath,
+        string pointerPath,
+        byte[] rom,
+        IReadOnlyList<CodeExclusion> exclusions,
+        IReadOnlyList<ContentRange> contentRanges)
     {
         List<CodeSeed> seeds = [];
-        foreach (string line in File.ReadLines(path))
+        List<EntryPointer> entries = [];
+        HashSet<(int Bank, int Address)> pointerLocations = [];
+        foreach (string line in File.ReadLines(tablePath))
         {
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
             {
@@ -510,30 +591,108 @@ internal static class Program
             {
                 throw new InvalidDataException($"invalid code entry table bounds: {line}");
             }
+            if (!contentRanges.Any(range =>
+                range.Bank == bank && start >= range.Start && endExclusive <= range.EndExclusive))
+            {
+                throw new InvalidDataException($"code entry table lacks a verified content range: {line}");
+            }
 
             for (int address = start; address < endExclusive; address += 2)
             {
-                int romOffset = HeaderSize + (bank * PrgBankSize) + address - cpuBase;
-                int target = rom[romOffset] | (rom[romOffset + 1] << 8);
-                if (target < cpuBase || target >= cpuBase + PrgBankSize)
-                {
-                    continue;
-                }
-                if (exclusions.Any(item =>
-                    item.Bank == bank && target >= item.Start && target < item.EndExclusive))
-                {
-                    continue;
-                }
-                seeds.Add(new CodeSeed(
-                    bank,
-                    target,
-                    null,
-                    "Entry pointer table",
-                    $"Pointer at ${address:X4}: {columns[4]}"));
+                AddPointer(bank, start, endExclusive, address, columns[4], false);
             }
         }
 
-        return seeds;
+        foreach (string line in File.ReadLines(pointerPath))
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+            {
+                continue;
+            }
+            string[] columns = line.Split('\t');
+            if (columns.Length != 4)
+            {
+                throw new InvalidDataException($"invalid explicit code pointer: {line}");
+            }
+
+            int bank = int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int address = int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            if (address < cpuBase || address + 2 > cpuBase + PrgBankSize ||
+                !contentRanges.Any(range =>
+                    range.Bank == bank && address >= range.Start && address + 2 <= range.EndExclusive))
+            {
+                throw new InvalidDataException($"explicit code pointer lacks a verified content range: {line}");
+            }
+            AddPointer(bank, address, address + 2, address, columns[3], true);
+        }
+
+        return new EntryTableLoadResult(seeds, entries);
+
+        void AddPointer(
+            int bank,
+            int tableStart,
+            int tableEndExclusive,
+            int address,
+            string reason,
+            bool isExplicit)
+        {
+            if (!pointerLocations.Add((bank, address)))
+            {
+                throw new InvalidDataException(
+                    $"overlapping code pointer at bank ${bank:X2}:${address:X4}");
+            }
+
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            int romOffset = HeaderSize + (bank * PrgBankSize) + address - cpuBase;
+            int target = rom[romOffset] | (rom[romOffset + 1] << 8);
+            int? targetBank = target switch
+            {
+                >= 0xC000 and <= 0xFFFF => bank < 0x10 ? 0x0F : 0x1F,
+                >= 0x8000 and < 0xC000 when (bank & 0x0F) != 0x0F => bank,
+                _ => null
+            };
+            CodeExclusion? exclusion = targetBank is int mappedBank
+                ? exclusions.FirstOrDefault(item =>
+                    item.Bank == mappedBank && target >= item.Start && target < item.EndExclusive)
+                : null;
+            Opcode? targetOpcode = targetBank is int opcodeBank
+                ? OpcodeTable.Get(rom[
+                    HeaderSize + (opcodeBank * PrgBankSize) + target - CodeAnalyzer.CpuBase(opcodeBank)])
+                : null;
+            string classification = targetBank switch
+            {
+                null => "non-code-value",
+                _ when exclusion is not null => "excluded-data",
+                0x0F or 0x1F when target >= 0xFFFA => "vector-data-value",
+                _ when targetOpcode is null => "unsupported-target-value",
+                _ when targetBank != bank => "fixed-bank-code",
+                _ => "local-bank-code"
+            };
+            entries.Add(new EntryPointer(
+                bank,
+                tableStart,
+                tableEndExclusive,
+                address,
+                target,
+                targetBank,
+                classification,
+                reason,
+                isExplicit));
+            if (classification is not ("fixed-bank-code" or "local-bank-code"))
+            {
+                return;
+            }
+
+            int executableBank = targetBank ?? throw new InvalidDataException(
+                $"executable pointer at bank ${bank:X2}:${address:X4} has no mapped target bank");
+            seeds.Add(new CodeSeed(
+                executableBank,
+                target,
+                null,
+                "Entry pointer table",
+                $"Bank ${bank:X2} pointer at ${address:X4}: {reason}"));
+        }
     }
 
     private static List<CodeSeed> LoadGhidraCodeSeeds(
@@ -1219,6 +1378,357 @@ internal static class Program
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
     }
 
+    private static void WriteUnclassifiedReferenceReport(
+        string path,
+        IReadOnlyList<ContentRange> contentRanges,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        bool[][] classified = Enumerable.Range(0, PrgBankCount)
+            .Select(_ => new bool[PrgBankSize])
+            .ToArray();
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            foreach (DecodedInstruction instruction in analysis.Instructions.Values)
+            {
+                for (int index = 0; index < instruction.Opcode.Size; index++)
+                {
+                    classified[bank][instruction.Offset + index] = true;
+                }
+            }
+            foreach (int offset in analysis.InlineDataOffsets)
+            {
+                classified[bank][offset] = true;
+            }
+        }
+        foreach (ContentRange range in contentRanges)
+        {
+            int start = range.Start - CodeAnalyzer.CpuBase(range.Bank);
+            int endExclusive = range.EndExclusive - CodeAnalyzer.CpuBase(range.Bank);
+            for (int offset = start; offset < endExclusive; offset++)
+            {
+                classified[range.Bank][offset] = true;
+            }
+        }
+
+        StringBuilder report = new();
+        report.AppendLine("Bank\tReferencedAddress\tConsumerAddress\tMnemonic\tAddressingMode");
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            foreach (DecodedInstruction instruction in analysis.Instructions.Values)
+            {
+                if (instruction.Opcode.Mode is not (
+                    AddressingMode.Absolute or AddressingMode.AbsoluteX or AddressingMode.AbsoluteY))
+                {
+                    continue;
+                }
+                int address = instruction.Operand1 | (instruction.Operand2 << 8);
+                if (TargetBank(bank, address) is not int targetBank ||
+                    targetBank != bank ||
+                    classified[bank][address - CodeAnalyzer.CpuBase(bank)])
+                {
+                    continue;
+                }
+
+                report.Append(bank.ToString("X2", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(instruction.Address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(instruction.Opcode.Mnemonic).Append('\t')
+                    .AppendLine(instruction.Opcode.Mode.ToString());
+            }
+        }
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+    }
+
+    private static void WriteEntryPointReport(
+        string path,
+        IReadOnlyList<EntryPointer> entries,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        StringBuilder report = new();
+        report.AppendLine("Dragon Warrior IV entry-point and pointer-boundary audit");
+        report.AppendLine("Every declared table is read as contiguous, non-overlapping two-byte little-endian entries.");
+        report.AppendLine();
+
+        int executableCount = entries.Count(entry => entry.Classification is "fixed-bank-code" or "local-bank-code");
+        int decodedCount = entries.Count(entry => EntryTargetDecoded(entry, analyses));
+        report.AppendLine($"Declared tables: {entries.Where(entry => !entry.IsExplicit).Select(entry => (entry.Bank, entry.TableStart, entry.TableEndExclusive)).Distinct().Count()}");
+        report.AppendLine($"Explicit pointer fields: {entries.Count(entry => entry.IsExplicit)}");
+        report.AppendLine($"Pointer entries: {entries.Count}");
+        report.AppendLine($"Executable targets decoded: {decodedCount} / {executableCount}");
+        foreach (IGrouping<string, EntryPointer> group in entries.GroupBy(entry => entry.Classification).OrderBy(group => group.Key))
+        {
+            report.AppendLine($"{group.Key}: {group.Count()}");
+        }
+        foreach (IGrouping<(int Bank, int Start, int EndExclusive), EntryPointer> table in entries
+            .GroupBy(entry => (entry.Bank, entry.TableStart, entry.TableEndExclusive))
+            .OrderBy(group => group.Key.Bank)
+            .ThenBy(group => group.Key.TableStart))
+        {
+            report.AppendLine();
+            report.AppendLine(
+                $"Bank ${table.Key.Bank:X2}:${table.Key.Start:X4}-${table.Key.EndExclusive - 1:X4} " +
+                $"({table.Count()} entries)");
+            foreach (EntryPointer entry in table)
+            {
+                string mappedTarget = entry.TargetBank is int targetBank
+                    ? $"bank ${targetBank:X2}:${entry.Target:X4}"
+                    : $"${entry.Target:X4}";
+                string decoded = entry.Classification is "fixed-bank-code" or "local-bank-code"
+                    ? EntryTargetDecoded(entry, analyses) ? ", decoded" : ", NOT DECODED"
+                    : string.Empty;
+                report.AppendLine(
+                    $"  ${entry.PointerAddress:X4} -> {mappedTarget} [{entry.Classification}{decoded}]");
+            }
+        }
+
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+        if (decodedCount != executableCount)
+        {
+            throw new InvalidDataException(
+                $"{executableCount - decodedCount} executable entry-table targets were not decoded");
+        }
+    }
+
+    private static bool EntryTargetDecoded(
+        EntryPointer entry,
+        IReadOnlyDictionary<int, BankAnalysis> analyses) =>
+        entry.Classification is "fixed-bank-code" or "local-bank-code" &&
+        entry.TargetBank is int bank &&
+        analyses[bank].Instructions.ContainsKey(entry.Target - CodeAnalyzer.CpuBase(bank));
+
+    private static void WriteRoutineContractReport(
+        string path,
+        IReadOnlyList<RoutineContract> contracts,
+        IReadOnlyDictionary<int, List<BankLabel>> labels,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        HashSet<(int Bank, int Address)> locations = [];
+        StringBuilder report = new();
+        report.AppendLine("# Verified Routine Contracts");
+        foreach (RoutineContract contract in contracts.OrderBy(contract => contract.Bank).ThenBy(contract => contract.Address))
+        {
+            if (!locations.Add((contract.Bank, contract.Address)))
+            {
+                throw new InvalidDataException(
+                    $"duplicate routine contract at bank ${contract.Bank:X2}:${contract.Address:X4}");
+            }
+            if (!analyses[contract.Bank].Instructions.ContainsKey(
+                contract.Address - CodeAnalyzer.CpuBase(contract.Bank)))
+            {
+                throw new InvalidDataException(
+                    $"routine contract target is not decoded at bank ${contract.Bank:X2}:${contract.Address:X4}");
+            }
+            if (!labels.TryGetValue(contract.Bank, out List<BankLabel>? bankLabels) ||
+                !bankLabels.Any(label => label.Address == contract.Address && label.Name == contract.Name))
+            {
+                throw new InvalidDataException(
+                    $"routine contract label mismatch at bank ${contract.Bank:X2}:${contract.Address:X4}: {contract.Name}");
+            }
+
+            report.AppendLine();
+            report.AppendLine($"## {contract.Name} (`${contract.Bank:X2}:${contract.Address:X4}`)");
+            report.AppendLine();
+            report.AppendLine($"- Calling convention: {contract.CallingConvention}");
+            report.AppendLine($"- Inputs: {contract.Inputs}");
+            report.AppendLine($"- Outputs: {contract.Outputs}");
+            report.AppendLine($"- Clobbers: {contract.Clobbers}");
+            report.AppendLine($"- Side effects: {contract.SideEffects}");
+            report.AppendLine($"- Evidence: {contract.Evidence}");
+        }
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+    }
+
+    private static void WriteRoutineInterfaceReport(
+        string path,
+        IReadOnlyDictionary<(int Bank, int Address), SortedSet<string>> routineTargets,
+        IReadOnlyDictionary<int, List<BankLabel>> labels,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        StringBuilder report = new();
+        report.AppendLine("Bank\tAddress\tName\tCallingConvention\tRegisterInputs\tRegisterOutputs\tDirectMemoryWrites\tCalls");
+        foreach (((int Bank, int Address) location, SortedSet<string> evidence) in routineTargets
+            .OrderBy(item => item.Key.Bank)
+            .ThenBy(item => item.Key.Address))
+        {
+            RoutineInterface contract = AnalyzeRoutineInterface(
+                location.Bank,
+                location.Address,
+                analyses);
+            string name = labels[location.Bank]
+                .First(label => label.Address == location.Address)
+                .Name;
+            report.Append(location.Bank.ToString("X2", CultureInfo.InvariantCulture)).Append('\t')
+                .Append(location.Address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                .Append(name).Append('\t')
+                .Append(string.Join("; ", evidence)).Append('\t')
+                .Append(string.Join(',', contract.RegisterInputs)).Append('\t')
+                .Append(string.Join(',', contract.RegisterOutputs)).Append('\t')
+                .Append(string.Join(',', contract.DirectMemoryWrites)).Append('\t')
+                .AppendLine(string.Join(',', contract.Calls));
+        }
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+    }
+
+    private static Dictionary<(int Bank, int Address), SortedSet<string>> BuildRoutineTargets(
+        IReadOnlyList<CodeSeed> seeds,
+        IReadOnlyList<EntryPointer> entries,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        Dictionary<(int Bank, int Address), SortedSet<string>> targets = [];
+        foreach (EntryPointer entry in entries.Where(entry =>
+            entry.Classification is "fixed-bank-code" or "local-bank-code"))
+        {
+            Add(entry.TargetBank!.Value, entry.Target,
+                $"Pointer ${entry.Bank:X2}:${entry.PointerAddress:X4} ({entry.Reason})");
+        }
+        foreach (CodeSeed seed in seeds.Where(seed => seed.IsEntryPoint && seed.Source != "Entry pointer table"))
+        {
+            Add(seed.Bank, seed.Address, $"{seed.Source}: {seed.Reason}");
+        }
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            foreach (DecodedInstruction instruction in analysis.Instructions.Values.Where(instruction =>
+                instruction.Opcode.IsCall && instruction.Target is not null))
+            {
+                int target = instruction.Target!.Value;
+                if (TargetBank(bank, target) is int targetBank &&
+                    analyses[targetBank].Instructions.ContainsKey(target - CodeAnalyzer.CpuBase(targetBank)))
+                {
+                    Add(targetBank, target, $"Direct call from ${bank:X2}:${instruction.Address:X4}");
+                }
+            }
+        }
+        return targets;
+
+        void Add(int bank, int address, string evidence)
+        {
+            if (!analyses[bank].Instructions.ContainsKey(address - CodeAnalyzer.CpuBase(bank)))
+            {
+                return;
+            }
+            if (!targets.TryGetValue((bank, address), out SortedSet<string>? targetEvidence))
+            {
+                targetEvidence = new(StringComparer.Ordinal);
+                targets.Add((bank, address), targetEvidence);
+            }
+            targetEvidence.Add(evidence);
+        }
+    }
+
+    private static RoutineInterface AnalyzeRoutineInterface(
+        int bank,
+        int startAddress,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        SortedSet<string> registerInputs = [];
+        SortedSet<string> registerOutputs = [];
+        SortedSet<string> memoryWrites = [];
+        SortedSet<string> calls = [];
+        HashSet<int> visited = [];
+        Queue<int> pending = new();
+        pending.Enqueue(startAddress);
+        BankAnalysis analysis = analyses[bank];
+
+        while (pending.TryDequeue(out int pathAddress))
+        {
+            int address = pathAddress;
+            while (analysis.Instructions.TryGetValue(
+                address - CodeAnalyzer.CpuBase(bank),
+                out DecodedInstruction? instruction) && visited.Add(address))
+            {
+                CollectRegisterAccess(instruction, registerInputs, registerOutputs);
+                if (instruction.Opcode.Mnemonic is "sta" or "stx" or "sty" or
+                    "inc" or "dec" or "asl" or "lsr" or "rol" or "ror" &&
+                    instruction.Opcode.Mode != AddressingMode.Accumulator)
+                {
+                    memoryWrites.Add(FormatStaticOperand(instruction));
+                }
+                if (instruction.Opcode.IsCall && instruction.Target is int callTarget)
+                {
+                    calls.Add($"${callTarget:X4}");
+                }
+                if (instruction.Opcode.IsBranch && instruction.Target is int branchTarget)
+                {
+                    pending.Enqueue(branchTarget);
+                }
+                if (instruction.Opcode.IsJump && instruction.Target is int jumpTarget &&
+                    TargetBank(bank, jumpTarget) == bank)
+                {
+                    pending.Enqueue(jumpTarget);
+                }
+                if (instruction.Opcode.StopsFlow)
+                {
+                    break;
+                }
+                address += instruction.Opcode.Size;
+            }
+        }
+
+        return new RoutineInterface(registerInputs, registerOutputs, memoryWrites, calls);
+    }
+
+    private static void CollectRegisterAccess(
+        DecodedInstruction instruction,
+        ISet<string> inputs,
+        ISet<string> outputs)
+    {
+        string mnemonic = instruction.Opcode.Mnemonic;
+        if (mnemonic is "adc" or "and" or "asl" or "cmp" or "eor" or "ora" or "pha" or
+            "rol" or "ror" or "sbc" or "sta" or "tax" or "tay")
+        {
+            inputs.Add("A");
+        }
+        if (mnemonic is "dex" or "inx" or "stx" or "txa" or "txs" or "cpx" ||
+            instruction.Opcode.Mode is AddressingMode.ZeroPageX or AddressingMode.AbsoluteX or AddressingMode.IndexedIndirect)
+        {
+            inputs.Add("X");
+        }
+        if (mnemonic is "dey" or "iny" or "sty" or "tya" or "cpy" ||
+            instruction.Opcode.Mode is AddressingMode.ZeroPageY or AddressingMode.AbsoluteY or AddressingMode.IndirectIndexed)
+        {
+            inputs.Add("Y");
+        }
+        if (mnemonic is "adc" or "and" or "asl" or "eor" or "lda" or "lsr" or "ora" or
+            "pla" or "rol" or "ror" or "sbc" or "txa" or "tya")
+        {
+            outputs.Add("A");
+        }
+        if (mnemonic is "dex" or "inx" or "ldx" or "tax" or "tsx")
+        {
+            outputs.Add("X");
+        }
+        if (mnemonic is "dey" or "iny" or "ldy" or "tay")
+        {
+            outputs.Add("Y");
+        }
+        outputs.Add("P");
+    }
+
+    private static string FormatStaticOperand(DecodedInstruction instruction)
+    {
+        int word = instruction.Operand1 | (instruction.Operand2 << 8);
+        return instruction.Opcode.Mode switch
+        {
+            AddressingMode.ZeroPage => $"${instruction.Operand1:X2}",
+            AddressingMode.ZeroPageX => $"${instruction.Operand1:X2}+X",
+            AddressingMode.ZeroPageY => $"${instruction.Operand1:X2}+Y",
+            AddressingMode.Absolute => $"${word:X4}",
+            AddressingMode.AbsoluteX => $"${word:X4}+X",
+            AddressingMode.AbsoluteY => $"${word:X4}+Y",
+            AddressingMode.IndexedIndirect => $"(${instruction.Operand1:X2},X)",
+            AddressingMode.IndirectIndexed => $"(${instruction.Operand1:X2}),Y",
+            _ => "implicit"
+        };
+    }
+
+    private static int? TargetBank(int currentBank, int target) => target switch
+    {
+        >= 0xC000 and <= 0xFFFF => currentBank < 0x10 ? 0x0F : 0x1F,
+        >= 0x8000 and < 0xC000 when (currentBank & 0x0F) != 0x0F => currentBank,
+        _ => null
+    };
+
     private static void RequireArgumentCount(string[] args, int expected, string usage)
     {
         if (args.Length != expected)
@@ -1236,5 +1746,31 @@ internal static class Program
         string Confidence,
         string Reason);
     private sealed record BankClassification(int Bank, string Category, string Confidence, string Reason);
+    private sealed record EntryTableLoadResult(List<CodeSeed> Seeds, List<EntryPointer> Entries);
+    private sealed record EntryPointer(
+        int Bank,
+        int TableStart,
+        int TableEndExclusive,
+        int PointerAddress,
+        int Target,
+        int? TargetBank,
+        string Classification,
+        string Reason,
+        bool IsExplicit);
+    private sealed record RoutineContract(
+        int Bank,
+        int Address,
+        string Name,
+        string CallingConvention,
+        string Inputs,
+        string Outputs,
+        string Clobbers,
+        string SideEffects,
+        string Evidence);
+    private sealed record RoutineInterface(
+        IReadOnlySet<string> RegisterInputs,
+        IReadOnlySet<string> RegisterOutputs,
+        IReadOnlySet<string> DirectMemoryWrites,
+        IReadOnlySet<string> Calls);
     private sealed record RomFacts(int Mapper, int PrgSize, int ChrSize, bool Battery, bool VerticalMirroring);
 }

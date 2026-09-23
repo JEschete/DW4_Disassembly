@@ -74,8 +74,17 @@
 0E	BFD8	Bank0E_CompatibilityFooter	Data	Repeated reset stub, title signature, metadata, and vectors
 0F	E9AD	Bank0F_GetMapDataBank	Code	Routine at headerless ROM offset $3E9AD, CPU address $E9AD
 0F	C000	Bank0F_LowerFixedEngine	Code	Fixed engine, interrupt, mapper, BRK-dispatch, PPU, and map services for the lower SUROM region
+0F	FB6C	Bank0F_PpuUploadPointers	Table	Two pointers to conditional PPU upload streams
+0F	FB70	Bank0F_PpuTileStream	Data	Tile stream consumed by the bounded upload loop
+0F	FC57	Bank0F_PpuAttributeData	Data	Eighteen PPU attribute bytes
+0F	FC69	Bank0F_PpuUploadMasks	Table	Thirty-six source-consumption masks
+0F	FC8D	Bank0F_PpuPatternStream	Data	Pattern stream consumed before fixed-bank code resumes at $FF74
 10	8000	Bank10_BattleServiceDirectory	Table	64 little-endian battle and party service pointers
 10	8080	Bank10_BattlePartyServices	Code	Battle-side party record, status, statistic, and reward services
+10	9E30	Bank10_BattleActionHandlerPointers	Table	113 routine pointers selected by $6E0B and dispatched through $0000
+10	AAA6	Bank10_BattleRecordOperationPointers	Table	48 routine pointers selected by $6E59 and dispatched through $0000
+10	B499	Bank10_BattleEffectPointerTableAddress	Pointer	Address of the battle-effect handler table
+10	B49B	Bank10_BattleEffectHandlerPointers	Table	120 routine pointers selected by $0B and dispatched through $0004
 11	8000	Bank11_BattleActionDirectory	Table	25 little-endian battle action and state service pointers with one null entry
 11	8032	Bank11_BattleActionServices	Code	Battle action, combatant state, and arena-state processing
 11	8824	Bank11_BattleValues	Table	Directly indexed combatant values and selection records through $885A
@@ -94,8 +103,24 @@
 11	BFD8	Bank11_CompatibilityFooter	Data	Repeated reset stub, title signature, metadata, and vectors
 12	8000	Bank12_BattleSetupDirectory	Table	50 little-endian battle setup and combat service pointers with two null entries
 12	8064	Bank12_BattleSetupServices	Code	Initializes battle RAM, party combatants, monster state, and battle presentation
+12	8491	Bank12_BattleSetupHandlerPointers	Table	Eight handlers selected from three-bit setup fields and dispatched through $83DF
+12	A541	Bank12_BattleSetupOperationPointers	Table	Nine setup operation handlers dispatched through $A4B1
+12	A9ED	Bank12_BattleSetupEventPointers	Table	Sixteen event handlers parallel to the IDs at $AA0D
+12	AA0D	Bank12_BattleSetupEventIds	Table	Sixteen event IDs selecting the handler table at $A9ED
+12	8EAD	InitializeChapterSaveState	Code	Clears save work state and initializes chapter-dependent party records
 13	8000	Bank13_BattlePresentationDirectory	Table	28 little-endian battle presentation and state service pointers
 13	8038	Bank13_BattlePresentationServices	Code	Battle state routing, combatant animation, and presentation services
+13	8078	Bank13_BattleStateHandlerPointers	Table	Eight state-selected handler pointers dispatched through bank $13:$805B
+13	8D8F	Bank13_BattleRecordBasePointer	Table	Little-endian $7600 base used for 58-byte battle records
+13	89B4	Bank13_BattleCharacterRecordBase	Table	Little-endian $7274 base for 30-byte battle-character records
+13	89CB	Bank13_BattleCharacterRecordPointers	Table	Twenty-one pointers into SRAM battle-character records
+13	8A1E	Bank13_BattleSlotRecordPointers	Table	Ten pointers selected by the bounded active-slot scan
+13	8599	Bank13_BattleActionHandlerBasePointer	Table	Little-endian base of the action-ID-indexed handler table at $8B8B
+13	8B8B	Bank13_BattleActionHandlerPointers	Table	One hundred four battle-action handlers dispatched through $8509
+13	91A9	Bank13_SpecialBattleActionIds	Table	Eighteen action IDs searched by battle presentation routing
+13	91CD	Bank13_SpecialBattleActionHandlerPointers	Table	Eighteen handlers parallel to the action IDs at $91A9
+13	A747	Bank13_BattleEffectRecordPointers	Table	Four pointers to terminated battle-effect record lists
+13	A74F	Bank13_BattleEffectRecords	Data	Four-byte battle-effect records terminated by $FF
 13	90EC	Bank13_BattleFieldOffsets	Table	Field offsets followed by eight arithmetic handler pointers
 14	8000	Bank14_BattleTurnDirectory	Table	26 little-endian battle-turn service pointers
 14	8034	Bank14_BattleTurnEngine	Code	Turn orchestration and per-combatant battle-state processing
@@ -108,19 +133,29 @@
 14	B2D5	Bank14_MonsterIdMap	Table	Monster identifier ordering table consumed by bank $14:$9F0F/$9F1C
 14	B398	Bank14_MonsterGraphicsBankBitmap	Table	25-byte MSB-first bitmap selecting physical bank $06 or $07 for monster IDs $00-$C1
 14	B3B1	Bank14_MonsterGraphicsDescriptors	Table	194 five-byte records: chunk count, stream pointer, and two layout bytes
+14	B77B	Bank14_CompressedGraphicsStreams	CompressedGraphics	Pointer-selected bank-local graphics streams ending before code at $BD00
 15	8000	Bank15_ItemEffectDirectory	Table	26 little-endian item, effect-script, and inventory service pointers with one null entry
 15	8034	Bank15_EffectScripts	Script	Table-driven item and field-effect command streams
 15	9640	Bank15_EffectScriptPointers	Table	Pointers into the item and field-effect command streams
 15	98F8	Bank15_InterpretEffectScript	Code	Interpreter for the table-driven effect command streams
 15	B374	Bank15_InitializeInventoryStorage	Code	Initializes the 128-byte vault and inventory storage area
+15	BB1A	Bank15_ItemEffectLookupA	Table	Thirty two-byte values for inventory mode one
+15	BB56	Bank15_ItemEffectLookupDefault	Table	Thirty two-byte values for the default inventory mode
+15	BB92	Bank15_ItemEffectLookupB	Table	Thirty two-byte values for inventory mode three
 16	8000	Bank16_TextUiDirectory	Table	20 little-endian text and user-interface service pointers
 16	8028	Bank16_TextUiServices	Code	Dialogue display, text control, window, and user-interface services
+16	80C4	Bank16_TextCommandHandlerPointers	Table	Nineteen handlers for clamped text/UI command values $40-$52
 16	874C	Bank16_SelectTextGroup	Code	Maps a text ID to its group pointer and physical text bank
 16	87A8	Bank16_DecodeHuffmanSymbol	Code	Consumes the compressed stream most-significant-bit first from root node $5C
 16	87D8	Bank16_HuffmanOneBranches	Table	Branch-1 values for the 93-node dialogue Huffman tree
 16	8835	Bank16_HuffmanZeroBranches	Table	Branch-0 values for the 93-node dialogue Huffman tree
 16	8951	Bank16_TextGroupPointers	Table	88 little-endian pointers for text groups $00-$57
 16	8A01	Bank16_TextBankThresholds	Table	Group thresholds $1A,$28,$36,$41,$4B,$56,$FF
+16	9C7F	Bank16_TextUiMetricTables	Table	Four sixteen-byte UI width, stride, and cursor-adjustment tables
+16	9D49	Bank16_TextUiCursorPositions	Table	Six indexed cursor positions
+16	9DED	Bank16_TextUiModeValues	Table	Four indexed menu-mode values
+16	9E7F	Bank16_TextUiSelectionMapA	Table	Sixty-four UI selection values
+16	9EBF	Bank16_TextUiSelectionMapB	Table	Forty UI selection values
 16	A4FF	Bank16_TextUiPointerBase	Table	Base pointer for the 113-entry text/UI record directory
 16	A501	Bank16_TextUiRecordPointers	Table	Pointers to variable text/UI interpreter records
 16	A5E3	Bank16_TextUiCommandDirectory	Table	Two command-set pointers followed by doubled-index thresholds
@@ -209,6 +244,10 @@
 18	A73D	Bank18_MapEncounterRecordsA	Data	Nine map-keyed records terminated at $A778
 18	A779	Bank18_MapEncounterRecordsB	Data	Twenty-three map-keyed records terminated at $A810
 18	A811	Bank18_BattleDataPointer	Table	Little-endian pointer used by battle setup code at $A876
+18	B23F	Bank18_BattleAnimationPointers	Table	Pointers to three parallel animation arrays
+18	B245	Bank18_BattleAnimationX	Data	Signed X-coordinate animation values
+18	B2DD	Bank18_BattleAnimationY	Data	Signed Y-coordinate animation values
+18	B375	Bank18_BattleAnimationCommands	Data	Twenty-nine $FF-terminated command groups
 18	B798	Bank18_LoadFontTiles	Code	Runtime-observed routine that uploads one-bitplane glyphs to PPU pattern table $1000
 18	B83D	Bank18_LowercaseAndSymbolFont	Graphics	140 one-bitplane glyphs: digits, lowercase, punctuation, icons, and UI pieces
 18	BC9D	Bank18_UppercaseFont	Graphics	36 one-bitplane uppercase and digit glyphs
@@ -226,10 +265,48 @@
 1A	BFD8	Bank1A_TextStreamRollover	Data	Compressed-text rollover boundary into physical bank $1B
 1B	8000	Bank1B_EventDirectoryTextOverlay	Table	Event-service directory whose bytes also continue compressed text group $55 through $832E
 1B	8020	Bank1B_MapEventServices	Code	Map-local event, position, and entity services
+1B	8738	Bank1B_AnimationTimingValues	Table	Four values selected by animation state $058E in the proven range zero through three
+1B	88A8	Bank1B_GraphicsPagePointers	Table	Two pointers to 256-byte graphics source pages
+1B	8916	Bank1B_MapGraphicsRouting	Table	Map/submap keys, PPU destinations, source pointers, and entity indices
+1B	8935	Bank1B_GraphicsPageA	Graphics	First bounded 256-byte graphics page
+1B	8C35	Bank1B_PpuSourcePage	Graphics	Bounded 256-byte PPU source block
+1B	8D35	Bank1B_GraphicsPageB	Graphics	Second bounded 256-byte graphics page
+1B	9222	Bank1B_AnimationSoundIds	Table	Five sound IDs selected by animation-state high nibble
+1B	9321	Bank1B_GraphicsSourcePointer	Table	Pointer to the 2048-byte sprite graphics source at $968F
+1B	936F	Bank1B_AnimationFrameTablesA	Table	Coordinate records and frame IDs for animation states $40-$4F
+1B	9466	Bank1B_AnimationFrameTablesB	Table	Coordinate, frame, and sound tables for animation states $50-$55
 1B	95C9	Bank1B_SpriteTileIds	Table	Twenty-three tile IDs written into OAM sprite records
 1B	95E0	Bank1B_SpriteLayouts	Data	Seven 25-byte layouts selected by object type
 1B	9690	Bank1B_SpriteGraphics	Graphics	One hundred twenty-eight raw NES 2bpp sprite tiles
-1B	A0FE	Bank1B_TextGroup57ContinuationOverlay	CompressedText	Final dialogue group continues here after $1B:$BFD7 and shares bytes with executable/table content through $A65E
+1B	A0FE	Bank1B_MapEventService_A0FE	Code	Map-event service selected through directory entry $09 at $8012
+1B	A3F9	Bank1B_MapMotionTables	Table	Signed coordinate pairs and bounded setup sequences consumed by map-event animation code
+1B	A5DF	Bank1B_PpuCommandPointers	Table	Ten pointers selected by bounded command IDs zero through nine
+1B	A5F3	Bank1B_PpuCommandStreams	Data	Ten PPU command streams terminated by $FF
+1B	A718	Bank1B_MapSetupValues	Table	Four values selected by the final four iterations of a descending setup loop
+1B	A772	Bank1B_PpuSetupValues	Table	Four setup values followed by five chapter-indexed values
+1B	A874	Bank1B_PpuUpdateTemplates	Data	Four 13-byte templates copied into the PPU update buffer
+1B	A91A	Bank1B_GraphicsRowOffsets	Table	Four offsets into fixed-bank sixteen-byte graphics rows
+1B	A93F	Bank1B_NametableFillRecords	Table	Four value, destination, and count records
+1B	A972	Bank1B_PpuTileRunRecords	Data	Variable count and value-pair records expanded into RAM
+1B	A9AF	Bank1B_RamDestinationPointer	Table	Pointer to RAM destination $7884
+1B	AA39	Bank1B_PpuUpdateTemplate	Data	Thirty-three-byte template copied to the PPU update buffer
+1B	AAE1	Bank1B_MapRendererTables	Table	Source pointers, destination offsets, masks, and deltas for map rendering
+1B	AD25	Bank1B_DormantMapHandlerRti	Code	Coherent dormant BRK-backed handler ending in RTI
+1B	AD3A	Bank1B_DormantMapHandlerRts	Code	Coherent dormant BRK-backed handler ending in RTS
+1B	AE00	Bank1B_AnimationDelays	Table	Six animation delays followed by a PPU frame-data pointer
+1B	AE08	Bank1B_PpuFrameData	Data	Six overlapping eight-byte PPU frames
+1B	AEDD	Bank1B_MapEventStreamPointer	Table	Pointer to the overlapping map-event record stream at $AEDF
+1B	AEDF	Bank1B_MapEventStream	Data	Variable map and payload records terminated by $FF
+1B	AF2A	Bank1B_MapEventPayloads	Data	Six payload blocks bounded by stream pointers and lengths
+1B	AF73	Bank1B_RamInitializationData	Data	One hundred thirty-three bytes copied to $7800-$7884
+1B	B209	Bank1B_RuntimeCodeTemplate	Data	Sixteen-byte 6502 fragment copied into generated RAM code
+1B	B2BE	Bank1B_PpuWriteCodeTemplate	Data	Five-byte 6502 PPU-write fragment copied into generated RAM code
+1B	B2D3	Bank1B_NmiPpuUpdateCallback	Code	NMI callback selected through the table at $B342 and ending at fixed trampoline $C1A0
+1B	B324	Bank1B_RamPointerTable	Table	Three overlapping RAM pointers used by graphics-copy setup
+1B	B342	Bank1B_NmiCallbackPointers	Table	Two callbacks selected with X=$00/$02 and written to the NMI callback slot
+1B	B6C4	Bank1B_RamStreamPointer	Table	Pointer to RAM stream $7800
+1B	B708	Bank1B_PpuUpdatePatterns	Table	Two-byte update header and two parallel 64-byte row pattern tables
+1B	B78A	Bank1B_TextGroup57Continuation	CompressedText	Final dialogue group continues here after $1B:$BFD7 through pointer $B78A at $8014
 1B	BFD8	Bank1B_FinalTextRollover	Data	Final stream boundary reloads the continuation pointer from $1B:$8014
 1C	8000	Bank1C_MapEntityDirectory	Table	22-entry mixed map and entity service directory
 1C	802C	Bank1C_MapEntityData	Data	Structured map, entity, and event data preceding the recovered service code
@@ -243,14 +320,34 @@
 1C	BFD8	Bank1C_CompatibilityFooter	Data	Repeated reset stub, title signature, metadata, and vectors
 1D	8000	Bank1D_EventServiceDirectory	Table	Mixed event-service directory at the start of the bank
 1D	802A	Bank1D_MapEventServices	Code	Map event, entity placement, movement, and scripted state services
+1D	8096	Bank1D_MapGraphicsConfiguration	Table	Map selectors, modes, source indices, and destination pairs
+1D	80DE	Bank1D_GraphicsPointers	Table	Thirty-two source pointers with null slots
+1D	811E	Bank1D_MapGraphics	Graphics	Twenty contiguous 128-byte graphics blocks through $8B1D
+1D	8D1D	Bank1D_MapMotionOffsets	Table	Eight signed coordinate offsets selected by two doubled random indices
+1D	8D69	Bank1D_PpuPayloadPointers	Table	Two PPU payload sources selected by map-transition state
+1D	8ED8	Bank1D_PpuSetupBytes	Table	Two four-byte PPU setup arrays
+1D	8F32	Bank1D_PpuUploadData	Data	Thirty-two-byte PPU upload block
+1D	9052	Bank1D_GraphicsInitializationTemplate	Data	Sixteen-byte graphics initialization template
 1D	90EF	Bank1D_MapMotionDeltas	Table	Two 64-byte coordinate-delta tables used by opposing map animation passes
 1D	921B	Bank1D_PpuBlankWidths	Table	Fifteen PPU fill widths used by the map transition effect
 1D	925A	Bank1D_NmiCallbackPointerA	Table	Pointer to the $9273 NMI callback continuation
 1D	9273	Bank1D_NmiCallbackA	Code	Callback installed at $0503-$0504 during the first map transition pass
 1D	944E	Bank1D_NmiCallbackPointerB	Table	Pointer to the $9467 NMI callback continuation
 1D	9467	Bank1D_NmiCallbackB	Code	Callback installed at $0503-$0504 during the second map transition pass
+1D	96B5	Bank1D_MapSubmapDispatchKeys	Table	Seven map/submap key pairs followed by a terminal $FF
+1D	96D1	Bank1D_MapSubmapHandlerPointers	Table	Seven handlers parallel to the map/submap keys at $96B5
+1D	B62A	Bank1D_MapEventHandlerPointers	Table	One hundred twenty-eight handlers for low-half event IDs
+1D	B72A	Bank1D_MapEventHandlerPointersHigh	Table	Ten handlers for supported high-half event IDs
 1E	8000	Bank1E_MapInteractionDirectory	Table	72 little-endian map and entity interaction service pointers
 1E	8090	Bank1E_MapInteractionServices	Code	Map entity interaction, movement, collision, and event services
+1E	89C5	Bank1E_MapTransitionDirections	Table	Three direction values for matched bidirectional transitions
+1E	89C8	Bank1E_MapTransitionPointers	Table	Three map IDs and transition-stream pointers followed by $FF
+1E	89D2	Bank1E_MapTransitionRecords	Data	Eight-byte bidirectional transition records in three terminated streams
+1E	8A24	Bank1E_MapTransitionDisplayRecords	Data	Six five-byte transition display records
+1E	8A42	Bank1E_MapTransitionDisplayMasks	Table	Six transition-type display masks
+1E	9060	Bank1E_MapEventTriggerRecord	Data	Chapter, map, submap, coordinate, entity, and target trigger fields
+1E	A499	Bank1E_ChapterMapHandlerPointers	Table	Five chapter-selected map interaction handlers
+1E	A75E	Bank1E_ChapterMapValues	Table	Five values selected by SaveCurrentChapterMinus1
 1F	C001	FixedTrampoline00	Code	Fixed-bank JMP trampoline entry 00
 1F	C004	FixedTrampoline01	Code	Fixed-bank JMP trampoline entry 01
 1F	C007	FixedTrampoline02	Code	Fixed-bank JMP trampoline entry 02
@@ -283,8 +380,12 @@
 1F	C408	IrqHandler	Code	IRQ/BRK vector target
 1F	C543	InitializeOamShadow	Code	Fills the 256-byte OAM shadow page with $F7
 1F	C575	ClearNametables	Code	Writes zero to eight 256-byte PPU data blocks
+1F	C813	AddByteToPointer	Code	Adds A to the little-endian zero-page pointer selected by X
+1F	C81D	AddWordToPointer	Code	Adds Y:A to the little-endian zero-page pointer selected by X
+1F	C827	MultiplyPointerWord	Code	Multiplies the little-endian zero-page word selected by X by A in place
 1F	E771	ReadAudioSequenceByte	Code	Reads one byte through an indexed audio sequence pointer and advances that pointer
 1F	F08A	ResetApuChannels	Code	Disables and re-enables APU channels and resets pulse sweep registers
+1F	F47B	Bank1F_FixedGraphics	Graphics	152 raw NES 2bpp tiles through $FDFA with an intentional callback overlap at $F9F0
 1F	FF74	WaitForNmi	Code	Waits for the NMI-updated value at $050C to change
 1F	FF91	SelectPrgBank	Code	Writes low PRG bank bits and outer bank bit through MMC1
 1F	FFD8	Reset	Code	RESET vector target

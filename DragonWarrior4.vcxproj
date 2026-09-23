@@ -52,9 +52,12 @@
     <None Include="analysis\classification-report.txt" />
     <None Include="analysis\code-report.txt" />
     <None Include="config\bank-classifications.tsv" />
+    <None Include="config\code-entry-pointers.tsv" />
     <None Include="config\code-entry-tables.tsv" />
     <None Include="config\code-exclusions.tsv" />
+    <None Include="config\control-flow-conflicts.tsv" />
     <None Include="config\content-ranges.tsv" />
+    <None Include="config\indirect-jumps.tsv" />
     <None Include="config\code-seeds.tsv" />
     <None Include="config\labels.tsv" />
     <None Include="BANK_MAP.md" />

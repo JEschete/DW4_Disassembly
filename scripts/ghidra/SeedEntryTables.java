@@ -17,13 +17,14 @@ public class SeedEntryTables extends GhidraScript {
     @Override
     public void run() throws Exception {
         String[] args = getScriptArgs();
-        if (args.length < 2 || args.length > 3) {
+        if (args.length < 3 || args.length > 4) {
             throw new IllegalArgumentException(
-            "usage: SeedEntryTables.java <code-entry-tables.tsv> <code-exclusions.tsv> [bank-list]");
+            "usage: SeedEntryTables.java <code-entry-tables.tsv> <code-entry-pointers.tsv> " +
+            "<code-exclusions.tsv> [bank-list]");
         }
 
-        Set<Integer> includedBanks = parseBankList(args.length == 3 ? args[2] : null);
-        List<Exclusion> exclusions = readExclusions(args[1]);
+        Set<Integer> includedBanks = parseBankList(args.length == 4 ? args[3] : null);
+        List<Exclusion> exclusions = readExclusions(args[2]);
         Memory memory = currentProgram.getMemory();
         int seeded = 0;
         for (String line : Files.readAllLines(Path.of(args[0]))) {
@@ -41,26 +42,61 @@ public class SeedEntryTables extends GhidraScript {
             }
             int start = Integer.parseInt(columns[1], 16);
             int endExclusive = Integer.parseInt(columns[2], 16);
-            MemoryBlock block = findPhysicalBank(memory, bank);
-            int cpuBase = (bank == 0x0F || bank == 0x1F) ? 0xC000 : 0x8000;
             for (int address = start; address < endExclusive; address += 2) {
-                Address entry = block.getStart().add(address - cpuBase);
-                int target = Byte.toUnsignedInt(memory.getByte(entry)) |
-                    (Byte.toUnsignedInt(memory.getByte(entry.add(1))) << 8);
-                if (target < cpuBase || target >= cpuBase + 0x4000) {
-                    continue;
-                }
-                if (isExcluded(exclusions, bank, target)) {
-                    continue;
-                }
-                Address targetAddress = block.getStart().add(target - cpuBase);
-                if (disassemble(targetAddress)) {
-                    addEntryPoint(targetAddress);
-                    seeded++;
-                }
+                seeded += seedPointer(memory, exclusions, bank, address);
             }
         }
-        println("Seeded " + seeded + " dispatch-table targets");
+        for (String line : Files.readAllLines(Path.of(args[1]))) {
+            if (line.isBlank() || line.startsWith("#")) {
+                continue;
+            }
+            String[] columns = line.split("\\t", -1);
+            if (columns.length != 4) {
+                throw new IllegalArgumentException("invalid explicit code pointer: " + line);
+            }
+
+            int bank = Integer.parseInt(columns[0], 16);
+            if (!includedBanks.isEmpty() && !includedBanks.contains(bank)) {
+                continue;
+            }
+            seeded += seedPointer(memory, exclusions, bank, Integer.parseInt(columns[1], 16));
+        }
+        println("Seeded " + seeded + " dispatch-table and explicit-pointer targets");
+    }
+
+    private int seedPointer(
+            Memory memory,
+            List<Exclusion> exclusions,
+            int bank,
+            int address) throws Exception {
+        MemoryBlock block = findPhysicalBank(memory, bank);
+        int sourceCpuBase = (bank == 0x0F || bank == 0x1F) ? 0xC000 : 0x8000;
+        Address entry = block.getStart().add(address - sourceCpuBase);
+        int target = Byte.toUnsignedInt(memory.getByte(entry)) |
+            (Byte.toUnsignedInt(memory.getByte(entry.add(1))) << 8);
+        int targetBank;
+        int targetCpuBase;
+        if (target >= 0xC000) {
+            targetBank = bank < 0x10 ? 0x0F : 0x1F;
+            targetCpuBase = 0xC000;
+        }
+        else if (target >= 0x8000 && sourceCpuBase == 0x8000) {
+            targetBank = bank;
+            targetCpuBase = 0x8000;
+        }
+        else {
+            return 0;
+        }
+        if (isExcluded(exclusions, targetBank, target)) {
+            return 0;
+        }
+        MemoryBlock targetBlock = findPhysicalBank(memory, targetBank);
+        Address targetAddress = targetBlock.getStart().add(target - targetCpuBase);
+        if (!disassemble(targetAddress)) {
+            return 0;
+        }
+        addEntryPoint(targetAddress);
+        return 1;
     }
 
     private List<Exclusion> readExclusions(String path) throws Exception {

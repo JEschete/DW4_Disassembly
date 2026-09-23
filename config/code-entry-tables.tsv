@@ -1,23 +1,78 @@
 # Bank<TAB>Start<TAB>EndExclusive<TAB>Source<TAB>Reason
 08	8000	803C	Direct ROM analysis	30-entry map and tile service directory
 0E	8000	8008	Direct ROM analysis	Four-entry graphics and palette service directory
+0F	DEA5	DEA9	Direct ROM analysis	Two-entry map-object operation table selected and dispatched at $DE92-$DEA2
+0F	DF02	DF64	Direct ROM analysis	49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero
+0F	DF64	DF7A	Direct ROM analysis	Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8
 10	8000	8080	Direct ROM analysis	64-entry code dispatch table followed by code at $8080
+10	9E30	9F12	Direct ROM analysis	113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B
+10	AAA6	AB06	Direct ROM analysis	48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680
+10	B49B	B58B	Direct ROM analysis	120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel
 11	8000	8032	Direct ROM analysis	25-entry code dispatch table; first target is $8032
 11	A40A	A61E	Direct ROM analysis	266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C
 11	8FDC	904A	Direct ROM analysis	55-entry battle handler table selected by the sorted action IDs at $8FA5
 12	8000	8064	Direct ROM analysis	50-entry code dispatch table; first target is $8064
+12	8491	84A1	Direct ROM analysis	Eight-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
+12	A541	A553	Direct ROM analysis	Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1
+12	A9ED	AA0D	Direct ROM analysis	Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643
+12	AACA	AAD4	Direct ROM analysis	Five-entry battle setup handler table selected by values below five and dispatched at $AAB7-$AAC7
+12	B67A	B6BC	Direct ROM analysis	33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D
 13	8000	8038	Direct ROM analysis	28-entry code dispatch table; first target is $8038
+13	8078	8088	Direct ROM analysis	Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
+13	8B8B	8C5B	Direct ROM analysis	104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
+13	91CD	91F1	Direct ROM analysis	Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
 13	9100	9110	Direct ROM analysis	Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
+13	A636	A696	Direct ROM analysis	Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
+13	A751	A753	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A755	A757	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A759	A75B	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A75D	A75F	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A761	A763	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A765	A767	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A769	A76B	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A76D	A76F	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A771	A773	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A775	A777	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A779	A77B	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
+13	A77E	A780	Direct ROM analysis	Callback field in the second battle-effect record list dispatched at $A744
+13	A782	A784	Direct ROM analysis	Callback field in the second battle-effect record list dispatched at $A744
+13	A786	A788	Direct ROM analysis	Callback field in the second battle-effect record list dispatched at $A744
+13	A78A	A78C	Direct ROM analysis	Callback field in the second battle-effect record list dispatched at $A744
+13	A78F	A791	Direct ROM analysis	Callback field in the third battle-effect record list dispatched at $A744
+13	A794	A796	Direct ROM analysis	Callback field in the fourth battle-effect record list dispatched at $A744
 14	8000	8034	Direct ROM analysis	26-entry code dispatch table followed by code at $8034
 14	A40D	A41B	Direct ROM analysis	Seven-entry nested battle presentation dispatch table
 15	8000	8034	Direct ROM analysis	26-entry code dispatch table
 16	8000	8028	Direct ROM analysis	20-entry text and user-interface service directory
+16	80C4	80EA	Direct ROM analysis	Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
+16	A5EB	A5ED	Direct ROM analysis	Primary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A607	A609	Direct ROM analysis	Primary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A619	A61B	Direct ROM analysis	Primary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A633	A635	Direct ROM analysis	Primary text/UI escape handler at the fourth command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A641	A643	Direct ROM analysis	Primary text/UI escape handler at the fifth command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A64D	A64F	Direct ROM analysis	Primary text/UI escape handler at the sixth command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A68D	A68F	Direct ROM analysis	Primary text/UI escape handler at the seventh command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A6E3	A6E5	Direct ROM analysis	Secondary text/UI escape handler at the first command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A6EB	A6ED	Direct ROM analysis	Secondary text/UI escape handler at the second command-pointer low-byte wrap, dispatched through $9841/$987F
+16	A703	A705	Direct ROM analysis	Secondary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
 17	8000	804C	Direct ROM analysis	38-entry mixed map-system directory followed by code at $804C
 18	8000	8046	Direct ROM analysis	35-entry mixed bank directory; known data targets are excluded
 19	8000	8014	Direct ROM analysis	Ten-entry mixed map and tileset service directory
 1B	8000	8020	Direct ROM analysis	Sixteen-entry mixed event-service directory and text overlay
+1B	B342	B346	Direct ROM analysis	Two-entry NMI callback table selected with X=$00/$02 at $B32A-$B341
+1B	AC5B	AC65	Direct ROM analysis	Five-entry chapter event handler table selected by doubled SaveCurrentChapterMinus1 and dispatched at $AAFA-$AB0A
 1C	8000	802C	Direct ROM analysis	22-entry mixed map and entity service directory
 1C	AC8A	AD1E	Direct ROM analysis	74-entry map/submap event handler table selected by the key scan at $A010-$A032
 1C	BF4B	BFB1	Direct ROM analysis	51-entry map event handler table consumed by the indirect dispatcher at $AD5F-$AD6D
 1D	8000	802A	Direct ROM analysis	21-entry mixed map-event service directory
+1D	96D1	96DF	Direct ROM analysis	Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE
+1D	B62A	B72A	Direct ROM analysis	128-entry low-half map-event handler table selected by event ID and dispatched at $98AD
+1D	B72A	B73E	Direct ROM analysis	Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA
 1E	8000	8090	Direct ROM analysis	72-entry map and entity interaction service directory
+1E	A499	A4A3	Direct ROM analysis	Five-entry chapter map-interaction handler table selected by SaveCurrentChapterMinus1 and dispatched at $A496
+1E	BBAE	BBB6	Direct ROM analysis	Four-entry map-interaction handler table selected by keys $BBAA-$BBAD and dispatched through $0000 at $BB2B
+1E	BC3D	BC4D	Direct ROM analysis	Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476
+1E	BC62	BC7A	Direct ROM analysis	Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D
+1F	DEA5	DEA9	Direct ROM analysis	Two-entry map-object operation table selected and dispatched at $DE92-$DEA2
+1F	DF02	DF64	Direct ROM analysis	49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero
+1F	DF64	DF7A	Direct ROM analysis	Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8

@@ -1,0 +1,16 @@
+# Name<TAB>Start<TAB>EndExclusive<TAB>Initialization<TAB>Persistence<TAB>Evidence
+SaveWorkArea	610E	6157	Cleared by InitializeChapterSaveState	Direct battery SRAM	Bounded loop at bank $12:$8EB4 writes $610E-$6156
+SaveTotalGold	6157	6159	Set by chapter initialization	Direct battery SRAM	Read/write arithmetic uses the little-endian pair $6157-$6158
+SaveCurrentChapterMinus1	615A	615B	Caller-selected before chapter initialization	Direct battery SRAM	Chapter branches across banks $08/$10-$12/$18/$19
+SaveHeroGender	615C	615D	Initialized from chapter record	Direct battery SRAM	Read by map and battle presentation code
+SaveHeroName	615D	6165	Initialized from chapter record	Direct battery SRAM	Eight-byte copy loop reads offsets $00-$07
+SavePartyCharacters	616A	616E	Initialized from chapter-specific ROM tables	Direct battery SRAM	Four party identifiers written by bank $12:$8ECA
+SaveGameStateFlags	618E	618F	Cleared then conditionally set by chapter initialization	Direct battery SRAM	BIT-tested by bank $10 and written by bank $12
+SavePlayerWorldPosition	6197	6199	Updated by map position logic	Direct battery SRAM	Compared with PlayerWorldX/PlayerWorldY by fixed-bank map logic
+SaveStoryFlags	625D	625E	Game-event updates	Direct battery SRAM	Bit-field operations in bank $1E
+SaveVehicleFlags	628E	628F	Game-event updates	Direct battery SRAM	BIT-tested by bank $1E movement logic
+SaveJoinedCharacterFlags	6292	6293	Party-event updates	Direct battery SRAM	Read by bank $19 map-asset selection
+SaveTransformState	6296	6298	Map-event updates	Direct battery SRAM	Read/write use of step and shape bytes in banks $1D/$1E
+SaveSmallMedals	62A2	62A3	Item-event updates	Direct battery SRAM	Named field used by item and event services
+SaveCasinoCoins	62AD	62B0	Casino updates	Direct battery SRAM	Three-byte carry-propagating arithmetic in bank $17
+SaveTimeOfDay	62ED	62EE	Frame/world-time updates	Direct battery SRAM	Incremented and wrapped by fixed-bank time logic

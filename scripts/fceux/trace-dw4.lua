@@ -13,6 +13,7 @@ local prg = 0
 local shift = 0x10
 local executed = {}
 local reads = {}
+local writes = {}
 local callback_probe = nil
 local target_bank = nil
 local navigation_direction = 0
@@ -55,6 +56,12 @@ local function record_execution(address, size)
     end
 end
 
+local function record_sram_write(address, size, value)
+    if type(address) == "number" then
+        writes[string.format("%04X", address)] = true
+    end
+end
+
 local function mapper_write(address, size, value)
     if AND(value, 0x80) ~= 0 then
         shift = 0x10
@@ -84,13 +91,16 @@ api_log:close()
 
 memory.registerexec(0x8000, 0x8000, record_execution)
 memory.registerread(0x8000, 0x8000, record_read)
+memory.registerwrite(0x6000, 0x2000, record_sram_write)
 memory.registerwrite(0x8000, 0x8000, mapper_write)
 
 local completed_frames = 0
 local random_state = 0x4D57
 for frame = 1, config.frames do
     local input = {}
-    if config.profile == "buttons" then
+    if config.profile == "startup" or config.profile == "banking" or config.profile == "audio" then
+        -- Startup naturally exercises reset, mapper setup, and title-screen audio.
+    elseif config.profile == "buttons" or config.profile == "menus" or config.profile == "text" or config.profile == "save-load" then
         if frame > 90 then
             local phase = frame % 120
             if phase == 0 or phase == 1 then input.start = 1 end
@@ -116,7 +126,7 @@ for frame = 1, config.frames do
                 input.left = 1
             end
         end
-    elseif config.profile == "hunt-assets" then
+    elseif config.profile == "hunt-assets" or config.profile == "battle" or config.profile == "graphics" then
         if frame >= 120 and frame <= 124 then
             input.start = 1
         elseif frame > 180 then
@@ -220,6 +230,18 @@ for _, key in ipairs(read_keys) do
 end
 read_output:close()
 
+local write_keys = {}
+for key in pairs(writes) do
+    table.insert(write_keys, key)
+end
+table.sort(write_keys)
+local write_output = assert(io.open(config.write_output, "w"))
+write_output:write("# CPUAddress\n")
+for _, key in ipairs(write_keys) do
+    write_output:write(key, "\n")
+end
+write_output:close()
+
 local screenshot_output = assert(io.open(config.screenshot, "wb"))
 screenshot_output:write(gui.gdscreenshot())
 screenshot_output:close()
@@ -230,10 +252,11 @@ api_append:close()
 
 local done = assert(io.open(config.done, "w"))
 done:write(string.format(
-    "frames=%d\naddresses=%d\nreads=%d\nmap=%02X\nsubmap=%02X\nworld_x=%02X\nworld_y=%02X\nlocal_x=%02X\nlocal_y=%02X\nstate_41=%02X\n",
+    "frames=%d\naddresses=%d\nreads=%d\nwrites=%d\nmap=%02X\nsubmap=%02X\nworld_x=%02X\nworld_y=%02X\nlocal_x=%02X\nlocal_y=%02X\nstate_41=%02X\n",
     completed_frames,
     #keys,
     #read_keys,
+    #write_keys,
     memory.readbyte(0x0063),
     memory.readbyte(0x0064),
     memory.readbyte(0x0042),

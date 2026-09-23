@@ -2,7 +2,7 @@ param(
     [string]$Rom = 'F:\NES\Dragon Warrior IV (USA).nes',
     [ValidateRange(60, 36000)]
     [int]$Frames = 1800,
-    [ValidateSet('explore', 'buttons', 'wander', 'hunt-assets', 'seek-world')]
+    [ValidateSet('startup', 'banking', 'menus', 'maps', 'battle', 'text', 'save-load', 'audio', 'graphics', 'explore', 'buttons', 'wander', 'hunt-assets', 'seek-world')]
     [string]$Profile = 'explore',
     [switch]$Visible
 )
@@ -20,6 +20,8 @@ $outputPath = Join-Path $projectRoot 'analysis\fceux-exec.tsv'
 $sessionOutputPath = Join-Path $workRoot 'fceux-exec-current.tsv'
 $readOutputPath = Join-Path $projectRoot 'analysis\fceux-reads.tsv'
 $sessionReadOutputPath = Join-Path $workRoot 'fceux-reads-current.tsv'
+$writeOutputPath = Join-Path $projectRoot 'analysis\fceux-writes.tsv'
+$sessionWriteOutputPath = Join-Path $workRoot 'fceux-writes-current.tsv'
 $apiLogPath = Join-Path $workRoot 'lua-api.txt'
 $screenshotPath = Join-Path $workRoot 'final-screen.gd'
 
@@ -47,6 +49,7 @@ Set-Content -LiteralPath $configPath -Value $config -Encoding ASCII
 
 $luaOutput = $sessionOutputPath.Replace('\', '/')
 $luaReadOutput = $sessionReadOutputPath.Replace('\', '/')
+$luaWriteOutput = $sessionWriteOutputPath.Replace('\', '/')
 $luaDone = (Join-Path $workRoot 'trace.done').Replace('\', '/')
 $luaApiLog = $apiLogPath.Replace('\', '/')
 $luaScreenshot = $screenshotPath.Replace('\', '/')
@@ -56,6 +59,7 @@ DW4_TRACE_CONFIG_DATA = {
     profile = '$Profile',
     output = '$luaOutput',
     read_output = '$luaReadOutput',
+    write_output = '$luaWriteOutput',
     done = '$luaDone',
     api_log = '$luaApiLog',
     screenshot = '$luaScreenshot'
@@ -66,6 +70,7 @@ Add-Content -LiteralPath $traceLauncherPath -Value (Get-Content -LiteralPath $lu
 
 Remove-Item -LiteralPath $sessionOutputPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $sessionReadOutputPath -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath $sessionWriteOutputPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $workRoot 'trace.done') -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $apiLogPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $screenshotPath -Force -ErrorAction SilentlyContinue
@@ -97,6 +102,9 @@ if (-not (Test-Path -LiteralPath $sessionOutputPath)) {
 if (-not (Test-Path -LiteralPath $sessionReadOutputPath)) {
     throw "FCEUX did not create $sessionReadOutputPath"
 }
+if (-not (Test-Path -LiteralPath $sessionWriteOutputPath)) {
+    throw "FCEUX did not create $sessionWriteOutputPath"
+}
 
 $records = @{}
 foreach ($path in @($outputPath, $sessionOutputPath)) {
@@ -122,3 +130,15 @@ foreach ($path in @($readOutputPath, $sessionReadOutputPath)) {
 $mergedReads = @('# Bank`tCPUAddress') + @($readRecords.Keys | Sort-Object)
 Set-Content -LiteralPath $readOutputPath -Value $mergedReads -Encoding ASCII
 Write-Host "Merged FCEUX reads written to $readOutputPath ($($readRecords.Count) physical addresses)"
+
+$writeRecords = @{}
+foreach ($path in @($writeOutputPath, $sessionWriteOutputPath)) {
+    if (-not (Test-Path -LiteralPath $path)) { continue }
+    foreach ($line in Get-Content -LiteralPath $path) {
+        if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith('#')) { continue }
+        $writeRecords[$line] = $true
+    }
+}
+$mergedWrites = @('# CPUAddress') + @($writeRecords.Keys | Sort-Object)
+Set-Content -LiteralPath $writeOutputPath -Value $mergedWrites -Encoding ASCII
+Write-Host "Merged FCEUX writes written to $writeOutputPath ($($writeRecords.Count) SRAM addresses)"

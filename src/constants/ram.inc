@@ -20,6 +20,7 @@ BattleActionIds          = $6D8C
 BattleActionWeights      = $6DC2
 BattleSlotDescriptors    = $72F4
 
+SaveWorkArea             = $610E
 SaveTotalGold            = $6157
 SaveCurrentChapterMinus1 = $615A
 SaveHeroGender           = $615C
@@ -28,6 +29,9 @@ SavePartyCharacter1      = $616A
 SavePartyCharacter2      = $616B
 SavePartyCharacter3      = $616C
 SavePartyCharacter4      = $616D
+SaveGameStateFlags       = $618E
+SavePlayerWorldX         = $6197
+SavePlayerWorldY         = $6198
 SaveStoryFlags           = $625D
 SaveVehicleFlags         = $628E
 SaveJoinedCharacterFlags = $6292

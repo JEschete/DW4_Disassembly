@@ -11,13 +11,14 @@ $scriptPath = Join-Path $PSScriptRoot 'ghidra'
 $seedPath = Join-Path $projectRoot 'config\code-seeds.tsv'
 $runtimeSeedPath = Join-Path $projectRoot 'analysis\fceux-exec.tsv'
 $entryTablePath = Join-Path $projectRoot 'config\code-entry-tables.tsv'
+$entryPointerPath = Join-Path $projectRoot 'config\code-entry-pointers.tsv'
 $exclusionPath = Join-Path $projectRoot 'config\code-exclusions.tsv'
 $outputPath = Join-Path $projectRoot 'analysis\ghidra-code-ranges.tsv'
 $workingRom = Join-Path $workRoot 'input.nes'
 $seedBinary = Join-Path $workRoot 'bank_1F.bin'
 $projectName = 'dw4-' + [Guid]::NewGuid().ToString('N')
 
-foreach ($required in @($Rom, $headless, $seedPath)) {
+foreach ($required in @($Rom, $headless, $seedPath, $runtimeSeedPath, $entryTablePath, $entryPointerPath, $exclusionPath)) {
     if (-not (Test-Path -LiteralPath $required)) {
         throw "Required file not found: $required"
     }
@@ -47,7 +48,7 @@ $arguments = @(
     '-scriptPath', $scriptPath,
     '-preScript', 'CreateDw4Memory.java', $workingRom,
     '-preScript', 'SeedBankCode.java', $seedPath, $runtimeSeedPath,
-    '-preScript', 'SeedEntryTables.java', $entryTablePath, $exclusionPath,
+    '-preScript', 'SeedEntryTables.java', $entryTablePath, $entryPointerPath, $exclusionPath,
     '-postScript', 'ExportBankCode.java', $outputPath, $exclusionPath,
     '-analysisTimeoutPerFile', '600',
     '-deleteProject'
