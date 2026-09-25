@@ -1,0 +1,218 @@
+# Bank<TAB>Address<TAB>Kind<TAB>Status<TAB>Disposition<TAB>Reason
+# Every analyzer warning identity ever tracked. Resolved dispositions are re-checked by Dw4Tool on every extraction:
+# inline-operand, decoded-instruction, typed-data, or unreached (not decoded and not typed). Current rows must match the analyzer exactly.
+08	AF5B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$02 at $AF58 under BrkSelector EB
+08	B67D	unsupported-opcode	resolved	typed-data	Inside ConstantData range $B67D-$B67E, the pointer read by LDY $B67D / LDA $B67E at $B4E5-$B4E8; the complementary BNE/BEQ pair at $B66D-$B66F keeps flow out of these bytes
+08	B6C0	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1F,$DB,$7F at $B6BD under BrkSelector DB
+08	B7B0	unsupported-opcode	resolved	unreached	Reached only from directory entry $14 target $B7AE, now typed as data; no decoded path reaches this byte
+08	BE94	unsupported-opcode	resolved	typed-data	Inside MapDisplayRecords range $BE94-$BF63
+10	8B6B	unsupported-opcode	resolved	inline-operand	Inline byte consumed by JSR at $8B68 under JsrInline 8C18
+10	8B70	unsupported-opcode	resolved	inline-operand	Inline byte consumed by JSR at $8B6D under JsrInline 8C18
+10	8DE6	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8DF7	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8DF9	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E03	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E04	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E05	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E75	unsupported-opcode	resolved	unreached	Reached only from directory entry $21 target $8E61, now typed as data; no decoded path reaches this byte
+10	B6AC	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$E7 at $B6AB
+10	B6E6	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$E7 at $B6E5
+10	B75F	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BPL $B757 at $B75E
+10	BA0F	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $6B,$93,$02 at $BA0C under BrkSelector 93
+10	BA9C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $04,$C3,$02 at $BA99 under BrkSelector C3
+10	BAAD	unsupported-opcode	resolved	inline-operand	Operand 3 of 4 consumed by BRK $6B,$83,$02,$01 at $BAAA under BrkSelector 83
+10	BAC6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $04,$C3,$02 at $BAC3 under BrkSelector C3
+10	BBEB	operand-conflict	resolved	decoded-instruction	Phantom overlap from a two-operand reading of the three-operand BRK at $BBE7; JMP $BBEB at $BBE4 lands on LDA $75
+10	BC7E	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCC9	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCEC	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCEF	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCF1	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD03	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD13	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD1F	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD43	unsupported-opcode	resolved	typed-data	Inside CompressedMonsterGraphics range $BD2A-$BF53
+11	8A2C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E1,$D3,$89 at $8A29 under BrkSelector D3
+11	8AF6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$23 at $8AF3 under BrkSelector 93
+11	8B40	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$14 at $8B3D under BrkSelector C3
+11	8B66	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BCS $8B6B at $8B65
+11	8BBB	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E0,$D3,$13 at $8BB8 under BrkSelector D3
+11	8BD7	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $E0,$D3,$12 at $8BD5 under BrkSelector D3
+11	8BE4	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JSR $8BB8 at $8BE2
+11	8D84	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E8,$D3,$0F at $8D81 under BrkSelector D3
+11	8EF5	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$8F at $8EF2 under BrkSelector D3
+11	8F09	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E5,$D3,$8F at $8F06 under BrkSelector D3
+11	9121	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $64,$D3,$17 at $911E under BrkSelector D3
+11	9221	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JSR $92CF at $921F
+11	9275	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$07 at $9272 under BrkSelector 93
+11	9AF5	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F0,$D3,$23 at $9AF2 under BrkSelector D3
+11	9B6C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0F at $9B69 under BrkSelector C3
+11	9C09	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $66,$D3,$02 at $9C06 under BrkSelector D3
+11	9C71	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JSR $A3F7 at $9C70
+11	A144	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E8,$D3,$1A at $A141 under BrkSelector D3
+11	A2AA	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0F at $A2A7 under BrkSelector C3
+11	A6C8	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $70,$D3,$4F at $A6C5 under BrkSelector D3
+11	A7A7	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E5,$D3,$6B at $A7A4 under BrkSelector D3
+11	A866	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $C5,$D3,$6B at $A863 under BrkSelector D3
+11	A86B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E9,$D3,$E7 at $A868 under BrkSelector D3
+11	A8A5	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E9,$D3,$83 at $A8A2 under BrkSelector D3
+11	AA88	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CPY #$0C at $AA87
+11	AAAC	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E1,$D3,$89 at $AAA9 under BrkSelector D3
+11	AACC	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$02 at $AACB
+11	ABD5	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$13 at $ABD2 under BrkSelector C3
+11	AC31	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E9,$D3,$62 at $AC2E under BrkSelector D3
+11	AC55	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0B at $AC52 under BrkSelector C3
+11	AC5A	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$1B at $AC57 under BrkSelector 93
+11	AE82	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0F at $AE7F under BrkSelector C3
+11	AE9B	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JMP $AE74 at $AE9A
+11	AED6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E5,$D3,$A3 at $AED3 under BrkSelector D3
+11	AF0B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$03 at $AF08 under BrkSelector C3
+11	AF36	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E5,$D3,$A3 at $AF33 under BrkSelector D3
+11	AF67	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$13 at $AF64 under BrkSelector 93
+11	B113	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E9,$D3,$A3 at $B110 under BrkSelector D3
+11	B11D	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E4,$D3,$7B at $B11A under BrkSelector D3
+11	B127	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0C at $B124 under BrkSelector C3
+11	B153	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$1C at $B150 under BrkSelector 93
+11	B1A2	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of STA $735E at $B1A0
+11	B1FA	unsupported-opcode	resolved	unreached	No decoded path reaches this byte after the handler-derived BRK counts corrected the surrounding bank $11 flow
+11	B262	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E1,$D3,$47 at $B25F under BrkSelector D3
+11	B31A	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $C5,$D3,$63 at $B317 under BrkSelector D3
+11	B32C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$43,$43 at $B329 under BrkSelector 43
+11	B38B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$12 at $B388 under BrkSelector D3
+11	B390	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$13 at $B38D under BrkSelector D3
+11	B3C9	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JMP $B3CF at $B3C8
+11	B3D2	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E4,$D3,$1A at $B3CF under BrkSelector D3
+11	B3E4	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JSR $BF2E at $B3E2
+11	B415	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E8,$D3,$07 at $B412 under BrkSelector D3
+11	B423	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$1C at $B420 under BrkSelector D3
+11	B451	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$14 at $B44E under BrkSelector D3
+11	B46E	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $F1,$D3,$27 at $B46B under BrkSelector D3
+11	B4A6	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JSR $893A at $B4A4
+11	B751	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of JMP $B757 at $B750
+11	B781	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0F at $B77E under BrkSelector C3
+11	B7ED	unsupported-opcode	resolved	inline-operand	Operand 2 of 2 consumed by BRK $06,$1F at $B7EB under BrkDefault
+11	BCC7	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$1B at $BCC4 under BrkSelector 93
+12	84E1	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$04 at $84E0
+12	8AD1	unsupported-opcode	resolved	typed-data	Inside BattleSetupSelectorMapB range $8AC1-$8BBB
+12	9C91	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$63 at $9C90
+12	9EA9	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BCS $9EAD at $9EA8
+12	ADC9	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $66,$93,$6B at $ADC6 under BrkSelector 93
+12	ADF5	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDY #$FF at $ADF4
+12	BE57	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BEAF	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BECF	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BED2	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+13	B7E8	unsupported-opcode	resolved	unreached	Reached only from directory entry $0F target $B7E3, a pointer-mode data target; no decoded path reaches this byte
+13	BCEF	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
+13	BDE3	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
+13	BED4	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
+13	BF2A	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
+13	BF6B	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
+15	9CFC	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $06,$EB,$04 at $9CF9 under BrkSelector EB
+15	9D17	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0D,$EB,$02 at $9D14 under BrkSelector EB
+15	9D28	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $13,$CB,$04 at $9D25 under BrkSelector CB
+15	9D52	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $06,$CB,$04 at $9D4F under BrkSelector CB
+15	9E39	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$DB,$FA at $9E36 under BrkSelector DB
+15	9F82	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $20,$DB,$BF at $9F7F under BrkSelector DB
+15	9FFB	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $13,$CB,$80 at $9FF8 under BrkSelector CB
+15	A214	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDX #$02 at $A213
+15	A2AF	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$CB,$04 at $A2AC under BrkSelector CB
+15	A51A	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$CB,$04 at $A517 under BrkSelector CB
+15	A9A7	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $27,$EB,$FF at $A9A4 under BrkSelector EB
+15	AB39	unsupported-opcode	resolved	inline-operand	Operand 2 of 2 consumed by BRK $C7,$3B at $AB37 under BrkSelector 3B
+15	AC2B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1A,$CB,$04 at $AC28 under BrkSelector CB
+15	AC8D	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BNE $AC91 at $AC8C
+15	ADCF	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $1D,$CB,$02 at $ADCD under BrkSelector CB
+15	B10D	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1B,$EB,$FF at $B10A under BrkSelector EB
+15	B13C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1B,$EB,$FF at $B139 under BrkSelector EB
+15	B142	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1C,$EB,$80 at $B13F under BrkSelector EB
+15	B18C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1B,$EB,$FF at $B189 under BrkSelector EB
+15	B632	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$04 at $B62F under BrkSelector 93
+16	B0FC	unsupported-opcode	resolved	typed-data	Inside TextUiCommandDataPrimary range $B03C-$B1C0
+16	B40C	unsupported-opcode	resolved	typed-data	Inside TextUiCommandDataSecondary range $B3A8-$B4B5
+16	B84A	operand-conflict	resolved	decoded-instruction	Entered by BPL $B84A decoded from RTS-dispatch value $B89F; the RTS handler begins at $B8A0, so $B84A remains the operand of STA $03C9
+16	B871	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of STA $03C8 at $B86F
+16	B8A1	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDA #$3C at $B8A0
+18	B40D	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B48F	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B525	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B5C2	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B624	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B655	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	B65C	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $B40D-$B797
+18	BDBD	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $BDBD-$BFD7
+18	BEEE	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $BDBD-$BFD7
+18	BF5D	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $BDBD-$BFD7
+18	BF97	unsupported-opcode	resolved	typed-data	Inside MixedDirectoryRecords range $BDBD-$BFD7
+1B	80F6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0A,$EB,$04 at $80F3 under BrkSelector EB
+1B	8F25	unsupported-opcode	resolved	typed-data	Inside Graphics range $8E35-$9134
+1B	9E92	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $26,$CB,$80 at $9E8F under BrkSelector CB
+1B	A100	unsupported-opcode	resolved	inline-operand	Operand 2 of 2 consumed by BRK $94,$FB at $A0FE under BrkSelector FB
+1B	B794	unsupported-opcode	resolved	typed-data	Inside CompressedText range $B78A-$BFD7
+1C	9C7D	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0C,$EB,$80 at $9C7A under BrkSelector EB
+1C	A12E	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BEQ $A13E at $A12D
+1C	A162	unsupported-opcode	resolved	inline-operand	Operand 1 of 3 consumed by BRK $1A,$EB,$80 at $A161 under BrkSelector EB
+1C	A166	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BEQ $A15A at $A165
+1C	A176	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BEQ $A182 at $A175
+1C	A2D8	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$04 at $A2D5 under BrkSelector EB
+1C	A497	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$04 at $A494 under BrkSelector EB
+1C	A54C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$02 at $A549 under BrkSelector EB
+1C	A591	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0C,$EB,$80 at $A58E under BrkSelector EB
+1C	A8A5	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDX #$03 at $A8A4
+1C	A913	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BEQ $A956 at $A912
+1C	A98E	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1D,$EB,$80 at $A98B under BrkSelector EB
+1C	A9DD	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BNE $A9ED at $A9DC
+1C	AA20	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of AND #$FC at $AA1F
+1C	AD7D	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $08,$CB,$80 at $AD7A under BrkSelector CB
+1C	AE46	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$DB,$BF at $AE43 under BrkSelector DB
+1C	B299	unsupported-opcode	resolved	inline-operand	Operand 1 of 3 consumed by BRK $17,$CB,$20 at $B298 under BrkSelector CB
+1C	B334	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1A,$CB,$80 at $B331 under BrkSelector CB
+1C	B3A4	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $26,$CB,$04 at $B3A1 under BrkSelector CB
+1C	B496	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0A,$CB,$80 at $B493 under BrkSelector CB
+1C	B5CC	unsupported-opcode	resolved	inline-operand	Operand 1 of 2 consumed by BRK $1F,$EF at $B5CB under BrkDefault
+1C	B632	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $17,$CB,$02 at $B62F under BrkSelector CB
+1C	B645	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1A,$CB,$02 at $B642 under BrkSelector CB
+1C	B7C7	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BNE $B83A at $B7C6
+1C	B904	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $13,$CB,$02 at $B901 under BrkSelector CB
+1C	B99D	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1D,$CB,$04 at $B99A under BrkSelector CB
+1C	B9AD	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDX #$04 at $B9AC
+1C	BA02	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $29,$CB,$80 at $B9FF under BrkSelector CB
+1C	BA6F	unsupported-opcode	resolved	inline-operand	Operand 2 of 2 consumed by BRK $1F,$EF at $BA6D under BrkDefault
+1C	BAA3	unsupported-opcode	resolved	inline-operand	Operand 1 of 2 consumed by BRK $1F,$EF at $BAA2 under BrkDefault
+1D	96F1	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $04,$EB,$02 at $96EE under BrkSelector EB
+1D	9716	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $16,$EB,$02 at $9713 under BrkSelector EB
+1D	99BF	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $01,$EB,$02 at $99BC under BrkSelector EB
+1D	9CCC	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $1F,$DB,$FC at $9CCA under BrkSelector DB
+1D	A580	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $08,$DB,$DF at $A57D under BrkSelector DB
+1D	A843	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $08,$CB,$04 at $A840 under BrkSelector CB
+1D	A908	unsupported-opcode	resolved	inline-operand	Operand 2 of 2 consumed by BRK $53,$73 at $A906 under BrkSelector 73
+1D	AC92	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$DB,$DF at $AC8F under BrkSelector DB
+1D	ACF8	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$02 at $ACF5 under BrkSelector EB
+1E	81F7	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$0B at $81F4 under BrkService 16:09
+1E	81FE	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$52 at $81FB under BrkService 16:09
+1E	8228	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$0C at $8225 under BrkService 16:09
+1E	828C	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $09,$6F,$1D at $828A under BrkService 16:09
+1E	82AE	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $09,$6F,$1C at $82AC under BrkService 16:09
+1E	82AF	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$1C at $82AC under BrkService 16:09
+1E	82CD	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $09,$6F,$1B at $82CB under BrkService 16:09
+1E	82CE	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$1B at $82CB under BrkService 16:09
+1E	82EC	unsupported-opcode	resolved	inline-operand	Operand 2 of 3 consumed by BRK $09,$6F,$1A at $82EA under BrkService 16:09
+1E	82ED	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $09,$6F,$1A at $82EA under BrkService 16:09
+1E	8E25	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $16,$DB,$BF at $8E22 under BrkSelector DB
+1E	931F	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1F,$DB,$7F at $931C under BrkSelector DB
+1E	952F	unsupported-opcode	resolved	inline-operand	Operand 1 of 2 consumed by BRK $6F,$33 at $952E under BrkSelector 33
+1E	9562	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $13,$DB,$BF at $955F under BrkSelector DB
+1E	956A	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $13,$DB,$7F at $9567 under BrkSelector DB
+1E	9572	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $20,$DB,$7F at $956F under BrkSelector DB
+1E	9866	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0D,$CB,$80 at $9863 under BrkSelector CB
+1E	A357	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $16,$CB,$80 at $A354 under BrkSelector CB
+1E	A3FF	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0F,$EB,$04 at $A3FC under BrkSelector EB
+1E	A423	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0A,$DB,$DF at $A420 under BrkSelector DB
+1E	A456	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $0F,$DB,$FB at $A453 under BrkSelector DB
+1E	AD9E	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $06,$DB,$F7 at $AD9B under BrkSelector DB
+1E	ADA2	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$DB,$BF at $AD9F under BrkSelector DB
+1E	B5B7	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDA $72 at $B5B6
+1F	CE50	operand-conflict	resolved	decoded-instruction	CPY #$AA came from a Ghidra block starting inside JSR $CEA9; the fixed-bank BRK continuation decodes JMP $C010 at $CE4D
+1F	F6D3	unsupported-opcode	resolved	typed-data	Inside Graphics range $F47B-$FDFA
+1F	F791	unsupported-opcode	resolved	typed-data	Inside Graphics range $F47B-$FDFA
+1F	F793	unsupported-opcode	resolved	typed-data	Inside Graphics range $F47B-$FDFA

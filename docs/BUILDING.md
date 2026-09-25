@@ -59,7 +59,7 @@ set DW4_ROM=<path-to-reference-rom>
 verify-completion.cmd
 ```
 
-The gate performs asset round-trip verification, exact-source extraction, warning triage, pointer and indirect-jump audits, runtime/save evidence checks, a clean build, and exact ROM verification.
+The gate performs asset round-trip verification and exact-source extraction. Extraction enforces the inline-operand ABI against causal runtime resumes when available, the warning ledger and tamper-evident manifest, the exact intentional code/data-overlap ledger, block-atomic Ghidra rejection, and evidence citations. The gate then runs pointer and indirect-jump audits and runtime/save evidence checks, and finishes with a clean build and exact ROM verification.
 
 ## Optional Static Analysis
 

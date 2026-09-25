@@ -33,33 +33,9 @@ LowerFixedEngine_Entry_C013:
 LowerFixedEngine_Entry_C016:
         jmp     LowerFixedEngine_Branch_E944    ; C016 4C 44 E9                 LD.
 ; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C019:
-        brk                                     ; C019 00                       .
-        db   $00,$00                         ; C01A 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C01C:
-        brk                                     ; C01C 00                       .
-        db   $00,$00                         ; C01D 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C01F:
-        brk                                     ; C01F 00                       .
-        db   $00,$00                         ; C020 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C022:
-        brk                                     ; C022 00                       .
-        db   $00,$00                         ; C023 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C025:
-        brk                                     ; C025 00                       .
-        db   $00,$00                         ; C026 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C028:
-        brk                                     ; C028 00                       .
-        db   $00,$00                         ; C029 00 00                    ..
-; ----------------------------------------------------------------------------
-LowerFixedEngine_Entry_C02B:
-        brk                                     ; C02B 00                       .
-        db   $00,$00                         ; C02C 00 00                    ..
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; C019 00 00 00 00 00 00 00 00  ........
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; C021 00 00 00 00 00 00 00 00  ........
+        db   $00,$00,$00,$00,$00             ; C029 00 00 00 00 00           .....
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C02E:
         jmp     LowerFixedEngine_Branch_F4AB    ; C02E 4C AB F4                 L..
@@ -143,7 +119,7 @@ LowerFixedEngine_Branch_C0B0:
         lda     #$18                            ; C0C7 A9 18                    ..
         sta     $0506                           ; C0C9 8D 06 05                 ...
         sta     PPUMASK                         ; C0CC 8D 01 20                 ..
-        jmp     $C968                           ; C0CF 4C 68 C9                 Lh.
+        jmp     LowerFixedEngine_Branch_C968    ; C0CF 4C 68 C9                 Lh.
 ; ----------------------------------------------------------------------------
         db   $5A                             ; C0D2 5A                       Z
         db   $C1,$AD,$02,$20,$10,$FB,$AD,$02 ; C0D3 C1 AD 02 20 10 FB AD 02  ... ....
@@ -161,7 +137,7 @@ LowerFixedEngine_Entry_C104:
         lda     $0501                           ; C10D AD 01 05                 ...
         jsr     LowerFixedEngine_Entry_C12F     ; C110 20 2F C1                  /.
         lda     #$00                            ; C113 A9 00                    ..
-        jmp     $C146                           ; C115 4C 46 C1                 LF.
+        jmp     LowerFixedEngine_Branch_C146    ; C115 4C 46 C1                 LF.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C118:
         sta     $0500                           ; C118 8D 00 05                 ...
@@ -189,6 +165,7 @@ LowerFixedEngine_Entry_C12F:
         sta     $BFFF                           ; C142 8D FF BF                 ...
         rts                                     ; C145 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C146:
         sta     $DFFF                           ; C146 8D FF DF                 ...
         lsr     a                               ; C149 4A                       J
         sta     $DFFF                           ; C14A 8D FF DF                 ...
@@ -242,7 +219,7 @@ LowerFixedEngine_Branch_C19B:
         jsr     LowerFixedEngine_Entry_C12F     ; C1A5 20 2F C1                  /.
         lda     #$10                            ; C1A8 A9 10                    ..
         jsr     LowerFixedEngine_Entry_C12F     ; C1AA 20 2F C1                  /.
-        jsr     LowerFixedEngine_Entry_C019     ; C1AD 20 19 C0                  ..
+        jsr     $C019                           ; C1AD 20 19 C0                  ..
 LowerFixedEngine_Branch_C1B0:
         lda     $0507                           ; C1B0 AD 07 05                 ...
         jsr     LowerFixedEngine_Entry_FF91     ; C1B3 20 91 FF                  ..
@@ -288,13 +265,13 @@ LowerFixedEngine_Branch_C1EF:
         lda     ($10),y                         ; C1FF B1 10                    ..
         and     #$0F                            ; C201 29 0F                    ).
         cmp     #$07                            ; C203 C9 07                    ..
-        beq     $C219                           ; C205 F0 12                    ..
+        beq     LowerFixedEngine_Branch_C219    ; C205 F0 12                    ..
         cmp     #$0F                            ; C207 C9 0F                    ..
-        beq     $C219                           ; C209 F0 0E                    ..
+        beq     LowerFixedEngine_Branch_C219    ; C209 F0 0E                    ..
         cmp     #$03                            ; C20B C9 03                    ..
-        beq     $C219                           ; C20D F0 0A                    ..
+        beq     LowerFixedEngine_Branch_C219    ; C20D F0 0A                    ..
         cmp     #$0B                            ; C20F C9 0B                    ..
-        beq     $C219                           ; C211 F0 06                    ..
+        beq     LowerFixedEngine_Branch_C219    ; C211 F0 06                    ..
         pla                                     ; C213 68                       h
         tay                                     ; C214 A8                       .
         pla                                     ; C215 68                       h
@@ -302,6 +279,7 @@ LowerFixedEngine_Branch_C1EF:
         pla                                     ; C217 68                       h
         rti                                     ; C218 40                       @
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C219:
         pla                                     ; C219 68                       h
         tay                                     ; C21A A8                       .
         pla                                     ; C21B 68                       h
@@ -314,23 +292,26 @@ LowerFixedEngine_Branch_C1EF:
 LowerFixedEngine_Entry_C222:
         lda     $1F                             ; C222 A5 1F                    ..
         and     #$20                            ; C224 29 20                    )
-        bne     $C23A                           ; C226 D0 12                    ..
+        bne     LowerFixedEngine_Branch_C23A    ; C226 D0 12                    ..
         lda     $1F                             ; C228 A5 1F                    ..
         and     #$10                            ; C22A 29 10                    ).
-        beq     $C231                           ; C22C F0 03                    ..
+        beq     LowerFixedEngine_Branch_C231    ; C22C F0 03                    ..
         jmp     LowerFixedEngine_Branch_C297    ; C22E 4C 97 C2                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C231:
         lda     $1F                             ; C231 A5 1F                    ..
         and     #$04                            ; C233 29 04                    ).
         beq     LowerFixedEngine_Branch_C276    ; C235 F0 3F                    .?
         jmp     LowerFixedEngine_Branch_C315    ; C237 4C 15 C3                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C23A:
         ldx     #$00                            ; C23A A2 00                    ..
         lda     $050B                           ; C23C AD 0B 05                 ...
         beq     LowerFixedEngine_Branch_C276    ; C23F F0 35                    .5
+LowerFixedEngine_Branch_C241:
         ldy     #$01                            ; C241 A0 01                    ..
         lda     $0300,x                         ; C243 BD 00 03                 ...
-        bpl     $C25C                           ; C246 10 14                    ..
+        bpl     LowerFixedEngine_Branch_C25C    ; C246 10 14                    ..
         tay                                     ; C248 A8                       .
         lsr     a                               ; C249 4A                       J
         lsr     a                               ; C24A 4A                       J
@@ -343,22 +324,24 @@ LowerFixedEngine_Entry_C222:
         inx                                     ; C256 E8                       .
         ldy     $0300,x                         ; C257 BC 00 03                 ...
         and     #$3F                            ; C25A 29 3F                    )?
+LowerFixedEngine_Branch_C25C:
         inx                                     ; C25C E8                       .
         sta     PPUADDR                         ; C25D 8D 06 20                 ..
         lda     $0300,x                         ; C260 BD 00 03                 ...
         inx                                     ; C263 E8                       .
         sta     PPUADDR                         ; C264 8D 06 20                 ..
+LowerFixedEngine_Branch_C267:
         lda     $0300,x                         ; C267 BD 00 03                 ...
         inx                                     ; C26A E8                       .
         sta     PPUDATA                         ; C26B 8D 07 20                 ..
         dey                                     ; C26E 88                       .
-        bne     $C267                           ; C26F D0 F6                    ..
+        bne     LowerFixedEngine_Branch_C267    ; C26F D0 F6                    ..
         dec     $050B                           ; C271 CE 0B 05                 ...
-        bne     $C241                           ; C274 D0 CB                    ..
+        bne     LowerFixedEngine_Branch_C241    ; C274 D0 CB                    ..
 LowerFixedEngine_Branch_C276:
         lda     $0506                           ; C276 AD 06 05                 ...
         and     #$08                            ; C279 29 08                    ).
-        beq     $C296                           ; C27B F0 19                    ..
+        beq     LowerFixedEngine_Branch_C296    ; C27B F0 19                    ..
         lda     #$3F                            ; C27D A9 3F                    .?
         sta     PPUADDR                         ; C27F 8D 06 20                 ..
         lda     #$00                            ; C282 A9 00                    ..
@@ -369,6 +352,7 @@ LowerFixedEngine_Branch_C276:
         lda     $1F                             ; C290 A5 1F                    ..
         and     #$DF                            ; C292 29 DF                    ).
         sta     $1F                             ; C294 85 1F                    ..
+LowerFixedEngine_Branch_C296:
         rts                                     ; C296 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_C297:
@@ -420,12 +404,13 @@ LowerFixedEngine_Entry_C2EA:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C303:
         bit     $1F                             ; C303 24 1F                    $.
-        bvs     $C314                           ; C305 70 0D                    p.
+        bvs     LowerFixedEngine_Branch_C314    ; C305 70 0D                    p.
         lda     $0506                           ; C307 AD 06 05                 ...
         ora     #$18                            ; C30A 09 18                    ..
         sta     PPUMASK                         ; C30C 8D 01 20                 ..
         lda     #$02                            ; C30F A9 02                    ..
         sta     OAMDMA                          ; C311 8D 14 40                 ..@
+LowerFixedEngine_Branch_C314:
         rts                                     ; C314 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_C315:
@@ -511,6 +496,7 @@ LowerFixedEngine_Entry_C3BA:
         sta     $25                             ; C3CB 85 25                    .%
         rts                                     ; C3CD 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C3CE:
         sta     $20                             ; C3CE 85 20                    .
         stx     $21                             ; C3D0 86 21                    .!
         lda     $0507                           ; C3D2 AD 07 05                 ...
@@ -595,7 +581,7 @@ LowerFixedEngine_Branch_C451:
         plp                                     ; C459 28                       (
         pla                                     ; C45A 68                       h
         lda     $20                             ; C45B A5 20                    .
-        jmp     $C3CE                           ; C45D 4C CE C3                 L..
+        jmp     LowerFixedEngine_Branch_C3CE    ; C45D 4C CE C3                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_C460:
         jmp     LowerFixedEngine_Branch_C4F8    ; C460 4C F8 C4                 L..
@@ -603,9 +589,9 @@ LowerFixedEngine_Branch_C460:
 LowerFixedEngine_Branch_C463:
         pla                                     ; C463 68                       h
         cmp     #$CB                            ; C464 C9 CB                    ..
-        bcc     $C484                           ; C466 90 1C                    ..
+        bcc     LowerFixedEngine_Branch_C484    ; C466 90 1C                    ..
         cmp     #$FB                            ; C468 C9 FB                    ..
-        bcc     $C4A1                           ; C46A 90 35                    .5
+        bcc     LowerFixedEngine_Branch_C4A1    ; C46A 90 35                    .5
         lda     #$19                            ; C46C A9 19                    ..
         sta     $23                           ; C46E 85 23                    .#
         lda     #$03                            ; C470 A9 03                    ..
@@ -620,6 +606,7 @@ LowerFixedEngine_Branch_C463:
         lda     $20                             ; C47F A5 20                    .
         jmp     LowerFixedEngine_Branch_C38B    ; C481 4C 8B C3                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C484:
         pha                                     ; C484 48                       H
         lda     #$16                            ; C485 A9 16                    ..
         sta     $23                           ; C487 85 23                    .#
@@ -640,18 +627,20 @@ LowerFixedEngine_Branch_C463:
         lda     $20                             ; C49C A5 20                    .
         jmp     LowerFixedEngine_Branch_C38B    ; C49E 4C 8B C3                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C4A1:
         plp                                     ; C4A1 28                       (
         pha                                     ; C4A2 48                       H
         tsx                                     ; C4A3 BA                       .
         inc     $0103,x                         ; C4A4 FE 03 01                 ...
-        bne     $C4AC                           ; C4A7 D0 03                    ..
+        bne     LowerFixedEngine_Branch_C4AC    ; C4A7 D0 03                    ..
         inc     $0104,x                         ; C4A9 FE 04 01                 ...
+LowerFixedEngine_Branch_C4AC:
         pla                                     ; C4AC 68                       h
         plp                                     ; C4AD 28                       (
         cmp     #$CB                            ; C4AE C9 CB                    ..
-        beq     $C4CA                           ; C4B0 F0 18                    ..
+        beq     LowerFixedEngine_Branch_C4CA    ; C4B0 F0 18                    ..
         cmp     #$DB                            ; C4B2 C9 DB                    ..
-        beq     $C4E1                           ; C4B4 F0 2B                    .+
+        beq     LowerFixedEngine_Branch_C4E1    ; C4B4 F0 2B                    .+
         dey                                     ; C4B6 88                       .
         lda     ($26),y                         ; C4B7 B1 26                    .&
         tax                                     ; C4B9 AA                       .
@@ -666,6 +655,7 @@ LowerFixedEngine_Branch_C463:
         plp                                     ; C4C8 28                       (
         rts                                     ; C4C9 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C4CA:
         dey                                     ; C4CA 88                       .
         lda     ($26),y                         ; C4CB B1 26                    .&
         tax                                     ; C4CD AA                       .
@@ -681,6 +671,7 @@ LowerFixedEngine_Branch_C463:
         plp                                     ; C4DF 28                       (
         rts                                     ; C4E0 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C4E1:
         dey                                     ; C4E1 88                       .
         lda     ($26),y                         ; C4E2 B1 26                    .&
         tax                                     ; C4E4 AA                       .
@@ -746,15 +737,24 @@ LowerFixedEngine_Entry_C52F:
 LowerFixedEngine_Entry_C543:
         lda     #$F7                            ; C543 A9 F7                    ..
         ldx     #$00                            ; C545 A2 00                    ..
+LowerFixedEngine_Branch_C547:
         sta     $0200,x                         ; C547 9D 00 02                 ...
         inx                                     ; C54A E8                       .
-        bne     $C547                           ; C54B D0 FA                    ..
+        bne     LowerFixedEngine_Branch_C547    ; C54B D0 FA                    ..
         rts                                     ; C54D 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$AF,$C5,$20,$69,$C5,$20,$43 ; C54E 20 AF C5 20 69 C5 20 43   .. i. C
-        db   $C5,$A5,$1F,$29,$7F,$85,$1F,$A5 ; C556 C5 A5 1F 29 7F 85 1F A5  ...)....
-        db   $1F,$29,$BF,$85,$1F,$20,$74,$FF ; C55E 1F 29 BF 85 1F 20 74 FF  .)... t.
-        db   $4C,$92,$C5                     ; C566 4C 92 C5                 L..
+LowerFixedEngine_Entry_C54E:
+        jsr     LowerFixedEngine_Entry_C5AF     ; C54E 20 AF C5                  ..
+        jsr     LowerFixedEngine_Entry_C569     ; C551 20 69 C5                  i.
+        jsr     LowerFixedEngine_Entry_C543     ; C554 20 43 C5                  C.
+        lda     $1F                             ; C557 A5 1F                    ..
+        and     #$7F                            ; C559 29 7F                    ).
+        sta     $1F                             ; C55B 85 1F                    ..
+        lda     $1F                             ; C55D A5 1F                    ..
+        and     #$BF                            ; C55F 29 BF                    ).
+        sta     $1F                             ; C561 85 1F                    ..
+        jsr     LowerFixedEngine_Entry_FF74     ; C563 20 74 FF                  t.
+        jmp     LowerFixedEngine_Branch_C592    ; C566 4C 92 C5                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C569:
         jsr     LowerFixedEngine_Entry_C575     ; C569 20 75 C5                  u.
@@ -783,13 +783,16 @@ LowerFixedEngine_Branch_C585:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C58F:
         jsr     LowerFixedEngine_Entry_C5A8     ; C58F 20 A8 C5                  ..
+LowerFixedEngine_Branch_C592:
         ldy     #$18                            ; C592 A0 18                    ..
-        bne     $C598                           ; C594 D0 02                    ..
+        bne     LowerFixedEngine_Branch_C598    ; C594 D0 02                    ..
 LowerFixedEngine_Entry_C596:
         ldy     #$00                            ; C596 A0 00                    ..
+LowerFixedEngine_Branch_C598:
         lda     PPUSTATUS                       ; C598 AD 02 20                 ..
+LowerFixedEngine_Branch_C59B:
         lda     PPUSTATUS                       ; C59B AD 02 20                 ..
-        bpl     $C59B                           ; C59E 10 FB                    ..
+        bpl     LowerFixedEngine_Branch_C59B    ; C59E 10 FB                    ..
         tya                                     ; C5A0 98                       .
         sta     PPUMASK                         ; C5A1 8D 01 20                 ..
         sta     $0506                           ; C5A4 8D 06 05                 ...
@@ -808,21 +811,69 @@ LowerFixedEngine_Entry_C5AF:
         sta     $1F                             ; C5B6 85 1F                    ..
         rts                                     ; C5B8 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$00,$85,$16,$F0,$1F,$A9,$40 ; C5B9 A9 00 85 16 F0 1F A9 40  .......@
-        db   $A2,$F0,$D0,$03,$A9,$10,$AA,$86 ; C5C1 A2 F0 D0 03 A9 10 AA 86  ........
-        db   $17,$85,$16,$20,$DE,$C5,$A2,$03 ; C5C9 17 85 16 20 DE C5 A2 03  ... ....
-        db   $20,$0C,$C9,$A5,$16,$18,$65,$17 ; C5D1 20 0C C9 A5 16 18 65 17   .....e.
-        db   $C9,$50,$90,$ED,$60,$A0,$00,$A9 ; C5D9 C9 50 90 ED 60 A0 00 A9  .P..`...
-        db   $BF,$99,$00,$03,$C8,$A9,$20,$99 ; C5E1 BF 99 00 03 C8 A9 20 99  ...... .
-        db   $00,$03,$C8,$A9,$00,$99,$00,$03 ; C5E9 00 03 C8 A9 00 99 00 03  ........
-        db   $C8,$8C,$0A,$05,$85,$18,$AA,$A5 ; C5F1 C8 8C 0A 05 85 18 AA A5  ........
-        db   $18,$AC,$FC,$05,$29,$03,$F0,$04 ; C5F9 18 AC FC 05 29 03 F0 04  ....)...
-        db   $BC,$FD,$05,$E8,$98,$38,$E5,$16 ; C601 BC FD 05 E8 98 38 E5 16  .....8..
-        db   $C9,$40,$90,$03,$AD,$FC,$05,$AC ; C609 C9 40 90 03 AD FC 05 AC  .@......
-        db   $0A,$05,$99,$00,$03,$E6,$18,$EE ; C611 0A 05 99 00 03 E6 18 EE  ........
-        db   $0A,$05,$A5,$18,$C9,$20,$90,$D7 ; C619 0A 05 A5 18 C9 20 90 D7  ..... ..
-        db   $A9,$01,$8D,$0B,$05             ; C621 A9 01 8D 0B 05           .....
+LowerFixedEngine_Entry_C5B9:
+        lda     #$00                            ; C5B9 A9 00                    ..
+        sta     $16                             ; C5BB 85 16                    ..
+        beq     LowerFixedEngine_Entry_C5DE     ; C5BD F0 1F                    ..
+LowerFixedEngine_Branch_C5BF:
+        lda     #$40                            ; C5BF A9 40                    .@
+        ldx     #$F0                            ; C5C1 A2 F0                    ..
+        bne     LowerFixedEngine_Branch_C5C8    ; C5C3 D0 03                    ..
+        db   $A9,$10,$AA                     ; C5C5 A9 10 AA                 ...
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C5C8:
+        stx     $17                             ; C5C8 86 17                    ..
+LowerFixedEngine_Branch_C5CA:
+        sta     $16                             ; C5CA 85 16                    ..
+        jsr     LowerFixedEngine_Entry_C5DE     ; C5CC 20 DE C5                  ..
+        ldx     #$03                            ; C5CF A2 03                    ..
+        jsr     LowerFixedEngine_Entry_C90C     ; C5D1 20 0C C9                  ..
+        lda     $16                             ; C5D4 A5 16                    ..
+        clc                                     ; C5D6 18                       .
+        adc     $17                             ; C5D7 65 17                    e.
+        cmp     #$50                            ; C5D9 C9 50                    .P
+        bcc     LowerFixedEngine_Branch_C5CA    ; C5DB 90 ED                    ..
+        rts                                     ; C5DD 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_C5DE:
+        ldy     #$00                            ; C5DE A0 00                    ..
+        lda     #$BF                            ; C5E0 A9 BF                    ..
+        sta     $0300,y                         ; C5E2 99 00 03                 ...
+        iny                                     ; C5E5 C8                       .
+        lda     #$20                            ; C5E6 A9 20                    .
+        sta     $0300,y                         ; C5E8 99 00 03                 ...
+        iny                                     ; C5EB C8                       .
+        lda     #$00                            ; C5EC A9 00                    ..
+        sta     $0300,y                         ; C5EE 99 00 03                 ...
+        iny                                     ; C5F1 C8                       .
+        sty     $050A                           ; C5F2 8C 0A 05                 ...
+        sta     $18                             ; C5F5 85 18                    ..
+        tax                                     ; C5F7 AA                       .
+LowerFixedEngine_Branch_C5F8:
+        lda     $18                             ; C5F8 A5 18                    ..
+        ldy     $05FC                           ; C5FA AC FC 05                 ...
+        and     #$03                            ; C5FD 29 03                    ).
+        beq     LowerFixedEngine_Branch_C605    ; C5FF F0 04                    ..
+        ldy     $05FD,x                         ; C601 BC FD 05                 ...
+        inx                                     ; C604 E8                       .
+LowerFixedEngine_Branch_C605:
+        tya                                     ; C605 98                       .
+        sec                                     ; C606 38                       8
+        sbc     $16                             ; C607 E5 16                    ..
+        cmp     #$40                            ; C609 C9 40                    .@
+        bcc     LowerFixedEngine_Branch_C610    ; C60B 90 03                    ..
+        lda     $05FC                           ; C60D AD FC 05                 ...
+LowerFixedEngine_Branch_C610:
+        ldy     $050A                           ; C610 AC 0A 05                 ...
+        sta     $0300,y                         ; C613 99 00 03                 ...
+        inc     $18                             ; C616 E6 18                    ..
+        inc     $050A                           ; C618 EE 0A 05                 ...
+        lda     $18                             ; C61B A5 18                    ..
+        cmp     #$20                            ; C61D C9 20                    .
+        bcc     LowerFixedEngine_Branch_C5F8    ; C61F 90 D7                    ..
+        lda     #$01                            ; C621 A9 01                    ..
+        sta     $050B                           ; C623 8D 0B 05                 ...
+LowerFixedEngine_Branch_C626:
         lda     $1F                             ; C626 A5 1F                    ..
         ora     #$20                            ; C628 09 20                    .
         sta     $1F                             ; C62A 85 1F                    ..
@@ -834,6 +885,7 @@ LowerFixedEngine_Entry_C62D:
         sta     $1F                             ; C631 85 1F                    ..
         jmp     LowerFixedEngine_Entry_FF74     ; C633 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C636:
         ldx     $050A                           ; C636 AE 0A 05                 ...
         lda     $1C                             ; C639 A5 1C                    ..
         and     #$3F                            ; C63B 29 3F                    )?
@@ -848,11 +900,15 @@ LowerFixedEngine_Entry_C62D:
         stx     $050A                           ; C64D 8E 0A 05                 ...
         inc     $050B                           ; C650 EE 0B 05                 ...
         inc     $1D                             ; C653 E6 1D                    ..
-        bne     $C659                           ; C655 D0 02                    ..
+        bne     LowerFixedEngine_Branch_C659    ; C655 D0 02                    ..
         inc     $1C                             ; C657 E6 1C                    ..
+LowerFixedEngine_Branch_C659:
         rts                                     ; C659 60                       `
 ; ----------------------------------------------------------------------------
-        db   $85,$1E,$20,$62,$C6,$4C,$36,$C6 ; C65A 85 1E 20 62 C6 4C 36 C6  .. b.L6.
+LowerFixedEngine_Entry_C65A:
+        sta     $1E                             ; C65A 85 1E                    ..
+        jsr     LowerFixedEngine_Entry_C662     ; C65C 20 62 C6                  b.
+        jmp     LowerFixedEngine_Branch_C636    ; C65F 4C 36 C6                 L6.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C662:
         lda     $0505                           ; C662 AD 05 05                 ...
@@ -866,19 +922,21 @@ LowerFixedEngine_Entry_C662:
         asl     a                               ; C671 0A                       .
         asl     a                               ; C672 0A                       .
         asl     a                               ; C673 0A                       .
-        bcc     $C67F                           ; C674 90 09                    ..
+        bcc     LowerFixedEngine_Branch_C67F    ; C674 90 09                    ..
         pha                                     ; C676 48                       H
         lda     $1C                             ; C677 A5 1C                    ..
         eor     #$04                            ; C679 49 04                    I.
         sta     $1C                             ; C67B 85 1C                    ..
         pla                                     ; C67D 68                       h
         clc                                     ; C67E 18                       .
+LowerFixedEngine_Branch_C67F:
         adc     $0508                           ; C67F 6D 08 05                 m..
         sta     $1D                             ; C682 85 1D                    ..
-        bcc     $C68C                           ; C684 90 06                    ..
+        bcc     LowerFixedEngine_Branch_C68C    ; C684 90 06                    ..
         lda     $1C                             ; C686 A5 1C                    ..
         eor     #$04                            ; C688 49 04                    I.
         sta     $1C                             ; C68A 85 1C                    ..
+LowerFixedEngine_Branch_C68C:
         lda     $0509                           ; C68C AD 09 05                 ...
         lsr     a                               ; C68F 4A                       J
         lsr     a                               ; C690 4A                       J
@@ -886,8 +944,9 @@ LowerFixedEngine_Entry_C662:
         clc                                     ; C692 18                       .
         adc     $01                             ; C693 65 01                    e.
         cmp     #$1E                            ; C695 C9 1E                    ..
-        bcc     $C69B                           ; C697 90 02                    ..
+        bcc     LowerFixedEngine_Branch_C69B    ; C697 90 02                    ..
         sbc     #$1E                            ; C699 E9 1E                    ..
+LowerFixedEngine_Branch_C69B:
         lsr     a                               ; C69B 4A                       J
         ror     $1D                             ; C69C 66 1D                    f.
         lsr     a                               ; C69E 4A                       J
@@ -898,15 +957,16 @@ LowerFixedEngine_Entry_C662:
         sta     $1C                             ; C6A6 85 1C                    ..
         and     #$33                            ; C6A8 29 33                    )3
         cmp     #$23                            ; C6AA C9 23                    .#
-        bne     $C6BE                           ; C6AC D0 10                    ..
+        bne     LowerFixedEngine_Branch_C6BE    ; C6AC D0 10                    ..
         lda     $1D                             ; C6AE A5 1D                    ..
         cmp     #$C0                            ; C6B0 C9 C0                    ..
-        bcc     $C6BE                           ; C6B2 90 0A                    ..
+        bcc     LowerFixedEngine_Branch_C6BE    ; C6B2 90 0A                    ..
         sbc     #$C0                            ; C6B4 E9 C0                    ..
         sta     $1D                             ; C6B6 85 1D                    ..
         lda     $1C                             ; C6B8 A5 1C                    ..
         and     #$3C                            ; C6BA 29 3C                    )<
         sta     $1C                             ; C6BC 85 1C                    ..
+LowerFixedEngine_Branch_C6BE:
         rts                                     ; C6BE 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C6BF:
@@ -928,15 +988,17 @@ LowerFixedEngine_Entry_C6C3:
         tax                                     ; C6D4 AA                       .
         inx                                     ; C6D5 E8                       .
         lda     #$FC                            ; C6D6 A9 FC                    ..
+LowerFixedEngine_Branch_C6D8:
         dex                                     ; C6D8 CA                       .
-        beq     $C6E5                           ; C6D9 F0 0A                    ..
+        beq     LowerFixedEngine_Branch_C6E5    ; C6D9 F0 0A                    ..
         sec                                     ; C6DB 38                       8
         rol     a                               ; C6DC 2A                       *
         rol     a                               ; C6DD 2A                       *
         asl     $0D                             ; C6DE 06 0D                    ..
         asl     $0D                             ; C6E0 06 0D                    ..
-        jmp     $C6D8                           ; C6E2 4C D8 C6                 L..
+        jmp     LowerFixedEngine_Branch_C6D8    ; C6E2 4C D8 C6                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C6E5:
         sta     $0B                             ; C6E5 85 0B                    ..
         lda     $1C                             ; C6E7 A5 1C                    ..
         and     #$04                            ; C6E9 29 04                    ).
@@ -981,18 +1043,52 @@ LowerFixedEngine_Entry_C727:
         sta     $1C                             ; C735 85 1C                    ..
         lda     $0F                             ; C737 A5 0F                    ..
         sta     $1D                             ; C739 85 1D                    ..
-        jmp     $C636                           ; C73B 4C 36 C6                 L6.
+        jmp     LowerFixedEngine_Branch_C636    ; C73B 4C 36 C6                 L6.
 ; ----------------------------------------------------------------------------
-        db   $98,$48,$20,$8C,$C7,$B5,$00,$99 ; C73E 98 48 20 8C C7 B5 00 99  .H .....
-        db   $00,$02,$B5,$01,$99,$01,$02,$B5 ; C746 00 02 B5 01 99 01 02 B5  ........
-        db   $02,$99,$02,$02,$B5,$03,$99,$03 ; C74E 02 99 02 02 B5 03 99 03  ........
-        db   $02,$E8,$E8,$E8,$E8,$68,$A8,$60 ; C756 02 E8 E8 E8 E8 68 A8 60  .....h.`
-        db   $98,$48,$20,$8C,$C7,$B5,$01,$99 ; C75E 98 48 20 8C C7 B5 01 99  .H .....
-        db   $01,$02,$B5,$02,$99,$02,$02,$4C ; C766 01 02 B5 02 99 02 02 4C  .......L
-        db   $57,$C7,$98,$48,$20,$8C,$C7,$B9 ; C76E 57 C7 98 48 20 8C C7 B9  W..H ...
-        db   $00,$02,$95,$00,$B9,$01,$02,$95 ; C776 00 02 95 00 B9 01 02 95  ........
-        db   $01,$B9,$02,$02,$95,$02,$B9,$03 ; C77E 01 B9 02 02 95 02 B9 03  ........
-        db   $02,$95,$03,$4C,$57,$C7         ; C786 02 95 03 4C 57 C7        ...LW.
+LowerFixedEngine_Entry_C73E:
+        tya                                     ; C73E 98                       .
+        pha                                     ; C73F 48                       H
+        jsr     LowerFixedEngine_Entry_C78C     ; C740 20 8C C7                  ..
+        lda     $00,x                           ; C743 B5 00                    ..
+        sta     $0200,y                         ; C745 99 00 02                 ...
+        lda     $01,x                           ; C748 B5 01                    ..
+        sta     $0201,y                         ; C74A 99 01 02                 ...
+        lda     $02,x                           ; C74D B5 02                    ..
+        sta     $0202,y                         ; C74F 99 02 02                 ...
+        lda     $03,x                           ; C752 B5 03                    ..
+        sta     $0203,y                         ; C754 99 03 02                 ...
+LowerFixedEngine_Branch_C757:
+        inx                                     ; C757 E8                       .
+        inx                                     ; C758 E8                       .
+        inx                                     ; C759 E8                       .
+        inx                                     ; C75A E8                       .
+        pla                                     ; C75B 68                       h
+        tay                                     ; C75C A8                       .
+        rts                                     ; C75D 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_C75E:
+        tya                                     ; C75E 98                       .
+        pha                                     ; C75F 48                       H
+        jsr     LowerFixedEngine_Entry_C78C     ; C760 20 8C C7                  ..
+        lda     $01,x                           ; C763 B5 01                    ..
+        sta     $0201,y                         ; C765 99 01 02                 ...
+        lda     $02,x                           ; C768 B5 02                    ..
+        sta     $0202,y                         ; C76A 99 02 02                 ...
+        jmp     LowerFixedEngine_Branch_C757    ; C76D 4C 57 C7                 LW.
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_C770:
+        tya                                     ; C770 98                       .
+        pha                                     ; C771 48                       H
+        jsr     LowerFixedEngine_Entry_C78C     ; C772 20 8C C7                  ..
+        lda     $0200,y                         ; C775 B9 00 02                 ...
+        sta     $00,x                           ; C778 95 00                    ..
+        lda     $0201,y                         ; C77A B9 01 02                 ...
+        sta     $01,x                           ; C77D 95 01                    ..
+        lda     $0202,y                         ; C77F B9 02 02                 ...
+        sta     $02,x                           ; C782 95 02                    ..
+        lda     $0203,y                         ; C784 B9 03 02                 ...
+        sta     $03,x                           ; C787 95 03                    ..
+        jmp     LowerFixedEngine_Branch_C757    ; C789 4C 57 C7                 LW.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C78C:
         tay                                     ; C78C A8                       .
@@ -1002,24 +1098,27 @@ LowerFixedEngine_Entry_C78C:
         ldy     #$00                            ; C790 A0 00                    ..
         sty     $16                             ; C792 84 16                    ..
         ldy     #$05                            ; C794 A0 05                    ..
+LowerFixedEngine_Branch_C796:
         dey                                     ; C796 88                       .
-        bmi     $C7CD                           ; C797 30 34                    04
+        bmi     LowerFixedEngine_Branch_C7CD    ; C797 30 34                    04
         cmp     $C7DC,y                         ; C799 D9 DC C7                 ...
-        bcc     $C796                           ; C79C 90 F8                    ..
+        bcc     LowerFixedEngine_Branch_C796    ; C79C 90 F8                    ..
         pha                                     ; C79E 48                       H
         tya                                     ; C79F 98                       .
         sec                                     ; C7A0 38                       8
         rol     a                               ; C7A1 2A                       *
         sec                                     ; C7A2 38                       8
         sbc     $0513                           ; C7A3 ED 13 05                 ...
-        bpl     $C7AB                           ; C7A6 10 03                    ..
+        bpl     LowerFixedEngine_Branch_C7AB    ; C7A6 10 03                    ..
         clc                                     ; C7A8 18                       .
         adc     #$0A                            ; C7A9 69 0A                    i.
+LowerFixedEngine_Branch_C7AB:
         lsr     a                               ; C7AB 4A                       J
-        bcs     $C7B3                           ; C7AC B0 05                    ..
+        bcs     LowerFixedEngine_Branch_C7B3    ; C7AC B0 05                    ..
         eor     #$7F                            ; C7AE 49 7F                    I.
         clc                                     ; C7B0 18                       .
         adc     #$85                            ; C7B1 69 85                    i.
+LowerFixedEngine_Branch_C7B3:
         sta     $16                             ; C7B3 85 16                    ..
         asl     a                               ; C7B5 0A                       .
         clc                                     ; C7B6 18                       .
@@ -1034,16 +1133,19 @@ LowerFixedEngine_Entry_C78C:
         pla                                     ; C7C2 68                       h
         sec                                     ; C7C3 38                       8
         sbc     #$04                            ; C7C4 E9 04                    ..
+LowerFixedEngine_Branch_C7C6:
         sec                                     ; C7C6 38                       8
         sbc     #$0C                            ; C7C7 E9 0C                    ..
-        bcs     $C7C6                           ; C7C9 B0 FB                    ..
+        bcs     LowerFixedEngine_Branch_C7C6    ; C7C9 B0 FB                    ..
         adc     #$0C                            ; C7CB 69 0C                    i.
+LowerFixedEngine_Branch_C7CD:
         asl     a                               ; C7CD 0A                       .
         asl     a                               ; C7CE 0A                       .
         clc                                     ; C7CF 18                       .
         adc     $16                             ; C7D0 65 16                    e.
-        bcc     $C7D6                           ; C7D2 90 02                    ..
+        bcc     LowerFixedEngine_Branch_C7D6    ; C7D2 90 02                    ..
         adc     #$0F                            ; C7D4 69 0F                    i.
+LowerFixedEngine_Branch_C7D6:
         tay                                     ; C7D6 A8                       .
         sty     $16                             ; C7D7 84 16                    ..
         pla                                     ; C7D9 68                       h
@@ -1059,25 +1161,43 @@ LowerFixedEngine_Entry_C7E1:
         txa                                     ; C7E6 8A                       .
         jsr     LowerFixedEngine_Entry_FF91     ; C7E7 20 91 FF                  ..
         ldy     #$00                            ; C7EA A0 00                    ..
+LowerFixedEngine_Branch_C7EC:
         lda     ($00),y                         ; C7EC B1 00                    ..
         sta     $0108,y                         ; C7EE 99 08 01                 ...
         iny                                     ; C7F1 C8                       .
         cpy     #$11                            ; C7F2 C0 11                    ..
-        bne     $C7EC                           ; C7F4 D0 F6                    ..
+        bne     LowerFixedEngine_Branch_C7EC    ; C7F4 D0 F6                    ..
         pla                                     ; C7F6 68                       h
         jmp     LowerFixedEngine_Entry_FF91     ; C7F7 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-        db   $EA,$49,$FF,$38,$75,$00,$95,$00 ; C7FA EA 49 FF 38 75 00 95 00  .I.8u...
-        db   $B0,$02,$D6,$01,$60,$20,$FB,$C7 ; C802 B0 02 D6 01 60 20 FB C7  ....` ..
-        db   $98,$49,$FF,$38,$75,$01,$95,$01 ; C80A 98 49 FF 38 75 01 95 01  .I.8u...
-        db   $60                             ; C812 60                       `
+LowerFixedEngine_Entry_C7FA:
+        nop                                     ; C7FA EA                       .
+LowerFixedEngine_Entry_C7FB:
+        eor     #$FF                            ; C7FB 49 FF                    I.
+        sec                                     ; C7FD 38                       8
+        adc     $00,x                           ; C7FE 75 00                    u.
+        sta     $00,x                           ; C800 95 00                    ..
+        bcs     LowerFixedEngine_Branch_C806    ; C802 B0 02                    ..
+        dec     $01,x                           ; C804 D6 01                    ..
+LowerFixedEngine_Branch_C806:
+        rts                                     ; C806 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_C807:
+        jsr     LowerFixedEngine_Entry_C7FB     ; C807 20 FB C7                  ..
+        tya                                     ; C80A 98                       .
+        eor     #$FF                            ; C80B 49 FF                    I.
+        sec                                     ; C80D 38                       8
+        adc     $01,x                           ; C80E 75 01                    u.
+        sta     $01,x                           ; C810 95 01                    ..
+        rts                                     ; C812 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C813:
         clc                                     ; C813 18                       .
         adc     $00,x                           ; C814 75 00                    u.
         sta     $00,x                           ; C816 95 00                    ..
-        bcc     $C81C                           ; C818 90 02                    ..
+        bcc     LowerFixedEngine_Branch_C81C    ; C818 90 02                    ..
         inc     $01,x                           ; C81A F6 01                    ..
+LowerFixedEngine_Branch_C81C:
         rts                                     ; C81C 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C81D:
@@ -1093,8 +1213,9 @@ LowerFixedEngine_Entry_C827:
         lda     #$00                            ; C829 A9 00                    ..
         sta     $17                             ; C82B 85 17                    ..
         sta     $18                             ; C82D 85 18                    ..
+LowerFixedEngine_Branch_C82F:
         lsr     $16                             ; C82F 46 16                    F.
-        bcc     $C840                           ; C831 90 0D                    ..
+        bcc     LowerFixedEngine_Branch_C840    ; C831 90 0D                    ..
         lda     $00,x                           ; C833 B5 00                    ..
         clc                                     ; C835 18                       .
         adc     $17                             ; C836 65 17                    e.
@@ -1102,10 +1223,11 @@ LowerFixedEngine_Entry_C827:
         lda     $01,x                           ; C83A B5 01                    ..
         adc     $18                             ; C83C 65 18                    e.
         sta     $18                             ; C83E 85 18                    ..
+LowerFixedEngine_Branch_C840:
         asl     $00,x                           ; C840 16 00                    ..
         rol     $01,x                           ; C842 36 01                    6.
         lda     $16                             ; C844 A5 16                    ..
-        bne     $C82F                           ; C846 D0 E7                    ..
+        bne     LowerFixedEngine_Branch_C82F    ; C846 D0 E7                    ..
         lda     $17                             ; C848 A5 17                    ..
         sta     $00,x                           ; C84A 95 00                    ..
         lda     $18                             ; C84C A5 18                    ..
@@ -1121,6 +1243,7 @@ LowerFixedEngine_Entry_C851:
         sta     $19                             ; C859 85 19                    ..
         sta     $16                             ; C85B 85 16                    ..
         sta     $17                             ; C85D 85 17                    ..
+LowerFixedEngine_Branch_C85F:
         asl     $00,x                           ; C85F 16 00                    ..
         rol     $01,x                           ; C861 36 01                    6.
         rol     $16                             ; C863 26 16                    &.
@@ -1132,23 +1255,30 @@ LowerFixedEngine_Entry_C851:
         pha                                     ; C86E 48                       H
         lda     $17                             ; C86F A5 17                    ..
         sbc     $19                             ; C871 E5 19                    ..
-        bcs     $C87B                           ; C873 B0 06                    ..
+        bcs     LowerFixedEngine_Branch_C87B    ; C873 B0 06                    ..
         pla                                     ; C875 68                       h
         dec     $00,x                           ; C876 D6 00                    ..
-        jmp     $C880                           ; C878 4C 80 C8                 L..
+        jmp     LowerFixedEngine_Branch_C880    ; C878 4C 80 C8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C87B:
         sta     $17                             ; C87B 85 17                    ..
         pla                                     ; C87D 68                       h
         sta     $16                             ; C87E 85 16                    ..
+LowerFixedEngine_Branch_C880:
         dey                                     ; C880 88                       .
-        bne     $C85F                           ; C881 D0 DC                    ..
+        bne     LowerFixedEngine_Branch_C85F    ; C881 D0 DC                    ..
         pla                                     ; C883 68                       h
         tay                                     ; C884 A8                       .
         lda     $16                             ; C885 A5 16                    ..
         rts                                     ; C887 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A1,$00,$F6,$00,$D0,$02,$F6,$01 ; C888 A1 00 F6 00 D0 02 F6 01  ........
-        db   $60                             ; C890 60                       `
+LowerFixedEngine_Entry_C888:
+        lda     ($00,x)                         ; C888 A1 00                    ..
+        inc     $00,x                           ; C88A F6 00                    ..
+        bne     LowerFixedEngine_Branch_C890    ; C88C D0 02                    ..
+        inc     $01,x                           ; C88E F6 01                    ..
+LowerFixedEngine_Branch_C890:
+        rts                                     ; C890 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C891:
         tya                                     ; C891 98                       .
@@ -1169,21 +1299,23 @@ LowerFixedEngine_Entry_C891:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C8AD:
         ldy     #$08                            ; C8AD A0 08                    ..
+LowerFixedEngine_Branch_C8AF:
         lda     $13                             ; C8AF A5 13                    ..
         eor     $16                             ; C8B1 45 16                    E.
         asl     $12                             ; C8B3 06 12                    ..
         rol     $13                             ; C8B5 26 13                    &.
         asl     $16                             ; C8B7 06 16                    ..
         asl     a                               ; C8B9 0A                       .
-        bcc     $C8C8                           ; C8BA 90 0C                    ..
+        bcc     LowerFixedEngine_Branch_C8C8    ; C8BA 90 0C                    ..
         lda     $12                             ; C8BC A5 12                    ..
         eor     #$21                            ; C8BE 49 21                    I!
         sta     $12                             ; C8C0 85 12                    ..
         lda     $13                             ; C8C2 A5 13                    ..
         eor     #$10                            ; C8C4 49 10                    I.
         sta     $13                             ; C8C6 85 13                    ..
+LowerFixedEngine_Branch_C8C8:
         dey                                     ; C8C8 88                       .
-        bne     $C8AF                           ; C8C9 D0 E4                    ..
+        bne     LowerFixedEngine_Branch_C8AF    ; C8C9 D0 E4                    ..
         rts                                     ; C8CB 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C8CC:
@@ -1218,13 +1350,15 @@ LowerFixedEngine_Entry_C8F3:
         lda     #$00                            ; C8F8 A9 00                    ..
         sta     JOY1                            ; C8FA 8D 16 40                 ..@
         ldy     #$08                            ; C8FD A0 08                    ..
+LowerFixedEngine_Branch_C8FF:
         lda     JOY1,x                          ; C8FF BD 16 40                 ..@
         lsr     a                               ; C902 4A                       J
-        bcs     $C906                           ; C903 B0 01                    ..
+        bcs     LowerFixedEngine_Branch_C906    ; C903 B0 01                    ..
         lsr     a                               ; C905 4A                       J
+LowerFixedEngine_Branch_C906:
         ror     ButtonsPressed,x                ; C906 76 14                    v.
         dey                                     ; C908 88                       .
-        bne     $C8FF                           ; C909 D0 F4                    ..
+        bne     LowerFixedEngine_Branch_C8FF    ; C909 D0 F4                    ..
         rts                                     ; C90B 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C90C:
@@ -1248,7 +1382,7 @@ LowerFixedEngine_Entry_C913:
 LowerFixedEngine_Entry_C91F:
         lda     $1F                             ; C91F A5 1F                    ..
         and     #$C8                            ; C921 29 C8                    ).
-        bne     $C94A                           ; C923 D0 25                    .%
+        bne     LowerFixedEngine_Branch_C94A    ; C923 D0 25                    .%
         lda     $0513                           ; C925 AD 13 05                 ...
         and     #$01                            ; C928 29 01                    ).
         tax                                     ; C92A AA                       .
@@ -1263,9 +1397,11 @@ LowerFixedEngine_Entry_C91F:
         ldx     $0513                           ; C93D AE 13 05                 ...
         inx                                     ; C940 E8                       .
         cpx     #$0A                            ; C941 E0 0A                    ..
-        bcc     $C947                           ; C943 90 02                    ..
+        bcc     LowerFixedEngine_Branch_C947    ; C943 90 02                    ..
         ldx     #$00                            ; C945 A2 00                    ..
+LowerFixedEngine_Branch_C947:
         stx     $0513                           ; C947 8E 13 05                 ...
+LowerFixedEngine_Branch_C94A:
         rts                                     ; C94A 60                       `
 ; ----------------------------------------------------------------------------
         db   $D0                             ; C94B D0                       .
@@ -1275,6 +1411,7 @@ LowerFixedEngine_Entry_C94E:
         tay                                     ; C94E A8                       .
         lda     #$30                            ; C94F A9 30                    .0
         sta     $10                             ; C951 85 10                    ..
+LowerFixedEngine_Branch_C953:
         lda     $0200,x                         ; C953 BD 00 02                 ...
         pha                                     ; C956 48                       H
         lda     $0200,y                         ; C957 B9 00 02                 ...
@@ -1284,9 +1421,10 @@ LowerFixedEngine_Entry_C94E:
         inx                                     ; C961 E8                       .
         iny                                     ; C962 C8                       .
         dec     $10                             ; C963 C6 10                    ..
-        bne     $C953                           ; C965 D0 EC                    ..
+        bne     LowerFixedEngine_Branch_C953    ; C965 D0 EC                    ..
         rts                                     ; C967 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C968:
         jsr     LowerFixedEngine_Entry_C983     ; C968 20 83 C9                  ..
         jsr     LowerFixedEngine_Entry_C52F     ; C96B 20 2F C5                  /.
         brk                                     ; C96E 00                       .
@@ -1304,15 +1442,17 @@ LowerFixedEngine_Entry_C94E:
         brk                                     ; C97A 00                       .
         db   $22,$EF                         ; C97B 22 EF                    ".
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_C97D:
         jsr     LowerFixedEngine_Entry_C9ED     ; C97D 20 ED C9                  ..
-        jmp     $C97D                           ; C980 4C 7D C9                 L}.
+        jmp     LowerFixedEngine_Branch_C97D    ; C980 4C 7D C9                 L}.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_C983:
         ldx     #$5D                            ; C983 A2 5D                    .]
+LowerFixedEngine_Branch_C985:
         lda     $C98F,x                         ; C985 BD 8F C9                 ...
         sta     $6CAD,x                         ; C988 9D AD 6C                 ..l
         dex                                     ; C98B CA                       .
-        bpl     $C985                           ; C98C 10 F7                    ..
+        bpl     LowerFixedEngine_Branch_C985    ; C98C 10 F7                    ..
         rts                                     ; C98E 60                       `
 ; ----------------------------------------------------------------------------
         db   $08,$AD,$07,$05,$8D,$CC,$07,$A9 ; C98F 08 AD 07 05 8D CC 07 A9  ........
@@ -1356,33 +1496,35 @@ LowerFixedEngine_Entry_CA17:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CA21:
         ldx     $058E                           ; CA21 AE 8E 05                 ...
-        lda     $CA3C,x                         ; CA24 BD 3C CA                 .<.
+        lda     LowerFixedEngine_Branch_CA3C,x  ; CA24 BD 3C CA                 .<.
         and     $3C                             ; CA27 25 3C                    %<
-        bne     $CA3C                           ; CA29 D0 11                    ..
+        bne     LowerFixedEngine_Branch_CA3C    ; CA29 D0 11                    ..
         lda     #$01                            ; CA2B A9 01                    ..
         sta     $052F                           ; CA2D 8D 2F 05                 ./.
         jsr     LowerFixedEngine_Entry_CA41     ; CA30 20 41 CA                  A.
         jsr     LowerFixedEngine_Entry_CB1E     ; CA33 20 1E CB                  ..
         jsr     LowerFixedEngine_Entry_CBF8     ; CA36 20 F8 CB                  ..
         jsr     LowerFixedEngine_Entry_CB71     ; CA39 20 71 CB                  q.
+LowerFixedEngine_Branch_CA3C:
         rts                                     ; CA3C 60                       `
 ; ----------------------------------------------------------------------------
         db   $0F,$07,$0F,$03                 ; CA3D 0F 07 0F 03              ....
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CA41:
         lda     $0530                           ; CA41 AD 30 05                 .0.
-        bpl     $CA55                           ; CA44 10 0F                    ..
+        bpl     LowerFixedEngine_Branch_CA55    ; CA44 10 0F                    ..
         lda     #$FF                            ; CA46 A9 FF                    ..
         sta     $56                             ; CA48 85 56                    .V
         jsr     LowerFixedEngine_Entry_DB18     ; CA4A 20 18 DB                  ..
         sta     ButtonsPressed                  ; CA4D 85 14                    ..
         lda     $0530                           ; CA4F AD 30 05                 .0.
-        bpl     $CA55                           ; CA52 10 01                    ..
+        bpl     LowerFixedEngine_Branch_CA55    ; CA52 10 01                    ..
         rts                                     ; CA54 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CA55:
         lda     $0515                           ; CA55 AD 15 05                 ...
         cmp     #$02                            ; CA58 C9 02                    ..
-        bne     $CA77                           ; CA5A D0 1B                    ..
+        bne     LowerFixedEngine_Branch_CA77    ; CA5A D0 1B                    ..
         jsr     LowerFixedEngine_Entry_D241     ; CA5C 20 41 D2                  A.
         lda     ButtonsPressed                  ; CA5F A5 14                    ..
         and     #$F0                            ; CA61 29 F0                    ).
@@ -1398,6 +1540,7 @@ LowerFixedEngine_Branch_CA71:
 LowerFixedEngine_Branch_CA76:
         rts                                     ; CA76 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CA77:
         lda     #$00                            ; CA77 A9 00                    ..
         sta     $56                             ; CA79 85 56                    .V
         lda     $7140                           ; CA7B AD 40 71                 .@q
@@ -1405,9 +1548,9 @@ LowerFixedEngine_Branch_CA76:
         tax                                     ; CA80 AA                       .
         lda     $6F40,x                         ; CA81 BD 40 6F                 .@o
         cmp     #$10                            ; CA84 C9 10                    ..
-        bcc     $CAD8                           ; CA86 90 50                    .P
+        bcc     LowerFixedEngine_Branch_CAD8    ; CA86 90 50                    .P
         cmp     #$14                            ; CA88 C9 14                    ..
-        bcs     $CAD8                           ; CA8A B0 4C                    .L
+        bcs     LowerFixedEngine_Branch_CAD8    ; CA8A B0 4C                    .L
         and     #$03                            ; CA8C 29 03                    ).
         tax                                     ; CA8E AA                       .
         lda     $CB1A,x                         ; CA8F BD 1A CB                 ...
@@ -1425,23 +1568,42 @@ LowerFixedEngine_Branch_CAA0:
         dex                                     ; CAAA CA                       .
         bpl     LowerFixedEngine_Branch_CAA0    ; CAAB 10 F3                    ..
         brk                                     ; CAAD 00                       .
-        db   $A4,$FB,$A5,$3C,$29,$F0,$09,$08 ; CAAE A4 FB A5 3C 29 F0 09 08  ...<)...
-        db   $85,$3C,$A2,$00,$20,$BE,$CA,$E8 ; CAB6 85 3C A2 00 20 BE CA E8  .<.. ...
-        db   $BD,$04,$70,$29,$7F,$9D,$04,$70 ; CABE BD 04 70 29 7F 9D 04 70  ..p)...p
-        db   $BD,$64,$6F,$9D,$A4,$6F,$BD,$84 ; CAC6 BD 64 6F 9D A4 6F BD 84  .do..o..
-        db   $6F,$9D,$C4,$6F,$A9,$00,$9D,$2A ; CACE 6F 9D C4 6F A9 00 9D 2A  o..o...*
-        db   $05,$60                         ; CAD6 05 60                    .`
+        db   $A4,$FB                         ; CAAE A4 FB                    ..
 ; ----------------------------------------------------------------------------
+        lda     $3C                             ; CAB0 A5 3C                    .<
+        and     #$F0                            ; CAB2 29 F0                    ).
+        ora     #$08                            ; CAB4 09 08                    ..
+        sta     $3C                             ; CAB6 85 3C                    .<
+        ldx     #$00                            ; CAB8 A2 00                    ..
+        jsr     LowerFixedEngine_Entry_CABE     ; CABA 20 BE CA                  ..
+        inx                                     ; CABD E8                       .
+LowerFixedEngine_Entry_CABE:
+        lda     $7004,x                         ; CABE BD 04 70                 ..p
+        and     #$7F                            ; CAC1 29 7F                    ).
+        sta     $7004,x                         ; CAC3 9D 04 70                 ..p
+        lda     $6F64,x                         ; CAC6 BD 64 6F                 .do
+        sta     $6FA4,x                         ; CAC9 9D A4 6F                 ..o
+        lda     $6F84,x                         ; CACC BD 84 6F                 ..o
+        sta     $6FC4,x                         ; CACF 9D C4 6F                 ..o
+        lda     #$00                            ; CAD2 A9 00                    ..
+        sta     $052A,x                         ; CAD4 9D 2A 05                 .*.
+        rts                                     ; CAD7 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CAD8:
         lda     $15                             ; CAD8 A5 15                    ..
         and     #$03                            ; CADA 29 03                    ).
-        jmp     $CAEA                           ; CADC 4C EA CA                 L..
+        jmp     LowerFixedEngine_Branch_CAEA    ; CADC 4C EA CA                 L..
 ; ----------------------------------------------------------------------------
-        db   $8D,$8E,$05,$A9,$20,$8D,$8F,$05 ; CADF 8D 8E 05 A9 20 8D 8F 05  .... ...
-        db   $4C,$41,$D2                     ; CAE7 4C 41 D2                 LA.
+LowerFixedEngine_Entry_CADF:
+        sta     $058E                           ; CADF 8D 8E 05                 ...
+        lda     #$20                            ; CAE2 A9 20                    .
+        sta     $058F                           ; CAE4 8D 8F 05                 ...
+        jmp     LowerFixedEngine_Entry_D241     ; CAE7 4C 41 D2                 LA.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CAEA:
         lda     $058E                           ; CAEA AD 8E 05                 ...
         cmp     #$01                            ; CAED C9 01                    ..
-        beq     $CB17                           ; CAEF F0 26                    .&
+        beq     LowerFixedEngine_Branch_CB17    ; CAEF F0 26                    .&
         lda     #$01                            ; CAF1 A9 01                    ..
         sta     $058E                           ; CAF3 8D 8E 05                 ...
         lda     #$10                            ; CAF6 A9 10                    ..
@@ -1460,6 +1622,7 @@ LowerFixedEngine_Branch_CAFD:
         sta     $70E0,x                         ; CB11 9D E0 70                 ..p
         dex                                     ; CB14 CA                       .
         bpl     LowerFixedEngine_Branch_CAFD    ; CB15 10 E6                    ..
+LowerFixedEngine_Branch_CB17:
         jmp     LowerFixedEngine_Entry_D241     ; CB17 4C 41 D2                 LA.
 ; ----------------------------------------------------------------------------
         db   $10,$80,$20,$40                 ; CB1A 10 80 20 40              .. @
@@ -1478,29 +1641,32 @@ LowerFixedEngine_Entry_CB1E:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CB33:
         ldx     $3D                             ; CB33 A6 3D                    .=
-        beq     $CB4A                           ; CB35 F0 13                    ..
+        beq     LowerFixedEngine_Branch_CB4A    ; CB35 F0 13                    ..
         dex                                     ; CB37 CA                       .
-        beq     $CB64                           ; CB38 F0 2A                    .*
+        beq     LowerFixedEngine_Branch_CB64    ; CB38 F0 2A                    .*
         dex                                     ; CB3A CA                       .
-        beq     $CB57                           ; CB3B F0 1A                    ..
+        beq     LowerFixedEngine_Branch_CB57    ; CB3B F0 1A                    ..
         jsr     LowerFixedEngine_Entry_CBCA     ; CB3D 20 CA CB                  ..
         jsr     LowerFixedEngine_Entry_CBD6     ; CB40 20 D6 CB                  ..
         jsr     LowerFixedEngine_Entry_CBE4     ; CB43 20 E4 CB                  ..
         jsr     LowerFixedEngine_Entry_CBBE     ; CB46 20 BE CB                  ..
         rts                                     ; CB49 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CB4A:
         jsr     LowerFixedEngine_Entry_CBD6     ; CB4A 20 D6 CB                  ..
         jsr     LowerFixedEngine_Entry_CBBE     ; CB4D 20 BE CB                  ..
         jsr     LowerFixedEngine_Entry_CBCA     ; CB50 20 CA CB                  ..
         jsr     LowerFixedEngine_Entry_CBE4     ; CB53 20 E4 CB                  ..
         rts                                     ; CB56 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CB57:
         jsr     LowerFixedEngine_Entry_CBE4     ; CB57 20 E4 CB                  ..
         jsr     LowerFixedEngine_Entry_CBCA     ; CB5A 20 CA CB                  ..
         jsr     LowerFixedEngine_Entry_CBBE     ; CB5D 20 BE CB                  ..
         jsr     LowerFixedEngine_Entry_CBD6     ; CB60 20 D6 CB                  ..
         rts                                     ; CB63 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CB64:
         jsr     LowerFixedEngine_Entry_CBBE     ; CB64 20 BE CB                  ..
         jsr     LowerFixedEngine_Entry_CBE4     ; CB67 20 E4 CB                  ..
         jsr     LowerFixedEngine_Entry_CBD6     ; CB6A 20 D6 CB                  ..
@@ -1509,34 +1675,37 @@ LowerFixedEngine_Branch_CB33:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CB71:
         lda     $0530                           ; CB71 AD 30 05                 .0.
-        bmi     $CB97                           ; CB74 30 21                    0!
+        bmi     LowerFixedEngine_Branch_CB97    ; CB74 30 21                    0!
         lda     $0599                           ; CB76 AD 99 05                 ...
         and     #$10                            ; CB79 29 10                    ).
-        bne     $CB97                           ; CB7B D0 1A                    ..
+        bne     LowerFixedEngine_Branch_CB97    ; CB7B D0 1A                    ..
         lda     $0539                           ; CB7D AD 39 05                 .9.
-        bmi     $CB97                           ; CB80 30 15                    0.
+        bmi     LowerFixedEngine_Branch_CB97    ; CB80 30 15                    0.
         clc                                     ; CB82 18                       .
         adc     #$10                            ; CB83 69 10                    i.
         sta     $0539                           ; CB85 8D 39 05                 .9.
-        bpl     $CB97                           ; CB88 10 0D                    ..
+        bpl     LowerFixedEngine_Branch_CB97    ; CB88 10 0D                    ..
         brk                                     ; CB8A 00                       .
         db   $13,$1F                         ; CB8B 13 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     $CB93                           ; CB8D 90 04                    ..
+        bcc     LowerFixedEngine_Branch_CB93    ; CB8D 90 04                    ..
         brk                                     ; CB8F 00                       .
         db   $07,$6F,$28                     ; CB90 07 6F 28                 .o(
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CB93:
         brk                                     ; CB93 00                       .
         db   $07,$6F,$2A                     ; CB94 07 6F 2A                 .o*
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CB97:
         rts                                     ; CB97 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CB98:
         lda     $052E                           ; CB98 AD 2E 05                 ...
-        beq     $CBA1                           ; CB9B F0 04                    ..
+        beq     LowerFixedEngine_Branch_CBA1    ; CB9B F0 04                    ..
         dec     $052E                           ; CB9D CE 2E 05                 ...
         rts                                     ; CBA0 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CBA1:
         ldx     #$01                            ; CBA1 A2 01                    ..
         stx     JOY1                            ; CBA3 8E 16 40                 ..@
         dex                                     ; CBA6 CA                       .
@@ -1555,49 +1724,51 @@ LowerFixedEngine_Entry_CBB4:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CBBE:
         lda     ButtonsPressed                  ; CBBE A5 14                    ..
-        bpl     $CBF7                           ; CBC0 10 35                    .5
+        bpl     LowerFixedEngine_Branch_CBF7    ; CBC0 10 35                    .5
         jsr     LowerFixedEngine_Entry_CD85     ; CBC2 20 85 CD                  ..
         lda     #$01                            ; CBC5 A9 01                    ..
-        jmp     $CBEF                           ; CBC7 4C EF CB                 L..
+        jmp     LowerFixedEngine_Branch_CBEF    ; CBC7 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CBCA:
         bit     ButtonsPressed                  ; CBCA 24 14                    $.
-        bvc     $CBF7                           ; CBCC 50 29                    P)
+        bvc     LowerFixedEngine_Branch_CBF7    ; CBCC 50 29                    P)
         jsr     LowerFixedEngine_Entry_CD85     ; CBCE 20 85 CD                  ..
         lda     #$03                            ; CBD1 A9 03                    ..
-        jmp     $CBEF                           ; CBD3 4C EF CB                 L..
+        jmp     LowerFixedEngine_Branch_CBEF    ; CBD3 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CBD6:
         lda     ButtonsPressed                  ; CBD6 A5 14                    ..
         and     #$10                            ; CBD8 29 10                    ).
-        beq     $CBF7                           ; CBDA F0 1B                    ..
+        beq     LowerFixedEngine_Branch_CBF7    ; CBDA F0 1B                    ..
         jsr     LowerFixedEngine_Entry_CD85     ; CBDC 20 85 CD                  ..
         lda     #$00                            ; CBDF A9 00                    ..
-        jmp     $CBEF                           ; CBE1 4C EF CB                 L..
+        jmp     LowerFixedEngine_Branch_CBEF    ; CBE1 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CBE4:
         lda     ButtonsPressed                  ; CBE4 A5 14                    ..
         and     #$20                            ; CBE6 29 20                    )
-        beq     $CBF7                           ; CBE8 F0 0D                    ..
+        beq     LowerFixedEngine_Branch_CBF7    ; CBE8 F0 0D                    ..
         jsr     LowerFixedEngine_Entry_CD85     ; CBEA 20 85 CD                  ..
         lda     #$02                            ; CBED A9 02                    ..
+LowerFixedEngine_Branch_CBEF:
         sta     $3D                             ; CBEF 85 3D                    .=
         jsr     LowerFixedEngine_Entry_CC88     ; CBF1 20 88 CC                  ..
-        jmp     $D0C4                           ; CBF4 4C C4 D0                 L..
+        jmp     LowerFixedEngine_Branch_D0C4    ; CBF4 4C C4 D0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CBF7:
         rts                                     ; CBF7 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CBF8:
         lda     $0530                           ; CBF8 AD 30 05                 .0.
-        bmi     $CC64                           ; CBFB 30 67                    0g
+        bmi     LowerFixedEngine_Branch_CC64    ; CBFB 30 67                    0g
         lda     ButtonsPressed                  ; CBFD A5 14                    ..
         ora     $0529                           ; CBFF 0D 29 05                 .).
         and     #$01                            ; CC02 29 01                    ).
-        beq     $CC63                           ; CC04 F0 5D                    .]
+        beq     LowerFixedEngine_Branch_CC63    ; CC04 F0 5D                    .]
         asl     $0529                           ; CC06 0E 29 05                 .).
         lda     $0515                           ; CC09 AD 15 05                 ...
         cmp     #$02                            ; CC0C C9 02                    ..
-        beq     $CC33                           ; CC0E F0 23                    .#
+        beq     LowerFixedEngine_Branch_CC33    ; CC0E F0 23                    .#
         lda     $41                             ; CC10 A5 41                    .A
         bmi     LowerFixedEngine_Branch_CC68    ; CC12 30 54                    0T
         lda     PlayerWorldX                    ; CC14 A5 42                    .B
@@ -1607,9 +1778,18 @@ LowerFixedEngine_Entry_CBF8:
         cmp     SavePlayerWorldY                ; CC1D CD 98 61                 ..a
         bne     LowerFixedEngine_Branch_CC68    ; CC20 D0 46                    .F
         brk                                     ; CC22 00                       .
-        db   $13,$EB,$02,$F0,$40,$AD,$5A,$61 ; CC23 13 EB 02 F0 40 AD 5A 61  ....@.Za
-        db   $C9,$04,$D0,$39,$00,$08,$EF,$60 ; CC2B C9 04 D0 39 00 08 EF 60  ...9...`
+        db   $13,$EB,$02                     ; CC23 13 EB 02                 ...
 ; ----------------------------------------------------------------------------
+        beq     LowerFixedEngine_Branch_CC68    ; CC26 F0 40                    .@
+        lda     SaveCurrentChapterMinus1        ; CC28 AD 5A 61                 .Za
+        cmp     #$04                            ; CC2B C9 04                    ..
+        bne     LowerFixedEngine_Branch_CC68    ; CC2D D0 39                    .9
+        brk                                     ; CC2F 00                       .
+        db   $08,$EF                         ; CC30 08 EF                    ..
+; ----------------------------------------------------------------------------
+        rts                                     ; CC32 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CC33:
         ldx     SavePlayerWorldX                ; CC33 AE 97 61                 ..a
         ldy     SavePlayerWorldY                ; CC36 AC 98 61                 ..a
         jsr     LowerFixedEngine_Entry_D251     ; CC39 20 51 D2                  Q.
@@ -1617,27 +1797,44 @@ LowerFixedEngine_Entry_CBF8:
         lda     $6F40,x                         ; CC3D BD 40 6F                 .@o
         bne     LowerFixedEngine_Branch_CC81    ; CC40 D0 3F                    .?
         brk                                     ; CC42 00                       .
-        db   $5B,$33,$A9,$00,$8D,$15,$05,$A9 ; CC43 5B 33 A9 00 8D 15 05 A9  [3......
-        db   $10,$8D,$2E,$05,$00,$18,$EF,$00 ; CC4B 10 8D 2E 05 00 18 EF 00  ........
-        db   $0E,$EF,$20,$F1,$DF,$00,$09,$9F ; CC53 0E EF 20 F1 DF 00 09 9F  .. .....
-        db   $AD,$00,$70,$09,$40,$8D,$00,$70 ; CC5B AD 00 70 09 40 8D 00 70  ..p.@..p
+        db   $5B,$33                         ; CC43 5B 33                    [3
 ; ----------------------------------------------------------------------------
+        lda     #$00                            ; CC45 A9 00                    ..
+        sta     $0515                           ; CC47 8D 15 05                 ...
+        lda     #$10                            ; CC4A A9 10                    ..
+        sta     $052E                           ; CC4C 8D 2E 05                 ...
+        brk                                     ; CC4F 00                       .
+        db   $18,$EF                         ; CC50 18 EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; CC52 00                       .
+        db   $0E,$EF                         ; CC53 0E EF                    ..
+; ----------------------------------------------------------------------------
+        jsr     LowerFixedEngine_Entry_DFF1     ; CC55 20 F1 DF                  ..
+        brk                                     ; CC58 00                       .
+        db   $09,$9F                         ; CC59 09 9F                    ..
+; ----------------------------------------------------------------------------
+        lda     $7000                           ; CC5B AD 00 70                 ..p
+        ora     #$40                            ; CC5E 09 40                    .@
+        sta     $7000                           ; CC60 8D 00 70                 ..p
+LowerFixedEngine_Branch_CC63:
         rts                                     ; CC63 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CC64:
         asl     $0529                           ; CC64 0E 29 05                 .).
         rts                                     ; CC67 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CC68:
         lda     $0599                           ; CC68 AD 99 05                 ...
         and     #$10                            ; CC6B 29 10                    ).
-        bne     $CC7D                           ; CC6D D0 0E                    ..
+        bne     LowerFixedEngine_Branch_CC7D    ; CC6D D0 0E                    ..
         lda     $0539                           ; CC6F AD 39 05                 .9.
-        bmi     $CC7D                           ; CC72 30 09                    0.
+        bmi     LowerFixedEngine_Branch_CC7D    ; CC72 30 09                    0.
         brk                                     ; CC74 00                       .
         db   $07,$6F,$2A                     ; CC75 07 6F 2A                 .o*
 ; ----------------------------------------------------------------------------
         lda     #$80                            ; CC78 A9 80                    ..
         sta     $0539                           ; CC7A 8D 39 05                 .9.
+LowerFixedEngine_Branch_CC7D:
         brk                                     ; CC7D 00                       .
         db   $14,$EF                         ; CC7E 14 EF                    ..
 ; ----------------------------------------------------------------------------
@@ -1651,7 +1848,7 @@ LowerFixedEngine_Branch_CC81:
 LowerFixedEngine_Entry_CC88:
         jsr     LowerFixedEngine_Entry_CF91     ; CC88 20 91 CF                  ..
         jsr     LowerFixedEngine_Entry_CC91     ; CC8B 20 91 CC                  ..
-        jmp     $CDC9                           ; CC8E 4C C9 CD                 L..
+        jmp     LowerFixedEngine_Branch_CDC9    ; CC8E 4C C9 CD                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CC91:
         jsr     LowerFixedEngine_Entry_D16F     ; CC91 20 6F D1                  o.
@@ -1795,25 +1992,36 @@ LowerFixedEngine_Entry_CD78:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CD85:
         lda     $0539                           ; CD85 AD 39 05                 .9.
-        bpl     $CD8E                           ; CD88 10 04                    ..
+        bpl     LowerFixedEngine_Branch_CD8E    ; CD88 10 04                    ..
         brk                                     ; CD8A 00                       .
         db   $07,$6F,$FF                     ; CD8B 07 6F FF                 .o.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CD8E:
         lda     #$00                            ; CD8E A9 00                    ..
         sta     $0539                           ; CD90 8D 39 05                 .9.
         lda     $0599                           ; CD93 AD 99 05                 ...
         and     #$F0                            ; CD96 29 F0                    ).
-        beq     $CDC8                           ; CD98 F0 2E                    ..
+        beq     LowerFixedEngine_Branch_CDC8    ; CD98 F0 2E                    ..
         ldy     #$BC                            ; CD9A A0 BC                    ..
         and     #$30                            ; CD9C 29 30                    )0
         bne     LowerFixedEngine_Branch_CDB6    ; CD9E D0 16                    ..
         dey                                     ; CDA0 88                       .
         ldx     #$00                            ; CDA1 A2 00                    ..
+LowerFixedEngine_Branch_CDA3:
         brk                                     ; CDA3 00                       .
-        db   $2B,$63,$41,$C9,$08,$B0,$04,$E8 ; CDA4 2B 63 41 C9 08 B0 04 E8  +cA.....
-        db   $4C,$A3,$CD,$86,$6E,$00,$2E,$0F ; CDAC 4C A3 CD 86 6E 00 2E 0F  L...n...
-        db   $85,$F9                         ; CDB4 85 F9                    ..
+        db   $2B,$63,$41                     ; CDA4 2B 63 41                 +cA
 ; ----------------------------------------------------------------------------
+        cmp     #$08                            ; CDA7 C9 08                    ..
+        bcs     LowerFixedEngine_Branch_CDAF    ; CDA9 B0 04                    ..
+        inx                                     ; CDAB E8                       .
+        jmp     LowerFixedEngine_Branch_CDA3    ; CDAC 4C A3 CD                 L..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CDAF:
+        stx     $6E                             ; CDAF 86 6E                    .n
+        brk                                     ; CDB1 00                       .
+        db   $2E,$0F                         ; CDB2 2E 0F                    ..
+; ----------------------------------------------------------------------------
+        sta     $F9                             ; CDB4 85 F9                    ..
 LowerFixedEngine_Branch_CDB6:
         tya                                     ; CDB6 98                       .
         ldx     #$03                            ; CDB7 A2 03                    ..
@@ -1821,10 +2029,15 @@ LowerFixedEngine_Branch_CDB6:
         ldx     #$03                            ; CDBC A2 03                    ..
         lda     #$BD                            ; CDBE A9 BD                    ..
         brk                                     ; CDC0 00                       .
-        db   $04,$6F,$20,$F0,$D1,$68,$68     ; CDC1 04 6F 20 F0 D1 68 68     .o ..hh
+        db   $04,$6F                         ; CDC1 04 6F                    .o
 ; ----------------------------------------------------------------------------
+        jsr     LowerFixedEngine_Entry_D1F0     ; CDC3 20 F0 D1                  ..
+        pla                                     ; CDC6 68                       h
+        pla                                     ; CDC7 68                       h
+LowerFixedEngine_Branch_CDC8:
         rts                                     ; CDC8 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CDC9:
         lda     $7001                           ; CDC9 AD 01 70                 ..p
         and     #$03                            ; CDCC 29 03                    ).
         sta     $0528                           ; CDCE 8D 28 05                 .(.
@@ -1858,44 +2071,53 @@ LowerFixedEngine_Branch_CE08:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CE09:
         cmp     #$00                            ; CE09 C9 00                    ..
-        bne     $CE50                           ; CE0B D0 43                    .C
+        bne     LowerFixedEngine_Branch_CE50    ; CE0B D0 43                    .C
         lda     $41                             ; CE0D A5 41                    .A
-        bpl     $CE80                           ; CE0F 10 6F                    .o
+        bpl     LowerFixedEngine_Branch_CE80    ; CE0F 10 6F                    .o
         lda     PlayerLocalX                    ; CE11 A5 44                    .D
         sta     $6FA0                           ; CE13 8D A0 6F                 ..o
         lda     PlayerLocalY                    ; CE16 A5 45                    .E
         sta     $6FC0                           ; CE18 8D C0 6F                 ..o
         lda     $0527                           ; CE1B AD 27 05                 .'.
-        beq     $CE31                           ; CE1E F0 11                    ..
+        beq     LowerFixedEngine_Branch_CE31    ; CE1E F0 11                    ..
         bmi     LowerFixedEngine_Branch_CE2E    ; CE20 30 0C                    0.
         sta     $0515                           ; CE22 8D 15 05                 ...
         brk                                     ; CE25 00                       .
-        db   $00,$EF,$00,$04,$EF,$4C,$31,$CE ; CE26 00 EF 00 04 EF 4C 31 CE  .....L1.
+        db   $00,$EF                         ; CE26 00 EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; CE28 00                       .
+        db   $04,$EF                         ; CE29 04 EF                    ..
+; ----------------------------------------------------------------------------
+        jmp     LowerFixedEngine_Branch_CE31    ; CE2B 4C 31 CE                 L1.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE2E:
         jsr     LowerFixedEngine_Entry_CE72     ; CE2E 20 72 CE                  r.
+LowerFixedEngine_Branch_CE31:
         jsr     LowerFixedEngine_Entry_CF56     ; CE31 20 56 CF                  V.
         brk                                     ; CE34 00                       .
         db   $00,$BF                         ; CE35 00 BF                    ..
 ; ----------------------------------------------------------------------------
-        bcs     $CE47                           ; CE37 B0 0E                    ..
+        bcs     LowerFixedEngine_Branch_CE47    ; CE37 B0 0E                    ..
         jsr     LowerFixedEngine_Entry_CF5F     ; CE39 20 5F CF                  _.
         jsr     LowerFixedEngine_Entry_CEBE     ; CE3C 20 BE CE                  ..
-        bcs     $CE4A                           ; CE3F B0 09                    ..
+        bcs     LowerFixedEngine_Branch_CE4A    ; CE3F B0 09                    ..
         jsr     LowerFixedEngine_Entry_CF8D     ; CE41 20 8D CF                  ..
-        jmp     $CE4A                           ; CE44 4C 4A CE                 LJ.
+        jmp     LowerFixedEngine_Branch_CE4A    ; CE44 4C 4A CE                 LJ.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CE47:
         jsr     LowerFixedEngine_Entry_CF56     ; CE47 20 56 CF                  V.
+LowerFixedEngine_Branch_CE4A:
         jsr     LowerFixedEngine_Entry_CEA9     ; CE4A 20 A9 CE                  ..
         jmp     LowerFixedEngine_Entry_C010     ; CE4D 4C 10 C0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CE50:
         tax                                     ; CE50 AA                       .
         lda     $3C                             ; CE51 A5 3C                    .<
         and     #$0F                            ; CE53 29 0F                    ).
         cmp     #$0F                            ; CE55 C9 0F                    ..
         bne     LowerFixedEngine_Branch_CE68    ; CE57 D0 0F                    ..
         bit     $41                             ; CE59 24 41                    $A
-        bmi     $CE69                           ; CE5B 30 0C                    0.
+        bmi     LowerFixedEngine_Branch_CE69    ; CE5B 30 0C                    0.
         lda     $052C                           ; CE5D AD 2C 05                 .,.
         ora     $052D                           ; CE60 0D 2D 05                 .-.
         beq     LowerFixedEngine_Branch_CE68    ; CE63 F0 03                    ..
@@ -1905,6 +2127,7 @@ LowerFixedEngine_Branch_CE2E:
 LowerFixedEngine_Branch_CE68:
         rts                                     ; CE68 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CE69:
         cpx     #$FF                            ; CE69 E0 FF                    ..
         bne     LowerFixedEngine_Branch_CE68    ; CE6B D0 FB                    ..
         lda     $0527                           ; CE6D AD 27 05                 .'.
@@ -1916,13 +2139,23 @@ LowerFixedEngine_Entry_CE72:
         ldx     $0594                           ; CE7A AE 94 05                 ...
         jmp     LowerFixedEngine_Entry_D207     ; CE7D 4C 07 D2                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CE80:
         jsr     LowerFixedEngine_Entry_CF56     ; CE80 20 56 CF                  V.
         lda     $0527                           ; CE83 AD 27 05                 .'.
         beq     LowerFixedEngine_Branch_CE9A    ; CE86 F0 12                    ..
         sta     $0515                           ; CE88 8D 15 05                 ...
         brk                                     ; CE8B 00                       .
-        db   $09,$FB,$A9,$20,$8D,$34,$05,$00 ; CE8C 09 FB A9 20 8D 34 05 00  ... .4..
-        db   $00,$EF,$00,$04,$EF,$60         ; CE94 00 EF 00 04 EF 60        .....`
+        db   $09,$FB                         ; CE8C 09 FB                    ..
+; ----------------------------------------------------------------------------
+        lda     #$20                            ; CE8E A9 20                    .
+        sta     $0534                           ; CE90 8D 34 05                 .4.
+        brk                                     ; CE93 00                       .
+        db   $00,$EF                         ; CE94 00 EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; CE96 00                       .
+        db   $04,$EF                         ; CE97 04 EF                    ..
+; ----------------------------------------------------------------------------
+        rts                                     ; CE99 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE9A:
         jsr     LowerFixedEngine_Entry_CF03     ; CE9A 20 03 CF                  ..
@@ -1934,10 +2167,11 @@ LowerFixedEngine_Branch_CE9A:
 LowerFixedEngine_Entry_CEA9:
         lda     Bank0F_LowerFixedEngine         ; CEA9 AD 00 C0                 ...
         and     #$40                            ; CEAC 29 40                    )@
-        bne     $CEB6                           ; CEAE D0 06                    ..
+        bne     LowerFixedEngine_Branch_CEB6    ; CEAE D0 06                    ..
         lda     ButtonsPressed                  ; CEB0 A5 14                    ..
         and     #$08                            ; CEB2 29 08                    ).
         beq     LowerFixedEngine_Branch_CEBD    ; CEB4 F0 07                    ..
+LowerFixedEngine_Branch_CEB6:
         tsx                                     ; CEB6 BA                       .
         stx     $051B                           ; CEB7 8E 1B 05                 ...
         brk                                     ; CEBA 00                       .
@@ -1950,14 +2184,16 @@ LowerFixedEngine_Entry_CEBE:
         lda     $059E                           ; CEBE AD 9E 05                 ...
         ldx     #$00                            ; CEC1 A2 00                    ..
         and     #$7F                            ; CEC3 29 7F                    ).
+LowerFixedEngine_Branch_CEC5:
         cmp     $CEF8,x                         ; CEC5 DD F8 CE                 ...
-        beq     $CED1                           ; CEC8 F0 07                    ..
+        beq     LowerFixedEngine_Branch_CED1    ; CEC8 F0 07                    ..
         inx                                     ; CECA E8                       .
         cpx     #$0B                            ; CECB E0 0B                    ..
-        bcc     $CEC5                           ; CECD 90 F6                    ..
+        bcc     LowerFixedEngine_Branch_CEC5    ; CECD 90 F6                    ..
         clc                                     ; CECF 18                       .
         rts                                     ; CED0 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CED1:
         cpx     #$06                            ; CED1 E0 06                    ..
         beq     LowerFixedEngine_Branch_CEF3    ; CED3 F0 1E                    ..
         cpx     #$08                            ; CED5 E0 08                    ..
@@ -1967,19 +2203,33 @@ LowerFixedEngine_Entry_CEBE:
         cpx     #$0A                            ; CEDD E0 0A                    ..
         beq     LowerFixedEngine_Branch_CEEE    ; CEDF F0 0D                    ..
         brk                                     ; CEE1 00                       .
-        db   $0D,$EF,$38,$60                 ; CEE2 0D EF 38 60              ..8`
+        db   $0D,$EF                         ; CEE2 0D EF                    ..
+; ----------------------------------------------------------------------------
+        sec                                     ; CEE4 38                       8
+        rts                                     ; CEE5 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CEE6:
         brk                                     ; CEE6 00                       .
-        db   $1B,$EF,$20,$BE,$CE,$38,$60     ; CEE7 1B EF 20 BE CE 38 60     .. ..8`
+        db   $1B,$EF                         ; CEE7 1B EF                    ..
+; ----------------------------------------------------------------------------
+        jsr     LowerFixedEngine_Entry_CEBE     ; CEE9 20 BE CE                  ..
+        sec                                     ; CEEC 38                       8
+        rts                                     ; CEED 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CEEE:
         brk                                     ; CEEE 00                       .
-        db   $21,$EF,$38,$60                 ; CEEF 21 EF 38 60              !.8`
+        db   $21,$EF                         ; CEEF 21 EF                    !.
+; ----------------------------------------------------------------------------
+        sec                                     ; CEF1 38                       8
+        rts                                     ; CEF2 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CEF3:
         brk                                     ; CEF3 00                       .
-        db   $09,$BF,$38,$60                 ; CEF4 09 BF 38 60              ..8`
+        db   $09,$BF                         ; CEF4 09 BF                    ..
+; ----------------------------------------------------------------------------
+        sec                                     ; CEF6 38                       8
+        rts                                     ; CEF7 60                       `
+; ----------------------------------------------------------------------------
         db   $06,$07,$08,$09,$25,$26,$0A,$0C ; CEF8 06 07 08 09 25 26 0A 0C  ....%&..
         db   $05,$0B,$0F                     ; CF00 05 0B 0F                 ...
 ; ----------------------------------------------------------------------------
@@ -2016,7 +2266,14 @@ LowerFixedEngine_Branch_CF37:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CF38:
         brk                                     ; CF38 00                       .
-        db   $10,$87,$90,$03,$00,$06,$EF,$60 ; CF39 10 87 90 03 00 06 EF 60  .......`
+        db   $10,$87                         ; CF39 10 87                    ..
+; ----------------------------------------------------------------------------
+        bcc     LowerFixedEngine_Branch_CF40    ; CF3B 90 03                    ..
+        brk                                     ; CF3D 00                       .
+        db   $06,$EF                         ; CF3E 06 EF                    ..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CF40:
+        rts                                     ; CF40 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CF41:
         lda     SaveCurrentChapterMinus1        ; CF41 AD 5A 61                 .Za
@@ -2033,10 +2290,11 @@ LowerFixedEngine_Branch_CF55:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CF56:
         lda     $0515                           ; CF56 AD 15 05                 ...
-        bne     $CF5E                           ; CF59 D0 03                    ..
+        bne     LowerFixedEngine_Branch_CF5E    ; CF59 D0 03                    ..
         brk                                     ; CF5B 00                       .
         db   $16,$EF                         ; CF5C 16 EF                    ..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CF5E:
         rts                                     ; CF5E 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_CF5F:
@@ -2047,11 +2305,20 @@ LowerFixedEngine_Entry_CF5F:
         sta     $46                             ; CF68 85 46                    .F
         ldx     #$00                            ; CF6A A2 00                    ..
         cmp     $47                             ; CF6C C5 47                    .G
-        beq     $CF7D                           ; CF6E F0 0D                    ..
+        beq     LowerFixedEngine_Branch_CF7D    ; CF6E F0 0D                    ..
         brk                                     ; CF70 00                       .
-        db   $00,$87,$90,$03,$00,$1C,$EF,$00 ; CF71 00 87 90 03 00 1C EF 00  ........
-        db   $0A,$EF,$A2,$10                 ; CF79 0A EF A2 10              ....
+        db   $00,$87                         ; CF71 00 87                    ..
 ; ----------------------------------------------------------------------------
+        bcc     LowerFixedEngine_Branch_CF78    ; CF73 90 03                    ..
+        brk                                     ; CF75 00                       .
+        db   $1C,$EF                         ; CF76 1C EF                    ..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CF78:
+        brk                                     ; CF78 00                       .
+        db   $0A,$EF                         ; CF79 0A EF                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$10                            ; CF7B A2 10                    ..
+LowerFixedEngine_Branch_CF7D:
         lda     $627D                           ; CF7D AD 7D 62                 .}b
         and     #$EF                            ; CF80 29 EF                    ).
         sta     $627D                           ; CF82 8D 7D 62                 .}b
@@ -2077,9 +2344,10 @@ LowerFixedEngine_Entry_CF91:
         jsr     LowerFixedEngine_Entry_D7FC     ; CFA2 20 FC D7                  ..
         jsr     LowerFixedEngine_Entry_D16F     ; CFA5 20 6F D1                  o.
         bit     $41                             ; CFA8 24 41                    $A
-        bpl     $CFAF                           ; CFAA 10 03                    ..
-        jmp     $D050                           ; CFAC 4C 50 D0                 LP.
+        bpl     LowerFixedEngine_Branch_CFAF    ; CFAA 10 03                    ..
+        jmp     LowerFixedEngine_Branch_D050    ; CFAC 4C 50 D0                 LP.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_CFAF:
         tay                                     ; CFAF A8                       .
         lda     $52                           ; CFB0 A5 52                    .R
         tax                                     ; CFB2 AA                       .
@@ -2122,7 +2390,9 @@ LowerFixedEngine_Branch_CFF3:
         cmp     $53                             ; CFFD C5 53                    .S
         bne     LowerFixedEngine_Branch_D007    ; CFFF D0 06                    ..
         brk                                     ; D001 00                       .
-        db   $81,$FB,$4C,$13,$D0             ; D002 81 FB 4C 13 D0           ..L..
+        db   $81,$FB                         ; D002 81 FB                    ..
+; ----------------------------------------------------------------------------
+        jmp     LowerFixedEngine_Branch_D013    ; D004 4C 13 D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D007:
         dex                                     ; D007 CA                       .
@@ -2137,7 +2407,7 @@ LowerFixedEngine_Branch_D010:
         db   $A2,$FB                         ; D011 A2 FB                    ..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D013:
-        jmp     $D0C4                           ; D013 4C C4 D0                 L..
+        jmp     LowerFixedEngine_Branch_D0C4    ; D013 4C C4 D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D016:
         cmp     #$01                            ; D016 C9 01                    ..
@@ -2152,26 +2422,40 @@ LowerFixedEngine_Branch_D01A:
         bne     LowerFixedEngine_Branch_D013    ; D027 D0 EA                    ..
         sta     $0515                           ; D029 8D 15 05                 ...
         brk                                     ; D02C 00                       .
-        db   $59,$33,$AD,$34,$05,$29,$1F,$8D ; D02D 59 33 AD 34 05 29 1F 8D  Y3.4.)..
-        db   $34,$05,$AD,$88,$62,$30,$03,$00 ; D035 34 05 AD 88 62 30 03 00  4...b0..
-        db   $09,$9F,$00,$0E,$EF,$20,$F1,$DF ; D03D 09 9F 00 0E EF 20 F1 DF  ..... ..
-        db   $AD,$00,$70,$09                 ; D045 AD 00 70 09              ..p.
+        db   $59,$33                         ; D02D 59 33                    Y3
 ; ----------------------------------------------------------------------------
-        rti                                     ; D049 40                       @
+        lda     $0534                           ; D02F AD 34 05                 .4.
+        and     #$1F                            ; D032 29 1F                    ).
+        sta     $0534                           ; D034 8D 34 05                 .4.
+        lda     $6288                           ; D037 AD 88 62                 ..b
+        bmi     LowerFixedEngine_Branch_D03F    ; D03A 30 03                    0.
+        brk                                     ; D03C 00                       .
+        db   $09,$9F                         ; D03D 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        db   $8D,$00,$70,$4C,$0A,$D0         ; D04A 8D 00 70 4C 0A D0        ..pL..
+LowerFixedEngine_Branch_D03F:
+        brk                                     ; D03F 00                       .
+        db   $0E,$EF                         ; D040 0E EF                    ..
 ; ----------------------------------------------------------------------------
+        jsr     LowerFixedEngine_Entry_DFF1     ; D042 20 F1 DF                  ..
+        lda     $7000                           ; D045 AD 00 70                 ..p
+        ora     #$40                            ; D048 09 40                    .@
+LowerFixedEngine_Entry_D04A:
+        sta     $7000                           ; D04A 8D 00 70                 ..p
+        jmp     LowerFixedEngine_Branch_D00A    ; D04D 4C 0A D0                 L..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D050:
         pha                                     ; D050 48                       H
         lda     $52                           ; D051 A5 52                    .R
         pha                                     ; D053 48                       H
         lda     CurrentMapNumber                ; D054 A5 63                    .c
         cmp     #$3E                            ; D056 C9 3E                    .>
-        beq     $D05E                           ; D058 F0 04                    ..
+        beq     LowerFixedEngine_Branch_D05E    ; D058 F0 04                    ..
         lda     $56                             ; D05A A5 56                    .V
         bne     LowerFixedEngine_Branch_D080    ; D05C D0 22                    ."
+LowerFixedEngine_Branch_D05E:
         lda     $0515                           ; D05E AD 15 05                 ...
         cmp     #$01                            ; D061 C9 01                    ..
-        bne     $D075                           ; D063 D0 10                    ..
+        bne     LowerFixedEngine_Branch_D075    ; D063 D0 10                    ..
         lda     $0534                           ; D065 AD 34 05                 .4.
         and     #$1F                            ; D068 29 1F                    ).
         tax                                     ; D06A AA                       .
@@ -2179,11 +2463,12 @@ LowerFixedEngine_Branch_D01A:
         and     #$FC                            ; D06E 29 FC                    ).
         ora     $3D                             ; D070 05 3D                    .=
         sta     $7000,x                         ; D072 9D 00 70                 ..p
+LowerFixedEngine_Branch_D075:
         lda     #$00                            ; D075 A9 00                    ..
         sta     $51                             ; D077 85 51                    .Q
         ldx     #$06                            ; D079 A2 06                    ..
         jsr     LowerFixedEngine_Entry_D724     ; D07B 20 24 D7                  $.
-        bcs     $D0EF                           ; D07E B0 6F                    .o
+        bcs     LowerFixedEngine_Branch_D0EF    ; D07E B0 6F                    .o
 LowerFixedEngine_Branch_D080:
         pla                                     ; D080 68                       h
         tax                                     ; D081 AA                       .
@@ -2196,19 +2481,20 @@ LowerFixedEngine_Branch_D080:
         lda     $0527                           ; D08B AD 27 05                 .'.
         bne     LowerFixedEngine_Branch_D0B8    ; D08E D0 28                    .(
         lda     $0515                           ; D090 AD 15 05                 ...
-        bne     $D0BD                           ; D093 D0 28                    .(
+        bne     LowerFixedEngine_Branch_D0BD    ; D093 D0 28                    .(
         lda     $6F40,x                         ; D095 BD 40 6F                 .@o
         sta     $059E                           ; D098 8D 9E 05                 ...
         lda     Bank0F_LowerFixedEngine         ; D09B AD 00 C0                 ...
-        bmi     $D0A6                           ; D09E 30 06                    0.
+        bmi     LowerFixedEngine_Branch_D0A6    ; D09E 30 06                    0.
         lda     ButtonsPressed                  ; D0A0 A5 14                    ..
         and     #$02                            ; D0A2 29 02                    ).
         bne     LowerFixedEngine_Branch_D0B8    ; D0A4 D0 12                    ..
+LowerFixedEngine_Branch_D0A6:
         lda     $059E                           ; D0A6 AD 9E 05                 ...
         cmp     #$83                            ; D0A9 C9 83                    ..
-        beq     $D0C4                           ; D0AB F0 17                    ..
+        beq     LowerFixedEngine_Branch_D0C4    ; D0AB F0 17                    ..
         cmp     #$B0                            ; D0AD C9 B0                    ..
-        beq     $D0C9                           ; D0AF F0 18                    ..
+        beq     LowerFixedEngine_Branch_D0C9    ; D0AF F0 18                    ..
         and     #$80                            ; D0B1 29 80                    ).
         beq     LowerFixedEngine_Branch_D0B8    ; D0B3 F0 03                    ..
 LowerFixedEngine_Branch_D0B5:
@@ -2219,18 +2505,21 @@ LowerFixedEngine_Branch_D0B8:
         jsr     LowerFixedEngine_Entry_D1C9     ; D0B9 20 C9 D1                  ..
         rts                                     ; D0BC 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D0BD:
         sty     $54                             ; D0BD 84 54                    .T
         jmp     LowerFixedEngine_Branch_D01A    ; D0BF 4C 1A D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D0C2:
         pla                                     ; D0C2 68                       h
         pla                                     ; D0C3 68                       h
+LowerFixedEngine_Branch_D0C4:
         pla                                     ; D0C4 68                       h
         pla                                     ; D0C5 68                       h
         pla                                     ; D0C6 68                       h
         pla                                     ; D0C7 68                       h
         rts                                     ; D0C8 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D0C9:
         lda     CurrentMapNumber                ; D0C9 A5 63                    .c
         cmp     #$37                            ; D0CB C9 37                    .7
         bne     LowerFixedEngine_Branch_D0B5    ; D0CD D0 E6                    ..
@@ -2240,16 +2529,24 @@ LowerFixedEngine_Branch_D0C2:
         and     #$C0                            ; D0D8 29 C0                    ).
         bne     LowerFixedEngine_Branch_D0E2    ; D0DA D0 06                    ..
         brk                                     ; D0DC 00                       .
-        db   $3F,$EF,$4C,$B8,$D0             ; D0DD 3F EF 4C B8 D0           ?.L..
+        db   $3F,$EF                         ; D0DD 3F EF                    ?.
+; ----------------------------------------------------------------------------
+        jmp     LowerFixedEngine_Branch_D0B8    ; D0DF 4C B8 D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D0E2:
         brk                                     ; D0E2 00                       .
-        db   $07,$6F,$43,$00,$C2,$4B,$20,$0A ; D0E3 07 6F 43 00 C2 4B 20 0A  .oC..K .
-        db   $D2,$4C,$10,$D0                 ; D0EB D2 4C 10 D0              .L..
+        db   $07,$6F,$43                     ; D0E3 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
+        brk                                     ; D0E6 00                       .
+        db   $C2,$4B                         ; D0E7 C2 4B                    .K
+; ----------------------------------------------------------------------------
+        jsr     LowerFixedEngine_Entry_D20A     ; D0E9 20 0A D2                  ..
+        jmp     LowerFixedEngine_Branch_D010    ; D0EC 4C 10 D0                 L..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D0EF:
         lda     $70E0,x                         ; D0EF BD E0 70                 ..p
         and     #$08                            ; D0F2 29 08                    ).
-        beq     $D14A                           ; D0F4 F0 54                    .T
+        beq     LowerFixedEngine_Branch_D14A    ; D0F4 F0 54                    .T
         lda     #$00                            ; D0F6 A9 00                    ..
         sta     $7E                             ; D0F8 85 7E                    .~
         lda     $3D                             ; D0FA A5 3D                    .=
@@ -2297,6 +2594,7 @@ LowerFixedEngine_Branch_D141:
         and     #$03                            ; D145 29 03                    ).
         jmp     LowerFixedEngine_Branch_D0FC    ; D147 4C FC D0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D14A:
         lda     $70E0,x                         ; D14A BD E0 70                 ..p
         and     #$07                            ; D14D 29 07                    ).
         beq     LowerFixedEngine_Branch_D16C    ; D14F F0 1B                    ..
@@ -2380,13 +2678,15 @@ LowerFixedEngine_Entry_D1C9:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D1E1:
         lda     $07BB                           ; D1E1 AD BB 07                 ...
-        bpl     $D1EC                           ; D1E4 10 06                    ..
+        bpl     LowerFixedEngine_Branch_D1EC    ; D1E4 10 06                    ..
         jsr     LowerFixedEngine_Entry_E3E2     ; D1E6 20 E2 E3                  ..
         jsr     LowerFixedEngine_Entry_FF74     ; D1E9 20 74 FF                  t.
+LowerFixedEngine_Branch_D1EC:
         rts                                     ; D1EC 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D1ED:
         jsr     LowerFixedEngine_Entry_D1FD     ; D1ED 20 FD D1                  ..
+LowerFixedEngine_Entry_D1F0:
         jsr     LowerFixedEngine_Entry_C8CC     ; D1F0 20 CC C8                  ..
 LowerFixedEngine_Entry_D1F3:
         lda     #$00                            ; D1F3 A9 00                    ..
@@ -2409,24 +2709,32 @@ LowerFixedEngine_Entry_D1FD:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D207:
         jsr     LowerFixedEngine_Entry_D1FD     ; D207 20 FD D1                  ..
+LowerFixedEngine_Entry_D20A:
         jsr     LowerFixedEngine_Entry_D218     ; D20A 20 18 D2                  ..
         jmp     LowerFixedEngine_Entry_D1F3     ; D20D 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-        db   $A9,$3C,$D0,$06,$A9,$78,$D0,$02 ; D210 A9 3C D0 06 A9 78 D0 02  .<...x..
+LowerFixedEngine_Entry_D210:
+        lda     #$3C                            ; D210 A9 3C                    .<
+        bne     LowerFixedEngine_Branch_D21A    ; D212 D0 06                    ..
+        db   $A9,$78,$D0,$02                 ; D214 A9 78 D0 02              .x..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D218:
         lda     #$B4                            ; D218 A9 B4                    ..
+LowerFixedEngine_Branch_D21A:
         sta     $00                             ; D21A 85 00                    ..
+LowerFixedEngine_Branch_D21C:
         jsr     LowerFixedEngine_Entry_D230     ; D21C 20 30 D2                  0.
-        beq     $D226                           ; D21F F0 05                    ..
+        beq     LowerFixedEngine_Branch_D226    ; D21F F0 05                    ..
         dec     $00                             ; D221 C6 00                    ..
-        bne     $D21C                           ; D223 D0 F7                    ..
+        bne     LowerFixedEngine_Branch_D21C    ; D223 D0 F7                    ..
         rts                                     ; D225 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D226:
         jsr     LowerFixedEngine_Entry_D230     ; D226 20 30 D2                  0.
-        bne     $D22F                           ; D229 D0 04                    ..
+        bne     LowerFixedEngine_Branch_D22F    ; D229 D0 04                    ..
         dec     $00                             ; D22B C6 00                    ..
-        bne     $D226                           ; D22D D0 F7                    ..
+        bne     LowerFixedEngine_Branch_D226    ; D22D D0 F7                    ..
+LowerFixedEngine_Branch_D22F:
         rts                                     ; D22F 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D230:
@@ -2440,9 +2748,10 @@ LowerFixedEngine_Entry_D230:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D241:
         lda     $62A5                           ; D241 AD A5 62                 ..b
-        bmi     $D249                           ; D244 30 03                    0.
+        bmi     LowerFixedEngine_Branch_D249    ; D244 30 03                    0.
         jmp     LowerFixedEngine_Entry_C8EC     ; D246 4C EC C8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D249:
         lda     #$00                            ; D249 A9 00                    ..
         sta     ButtonsPressed                  ; D24B 85 14                    ..
         sta     $0529                           ; D24D 8D 29 05                 .).
@@ -2469,9 +2778,17 @@ LowerFixedEngine_Entry_D266:
         jsr     LowerFixedEngine_Entry_D523     ; D273 20 23 D5                  #.
         rts                                     ; D276 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$07,$05,$85,$04,$A9,$0B,$20 ; D277 AD 07 05 85 04 A9 0B 20  .......
-        db   $91,$FF,$20,$8C,$D2,$48,$A5,$04 ; D27F 91 FF 20 8C D2 48 A5 04  .. ..H..
-        db   $20,$91,$FF,$68,$60             ; D287 20 91 FF 68 60            ..h`
+LowerFixedEngine_Entry_D277:
+        lda     $0507                           ; D277 AD 07 05                 ...
+        sta     $04                             ; D27A 85 04                    ..
+        lda     #$0B                            ; D27C A9 0B                    ..
+        jsr     LowerFixedEngine_Entry_FF91     ; D27E 20 91 FF                  ..
+        jsr     LowerFixedEngine_Entry_D28C     ; D281 20 8C D2                  ..
+        pha                                     ; D284 48                       H
+        lda     $04                             ; D285 A5 04                    ..
+        jsr     LowerFixedEngine_Entry_FF91     ; D287 20 91 FF                  ..
+        pla                                     ; D28A 68                       h
+        rts                                     ; D28B 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D28C:
         stx     $00                             ; D28C 86 00                    ..
@@ -2707,9 +3024,9 @@ LowerFixedEngine_Branch_D3D9:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D3E6:
         cpx     $3F                             ; D3E6 E4 3F                    .?
-        bcs     $D410                           ; D3E8 B0 26                    .&
+        bcs     LowerFixedEngine_Branch_D410    ; D3E8 B0 26                    .&
         cpy     $40                             ; D3EA C4 40                    .@
-        bcs     $D410                           ; D3EC B0 22                    ."
+        bcs     LowerFixedEngine_Branch_D410    ; D3EC B0 22                    ."
         txa                                     ; D3EE 8A                       .
         pha                                     ; D3EF 48                       H
         lda     $3F                             ; D3F0 A5 3F                    .?
@@ -2729,6 +3046,7 @@ LowerFixedEngine_Entry_D3E6:
         lda     ($00),y                         ; D40D B1 00                    ..
         rts                                     ; D40F 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D410:
         lda     #$FF                            ; D410 A9 FF                    ..
         sta     $00                             ; D412 85 00                    ..
         sta     $01                             ; D414 85 01                    ..
@@ -2737,9 +3055,9 @@ LowerFixedEngine_Entry_D3E6:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D41A:
         cpx     $3F                             ; D41A E4 3F                    .?
-        bcs     $D410                           ; D41C B0 F2                    ..
+        bcs     LowerFixedEngine_Branch_D410    ; D41C B0 F2                    ..
         cpy     $40                             ; D41E C4 40                    .@
-        bcs     $D410                           ; D420 B0 EE                    ..
+        bcs     LowerFixedEngine_Branch_D410    ; D420 B0 EE                    ..
         ldy     #$00                            ; D422 A0 00                    ..
         lda     ($00),y                         ; D424 B1 00                    ..
 LowerFixedEngine_Entry_D426:
@@ -2747,18 +3065,19 @@ LowerFixedEngine_Entry_D426:
         lda     $00                             ; D427 A5 00                    ..
         and     $01                             ; D429 25 01                    %.
         cmp     #$FF                            ; D42B C9 FF                    ..
-        beq     $D435                           ; D42D F0 06                    ..
+        beq     LowerFixedEngine_Branch_D435    ; D42D F0 06                    ..
         inc     $00                             ; D42F E6 00                    ..
-        bne     $D435                           ; D431 D0 02                    ..
+        bne     LowerFixedEngine_Branch_D435    ; D431 D0 02                    ..
         inc     $01                             ; D433 E6 01                    ..
+LowerFixedEngine_Branch_D435:
         pla                                     ; D435 68                       h
         rts                                     ; D436 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D437:
         cpx     $3F                             ; D437 E4 3F                    .?
-        bcs     $D410                           ; D439 B0 D5                    ..
+        bcs     LowerFixedEngine_Branch_D410    ; D439 B0 D5                    ..
         cpy     $40                             ; D43B C4 40                    .@
-        bcs     $D410                           ; D43D B0 D1                    ..
+        bcs     LowerFixedEngine_Branch_D410    ; D43D B0 D1                    ..
         ldy     #$00                            ; D43F A0 00                    ..
         lda     ($00),y                         ; D441 B1 00                    ..
 LowerFixedEngine_Entry_D443:
@@ -2766,13 +3085,14 @@ LowerFixedEngine_Entry_D443:
         lda     $00                             ; D444 A5 00                    ..
         and     $01                             ; D446 25 01                    %.
         cmp     #$FF                            ; D448 C9 FF                    ..
-        beq     $D457                           ; D44A F0 0B                    ..
+        beq     LowerFixedEngine_Branch_D457    ; D44A F0 0B                    ..
         lda     $00                             ; D44C A5 00                    ..
         clc                                     ; D44E 18                       .
         adc     $3F                             ; D44F 65 3F                    e?
         sta     $00                             ; D451 85 00                    ..
-        bcc     $D457                           ; D453 90 02                    ..
+        bcc     LowerFixedEngine_Branch_D457    ; D453 90 02                    ..
         inc     $01                             ; D455 E6 01                    ..
+LowerFixedEngine_Branch_D457:
         pla                                     ; D457 68                       h
         rts                                     ; D458 60                       `
 ; ----------------------------------------------------------------------------
@@ -2874,12 +3194,13 @@ LowerFixedEngine_Entry_D4F3:
         beq     LowerFixedEngine_Branch_D515    ; D4F8 F0 1B                    ..
         lda     $07BA                           ; D4FA AD BA 07                 ...
         cmp     #$04                            ; D4FD C9 04                    ..
-        bne     $D50A                           ; D4FF D0 09                    ..
+        bne     LowerFixedEngine_Branch_D50A    ; D4FF D0 09                    ..
         pla                                     ; D501 68                       h
         pha                                     ; D502 48                       H
         and     #$1F                            ; D503 29 1F                    ).
         cmp     $0520                           ; D505 CD 20 05                 . .
         beq     LowerFixedEngine_Branch_D515    ; D508 F0 0B                    ..
+LowerFixedEngine_Branch_D50A:
         pla                                     ; D50A 68                       h
         lda     #$20                            ; D50B A9 20                    .
         ldx     $46                             ; D50D A6 46                    .F
@@ -2941,17 +3262,18 @@ LowerFixedEngine_Branch_D546:
         sta     $7B                             ; D55D 85 7B                    .{
         lda     $3C                             ; D55F A5 3C                    .<
         and     #$0F                            ; D561 29 0F                    ).
-        bne     $D588                           ; D563 D0 23                    .#
+        bne     LowerFixedEngine_Branch_D588    ; D563 D0 23                    .#
         lda     $41                             ; D565 A5 41                    .A
-        bmi     $D56C                           ; D567 30 03                    0.
+        bmi     LowerFixedEngine_Branch_D56C    ; D567 30 03                    0.
         jmp     LowerFixedEngine_Entry_C013     ; D569 4C 13 C0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D56C:
         lda     $67                             ; D56C A5 67                    .g
         jsr     LowerFixedEngine_Entry_FF91     ; D56E 20 91 FF                  ..
         jsr     LowerFixedEngine_Entry_D57F     ; D571 20 7F D5                  ..
         lda     $7024                           ; D574 AD 24 70                 .$p
         and     $7025                           ; D577 2D 25 70                 -%p
-        bmi     $D5AC                           ; D57A 30 30                    00
+        bmi     LowerFixedEngine_Branch_D5AC    ; D57A 30 30                    00
         jmp     LowerFixedEngine_Entry_C013     ; D57C 4C 13 C0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D57F:
@@ -2959,32 +3281,37 @@ LowerFixedEngine_Entry_D57F:
         jsr     LowerFixedEngine_Entry_D5EE     ; D582 20 EE D5                  ..
         jmp     LowerFixedEngine_Entry_D57F     ; D585 4C 7F D5                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D588:
         pha                                     ; D588 48                       H
         jsr     LowerFixedEngine_Entry_D5C0     ; D589 20 C0 D5                  ..
         pla                                     ; D58C 68                       h
         and     #$07                            ; D58D 29 07                    ).
-        bne     $D5AC                           ; D58F D0 1B                    ..
+        bne     LowerFixedEngine_Branch_D5AC    ; D58F D0 1B                    ..
         lda     $41                             ; D591 A5 41                    .A
-        bpl     $D598                           ; D593 10 03                    ..
+        bpl     LowerFixedEngine_Branch_D598    ; D593 10 03                    ..
         jsr     LowerFixedEngine_Entry_D5AD     ; D595 20 AD D5                  ..
+LowerFixedEngine_Branch_D598:
         ldx     #$00                            ; D598 A2 00                    ..
         jsr     LowerFixedEngine_Entry_D59D     ; D59A 20 9D D5                  ..
 LowerFixedEngine_Entry_D59D:
         lda     $052A,x                         ; D59D BD 2A 05                 .*.
         and     #$40                            ; D5A0 29 40                    )@
-        beq     $D5AB                           ; D5A2 F0 07                    ..
+        beq     LowerFixedEngine_Branch_D5AB    ; D5A2 F0 07                    ..
         asl     a                               ; D5A4 0A                       .
         ora     $7004,x                         ; D5A5 1D 04 70                 ..p
         sta     $7004,x                         ; D5A8 9D 04 70                 ..p
+LowerFixedEngine_Branch_D5AB:
         inx                                     ; D5AB E8                       .
+LowerFixedEngine_Branch_D5AC:
         rts                                     ; D5AC 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D5AD:
         lda     $67                             ; D5AD A5 67                    .g
         jsr     LowerFixedEngine_Entry_FF91     ; D5AF 20 91 FF                  ..
+LowerFixedEngine_Branch_D5B2:
         jsr     LowerFixedEngine_Entry_D5FE     ; D5B2 20 FE D5                  ..
         jsr     LowerFixedEngine_Entry_D5EE     ; D5B5 20 EE D5                  ..
-        jmp     $D5B2                           ; D5B8 4C B2 D5                 L..
+        jmp     LowerFixedEngine_Branch_D5B2    ; D5B8 4C B2 D5                 L..
 ; ----------------------------------------------------------------------------
         db   $A5,$58,$4C,$91,$FF             ; D5BB A5 58 4C 91 FF           .XL..
 ; ----------------------------------------------------------------------------
@@ -2992,7 +3319,7 @@ LowerFixedEngine_Entry_D5C0:
         ldx     $51                             ; D5C0 A6 51                    .Q
         lda     $7020,x                         ; D5C2 BD 20 70                 . p
         cmp     #$FF                            ; D5C5 C9 FF                    ..
-        beq     $D5E5                           ; D5C7 F0 1C                    ..
+        beq     LowerFixedEngine_Branch_D5E5    ; D5C7 F0 1C                    ..
         lda     $7160,x                         ; D5C9 BD 60 71                 .`q
         beq     LowerFixedEngine_Branch_D5DD    ; D5CC F0 0F                    ..
         bmi     LowerFixedEngine_Branch_D5DA    ; D5CE 30 0A                    0.
@@ -3008,6 +3335,7 @@ LowerFixedEngine_Branch_D5DD:
         lda     $51                             ; D5DF A5 51                    .Q
         cmp     #$1E                            ; D5E1 C9 1E                    ..
         bcc     LowerFixedEngine_Entry_D5C0     ; D5E3 90 DB                    ..
+LowerFixedEngine_Branch_D5E5:
         lda     #$06                            ; D5E5 A9 06                    ..
         sta     $51                             ; D5E7 85 51                    .Q
         rts                                     ; D5E9 60                       `
@@ -3020,30 +3348,33 @@ LowerFixedEngine_Entry_D5EE:
         inc     $51                             ; D5EE E6 51                    .Q
         lda     $51                             ; D5F0 A5 51                    .Q
         cmp     #$1E                            ; D5F2 C9 1E                    ..
-        bcc     $D5FD                           ; D5F4 90 07                    ..
+        bcc     LowerFixedEngine_Branch_D5FD    ; D5F4 90 07                    ..
+LowerFixedEngine_Branch_D5F6:
         lda     $58                             ; D5F6 A5 58                    .X
         jsr     LowerFixedEngine_Entry_FF91     ; D5F8 20 91 FF                  ..
 LowerFixedEngine_Branch_D5FB:
         pla                                     ; D5FB 68                       h
         pla                                     ; D5FC 68                       h
+LowerFixedEngine_Branch_D5FD:
         rts                                     ; D5FD 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D5FE:
         ldx     $51                             ; D5FE A6 51                    .Q
         lda     $70E0,x                         ; D600 BD E0 70                 ..p
         and     #$40                            ; D603 29 40                    )@
-        beq     $D5FD                           ; D605 F0 F6                    ..
+        beq     LowerFixedEngine_Branch_D5FD    ; D605 F0 F6                    ..
 LowerFixedEngine_Entry_D607:
         ldx     $51                             ; D607 A6 51                    .Q
         lda     $7020,x                         ; D609 BD 20 70                 . p
         cmp     #$FF                            ; D60C C9 FF                    ..
-        beq     $D5F6                           ; D60E F0 E6                    ..
+        beq     LowerFixedEngine_Branch_D5F6    ; D60E F0 E6                    ..
         jsr     LowerFixedEngine_Entry_D63B     ; D610 20 3B D6                  ;.
-        bcc     $D61B                           ; D613 90 06                    ..
+        bcc     LowerFixedEngine_Branch_D61B    ; D613 90 06                    ..
         jsr     LowerFixedEngine_Entry_D621     ; D615 20 21 D6                  !.
         jsr     LowerFixedEngine_Entry_D891     ; D618 20 91 D8                  ..
+LowerFixedEngine_Branch_D61B:
         jsr     LowerFixedEngine_Entry_D684     ; D61B 20 84 D6                  ..
-        jmp     $D76E                           ; D61E 4C 6E D7                 Ln.
+        jmp     LowerFixedEngine_Branch_D76E    ; D61E 4C 6E D7                 Ln.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D621:
         lda     $6F60,x                         ; D621 BD 60 6F                 .`o
@@ -3051,19 +3382,21 @@ LowerFixedEngine_Entry_D621:
         lda     $6F80,x                         ; D626 BD 80 6F                 ..o
         sta     $53                             ; D629 85 53                    .S
         jsr     LowerFixedEngine_Entry_D6F4     ; D62B 20 F4 D6                  ..
-        bcs     $D63A                           ; D62E B0 0A                    ..
+        bcs     LowerFixedEngine_Branch_D63A    ; D62E B0 0A                    ..
         ldx     $51                             ; D630 A6 51                    .Q
         lda     $7020,x                         ; D632 BD 20 70                 . p
         and     #$EF                            ; D635 29 EF                    ).
         sta     $7020,x                         ; D637 9D 20 70                 . p
+LowerFixedEngine_Branch_D63A:
         rts                                     ; D63A 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D63B:
         lda     $56                             ; D63B A5 56                    .V
-        beq     $D646                           ; D63D F0 07                    ..
+        beq     LowerFixedEngine_Branch_D646    ; D63D F0 07                    ..
         lda     $70E0,x                         ; D63F BD E0 70                 ..p
         and     #$10                            ; D642 29 10                    ).
         bne     LowerFixedEngine_Branch_D673    ; D644 D0 2D                    .-
+LowerFixedEngine_Branch_D646:
         lda     $7000,x                         ; D646 BD 00 70                 ..p
         bmi     LowerFixedEngine_Branch_D5FB    ; D649 30 B0                    0.
         lda     $7040,x                         ; D64B BD 40 70                 .@p
@@ -3100,11 +3433,13 @@ LowerFixedEngine_Entry_D684:
         php                                     ; D684 08                       .
         jsr     LowerFixedEngine_Entry_D752     ; D685 20 52 D7                  R.
         plp                                     ; D688 28                       (
-        bcc     $D690                           ; D689 90 05                    ..
+        bcc     LowerFixedEngine_Branch_D690    ; D689 90 05                    ..
         lda     $0530                           ; D68B AD 30 05                 .0.
-        bmi     $D695                           ; D68E 30 05                    0.
+        bmi     LowerFixedEngine_Branch_D695    ; D68E 30 05                    0.
+LowerFixedEngine_Branch_D690:
         jsr     LowerFixedEngine_Entry_D722     ; D690 20 22 D7                  ".
-        bcs     $D6D8                           ; D693 B0 43                    .C
+        bcs     LowerFixedEngine_Branch_D6D8    ; D693 B0 43                    .C
+LowerFixedEngine_Branch_D695:
         ldx     $52                           ; D695 A6 52                    .R
         ldy     $53                             ; D697 A4 53                    .S
         jsr     LowerFixedEngine_Entry_D3E6     ; D699 20 E6 D3                  ..
@@ -3128,11 +3463,12 @@ LowerFixedEngine_Entry_D6B6:
         ldx     $51                             ; D6BE A6 51                    .Q
         lda     $70E0,x                         ; D6C0 BD E0 70                 ..p
         and     #$07                            ; D6C3 29 07                    ).
-        beq     $D6CC                           ; D6C5 F0 05                    ..
+        beq     LowerFixedEngine_Branch_D6CC    ; D6C5 F0 05                    ..
         cpy     #$83                            ; D6C7 C0 83                    ..
         bne     LowerFixedEngine_Branch_D6D6    ; D6C9 D0 0B                    ..
         rts                                     ; D6CB 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D6CC:
         tya                                     ; D6CC 98                       .
         bmi     LowerFixedEngine_Branch_D6D6    ; D6CD 30 07                    0.
         and     #$7F                            ; D6CF 29 7F                    ).
@@ -3143,6 +3479,7 @@ LowerFixedEngine_Entry_D6B6:
 LowerFixedEngine_Branch_D6D6:
         pla                                     ; D6D6 68                       h
         pla                                     ; D6D7 68                       h
+LowerFixedEngine_Branch_D6D8:
         pla                                     ; D6D8 68                       h
         pla                                     ; D6D9 68                       h
         rts                                     ; D6DA 60                       `
@@ -3166,23 +3503,23 @@ LowerFixedEngine_Entry_D6E8:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D6F4:
         lda     $0539                           ; D6F4 AD 39 05                 .9.
-        bpl     $D720                           ; D6F7 10 27                    .'
+        bpl     LowerFixedEngine_Branch_D720    ; D6F7 10 27                    .'
         lda     $52                           ; D6F9 A5 52                    .R
         sec                                     ; D6FB 38                       8
         sbc     $7C                             ; D6FC E5 7C                    .|
         sta     $5F                             ; D6FE 85 5F                    ._
         cmp     #$10                            ; D700 C9 10                    ..
-        bcs     $D720                           ; D702 B0 1C                    ..
+        bcs     LowerFixedEngine_Branch_D720    ; D702 B0 1C                    ..
         lda     $53                             ; D704 A5 53                    .S
         sec                                     ; D706 38                       8
         sbc     $7B                             ; D707 E5 7B                    .{
         sta     $60                             ; D709 85 60                    .`
         cmp     #$0F                            ; D70B C9 0F                    ..
-        bcs     $D720                           ; D70D B0 11                    ..
+        bcs     LowerFixedEngine_Branch_D720    ; D70D B0 11                    ..
         brk                                     ; D70F 00                       .
         db   $0B,$6F                         ; D710 0B 6F                    .o
 ; ----------------------------------------------------------------------------
-        bcc     $D720                           ; D712 90 0C                    ..
+        bcc     LowerFixedEngine_Branch_D720    ; D712 90 0C                    ..
         ldx     $51                             ; D714 A6 51                    .Q
         lda     $7020,x                         ; D716 BD 20 70                 . p
         ora     #$10                            ; D719 09 10                    ..
@@ -3190,6 +3527,7 @@ LowerFixedEngine_Entry_D6F4:
         sec                                     ; D71E 38                       8
         rts                                     ; D71F 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D720:
         clc                                     ; D720 18                       .
         rts                                     ; D721 60                       `
 ; ----------------------------------------------------------------------------
@@ -3198,27 +3536,31 @@ LowerFixedEngine_Entry_D722:
 LowerFixedEngine_Entry_D724:
         lda     $6F60,x                         ; D724 BD 60 6F                 .`o
         cmp     $52                           ; D727 C5 52                    .R
-        bne     $D732                           ; D729 D0 07                    ..
+        bne     LowerFixedEngine_Branch_D732    ; D729 D0 07                    ..
         lda     $6F80,x                         ; D72B BD 80 6F                 ..o
         cmp     $53                             ; D72E C5 53                    .S
-        beq     $D743                           ; D730 F0 11                    ..
+        beq     LowerFixedEngine_Branch_D743    ; D730 F0 11                    ..
+LowerFixedEngine_Branch_D732:
         inx                                     ; D732 E8                       .
         cpx     #$1E                            ; D733 E0 1E                    ..
-        bcs     $D741                           ; D735 B0 0A                    ..
+        bcs     LowerFixedEngine_Branch_D741    ; D735 B0 0A                    ..
         lda     $6F60,x                         ; D737 BD 60 6F                 .`o
         and     $6F80,x                         ; D73A 3D 80 6F                 =.o
         cmp     #$FF                            ; D73D C9 FF                    ..
         bne     LowerFixedEngine_Entry_D724     ; D73F D0 E3                    ..
+LowerFixedEngine_Branch_D741:
         clc                                     ; D741 18                       .
         rts                                     ; D742 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D743:
         cpx     $51                             ; D743 E4 51                    .Q
-        beq     $D732                           ; D745 F0 EB                    ..
+        beq     LowerFixedEngine_Branch_D732    ; D745 F0 EB                    ..
         cpx     #$06                            ; D747 E0 06                    ..
-        bcs     $D751                           ; D749 B0 06                    ..
+        bcs     LowerFixedEngine_Branch_D751    ; D749 B0 06                    ..
         lda     $7020,x                         ; D74B BD 20 70                 . p
-        bmi     $D732                           ; D74E 30 E2                    0.
+        bmi     LowerFixedEngine_Branch_D732    ; D74E 30 E2                    0.
         sec                                     ; D750 38                       8
+LowerFixedEngine_Branch_D751:
         rts                                     ; D751 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D752:
@@ -3237,30 +3579,34 @@ LowerFixedEngine_Entry_D752:
         sta     $53                             ; D76B 85 53                    .S
         rts                                     ; D76D 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D76E:
         ldx     $51                             ; D76E A6 51                    .Q
         lda     $7000,x                         ; D770 BD 00 70                 ..p
         ora     #$80                            ; D773 09 80                    ..
         sta     $7000,x                         ; D775 9D 00 70                 ..p
         and     #$01                            ; D778 29 01                    ).
-        beq     $D794                           ; D77A F0 18                    ..
+        beq     LowerFixedEngine_Branch_D794    ; D77A F0 18                    ..
         ldy     #$10                            ; D77C A0 10                    ..
         lda     $7000,x                         ; D77E BD 00 70                 ..p
         and     #$03                            ; D781 29 03                    ).
         cmp     #$01                            ; D783 C9 01                    ..
-        beq     $D789                           ; D785 F0 02                    ..
+        beq     LowerFixedEngine_Branch_D789    ; D785 F0 02                    ..
         ldy     #$F0                            ; D787 A0 F0                    ..
+LowerFixedEngine_Branch_D789:
         tya                                     ; D789 98                       .
         clc                                     ; D78A 18                       .
         adc     $71E0,x                         ; D78B 7D E0 71                 }.q
         sta     $71E0,x                         ; D78E 9D E0 71                 ..q
-        jmp     $D7B7                           ; D791 4C B7 D7                 L..
+        jmp     LowerFixedEngine_Branch_D7B7    ; D791 4C B7 D7                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D794:
         ldy     #$01                            ; D794 A0 01                    ..
         lda     $7000,x                         ; D796 BD 00 70                 ..p
         and     #$03                            ; D799 29 03                    ).
         cmp     #$02                            ; D79B C9 02                    ..
-        beq     $D7A1                           ; D79D F0 02                    ..
+        beq     LowerFixedEngine_Branch_D7A1    ; D79D F0 02                    ..
         ldy     #$FF                            ; D79F A0 FF                    ..
+LowerFixedEngine_Branch_D7A1:
         sty     $54                             ; D7A1 84 54                    .T
         lda     $71E0,x                         ; D7A3 BD E0 71                 ..q
         clc                                     ; D7A6 18                       .
@@ -3271,17 +3617,19 @@ LowerFixedEngine_Entry_D752:
         and     #$F0                            ; D7B0 29 F0                    ).
         ora     $54                             ; D7B2 05 54                    .T
         sta     $71E0,x                         ; D7B4 9D E0 71                 ..q
+LowerFixedEngine_Branch_D7B7:
         lda     $52                           ; D7B7 A5 52                    .R
         sta     $6F60,x                         ; D7B9 9D 60 6F                 .`o
         lda     $53                             ; D7BC A5 53                    .S
         sta     $6F80,x                         ; D7BE 9D 80 6F                 ..o
         lda     $7020,x                         ; D7C1 BD 20 70                 . p
         and     #$10                            ; D7C4 29 10                    ).
-        beq     $D7D2                           ; D7C6 F0 0A                    ..
+        beq     LowerFixedEngine_Branch_D7D2    ; D7C6 F0 0A                    ..
         lda     $52                           ; D7C8 A5 52                    .R
         sta     $6FA0,x                         ; D7CA 9D A0 6F                 ..o
         lda     $53                             ; D7CD A5 53                    .S
         sta     $6FC0,x                         ; D7CF 9D C0 6F                 ..o
+LowerFixedEngine_Branch_D7D2:
         jmp     LowerFixedEngine_Entry_D7FC     ; D7D2 4C FC D7                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D7D5:
@@ -3290,7 +3638,7 @@ LowerFixedEngine_Entry_D7D5:
         sec                                     ; D7D9 38                       8
         sbc     #$01                            ; D7DA E9 01                    ..
         cmp     #$06                            ; D7DC C9 06                    ..
-        bcs     $D85C                           ; D7DE B0 7C                    .|
+        bcs     LowerFixedEngine_Branch_D85C    ; D7DE B0 7C                    .|
         tax                                     ; D7E0 AA                       .
         jsr     LowerFixedEngine_Entry_D7F1     ; D7E1 20 F1 D7                  ..
         jsr     LowerFixedEngine_Entry_D7F1     ; D7E4 20 F1 D7                  ..
@@ -3302,23 +3650,24 @@ LowerFixedEngine_Entry_D7D5:
 LowerFixedEngine_Entry_D7F1:
         lda     $7020,x                         ; D7F1 BD 20 70                 . p
         cmp     #$FF                            ; D7F4 C9 FF                    ..
-        beq     $D861                           ; D7F6 F0 69                    .i
+        beq     LowerFixedEngine_Branch_D861    ; D7F6 F0 69                    .i
         cpx     #$1E                            ; D7F8 E0 1E                    ..
-        bcs     $D861                           ; D7FA B0 65                    .e
+        bcs     LowerFixedEngine_Branch_D861    ; D7FA B0 65                    .e
 LowerFixedEngine_Entry_D7FC:
         txa                                     ; D7FC 8A                       .
         pha                                     ; D7FD 48                       H
         lda     $70E0,x                         ; D7FE BD E0 70                 ..p
-        bpl     $D857                           ; D801 10 54                    .T
+        bpl     LowerFixedEngine_Branch_D857    ; D801 10 54                    .T
         pla                                     ; D803 68                       h
         txa                                     ; D804 8A                       .
         pha                                     ; D805 48                       H
         lda     $7000,x                         ; D806 BD 00 70                 ..p
         pha                                     ; D809 48                       H
         and     #$3C                            ; D80A 29 3C                    )<
-        bne     $D812                           ; D80C D0 04                    ..
+        bne     LowerFixedEngine_Branch_D812    ; D80C D0 04                    ..
         cpx     #$00                            ; D80E E0 00                    ..
-        bne     $D85D                           ; D810 D0 4B                    .K
+        bne     LowerFixedEngine_Branch_D85D    ; D810 D0 4B                    .K
+LowerFixedEngine_Branch_D812:
         jsr     LowerFixedEngine_Entry_C78C     ; D812 20 8C C7                  ..
         lda     $6FE0,x                         ; D815 BD E0 6F                 ..o
         and     #$0F                            ; D818 29 0F                    ).
@@ -3348,15 +3697,19 @@ LowerFixedEngine_Entry_D7FC:
         lda     $60                             ; D850 A5 60                    .`
         ora     #$00                            ; D852 09 00                    ..
         sta     $020E,x                         ; D854 9D 0E 02                 ...
+LowerFixedEngine_Branch_D857:
         pla                                     ; D857 68                       h
         clc                                     ; D858 18                       .
         adc     #$06                            ; D859 69 06                    i.
         tax                                     ; D85B AA                       .
+LowerFixedEngine_Branch_D85C:
         rts                                     ; D85C 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D85D:
         pla                                     ; D85D 68                       h
-        jmp     $D857                           ; D85E 4C 57 D8                 LW.
+        jmp     LowerFixedEngine_Branch_D857    ; D85E 4C 57 D8                 LW.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D861:
         pla                                     ; D861 68                       h
         pla                                     ; D862 68                       h
         rts                                     ; D863 60                       `
@@ -3382,17 +3735,19 @@ LowerFixedEngine_Entry_D876:
         asl     a                               ; D87A 0A                       .
         asl     a                               ; D87B 0A                       .
         ldy     $0526                           ; D87C AC 26 05                 .&.
-        bpl     $D884                           ; D87F 10 03                    ..
+        bpl     LowerFixedEngine_Branch_D884    ; D87F 10 03                    ..
         clc                                     ; D881 18                       .
         adc     #$08                            ; D882 69 08                    i.
+LowerFixedEngine_Branch_D884:
         tay                                     ; D884 A8                       .
+LowerFixedEngine_Branch_D885:
         lda     ($4F),y                         ; D885 B1 4F                    .O
         sta     $00,x                           ; D887 95 00                    ..
         inx                                     ; D889 E8                       .
         iny                                     ; D88A C8                       .
         tya                                     ; D88B 98                       .
         and     #$07                            ; D88C 29 07                    ).
-        bne     $D885                           ; D88E D0 F5                    ..
+        bne     LowerFixedEngine_Branch_D885    ; D88E D0 F5                    ..
         rts                                     ; D890 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_D891:
@@ -3404,10 +3759,11 @@ LowerFixedEngine_Entry_D891:
         ldy     #$00                            ; D89D A0 00                    ..
         lda     ($4D),y                         ; D89F B1 4D                    .M
         sta     $57                             ; D8A1 85 57                    .W
-        bmi     $D8BA                           ; D8A3 30 15                    0.
+        bmi     LowerFixedEngine_Branch_D8BA    ; D8A3 30 15                    0.
         cmp     #$31                            ; D8A5 C9 31                    .1
-        bcc     $D8AB                           ; D8A7 90 02                    ..
+        bcc     LowerFixedEngine_Branch_D8AB    ; D8A7 90 02                    ..
         lda     #$00                            ; D8A9 A9 00                    ..
+LowerFixedEngine_Branch_D8AB:
         asl     a                               ; D8AB 0A                       .
         tay                                     ; D8AC A8                       .
         lda     $DF02,y                         ; D8AD B9 02 DF                 ...
@@ -3416,6 +3772,7 @@ LowerFixedEngine_Entry_D891:
         sta     $53                             ; D8B5 85 53                    .S
         jmp     ($0052)                         ; D8B7 6C 52 00                 lR.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_D8BA:
         and     #$7F                            ; D8BA 29 7F                    ).
         asl     a                               ; D8BC 0A                       .
         tay                                     ; D8BD A8                       .
@@ -3527,10 +3884,17 @@ LowerFixedEngine_Branch_D974:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D97F:
         jsr     LowerFixedEngine_Entry_DDE3     ; D97F 20 E3 DD                  ..
-        db   $A5,$57,$C9,$09,$F0,$0E,$A9,$81 ; D982 A5 57 C9 09 F0 0E A9 81  .W......
-        db   $9D,$60,$6F,$9D,$80,$6F,$9D,$A0 ; D98A 9D 60 6F 9D 80 6F 9D A0  .`o..o..
-        db   $6F,$9D,$C0,$6F,$A9,$00,$4C,$9D ; D992 6F 9D C0 6F A9 00 4C 9D  o..o..L.
-        db   $D9                             ; D99A D9                       .
+        lda     $57                             ; D982 A5 57                    .W
+        cmp     #$09                            ; D984 C9 09                    ..
+        beq     LowerFixedEngine_Branch_D996    ; D986 F0 0E                    ..
+        lda     #$81                            ; D988 A9 81                    ..
+        sta     $6F60,x                         ; D98A 9D 60 6F                 .`o
+        sta     $6F80,x                         ; D98D 9D 80 6F                 ..o
+        sta     $6FA0,x                         ; D990 9D A0 6F                 ..o
+        sta     $6FC0,x                         ; D993 9D C0 6F                 ..o
+LowerFixedEngine_Branch_D996:
+        lda     #$00                            ; D996 A9 00                    ..
+        jmp     LowerFixedEngine_Branch_D99D    ; D998 4C 9D D9                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D99B:
         lda     #$36                            ; D99B A9 36                    .6
@@ -3584,7 +3948,9 @@ LowerFixedEngine_Entry_D9CB:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D9FB:
         jsr     LowerFixedEngine_Entry_DDE3     ; D9FB 20 E3 DD                  ..
-        db   $A9,$00,$9D,$60,$71,$4C,$74,$D9 ; D9FE A9 00 9D 60 71 4C 74 D9  ...`qLt.
+        lda     #$00                            ; D9FE A9 00                    ..
+        sta     $7160,x                         ; DA00 9D 60 71                 .`q
+        jmp     LowerFixedEngine_Branch_D974    ; DA03 4C 74 D9                 Lt.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_DA06:
         lda     #$89                            ; DA06 A9 89                    ..
@@ -3675,7 +4041,9 @@ LowerFixedEngine_Entry_DA97:
         lda     ($4D),y                         ; DA99 B1 4D                    .M
         jsr     LowerFixedEngine_Entry_DDE0     ; DA9B 20 E0 DD                  ..
         brk                                     ; DA9E 00                       .
-        db   $01,$8F,$4C,$F0,$DD             ; DA9F 01 8F 4C F0 DD           ..L..
+        db   $01,$8F                         ; DA9F 01 8F                    ..
+; ----------------------------------------------------------------------------
+        jmp     LowerFixedEngine_Branch_DDF0    ; DAA1 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DAA4:
         lda     $0507                           ; DAA4 AD 07 05                 ...
@@ -3748,9 +4116,9 @@ LowerFixedEngine_Entry_DB18:
         dec     $0530                           ; DB1E CE 30 05                 .0.
         lda     $0530                           ; DB21 AD 30 05                 .0.
         and     #$0F                            ; DB24 29 0F                    ).
-        bne     $DB66                           ; DB26 D0 3E                    .>
+        bne     LowerFixedEngine_Branch_DB66    ; DB26 D0 3E                    .>
         dec     $0531                           ; DB28 CE 31 05                 .1.
-        beq     $DB61                           ; DB2B F0 34                    .4
+        beq     LowerFixedEngine_Branch_DB61    ; DB2B F0 34                    .4
         lda     $0533                           ; DB2D AD 33 05                 .3.
         ora     $0532                           ; DB30 0D 32 05                 .2.
         bne     LowerFixedEngine_Branch_DB3A    ; DB33 D0 05                    ..
@@ -3779,9 +4147,11 @@ LowerFixedEngine_Branch_DB45:
         ora     #$80                            ; DB5C 09 80                    ..
         jmp     LowerFixedEngine_Branch_DB63    ; DB5E 4C 63 DB                 Lc.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_DB61:
         lda     #$00                            ; DB61 A9 00                    ..
 LowerFixedEngine_Branch_DB63:
         sta     $0530                           ; DB63 8D 30 05                 .0.
+LowerFixedEngine_Branch_DB66:
         pla                                     ; DB66 68                       h
         and     #$F0                            ; DB67 29 F0                    ).
         rts                                     ; DB69 60                       `
@@ -3791,12 +4161,13 @@ LowerFixedEngine_Entry_DB6A:
         lda     $0532                           ; DB6C AD 32 05                 .2.
         sta     $00                             ; DB6F 85 00                    ..
         ora     $0533                           ; DB71 0D 33 05                 .3.
-        beq     $DB82                           ; DB74 F0 0C                    ..
+        beq     LowerFixedEngine_Branch_DB82    ; DB74 F0 0C                    ..
         lda     $0533                           ; DB76 AD 33 05                 .3.
         sta     $01                             ; DB79 85 01                    ..
         ldx     #$00                            ; DB7B A2 00                    ..
         lda     #$1C                            ; DB7D A9 1C                    ..
         jsr     LowerFixedEngine_Entry_C3EA     ; DB7F 20 EA C3                  ..
+LowerFixedEngine_Branch_DB82:
         rts                                     ; DB82 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DB83:
@@ -4020,8 +4391,11 @@ LowerFixedEngine_Entry_DD06:
         tay                                     ; DD12 A8                       .
         pla                                     ; DD13 68                       h
         brk                                     ; DD14 00                       .
-        db   $09,$EF,$A6,$51,$20,$DA,$DD,$4C ; DD15 09 EF A6 51 20 DA DD 4C  ...Q ..L
-        db   $91,$D8                         ; DD1D 91 D8                    ..
+        db   $09,$EF                         ; DD15 09 EF                    ..
+; ----------------------------------------------------------------------------
+        ldx     $51                             ; DD17 A6 51                    .Q
+        jsr     LowerFixedEngine_Entry_DDDA     ; DD19 20 DA DD                  ..
+        jmp     LowerFixedEngine_Entry_D891     ; DD1C 4C 91 D8                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DD1F:
         ldy     #$01                            ; DD1F A0 01                    ..
@@ -4061,25 +4435,28 @@ LowerFixedEngine_Branch_DD56:
         and     #$0F                            ; DD5B 29 0F                    ).
         sta     $53                             ; DD5D 85 53                    .S
         cmp     #$08                            ; DD5F C9 08                    ..
-        bcs     $DD76                           ; DD61 B0 13                    ..
+        bcs     LowerFixedEngine_Branch_DD76    ; DD61 B0 13                    ..
         lda     ($4D),y                         ; DD63 B1 4D                    .M
         and     #$0F                            ; DD65 29 0F                    ).
         cmp     $53                             ; DD67 C5 53                    .S
-        beq     $DD6D                           ; DD69 F0 02                    ..
+        beq     LowerFixedEngine_Branch_DD6D    ; DD69 F0 02                    ..
         bcs     LowerFixedEngine_Branch_DD8C    ; DD6B B0 1F                    ..
+LowerFixedEngine_Branch_DD6D:
         lda     $54                             ; DD6D A5 54                    .T
         and     #$0B                            ; DD6F 29 0B                    ).
         sta     $54                             ; DD71 85 54                    .T
         jmp     LowerFixedEngine_Branch_DD8C    ; DD73 4C 8C DD                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_DD76:
         eor     #$0F                            ; DD76 49 0F                    I.
         sta     $53                             ; DD78 85 53                    .S
         inc     $53                             ; DD7A E6 53                    .S
         lda     ($4D),y                         ; DD7C B1 4D                    .M
         and     #$0F                            ; DD7E 29 0F                    ).
         cmp     $53                             ; DD80 C5 53                    .S
-        beq     $DD86                           ; DD82 F0 02                    ..
+        beq     LowerFixedEngine_Branch_DD86    ; DD82 F0 02                    ..
         bcs     LowerFixedEngine_Branch_DD8C    ; DD84 B0 06                    ..
+LowerFixedEngine_Branch_DD86:
         lda     $54                             ; DD86 A5 54                    .T
         and     #$0E                            ; DD88 29 0E                    ).
         sta     $54                             ; DD8A 85 54                    .T
@@ -4090,11 +4467,13 @@ LowerFixedEngine_Branch_DD8C:
         and     #$03                            ; DD93 29 03                    ).
         pha                                     ; DD95 48                       H
         tax                                     ; DD96 AA                       .
+LowerFixedEngine_Branch_DD97:
         dex                                     ; DD97 CA                       .
-        bmi     $DD9F                           ; DD98 30 05                    0.
+        bmi     LowerFixedEngine_Branch_DD9F    ; DD98 30 05                    0.
         asl     $53                             ; DD9A 06 53                    .S
-        jmp     $DD97                           ; DD9C 4C 97 DD                 L..
+        jmp     LowerFixedEngine_Branch_DD97    ; DD9C 4C 97 DD                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_DD9F:
         pla                                     ; DD9F 68                       h
         tax                                     ; DDA0 AA                       .
         lda     $53                             ; DDA1 A5 53                    .S
@@ -4121,15 +4500,18 @@ LowerFixedEngine_Entry_DDAF:
 LowerFixedEngine_Branch_DDC4:
         ldy     #$03                            ; DDC4 A0 03                    ..
         lda     ($4D),y                         ; DDC6 B1 4D                    .M
-        jmp     $D8AB                           ; DDC8 4C AB D8                 L..
+        jmp     LowerFixedEngine_Branch_D8AB    ; DDC8 4C AB D8                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DDCB:
         ldy     #$01                            ; DDCB A0 01                    ..
         lda     ($4D),y                         ; DDCD B1 4D                    .M
         brk                                     ; DDCF 00                       .
-        db   $03,$9F,$A6,$51,$20,$E0,$DD,$4C ; DDD0 03 9F A6 51 20 E0 DD 4C  ...Q ..L
+        db   $03,$9F                         ; DDD0 03 9F                    ..
 ; ----------------------------------------------------------------------------
-        sta     ($D8),y                         ; DDD8 91 D8                    ..
+        ldx     $51                             ; DDD2 A6 51                    .Q
+        jsr     LowerFixedEngine_Entry_DDE0     ; DDD4 20 E0 DD                  ..
+        jmp     LowerFixedEngine_Entry_D891     ; DDD7 4C 91 D8                 L..
+; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DDDA:
         jsr     LowerFixedEngine_Entry_DDE7     ; DDDA 20 E7 DD                  ..
 LowerFixedEngine_Entry_DDDD:
@@ -4142,8 +4524,9 @@ LowerFixedEngine_Entry_DDE3:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_DDE7:
         inc     $7080,x                         ; DDE7 FE 80 70                 ..p
-        bne     $DDEF                           ; DDEA D0 03                    ..
+        bne     LowerFixedEngine_Branch_DDEF    ; DDEA D0 03                    ..
         inc     $7060,x                         ; DDEC FE 60 70                 .`p
+LowerFixedEngine_Branch_DDEF:
         rts                                     ; DDEF 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_DDF0:
@@ -4297,13 +4680,15 @@ LowerFixedEngine_Entry_DEE5:
 ; ----------------------------------------------------------------------------
         pla                                     ; DEED 68                       h
         ldx     $51                             ; DEEE A6 51                    .Q
-        bcs     $DEFC                           ; DEF0 B0 0A                    ..
+        bcs     LowerFixedEngine_Branch_DEFC    ; DEF0 B0 0A                    ..
         cmp     #$16                            ; DEF2 C9 16                    ..
-        beq     $DEF9                           ; DEF4 F0 03                    ..
+        beq     LowerFixedEngine_Branch_DEF9    ; DEF4 F0 03                    ..
         jmp     LowerFixedEngine_Entry_D8D7     ; DEF6 4C D7 D8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_DEF9:
         jmp     LowerFixedEngine_Entry_D8CE     ; DEF9 4C CE D8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_DEFC:
         jsr     LowerFixedEngine_Entry_DDE0     ; DEFC 20 E0 DD                  ..
         jmp     LowerFixedEngine_Entry_D891     ; DEFF 4C 91 D8                 L..
 ; ----------------------------------------------------------------------------
@@ -4344,8 +4729,9 @@ LowerFixedEngine_Entry_DEE5:
 LowerFixedEngine_Entry_DF9F:
         pha                                     ; DF9F 48                       H
         inc     $49                             ; DFA0 E6 49                    .I
-        bne     $DFA6                           ; DFA2 D0 02                    ..
+        bne     LowerFixedEngine_Branch_DFA6    ; DFA2 D0 02                    ..
         inc     $4A                             ; DFA4 E6 4A                    .J
+LowerFixedEngine_Branch_DFA6:
         lda     $49                             ; DFA6 A5 49                    .I
         cmp     #$D8                            ; DFA8 C9 D8                    ..
         bne     LowerFixedEngine_Branch_DFED    ; DFAA D0 41                    .A
@@ -4386,16 +4772,46 @@ LowerFixedEngine_Branch_DFED:
         pla                                     ; DFED 68                       h
         rts                                     ; DFEE 60                       `
 ; ----------------------------------------------------------------------------
-        db   $0A,$BF,$A9,$00,$8D,$BB,$07,$85 ; DFEF 0A BF A9 00 8D BB 07 85  ........
-        db   $EA,$85,$EB,$20,$F6,$E4,$20,$02 ; DFF7 EA 85 EB 20 F6 E4 20 02  ... .. .
-        db   $E4,$A5,$41,$10,$11,$A5,$45,$38 ; DFFF E4 A5 41 10 11 A5 45 38  ..A...E8
-        db   $E9,$07,$85,$ED,$A5,$44,$38,$E9 ; E007 E9 07 85 ED A5 44 38 E9  .....D8.
-        db   $08,$85,$EC,$4C,$23,$E0,$A5,$43 ; E00F 08 85 EC 4C 23 E0 A5 43  ...L#..C
-        db   $38,$E9,$07,$85,$ED,$A5,$42,$38 ; E017 38 E9 07 85 ED A5 42 38  8.....B8
-        db   $E9,$08,$85,$EC,$A5,$61,$09,$01 ; E01F E9 08 85 EC A5 61 09 01  .....a..
-        db   $85,$61,$20,$47,$E1,$A9,$00,$85 ; E027 85 61 20 47 E1 A9 00 85  .a G....
-        db   $16,$20,$68,$E3,$A2,$01         ; E02F 16 20 68 E3 A2 01        . h...
+        db   $0A,$BF                         ; DFEF 0A BF                    ..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_DFF1:
+        lda     #$00                            ; DFF1 A9 00                    ..
+        sta     $07BB                           ; DFF3 8D BB 07                 ...
+        sta     $EA                             ; DFF6 85 EA                    ..
+        sta     $EB                             ; DFF8 85 EB                    ..
+        jsr     LowerFixedEngine_Entry_E4F6     ; DFFA 20 F6 E4                  ..
+LDFFF = $+ 2
+        jsr     LowerFixedEngine_Entry_E402     ; DFFD 20 02 E4                  ..
+        lda     $41                             ; E000 A5 41                    .A
+        bpl     LowerFixedEngine_Branch_E015    ; E002 10 11                    ..
+        lda     PlayerLocalY                    ; E004 A5 45                    .E
+        sec                                     ; E006 38                       8
+        sbc     #$07                            ; E007 E9 07                    ..
+        sta     $ED                             ; E009 85 ED                    ..
+        lda     PlayerLocalX                    ; E00B A5 44                    .D
+        sec                                     ; E00D 38                       8
+        sbc     #$08                            ; E00E E9 08                    ..
+        sta     $EC                             ; E010 85 EC                    ..
+        jmp     LowerFixedEngine_Branch_E023    ; E012 4C 23 E0                 L#.
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E015:
+        lda     PlayerWorldY                    ; E015 A5 43                    .C
+        sec                                     ; E017 38                       8
+        sbc     #$07                            ; E018 E9 07                    ..
+        sta     $ED                             ; E01A 85 ED                    ..
+        lda     PlayerWorldX                    ; E01C A5 42                    .B
+        sec                                     ; E01E 38                       8
+        sbc     #$08                            ; E01F E9 08                    ..
+        sta     $EC                             ; E021 85 EC                    ..
+LowerFixedEngine_Branch_E023:
+        lda     $61                             ; E023 A5 61                    .a
+        ora     #$01                            ; E025 09 01                    ..
+        sta     $61                             ; E027 85 61                    .a
+        jsr     LowerFixedEngine_Entry_E147     ; E029 20 47 E1                  G.
+        lda     #$00                            ; E02C A9 00                    ..
+        sta     $16                             ; E02E 85 16                    ..
+        jsr     LowerFixedEngine_Entry_E368     ; E030 20 68 E3                  h.
+        ldx     #$01                            ; E033 A2 01                    ..
 LowerFixedEngine_Branch_E035:
         lda     $7020,x                         ; E035 BD 20 70                 . p
         cmp     #$FF                            ; E038 C9 FF                    ..
@@ -4429,88 +4845,102 @@ LowerFixedEngine_Branch_E06D:
 LowerFixedEngine_Entry_E06E:
         jsr     LowerFixedEngine_Entry_E147     ; E06E 20 47 E1                  G.
         lda     $3E                             ; E071 A5 3E                    .>
-        beq     $E0BE                           ; E073 F0 49                    .I
+        beq     LowerFixedEngine_Branch_E0BE    ; E073 F0 49                    .I
         lda     $7000                           ; E075 AD 00 70                 ..p
         and     #$03                            ; E078 29 03                    ).
-        bne     $E08C                           ; E07A D0 10                    ..
+        bne     LowerFixedEngine_Branch_E08C    ; E07A D0 10                    ..
         lda     $EB                             ; E07C A5 EB                    ..
         sec                                     ; E07E 38                       8
         sbc     $058F                           ; E07F ED 8F 05                 ...
         sta     $EB                             ; E082 85 EB                    ..
-        bcs     $E089                           ; E084 B0 03                    ..
+        bcs     LowerFixedEngine_Branch_E089    ; E084 B0 03                    ..
         dec     a:$ED                           ; E086 CE ED 00                 ...
-        jmp     $E0BE                           ; E089 4C BE E0                 L..
+LowerFixedEngine_Branch_E089:
+        jmp     LowerFixedEngine_Branch_E0BE    ; E089 4C BE E0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E08C:
         cmp     #$01                            ; E08C C9 01                    ..
-        bne     $E09F                           ; E08E D0 0F                    ..
+        bne     LowerFixedEngine_Branch_E09F    ; E08E D0 0F                    ..
         lda     $EA                             ; E090 A5 EA                    ..
         clc                                     ; E092 18                       .
         adc     $058F                           ; E093 6D 8F 05                 m..
         sta     $EA                             ; E096 85 EA                    ..
-        bcc     $E09C                           ; E098 90 02                    ..
+        bcc     LowerFixedEngine_Branch_E09C    ; E098 90 02                    ..
         inc     $EC                             ; E09A E6 EC                    ..
-        jmp     $E0BE                           ; E09C 4C BE E0                 L..
+LowerFixedEngine_Branch_E09C:
+        jmp     LowerFixedEngine_Branch_E0BE    ; E09C 4C BE E0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E09F:
         cmp     #$02                            ; E09F C9 02                    ..
-        bne     $E0B2                           ; E0A1 D0 0F                    ..
+        bne     LowerFixedEngine_Branch_E0B2    ; E0A1 D0 0F                    ..
         lda     $EB                             ; E0A3 A5 EB                    ..
         clc                                     ; E0A5 18                       .
         adc     $058F                           ; E0A6 6D 8F 05                 m..
         sta     $EB                             ; E0A9 85 EB                    ..
-        bcc     $E0AF                           ; E0AB 90 02                    ..
+        bcc     LowerFixedEngine_Branch_E0AF    ; E0AB 90 02                    ..
         inc     $ED                             ; E0AD E6 ED                    ..
-        jmp     $E0BE                           ; E0AF 4C BE E0                 L..
+LowerFixedEngine_Branch_E0AF:
+        jmp     LowerFixedEngine_Branch_E0BE    ; E0AF 4C BE E0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E0B2:
         lda     $EA                             ; E0B2 A5 EA                    ..
         sec                                     ; E0B4 38                       8
         sbc     $058F                           ; E0B5 ED 8F 05                 ...
         sta     $EA                             ; E0B8 85 EA                    ..
-        bcs     $E0BE                           ; E0BA B0 02                    ..
+        bcs     LowerFixedEngine_Branch_E0BE    ; E0BA B0 02                    ..
         dec     $EC                             ; E0BC C6 EC                    ..
+LowerFixedEngine_Branch_E0BE:
         ldx     #$01                            ; E0BE A2 01                    ..
+LowerFixedEngine_Branch_E0C0:
         lda     $7020,x                         ; E0C0 BD 20 70                 . p
         cmp     #$FF                            ; E0C3 C9 FF                    ..
-        bne     $E0C8                           ; E0C5 D0 01                    ..
+        bne     LowerFixedEngine_Branch_E0C8    ; E0C5 D0 01                    ..
         rts                                     ; E0C7 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E0C8:
         lda     $7000,x                         ; E0C8 BD 00 70                 ..p
         sta     $E4                             ; E0CB 85 E4                    ..
-        bmi     $E0EA                           ; E0CD 30 1B                    0.
+        bmi     LowerFixedEngine_Branch_E0EA    ; E0CD 30 1B                    0.
         lda     $7020,x                         ; E0CF BD 20 70                 . p
         and     #$90                            ; E0D2 29 90                    ).
-        beq     $E0DC                           ; E0D4 F0 06                    ..
+        beq     LowerFixedEngine_Branch_E0DC    ; E0D4 F0 06                    ..
         jsr     LowerFixedEngine_Entry_E160     ; E0D6 20 60 E1                  `.
-        jmp     $E0DF                           ; E0D9 4C DF E0                 L..
+        jmp     LowerFixedEngine_Branch_E0DF    ; E0D9 4C DF E0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E0DC:
         jsr     LowerFixedEngine_Entry_E169     ; E0DC 20 69 E1                  i.
+LowerFixedEngine_Branch_E0DF:
         lda     $E4                             ; E0DF A5 E4                    ..
         sta     $7000,x                         ; E0E1 9D 00 70                 ..p
         inx                                     ; E0E4 E8                       .
         cpx     #$1E                            ; E0E5 E0 1E                    ..
-        bcc     $E0C0                           ; E0E7 90 D7                    ..
+        bcc     LowerFixedEngine_Branch_E0C0    ; E0E7 90 D7                    ..
         rts                                     ; E0E9 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E0EA:
         lda     #$0F                            ; E0EA A9 0F                    ..
         sta     $E3                             ; E0EC 85 E3                    ..
         ldy     #$10                            ; E0EE A0 10                    ..
         lda     $70E0,x                         ; E0F0 BD E0 70                 ..p
         and     #$40                            ; E0F3 29 40                    )@
-        beq     $E0FB                           ; E0F5 F0 04                    ..
+        beq     LowerFixedEngine_Branch_E0FB    ; E0F5 F0 04                    ..
         ldy     #$20                            ; E0F7 A0 20                    .
         lsr     $E3                             ; E0F9 46 E3                    F.
+LowerFixedEngine_Branch_E0FB:
         sty     $E2                             ; E0FB 84 E2                    ..
         lda     $7020,x                         ; E0FD BD 20 70                 . p
         sta     $E5                             ; E100 85 E5                    ..
         and     #$90                            ; E102 29 90                    ).
-        beq     $E10C                           ; E104 F0 06                    ..
+        beq     LowerFixedEngine_Branch_E10C    ; E104 F0 06                    ..
         jsr     LowerFixedEngine_Entry_E160     ; E106 20 60 E1                  `.
-        jmp     $E12B                           ; E109 4C 2B E1                 L+.
+        jmp     LowerFixedEngine_Branch_E12B    ; E109 4C 2B E1                 L+.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E10C:
         lda     $E4                             ; E10C A5 E4                    ..
         jsr     LowerFixedEngine_Entry_E2EE     ; E10E 20 EE E2                  ..
         lda     $E5                             ; E111 A5 E5                    ..
         and     #$40                            ; E113 29 40                    )@
-        beq     $E128                           ; E115 F0 11                    ..
+        beq     LowerFixedEngine_Branch_E128    ; E115 F0 11                    ..
         lda     #$10                            ; E117 A9 10                    ..
         sta     $E2                             ; E119 85 E2                    ..
         lda     $E5                             ; E11B A5 E5                    ..
@@ -4520,42 +4950,47 @@ LowerFixedEngine_Entry_E06E:
 LowerFixedEngine_Branch_E123:
         lda     $E5                             ; E123 A5 E5                    ..
         jsr     LowerFixedEngine_Entry_E2EE     ; E125 20 EE E2                  ..
+LowerFixedEngine_Branch_E128:
         jsr     LowerFixedEngine_Entry_E169     ; E128 20 69 E1                  i.
+LowerFixedEngine_Branch_E12B:
         lda     $3C                             ; E12B A5 3C                    .<
         and     $E3                             ; E12D 25 E3                    %.
         cmp     $E3                             ; E12F C5 E3                    ..
-        bne     $E139                           ; E131 D0 06                    ..
+        bne     LowerFixedEngine_Branch_E139    ; E131 D0 06                    ..
         lda     $E4                             ; E133 A5 E4                    ..
         and     #$7F                            ; E135 29 7F                    ).
         sta     $E4                             ; E137 85 E4                    ..
+LowerFixedEngine_Branch_E139:
         lda     $E4                             ; E139 A5 E4                    ..
         sta     $7000,x                         ; E13B 9D 00 70                 ..p
         inx                                     ; E13E E8                       .
         cpx     #$1E                            ; E13F E0 1E                    ..
-        bcs     $E146                           ; E141 B0 03                    ..
-        jmp     $E0C0                           ; E143 4C C0 E0                 L..
+        bcs     LowerFixedEngine_Branch_E146    ; E141 B0 03                    ..
+        jmp     LowerFixedEngine_Branch_E0C0    ; E143 4C C0 E0                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E146:
         rts                                     ; E146 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E147:
         lda     $7020                           ; E147 AD 20 70                 . p
         and     #$90                            ; E14A 29 90                    ).
-        beq     $E152                           ; E14C F0 04                    ..
+        beq     LowerFixedEngine_Branch_E152    ; E14C F0 04                    ..
         ldy     #$00                            ; E14E A0 00                    ..
         beq     LowerFixedEngine_Branch_E1B7    ; E150 F0 65                    .e
+LowerFixedEngine_Branch_E152:
         lda     #$08                            ; E152 A9 08                    ..
         sta     $00                             ; E154 85 00                    ..
         lda     #$07                            ; E156 A9 07                    ..
         sta     $01                             ; E158 85 01                    ..
         lda     #$00                            ; E15A A9 00                    ..
         tax                                     ; E15C AA                       .
-        jmp     $E336                           ; E15D 4C 36 E3                 L6.
+        jmp     LowerFixedEngine_Branch_E336    ; E15D 4C 36 E3                 L6.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E160:
         lda     $E4                             ; E160 A5 E4                    ..
         and     #$3C                            ; E162 29 3C                    )<
         sta     $E2                             ; E164 85 E2                    ..
-        bne     $E1A9                           ; E166 D0 41                    .A
+        bne     LowerFixedEngine_Branch_E1A9    ; E166 D0 41                    .A
         rts                                     ; E168 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E169:
@@ -4565,7 +5000,7 @@ LowerFixedEngine_Entry_E169:
         lda     $7140,x                         ; E16F BD 40 71                 .@q
         and     #$E0                            ; E172 29 E0                    ).
         cmp     $46                             ; E174 C5 46                    .F
-        bne     $E1A5                           ; E176 D0 2D                    .-
+        bne     LowerFixedEngine_Branch_E1A5    ; E176 D0 2D                    .-
 LowerFixedEngine_Entry_E178:
         lda     $7120,x                         ; E178 BD 20 71                 . q
         sec                                     ; E17B 38                       8
@@ -4575,22 +5010,25 @@ LowerFixedEngine_Entry_E178:
         sbc     $ED                             ; E183 E5 ED                    ..
         sta     $E1                             ; E185 85 E1                    ..
         and     #$F0                            ; E187 29 F0                    ).
-        beq     $E199                           ; E189 F0 0E                    ..
+        beq     LowerFixedEngine_Branch_E199    ; E189 F0 0E                    ..
         lda     $E1                             ; E18B A5 E1                    ..
         cmp     #$FF                            ; E18D C9 FF                    ..
-        bne     $E1A5                           ; E18F D0 14                    ..
+        bne     LowerFixedEngine_Branch_E1A5    ; E18F D0 14                    ..
         lda     $E0                             ; E191 A5 E0                    ..
         cmp     #$40                            ; E193 C9 40                    .@
-        bcc     $E1A5                           ; E195 90 0E                    ..
-        bcs     $E1D3                           ; E197 B0 3A                    .:
+        bcc     LowerFixedEngine_Branch_E1A5    ; E195 90 0E                    ..
+        bcs     LowerFixedEngine_Branch_E1D3    ; E197 B0 3A                    .:
+LowerFixedEngine_Branch_E199:
         lda     $E1                             ; E199 A5 E1                    ..
         and     #$0F                            ; E19B 29 0F                    ).
         cmp     #$0F                            ; E19D C9 0F                    ..
-        bcc     $E1D3                           ; E19F 90 32                    .2
+        bcc     LowerFixedEngine_Branch_E1D3    ; E19F 90 32                    .2
         lda     $E0                             ; E1A1 A5 E0                    ..
-        beq     $E1D3                           ; E1A3 F0 2E                    ..
+        beq     LowerFixedEngine_Branch_E1D3    ; E1A3 F0 2E                    ..
+LowerFixedEngine_Branch_E1A5:
         lda     $E2                             ; E1A5 A5 E2                    ..
-        beq     $E1D1                           ; E1A7 F0 28                    .(
+        beq     LowerFixedEngine_Branch_E1D1    ; E1A7 F0 28                    .(
+LowerFixedEngine_Branch_E1A9:
         jsr     LowerFixedEngine_Entry_C78C     ; E1A9 20 8C C7                  ..
         lda     $E2                             ; E1AC A5 E2                    ..
         jsr     LowerFixedEngine_Entry_E4BB     ; E1AE 20 BB E4                  ..
@@ -4607,9 +5045,11 @@ LowerFixedEngine_Branch_E1B7:
         sta     $0207,y                         ; E1C8 99 07 02                 ...
         sta     $020B,y                         ; E1CB 99 0B 02                 ...
         sta     $020F,y                         ; E1CE 99 0F 02                 ...
+LowerFixedEngine_Branch_E1D1:
         clc                                     ; E1D1 18                       .
         rts                                     ; E1D2 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E1D3:
         lda     $7100,x                         ; E1D3 BD 00 71                 ..q
         sec                                     ; E1D6 38                       8
         sbc     $EA                             ; E1D7 E5 EA                    ..
@@ -4618,15 +5058,15 @@ LowerFixedEngine_Branch_E1B7:
         sbc     $EC                             ; E1DE E5 EC                    ..
         sta     $DF                             ; E1E0 85 DF                    ..
         and     #$F0                            ; E1E2 29 F0                    ).
-        beq     $E24D                           ; E1E4 F0 67                    .g
+        beq     LowerFixedEngine_Branch_E24D    ; E1E4 F0 67                    .g
         lda     $DF                             ; E1E6 A5 DF                    ..
         cmp     #$FF                            ; E1E8 C9 FF                    ..
-        bne     $E1A5                           ; E1EA D0 B9                    ..
+        bne     LowerFixedEngine_Branch_E1A5    ; E1EA D0 B9                    ..
         lda     $DE                             ; E1EC A5 DE                    ..
-        bpl     $E1A5                           ; E1EE 10 B5                    ..
+        bpl     LowerFixedEngine_Branch_E1A5    ; E1EE 10 B5                    ..
         sta     $E6                             ; E1F0 85 E6                    ..
         lda     $E2                             ; E1F2 A5 E2                    ..
-        bne     $E20E                           ; E1F4 D0 18                    ..
+        bne     LowerFixedEngine_Branch_E20E    ; E1F4 D0 18                    ..
         jsr     LowerFixedEngine_Entry_E45C     ; E1F6 20 5C E4                  \.
         sta     $E2                             ; E1F9 85 E2                    ..
         lda     $E4                             ; E1FB A5 E4                    ..
@@ -4636,9 +5076,11 @@ LowerFixedEngine_Branch_E1B7:
         lda     $E2                             ; E203 A5 E2                    ..
         jsr     LowerFixedEngine_Entry_C78C     ; E205 20 8C C7                  ..
         jsr     LowerFixedEngine_Entry_E368     ; E208 20 68 E3                  h.
-        jmp     $E211                           ; E20B 4C 11 E2                 L..
+        jmp     LowerFixedEngine_Branch_E211    ; E20B 4C 11 E2                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E20E:
         jsr     LowerFixedEngine_Entry_C78C     ; E20E 20 8C C7                  ..
+LowerFixedEngine_Branch_E211:
         lda     $E6                             ; E211 A5 E6                    ..
         lsr     a                               ; E213 4A                       J
         lsr     a                               ; E214 4A                       J
@@ -4672,8 +5114,9 @@ LowerFixedEngine_Branch_E1B7:
         sec                                     ; E24B 38                       8
         rts                                     ; E24C 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E24D:
         lda     $E2                             ; E24D A5 E2                    ..
-        bne     $E269                           ; E24F D0 18                    ..
+        bne     LowerFixedEngine_Branch_E269    ; E24F D0 18                    ..
         jsr     LowerFixedEngine_Entry_E45C     ; E251 20 5C E4                  \.
         sta     $E2                             ; E254 85 E2                    ..
         lda     $E4                             ; E256 A5 E4                    ..
@@ -4683,14 +5126,16 @@ LowerFixedEngine_Branch_E1B7:
         lda     $E2                             ; E25E A5 E2                    ..
         jsr     LowerFixedEngine_Entry_C78C     ; E260 20 8C C7                  ..
         jsr     LowerFixedEngine_Entry_E368     ; E263 20 68 E3                  h.
-        jmp     $E26C                           ; E266 4C 6C E2                 Ll.
+        jmp     LowerFixedEngine_Branch_E26C    ; E266 4C 6C E2                 Ll.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E269:
         jsr     LowerFixedEngine_Entry_C78C     ; E269 20 8C C7                  ..
+LowerFixedEngine_Branch_E26C:
         lda     $DF                             ; E26C A5 DF                    ..
         cmp     #$0F                            ; E26E C9 0F                    ..
-        bne     $E2AE                           ; E270 D0 3C                    .<
+        bne     LowerFixedEngine_Branch_E2AE    ; E270 D0 3C                    .<
         lda     $DE                             ; E272 A5 DE                    ..
-        bpl     $E2AE                           ; E274 10 38                    .8
+        bpl     LowerFixedEngine_Branch_E2AE    ; E274 10 38                    .8
         lsr     a                               ; E276 4A                       J
         lsr     a                               ; E277 4A                       J
         lsr     a                               ; E278 4A                       J
@@ -4722,6 +5167,7 @@ LowerFixedEngine_Branch_E1B7:
         sec                                     ; E2AC 38                       8
         rts                                     ; E2AD 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E2AE:
         lda     $DE                             ; E2AE A5 DE                    ..
         lsr     $DF                             ; E2B0 46 DF                    F.
         ror     a                               ; E2B2 6A                       j
@@ -4759,43 +5205,51 @@ LowerFixedEngine_Branch_E1B7:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E2EE:
         and     #$03                            ; E2EE 29 03                    ).
-        bne     $E301                           ; E2F0 D0 0F                    ..
+        bne     LowerFixedEngine_Branch_E301    ; E2F0 D0 0F                    ..
         lda     $7120,x                         ; E2F2 BD 20 71                 . q
         sec                                     ; E2F5 38                       8
         sbc     $E2                             ; E2F6 E5 E2                    ..
         sta     $7120,x                         ; E2F8 9D 20 71                 . q
-        bcs     $E300                           ; E2FB B0 03                    ..
+        bcs     LowerFixedEngine_Branch_E300    ; E2FB B0 03                    ..
         dec     $6FC0,x                         ; E2FD DE C0 6F                 ..o
+LowerFixedEngine_Branch_E300:
         rts                                     ; E300 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E301:
         cmp     #$01                            ; E301 C9 01                    ..
-        bne     $E314                           ; E303 D0 0F                    ..
+        bne     LowerFixedEngine_Branch_E314    ; E303 D0 0F                    ..
         lda     $7100,x                         ; E305 BD 00 71                 ..q
         clc                                     ; E308 18                       .
         adc     $E2                             ; E309 65 E2                    e.
         sta     $7100,x                         ; E30B 9D 00 71                 ..q
-        bcc     $E313                           ; E30E 90 03                    ..
+        bcc     LowerFixedEngine_Branch_E313    ; E30E 90 03                    ..
         inc     $6FA0,x                         ; E310 FE A0 6F                 ..o
+LowerFixedEngine_Branch_E313:
         rts                                     ; E313 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E314:
         cmp     #$02                            ; E314 C9 02                    ..
-        bne     $E327                           ; E316 D0 0F                    ..
+        bne     LowerFixedEngine_Branch_E327    ; E316 D0 0F                    ..
         lda     $7120,x                         ; E318 BD 20 71                 . q
         clc                                     ; E31B 18                       .
         adc     $E2                             ; E31C 65 E2                    e.
         sta     $7120,x                         ; E31E 9D 20 71                 . q
-        bcc     $E326                           ; E321 90 03                    ..
+        bcc     LowerFixedEngine_Branch_E326    ; E321 90 03                    ..
         inc     $6FC0,x                         ; E323 FE C0 6F                 ..o
+LowerFixedEngine_Branch_E326:
         rts                                     ; E326 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E327:
         lda     $7100,x                         ; E327 BD 00 71                 ..q
         sec                                     ; E32A 38                       8
         sbc     $E2                             ; E32B E5 E2                    ..
         sta     $7100,x                         ; E32D 9D 00 71                 ..q
-        bcs     $E335                           ; E330 B0 03                    ..
+        bcs     LowerFixedEngine_Branch_E335    ; E330 B0 03                    ..
         dec     $6FA0,x                         ; E332 DE A0 6F                 ..o
+LowerFixedEngine_Branch_E335:
         rts                                     ; E335 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E336:
         jsr     LowerFixedEngine_Entry_C78C     ; E336 20 8C C7                  ..
         lda     $00                             ; E339 A5 00                    ..
         asl     a                               ; E33B 0A                       .
@@ -4902,7 +5356,7 @@ LowerFixedEngine_Entry_E3E2:
 LowerFixedEngine_Branch_E3EC:
         lda     $7020,x                         ; E3EC BD 20 70                 . p
         cmp     #$FF                            ; E3EF C9 FF                    ..
-        beq     LowerFixedEngine_Branch_E402    ; E3F1 F0 0F                    ..
+        beq     LowerFixedEngine_Entry_E402     ; E3F1 F0 0F                    ..
         lda     $70E0,x                         ; E3F3 BD E0 70                 ..p
         and     #$20                            ; E3F6 29 20                    )
         beq     LowerFixedEngine_Branch_E3FD    ; E3F8 F0 03                    ..
@@ -4911,7 +5365,7 @@ LowerFixedEngine_Branch_E3FD:
         inx                                     ; E3FD E8                       .
         cpx     #$1E                            ; E3FE E0 1E                    ..
         bcc     LowerFixedEngine_Branch_E3EC    ; E400 90 EA                    ..
-LowerFixedEngine_Branch_E402:
+LowerFixedEngine_Entry_E402:
         ldx     #$01                            ; E402 A2 01                    ..
 LowerFixedEngine_Branch_E404:
         lda     $7020,x                         ; E404 BD 20 70                 . p
@@ -4945,7 +5399,7 @@ LowerFixedEngine_Branch_E430:
 LowerFixedEngine_Branch_E435:
         pla                                     ; E435 68                       h
         pla                                     ; E436 68                       h
-        jmp     LowerFixedEngine_Branch_E402    ; E437 4C 02 E4                 L..
+        jmp     LowerFixedEngine_Entry_E402     ; E437 4C 02 E4                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E43A:
         jsr     LowerFixedEngine_Entry_E4BB     ; E43A 20 BB E4                  ..
@@ -4967,18 +5421,20 @@ LowerFixedEngine_Branch_E456:
 LowerFixedEngine_Entry_E45C:
         lda     $61                             ; E45C A5 61                    .a
         cmp     #$FF                            ; E45E C9 FF                    ..
-        beq     $E481                           ; E460 F0 1F                    ..
+        beq     LowerFixedEngine_Branch_E481    ; E460 F0 1F                    ..
         lda     #$02                            ; E462 A9 02                    ..
         sta     $01                             ; E464 85 01                    ..
         lda     #$01                            ; E466 A9 01                    ..
         sta     $00                             ; E468 85 00                    ..
         lda     $61                             ; E46A A5 61                    .a
         lsr     a                               ; E46C 4A                       J
+LowerFixedEngine_Branch_E46D:
         lsr     a                               ; E46D 4A                       J
-        bcc     $E476                           ; E46E 90 06                    ..
+        bcc     LowerFixedEngine_Branch_E476    ; E46E 90 06                    ..
         asl     $01                             ; E470 06 01                    ..
         inc     $00                             ; E472 E6 00                    ..
-        bne     $E46D                           ; E474 D0 F7                    ..
+        bne     LowerFixedEngine_Branch_E46D    ; E474 D0 F7                    ..
+LowerFixedEngine_Branch_E476:
         lda     $61                             ; E476 A5 61                    .a
         ora     $01                             ; E478 05 01                    ..
         sta     $61                             ; E47A 85 61                    .a
@@ -4987,19 +5443,22 @@ LowerFixedEngine_Entry_E45C:
         asl     a                               ; E47F 0A                       .
         rts                                     ; E480 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E481:
         lda     $62                             ; E481 A5 62                    .b
         cmp     #$FF                            ; E483 C9 FF                    ..
-        beq     $E4A8                           ; E485 F0 21                    .!
+        beq     LowerFixedEngine_Branch_E4A8    ; E485 F0 21                    .!
         lda     #$01                            ; E487 A9 01                    ..
         sta     $01                             ; E489 85 01                    ..
         lda     #$00                            ; E48B A9 00                    ..
         sta     $00                             ; E48D 85 00                    ..
         lda     $62                             ; E48F A5 62                    .b
+LowerFixedEngine_Branch_E491:
         lsr     a                               ; E491 4A                       J
-        bcc     $E49A                           ; E492 90 06                    ..
+        bcc     LowerFixedEngine_Branch_E49A    ; E492 90 06                    ..
         asl     $01                             ; E494 06 01                    ..
         inc     $00                             ; E496 E6 00                    ..
-        bne     $E491                           ; E498 D0 F7                    ..
+        bne     LowerFixedEngine_Branch_E491    ; E498 D0 F7                    ..
+LowerFixedEngine_Branch_E49A:
         lda     $62                             ; E49A A5 62                    .b
         ora     $01                             ; E49C 05 01                    ..
         sta     $62                             ; E49E 85 62                    .b
@@ -5010,6 +5469,7 @@ LowerFixedEngine_Entry_E45C:
         adc     #$20                            ; E4A5 69 20                    i
         rts                                     ; E4A7 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E4A8:
         lda     $07BB                           ; E4A8 AD BB 07                 ...
         ora     #$80                            ; E4AB 09 80                    ..
         sta     $07BB                           ; E4AD 8D BB 07                 ...
@@ -5023,49 +5483,98 @@ LowerFixedEngine_Entry_E45C:
 LowerFixedEngine_Entry_E4BB:
         sta     $00                             ; E4BB 85 00                    ..
         cmp     #$20                            ; E4BD C9 20                    .
-        bcs     $E4DC                           ; E4BF B0 1B                    ..
+        bcs     LowerFixedEngine_Branch_E4DC    ; E4BF B0 1B                    ..
         lda     #$02                            ; E4C1 A9 02                    ..
         sta     $01                             ; E4C3 85 01                    ..
         lda     $00                             ; E4C5 A5 00                    ..
+LowerFixedEngine_Branch_E4C7:
         cmp     #$04                            ; E4C7 C9 04                    ..
-        beq     $E4D3                           ; E4C9 F0 08                    ..
+        beq     LowerFixedEngine_Branch_E4D3    ; E4C9 F0 08                    ..
         asl     $01                             ; E4CB 06 01                    ..
         sec                                     ; E4CD 38                       8
         sbc     #$04                            ; E4CE E9 04                    ..
-        jmp     $E4C7                           ; E4D0 4C C7 E4                 L..
+        jmp     LowerFixedEngine_Branch_E4C7    ; E4D0 4C C7 E4                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E4D3:
         lda     $01                             ; E4D3 A5 01                    ..
         eor     #$FF                            ; E4D5 49 FF                    I.
         and     $61                             ; E4D7 25 61                    %a
         sta     $61                             ; E4D9 85 61                    .a
         rts                                     ; E4DB 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E4DC:
         lda     #$01                            ; E4DC A9 01                    ..
         sta     $01                             ; E4DE 85 01                    ..
         lda     $00                             ; E4E0 A5 00                    ..
+LowerFixedEngine_Branch_E4E2:
         cmp     #$20                            ; E4E2 C9 20                    .
-        beq     $E4ED                           ; E4E4 F0 07                    ..
+        beq     LowerFixedEngine_Branch_E4ED    ; E4E4 F0 07                    ..
         asl     $01                             ; E4E6 06 01                    ..
         sec                                     ; E4E8 38                       8
         sbc     #$04                            ; E4E9 E9 04                    ..
-        bne     $E4E2                           ; E4EB D0 F5                    ..
+        bne     LowerFixedEngine_Branch_E4E2    ; E4EB D0 F5                    ..
+LowerFixedEngine_Branch_E4ED:
         lda     $01                             ; E4ED A5 01                    ..
         eor     #$FF                            ; E4EF 49 FF                    I.
         and     $62                             ; E4F1 25 62                    %b
         sta     $62                             ; E4F3 85 62                    .b
         rts                                     ; E4F5 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A2,$00,$A9,$F7,$9D,$00,$02,$E8 ; E4F6 A2 00 A9 F7 9D 00 02 E8  ........
-        db   $D0,$FA,$60,$A9,$00,$85,$61,$85 ; E4FE D0 FA 60 A9 00 85 61 85  ..`...a.
-        db   $62,$A5,$41,$10,$05,$A9,$05,$4C ; E506 62 A5 41 10 05 A9 05 4C  b.A....L
-        db   $12,$E5,$A9,$01,$8D,$BC,$07,$A2 ; E50E 12 E5 A9 01 8D BC 07 A2  ........
-        db   $00,$BD,$20,$70,$C9,$FF,$F0,$0D ; E516 00 BD 20 70 C9 FF F0 0D  .. p....
-        db   $BD,$00,$70,$29,$C3,$9D,$00,$70 ; E51E BD 00 70 29 C3 9D 00 70  ..p)...p
-        db   $E8,$E0,$1E,$90,$EC,$60,$A5,$1A ; E526 E8 E0 1E 90 EC 60 A5 1A  .....`..
-        db   $D0,$0E,$A5,$FD,$C9,$7F,$A5,$FE ; E52E D0 0E A5 FD C9 7F A5 FE  ........
-        db   $E9,$96,$A5,$FF,$E9,$98,$90,$0C ; E536 E9 96 A5 FF E9 98 90 0C  ........
-        db   $A9,$7F,$85,$FD,$A9,$96,$85,$FE ; E53E A9 7F 85 FD A9 96 85 FE  ........
-        db   $A9,$98,$85,$FF,$60             ; E546 A9 98 85 FF 60           ....`
+LowerFixedEngine_Entry_E4F6:
+        ldx     #$00                            ; E4F6 A2 00                    ..
+        lda     #$F7                            ; E4F8 A9 F7                    ..
+LowerFixedEngine_Branch_E4FA:
+        sta     $0200,x                         ; E4FA 9D 00 02                 ...
+        inx                                     ; E4FD E8                       .
+        bne     LowerFixedEngine_Branch_E4FA    ; E4FE D0 FA                    ..
+        rts                                     ; E500 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_E501:
+        lda     #$00                            ; E501 A9 00                    ..
+        sta     $61                             ; E503 85 61                    .a
+        sta     $62                             ; E505 85 62                    .b
+        lda     $41                             ; E507 A5 41                    .A
+        bpl     LowerFixedEngine_Branch_E510    ; E509 10 05                    ..
+        lda     #$05                            ; E50B A9 05                    ..
+        jmp     LowerFixedEngine_Branch_E512    ; E50D 4C 12 E5                 L..
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E510:
+        lda     #$01                            ; E510 A9 01                    ..
+LowerFixedEngine_Branch_E512:
+        sta     $07BC                           ; E512 8D BC 07                 ...
+        ldx     #$00                            ; E515 A2 00                    ..
+LowerFixedEngine_Branch_E517:
+        lda     $7020,x                         ; E517 BD 20 70                 . p
+        cmp     #$FF                            ; E51A C9 FF                    ..
+        beq     LowerFixedEngine_Branch_E52B    ; E51C F0 0D                    ..
+        lda     $7000,x                         ; E51E BD 00 70                 ..p
+        and     #$C3                            ; E521 29 C3                    ).
+        sta     $7000,x                         ; E523 9D 00 70                 ..p
+        inx                                     ; E526 E8                       .
+        cpx     #$1E                            ; E527 E0 1E                    ..
+        bcc     LowerFixedEngine_Branch_E517    ; E529 90 EC                    ..
+LowerFixedEngine_Branch_E52B:
+        rts                                     ; E52B 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_E52C:
+        lda     $1A                             ; E52C A5 1A                    ..
+        bne     LowerFixedEngine_Branch_E53E    ; E52E D0 0E                    ..
+        lda     $FD                             ; E530 A5 FD                    ..
+        cmp     #$7F                            ; E532 C9 7F                    ..
+        lda     $FE                             ; E534 A5 FE                    ..
+        sbc     #$96                            ; E536 E9 96                    ..
+        lda     $FF                             ; E538 A5 FF                    ..
+        sbc     #$98                            ; E53A E9 98                    ..
+        bcc     LowerFixedEngine_Branch_E54A    ; E53C 90 0C                    ..
+LowerFixedEngine_Branch_E53E:
+        lda     #$7F                            ; E53E A9 7F                    ..
+        sta     $FD                             ; E540 85 FD                    ..
+        lda     #$96                            ; E542 A9 96                    ..
+        sta     $FE                             ; E544 85 FE                    ..
+        lda     #$98                            ; E546 A9 98                    ..
+        sta     $FF                             ; E548 85 FF                    ..
+LowerFixedEngine_Branch_E54A:
+        rts                                     ; E54A 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E54B:
         php                                     ; E54B 08                       .
@@ -5093,11 +5602,12 @@ LowerFixedEngine_Branch_E54B:
         db   $20,$EF                         ; E56E 20 EF                     .
 ; ----------------------------------------------------------------------------
         plp                                     ; E570 28                       (
-        bcc     $E577                           ; E571 90 04                    ..
+        bcc     LowerFixedEngine_Branch_E577    ; E571 90 04                    ..
         brk                                     ; E573 00                       .
         db   $29,$EF                         ; E574 29 EF                    ).
 ; ----------------------------------------------------------------------------
         sec                                     ; E576 38                       8
+LowerFixedEngine_Branch_E577:
         pla                                     ; E577 68                       h
         pha                                     ; E578 48                       H
         and     #$0F                            ; E579 29 0F                    ).
@@ -5112,19 +5622,23 @@ LowerFixedEngine_Entry_E584:
         jsr     LowerFixedEngine_Entry_E5C1     ; E587 20 C1 E5                  ..
 LowerFixedEngine_Entry_E58A:
         jsr     LowerFixedEngine_Entry_E600     ; E58A 20 00 E6                  ..
+LowerFixedEngine_Branch_E58D:
         cmp     #$00                            ; E58D C9 00                    ..
-        beq     $E59C                           ; E58F F0 0B                    ..
+        beq     LowerFixedEngine_Branch_E59C    ; E58F F0 0B                    ..
         cmp     #$01                            ; E591 C9 01                    ..
-        beq     $E59F                           ; E593 F0 0A                    ..
+        beq     LowerFixedEngine_Branch_E59F    ; E593 F0 0A                    ..
         cmp     #$02                            ; E595 C9 02                    ..
-        beq     $E5A2                           ; E597 F0 09                    ..
-        jmp     $E78C                           ; E599 4C 8C E7                 L..
+        beq     LowerFixedEngine_Branch_E5A2    ; E597 F0 09                    ..
+        jmp     LowerFixedEngine_Branch_E78C    ; E599 4C 8C E7                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $E674                           ; E59C 4C 74 E6                 Lt.
+LowerFixedEngine_Branch_E59C:
+        jmp     LowerFixedEngine_Branch_E674    ; E59C 4C 74 E6                 Lt.
 ; ----------------------------------------------------------------------------
-        jmp     $E6A3                           ; E59F 4C A3 E6                 L..
+LowerFixedEngine_Branch_E59F:
+        jmp     LowerFixedEngine_Branch_E6A3    ; E59F 4C A3 E6                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $E795                           ; E5A2 4C 95 E7                 L..
+LowerFixedEngine_Branch_E5A2:
+        jmp     LowerFixedEngine_Branch_E795    ; E5A2 4C 95 E7                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E5A5:
         lda     #$FF                            ; E5A5 A9 FF                    ..
@@ -5132,9 +5646,10 @@ LowerFixedEngine_Entry_E5A5:
         lda     #$02                            ; E5A9 A9 02                    ..
         jsr     LowerFixedEngine_Entry_E606     ; E5AB 20 06 E6                  ..
         cmp     #$00                            ; E5AE C9 00                    ..
-        beq     $E5B7                           ; E5B0 F0 05                    ..
+        beq     LowerFixedEngine_Branch_E5B7    ; E5B0 F0 05                    ..
         sta     $66                             ; E5B2 85 66                    .f
         jsr     LowerFixedEngine_Entry_E58A     ; E5B4 20 8A E5                  ..
+LowerFixedEngine_Branch_E5B7:
         rts                                     ; E5B7 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E5B8:
@@ -5155,15 +5670,18 @@ LowerFixedEngine_Entry_E5C1:
         ldy     $40                             ; E5CE A4 40                    .@
         sty     $00                             ; E5D0 84 00                    ..
         ldy     #$00                            ; E5D2 A0 00                    ..
+LowerFixedEngine_Branch_E5D4:
         ldx     $3F                             ; E5D4 A6 3F                    .?
+LowerFixedEngine_Branch_E5D6:
         sta     ($4F),y                         ; E5D6 91 4F                    .O
         inc     $4F                             ; E5D8 E6 4F                    .O
-        bne     $E5DE                           ; E5DA D0 02                    ..
+        bne     LowerFixedEngine_Branch_E5DE    ; E5DA D0 02                    ..
         inc     $50                             ; E5DC E6 50                    .P
+LowerFixedEngine_Branch_E5DE:
         dex                                     ; E5DE CA                       .
-        bne     $E5D6                           ; E5DF D0 F5                    ..
+        bne     LowerFixedEngine_Branch_E5D6    ; E5DF D0 F5                    ..
         dec     $00                             ; E5E1 C6 00                    ..
-        bne     $E5D4                           ; E5E3 D0 EF                    ..
+        bne     LowerFixedEngine_Branch_E5D4    ; E5E3 D0 EF                    ..
         rts                                     ; E5E5 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E5E6:
@@ -5192,50 +5710,56 @@ LowerFixedEngine_Entry_E606:
         lda     #$00                            ; E607 A9 00                    ..
         sta     $00                             ; E609 85 00                    ..
         sta     $01                             ; E60B 85 01                    ..
+LowerFixedEngine_Branch_E60D:
         jsr     LowerFixedEngine_Entry_E61A     ; E60D 20 1A E6                  ..
         rol     $00                             ; E610 26 00                    &.
         rol     $01                             ; E612 26 01                    &.
         dex                                     ; E614 CA                       .
-        bne     $E60D                           ; E615 D0 F6                    ..
+        bne     LowerFixedEngine_Branch_E60D    ; E615 D0 F6                    ..
         lda     $00                             ; E617 A5 00                    ..
         rts                                     ; E619 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E61A:
         lda     #$80                            ; E61A A9 80                    ..
         ldy     $52                           ; E61C A4 52                    .R
-        beq     $E625                           ; E61E F0 05                    ..
+LowerFixedEngine_Branch_E61E:
+        beq     LowerFixedEngine_Branch_E625    ; E61E F0 05                    ..
         lsr     a                               ; E620 4A                       J
         dey                                     ; E621 88                       .
-        jmp     $E61E                           ; E622 4C 1E E6                 L..
+        jmp     LowerFixedEngine_Branch_E61E    ; E622 4C 1E E6                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E625:
         ldy     #$00                            ; E625 A0 00                    ..
         and     ($49),y                         ; E627 31 49                    1I
         sta     $0F                             ; E629 85 0F                    ..
         inc     $52                           ; E62B E6 52                    .R
         lda     $52                           ; E62D A5 52                    .R
         cmp     #$08                            ; E62F C9 08                    ..
-        bcc     $E63A                           ; E631 90 07                    ..
+        bcc     LowerFixedEngine_Branch_E63A    ; E631 90 07                    ..
         lda     #$00                            ; E633 A9 00                    ..
         sta     $52                           ; E635 85 52                    .R
         jsr     LowerFixedEngine_Entry_E642     ; E637 20 42 E6                  B.
+LowerFixedEngine_Branch_E63A:
         lda     $0F                             ; E63A A5 0F                    ..
-        beq     $E640                           ; E63C F0 02                    ..
+        beq     LowerFixedEngine_Branch_E640    ; E63C F0 02                    ..
         sec                                     ; E63E 38                       8
         rts                                     ; E63F 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E640:
         clc                                     ; E640 18                       .
         rts                                     ; E641 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E642:
         inc     $49                             ; E642 E6 49                    .I
-        bne     $E648                           ; E644 D0 02                    ..
+        bne     LowerFixedEngine_Branch_E648    ; E644 D0 02                    ..
         inc     $4A                             ; E646 E6 4A                    .J
+LowerFixedEngine_Branch_E648:
         lda     $49                             ; E648 A5 49                    .I
         cmp     #$D8                            ; E64A C9 D8                    ..
-        bne     $E673                           ; E64C D0 25                    .%
+        bne     LowerFixedEngine_Branch_E673    ; E64C D0 25                    .%
         lda     $4A                             ; E64E A5 4A                    .J
         cmp     #$BF                            ; E650 C9 BF                    ..
-        bne     $E673                           ; E652 D0 1F                    ..
+        bne     LowerFixedEngine_Branch_E673    ; E652 D0 1F                    ..
         pha                                     ; E654 48                       H
         txa                                     ; E655 8A                       .
         pha                                     ; E656 48                       H
@@ -5255,19 +5779,22 @@ LowerFixedEngine_Branch_E66A:
         pla                                     ; E670 68                       h
         tax                                     ; E671 AA                       .
         pla                                     ; E672 68                       h
+LowerFixedEngine_Branch_E673:
         rts                                     ; E673 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E674:
         lda     #$00                            ; E674 A9 00                    ..
         sta     $54                             ; E676 85 54                    .T
         jsr     LowerFixedEngine_Entry_E5E6     ; E678 20 E6 E5                  ..
         sta     $57                             ; E67B 85 57                    .W
         jsr     LowerFixedEngine_Entry_E600     ; E67D 20 00 E6                  ..
         cmp     #$00                            ; E680 C9 00                    ..
-        bne     $E6A0                           ; E682 D0 1C                    ..
+        bne     LowerFixedEngine_Branch_E6A0    ; E682 D0 1C                    ..
         jsr     LowerFixedEngine_Entry_E61A     ; E684 20 1A E6                  ..
-        bcc     $E68A                           ; E687 90 01                    ..
+        bcc     LowerFixedEngine_Branch_E68A    ; E687 90 01                    ..
         rts                                     ; E689 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E68A:
         lda     #$FF                            ; E68A A9 FF                    ..
         sta     $54                             ; E68C 85 54                    .T
         jsr     LowerFixedEngine_Entry_E5E6     ; E68E 20 E6 E5                  ..
@@ -5278,8 +5805,10 @@ LowerFixedEngine_Branch_E66A:
         sta     $5A                             ; E69B 85 5A                    .Z
         jmp     LowerFixedEngine_Entry_E58A     ; E69D 4C 8A E5                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $E58D                           ; E6A0 4C 8D E5                 L..
+LowerFixedEngine_Branch_E6A0:
+        jmp     LowerFixedEngine_Branch_E58D    ; E6A0 4C 8D E5                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E6A3:
         jsr     LowerFixedEngine_Entry_E604     ; E6A3 20 04 E6                  ..
         lda     $00                             ; E6A6 A5 00                    ..
         sta     $07                             ; E6A8 85 07                    ..
@@ -5311,18 +5840,20 @@ LowerFixedEngine_Branch_E66A:
         sbc     $03                             ; E6DE E5 03                    ..
         sta     $03                             ; E6E0 85 03                    ..
         lda     $54                             ; E6E2 A5 54                    .T
-        beq     $E6EA                           ; E6E4 F0 04                    ..
+        beq     LowerFixedEngine_Branch_E6EA    ; E6E4 F0 04                    ..
         lsr     $03                             ; E6E6 46 03                    F.
         lsr     $04                             ; E6E8 46 04                    F.
+LowerFixedEngine_Branch_E6EA:
         inc     $03                             ; E6EA E6 03                    ..
         inc     $04                             ; E6EC E6 04                    ..
+LowerFixedEngine_Branch_E6EE:
         lda     $57                             ; E6EE A5 57                    .W
         ldx     $03                             ; E6F0 A6 03                    ..
 LowerFixedEngine_Branch_E6F2:
         ldy     #$00                            ; E6F2 A0 00                    ..
         pha                                     ; E6F4 48                       H
         lda     $53                             ; E6F5 A5 53                    .S
-        beq     $E70E                           ; E6F7 F0 15                    ..
+        beq     LowerFixedEngine_Branch_E70E    ; E6F7 F0 15                    ..
         lda     ($07),y                         ; E6F9 B1 07                    ..
         and     #$1F                            ; E6FB 29 1F                    ).
         sta     ($07),y                         ; E6FD 91 07                    ..
@@ -5336,10 +5867,11 @@ LowerFixedEngine_Branch_E6F2:
         ora     ($07),y                         ; E706 11 07                    ..
         sta     ($07),y                         ; E708 91 07                    ..
         pla                                     ; E70A 68                       h
-        jmp     $E752                           ; E70B 4C 52 E7                 LR.
+        jmp     LowerFixedEngine_Branch_E752    ; E70B 4C 52 E7                 LR.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E70E:
         lda     $54                             ; E70E A5 54                    .T
-        beq     $E74F                           ; E710 F0 3D                    .=
+        beq     LowerFixedEngine_Branch_E74F    ; E710 F0 3D                    .=
         pla                                     ; E712 68                       h
         lda     $57                             ; E713 A5 57                    .W
         sta     ($07),y                         ; E715 91 07                    ..
@@ -5372,8 +5904,10 @@ LowerFixedEngine_Branch_E6F2:
         jsr     LowerFixedEngine_Entry_E780     ; E749 20 80 E7                  ..
         jmp     LowerFixedEngine_Branch_E766    ; E74C 4C 66 E7                 Lf.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E74F:
         pla                                     ; E74F 68                       h
         sta     ($07),y                         ; E750 91 07                    ..
+LowerFixedEngine_Branch_E752:
         jsr     LowerFixedEngine_Entry_E76D     ; E752 20 6D E7                  m.
         dex                                     ; E755 CA                       .
         bne     LowerFixedEngine_Branch_E6F2    ; E756 D0 9A                    ..
@@ -5387,13 +5921,14 @@ LowerFixedEngine_Branch_E6F2:
         inc     $08                             ; E764 E6 08                    ..
 LowerFixedEngine_Branch_E766:
         dec     $04                             ; E766 C6 04                    ..
-        bne     $E6EE                           ; E768 D0 84                    ..
+        bne     LowerFixedEngine_Branch_E6EE    ; E768 D0 84                    ..
         jmp     LowerFixedEngine_Entry_E58A     ; E76A 4C 8A E5                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E76D:
         inc     $07                             ; E76D E6 07                    ..
-        bne     $E773                           ; E76F D0 02                    ..
+        bne     LowerFixedEngine_Branch_E773    ; E76F D0 02                    ..
         inc     $08                             ; E771 E6 08                    ..
+LowerFixedEngine_Branch_E773:
         rts                                     ; E773 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E774:
@@ -5417,30 +5952,35 @@ LowerFixedEngine_Entry_E782:
 LowerFixedEngine_Branch_E78B:
         rts                                     ; E78B 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E78C:
         jsr     LowerFixedEngine_Entry_E5EB     ; E78C 20 EB E5                  ..
         jsr     LowerFixedEngine_Entry_E86F     ; E78F 20 6F E8                  o.
         jmp     LowerFixedEngine_Entry_E58A     ; E792 4C 8A E5                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E795:
         jsr     LowerFixedEngine_Entry_E5EB     ; E795 20 EB E5                  ..
         jsr     LowerFixedEngine_Entry_E86F     ; E798 20 6F E8                  o.
         jsr     LowerFixedEngine_Entry_E867     ; E79B 20 67 E8                  g.
+LowerFixedEngine_Branch_E79E:
         jsr     LowerFixedEngine_Entry_E61A     ; E79E 20 1A E6                  ..
-        bcs     $E7A6                           ; E7A1 B0 03                    ..
-        jmp     $E802                           ; E7A3 4C 02 E8                 L..
+        bcs     LowerFixedEngine_Branch_E7A6    ; E7A1 B0 03                    ..
+        jmp     LowerFixedEngine_Branch_E802    ; E7A3 4C 02 E8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E7A6:
         lda     #$02                            ; E7A6 A9 02                    ..
         jsr     LowerFixedEngine_Entry_E606     ; E7A8 20 06 E6                  ..
         cmp     #$00                            ; E7AB C9 00                    ..
-        beq     $E7EA                           ; E7AD F0 3B                    .;
+        beq     LowerFixedEngine_Branch_E7EA    ; E7AD F0 3B                    .;
         cmp     #$01                            ; E7AF C9 01                    ..
-        beq     $E7F6                           ; E7B1 F0 43                    .C
+        beq     LowerFixedEngine_Branch_E7F6    ; E7B1 F0 43                    .C
         cmp     #$02                            ; E7B3 C9 02                    ..
-        beq     $E7DC                           ; E7B5 F0 25                    .%
+        beq     LowerFixedEngine_Branch_E7DC    ; E7B5 F0 25                    .%
         jsr     LowerFixedEngine_Entry_E61A     ; E7B7 20 1A E6                  ..
-        bcs     $E7BE                           ; E7BA B0 02                    ..
-        bcc     $E795                           ; E7BC 90 D7                    ..
+        bcs     LowerFixedEngine_Branch_E7BE    ; E7BA B0 02                    ..
+        bcc     LowerFixedEngine_Branch_E795    ; E7BC 90 D7                    ..
+LowerFixedEngine_Branch_E7BE:
         ldx     $5B                             ; E7BE A6 5B                    .[
-        beq     $E7D9                           ; E7C0 F0 17                    ..
+        beq     LowerFixedEngine_Branch_E7D9    ; E7C0 F0 17                    ..
         dex                                     ; E7C2 CA                       .
         lda     $6E8A,x                         ; E7C3 BD 8A 6E                 ..n
         sta     $56                             ; E7C6 85 56                    .V
@@ -5451,72 +5991,84 @@ LowerFixedEngine_Branch_E78B:
         lda     $6E8A,x                         ; E7CF BD 8A 6E                 ..n
         sta     $08                             ; E7D2 85 08                    ..
         stx     $5B                             ; E7D4 86 5B                    .[
-        jmp     $E79E                           ; E7D6 4C 9E E7                 L..
+        jmp     LowerFixedEngine_Branch_E79E    ; E7D6 4C 9E E7                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E7D9:
         jmp     LowerFixedEngine_Entry_E58A     ; E7D9 4C 8A E5                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E7DC:
         jsr     LowerFixedEngine_Entry_E61A     ; E7DC 20 1A E6                  ..
-        bcc     $E7E7                           ; E7DF 90 06                    ..
+        bcc     LowerFixedEngine_Branch_E7E7    ; E7DF 90 06                    ..
         jsr     LowerFixedEngine_Entry_E8E1     ; E7E1 20 E1 E8                  ..
-        jmp     $E7F6                           ; E7E4 4C F6 E7                 L..
+        jmp     LowerFixedEngine_Branch_E7F6    ; E7E4 4C F6 E7                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E7E7:
         jsr     LowerFixedEngine_Entry_E8E1     ; E7E7 20 E1 E8                  ..
+LowerFixedEngine_Branch_E7EA:
         lda     $56                             ; E7EA A5 56                    .V
         clc                                     ; E7EC 18                       .
         adc     #$01                            ; E7ED 69 01                    i.
         and     #$03                            ; E7EF 29 03                    ).
         sta     $56                             ; E7F1 85 56                    .V
-        jmp     $E802                           ; E7F3 4C 02 E8                 L..
+        jmp     LowerFixedEngine_Branch_E802    ; E7F3 4C 02 E8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E7F6:
         lda     $56                             ; E7F6 A5 56                    .V
         sec                                     ; E7F8 38                       8
         sbc     #$01                            ; E7F9 E9 01                    ..
         and     #$03                            ; E7FB 29 03                    ).
         sta     $56                             ; E7FD 85 56                    .V
-        jmp     $E802                           ; E7FF 4C 02 E8                 L..
+        jmp     LowerFixedEngine_Branch_E802    ; E7FF 4C 02 E8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E802:
         jsr     LowerFixedEngine_Entry_E80B     ; E802 20 0B E8                  ..
         jsr     LowerFixedEngine_Entry_E8AA     ; E805 20 AA E8                  ..
-        jmp     $E79E                           ; E808 4C 9E E7                 L..
+        jmp     LowerFixedEngine_Branch_E79E    ; E808 4C 9E E7                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E80B:
         ldx     $56                             ; E80B A6 56                    .V
-        beq     $E817                           ; E80D F0 08                    ..
+        beq     LowerFixedEngine_Branch_E817    ; E80D F0 08                    ..
         dex                                     ; E80F CA                       .
-        beq     $E821                           ; E810 F0 0F                    ..
+        beq     LowerFixedEngine_Branch_E821    ; E810 F0 0F                    ..
         dex                                     ; E812 CA                       .
-        beq     $E82A                           ; E813 F0 15                    ..
-        bne     $E833                           ; E815 D0 1C                    ..
+        beq     LowerFixedEngine_Branch_E82A    ; E813 F0 15                    ..
+        bne     LowerFixedEngine_Branch_E833    ; E815 D0 1C                    ..
+LowerFixedEngine_Branch_E817:
         jsr     LowerFixedEngine_Entry_E83C     ; E817 20 3C E8                  <.
         lda     $54                             ; E81A A5 54                    .T
-        beq     $E820                           ; E81C F0 02                    ..
+        beq     LowerFixedEngine_Branch_E820    ; E81C F0 02                    ..
         bne     LowerFixedEngine_Entry_E83C     ; E81E D0 1C                    ..
+LowerFixedEngine_Branch_E820:
         rts                                     ; E820 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E821:
         jsr     LowerFixedEngine_Entry_E848     ; E821 20 48 E8                  H.
         lda     $54                             ; E824 A5 54                    .T
-        beq     $E820                           ; E826 F0 F8                    ..
+        beq     LowerFixedEngine_Branch_E820    ; E826 F0 F8                    ..
         bne     LowerFixedEngine_Entry_E848     ; E828 D0 1E                    ..
+LowerFixedEngine_Branch_E82A:
         jsr     LowerFixedEngine_Entry_E84F     ; E82A 20 4F E8                  O.
         lda     $54                             ; E82D A5 54                    .T
-        beq     $E820                           ; E82F F0 EF                    ..
+        beq     LowerFixedEngine_Branch_E820    ; E82F F0 EF                    ..
         bne     LowerFixedEngine_Entry_E84F     ; E831 D0 1C                    ..
+LowerFixedEngine_Branch_E833:
         jsr     LowerFixedEngine_Entry_E85B     ; E833 20 5B E8                  [.
         lda     $54                             ; E836 A5 54                    .T
-        beq     $E820                           ; E838 F0 E6                    ..
+        beq     LowerFixedEngine_Branch_E820    ; E838 F0 E6                    ..
         bne     LowerFixedEngine_Entry_E85B     ; E83A D0 1F                    ..
 LowerFixedEngine_Entry_E83C:
         lda     $08                             ; E83C A5 08                    ..
         sec                                     ; E83E 38                       8
         sbc     $3F                             ; E83F E5 3F                    .?
         sta     $08                             ; E841 85 08                    ..
-        bcs     $E847                           ; E843 B0 02                    ..
+        bcs     LowerFixedEngine_Branch_E847    ; E843 B0 02                    ..
         dec     $09                             ; E845 C6 09                    ..
+LowerFixedEngine_Branch_E847:
         rts                                     ; E847 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E848:
         inc     $08                             ; E848 E6 08                    ..
-        bne     $E847                           ; E84A D0 FB                    ..
+        bne     LowerFixedEngine_Branch_E847    ; E84A D0 FB                    ..
         inc     $09                             ; E84C E6 09                    ..
         rts                                     ; E84E 60                       `
 ; ----------------------------------------------------------------------------
@@ -5525,7 +6077,7 @@ LowerFixedEngine_Entry_E84F:
         clc                                     ; E851 18                       .
         adc     $3F                             ; E852 65 3F                    e?
         sta     $08                             ; E854 85 08                    ..
-        bcc     $E847                           ; E856 90 EF                    ..
+        bcc     LowerFixedEngine_Branch_E847    ; E856 90 EF                    ..
         inc     $09                             ; E858 E6 09                    ..
         rts                                     ; E85A 60                       `
 ; ----------------------------------------------------------------------------
@@ -5534,7 +6086,7 @@ LowerFixedEngine_Entry_E85B:
         sec                                     ; E85D 38                       8
         sbc     #$01                            ; E85E E9 01                    ..
         sta     $08                             ; E860 85 08                    ..
-        bcs     $E847                           ; E862 B0 E3                    ..
+        bcs     LowerFixedEngine_Branch_E847    ; E862 B0 E3                    ..
         dec     $09                             ; E864 C6 09                    ..
         rts                                     ; E866 60                       `
 ; ----------------------------------------------------------------------------
@@ -5549,7 +6101,7 @@ LowerFixedEngine_Entry_E86F:
         ldy     #$00                            ; E871 A0 00                    ..
         jsr     LowerFixedEngine_Entry_E88E     ; E873 20 8E E8                  ..
         lda     $54                             ; E876 A5 54                    .T
-        beq     $E88D                           ; E878 F0 13                    ..
+        beq     LowerFixedEngine_Branch_E88D    ; E878 F0 13                    ..
         iny                                     ; E87A C8                       .
         lda     $58                             ; E87B A5 58                    .X
         jsr     LowerFixedEngine_Entry_E88E     ; E87D 20 8E E8                  ..
@@ -5560,12 +6112,13 @@ LowerFixedEngine_Entry_E86F:
         lda     $5A                             ; E888 A5 5A                    .Z
         jmp     LowerFixedEngine_Entry_E88E     ; E88A 4C 8E E8                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E88D:
         rts                                     ; E88D 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_E88E:
         pha                                     ; E88E 48                       H
         lda     $53                             ; E88F A5 53                    .S
-        beq     $E8A6                           ; E891 F0 13                    ..
+        beq     LowerFixedEngine_Branch_E8A6    ; E891 F0 13                    ..
         lda     ($00),y                         ; E893 B1 00                    ..
         and     #$1F                            ; E895 29 1F                    ).
         sta     ($00),y                         ; E897 91 00                    ..
@@ -5581,6 +6134,7 @@ LowerFixedEngine_Entry_E88E:
         pla                                     ; E8A4 68                       h
         rts                                     ; E8A5 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E8A6:
         pla                                     ; E8A6 68                       h
         sta     ($00),y                         ; E8A7 91 00                    ..
         rts                                     ; E8A9 60                       `
@@ -5590,7 +6144,7 @@ LowerFixedEngine_Entry_E8AA:
         ldy     #$00                            ; E8AC A0 00                    ..
         jsr     LowerFixedEngine_Entry_E8C5     ; E8AE 20 C5 E8                  ..
         lda     $54                             ; E8B1 A5 54                    .T
-        beq     $E88D                           ; E8B3 F0 D8                    ..
+        beq     LowerFixedEngine_Branch_E88D    ; E8B3 F0 D8                    ..
         iny                                     ; E8B5 C8                       .
         lda     $58                             ; E8B6 A5 58                    .X
         jsr     LowerFixedEngine_Entry_E8C5     ; E8B8 20 C5 E8                  ..
@@ -5602,7 +6156,7 @@ LowerFixedEngine_Entry_E8AA:
 LowerFixedEngine_Entry_E8C5:
         pha                                     ; E8C5 48                       H
         lda     $53                             ; E8C6 A5 53                    .S
-        beq     $E8DD                           ; E8C8 F0 13                    ..
+        beq     LowerFixedEngine_Branch_E8DD    ; E8C8 F0 13                    ..
         lda     ($08),y                         ; E8CA B1 08                    ..
         and     #$1F                            ; E8CC 29 1F                    ).
         sta     ($08),y                         ; E8CE 91 08                    ..
@@ -5618,6 +6172,7 @@ LowerFixedEngine_Entry_E8C5:
         pla                                     ; E8DB 68                       h
         rts                                     ; E8DC 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E8DD:
         pla                                     ; E8DD 68                       h
         sta     ($08),y                         ; E8DE 91 08                    ..
         rts                                     ; E8E0 60                       `
@@ -5636,15 +6191,50 @@ LowerFixedEngine_Entry_E8E1:
         stx     $5B                             ; E8F5 86 5B                    .[
         rts                                     ; E8F7 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$3F,$18,$65,$49,$85,$49,$90 ; E8F8 A5 3F 18 65 49 85 49 90  .?.eI.I.
-        db   $02,$E6,$4A,$60,$A5,$49,$38,$E5 ; E900 02 E6 4A 60 A5 49 38 E5  ..J`.I8.
-        db   $3F,$85,$49,$B0,$F6,$C6,$4A,$60 ; E908 3F 85 49 B0 F6 C6 4A 60  ?.I...J`
-        db   $48,$20,$1E,$E9,$29,$E0,$91,$02 ; E910 48 20 1E E9 29 E0 91 02  H ..)...
-        db   $68,$11,$02,$91,$02,$60,$8A,$48 ; E918 68 11 02 91 02 60 8A 48  h....`.H
-        db   $A5,$3F,$85,$02,$A9,$00,$85,$03 ; E920 A5 3F 85 02 A9 00 85 03  .?......
-        db   $98,$A2,$02,$20,$27,$C8,$A9,$00 ; E928 98 A2 02 20 27 C8 A9 00  ... '...
-        db   $A0,$78,$A2,$02,$20,$1D,$C8,$68 ; E930 A0 78 A2 02 20 1D C8 68  .x.. ..h
+LowerFixedEngine_Entry_E8F8:
+        lda     $3F                             ; E8F8 A5 3F                    .?
+        clc                                     ; E8FA 18                       .
+        adc     $49                             ; E8FB 65 49                    eI
+        sta     $49                             ; E8FD 85 49                    .I
+        bcc     LowerFixedEngine_Branch_E903    ; E8FF 90 02                    ..
+        inc     $4A                             ; E901 E6 4A                    .J
+LowerFixedEngine_Branch_E903:
+        rts                                     ; E903 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_E904:
+        lda     $49                             ; E904 A5 49                    .I
+        sec                                     ; E906 38                       8
+        sbc     $3F                             ; E907 E5 3F                    .?
+        sta     $49                             ; E909 85 49                    .I
+        bcs     LowerFixedEngine_Branch_E903    ; E90B B0 F6                    ..
+        dec     $4A                             ; E90D C6 4A                    .J
+        rts                                     ; E90F 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_E910:
+        pha                                     ; E910 48                       H
+        jsr     LowerFixedEngine_Entry_E91E     ; E911 20 1E E9                  ..
+        and     #$E0                            ; E914 29 E0                    ).
+        sta     ($02),y                         ; E916 91 02                    ..
+        pla                                     ; E918 68                       h
+        ora     ($02),y                         ; E919 11 02                    ..
+        sta     ($02),y                         ; E91B 91 02                    ..
+        rts                                     ; E91D 60                       `
+; ----------------------------------------------------------------------------
+LowerFixedEngine_Entry_E91E:
+        txa                                     ; E91E 8A                       .
+        pha                                     ; E91F 48                       H
+        lda     $3F                             ; E920 A5 3F                    .?
+        sta     $02                             ; E922 85 02                    ..
+        lda     #$00                            ; E924 A9 00                    ..
+        sta     $03                             ; E926 85 03                    ..
+        tya                                     ; E928 98                       .
+        ldx     #$02                            ; E929 A2 02                    ..
+        jsr     LowerFixedEngine_Entry_C827     ; E92B 20 27 C8                  '.
+        lda     #$00                            ; E92E A9 00                    ..
+        ldy     #$78                            ; E930 A0 78                    .x
+        ldx     #$02                            ; E932 A2 02                    ..
+        jsr     LowerFixedEngine_Entry_C81D     ; E934 20 1D C8                  ..
+        pla                                     ; E937 68                       h
         ldy     #$00                            ; E938 A0 00                    ..
         ldx     #$02                            ; E93A A2 02                    ..
         jsr     LowerFixedEngine_Entry_C81D     ; E93C 20 1D C8                  ..
@@ -5682,12 +6272,14 @@ LowerFixedEngine_Branch_E944:
         sbc     #$00                            ; E978 E9 00                    ..
         sta     $01                             ; E97A 85 01                    ..
         ldx     #$10                            ; E97C A2 10                    ..
+LowerFixedEngine_Branch_E97E:
         asl     $00                             ; E97E 06 00                    ..
         rol     $01                             ; E980 26 01                    &.
-        bcs     $E988                           ; E982 B0 04                    ..
+        bcs     LowerFixedEngine_Branch_E988    ; E982 B0 04                    ..
         dex                                     ; E984 CA                       .
-        jmp     $E97E                           ; E985 4C 7E E9                 L~.
+        jmp     LowerFixedEngine_Branch_E97E    ; E985 4C 7E E9                 L~.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E988:
         stx     $55                             ; E988 86 55                    .U
         jsr     LowerFixedEngine_Entry_E642     ; E98A 20 42 E6                  B.
         lda     ($49),y                         ; E98D B1 49                    .I
@@ -5736,22 +6328,24 @@ LowerFixedEngine_Branch_E9CB:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E9CE:
         lda     $3E                             ; E9CE A5 3E                    .>
-        bne     $E9D5                           ; E9D0 D0 03                    ..
+        bne     LowerFixedEngine_Branch_E9D5    ; E9D0 D0 03                    ..
         lda     #$FF                            ; E9D2 A9 FF                    ..
         rts                                     ; E9D4 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E9D5:
         jsr     LowerFixedEngine_Entry_EA03     ; E9D5 20 03 EA                  ..
         bit     $6291                           ; E9D8 2C 91 62                 ,.b
-        bvc     $E9E0                           ; E9DB 50 03                    P.
+        bvc     LowerFixedEngine_Branch_E9E0    ; E9DB 50 03                    P.
         brk                                     ; E9DD 00                       .
         db   $3F,$EF                         ; E9DE 3F EF                    ?.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_E9E0:
         lda     $3D                             ; E9E0 A5 3D                    .=
         and     #$01                            ; E9E2 29 01                    ).
-        bne     $E9FA                           ; E9E4 D0 14                    ..
+        bne     LowerFixedEngine_Branch_E9FA    ; E9E4 D0 14                    ..
         lda     $059E                           ; E9E6 AD 9E 05                 ...
         cmp     #$31                            ; E9E9 C9 31                    .1
-        bne     $E9FA                           ; E9EB D0 0D                    ..
+        bne     LowerFixedEngine_Branch_E9FA    ; E9EB D0 0D                    ..
         ldy     #$01                            ; E9ED A0 01                    ..
         lda     $3E                             ; E9EF A5 3E                    .>
         and     #$07                            ; E9F1 29 07                    ).
@@ -5759,6 +6353,7 @@ LowerFixedEngine_Branch_E9CE:
         ldy     #$04                            ; E9F5 A0 04                    ..
 LowerFixedEngine_Branch_E9F7:
         sty     $052F                           ; E9F7 8C 2F 05                 ./.
+LowerFixedEngine_Branch_E9FA:
         lda     $3E                             ; E9FA A5 3E                    .>
         sec                                     ; E9FC 38                       8
         sbc     $058E                           ; E9FD ED 8E 05                 ...
@@ -5768,111 +6363,130 @@ LowerFixedEngine_Branch_E9F7:
 LowerFixedEngine_Entry_EA03:
         jsr     LowerFixedEngine_Entry_EA5A     ; EA03 20 5A EA                  Z.
         ldx     $3D                             ; EA06 A6 3D                    .=
-        beq     $EA32                           ; EA08 F0 28                    .(
+        beq     LowerFixedEngine_Branch_EA32    ; EA08 F0 28                    .(
         dex                                     ; EA0A CA                       .
-        beq     $EA25                           ; EA0B F0 18                    ..
+        beq     LowerFixedEngine_Branch_EA25    ; EA0B F0 18                    ..
         dex                                     ; EA0D CA                       .
-        beq     $EA46                           ; EA0E F0 36                    .6
+        beq     LowerFixedEngine_Branch_EA46    ; EA0E F0 36                    .6
         lda     $0508                           ; EA10 AD 08 05                 ...
         sec                                     ; EA13 38                       8
         sbc     $058E                           ; EA14 ED 8E 05                 ...
         sta     $0508                           ; EA17 8D 08 05                 ...
-        bcs     $EA24                           ; EA1A B0 08                    ..
+        bcs     LowerFixedEngine_Branch_EA24    ; EA1A B0 08                    ..
+LowerFixedEngine_Branch_EA1C:
         lda     $0505                           ; EA1C AD 05 05                 ...
         eor     #$01                            ; EA1F 49 01                    I.
         sta     $0505                           ; EA21 8D 05 05                 ...
+LowerFixedEngine_Branch_EA24:
         rts                                     ; EA24 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA25:
         lda     $0508                           ; EA25 AD 08 05                 ...
         clc                                     ; EA28 18                       .
         adc     $058E                           ; EA29 6D 8E 05                 m..
         sta     $0508                           ; EA2C 8D 08 05                 ...
-        bcs     $EA1C                           ; EA2F B0 EB                    ..
+        bcs     LowerFixedEngine_Branch_EA1C    ; EA2F B0 EB                    ..
         rts                                     ; EA31 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA32:
         lda     $0509                           ; EA32 AD 09 05                 ...
         sec                                     ; EA35 38                       8
         sbc     $058E                           ; EA36 ED 8E 05                 ...
         sta     $0509                           ; EA39 8D 09 05                 ...
         cmp     #$F0                            ; EA3C C9 F0                    ..
-        bcc     $EA59                           ; EA3E 90 19                    ..
+        bcc     LowerFixedEngine_Branch_EA59    ; EA3E 90 19                    ..
         sbc     #$10                            ; EA40 E9 10                    ..
         sta     $0509                           ; EA42 8D 09 05                 ...
         rts                                     ; EA45 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA46:
         lda     $0509                           ; EA46 AD 09 05                 ...
         clc                                     ; EA49 18                       .
         adc     $058E                           ; EA4A 6D 8E 05                 m..
         sta     $0509                           ; EA4D 8D 09 05                 ...
         cmp     #$F0                            ; EA50 C9 F0                    ..
-        bcc     $EA59                           ; EA52 90 05                    ..
+        bcc     LowerFixedEngine_Branch_EA59    ; EA52 90 05                    ..
         adc     #$0F                            ; EA54 69 0F                    i.
         sta     $0509                           ; EA56 8D 09 05                 ...
+LowerFixedEngine_Branch_EA59:
         rts                                     ; EA59 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_EA5A:
         lda     $3E                             ; EA5A A5 3E                    .>
         and     #$01                            ; EA5C 29 01                    ).
-        bne     $EA76                           ; EA5E D0 16                    ..
+        bne     LowerFixedEngine_Branch_EA76    ; EA5E D0 16                    ..
         lda     $3E                             ; EA60 A5 3E                    .>
         cmp     #$0A                            ; EA62 C9 0A                    ..
-        bcs     $EAAB                           ; EA64 B0 45                    .E
+        bcs     LowerFixedEngine_Branch_EAAB    ; EA64 B0 45                    .E
         cmp     #$08                            ; EA66 C9 08                    ..
-        beq     $EA87                           ; EA68 F0 1D                    ..
+        beq     LowerFixedEngine_Branch_EA87    ; EA68 F0 1D                    ..
         cmp     #$06                            ; EA6A C9 06                    ..
-        beq     $EA93                           ; EA6C F0 25                    .%
+        beq     LowerFixedEngine_Branch_EA93    ; EA6C F0 25                    .%
         cmp     #$04                            ; EA6E C9 04                    ..
-        beq     $EA7B                           ; EA70 F0 09                    ..
+        beq     LowerFixedEngine_Branch_EA7B    ; EA70 F0 09                    ..
         cmp     #$02                            ; EA72 C9 02                    ..
-        beq     $EA77                           ; EA74 F0 01                    ..
+        beq     LowerFixedEngine_Branch_EA77    ; EA74 F0 01                    ..
+LowerFixedEngine_Branch_EA76:
         rts                                     ; EA76 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA77:
         brk                                     ; EA77 00                       .
         db   $13,$EF                         ; EA78 13 EF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; EA7A 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA7B:
         lda     $3D                             ; EA7B A5 3D                    .=
         and     #$01                            ; EA7D 29 01                    ).
-        beq     $EA84                           ; EA7F F0 03                    ..
-        jmp     $EF9C                           ; EA81 4C 9C EF                 L..
+        beq     LowerFixedEngine_Branch_EA84    ; EA7F F0 03                    ..
+        jmp     LowerFixedEngine_Branch_EF9C    ; EA81 4C 9C EF                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $EF78                           ; EA84 4C 78 EF                 Lx.
+LowerFixedEngine_Branch_EA84:
+        jmp     LowerFixedEngine_Branch_EF78    ; EA84 4C 78 EF                 Lx.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA87:
         lda     $3D                             ; EA87 A5 3D                    .=
         and     #$01                            ; EA89 29 01                    ).
-        beq     $EA9F                           ; EA8B F0 12                    ..
+        beq     LowerFixedEngine_Branch_EA9F    ; EA8B F0 12                    ..
         jsr     LowerFixedEngine_Entry_EE05     ; EA8D 20 05 EE                  ..
-        jmp     $EEED                           ; EA90 4C ED EE                 L..
+        jmp     LowerFixedEngine_Branch_EEED    ; EA90 4C ED EE                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA93:
         lda     $3D                             ; EA93 A5 3D                    .=
         and     #$01                            ; EA95 29 01                    ).
-        beq     $EA9C                           ; EA97 F0 03                    ..
-        jmp     $EEF3                           ; EA99 4C F3 EE                 L..
+        beq     LowerFixedEngine_Branch_EA9C    ; EA97 F0 03                    ..
+        jmp     LowerFixedEngine_Branch_EEF3    ; EA99 4C F3 EE                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $EE42                           ; EA9C 4C 42 EE                 LB.
+LowerFixedEngine_Branch_EA9C:
+        jmp     LowerFixedEngine_Branch_EE42    ; EA9C 4C 42 EE                 LB.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EA9F:
         jsr     LowerFixedEngine_Entry_EDC7     ; EA9F 20 C7 ED                  ..
-        jmp     $EE3C                           ; EAA2 4C 3C EE                 L<.
+        jmp     LowerFixedEngine_Branch_EE3C    ; EAA2 4C 3C EE                 L<.
 ; ----------------------------------------------------------------------------
-        jmp     $EC4B                           ; EAA5 4C 4B EC                 LK.
+LowerFixedEngine_Branch_EAA5:
+        jmp     LowerFixedEngine_Branch_EC4B    ; EAA5 4C 4B EC                 LK.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EAA8:
         jmp     LowerFixedEngine_Branch_EB46    ; EAA8 4C 46 EB                 LF.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EAAB:
         ldx     $3D                             ; EAAB A6 3D                    .=
-        beq     $EAB3                           ; EAAD F0 04                    ..
+        beq     LowerFixedEngine_Branch_EAB3    ; EAAD F0 04                    ..
         cpx     #$02                            ; EAAF E0 02                    ..
-        bne     $EAA5                           ; EAB1 D0 F2                    ..
+        bne     LowerFixedEngine_Branch_EAA5    ; EAB1 D0 F2                    ..
+LowerFixedEngine_Branch_EAB3:
         bit     $41                             ; EAB3 24 41                    $A
-        bpl     $EAA8                           ; EAB5 10 F1                    ..
+        bpl     LowerFixedEngine_Branch_EAA8    ; EAB5 10 F1                    ..
         cmp     #$0E                            ; EAB7 C9 0E                    ..
-        beq     $EA76                           ; EAB9 F0 BB                    ..
+        beq     LowerFixedEngine_Branch_EA76    ; EAB9 F0 BB                    ..
         cmp     #$0A                            ; EABB C9 0A                    ..
-        beq     $EA76                           ; EABD F0 B7                    ..
+        beq     LowerFixedEngine_Branch_EA76    ; EABD F0 B7                    ..
         and     #$10                            ; EABF 29 10                    ).
         lsr     a                               ; EAC1 4A                       J
-        beq     $EAC6                           ; EAC2 F0 02                    ..
+        beq     LowerFixedEngine_Branch_EAC6    ; EAC2 F0 02                    ..
         adc     #$01                            ; EAC4 69 01                    i.
+LowerFixedEngine_Branch_EAC6:
         sta     $02                             ; EAC6 85 02                    ..
         sec                                     ; EAC8 38                       8
         sbc     #$09                            ; EAC9 E9 09                    ..
@@ -5881,8 +6495,9 @@ LowerFixedEngine_Entry_EA5A:
         sta     $03                             ; EACE 85 03                    ..
         lda     #$F9                            ; EAD0 A9 F9                    ..
         cpx     #$00                            ; EAD2 E0 00                    ..
-        beq     $EAD8                           ; EAD4 F0 02                    ..
+        beq     LowerFixedEngine_Branch_EAD8    ; EAD4 F0 02                    ..
         lda     #$07                            ; EAD6 A9 07                    ..
+LowerFixedEngine_Branch_EAD8:
         clc                                     ; EAD8 18                       .
         adc     PlayerLocalY                    ; EAD9 65 45                    eE
         sta     $04                             ; EADB 85 04                    ..
@@ -5895,24 +6510,27 @@ LowerFixedEngine_Entry_EA5A:
         jsr     LowerFixedEngine_Entry_EB25     ; EAEB 20 25 EB                  %.
         jsr     LowerFixedEngine_Entry_D426     ; EAEE 20 26 D4                  &.
         jsr     LowerFixedEngine_Entry_EB20     ; EAF1 20 20 EB                   .
+LowerFixedEngine_Branch_EAF4:
         ldx     $03                             ; EAF4 A6 03                    ..
         ldy     $04                             ; EAF6 A4 04                    ..
         lda     $00                             ; EAF8 A5 00                    ..
         and     $01                             ; EAFA 25 01                    %.
         cmp     #$FF                            ; EAFC C9 FF                    ..
-        bne     $EB0F                           ; EAFE D0 0F                    ..
+        bne     LowerFixedEngine_Branch_EB0F    ; EAFE D0 0F                    ..
         jsr     LowerFixedEngine_Entry_D3E6     ; EB00 20 E6 D3                  ..
         jsr     LowerFixedEngine_Entry_D4F3     ; EB03 20 F3 D4                  ..
         jsr     LowerFixedEngine_Entry_EB25     ; EB06 20 25 EB                  %.
         jsr     LowerFixedEngine_Entry_D426     ; EB09 20 26 D4                  &.
-        jmp     $EB18                           ; EB0C 4C 18 EB                 L..
+        jmp     LowerFixedEngine_Branch_EB18    ; EB0C 4C 18 EB                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EB0F:
         jsr     LowerFixedEngine_Entry_D41A     ; EB0F 20 1A D4                  ..
         jsr     LowerFixedEngine_Entry_D4F3     ; EB12 20 F3 D4                  ..
         jsr     LowerFixedEngine_Entry_EB25     ; EB15 20 25 EB                  %.
+LowerFixedEngine_Branch_EB18:
         jsr     LowerFixedEngine_Entry_EB20     ; EB18 20 20 EB                   .
         dec     $05                             ; EB1B C6 05                    ..
-        bne     $EAF4                           ; EB1D D0 D5                    ..
+        bne     LowerFixedEngine_Branch_EAF4    ; EB1D D0 D5                    ..
         rts                                     ; EB1F 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_EB20:
@@ -6084,14 +6702,16 @@ LowerFixedEngine_Entry_EC3A:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_EC48:
         asl     $53                             ; EC48 06 53                    .S
+LowerFixedEngine_Branch_EC4A:
         rts                                     ; EC4A 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EC4B:
         bit     $41                             ; EC4B 24 41                    $A
-        bpl     $ECBC                           ; EC4D 10 6D                    .m
+        bpl     LowerFixedEngine_Branch_ECBC    ; EC4D 10 6D                    .m
         cmp     #$0E                            ; EC4F C9 0E                    ..
-        beq     $EC4A                           ; EC51 F0 F7                    ..
+        beq     LowerFixedEngine_Branch_EC4A    ; EC51 F0 F7                    ..
         cmp     #$0A                            ; EC53 C9 0A                    ..
-        beq     $EC4A                           ; EC55 F0 F3                    ..
+        beq     LowerFixedEngine_Branch_EC4A    ; EC55 F0 F3                    ..
         and     #$10                            ; EC57 29 10                    ).
         lsr     a                               ; EC59 4A                       J
         sta     $02                             ; EC5A 85 02                    ..
@@ -6102,8 +6722,9 @@ LowerFixedEngine_Branch_EC48:
         sta     $04                             ; EC62 85 04                    ..
         lda     #$F7                            ; EC64 A9 F7                    ..
         cpx     #$03                            ; EC66 E0 03                    ..
-        beq     $EC6C                           ; EC68 F0 02                    ..
+        beq     LowerFixedEngine_Branch_EC6C    ; EC68 F0 02                    ..
         lda     #$08                            ; EC6A A9 08                    ..
+LowerFixedEngine_Branch_EC6C:
         clc                                     ; EC6C 18                       .
         adc     PlayerLocalX                    ; EC6D 65 44                    eD
         sta     $03                             ; EC6F 85 03                    ..
@@ -6116,24 +6737,27 @@ LowerFixedEngine_Branch_EC48:
         jsr     LowerFixedEngine_Entry_EB25     ; EC7F 20 25 EB                  %.
         jsr     LowerFixedEngine_Entry_D443     ; EC82 20 43 D4                  C.
         jsr     LowerFixedEngine_Entry_ECB4     ; EC85 20 B4 EC                  ..
+LowerFixedEngine_Branch_EC88:
         ldx     $03                             ; EC88 A6 03                    ..
         ldy     $04                             ; EC8A A4 04                    ..
         lda     $00                             ; EC8C A5 00                    ..
         and     $01                             ; EC8E 25 01                    %.
         cmp     #$FF                            ; EC90 C9 FF                    ..
-        bne     $ECA3                           ; EC92 D0 0F                    ..
+        bne     LowerFixedEngine_Branch_ECA3    ; EC92 D0 0F                    ..
         jsr     LowerFixedEngine_Entry_D3E6     ; EC94 20 E6 D3                  ..
         jsr     LowerFixedEngine_Entry_D4F3     ; EC97 20 F3 D4                  ..
         jsr     LowerFixedEngine_Entry_EB25     ; EC9A 20 25 EB                  %.
         jsr     LowerFixedEngine_Entry_D443     ; EC9D 20 43 D4                  C.
-        jmp     $ECAC                           ; ECA0 4C AC EC                 L..
+        jmp     LowerFixedEngine_Branch_ECAC    ; ECA0 4C AC EC                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_ECA3:
         jsr     LowerFixedEngine_Entry_D437     ; ECA3 20 37 D4                  7.
         jsr     LowerFixedEngine_Entry_D4F3     ; ECA6 20 F3 D4                  ..
         jsr     LowerFixedEngine_Entry_EB25     ; ECA9 20 25 EB                  %.
+LowerFixedEngine_Branch_ECAC:
         jsr     LowerFixedEngine_Entry_ECB4     ; ECAC 20 B4 EC                  ..
         dec     $05                             ; ECAF C6 05                    ..
-        bne     $EC88                           ; ECB1 D0 D5                    ..
+        bne     LowerFixedEngine_Branch_EC88    ; ECB1 D0 D5                    ..
         rts                                     ; ECB3 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_ECB4:
@@ -6144,6 +6768,7 @@ LowerFixedEngine_Entry_ECB4:
 LowerFixedEngine_Branch_ECB9:
         jmp     LowerFixedEngine_Branch_ED49    ; ECB9 4C 49 ED                 LI.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_ECBC:
         cmp     #$0A                            ; ECBC C9 0A                    ..
         beq     LowerFixedEngine_Branch_ECB9    ; ECBE F0 F9                    ..
         lsr     a                               ; ECC0 4A                       J
@@ -6317,9 +6942,10 @@ LowerFixedEngine_Entry_EDC7:
         clc                                     ; EDE7 18                       .
         adc     #$02                            ; EDE8 69 02                    i.
         cmp     #$11                            ; EDEA C9 11                    ..
-        bcc     $EDF1                           ; EDEC 90 03                    ..
+        bcc     LowerFixedEngine_Branch_EDF1    ; EDEC 90 03                    ..
         lda     #$01                            ; EDEE A9 01                    ..
         inx                                     ; EDF0 E8                       .
+LowerFixedEngine_Branch_EDF1:
         sta     $0523                           ; EDF1 8D 23 05                 .#.
         stx     $0525                           ; EDF4 8E 25 05                 .%.
         lda     #$12                            ; EDF7 A9 12                    ..
@@ -6356,20 +6982,24 @@ LowerFixedEngine_Entry_EE2F:
         ldx     #$3D                            ; EE2F A2 3D                    .=
         lda     $3D                             ; EE31 A5 3D                    .=
         cmp     #$03                            ; EE33 C9 03                    ..
-        beq     $EE39                           ; EE35 F0 02                    ..
+        beq     LowerFixedEngine_Branch_EE39    ; EE35 F0 02                    ..
         ldx     #$21                            ; EE37 A2 21                    .!
+LowerFixedEngine_Branch_EE39:
         stx     $00                             ; EE39 86 00                    ..
         rts                                     ; EE3B 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EE3C:
         lda     #$00                            ; EE3C A9 00                    ..
         sta     $01                             ; EE3E 85 01                    ..
-        beq     $EE4F                           ; EE40 F0 0D                    ..
+        beq     LowerFixedEngine_Branch_EE4F    ; EE40 F0 0D                    ..
+LowerFixedEngine_Branch_EE42:
         lda     $0522                           ; EE42 AD 22 05                 .".
         clc                                     ; EE45 18                       .
         adc     #$20                            ; EE46 69 20                    i
         sta     $0522                           ; EE48 8D 22 05                 .".
         lda     #$01                            ; EE4B A9 01                    ..
         sta     $01                             ; EE4D 85 01                    ..
+LowerFixedEngine_Branch_EE4F:
         ldx     #$00                            ; EE4F A2 00                    ..
         ldy     $050A                           ; EE51 AC 0A 05                 ...
         inc     $050B                           ; EE54 EE 0B 05                 ...
@@ -6402,7 +7032,7 @@ LowerFixedEngine_Entry_EE2F:
         iny                                     ; EE92 C8                       .
         jsr     LowerFixedEngine_Entry_EEB7     ; EE93 20 B7 EE                  ..
         lda     $0525                           ; EE96 AD 25 05                 .%.
-        beq     $EECE                           ; EE99 F0 33                    .3
+        beq     LowerFixedEngine_Branch_EECE    ; EE99 F0 33                    .3
         sta     $00                             ; EE9B 85 00                    ..
         asl     a                               ; EE9D 0A                       .
         sta     $0301,y                         ; EE9E 99 01 03                 ...
@@ -6418,7 +7048,8 @@ LowerFixedEngine_Entry_EE2F:
         iny                                     ; EEB6 C8                       .
 LowerFixedEngine_Entry_EEB7:
         lda     $01                             ; EEB7 A5 01                    ..
-        bne     $EED4                           ; EEB9 D0 19                    ..
+        bne     LowerFixedEngine_Branch_EED4    ; EEB9 D0 19                    ..
+LowerFixedEngine_Branch_EEBB:
         lda     $6EC6,x                         ; EEBB BD C6 6E                 ..n
         sta     $0300,y                         ; EEBE 99 00 03                 ...
         iny                                     ; EEC1 C8                       .
@@ -6427,10 +7058,12 @@ LowerFixedEngine_Entry_EEB7:
         inx                                     ; EEC8 E8                       .
         iny                                     ; EEC9 C8                       .
         dec     $00                             ; EECA C6 00                    ..
-        bne     $EEBB                           ; EECC D0 ED                    ..
+        bne     LowerFixedEngine_Branch_EEBB    ; EECC D0 ED                    ..
+LowerFixedEngine_Branch_EECE:
         sty     $050A                           ; EECE 8C 0A 05                 ...
-        jmp     $C626                           ; EED1 4C 26 C6                 L&.
+        jmp     LowerFixedEngine_Branch_C626    ; EED1 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EED4:
         lda     $6EEA,x                         ; EED4 BD EA 6E                 ..n
         sta     $0300,y                         ; EED7 99 00 03                 ...
         iny                                     ; EEDA C8                       .
@@ -6439,16 +7072,19 @@ LowerFixedEngine_Entry_EEB7:
         inx                                     ; EEE1 E8                       .
         iny                                     ; EEE2 C8                       .
         dec     $00                             ; EEE3 C6 00                    ..
-        bne     $EED4                           ; EEE5 D0 ED                    ..
+        bne     LowerFixedEngine_Branch_EED4    ; EEE5 D0 ED                    ..
         sty     $050A                           ; EEE7 8C 0A 05                 ...
-        jmp     $C626                           ; EEEA 4C 26 C6                 L&.
+        jmp     LowerFixedEngine_Branch_C626    ; EEEA 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EEED:
         lda     #$00                            ; EEED A9 00                    ..
         sta     $01                             ; EEEF 85 01                    ..
-        beq     $EEFA                           ; EEF1 F0 07                    ..
+        beq     LowerFixedEngine_Branch_EEFA    ; EEF1 F0 07                    ..
+LowerFixedEngine_Branch_EEF3:
         inc     $0522                           ; EEF3 EE 22 05                 .".
         lda     #$01                            ; EEF6 A9 01                    ..
         sta     $01                             ; EEF8 85 01                    ..
+LowerFixedEngine_Branch_EEFA:
         ldx     #$00                            ; EEFA A2 00                    ..
         ldy     $050A                           ; EEFC AC 0A 05                 ...
         inc     $050B                           ; EEFF EE 0B 05                 ...
@@ -6466,7 +7102,7 @@ LowerFixedEngine_Entry_EEB7:
         iny                                     ; EF1B C8                       .
         jsr     LowerFixedEngine_Entry_EF42     ; EF1C 20 42 EF                  B.
         lda     $0525                           ; EF1F AD 25 05                 .%.
-        beq     $EF59                           ; EF22 F0 35                    .5
+        beq     LowerFixedEngine_Branch_EF59    ; EF22 F0 35                    .5
         sta     $00                             ; EF24 85 00                    ..
         asl     a                               ; EF26 0A                       .
         sta     $0301,y                         ; EF27 99 01 03                 ...
@@ -6483,7 +7119,8 @@ LowerFixedEngine_Entry_EEB7:
         iny                                     ; EF41 C8                       .
 LowerFixedEngine_Entry_EF42:
         lda     $01                             ; EF42 A5 01                    ..
-        bne     $EF5F                           ; EF44 D0 19                    ..
+        bne     LowerFixedEngine_Branch_EF5F    ; EF44 D0 19                    ..
+LowerFixedEngine_Branch_EF46:
         lda     $6EC6,x                         ; EF46 BD C6 6E                 ..n
         sta     $0300,y                         ; EF49 99 00 03                 ...
         iny                                     ; EF4C C8                       .
@@ -6492,10 +7129,12 @@ LowerFixedEngine_Entry_EF42:
         inx                                     ; EF53 E8                       .
         iny                                     ; EF54 C8                       .
         dec     $00                             ; EF55 C6 00                    ..
-        bne     $EF46                           ; EF57 D0 ED                    ..
+        bne     LowerFixedEngine_Branch_EF46    ; EF57 D0 ED                    ..
+LowerFixedEngine_Branch_EF59:
         sty     $050A                           ; EF59 8C 0A 05                 ...
-        jmp     $C626                           ; EF5C 4C 26 C6                 L&.
+        jmp     LowerFixedEngine_Branch_C626    ; EF5C 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EF5F:
         lda     $6ED8,x                         ; EF5F BD D8 6E                 ..n
         sta     $0300,y                         ; EF62 99 00 03                 ...
         iny                                     ; EF65 C8                       .
@@ -6504,10 +7143,11 @@ LowerFixedEngine_Entry_EF42:
         inx                                     ; EF6C E8                       .
         iny                                     ; EF6D C8                       .
         dec     $00                             ; EF6E C6 00                    ..
-        bne     $EF5F                           ; EF70 D0 ED                    ..
+        bne     LowerFixedEngine_Branch_EF5F    ; EF70 D0 ED                    ..
         sty     $050A                           ; EF72 8C 0A 05                 ...
-        jmp     $C626                           ; EF75 4C 26 C6                 L&.
+        jmp     LowerFixedEngine_Branch_C626    ; EF75 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EF78:
         jsr     LowerFixedEngine_Entry_EFBF     ; EF78 20 BF EF                  ..
         ldx     #$3E                            ; EF7B A2 3E                    .>
         stx     $00                             ; EF7D 86 00                    ..
@@ -6515,6 +7155,7 @@ LowerFixedEngine_Entry_EF42:
         sta     $03                             ; EF81 85 03                    ..
         lda     #$12                            ; EF83 A9 12                    ..
         sta     $02                             ; EF85 85 02                    ..
+LowerFixedEngine_Branch_EF87:
         ldx     $03                             ; EF87 A6 03                    ..
         lda     $6F0E,x                         ; EF89 BD 0E 6F                 ..o
         jsr     LowerFixedEngine_Entry_C727     ; EF8C 20 27 C7                  '.
@@ -6522,15 +7163,17 @@ LowerFixedEngine_Entry_EF42:
         inc     $00                             ; EF91 E6 00                    ..
         inc     $03                             ; EF93 E6 03                    ..
         dec     $02                             ; EF95 C6 02                    ..
-        bne     $EF87                           ; EF97 D0 EE                    ..
-        jmp     $C626                           ; EF99 4C 26 C6                 L&.
+        bne     LowerFixedEngine_Branch_EF87    ; EF97 D0 EE                    ..
+        jmp     LowerFixedEngine_Branch_C626    ; EF99 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_EF9C:
         jsr     LowerFixedEngine_Entry_EFCA     ; EF9C 20 CA EF                  ..
         lda     #$00                            ; EF9F A9 00                    ..
         sta     $01                             ; EFA1 85 01                    ..
         sta     $03                             ; EFA3 85 03                    ..
         lda     #$0F                            ; EFA5 A9 0F                    ..
         sta     $02                             ; EFA7 85 02                    ..
+LowerFixedEngine_Branch_EFA9:
         ldx     $03                             ; EFA9 A6 03                    ..
         lda     $6F0E,x                         ; EFAB BD 0E 6F                 ..o
         jsr     LowerFixedEngine_Entry_C727     ; EFAE 20 27 C7                  '.
@@ -6538,16 +7181,17 @@ LowerFixedEngine_Entry_EF42:
         inc     $01                             ; EFB3 E6 01                    ..
         inc     $03                             ; EFB5 E6 03                    ..
         dec     $02                             ; EFB7 C6 02                    ..
-        bne     $EFA9                           ; EFB9 D0 EE                    ..
-        jmp     $C626                           ; EFBB 4C 26 C6                 L&.
+        bne     LowerFixedEngine_Branch_EFA9    ; EFB9 D0 EE                    ..
+        jmp     LowerFixedEngine_Branch_C626    ; EFBB 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
         db   $60                             ; EFBE 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_EFBF:
         ldx     #$1D                            ; EFBF A2 1D                    ..
         lda     $3D                             ; EFC1 A5 3D                    .=
-        bne     $EFC7                           ; EFC3 D0 02                    ..
+        bne     LowerFixedEngine_Branch_EFC7    ; EFC3 D0 02                    ..
         ldx     #$00                            ; EFC5 A2 00                    ..
+LowerFixedEngine_Branch_EFC7:
         stx     $01                             ; EFC7 86 01                    ..
         rts                                     ; EFC9 60                       `
 ; ----------------------------------------------------------------------------
@@ -6555,8 +7199,9 @@ LowerFixedEngine_Entry_EFCA:
         ldx     #$3F                            ; EFCA A2 3F                    .?
         lda     $3D                             ; EFCC A5 3D                    .=
         cmp     #$03                            ; EFCE C9 03                    ..
-        beq     $EFD4                           ; EFD0 F0 02                    ..
+        beq     LowerFixedEngine_Branch_EFD4    ; EFD0 F0 02                    ..
         ldx     #$22                            ; EFD2 A2 22                    ."
+LowerFixedEngine_Branch_EFD4:
         stx     $00                             ; EFD4 86 00                    ..
         rts                                     ; EFD6 60                       `
 ; ----------------------------------------------------------------------------
@@ -6567,19 +7212,21 @@ LowerFixedEngine_Branch_EFDB:
         lda     #$00                            ; EFDB A9 00                    ..
 LowerFixedEngine_Branch_EFDD:
         sta     $29                             ; EFDD 85 29                    .)
-        bmi     $EFE4                           ; EFDF 30 03                    0.
+        bmi     LowerFixedEngine_Branch_EFE4    ; EFDF 30 03                    0.
         jsr     LowerFixedEngine_Entry_C5AF     ; EFE1 20 AF C5                  ..
+LowerFixedEngine_Branch_EFE4:
         jsr     LowerFixedEngine_Entry_F15B     ; EFE4 20 5B F1                  [.
         jsr     LowerFixedEngine_Entry_EFF5     ; EFE7 20 F5 EF                  ..
         jsr     LowerFixedEngine_Entry_F194     ; EFEA 20 94 F1                  ..
         bit     $29                             ; EFED 24 29                    $)
-        bmi     $EFF4                           ; EFEF 30 03                    0.
+        bmi     LowerFixedEngine_Branch_EFF4    ; EFEF 30 03                    0.
         jsr     LowerFixedEngine_Entry_C58F     ; EFF1 20 8F C5                  ..
+LowerFixedEngine_Branch_EFF4:
         rts                                     ; EFF4 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_EFF5:
         lda     $41                             ; EFF5 A5 41                    .A
-        bmi     $F010                           ; EFF7 30 17                    0.
+        bmi     LowerFixedEngine_Branch_F010    ; EFF7 30 17                    0.
         jsr     LowerFixedEngine_Entry_F18D     ; EFF9 20 8D F1                  ..
 LowerFixedEngine_Branch_EFFC:
         lda     #$0F                            ; EFFC A9 0F                    ..
@@ -6593,31 +7240,36 @@ LowerFixedEngine_Branch_F000:
         bne     LowerFixedEngine_Branch_EFFC    ; F00D D0 ED                    ..
         rts                                     ; F00F 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F010:
         jsr     LowerFixedEngine_Entry_F17A     ; F010 20 7A F1                  z.
+LowerFixedEngine_Branch_F013:
         lda     #$0F                            ; F013 A9 0F                    ..
         sta     $58                             ; F015 85 58                    .X
         jsr     LowerFixedEngine_Entry_F147     ; F017 20 47 F1                  G.
         jsr     LowerFixedEngine_Entry_F09E     ; F01A 20 9E F0                  ..
         jsr     LowerFixedEngine_Entry_D443     ; F01D 20 43 D4                  C.
         jsr     LowerFixedEngine_Entry_F06D     ; F020 20 6D F0                  m.
+LowerFixedEngine_Branch_F023:
         lda     $00                             ; F023 A5 00                    ..
         and     $01                             ; F025 25 01                    %.
         cmp     #$FF                            ; F027 C9 FF                    ..
-        bne     $F037                           ; F029 D0 0C                    ..
+        bne     LowerFixedEngine_Branch_F037    ; F029 D0 0C                    ..
         jsr     LowerFixedEngine_Entry_F147     ; F02B 20 47 F1                  G.
         jsr     LowerFixedEngine_Entry_F09E     ; F02E 20 9E F0                  ..
         jsr     LowerFixedEngine_Entry_D443     ; F031 20 43 D4                  C.
-        jmp     $F044                           ; F034 4C 44 F0                 LD.
+        jmp     LowerFixedEngine_Branch_F044    ; F034 4C 44 F0                 LD.
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F037:
         ldx     $53                             ; F037 A6 53                    .S
         ldy     $54                             ; F039 A4 54                    .T
         jsr     LowerFixedEngine_Entry_D437     ; F03B 20 37 D4                  7.
         jsr     LowerFixedEngine_Entry_D4F3     ; F03E 20 F3 D4                  ..
         jsr     LowerFixedEngine_Entry_F09E     ; F041 20 9E F0                  ..
+LowerFixedEngine_Branch_F044:
         jsr     LowerFixedEngine_Entry_F06D     ; F044 20 6D F0                  m.
-        bcc     $F023                           ; F047 90 DA                    ..
+        bcc     LowerFixedEngine_Branch_F023    ; F047 90 DA                    ..
         bit     $29                             ; F049 24 29                    $)
-        bpl     $F068                           ; F04B 10 1B                    ..
+        bpl     LowerFixedEngine_Branch_F068    ; F04B 10 1B                    ..
         lda     $1F                             ; F04D A5 1F                    ..
         ora     #$10                            ; F04F 09 10                    ..
         sta     $1F                             ; F051 85 1F                    ..
@@ -6631,14 +7283,15 @@ LowerFixedEngine_Branch_F000:
         lda     $1F                             ; F062 A5 1F                    ..
         and     #$EF                            ; F064 29 EF                    ).
         sta     $1F                             ; F066 85 1F                    ..
+LowerFixedEngine_Branch_F068:
         dec     $55                             ; F068 C6 55                    .U
-        bne     $F013                           ; F06A D0 A7                    ..
+        bne     LowerFixedEngine_Branch_F013    ; F06A D0 A7                    ..
         rts                                     ; F06C 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_F06D:
         inc     $54                             ; F06D E6 54                    .T
         dec     $58                             ; F06F C6 58                    .X
-        bne     $F09C                           ; F071 D0 29                    .)
+        bne     LowerFixedEngine_Branch_F09C    ; F071 D0 29                    .)
         lda     $54                             ; F073 A5 54                    .T
         sec                                     ; F075 38                       8
         sbc     #$0F                            ; F076 E9 0F                    ..
@@ -6648,7 +7301,7 @@ LowerFixedEngine_Entry_F06D:
         inc     $57                             ; F07E E6 57                    .W
         lda     $57                             ; F080 A5 57                    .W
         cmp     #$E0                            ; F082 C9 E0                    ..
-        bcc     $F090                           ; F084 90 0A                    ..
+        bcc     LowerFixedEngine_Branch_F090    ; F084 90 0A                    ..
         lda     #$00                            ; F086 A9 00                    ..
         sta     $57                             ; F088 85 57                    .W
         lda     #$20                            ; F08A A9 20                    .
@@ -6656,6 +7309,7 @@ LowerFixedEngine_Entry_F06D:
         sec                                     ; F08E 38                       8
         rts                                     ; F08F 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F090:
         and     #$1F                            ; F090 29 1F                    ).
         sta     $57                             ; F092 85 57                    .W
         lda     $56                             ; F094 A5 56                    .V
@@ -6664,12 +7318,13 @@ LowerFixedEngine_Entry_F06D:
         sec                                     ; F09A 38                       8
         rts                                     ; F09B 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F09C:
         clc                                     ; F09C 18                       .
         rts                                     ; F09D 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_F09E:
         bit     $29                             ; F09E 24 29                    $)
-        bmi     $F0D6                           ; F0A0 30 34                    04
+        bmi     LowerFixedEngine_Branch_F0D6    ; F0A0 30 34                    04
         pha                                     ; F0A2 48                       H
         jsr     LowerFixedEngine_Entry_F12B     ; F0A3 20 2B F1                  +.
         jsr     LowerFixedEngine_Entry_F0CA     ; F0A6 20 CA F0                  ..
@@ -6693,10 +7348,12 @@ LowerFixedEngine_Entry_F0CA:
         clc                                     ; F0CC 18                       .
         adc     #$20                            ; F0CD 69 20                    i
         sta     $57                             ; F0CF 85 57                    .W
-        bcc     $F0D5                           ; F0D1 90 02                    ..
+        bcc     LowerFixedEngine_Branch_F0D5    ; F0D1 90 02                    ..
         inc     $56                             ; F0D3 E6 56                    .V
+LowerFixedEngine_Branch_F0D5:
         rts                                     ; F0D5 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F0D6:
         pha                                     ; F0D6 48                       H
         jsr     LowerFixedEngine_Entry_F108     ; F0D7 20 08 F1                  ..
         jsr     LowerFixedEngine_Entry_F0CA     ; F0DA 20 CA F0                  ..
@@ -6758,10 +7415,11 @@ LowerFixedEngine_Entry_F147:
         ldx     $53                             ; F147 A6 53                    .S
         ldy     $54                             ; F149 A4 54                    .T
         lda     $41                             ; F14B A5 41                    .A
-        bmi     $F155                           ; F14D 30 06                    0.
+        bmi     LowerFixedEngine_Branch_F155    ; F14D 30 06                    0.
         jsr     LowerFixedEngine_Entry_D251     ; F14F 20 51 D2                  Q.
         jmp     LowerFixedEngine_Branch_D486    ; F152 4C 86 D4                 L..
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F155:
         jsr     LowerFixedEngine_Entry_D3E6     ; F155 20 E6 D3                  ..
         jmp     LowerFixedEngine_Entry_D4F3     ; F158 4C F3 D4                 L..
 ; ----------------------------------------------------------------------------
@@ -6804,15 +7462,17 @@ LowerFixedEngine_Entry_F18D:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_F194:
         ldx     #$1D                            ; F194 A2 1D                    ..
+LowerFixedEngine_Branch_F196:
         lda     #$00                            ; F196 A9 00                    ..
         sta     $076A,x                         ; F198 9D 6A 07                 .j.
         lda     $7020,x                         ; F19B BD 20 70                 . p
         cmp     #$FF                            ; F19E C9 FF                    ..
-        beq     $F1A7                           ; F1A0 F0 05                    ..
+        beq     LowerFixedEngine_Branch_F1A7    ; F1A0 F0 05                    ..
         and     #$EF                            ; F1A2 29 EF                    ).
         sta     $7020,x                         ; F1A4 9D 20 70                 . p
+LowerFixedEngine_Branch_F1A7:
         dex                                     ; F1A7 CA                       .
-        bpl     $F196                           ; F1A8 10 EC                    ..
+        bpl     LowerFixedEngine_Branch_F196    ; F1A8 10 EC                    ..
         rts                                     ; F1AA 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_F1AB:
@@ -6834,7 +7494,7 @@ LowerFixedEngine_Entry_F1C1:
         pha                                     ; F1C2 48                       H
         lda     $7001,x                         ; F1C3 BD 01 70                 ..p
         and     #$40                            ; F1C6 29 40                    )@
-        beq     $F1F5                           ; F1C8 F0 2B                    .+
+        beq     LowerFixedEngine_Branch_F1F5    ; F1C8 F0 2B                    .+
         lda     $7001,x                         ; F1CA BD 01 70                 ..p
         and     #$03                            ; F1CD 29 03                    ).
         asl     a                               ; F1CF 0A                       .
@@ -6857,6 +7517,7 @@ LowerFixedEngine_Entry_F1C1:
         sta     $7000,y                         ; F1F1 99 00 70                 ..p
         rts                                     ; F1F4 60                       `
 ; ----------------------------------------------------------------------------
+LowerFixedEngine_Branch_F1F5:
         pla                                     ; F1F5 68                       h
         pla                                     ; F1F6 68                       h
         pla                                     ; F1F7 68                       h
@@ -6865,6 +7526,7 @@ LowerFixedEngine_Entry_F1C1:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_F1FA:
         ldx     #$02                            ; F1FA A2 02                    ..
+LowerFixedEngine_Branch_F1FC:
         lda     $7001,x                         ; F1FC BD 01 70                 ..p
         and     #$3C                            ; F1FF 29 3C                    )<
         sta     $7001,x                         ; F201 9D 01 70                 ..p
@@ -6879,7 +7541,7 @@ LowerFixedEngine_Branch_F1FA:
         ora     $7021,x                         ; F219 1D 21 70                 .!p
         sta     $7021,x                         ; F21C 9D 21 70                 .!p
         dex                                     ; F21F CA                       .
-        bpl     $F1FC                           ; F220 10 DA                    ..
+        bpl     LowerFixedEngine_Branch_F1FC    ; F220 10 DA                    ..
         rts                                     ; F222 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_F223:
@@ -7391,169 +8053,164 @@ LowerFixedEngine_Branch_F5A7:
         db   $24,$02,$0E,$1E,$1C,$00,$22,$2A ; F5BC 24 02 0E 1E 1C 00 22 2A  $....."*
         db   $0A,$26,$28,$00,$3A,$3C,$F5,$08 ; F5C4 0A 26 28 00 3A 3C F5 08  .&(.:<..
         db   $24,$02,$0E,$1E,$1C,$00,$22,$2A ; F5CC 24 02 0E 1E 1C 00 22 2A  $....."*
-        db   $0A,$26,$28,$00,$3A,$3C,$F1     ; F5D4 0A 26 28 00 3A 3C F1     .&(.:<.
-; ----------------------------------------------------------------------------
-        rol     $28                             ; F5DB 26 28                    &(
-        db   $02,$0C,$0C,$F4,$26,$06,$0A,$1C ; F5DD 02 0C 0C F4 26 06 0A 1C  ....&...
-        db   $02,$24,$12,$1E,$FE,$32,$2A,$14 ; F5E5 02 24 12 1E FE 32 2A 14  .$...2*.
-        db   $12,$00,$10,$1E,$24,$12,$12,$F3 ; F5ED 12 00 10 1E 24 12 12 F3  ....$...
-        db   $1A,$1E,$1C,$26,$28,$0A,$24,$00 ; F5F5 1A 1E 1C 26 28 0A 24 00  ...&(.$.
-        db   $08,$0A,$26,$12,$0E,$1C,$FE,$02 ; F5FD 08 0A 26 12 0E 1C FE 02  ..&.....
-        db   $16,$12,$24,$02,$00,$28,$1E,$24 ; F605 16 12 24 02 00 28 1E 24  ..$..(.$
-        db   $12,$32,$02,$1A,$02,$F3,$1A,$2A ; F60D 12 32 02 1A 02 F3 1A 2A  .2.....*
-        db   $26,$12,$06,$FE,$16,$1E,$12,$06 ; F615 26 12 06 FE 16 1E 12 06  &.......
-        db   $10,$12,$00                     ; F61D 10 12 00                 ...
-; ----------------------------------------------------------------------------
-        rol     $2A                             ; F620 26 2A                    &*
-        asl     $3212                           ; F622 0E 12 32                 ..2
-        db   $02,$1A,$02,$F3,$06,$10,$12,$0A ; F625 02 1A 02 F3 06 10 12 0A  ........
-        db   $0C,$00,$20,$24,$1E,$0E,$24,$02 ; F62D 0C 00 20 24 1E 0E 24 02  .. $..$.
-        db   $1A,$1A,$0A,$24,$26,$FE,$16,$40 ; F635 1A 1A 0A 24 26 FE 16 40  ...$&..@
-        db   $1C,$02,$12,$28,$1E,$10,$00,$00 ; F63D 1C 02 12 28 1E 10 00 00  ...(....
-        db   $1A,$40,$32,$02,$1A,$02,$1C,$02 ; F645 1A 40 32 02 1A 02 1C 02  .@2.....
-        db   $F3,$20,$24,$1E,$0E,$24,$02,$1A ; F64D F3 20 24 1E 0E 24 02 1A  . $..$..
-        db   $1A,$0A,$24,$26,$FE,$16,$40,$1A ; F655 1A 0A 24 26 FE 16 40 1A  ..$&..@.
-        db   $02,$26,$2A,$28,$02,$00,$00,$1A ; F65D 02 26 2A 28 02 00 00 1A  .&*(....
-        db   $40,$26,$02,$12,$28,$1E,$10,$00 ; F665 40 26 02 12 28 1E 10 00  @&..(...
-        db   $00,$28,$40,$1C,$02,$24,$12,$28 ; F66D 00 28 40 1C 02 24 12 28  .(@..$.(
-        db   $02,$F1,$28,$40,$12,$16,$0A,$08 ; F675 02 F1 28 40 12 16 0A 08  ..(@....
-        db   $02,$00,$00,$10,$40,$26,$12,$1C ; F67D 02 00 00 10 40 26 12 1C  ....@&..
-        db   $1E,$10,$02,$24,$02,$00,$00,$16 ; F685 1E 10 02 24 02 00 00 16  ...$....
-        db   $40,$02,$26,$02,$1C,$1E,$F3,$26 ; F68D 40 02 26 02 1C 1E F3 26  @.&....&
-        db   $1E,$2A,$1C,$08,$00,$20,$24,$1E ; F695 1E 2A 1C 08 00 20 24 1E  .*... $.
-        db   $0E,$24,$02,$1A,$1A,$0A,$24,$26 ; F69D 0E 24 02 1A 1A 0A 24 26  .$....$&
-        db   $FE,$1A,$40,$28,$02,$16,$12,$1A ; F6A5 FE 1A 40 28 02 16 12 1A  ..@(....
-        db   $1E,$28,$1E,$00,$00,$28,$40,$0C ; F6AD 1E 28 1E 00 00 28 40 0C  .(...(@.
-        db   $2A,$16,$2A,$34,$02,$2E,$02,$F3 ; F6B5 2A 16 2A 34 02 2E 02 F3  *.*4....
-        db   $0E,$24,$02,$20,$10,$12,$06,$00 ; F6BD 0E 24 02 20 10 12 06 00  .$. ....
-        db   $08,$0A,$26,$12,$0E,$1C,$0A,$24 ; F6C5 08 0A 26 12 0E 1C 0A 24  ..&....$
-        db   $26,$FE,$28,$40,$32,$02,$26,$2A ; F6CD 26 FE 28 40 32 02 26 2A  &.(@2.&*
-        db   $1C,$1E,$00,$00,$26,$40,$0C,$2A ; F6D5 1C 1E 00 00 26 40 0C 2A  ....&@.*
-        db   $08,$02,$04,$02,$F3,$26,$06,$0A ; F6DD 08 02 04 02 F3 26 06 0A  .....&..
-        db   $1C,$02,$24,$12,$1E,$00,$02,$26 ; F6E5 1C 02 24 12 1E 00 02 26  ..$....&
-        db   $26,$12,$26,$28,$02,$1C,$28,$26 ; F6ED 26 12 26 28 02 1C 28 26  &.&(..(&
-        db   $FE,$16,$40,$1E,$24,$12,$1E,$00 ; F6F5 FE 16 40 1E 24 12 1E 00  ..@.$...
-        db   $00,$02,$40,$02,$26,$02,$1A,$12 ; F6FD 00 02 40 02 26 02 1A 12  ..@.&...
-        db   $00,$00,$0C,$40,$12,$26,$10,$12 ; F705 00 00 0C 40 12 26 10 12  ...@.&..
-        db   $16,$02,$2E,$02,$F1,$26,$40,$2A ; F70D 16 02 2E 02 F1 26 40 2A  .....&@*
-        db   $0A,$1C,$1E,$00,$00,$26,$40,$26 ; F715 0A 1C 1E 00 00 26 40 26  .....&@&
-        db   $2A,$0E,$12,$1A,$2A,$24,$02,$F3 ; F71D 2A 0E 12 1A 2A 24 02 F3  *...*$..
-        db   $08,$12,$24,$0A,$06,$28,$1E,$24 ; F725 08 12 24 0A 06 28 1E 24  ..$..(.$
-        db   $FE,$16,$1E,$12,$06,$10,$12,$00 ; F72D FE 16 1E 12 06 10 12 00  ........
-        db   $1C,$02,$16,$02,$1A,$2A,$24,$02 ; F735 1C 02 16 02 1A 2A 24 02  .....*$.
-        db   $F3,$20,$24,$1E,$08,$2A,$06,$0A ; F73D F3 20 24 1E 08 2A 06 0A  . $..*..
-        db   $24,$FE,$32,$2A,$16,$12,$1C,$1E ; F745 24 FE 32 2A 16 12 1C 1E  $.2*....
-        db   $04,$2A,$00,$06,$10,$12,$08,$02 ; F74D 04 2A 00 06 10 12 08 02  .*......
-        db   $F3,$20,$2A,$04,$18,$12,$26,$10 ; F755 F3 20 2A 04 18 12 26 10  . *...&.
-        db   $0A,$24,$FE,$32,$02,$26,$2A,$10 ; F75D 0A 24 FE 32 02 26 2A 10  .$.2.&*.
-        db   $12,$24,$1E,$00,$0C,$2A,$16,$2A ; F765 12 24 1E 00 0C 2A 16 2A  .$...*.*
-        db   $26,$10,$12,$1A,$02,$F9,$00,$00 ; F76D 26 10 12 1A 02 F9 00 00  &.......
-        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F775 00 00 00 00 00 00 00 00  ........
-        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F77D 00 00 00 00 00 00 00 00  ........
-        db   $00,$42,$44,$F0,$08,$24,$02,$0E ; F785 00 42 44 F0 08 24 02 0E  .BD..$..
-        db   $1E,$1C,$00,$2E,$02,$24,$24,$12 ; F78D 1E 1C 00 2E 02 24 24 12  .....$$.
-        db   $1E,$24,$00,$3A,$3C,$F1,$26,$28 ; F795 1E 24 00 3A 3C F1 26 28  .$.:<.&(
-        db   $02,$0C,$0C,$F4,$0A,$1C,$0E,$18 ; F79D 02 0C 0C F4 0A 1C 0E 18  ........
-        db   $12,$26,$10,$00,$28,$0A,$30,$28 ; F7A5 12 26 10 00 28 0A 30 28  .&..(.0(
-        db   $FE,$26,$28,$2A,$08,$12,$1E,$00 ; F7AD FE 26 28 2A 08 12 1E 00  .&(*....
-        db   $04,$2A,$04,$1E,$1E,$F3,$06,$10 ; F7B5 04 2A 04 1E 1E F3 06 10  .*......
-        db   $12,$0A,$0C,$00,$20,$24,$1E,$0E ; F7BD 12 0A 0C 00 20 24 1E 0E  .... $..
-        db   $24,$02,$1A,$1A,$0A,$24,$FE,$1A ; F7C5 24 02 1A 1A 0A 24 FE 1A  $....$..
-        db   $02,$26,$02,$32,$1E,$26,$10,$12 ; F7CD 02 26 02 32 1E 26 10 12  .&.2.&..
-        db   $00,$26,$02,$12,$28,$1E,$10,$F3 ; F7D5 00 26 02 12 28 1E 10 F3  .&..(...
-        db   $20,$24,$1E,$0E,$24,$02,$1A,$1A ; F7DD 20 24 1E 0E 24 02 1A 1A   $..$...
-        db   $0A,$24,$26,$FE,$1A,$02,$26,$02 ; F7E5 0A 24 26 FE 1A 02 26 02  .$&...&.
-        db   $10,$12,$24,$1E,$00,$1C,$12,$12 ; F7ED 10 12 24 1E 00 1C 12 12  ..$.....
-        db   $F1,$26,$2A,$26,$2A,$1A,$2A,$00 ; F7F5 F1 26 2A 26 2A 1A 2A 00  .&*&*.*.
-        db   $12,$12,$08,$02,$F1,$1C,$1E,$04 ; F7FD 12 12 08 02 F1 1C 1E 04  ........
-        db   $2A,$10,$12,$24,$1E,$00,$32,$02 ; F805 2A 10 12 24 1E 00 32 02  *..$..2.
-        db   $1A,$02,$08,$02,$F1,$10,$12,$28 ; F80D 1A 02 08 02 F1 10 12 28  .......(
-        db   $1E,$1A,$12,$00,$26,$02,$12,$28 ; F815 1E 1A 12 00 26 02 12 28  ....&..(
-        db   $1E,$10,$F3,$20,$24,$1E,$14,$0A ; F81D 1E 10 F3 20 24 1E 14 0A  ... $...
-        db   $06,$28,$00,$06,$1E,$1E,$24,$08 ; F825 06 28 00 06 1E 1E 24 08  .(....$.
-        db   $12,$1C,$02,$28,$1E,$24,$FE,$26 ; F82D 12 1C 02 28 1E 24 FE 26  ...(.$.&
-        db   $10,$12,$1C,$14,$12,$00,$0C,$2A ; F835 10 12 1C 14 12 00 0C 2A  .......*
-        db   $28,$02,$1A,$12,$F3,$02,$26,$26 ; F83D 28 02 1A 12 F3 02 26 26  (.....&&
-        db   $12,$26,$28,$02,$1C,$28,$26,$FE ; F845 12 26 28 02 1C 28 26 FE  .&(..(&.
-        db   $02,$28,$26,$2A,$16,$1E,$00,$26 ; F84D 02 28 26 2A 16 1E 00 26  .(&*...&
-        db   $2A,$1A,$12,$32,$1E,$26,$10,$12 ; F855 2A 1A 12 32 1E 26 10 12  *..2.&..
-        db   $F1,$32,$1E,$26,$10,$12,$16,$1E ; F85D F1 32 1E 26 10 12 16 1E  .2.&....
-        db   $00,$10,$02,$28,$02,$1C,$1E,$F3 ; F865 00 10 02 28 02 1C 1E F3  ...(....
-        db   $02,$26,$26,$12,$26,$28,$02,$1C ; F86D 02 26 26 12 26 28 02 1C  .&&.&(..
-        db   $28,$00,$08,$12,$24,$0A,$06,$28 ; F875 28 00 08 12 24 0A 06 28  (...$..(
-        db   $1E,$24,$26,$FE,$28,$1E,$0E,$1E ; F87D 1E 24 26 FE 28 1E 0E 1E  .$&.(...
-        db   $00,$1C,$02,$24,$12,$28,$02,$F1 ; F885 00 1C 02 24 12 28 02 F1  ...$.(..
-        db   $16,$0A,$1C,$12,$06,$10,$12,$00 ; F88D 16 0A 1C 12 06 10 12 00  ........
-        db   $1A,$02,$26,$2A,$28,$02,$F3,$02 ; F895 1A 02 26 2A 28 02 F3 02  ..&*(...
-        db   $26,$26,$12,$26,$28,$02,$1C,$28 ; F89D 26 26 12 26 28 02 1C 28  &&.&(..(
-        db   $00,$20,$24,$1E,$08,$2A,$06,$0A ; F8A5 00 20 24 1E 08 2A 06 0A  . $..*..
-        db   $24,$26,$FE,$32,$1E,$26,$10,$12 ; F8AD 24 26 FE 32 1E 26 10 12  $&.2.&..
-        db   $1C,$1E,$24,$12,$00,$32,$02,$1A ; F8B5 1C 1E 24 12 00 32 02 1A  ..$..2..
-        db   $02,$0E,$12,$26,$10,$12,$F1,$08 ; F8BD 02 0E 12 26 10 12 F1 08  ...&....
-        db   $02,$12,$34,$1E,$00,$26,$10,$12 ; F8C5 02 12 34 1E 00 26 10 12  ..4..&..
-        db   $1A,$02,$1A,$2A,$24,$02,$F1,$26 ; F8CD 1A 02 1A 2A 24 02 F1 26  ...*$..&
-        db   $02,$08,$02,$1E,$00,$32,$02,$10 ; F8D5 02 08 02 1E 00 32 02 10  .....2..
-        db   $02,$0E,$12,$F3,$26,$20,$0A,$06 ; F8DD 02 0E 12 F3 26 20 0A 06  ....& ..
-        db   $12,$02,$18,$00,$06,$1E,$1E,$20 ; F8E5 12 02 18 00 06 1E 1E 20  .......
-        db   $0A,$24,$02,$28,$1E,$24,$26,$FE ; F8ED 0A 24 02 28 1E 24 26 FE  .$.(.$&.
-        db   $28,$2A,$1C,$0A,$1E,$00,$1A,$1E ; F8F5 28 2A 1C 0A 1E 00 1A 1E  (*......
-        db   $24,$12,$28,$02,$F1,$20,$02,$2A ; F8FD 24 12 28 02 F1 20 02 2A  $.(.. .*
-        db   $18,$00,$04,$1E,$2E,$18,$0A,$24 ; F905 18 00 04 1E 2E 18 0A 24  .......$
-        db   $F1,$20,$02,$2A,$18,$00,$10,$02 ; F90D F1 20 02 2A 18 00 10 02  . .*....
-        db   $1C,$08,$0A,$18,$1A,$02,$1C,$F1 ; F915 1C 08 0A 18 1A 02 1C F1  ........
-        db   $06,$10,$0A,$24,$12,$0A,$00,$10 ; F91D 06 10 0A 24 12 0A 00 10  ...$....
-        db   $02,$26,$26,$1E,$1C,$F1,$24,$1E ; F925 02 26 26 1E 1C F1 24 1E  .&&...$.
-        db   $04,$0A,$24,$28,$00,$14,$0A,$02 ; F92D 04 0A 24 28 00 14 0A 02  ..$(....
-        db   $24,$2A,$18,$08,$F3,$26,$2A,$20 ; F935 24 2A 18 08 F3 26 2A 20  $*...&*
-        db   $0A,$24,$2C,$12,$26,$1E,$24,$FE ; F93D 0A 24 2C 12 26 1E 24 FE  .$,.&.$.
-        db   $16,$0A,$12,$14,$12,$00,$10,$1E ; F945 16 0A 12 14 12 00 10 1E  ........
-        db   $1C,$08,$02,$F3,$26,$20,$0A,$06 ; F94D 1C 08 02 F3 26 20 0A 06  ....& ..
-        db   $12,$02,$18,$00,$28,$10,$02,$1C ; F955 12 02 18 00 28 10 02 1C  ....(...
-        db   $16,$26,$00,$28,$1E,$FE,$02,$22 ; F95D 16 26 00 28 1E FE 02 22  .&.(..."
-        db   $2A,$02,$00,$1A,$02,$24,$12,$1C ; F965 2A 02 00 1A 02 24 12 1C  *....$..
-        db   $0A,$F1,$28,$1E,$16,$2A,$1A,$02 ; F96D 0A F1 28 1E 16 2A 1A 02  ..(..*..
-        db   $00,$26,$10,$1E,$28,$0A,$1C,$00 ; F975 00 26 10 1E 28 0A 1C 00  .&..(...
-        db   $20,$2A,$04,$18,$12,$26,$10,$12 ; F97D 20 2A 04 18 12 26 10 12   *...&..
-        db   $1C,$0E,$F1,$00,$00,$00,$00,$00 ; F985 1C 0E F1 00 00 00 00 00  ........
-        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F98D 00 00 00 00 00 00 00 00  ........
-        db   $00,$00,$00,$00,$00,$00,$00,$06 ; F995 00 00 00 00 00 00 00 06  ........
-        db   $1E,$40,$3E,$00,$18,$28,$08,$F1 ; F99D 1E 40 3E 00 18 28 08 F1  .@>..(..
-        db   $2E,$1E,$24,$16,$00,$10,$1E,$2A ; F9A5 2E 1E 24 16 00 10 1E 2A  ..$....*
-        db   $26,$0A,$00,$2A,$40,$26,$40,$02 ; F9AD 26 0A 00 2A 40 26 40 02  &..*@&@.
-        db   $40,$F3,$08,$12,$24,$0A,$06,$28 ; F9B5 40 F3 08 12 24 0A 06 28  @...$..(
-        db   $1E,$24,$FE,$1A,$02,$1C,$02,$04 ; F9BD 1E 24 FE 1A 02 1C 02 04  .$......
-        db   $2A,$00,$32,$02,$1A,$02,$1C,$02 ; F9C5 2A 00 32 02 1A 02 1C 02  *.2.....
-        db   $F3,$20,$24,$1E,$08,$2A,$06,$0A ; F9CD F3 20 24 1E 08 2A 06 0A  . $..*..
-        db   $24,$FE,$32,$2A,$16,$12,$1C,$1E ; F9D5 24 FE 32 2A 16 12 1C 1E  $.2*....
-        db   $04,$2A,$00,$06,$10,$12,$08,$02 ; F9DD 04 2A 00 06 10 12 08 02  .*......
-        db   $F3,$20,$2A,$04,$18,$12,$26,$10 ; F9E5 F3 20 2A 04 18 12 26 10  . *...&.
-        db   $0A,$24,$FE,$32,$02,$26,$2A,$10 ; F9ED 0A 24 FE 32 02 26 2A 10  .$.2.&*.
-        db   $12,$24,$1E,$00,$0C,$2A,$16,$2A ; F9F5 12 24 1E 00 0C 2A 16 2A  .$...*.*
-        db   $26,$10,$12,$1A,$02,$F3,$06,$1E ; F9FD 26 10 12 1A 02 F3 06 1E  &.......
-        db   $20,$32,$24,$12,$0E,$10,$28,$00 ; FA05 20 32 24 12 0E 10 28 00   2$...(.
-        db   $36,$38,$00,$46,$48,$48,$4C,$FE ; FA0D 36 38 00 46 48 48 4C FE  68.FHHL.
-        db   $0A,$1C,$12,$30,$00,$06,$1E,$24 ; FA15 0A 1C 12 30 00 06 1E 24  ...0...$
-        db   $20,$1E,$24,$02,$28,$12,$1E,$1C ; FA1D 20 1E 24 02 28 12 1E 1C   .$.(...
-        db   $F3,$04,$02,$26,$0A,$08,$00,$2A ; FA25 F3 04 02 26 0A 08 00 2A  ...&...*
-        db   $20,$1E,$1C,$00,$08,$24,$02,$0E ; FA2D 20 1E 1C 00 08 24 02 0E   ....$..
-        db   $1E,$1C,$00,$22,$2A,$0A,$26,$28 ; FA35 1E 1C 00 22 2A 0A 26 28  ..."*.&(
-        db   $00,$3A,$3C,$F5,$06,$1E,$20,$32 ; FA3D 00 3A 3C F5 06 1E 20 32  .:<... 2
-        db   $24,$12,$0E,$10,$28,$26,$00,$36 ; FA45 24 12 0E 10 28 26 00 36  $...(&.6
-        db   $38,$00,$46,$48,$48,$4A,$FE,$02 ; FA4D 38 00 46 48 48 4A FE 02  8.FHHJ..
-        db   $24,$1A,$1E,$24,$00,$20,$24,$1E ; FA55 24 1A 1E 24 00 20 24 1E  $..$. $.
-        db   $14,$0A,$06,$28,$FE,$04,$12,$24 ; FA5D 14 0A 06 28 FE 04 12 24  ...(...$
-        db   $08,$00,$26,$28,$2A,$08,$12,$1E ; FA65 08 00 26 28 2A 08 12 1E  ..&(*...
-        db   $FE,$06,$10,$2A,$1C,$00,$26,$1E ; FA6D FE 06 10 2A 1C 00 26 1E  ...*..&.
-        db   $0C,$28,$FE,$0A,$1C,$12,$30,$00 ; FA75 0C 28 FE 0A 1C 12 30 00  .(....0.
-        db   $06,$1E,$24,$20,$1E,$24,$02,$28 ; FA7D 06 1E 24 20 1E 24 02 28  ..$ .$.(
-        db   $12,$1E,$1C,$FE,$00,$F1,$1A,$2A ; FA85 12 1E 1C FE 00 F1 1A 2A  .......*
-        db   $26,$12,$06,$00,$06,$1E,$20,$32 ; FA8D 26 12 06 00 06 1E 20 32  &..... 2
-        db   $24,$12,$0E,$10,$28,$00,$36,$38 ; FA95 24 12 0E 10 28 00 36 38  $...(.68
-        db   $00,$46,$48,$48,$4A,$FE,$16,$1E ; FA9D 00 46 48 48 4A FE 16 1E  .FHHJ...
-        db   $12,$06,$10,$12,$00,$26,$2A,$0E ; FAA5 12 06 10 12 00 26 2A 0E  .....&*.
-        db   $12,$32,$02,$1A,$02,$FE,$00,$F6 ; FAAD 12 32 02 1A 02 FE 00 F6  .2......
-        db   $28,$10,$0A,$00,$0A,$1C,$08,$F7 ; FAB5 28 10 0A 00 0A 1C 08 F7  (.......
-        db   $FF                             ; FABD FF                       .
+        db   $0A,$26,$28,$00,$3A,$3C,$F1,$26 ; F5D4 0A 26 28 00 3A 3C F1 26  .&(.:<.&
+        db   $28,$02,$0C,$0C,$F4,$26,$06,$0A ; F5DC 28 02 0C 0C F4 26 06 0A  (....&..
+        db   $1C,$02,$24,$12,$1E,$FE,$32,$2A ; F5E4 1C 02 24 12 1E FE 32 2A  ..$...2*
+        db   $14,$12,$00,$10,$1E,$24,$12,$12 ; F5EC 14 12 00 10 1E 24 12 12  .....$..
+        db   $F3,$1A,$1E,$1C,$26,$28,$0A,$24 ; F5F4 F3 1A 1E 1C 26 28 0A 24  ....&(.$
+        db   $00,$08,$0A,$26,$12,$0E,$1C,$FE ; F5FC 00 08 0A 26 12 0E 1C FE  ...&....
+        db   $02,$16,$12,$24,$02,$00,$28,$1E ; F604 02 16 12 24 02 00 28 1E  ...$..(.
+        db   $24,$12,$32,$02,$1A,$02,$F3,$1A ; F60C 24 12 32 02 1A 02 F3 1A  $.2.....
+        db   $2A,$26,$12,$06,$FE,$16,$1E,$12 ; F614 2A 26 12 06 FE 16 1E 12  *&......
+        db   $06,$10,$12,$00,$26,$2A,$0E,$12 ; F61C 06 10 12 00 26 2A 0E 12  ....&*..
+        db   $32,$02,$1A,$02,$F3,$06,$10,$12 ; F624 32 02 1A 02 F3 06 10 12  2.......
+        db   $0A,$0C,$00,$20,$24,$1E,$0E,$24 ; F62C 0A 0C 00 20 24 1E 0E 24  ... $..$
+        db   $02,$1A,$1A,$0A,$24,$26,$FE,$16 ; F634 02 1A 1A 0A 24 26 FE 16  ....$&..
+        db   $40,$1C,$02,$12,$28,$1E,$10,$00 ; F63C 40 1C 02 12 28 1E 10 00  @...(...
+        db   $00,$1A,$40,$32,$02,$1A,$02,$1C ; F644 00 1A 40 32 02 1A 02 1C  ..@2....
+        db   $02,$F3,$20,$24,$1E,$0E,$24,$02 ; F64C 02 F3 20 24 1E 0E 24 02  .. $..$.
+        db   $1A,$1A,$0A,$24,$26,$FE,$16,$40 ; F654 1A 1A 0A 24 26 FE 16 40  ...$&..@
+        db   $1A,$02,$26,$2A,$28,$02,$00,$00 ; F65C 1A 02 26 2A 28 02 00 00  ..&*(...
+        db   $1A,$40,$26,$02,$12,$28,$1E,$10 ; F664 1A 40 26 02 12 28 1E 10  .@&..(..
+        db   $00,$00,$28,$40,$1C,$02,$24,$12 ; F66C 00 00 28 40 1C 02 24 12  ..(@..$.
+        db   $28,$02,$F1,$28,$40,$12,$16,$0A ; F674 28 02 F1 28 40 12 16 0A  (..(@...
+        db   $08,$02,$00,$00,$10,$40,$26,$12 ; F67C 08 02 00 00 10 40 26 12  .....@&.
+        db   $1C,$1E,$10,$02,$24,$02,$00,$00 ; F684 1C 1E 10 02 24 02 00 00  ....$...
+        db   $16,$40,$02,$26,$02,$1C,$1E,$F3 ; F68C 16 40 02 26 02 1C 1E F3  .@.&....
+        db   $26,$1E,$2A,$1C,$08,$00,$20,$24 ; F694 26 1E 2A 1C 08 00 20 24  &.*... $
+        db   $1E,$0E,$24,$02,$1A,$1A,$0A,$24 ; F69C 1E 0E 24 02 1A 1A 0A 24  ..$....$
+        db   $26,$FE,$1A,$40,$28,$02,$16,$12 ; F6A4 26 FE 1A 40 28 02 16 12  &..@(...
+        db   $1A,$1E,$28,$1E,$00,$00,$28,$40 ; F6AC 1A 1E 28 1E 00 00 28 40  ..(...(@
+        db   $0C,$2A,$16,$2A,$34,$02,$2E,$02 ; F6B4 0C 2A 16 2A 34 02 2E 02  .*.*4...
+        db   $F3,$0E,$24,$02,$20,$10,$12,$06 ; F6BC F3 0E 24 02 20 10 12 06  ..$. ...
+        db   $00,$08,$0A,$26,$12,$0E,$1C,$0A ; F6C4 00 08 0A 26 12 0E 1C 0A  ...&....
+        db   $24,$26,$FE,$28,$40,$32,$02,$26 ; F6CC 24 26 FE 28 40 32 02 26  $&.(@2.&
+        db   $2A,$1C,$1E,$00,$00,$26,$40,$0C ; F6D4 2A 1C 1E 00 00 26 40 0C  *....&@.
+        db   $2A,$08,$02,$04,$02,$F3,$26,$06 ; F6DC 2A 08 02 04 02 F3 26 06  *.....&.
+        db   $0A,$1C,$02,$24,$12,$1E,$00,$02 ; F6E4 0A 1C 02 24 12 1E 00 02  ...$....
+        db   $26,$26,$12,$26,$28,$02,$1C,$28 ; F6EC 26 26 12 26 28 02 1C 28  &&.&(..(
+        db   $26,$FE,$16,$40,$1E,$24,$12,$1E ; F6F4 26 FE 16 40 1E 24 12 1E  &..@.$..
+        db   $00,$00,$02,$40,$02,$26,$02,$1A ; F6FC 00 00 02 40 02 26 02 1A  ...@.&..
+        db   $12,$00,$00,$0C,$40,$12,$26,$10 ; F704 12 00 00 0C 40 12 26 10  ....@.&.
+        db   $12,$16,$02,$2E,$02,$F1,$26,$40 ; F70C 12 16 02 2E 02 F1 26 40  ......&@
+        db   $2A,$0A,$1C,$1E,$00,$00,$26,$40 ; F714 2A 0A 1C 1E 00 00 26 40  *.....&@
+        db   $26,$2A,$0E,$12,$1A,$2A,$24,$02 ; F71C 26 2A 0E 12 1A 2A 24 02  &*...*$.
+        db   $F3,$08,$12,$24,$0A,$06,$28,$1E ; F724 F3 08 12 24 0A 06 28 1E  ...$..(.
+        db   $24,$FE,$16,$1E,$12,$06,$10,$12 ; F72C 24 FE 16 1E 12 06 10 12  $.......
+        db   $00,$1C,$02,$16,$02,$1A,$2A,$24 ; F734 00 1C 02 16 02 1A 2A 24  ......*$
+        db   $02,$F3,$20,$24,$1E,$08,$2A,$06 ; F73C 02 F3 20 24 1E 08 2A 06  .. $..*.
+        db   $0A,$24,$FE,$32,$2A,$16,$12,$1C ; F744 0A 24 FE 32 2A 16 12 1C  .$.2*...
+        db   $1E,$04,$2A,$00,$06,$10,$12,$08 ; F74C 1E 04 2A 00 06 10 12 08  ..*.....
+        db   $02,$F3,$20,$2A,$04,$18,$12,$26 ; F754 02 F3 20 2A 04 18 12 26  .. *...&
+        db   $10,$0A,$24,$FE,$32,$02,$26,$2A ; F75C 10 0A 24 FE 32 02 26 2A  ..$.2.&*
+        db   $10,$12,$24,$1E,$00,$0C,$2A,$16 ; F764 10 12 24 1E 00 0C 2A 16  ..$...*.
+        db   $2A,$26,$10,$12,$1A,$02,$F9,$00 ; F76C 2A 26 10 12 1A 02 F9 00  *&......
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F774 00 00 00 00 00 00 00 00  ........
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F77C 00 00 00 00 00 00 00 00  ........
+        db   $00,$00,$42,$44,$F0,$08,$24,$02 ; F784 00 00 42 44 F0 08 24 02  ..BD..$.
+        db   $0E,$1E,$1C,$00,$2E,$02,$24,$24 ; F78C 0E 1E 1C 00 2E 02 24 24  ......$$
+        db   $12,$1E,$24,$00,$3A,$3C,$F1,$26 ; F794 12 1E 24 00 3A 3C F1 26  ..$.:<.&
+        db   $28,$02,$0C,$0C,$F4,$0A,$1C,$0E ; F79C 28 02 0C 0C F4 0A 1C 0E  (.......
+        db   $18,$12,$26,$10,$00,$28,$0A,$30 ; F7A4 18 12 26 10 00 28 0A 30  ..&..(.0
+        db   $28,$FE,$26,$28,$2A,$08,$12,$1E ; F7AC 28 FE 26 28 2A 08 12 1E  (.&(*...
+        db   $00,$04,$2A,$04,$1E,$1E,$F3,$06 ; F7B4 00 04 2A 04 1E 1E F3 06  ..*.....
+        db   $10,$12,$0A,$0C,$00,$20,$24,$1E ; F7BC 10 12 0A 0C 00 20 24 1E  ..... $.
+        db   $0E,$24,$02,$1A,$1A,$0A,$24,$FE ; F7C4 0E 24 02 1A 1A 0A 24 FE  .$....$.
+        db   $1A,$02,$26,$02,$32,$1E,$26,$10 ; F7CC 1A 02 26 02 32 1E 26 10  ..&.2.&.
+        db   $12,$00,$26,$02,$12,$28,$1E,$10 ; F7D4 12 00 26 02 12 28 1E 10  ..&..(..
+        db   $F3,$20,$24,$1E,$0E,$24,$02,$1A ; F7DC F3 20 24 1E 0E 24 02 1A  . $..$..
+        db   $1A,$0A,$24,$26,$FE,$1A,$02,$26 ; F7E4 1A 0A 24 26 FE 1A 02 26  ..$&...&
+        db   $02,$10,$12,$24,$1E,$00,$1C,$12 ; F7EC 02 10 12 24 1E 00 1C 12  ...$....
+        db   $12,$F1,$26,$2A,$26,$2A,$1A,$2A ; F7F4 12 F1 26 2A 26 2A 1A 2A  ..&*&*.*
+        db   $00,$12,$12,$08,$02,$F1,$1C,$1E ; F7FC 00 12 12 08 02 F1 1C 1E  ........
+        db   $04,$2A,$10,$12,$24,$1E,$00,$32 ; F804 04 2A 10 12 24 1E 00 32  .*..$..2
+        db   $02,$1A,$02,$08,$02,$F1,$10,$12 ; F80C 02 1A 02 08 02 F1 10 12  ........
+        db   $28,$1E,$1A,$12,$00,$26,$02,$12 ; F814 28 1E 1A 12 00 26 02 12  (....&..
+        db   $28,$1E,$10,$F3,$20,$24,$1E,$14 ; F81C 28 1E 10 F3 20 24 1E 14  (... $..
+        db   $0A,$06,$28,$00,$06,$1E,$1E,$24 ; F824 0A 06 28 00 06 1E 1E 24  ..(....$
+        db   $08,$12,$1C,$02,$28,$1E,$24,$FE ; F82C 08 12 1C 02 28 1E 24 FE  ....(.$.
+        db   $26,$10,$12,$1C,$14,$12,$00,$0C ; F834 26 10 12 1C 14 12 00 0C  &.......
+        db   $2A,$28,$02,$1A,$12,$F3,$02,$26 ; F83C 2A 28 02 1A 12 F3 02 26  *(.....&
+        db   $26,$12,$26,$28,$02,$1C,$28,$26 ; F844 26 12 26 28 02 1C 28 26  &.&(..(&
+        db   $FE,$02,$28,$26,$2A,$16,$1E,$00 ; F84C FE 02 28 26 2A 16 1E 00  ..(&*...
+        db   $26,$2A,$1A,$12,$32,$1E,$26,$10 ; F854 26 2A 1A 12 32 1E 26 10  &*..2.&.
+        db   $12,$F1,$32,$1E,$26,$10,$12,$16 ; F85C 12 F1 32 1E 26 10 12 16  ..2.&...
+        db   $1E,$00,$10,$02,$28,$02,$1C,$1E ; F864 1E 00 10 02 28 02 1C 1E  ....(...
+        db   $F3,$02,$26,$26,$12,$26,$28,$02 ; F86C F3 02 26 26 12 26 28 02  ..&&.&(.
+        db   $1C,$28,$00,$08,$12,$24,$0A,$06 ; F874 1C 28 00 08 12 24 0A 06  .(...$..
+        db   $28,$1E,$24,$26,$FE,$28,$1E,$0E ; F87C 28 1E 24 26 FE 28 1E 0E  (.$&.(..
+        db   $1E,$00,$1C,$02,$24,$12,$28,$02 ; F884 1E 00 1C 02 24 12 28 02  ....$.(.
+        db   $F1,$16,$0A,$1C,$12,$06,$10,$12 ; F88C F1 16 0A 1C 12 06 10 12  ........
+        db   $00,$1A,$02,$26,$2A,$28,$02,$F3 ; F894 00 1A 02 26 2A 28 02 F3  ...&*(..
+        db   $02,$26,$26,$12,$26,$28,$02,$1C ; F89C 02 26 26 12 26 28 02 1C  .&&.&(..
+        db   $28,$00,$20,$24,$1E,$08,$2A,$06 ; F8A4 28 00 20 24 1E 08 2A 06  (. $..*.
+        db   $0A,$24,$26,$FE,$32,$1E,$26,$10 ; F8AC 0A 24 26 FE 32 1E 26 10  .$&.2.&.
+        db   $12,$1C,$1E,$24,$12,$00,$32,$02 ; F8B4 12 1C 1E 24 12 00 32 02  ...$..2.
+        db   $1A,$02,$0E,$12,$26,$10,$12,$F1 ; F8BC 1A 02 0E 12 26 10 12 F1  ....&...
+        db   $08,$02,$12,$34,$1E,$00,$26,$10 ; F8C4 08 02 12 34 1E 00 26 10  ...4..&.
+        db   $12,$1A,$02,$1A,$2A,$24,$02,$F1 ; F8CC 12 1A 02 1A 2A 24 02 F1  ....*$..
+        db   $26,$02,$08,$02,$1E,$00,$32,$02 ; F8D4 26 02 08 02 1E 00 32 02  &.....2.
+        db   $10,$02,$0E,$12,$F3,$26,$20,$0A ; F8DC 10 02 0E 12 F3 26 20 0A  .....& .
+        db   $06,$12,$02,$18,$00,$06,$1E,$1E ; F8E4 06 12 02 18 00 06 1E 1E  ........
+        db   $20,$0A,$24,$02,$28,$1E,$24,$26 ; F8EC 20 0A 24 02 28 1E 24 26   .$.(.$&
+        db   $FE,$28,$2A,$1C,$0A,$1E,$00,$1A ; F8F4 FE 28 2A 1C 0A 1E 00 1A  .(*.....
+        db   $1E,$24,$12,$28,$02,$F1,$20,$02 ; F8FC 1E 24 12 28 02 F1 20 02  .$.(.. .
+        db   $2A,$18,$00,$04,$1E,$2E,$18,$0A ; F904 2A 18 00 04 1E 2E 18 0A  *.......
+        db   $24,$F1,$20,$02,$2A,$18,$00,$10 ; F90C 24 F1 20 02 2A 18 00 10  $. .*...
+        db   $02,$1C,$08,$0A,$18,$1A,$02,$1C ; F914 02 1C 08 0A 18 1A 02 1C  ........
+        db   $F1,$06,$10,$0A,$24,$12,$0A,$00 ; F91C F1 06 10 0A 24 12 0A 00  ....$...
+        db   $10,$02,$26,$26,$1E,$1C,$F1,$24 ; F924 10 02 26 26 1E 1C F1 24  ..&&...$
+        db   $1E,$04,$0A,$24,$28,$00,$14,$0A ; F92C 1E 04 0A 24 28 00 14 0A  ...$(...
+        db   $02,$24,$2A,$18,$08,$F3,$26,$2A ; F934 02 24 2A 18 08 F3 26 2A  .$*...&*
+        db   $20,$0A,$24,$2C,$12,$26,$1E,$24 ; F93C 20 0A 24 2C 12 26 1E 24   .$,.&.$
+        db   $FE,$16,$0A,$12,$14,$12,$00,$10 ; F944 FE 16 0A 12 14 12 00 10  ........
+        db   $1E,$1C,$08,$02,$F3,$26,$20,$0A ; F94C 1E 1C 08 02 F3 26 20 0A  .....& .
+        db   $06,$12,$02,$18,$00,$28,$10,$02 ; F954 06 12 02 18 00 28 10 02  .....(..
+        db   $1C,$16,$26,$00,$28,$1E,$FE,$02 ; F95C 1C 16 26 00 28 1E FE 02  ..&.(...
+        db   $22,$2A,$02,$00,$1A,$02,$24,$12 ; F964 22 2A 02 00 1A 02 24 12  "*....$.
+        db   $1C,$0A,$F1,$28,$1E,$16,$2A,$1A ; F96C 1C 0A F1 28 1E 16 2A 1A  ...(..*.
+        db   $02,$00,$26,$10,$1E,$28,$0A,$1C ; F974 02 00 26 10 1E 28 0A 1C  ..&..(..
+        db   $00,$20,$2A,$04,$18,$12,$26,$10 ; F97C 00 20 2A 04 18 12 26 10  . *...&.
+        db   $12,$1C,$0E,$F1,$00,$00,$00,$00 ; F984 12 1C 0E F1 00 00 00 00  ........
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F98C 00 00 00 00 00 00 00 00  ........
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; F994 00 00 00 00 00 00 00 00  ........
+        db   $06,$1E,$40,$3E,$00,$18,$28,$08 ; F99C 06 1E 40 3E 00 18 28 08  ..@>..(.
+        db   $F1,$2E,$1E,$24,$16,$00,$10,$1E ; F9A4 F1 2E 1E 24 16 00 10 1E  ...$....
+        db   $2A,$26,$0A,$00,$2A,$40,$26,$40 ; F9AC 2A 26 0A 00 2A 40 26 40  *&..*@&@
+        db   $02,$40,$F3,$08,$12,$24,$0A,$06 ; F9B4 02 40 F3 08 12 24 0A 06  .@...$..
+        db   $28,$1E,$24,$FE,$1A,$02,$1C,$02 ; F9BC 28 1E 24 FE 1A 02 1C 02  (.$.....
+        db   $04,$2A,$00,$32,$02,$1A,$02,$1C ; F9C4 04 2A 00 32 02 1A 02 1C  .*.2....
+        db   $02,$F3,$20,$24,$1E,$08,$2A,$06 ; F9CC 02 F3 20 24 1E 08 2A 06  .. $..*.
+        db   $0A,$24,$FE,$32,$2A,$16,$12,$1C ; F9D4 0A 24 FE 32 2A 16 12 1C  .$.2*...
+        db   $1E,$04,$2A,$00,$06,$10,$12,$08 ; F9DC 1E 04 2A 00 06 10 12 08  ..*.....
+        db   $02,$F3,$20,$2A,$04,$18,$12,$26 ; F9E4 02 F3 20 2A 04 18 12 26  .. *...&
+        db   $10,$0A,$24,$FE,$32,$02,$26,$2A ; F9EC 10 0A 24 FE 32 02 26 2A  ..$.2.&*
+        db   $10,$12,$24,$1E,$00,$0C,$2A,$16 ; F9F4 10 12 24 1E 00 0C 2A 16  ..$...*.
+        db   $2A,$26,$10,$12,$1A,$02,$F3,$06 ; F9FC 2A 26 10 12 1A 02 F3 06  *&......
+        db   $1E,$20,$32,$24,$12,$0E,$10,$28 ; FA04 1E 20 32 24 12 0E 10 28  . 2$...(
+        db   $00,$36,$38,$00,$46,$48,$48,$4C ; FA0C 00 36 38 00 46 48 48 4C  .68.FHHL
+        db   $FE,$0A,$1C,$12,$30,$00,$06,$1E ; FA14 FE 0A 1C 12 30 00 06 1E  ....0...
+        db   $24,$20,$1E,$24,$02,$28,$12,$1E ; FA1C 24 20 1E 24 02 28 12 1E  $ .$.(..
+        db   $1C,$F3,$04,$02,$26,$0A,$08,$00 ; FA24 1C F3 04 02 26 0A 08 00  ....&...
+        db   $2A,$20,$1E,$1C,$00,$08,$24,$02 ; FA2C 2A 20 1E 1C 00 08 24 02  * ....$.
+        db   $0E,$1E,$1C,$00,$22,$2A,$0A,$26 ; FA34 0E 1E 1C 00 22 2A 0A 26  ...."*.&
+        db   $28,$00,$3A,$3C,$F5,$06,$1E,$20 ; FA3C 28 00 3A 3C F5 06 1E 20  (.:<...
+        db   $32,$24,$12,$0E,$10,$28,$26,$00 ; FA44 32 24 12 0E 10 28 26 00  2$...(&.
+        db   $36,$38,$00,$46,$48,$48,$4A,$FE ; FA4C 36 38 00 46 48 48 4A FE  68.FHHJ.
+        db   $02,$24,$1A,$1E,$24,$00,$20,$24 ; FA54 02 24 1A 1E 24 00 20 24  .$..$. $
+        db   $1E,$14,$0A,$06,$28,$FE,$04,$12 ; FA5C 1E 14 0A 06 28 FE 04 12  ....(...
+        db   $24,$08,$00,$26,$28,$2A,$08,$12 ; FA64 24 08 00 26 28 2A 08 12  $..&(*..
+        db   $1E,$FE,$06,$10,$2A,$1C,$00,$26 ; FA6C 1E FE 06 10 2A 1C 00 26  ....*..&
+        db   $1E,$0C,$28,$FE,$0A,$1C,$12,$30 ; FA74 1E 0C 28 FE 0A 1C 12 30  ..(....0
+        db   $00,$06,$1E,$24,$20,$1E,$24,$02 ; FA7C 00 06 1E 24 20 1E 24 02  ...$ .$.
+        db   $28,$12,$1E,$1C,$FE,$00,$F1,$1A ; FA84 28 12 1E 1C FE 00 F1 1A  (.......
+        db   $2A,$26,$12,$06,$00,$06,$1E,$20 ; FA8C 2A 26 12 06 00 06 1E 20  *&.....
+        db   $32,$24,$12,$0E,$10,$28,$00,$36 ; FA94 32 24 12 0E 10 28 00 36  2$...(.6
+        db   $38,$00,$46,$48,$48,$4A,$FE,$16 ; FA9C 38 00 46 48 48 4A FE 16  8.FHHJ..
+        db   $1E,$12,$06,$10,$12,$00,$26,$2A ; FAA4 1E 12 06 10 12 00 26 2A  ......&*
+        db   $0E,$12,$32,$02,$1A,$02,$FE,$00 ; FAAC 0E 12 32 02 1A 02 FE 00  ..2.....
+        db   $F6,$28,$10,$0A,$00,$0A,$1C,$08 ; FAB4 F6 28 10 0A 00 0A 1C 08  .(......
+        db   $F7,$FF                         ; FABC F7 FF                    ..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_FABE:
         jsr     LowerFixedEngine_Entry_C5AF     ; FABE 20 AF C5                  ..
@@ -7565,75 +8222,87 @@ LowerFixedEngine_Branch_FABE:
         lda     $FB6D                           ; FACE AD 6D FB                 .m.
         sta     $01                             ; FAD1 85 01                    ..
         ldx     #$00                            ; FAD3 A2 00                    ..
+LowerFixedEngine_Branch_FAD5:
         lda     #$80                            ; FAD5 A9 80                    ..
         sta     $02                             ; FAD7 85 02                    ..
         ldy     #$00                            ; FAD9 A0 00                    ..
+LowerFixedEngine_Branch_FADB:
         lda     $02                             ; FADB A5 02                    ..
         and     $7800,x                         ; FADD 3D 00 78                 =.x
-        beq     $FAEA                           ; FAE0 F0 08                    ..
+        beq     LowerFixedEngine_Branch_FAEA    ; FAE0 F0 08                    ..
         lda     ($00),y                         ; FAE2 B1 00                    ..
         inc     $00                             ; FAE4 E6 00                    ..
-        bne     $FAEA                           ; FAE6 D0 02                    ..
+        bne     LowerFixedEngine_Branch_FAEA    ; FAE6 D0 02                    ..
         inc     $01                             ; FAE8 E6 01                    ..
+LowerFixedEngine_Branch_FAEA:
         sta     PPUDATA                         ; FAEA 8D 07 20                 ..
         lsr     $02                             ; FAED 46 02                    F.
-        bne     $FADB                           ; FAEF D0 EA                    ..
+        bne     LowerFixedEngine_Branch_FADB    ; FAEF D0 EA                    ..
         inx                                     ; FAF1 E8                       .
         cpx     #$84                            ; FAF2 E0 84                    ..
-        bne     $FAD5                           ; FAF4 D0 DF                    ..
+        bne     LowerFixedEngine_Branch_FAD5    ; FAF4 D0 DF                    ..
         lda     #$20                            ; FAF6 A9 20                    .
         sta     PPUADDR                         ; FAF8 8D 06 20                 ..
         lda     #$00                            ; FAFB A9 00                    ..
         sta     PPUADDR                         ; FAFD 8D 06 20                 ..
         ldy     #$0E                            ; FB00 A0 0E                    ..
+LowerFixedEngine_Branch_FB02:
         ldx     #$20                            ; FB02 A2 20                    .
+LowerFixedEngine_Branch_FB04:
         sta     PPUDATA                         ; FB04 8D 07 20                 ..
         dex                                     ; FB07 CA                       .
-        bne     $FB04                           ; FB08 D0 FA                    ..
+        bne     LowerFixedEngine_Branch_FB04    ; FB08 D0 FA                    ..
         dey                                     ; FB0A 88                       .
-        bne     $FB02                           ; FB0B D0 F5                    ..
+        bne     LowerFixedEngine_Branch_FB02    ; FB0B D0 F5                    ..
         lda     $FB6E                           ; FB0D AD 6E FB                 .n.
         sta     $00                             ; FB10 85 00                    ..
         lda     $FB6F                           ; FB12 AD 6F FB                 .o.
         sta     $01                             ; FB15 85 01                    ..
+LowerFixedEngine_Branch_FB17:
         lda     #$80                            ; FB17 A9 80                    ..
         sta     $02                             ; FB19 85 02                    ..
+LowerFixedEngine_Branch_FB1B:
         cpy     #$24                            ; FB1B C0 24                    .$
-        bcs     $FB26                           ; FB1D B0 07                    ..
+        bcs     LowerFixedEngine_Branch_FB26    ; FB1D B0 07                    ..
         lda     $02                             ; FB1F A5 02                    ..
         and     Bank0F_PpuUploadMasks,y         ; FB21 39 69 FC                 9i.
-        beq     $FB2E                           ; FB24 F0 08                    ..
+        beq     LowerFixedEngine_Branch_FB2E    ; FB24 F0 08                    ..
+LowerFixedEngine_Branch_FB26:
         lda     ($00,x)                         ; FB26 A1 00                    ..
         inc     $00                             ; FB28 E6 00                    ..
-        bne     $FB2E                           ; FB2A D0 02                    ..
+        bne     LowerFixedEngine_Branch_FB2E    ; FB2A D0 02                    ..
         inc     $01                             ; FB2C E6 01                    ..
+LowerFixedEngine_Branch_FB2E:
         sta     PPUDATA                         ; FB2E 8D 07 20                 ..
         lsr     $02                             ; FB31 46 02                    F.
-        bne     $FB1B                           ; FB33 D0 E6                    ..
+        bne     LowerFixedEngine_Branch_FB1B    ; FB33 D0 E6                    ..
         iny                                     ; FB35 C8                       .
         cpy     #$38                            ; FB36 C0 38                    .8
-        bne     $FB17                           ; FB38 D0 DD                    ..
+        bne     LowerFixedEngine_Branch_FB17    ; FB38 D0 DD                    ..
         ldy     #$40                            ; FB3A A0 40                    .@
+LowerFixedEngine_Branch_FB3C:
         lda     #$0B                            ; FB3C A9 0B                    ..
         sta     PPUDATA                         ; FB3E 8D 07 20                 ..
         lda     #$0C                            ; FB41 A9 0C                    ..
         sta     PPUDATA                         ; FB43 8D 07 20                 ..
         dey                                     ; FB46 88                       .
-        bne     $FB3C                           ; FB47 D0 F3                    ..
+        bne     LowerFixedEngine_Branch_FB3C    ; FB47 D0 F3                    ..
         lda     #$23                            ; FB49 A9 23                    .#
         sta     PPUADDR                         ; FB4B 8D 06 20                 ..
         lda     #$DE                            ; FB4E A9 DE                    ..
         sta     PPUADDR                         ; FB50 8D 06 20                 ..
+LowerFixedEngine_Branch_FB53:
         lda     Bank0F_PpuAttributeData,y       ; FB53 B9 57 FC                 .W.
         sta     PPUDATA                         ; FB56 8D 07 20                 ..
         iny                                     ; FB59 C8                       .
         cpy     #$12                            ; FB5A C0 12                    ..
-        bne     $FB53                           ; FB5C D0 F5                    ..
+        bne     LowerFixedEngine_Branch_FB53    ; FB5C D0 F5                    ..
         ldy     #$10                            ; FB5E A0 10                    ..
+LowerFixedEngine_Branch_FB60:
         lda     #$00                            ; FB60 A9 00                    ..
         sta     PPUDATA                         ; FB62 8D 07 20                 ..
         dey                                     ; FB65 88                       .
-        bne     $FB60                           ; FB66 D0 F8                    ..
+        bne     LowerFixedEngine_Branch_FB60    ; FB66 D0 F8                    ..
         jsr     LowerFixedEngine_Entry_C58F     ; FB68 20 8F C5                  ..
         rts                                     ; FB6B 60                       `
 ; ----------------------------------------------------------------------------
@@ -7779,11 +8448,12 @@ Bank0F_PpuPatternStream:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Entry_FF74:
         lda     $050C                           ; FF74 AD 0C 05                 ...
+LowerFixedEngine_Branch_FF77:
         nop                                     ; FF77 EA                       .
         nop                                     ; FF78 EA                       .
         inc     $12                             ; FF79 E6 12                    ..
         cmp     $050C                           ; FF7B CD 0C 05                 ...
-        beq     $FF77                           ; FF7E F0 F7                    ..
+        beq     LowerFixedEngine_Branch_FF77    ; FF7E F0 F7                    ..
         nop                                     ; FF80 EA                       .
         nop                                     ; FF81 EA                       .
         jsr     LowerFixedEngine_Entry_C913     ; FF82 20 13 C9                  ..

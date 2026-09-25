@@ -22,6 +22,8 @@ $configPath = Join-Path $workRoot 'fceux.cfg'
 $traceLauncherPath = Join-Path $workRoot 'trace-launch.lua'
 $outputPath = Join-Path $projectRoot 'analysis\fceux-exec.tsv'
 $sessionOutputPath = Join-Path $workRoot 'fceux-exec-current.tsv'
+$resumeOutputPath = Join-Path $projectRoot 'analysis\fceux-inline-resumes.tsv'
+$sessionResumeOutputPath = Join-Path $workRoot 'fceux-inline-resumes-current.tsv'
 $readOutputPath = Join-Path $projectRoot 'analysis\fceux-reads.tsv'
 $sessionReadOutputPath = Join-Path $workRoot 'fceux-reads-current.tsv'
 $writeOutputPath = Join-Path $projectRoot 'analysis\fceux-writes.tsv'
@@ -52,6 +54,7 @@ $config = $config -replace '^"odstates".*$', ('"odstates" ' + $workRoot)
 Set-Content -LiteralPath $configPath -Value $config -Encoding ASCII
 
 $luaOutput = $sessionOutputPath.Replace('\', '/')
+$luaResumeOutput = $sessionResumeOutputPath.Replace('\', '/')
 $luaReadOutput = $sessionReadOutputPath.Replace('\', '/')
 $luaWriteOutput = $sessionWriteOutputPath.Replace('\', '/')
 $luaDone = (Join-Path $workRoot 'trace.done').Replace('\', '/')
@@ -63,6 +66,7 @@ DW4_TRACE_CONFIG_DATA = {
     frames = $Frames,
     profile = '$TraceMode',
     output = '$luaOutput',
+    resume_output = '$luaResumeOutput',
     read_output = '$luaReadOutput',
     write_output = '$luaWriteOutput',
     done = '$luaDone',
@@ -75,6 +79,7 @@ Set-Content -LiteralPath $traceLauncherPath -Value $launcherHeader -Encoding ASC
 Add-Content -LiteralPath $traceLauncherPath -Value (Get-Content -LiteralPath $luaScript -Raw) -Encoding ASCII
 
 Remove-Item -LiteralPath $sessionOutputPath -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath $sessionResumeOutputPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $sessionReadOutputPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $sessionWriteOutputPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $workRoot 'trace.done') -Force -ErrorAction SilentlyContinue
@@ -105,6 +110,9 @@ if (-not $process.WaitForExit(180000)) {
 if (-not (Test-Path -LiteralPath $sessionOutputPath)) {
     throw "FCEUX did not create $sessionOutputPath"
 }
+if (-not (Test-Path -LiteralPath $sessionResumeOutputPath)) {
+    throw "FCEUX did not create $sessionResumeOutputPath"
+}
 if (-not (Test-Path -LiteralPath $sessionReadOutputPath)) {
     throw "FCEUX did not create $sessionReadOutputPath"
 }
@@ -124,6 +132,18 @@ foreach ($path in @($outputPath, $sessionOutputPath)) {
 $merged = @('# Bank`tCPUAddress') + @($records.Keys | Sort-Object)
 Set-Content -LiteralPath $outputPath -Value $merged -Encoding ASCII
 Write-Host "Merged FCEUX trace written to $outputPath ($($records.Count) instruction starts)"
+
+$resumeRecords = @{}
+foreach ($path in @($resumeOutputPath, $sessionResumeOutputPath)) {
+    if (-not (Test-Path -LiteralPath $path)) { continue }
+    foreach ($line in Get-Content -LiteralPath $path) {
+        if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith('#')) { continue }
+        $resumeRecords[$line] = $true
+    }
+}
+$mergedResumes = @('# Bank`tCallAddress`tKind`tContinuation') + @($resumeRecords.Keys | Sort-Object)
+Set-Content -LiteralPath $resumeOutputPath -Value $mergedResumes -Encoding ASCII
+Write-Host "Merged FCEUX call resumes written to $resumeOutputPath ($($resumeRecords.Count) observed returns)"
 
 $readRecords = @{}
 foreach ($path in @($readOutputPath, $sessionReadOutputPath)) {

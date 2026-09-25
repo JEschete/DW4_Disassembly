@@ -52,11 +52,12 @@ MapInteractionSystem_Branch_80A7:
         db   $80,$CC,$81,$D0,$81,$60,$82,$64 ; 80AB 80 CC 81 D0 81 60 82 64  .....`.d
         db   $82,$FD,$83,$42,$83,$3F,$83     ; 80B3 82 FD 83 42 83 3F 83     ...B.?.
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_80BA:
         bit     $41                             ; 80BA 24 41                    $A
-        bpl     $80EA                           ; 80BC 10 2C                    .,
+        bpl     MapInteractionSystem_Branch_80EA; 80BC 10 2C                    .,
         jsr     MapInteractionSystem_Entry_81AE ; 80BE 20 AE 81                  ..
         jsr     MapInteractionSystem_Entry_8126 ; 80C1 20 26 81                  &.
-        bcs     $80F9                           ; 80C4 B0 33                    .3
+        bcs     MapInteractionSystem_Branch_80F9; 80C4 B0 33                    .3
         ldx     $51                             ; 80C6 A6 51                    .Q
         ldy     $52                             ; 80C8 A4 52                    .R
         jsr     UpperFixedEngine_Entry_D3E6     ; 80CA 20 E6 D3                  ..
@@ -66,26 +67,31 @@ MapInteractionSystem_Branch_80A7:
         lda     $6F40,x                         ; 80D2 BD 40 6F                 .@o
         and     #$7F                            ; 80D5 29 7F                    ).
         cmp     #$27                            ; 80D7 C9 27                    .'
-        beq     $80E2                           ; 80D9 F0 07                    ..
+        beq     MapInteractionSystem_Branch_80E2; 80D9 F0 07                    ..
         dey                                     ; 80DB 88                       .
         cmp     #$17                            ; 80DC C9 17                    ..
-        bne     $80E5                           ; 80DE D0 05                    ..
+        bne     MapInteractionSystem_Branch_80E5; 80DE D0 05                    ..
         iny                                     ; 80E0 C8                       .
         iny                                     ; 80E1 C8                       .
+MapInteractionSystem_Branch_80E2:
         jsr     MapInteractionSystem_Entry_81B8 ; 80E2 20 B8 81                  ..
+MapInteractionSystem_Branch_80E5:
         jsr     MapInteractionSystem_Entry_8126 ; 80E5 20 26 81                  &.
-        bcs     $80F9                           ; 80E8 B0 0F                    ..
+        bcs     MapInteractionSystem_Branch_80F9; 80E8 B0 0F                    ..
+MapInteractionSystem_Branch_80EA:
         jsr     MapInteractionSystem_Entry_BAEA ; 80EA 20 EA BA                  ..
-        bcc     $80F2                           ; 80ED 90 03                    ..
+        bcc     MapInteractionSystem_Branch_80F2; 80ED 90 03                    ..
         jmp     MapInteractionSystem_Entry_84B6 ; 80EF 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_80F2:
         lda     #$F0                            ; 80F2 A9 F0                    ..
         ldx     #$02                            ; 80F4 A2 02                    ..
         jmp     UpperFixedEngine_Entry_D1ED     ; 80F6 4C ED D1                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_80F9:
         stx     $059C                           ; 80F9 8E 9C 05                 ...
         lda     $70E0,x                         ; 80FC BD E0 70                 ..p
-        bpl     $8146                           ; 80FF 10 45                    .E
+        bpl     MapInteractionSystem_Branch_8146; 80FF 10 45                    .E
 MapInteractionSystem_Branch_8101:
         lda     $7000,x                         ; 8101 BD 00 70                 ..p
         sta     $51                             ; 8104 85 51                    .Q
@@ -114,24 +120,29 @@ MapInteractionSystem_Branch_8121:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8126:
         ldx     #$06                            ; 8126 A2 06                    ..
+MapInteractionSystem_Branch_8128:
         lda     $7020,x                         ; 8128 BD 20 70                 . p
         cmp     #$FF                            ; 812B C9 FF                    ..
-        beq     $8142                           ; 812D F0 13                    ..
+        beq     MapInteractionSystem_Branch_8142; 812D F0 13                    ..
         lda     $6F60,x                         ; 812F BD 60 6F                 .`o
         cmp     $51                             ; 8132 C5 51                    .Q
-        bne     $813D                           ; 8134 D0 07                    ..
+        bne     MapInteractionSystem_Branch_813D; 8134 D0 07                    ..
         lda     $6F80,x                         ; 8136 BD 80 6F                 ..o
         cmp     $52                             ; 8139 C5 52                    .R
-        beq     $8144                           ; 813B F0 07                    ..
+        beq     MapInteractionSystem_Branch_8144; 813B F0 07                    ..
+MapInteractionSystem_Branch_813D:
         inx                                     ; 813D E8                       .
         cpx     #$20                            ; 813E E0 20                    .
-        bcc     $8128                           ; 8140 90 E6                    ..
+        bcc     MapInteractionSystem_Branch_8128; 8140 90 E6                    ..
+MapInteractionSystem_Branch_8142:
         clc                                     ; 8142 18                       .
         rts                                     ; 8143 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8144:
         sec                                     ; 8144 38                       8
         rts                                     ; 8145 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8146:
         tya                                     ; 8146 98                       .
         pha                                     ; 8147 48                       H
         txa                                     ; 8148 8A                       .
@@ -214,11 +225,13 @@ MapInteractionSystem_Entry_81B8:
         sta     $52                             ; 81CA 85 52                    .R
         rts                                     ; 81CC 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_81CD:
         brk                                     ; 81CD 00                       .
         db   $0B,$2F                         ; 81CE 0B 2F                    ./
 ; ----------------------------------------------------------------------------
         rts                                     ; 81D0 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_81D1:
         brk                                     ; 81D1 00                       .
         db   $07,$6F,$07                     ; 81D2 07 6F 07                 .o.
 ; ----------------------------------------------------------------------------
@@ -226,41 +239,43 @@ MapInteractionSystem_Entry_81B8:
         db   $07,$6F,$06                     ; 81D6 07 6F 06                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 81D9 C9 FF                    ..
-        beq     $823D                           ; 81DB F0 60                    .`
+        beq     MapInteractionSystem_Branch_823D; 81DB F0 60                    .`
         cmp     #$01                            ; 81DD C9 01                    ..
-        beq     $8240                           ; 81DF F0 5F                    ._
+        beq     MapInteractionSystem_Branch_8240; 81DF F0 5F                    ._
         brk                                     ; 81E1 00                       .
         db   $07,$6F,$08                     ; 81E2 07 6F 08                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 81E5 C9 FF                    ..
-        beq     $823D                           ; 81E7 F0 54                    .T
+        beq     MapInteractionSystem_Branch_823D; 81E7 F0 54                    .T
         sta     $07B9                           ; 81E9 8D B9 07                 ...
         lda     $07B9                           ; 81EC AD B9 07                 ...
         brk                                     ; 81EF 00                       .
         db   $37,$0F                         ; 81F0 37 0F                    7.
 ; ----------------------------------------------------------------------------
-        bcs     $81FB                           ; 81F2 B0 07                    ..
+        bcs     MapInteractionSystem_Branch_81FB; 81F2 B0 07                    ..
         brk                                     ; 81F4 00                       .
         db   $09,$6F,$0B                     ; 81F5 09 6F 0B                 .o.
 ; ----------------------------------------------------------------------------
-        jmp     $81FF                           ; 81F8 4C FF 81                 L..
+        jmp     MapInteractionSystem_Branch_81FF; 81F8 4C FF 81                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_81FB:
         brk                                     ; 81FB 00                       .
         db   $09,$6F,$52                     ; 81FC 09 6F 52                 .oR
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_81FF:
         jsr     UpperFixedEngine_Entry_C8CC     ; 81FF 20 CC C8                  ..
         brk                                     ; 8202 00                       .
-        db   $09,$6F                         ; 8203 09 6F                    .o
+        db   $09,$6F,$09                     ; 8203 09 6F 09                 .o.
 ; ----------------------------------------------------------------------------
-        ora     #$00                            ; 8205 09 00                    ..
-        ora     #$6F                            ; 8207 09 6F                    .o
-        asl     a                               ; 8209 0A                       .
+        brk                                     ; 8206 00                       .
+        db   $09,$6F,$0A                     ; 8207 09 6F 0A                 .o.
+; ----------------------------------------------------------------------------
         ldx     $07B9                           ; 820A AE B9 07                 ...
         brk                                     ; 820D 00                       .
         db   $2B,$53                         ; 820E 2B 53                    +S
 ; ----------------------------------------------------------------------------
         cmp     #$05                            ; 8210 C9 05                    ..
-        bcc     $821F                           ; 8212 90 0B                    ..
+        bcc     MapInteractionSystem_Branch_821F; 8212 90 0B                    ..
         cmp     #$08                            ; 8214 C9 08                    ..
         bcc     MapInteractionSystem_Branch_823A; 8216 90 22                    ."
         lda     #$00                            ; 8218 A9 00                    ..
@@ -268,45 +283,65 @@ MapInteractionSystem_Entry_81B8:
         db   $3C,$73                         ; 821B 3C 73                    <s
 ; ----------------------------------------------------------------------------
         beq     MapInteractionSystem_Branch_823A; 821D F0 1B                    ..
+MapInteractionSystem_Branch_821F:
         jsr     UpperFixedEngine_Entry_C8CC     ; 821F 20 CC C8                  ..
         brk                                     ; 8222 00                       .
         db   $85,$FB                         ; 8223 85 FB                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; 8225 00                       .
-        db   $09,$6F,$0C,$AE,$B9,$07,$00,$2B ; 8226 09 6F 0C AE B9 07 00 2B  .o.....+
-        db   $53,$C9,$05,$B0,$07,$20,$CC,$C8 ; 822E 53 C9 05 B0 07 20 CC C8  S.... ..
-        db   $00,$09,$6F,$0D                 ; 8236 00 09 6F 0D              ..o.
+        db   $09,$6F,$0C                     ; 8226 09 6F 0C                 .o.
+; ----------------------------------------------------------------------------
+        ldx     $07B9                           ; 8229 AE B9 07                 ...
+        brk                                     ; 822C 00                       .
+        db   $2B,$53                         ; 822D 2B 53                    +S
+; ----------------------------------------------------------------------------
+        cmp     #$05                            ; 822F C9 05                    ..
+        bcs     MapInteractionSystem_Branch_823A; 8231 B0 07                    ..
+        jsr     UpperFixedEngine_Entry_C8CC     ; 8233 20 CC C8                  ..
+        brk                                     ; 8236 00                       .
+        db   $09,$6F,$0D                     ; 8237 09 6F 0D                 .o.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_823A:
         jmp     MapInteractionSystem_Entry_84B6 ; 823A 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_823D:
         jmp     UpperFixedEngine_Entry_D1F3     ; 823D 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8240:
         brk                                     ; 8240 00                       .
         db   $07,$6F,$0E                     ; 8241 07 6F 0E                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 8244 C9 FF                    ..
-        beq     $825A                           ; 8246 F0 12                    ..
+        beq     MapInteractionSystem_Branch_825A; 8246 F0 12                    ..
         cmp     #$00                            ; 8248 C9 00                    ..
-        beq     $8253                           ; 824A F0 07                    ..
+        beq     MapInteractionSystem_Branch_8253; 824A F0 07                    ..
         brk                                     ; 824C 00                       .
         db   $07,$6F,$11                     ; 824D 07 6F 11                 .o.
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Entry_84B6 ; 8250 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8253:
         brk                                     ; 8253 00                       .
         db   $07,$6F,$10                     ; 8254 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Entry_84B6 ; 8257 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_825A:
         jmp     UpperFixedEngine_Entry_D1F3     ; 825A 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-        db   $43,$06,$12,$00,$00,$14,$2F,$60 ; 825D 43 06 12 00 00 14 2F 60  C...../`
+        db   $43,$06,$12,$00                 ; 825D 43 06 12 00              C...
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_8261:
+        brk                                     ; 8261 00                       .
+        db   $14,$2F                         ; 8262 14 2F                    ./
+; ----------------------------------------------------------------------------
+        rts                                     ; 8264 60                       `
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_8265:
         brk                                     ; 8265 00                       .
         db   $07,$6F,$17                     ; 8266 07 6F 17                 .o.
 ; ----------------------------------------------------------------------------
-        bmi     $8292                           ; 8269 30 27                    0'
+        bmi     MapInteractionSystem_Branch_8292; 8269 30 27                    0'
         sta     $07B9                           ; 826B 8D B9 07                 ...
         tax                                     ; 826E AA                       .
         sta     $F9                             ; 826F 85 F9                    ..
@@ -314,7 +349,7 @@ MapInteractionSystem_Branch_823A:
         db   $2B,$73                         ; 8272 2B 73                    +s
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; 8274 C9 08                    ..
-        bcc     $8282                           ; 8276 90 0A                    ..
+        bcc     MapInteractionSystem_Branch_8282; 8276 90 0A                    ..
         brk                                     ; 8278 00                       .
         db   $07,$6F,$50                     ; 8279 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
@@ -323,20 +358,23 @@ MapInteractionSystem_Branch_823A:
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Entry_84B6 ; 827F 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8282:
         brk                                     ; 8282 00                       .
         db   $07,$6F,$FD                     ; 8283 07 6F FD                 .o.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8286:
         brk                                     ; 8286 00                       .
-        db   $09,$6F                         ; 8287 09 6F                    .o
+        db   $09,$6F,$19                     ; 8287 09 6F 19                 .o.
 ; ----------------------------------------------------------------------------
-        ora     $0900,y                         ; 8289 19 00 09                 ...
-        db   $6F                             ; 828C 6F                       o
+        brk                                     ; 828A 00                       .
+        db   $09,$6F,$1D                     ; 828B 09 6F 1D                 .o.
 ; ----------------------------------------------------------------------------
-        ora     $FFC9,x                         ; 828D 1D C9 FF                 ...
-        bne     $8295                           ; 8290 D0 03                    ..
+        cmp     #$FF                            ; 828E C9 FF                    ..
+        bne     MapInteractionSystem_Branch_8295; 8290 D0 03                    ..
+MapInteractionSystem_Branch_8292:
         jmp     UpperFixedEngine_Entry_D1F3     ; 8292 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8295:
         ldx     $07B9                           ; 8295 AE B9 07                 ...
         brk                                     ; 8298 00                       .
         db   $33,$73                         ; 8299 33 73                    3s
@@ -349,9 +387,10 @@ MapInteractionSystem_Branch_8286:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82A8:
         brk                                     ; 82A8 00                       .
-        ora     #$6F                            ; 82A9 09 6F                    .o
-        ora     $0900,y                         ; 82AB 19 00 09                 ...
-        db   $6F,$1C                         ; 82AE 6F 1C                    o.
+        db   $09,$6F,$19                     ; 82A9 09 6F 19                 .o.
+; ----------------------------------------------------------------------------
+        brk                                     ; 82AC 00                       .
+        db   $09,$6F,$1C                     ; 82AD 09 6F 1C                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 82B0 C9 FF                    ..
         beq     MapInteractionSystem_Branch_8286; 82B2 F0 D2                    ..
@@ -367,10 +406,10 @@ MapInteractionSystem_Branch_82A8:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82C7:
         brk                                     ; 82C7 00                       .
-        db   $09,$6F                         ; 82C8 09 6F                    .o
+        db   $09,$6F,$19                     ; 82C8 09 6F 19                 .o.
 ; ----------------------------------------------------------------------------
-        ora     $0900,y                         ; 82CA 19 00 09                 ...
-        db   $6F,$1B                         ; 82CD 6F 1B                    o.
+        brk                                     ; 82CB 00                       .
+        db   $09,$6F,$1B                     ; 82CC 09 6F 1B                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 82CF C9 FF                    ..
         beq     MapInteractionSystem_Branch_82A8; 82D1 F0 D5                    ..
@@ -386,10 +425,10 @@ MapInteractionSystem_Branch_82C7:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82E6:
         brk                                     ; 82E6 00                       .
-        db   $09,$6F                         ; 82E7 09 6F                    .o
+        db   $09,$6F,$19                     ; 82E7 09 6F 19                 .o.
 ; ----------------------------------------------------------------------------
-        ora     $0900,y                         ; 82E9 19 00 09                 ...
-        db   $6F,$1A                         ; 82EC 6F 1A                    o.
+        brk                                     ; 82EA 00                       .
+        db   $09,$6F,$1A                     ; 82EB 09 6F 1A                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; 82EE C9 FF                    ..
         beq     MapInteractionSystem_Branch_82C7; 82F0 F0 D5                    ..
@@ -398,17 +437,18 @@ MapInteractionSystem_Branch_82E6:
         db   $36,$73                         ; 82F6 36 73                    6s
 ; ----------------------------------------------------------------------------
         jsr     MapInteractionSystem_Entry_8308 ; 82F8 20 08 83                  ..
-        bpl     $8305                           ; 82FB 10 08                    ..
-        bcs     $8305                           ; 82FD B0 06                    ..
+        bpl     MapInteractionSystem_Branch_8305; 82FB 10 08                    ..
+        bcs     MapInteractionSystem_Branch_8305; 82FD B0 06                    ..
         jsr     MapInteractionSystem_Entry_832D ; 82FF 20 2D 83                  -.
         jmp     MapInteractionSystem_Branch_82E6; 8302 4C E6 82                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8305:
         jmp     UpperFixedEngine_Entry_D1F3     ; 8305 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8308:
         php                                     ; 8308 08                       .
         pha                                     ; 8309 48                       H
-        bmi     $832A                           ; 830A 30 1E                    0.
+        bmi     MapInteractionSystem_Branch_832A; 830A 30 1E                    0.
         php                                     ; 830C 08                       .
         and     #$7F                            ; 830D 29 7F                    ).
         sta     $F9                             ; 830F 85 F9                    ..
@@ -433,6 +473,7 @@ MapInteractionSystem_Branch_8321:
         brk                                     ; 8327 00                       .
         db   $09,$9F                         ; 8328 09 9F                    ..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_832A:
         pla                                     ; 832A 68                       h
         plp                                     ; 832B 28                       (
         rts                                     ; 832C 60                       `
@@ -450,7 +491,11 @@ MapInteractionSystem_Entry_832D:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8CC     ; 833D 4C CC C8                 L..
 ; ----------------------------------------------------------------------------
-        db   $4C,$F3,$B3,$4C,$A6,$B2         ; 8340 4C F3 B3 4C A6 B2        L..L..
+MapInteractionSystem_Entry_8340:
+        jmp     MapInteractionSystem_Entry_B3F3 ; 8340 4C F3 B3                 L..
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Entry_8343:
+        jmp     MapInteractionSystem_Entry_B2A6 ; 8343 4C A6 B2                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8346:
         jsr     MapInteractionSystem_Entry_83D9 ; 8346 20 D9 83                  ..
@@ -2195,26 +2240,28 @@ MapInteractionSystem_Entry_8F6B:
         lda     $6F40,x                         ; 8F6C BD 40 6F                 .@o
         and     #$7F                            ; 8F6F 29 7F                    ).
         cmp     #$20                            ; 8F71 C9 20                    .
-        bcc     $8F78                           ; 8F73 90 03                    ..
+        bcc     MapInteractionSystem_Branch_8F78; 8F73 90 03                    ..
         cmp     #$24                            ; 8F75 C9 24                    .$
         rts                                     ; 8F77 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_8F78:
         sec                                     ; 8F78 38                       8
         rts                                     ; 8F79 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8F7A:
         ldx     #$00                            ; 8F7A A2 00                    ..
+MapInteractionSystem_Branch_8F7C:
         jsr     MapInteractionSystem_Entry_8F85 ; 8F7C 20 85 8F                  ..
         inx                                     ; 8F7F E8                       .
         cpx     #$06                            ; 8F80 E0 06                    ..
-        bne     $8F7C                           ; 8F82 D0 F8                    ..
+        bne     MapInteractionSystem_Branch_8F7C; 8F82 D0 F8                    ..
         rts                                     ; 8F84 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8F85:
         txa                                     ; 8F85 8A                       .
         pha                                     ; 8F86 48                       H
         lda     $7020,x                         ; 8F87 BD 20 70                 . p
-        bmi     $8FA2                           ; 8F8A 30 16                    0.
+        bmi     MapInteractionSystem_Branch_8FA2; 8F8A 30 16                    0.
         lda     $7000,x                         ; 8F8C BD 00 70                 ..p
         and     #$3C                            ; 8F8F 29 3C                    )<
         jsr     UpperFixedEngine_Entry_C78C     ; 8F91 20 8C C7                  ..
@@ -2223,6 +2270,7 @@ MapInteractionSystem_Entry_8F85:
         sta     $0204,y                         ; 8F99 99 04 02                 ...
         sta     $0208,y                         ; 8F9C 99 08 02                 ...
         sta     $020C,y                         ; 8F9F 99 0C 02                 ...
+MapInteractionSystem_Branch_8FA2:
         pla                                     ; 8FA2 68                       h
         tax                                     ; 8FA3 AA                       .
         rts                                     ; 8FA4 60                       `
@@ -2594,9 +2642,10 @@ MapInteractionSystem_Branch_91CC:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_91E1:
         ldx     #$00                            ; 91E1 A2 00                    ..
+MapInteractionSystem_Branch_91E3:
         lda     $9236,x                         ; 91E3 BD 36 92                 .6.
         cmp     #$FF                            ; 91E6 C9 FF                    ..
-        beq     $9219                           ; 91E8 F0 2F                    ./
+        beq     MapInteractionSystem_Branch_9219; 91E8 F0 2F                    ./
         cmp     CurrentMapNumber                ; 91EA C5 63                    .c
         bne     MapInteractionSystem_Branch_9211; 91EC D0 23                    .#
         lda     $9237,x                         ; 91EE BD 37 92                 .7.
@@ -2620,8 +2669,9 @@ MapInteractionSystem_Branch_9211:
         clc                                     ; 9212 18                       .
         adc     #$06                            ; 9213 69 06                    i.
         tax                                     ; 9215 AA                       .
-        jmp     $91E3                           ; 9216 4C E3 91                 L..
+        jmp     MapInteractionSystem_Branch_91E3; 9216 4C E3 91                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9219:
         lda     CurrentMapNumber                ; 9219 A5 63                    .c
         cmp     #$21                            ; 921B C9 21                    .!
         bne     MapInteractionSystem_Branch_9232; 921D D0 13                    ..
@@ -3011,18 +3061,30 @@ MapInteractionSystem_Branch_951B:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_951C:
         brk                                     ; 951C 00                       .
-        db   $1D,$EB                         ; 951D 1D EB                    ..
+        db   $1D,$EB,$20                     ; 951D 1D EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $1DF0                           ; 951F 20 F0 1D                  ..
+        beq     MapInteractionSystem_Branch_953F; 9520 F0 1D                    ..
         lda     $6299                           ; 9522 AD 99 62                 ..b
         bpl     MapInteractionSystem_Branch_953F; 9525 10 18                    ..
         and     #$3F                            ; 9527 29 3F                    )?
         brk                                     ; 9529 00                       .
-        db   $1E,$DB                         ; 952A 1E DB                    ..
+        db   $1E,$DB,$00                     ; 952A 1E DB 00                 ...
 ; ----------------------------------------------------------------------------
-        brk                                     ; 952C 00                       .
-        db   $48,$00,$6F,$33,$68,$48,$00,$52 ; 952D 48 00 6F 33 68 48 00 52  H.o3hH.R
-        db   $73,$68,$00,$26,$2F,$90,$03,$00 ; 9535 73 68 00 26 2F 90 03 00  sh.&/...
+        pha                                     ; 952D 48                       H
+        brk                                     ; 952E 00                       .
+        db   $6F,$33                         ; 952F 6F 33                    o3
+; ----------------------------------------------------------------------------
+        pla                                     ; 9531 68                       h
+        pha                                     ; 9532 48                       H
+        brk                                     ; 9533 00                       .
+        db   $52,$73                         ; 9534 52 73                    Rs
+; ----------------------------------------------------------------------------
+        pla                                     ; 9536 68                       h
+        brk                                     ; 9537 00                       .
+        db   $26,$2F                         ; 9538 26 2F                    &/
+; ----------------------------------------------------------------------------
+        bcc     MapInteractionSystem_Branch_953F; 953A 90 03                    ..
+        brk                                     ; 953C 00                       .
         db   $5F,$73                         ; 953D 5F 73                    _s
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_953F:
@@ -3064,8 +3126,9 @@ MapInteractionSystem_Entry_9567:
         bne     MapInteractionSystem_Branch_9575; 956D D0 06                    ..
 MapInteractionSystem_Entry_956F:
         brk                                     ; 956F 00                       .
-        db   $20,$DB,$7F,$A9,$0D             ; 9570 20 DB 7F A9 0D            ....
+        db   $20,$DB,$7F                     ; 9570 20 DB 7F                  ..
 ; ----------------------------------------------------------------------------
+        lda     #$0D                            ; 9573 A9 0D                    ..
 MapInteractionSystem_Branch_9575:
         brk                                     ; 9575 00                       .
         db   $63,$73                         ; 9576 63 73                    cs
@@ -3113,6 +3176,7 @@ MapInteractionSystem_Entry_95A9:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_95B7:
         ldx     #$03                            ; 95B7 A2 03                    ..
+MapInteractionSystem_Branch_95B9:
         txa                                     ; 95B9 8A                       .
         sta     $6FE0,x                         ; 95BA 9D E0 6F                 ..o
         lda     $058F                           ; 95BD AD 8F 05                 ...
@@ -3130,14 +3194,14 @@ MapInteractionSystem_Entry_95B7:
         ora     $70E0,x                         ; 95D5 1D E0 70                 ..p
         sta     $70E0,x                         ; 95D8 9D E0 70                 ..p
         dex                                     ; 95DB CA                       .
-        bpl     $95B9                           ; 95DC 10 DB                    ..
+        bpl     MapInteractionSystem_Branch_95B9; 95DC 10 DB                    ..
         brk                                     ; 95DE 00                       .
         db   $62,$23,$40                     ; 95DF 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
         sta     $51                             ; 95E2 85 51                    .Q
-        beq     MapInteractionSystem_Branch_9627; 95E4 F0 41                    .A
+        beq     MapInteractionSystem_Entry_9627 ; 95E4 F0 41                    .A
         dec     $51                             ; 95E6 C6 51                    .Q
-        beq     MapInteractionSystem_Branch_9627; 95E8 F0 3D                    .=
+        beq     MapInteractionSystem_Entry_9627 ; 95E8 F0 3D                    .=
         ldx     #$00                            ; 95EA A2 00                    ..
         ldy     #$00                            ; 95EC A0 00                    ..
 MapInteractionSystem_Branch_95EE:
@@ -3171,28 +3235,32 @@ MapInteractionSystem_Branch_9613:
 MapInteractionSystem_Branch_961E:
         iny                                     ; 961E C8                       .
         cpx     $51                             ; 961F E4 51                    .Q
-        beq     MapInteractionSystem_Branch_9627; 9621 F0 04                    ..
+        beq     MapInteractionSystem_Entry_9627 ; 9621 F0 04                    ..
         inx                                     ; 9623 E8                       .
         jmp     MapInteractionSystem_Branch_95EE; 9624 4C EE 95                 L..
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Branch_9627:
+MapInteractionSystem_Entry_9627:
         ldy     #$00                            ; 9627 A0 00                    ..
+MapInteractionSystem_Branch_9629:
         sty     $51                             ; 9629 84 51                    .Q
         ldx     #$00                            ; 962B A2 00                    ..
+MapInteractionSystem_Branch_962D:
         lda     $6FE0,x                         ; 962D BD E0 6F                 ..o
         cmp     $51                             ; 9630 C5 51                    .Q
-        beq     $963C                           ; 9632 F0 08                    ..
+        beq     MapInteractionSystem_Branch_963C; 9632 F0 08                    ..
         inx                                     ; 9634 E8                       .
         cmp     #$06                            ; 9635 C9 06                    ..
-        beq     $9642                           ; 9637 F0 09                    ..
-        jmp     $962D                           ; 9639 4C 2D 96                 L-.
+        beq     MapInteractionSystem_Branch_9642; 9637 F0 09                    ..
+        jmp     MapInteractionSystem_Branch_962D; 9639 4C 2D 96                 L-.
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_963C:
         ldy     $51                             ; 963C A4 51                    .Q
         txa                                     ; 963E 8A                       .
         sta     $053A,y                         ; 963F 99 3A 05                 .:.
+MapInteractionSystem_Branch_9642:
         iny                                     ; 9642 C8                       .
         cpy     #$04                            ; 9643 C0 04                    ..
-        bne     $9629                           ; 9645 D0 E2                    ..
+        bne     MapInteractionSystem_Branch_9629; 9645 D0 E2                    ..
         rts                                     ; 9647 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9648:
@@ -3240,29 +3308,33 @@ MapInteractionSystem_Branch_9680:
 MapInteractionSystem_Branch_9683:
         lda     $6BE7,x                         ; 9683 BD E7 6B                 ..k
         and     #$C0                            ; 9686 29 C0                    ).
-        bne     $96AB                           ; 9688 D0 21                    .!
+        bne     MapInteractionSystem_Branch_96AB; 9688 D0 21                    .!
         lda     SaveTransformSteps              ; 968A AD 96 62                 ..b
-        beq     $9695                           ; 968D F0 06                    ..
+        beq     MapInteractionSystem_Branch_9695; 968D F0 06                    ..
         lda     SaveTransformShape              ; 968F AD 97 62                 ..b
         and     #$7F                            ; 9692 29 7F                    ).
         rts                                     ; 9694 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9695:
         brk                                     ; 9695 00                       .
         db   $2B,$73                         ; 9696 2B 73                    +s
 ; ----------------------------------------------------------------------------
-        beq     $96AE                           ; 9698 F0 14                    ..
+        beq     MapInteractionSystem_Branch_96AE; 9698 F0 14                    ..
 L969B = $+ 1
         cmp     #$08                            ; 969A C9 08                    ..
-        bcc     $96A2                           ; 969C 90 04                    ..
+        bcc     MapInteractionSystem_Branch_96A2; 969C 90 04                    ..
         tay                                     ; 969E A8                       .
         lda     $969B,y                         ; 969F B9 9B 96                 ...
+MapInteractionSystem_Branch_96A2:
         rts                                     ; 96A2 60                       `
 ; ----------------------------------------------------------------------------
         db   $3D,$19,$12,$11,$4C,$3B,$2F,$3E ; 96A3 3D 19 12 11 4C 3B 2F 3E  =...L;/>
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_96AB:
         lda     #$0E                            ; 96AB A9 0E                    ..
         rts                                     ; 96AD 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_96AE:
         brk                                     ; 96AE 00                       .
         db   $29,$73                         ; 96AF 29 73                    )s
 ; ----------------------------------------------------------------------------
@@ -3464,20 +3536,23 @@ MapInteractionSystem_Entry_9825:
         lda     $07BA                           ; 9825 AD BA 07                 ...
         and     #$7F                            ; 9828 29 7F                    ).
         cmp     #$02                            ; 982A C9 02                    ..
-        bcs     $9845                           ; 982C B0 17                    ..
+        bcs     MapInteractionSystem_Branch_9845; 982C B0 17                    ..
         ldx     #$00                            ; 982E A2 00                    ..
+MapInteractionSystem_Branch_9830:
         lda     $6BE7,x                         ; 9830 BD E7 6B                 ..k
-        bmi     $9845                           ; 9833 30 10                    0.
+        bmi     MapInteractionSystem_Branch_9845; 9833 30 10                    0.
         and     #$20                            ; 9835 29 20                    )
-        beq     $9840                           ; 9837 F0 07                    ..
+        beq     MapInteractionSystem_Branch_9840; 9837 F0 07                    ..
         txa                                     ; 9839 8A                       .
         pha                                     ; 983A 48                       H
         jsr     MapInteractionSystem_Entry_991F ; 983B 20 1F 99                  ..
         pla                                     ; 983E 68                       h
         tax                                     ; 983F AA                       .
+MapInteractionSystem_Branch_9840:
         inx                                     ; 9840 E8                       .
         cpx     #$04                            ; 9841 E0 04                    ..
-        bcc     $9830                           ; 9843 90 EB                    ..
+        bcc     MapInteractionSystem_Branch_9830; 9843 90 EB                    ..
+MapInteractionSystem_Branch_9845:
         rts                                     ; 9845 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9846:
@@ -3582,7 +3657,7 @@ MapInteractionSystem_Branch_98FB:
 MapInteractionSystem_Entry_9902:
         lda     $6BE7,x                         ; 9902 BD E7 6B                 ..k
         and     #$20                            ; 9905 29 20                    )
-        beq     $991E                           ; 9907 F0 15                    ..
+        beq     MapInteractionSystem_Branch_991E; 9907 F0 15                    ..
         txa                                     ; 9909 8A                       .
         pha                                     ; 990A 48                       H
         jsr     UpperFixedEngine_Entry_C891     ; 990B 20 91 C8                  ..
@@ -3598,6 +3673,7 @@ MapInteractionSystem_Entry_9902:
 MapInteractionSystem_Branch_991C:
         pla                                     ; 991C 68                       h
         tax                                     ; 991D AA                       .
+MapInteractionSystem_Branch_991E:
         rts                                     ; 991E 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_991F:
@@ -3659,9 +3735,10 @@ MapInteractionSystem_Entry_997F:
         ldx     #$04                            ; 997F A2 04                    ..
         lda     #$03                            ; 9981 A9 03                    ..
         jsr     MapInteractionSystem_Entry_B157 ; 9983 20 57 B1                  W.
-        bcc     $998A                           ; 9986 90 02                    ..
+        bcc     MapInteractionSystem_Branch_998A; 9986 90 02                    ..
         inx                                     ; 9988 E8                       .
         inx                                     ; 9989 E8                       .
+MapInteractionSystem_Branch_998A:
         stx     $58                             ; 998A 86 58                    .X
         ldx     #$00                            ; 998C A2 00                    ..
         stx     $59                             ; 998E 86 59                    .Y
@@ -3679,7 +3756,7 @@ MapInteractionSystem_Branch_9990:
         inc     $59                             ; 99A6 E6 59                    .Y
         inx                                     ; 99A8 E8                       .
         cpx     $58                             ; 99A9 E4 58                    .X
-        beq     $99BC                           ; 99AB F0 0F                    ..
+        beq     MapInteractionSystem_Branch_99BC; 99AB F0 0F                    ..
         cpx     #$01                            ; 99AD E0 01                    ..
         bne     MapInteractionSystem_Branch_9990; 99AF D0 DF                    ..
         lda     $58                             ; 99B1 A5 58                    .X
@@ -3688,6 +3765,7 @@ MapInteractionSystem_Branch_9990:
         ldx     #$03                            ; 99B7 A2 03                    ..
         jmp     MapInteractionSystem_Branch_9990; 99B9 4C 90 99                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_99BC:
         rts                                     ; 99BC 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_99BD:
@@ -3758,7 +3836,7 @@ MapInteractionSystem_Branch_9A2B:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9A30:
         lda     $51                             ; 9A30 A5 51                    .Q
-        beq     $9A45                           ; 9A32 F0 11                    ..
+        beq     MapInteractionSystem_Branch_9A45; 9A32 F0 11                    ..
         sta     $6F                             ; 9A34 85 6F                    .o
         lda     #$00                            ; 9A36 A9 00                    ..
         jsr     MapInteractionSystem_Entry_B157 ; 9A38 20 57 B1                  W.
@@ -3767,8 +3845,9 @@ MapInteractionSystem_Entry_9A30:
 MapInteractionSystem_Entry_9A3C:
         lda     $6BE7,x                         ; 9A3C BD E7 6B                 ..k
         and     #$02                            ; 9A3F 29 02                    ).
-        beq     $9A45                           ; 9A41 F0 02                    ..
+        beq     MapInteractionSystem_Branch_9A45; 9A41 F0 02                    ..
         inc     $51                             ; 9A43 E6 51                    .Q
+MapInteractionSystem_Branch_9A45:
         rts                                     ; 9A45 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9A46:
@@ -3794,13 +3873,14 @@ MapInteractionSystem_Entry_9A60:
         and     #$03                            ; 9A63 29 03                    ).
         bne     MapInteractionSystem_Branch_9A84; 9A65 D0 1D                    ..
         lda     $41                             ; 9A67 A5 41                    .A
-        bpl     $9A78                           ; 9A69 10 0D                    ..
+        bpl     MapInteractionSystem_Branch_9A78; 9A69 10 0D                    ..
         lda     $07BA                           ; 9A6B AD BA 07                 ...
         and     #$7F                            ; 9A6E 29 7F                    ).
         cmp     #$04                            ; 9A70 C9 04                    ..
         bcc     MapInteractionSystem_Branch_9A84; 9A72 90 10                    ..
         cmp     #$07                            ; 9A74 C9 07                    ..
         beq     MapInteractionSystem_Branch_9A84; 9A76 F0 0C                    ..
+MapInteractionSystem_Branch_9A78:
         lda     $6BE7,x                         ; 9A78 BD E7 6B                 ..k
         lsr     a                               ; 9A7B 4A                       J
         bcc     MapInteractionSystem_Branch_9A84; 9A7C 90 06                    ..
@@ -3812,7 +3892,7 @@ MapInteractionSystem_Branch_9A84:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9A85:
         lda     $53                             ; 9A85 A5 53                    .S
-        beq     $9AC9                           ; 9A87 F0 40                    .@
+        beq     MapInteractionSystem_Branch_9AC9; 9A87 F0 40                    .@
         jsr     WaitForNmi                      ; 9A89 20 74 FF                  t.
         ldy     #$16                            ; 9A8C A0 16                    ..
         lda     $53                             ; 9A8E A5 53                    .S
@@ -3853,12 +3933,13 @@ MapInteractionSystem_Branch_9AB4:
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_C5B9     ; 9AC3 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 9AC6 20 74 FF                  t.
+MapInteractionSystem_Branch_9AC9:
         rts                                     ; 9AC9 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9ACA:
         lda     $54,x                           ; 9ACA B5 54                    .T
         cmp     #$01                            ; 9ACC C9 01                    ..
-        bne     $9AEA                           ; 9ACE D0 1A                    ..
+        bne     MapInteractionSystem_Branch_9AEA; 9ACE D0 1A                    ..
         lda     $627F                           ; 9AD0 AD 7F 62                 ..b
         and     #$DF                            ; 9AD3 29 DF                    ).
         sta     $627F                           ; 9AD5 8D 7F 62                 ..b
@@ -3873,6 +3954,7 @@ MapInteractionSystem_Entry_9ACA:
         inc     $60                             ; 9AE7 E6 60                    .`
         rts                                     ; 9AE9 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9AEA:
         cmp     #$02                            ; 9AEA C9 02                    ..
         bne     MapInteractionSystem_Branch_9B07; 9AEC D0 19                    ..
         lda     $627F                           ; 9AEE AD 7F 62                 ..b
@@ -3893,36 +3975,41 @@ MapInteractionSystem_Branch_9B07:
 MapInteractionSystem_Entry_9B08:
         lda     $0518                           ; 9B08 AD 18 05                 ...
         and     #$03                            ; 9B0B 29 03                    ).
-        bne     $9B1B                           ; 9B0D D0 0C                    ..
+        bne     MapInteractionSystem_Branch_9B1B; 9B0D D0 0C                    ..
         lda     $6BE7,x                         ; 9B0F BD E7 6B                 ..k
         and     #$08                            ; 9B12 29 08                    ).
-        beq     $9B1B                           ; 9B14 F0 05                    ..
+        beq     MapInteractionSystem_Branch_9B1B; 9B14 F0 05                    ..
         lda     #$04                            ; 9B16 A9 04                    ..
         jsr     MapInteractionSystem_Entry_B157 ; 9B18 20 57 B1                  W.
+MapInteractionSystem_Branch_9B1B:
         rts                                     ; 9B1B 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9B1C:
         ldx     #$03                            ; 9B1C A2 03                    ..
         lda     #$FF                            ; 9B1E A9 FF                    ..
+MapInteractionSystem_Branch_9B20:
         sta     $053E,x                         ; 9B20 9D 3E 05                 .>.
         dex                                     ; 9B23 CA                       .
-        bpl     $9B20                           ; 9B24 10 FA                    ..
+        bpl     MapInteractionSystem_Branch_9B20; 9B24 10 FA                    ..
         ldx     #$00                            ; 9B26 A2 00                    ..
         stx     $51                             ; 9B28 86 51                    .Q
+MapInteractionSystem_Branch_9B2A:
         lda     $6BE7,x                         ; 9B2A BD E7 6B                 ..k
-        bmi     $9B43                           ; 9B2D 30 14                    0.
+        bmi     MapInteractionSystem_Branch_9B43; 9B2D 30 14                    0.
         lda     #$02                            ; 9B2F A9 02                    ..
         jsr     MapInteractionSystem_Entry_B157 ; 9B31 20 57 B1                  W.
-        bcc     $9B3E                           ; 9B34 90 08                    ..
+        bcc     MapInteractionSystem_Branch_9B3E; 9B34 90 08                    ..
         ldy     $51                             ; 9B36 A4 51                    .Q
         txa                                     ; 9B38 8A                       .
         sta     $053E,y                         ; 9B39 99 3E 05                 .>.
         inc     $51                             ; 9B3C E6 51                    .Q
+MapInteractionSystem_Branch_9B3E:
         inx                                     ; 9B3E E8                       .
         cpx     #$04                            ; 9B3F E0 04                    ..
-        bne     $9B2A                           ; 9B41 D0 E7                    ..
+        bne     MapInteractionSystem_Branch_9B2A; 9B41 D0 E7                    ..
+MapInteractionSystem_Branch_9B43:
         lda     $51                             ; 9B43 A5 51                    .Q
-        beq     $9BB0                           ; 9B45 F0 69                    .i
+        beq     MapInteractionSystem_Branch_9BB0; 9B45 F0 69                    .i
         ldx     #$00                            ; 9B47 A2 00                    ..
         stx     $0542                           ; 9B49 8E 42 05                 .B.
 MapInteractionSystem_Branch_9B4C:
@@ -3984,6 +4071,7 @@ MapInteractionSystem_Branch_9B99:
 MapInteractionSystem_Branch_9BAD:
         jmp     UpperFixedEngine_Entry_D20A     ; 9BAD 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9BB0:
         rts                                     ; 9BB0 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_9BB1:
@@ -4445,7 +4533,7 @@ MapInteractionSystem_Branch_9EC4:
         clc                                     ; 9ECB 18                       .
         adc     #$09                            ; 9ECC 69 09                    i.
         cmp     #$12                            ; 9ECE C9 12                    ..
-        bcs     $9EE1                           ; 9ED0 B0 0F                    ..
+        bcs     MapInteractionSystem_Branch_9EE1; 9ED0 B0 0F                    ..
         sta     $02                             ; 9ED2 85 02                    ..
         lda     $03                             ; 9ED4 A5 03                    ..
         sec                                     ; 9ED6 38                       8
@@ -4453,10 +4541,12 @@ MapInteractionSystem_Branch_9EC4:
         clc                                     ; 9EDA 18                       .
         adc     #$07                            ; 9EDB 69 07                    i.
         cmp     #$0F                            ; 9EDD C9 0F                    ..
-        bcc     $9EE3                           ; 9EDF 90 02                    ..
+        bcc     MapInteractionSystem_Branch_9EE3; 9EDF 90 02                    ..
+MapInteractionSystem_Branch_9EE1:
         pla                                     ; 9EE1 68                       h
         rts                                     ; 9EE2 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9EE3:
         sta     $60                             ; 9EE3 85 60                    .`
         asl     a                               ; 9EE5 0A                       .
         sta     $01                             ; 9EE6 85 01                    ..
@@ -4476,12 +4566,13 @@ MapInteractionSystem_Branch_9EFD:
         sta     $5F                             ; 9EFD 85 5F                    ._
         dec     $5F                             ; 9EFF C6 5F                    ._
         cmp     #$0F                            ; 9F01 C9 0F                    ..
-        bcs     $9F0C                           ; 9F03 B0 07                    ..
+        bcs     MapInteractionSystem_Branch_9F0C; 9F03 B0 07                    ..
         brk                                     ; 9F05 00                       .
         db   $0B,$6F                         ; 9F06 0B 6F                    .o
 ; ----------------------------------------------------------------------------
-        bcs     $9EE1                           ; 9F08 B0 D7                    ..
+        bcs     MapInteractionSystem_Branch_9EE1; 9F08 B0 D7                    ..
         lda     $5F                             ; 9F0A A5 5F                    ._
+MapInteractionSystem_Branch_9F0C:
         asl     a                               ; 9F0C 0A                       .
         sec                                     ; 9F0D 38                       8
         sbc     #$02                            ; 9F0E E9 02                    ..
@@ -4490,7 +4581,7 @@ MapInteractionSystem_Branch_9EFD:
         pha                                     ; 9F13 48                       H
         and     #$E0                            ; 9F14 29 E0                    ).
         cmp     $46                             ; 9F16 C5 46                    .F
-        bne     $9EE1                           ; 9F18 D0 C7                    ..
+        bne     MapInteractionSystem_Branch_9EE1; 9F18 D0 C7                    ..
         pla                                     ; 9F1A 68                       h
         and     #$1F                            ; 9F1B 29 1F                    ).
         pha                                     ; 9F1D 48                       H
@@ -4552,9 +4643,11 @@ MapInteractionSystem_Branch_9F6F:
         sta     $4A                             ; 9F75 85 4A                    .J
         lda     $40                             ; 9F77 A5 40                    .@
         sta     $01                             ; 9F79 85 01                    ..
+MapInteractionSystem_Branch_9F7B:
         ldy     #$00                            ; 9F7B A0 00                    ..
         lda     $3F                             ; 9F7D A5 3F                    .?
         sta     $00                           ; 9F7F 85 00                    ..
+MapInteractionSystem_Branch_9F81:
         lda     ($49),y                         ; 9F81 B1 49                    .I
         pha                                     ; 9F83 48                       H
         and     #$E0                            ; 9F84 29 E0                    ).
@@ -4564,56 +4657,65 @@ MapInteractionSystem_Branch_9F6F:
         tax                                     ; 9F8B AA                       .
         lda     $6F20,x                         ; 9F8C BD 20 6F                 . o
         and     #$07                            ; 9F8F 29 07                    ).
-        beq     $9F97                           ; 9F91 F0 04                    ..
+        beq     MapInteractionSystem_Branch_9F97; 9F91 F0 04                    ..
         cmp     #$04                            ; 9F93 C9 04                    ..
-        bcc     $9FA6                           ; 9F95 90 0F                    ..
+        bcc     MapInteractionSystem_Branch_9FA6; 9F95 90 0F                    ..
+MapInteractionSystem_Branch_9F97:
         iny                                     ; 9F97 C8                       .
         dec     $00                           ; 9F98 C6 00                    ..
-        bne     $9F81                           ; 9F9A D0 E5                    ..
+        bne     MapInteractionSystem_Branch_9F81; 9F9A D0 E5                    ..
         jsr     UpperFixedEngine_Entry_E66F     ; 9F9C 20 6F E6                  o.
         dec     $01                             ; 9F9F C6 01                    ..
-        bne     $9F7B                           ; 9FA1 D0 D8                    ..
-        jmp     $A02B                           ; 9FA3 4C 2B A0                 L+.
+        bne     MapInteractionSystem_Branch_9F7B; 9FA1 D0 D8                    ..
+        jmp     MapInteractionSystem_Branch_A02B; 9FA3 4C 2B A0                 L+.
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9FA6:
         sta     $05                             ; 9FA6 85 05                    ..
         jsr     UpperFixedEngine_Entry_E66F     ; 9FA8 20 6F E6                  o.
         lda     $01                             ; 9FAB A5 01                    ..
         cmp     #$01                            ; 9FAD C9 01                    ..
-        bne     $9FB7                           ; 9FAF D0 06                    ..
+        bne     MapInteractionSystem_Branch_9FB7; 9FAF D0 06                    ..
         lda     $0520                           ; 9FB1 AD 20 05                 . .
-        jmp     $9FE7                           ; 9FB4 4C E7 9F                 L..
+        jmp     MapInteractionSystem_Branch_9FE7; 9FB4 4C E7 9F                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9FB7:
         lda     ($49),y                         ; 9FB7 B1 49                    .I
         sta     $07                             ; 9FB9 85 07                    ..
         and     #$E0                            ; 9FBB 29 E0                    ).
         cmp     $06                             ; 9FBD C5 06                    ..
         beq     MapInteractionSystem_Branch_9FE5; 9FBF F0 24                    .$
         ldx     #$00                            ; 9FC1 A2 00                    ..
+MapInteractionSystem_Branch_9FC3:
         lda     $A016,x                         ; 9FC3 BD 16 A0                 ...
-        bmi     $9FD0                           ; 9FC6 30 08                    0.
+        bmi     MapInteractionSystem_Branch_9FD0; 9FC6 30 08                    0.
         cmp     $28                             ; 9FC8 C5 28                    .(
-        beq     $A007                           ; 9FCA F0 3B                    .;
+        beq     MapInteractionSystem_Branch_A007; 9FCA F0 3B                    .;
         inx                                     ; 9FCC E8                       .
-        jmp     $9FC3                           ; 9FCD 4C C3 9F                 L..
+        jmp     MapInteractionSystem_Branch_9FC3; 9FCD 4C C3 9F                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9FD0:
         ldx     #$00                            ; 9FD0 A2 00                    ..
+MapInteractionSystem_Branch_9FD2:
         lda     $A01C,x                         ; 9FD2 BD 1C A0                 ...
-        bmi     $9FDF                           ; 9FD5 30 08                    0.
+        bmi     MapInteractionSystem_Branch_9FDF; 9FD5 30 08                    0.
         cmp     $28                             ; 9FD7 C5 28                    .(
-        beq     $9FF1                           ; 9FD9 F0 16                    ..
+        beq     MapInteractionSystem_Branch_9FF1; 9FD9 F0 16                    ..
         inx                                     ; 9FDB E8                       .
-        jmp     $9FD2                           ; 9FDC 4C D2 9F                 L..
+        jmp     MapInteractionSystem_Branch_9FD2; 9FDC 4C D2 9F                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_9FDF:
         lda     $06                             ; 9FDF A5 06                    ..
-        beq     $A010                           ; 9FE1 F0 2D                    .-
-        bne     $9FF1                           ; 9FE3 D0 0C                    ..
+        beq     MapInteractionSystem_Branch_A010; 9FE1 F0 2D                    .-
+        bne     MapInteractionSystem_Branch_9FF1; 9FE3 D0 0C                    ..
 MapInteractionSystem_Branch_9FE5:
         lda     $07                             ; 9FE5 A5 07                    ..
+MapInteractionSystem_Branch_9FE7:
         and     #$1F                            ; 9FE7 29 1F                    ).
         tax                                     ; 9FE9 AA                       .
         lda     $6F20,x                         ; 9FEA BD 20 6F                 . o
         and     #$07                            ; 9FED 29 07                    ).
-        bne     $A010                           ; 9FEF D0 1F                    ..
+        bne     MapInteractionSystem_Branch_A010; 9FEF D0 1F                    ..
+MapInteractionSystem_Branch_9FF1:
         jsr     UpperFixedEngine_Entry_E67B     ; 9FF1 20 7B E6                  {.
         lda     $05                             ; 9FF4 A5 05                    ..
         and     #$03                            ; 9FF6 29 03                    ).
@@ -4624,32 +4726,38 @@ MapInteractionSystem_Branch_9FE5:
         and     #$E0                            ; 9FFE 29 E0                    ).
         ora     $02,x                           ; A000 15 02                    ..
         sta     ($49),y                         ; A002 91 49                    .I
-        jmp     $9F97                           ; A004 4C 97 9F                 L..
+        jmp     MapInteractionSystem_Branch_9F97; A004 4C 97 9F                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A007:
         lda     $07                             ; A007 A5 07                    ..
         and     #$1F                            ; A009 29 1F                    ).
         cmp     $0520                           ; A00B CD 20 05                 . .
         beq     MapInteractionSystem_Branch_9FE5; A00E F0 D5                    ..
+MapInteractionSystem_Branch_A010:
         jsr     UpperFixedEngine_Entry_E67B     ; A010 20 7B E6                  {.
-        jmp     $9F97                           ; A013 4C 97 9F                 L..
+        jmp     MapInteractionSystem_Branch_9F97; A013 4C 97 9F                 L..
 ; ----------------------------------------------------------------------------
         db   $25,$26,$27,$28,$2B,$FF         ; A016 25 26 27 28 2B FF        %&'(+.
         db   $10,$11,$12,$13,$14,$15,$16,$17 ; A01C 10 11 12 13 14 15 16 17  ........
         db   $18,$19,$1A,$1D,$29,$2A,$FF     ; A024 18 19 1A 1D 29 2A FF     ....)*.
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A02B:
         plp                                     ; A02B 28                       (
-        bcc     $A045                           ; A02C 90 17                    ..
+        bcc     MapInteractionSystem_Branch_A045; A02C 90 17                    ..
 MapInteractionSystem_Entry_A02E:
         ldx     $0520                           ; A02E AE 20 05                 . .
         lda     #$FF                            ; A031 A9 FF                    ..
         sta     $6E5E,x                         ; A033 9D 5E 6E                 .^n
         ldx     #$00                            ; A036 A2 00                    ..
+MapInteractionSystem_Branch_A038:
         lda     $6E5E,x                         ; A038 BD 5E 6E                 .^n
-        beq     $A042                           ; A03B F0 05                    ..
+        beq     MapInteractionSystem_Branch_A042; A03B F0 05                    ..
         inx                                     ; A03D E8                       .
         cpx     #$20                            ; A03E E0 20                    .
-        bcc     $A038                           ; A040 90 F6                    ..
+        bcc     MapInteractionSystem_Branch_A038; A040 90 F6                    ..
+MapInteractionSystem_Branch_A042:
         stx     $0572                           ; A042 8E 72 05                 .r.
+MapInteractionSystem_Branch_A045:
         rts                                     ; A045 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A046:
@@ -4719,6 +4827,7 @@ MapInteractionSystem_Entry_A0A7:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A0B1:
         ldy     #$00                            ; A0B1 A0 00                    ..
+MapInteractionSystem_Branch_A0B3:
         lda     ($49),y                         ; A0B3 B1 49                    .I
         and     #$1F                            ; A0B5 29 1F                    ).
         tax                                     ; A0B7 AA                       .
@@ -4727,18 +4836,19 @@ MapInteractionSystem_Entry_A0B1:
         cmp     #$14                            ; A0BD C9 14                    ..
         bcc     MapInteractionSystem_Branch_A0C5; A0BF 90 04                    ..
         cmp     #$24                            ; A0C1 C9 24                    .$
-        bcc     $A0D6                           ; A0C3 90 11                    ..
+        bcc     MapInteractionSystem_Branch_A0D6; A0C3 90 11                    ..
 MapInteractionSystem_Branch_A0C5:
         dec     $49                             ; A0C5 C6 49                    .I
         lda     $49                             ; A0C7 A5 49                    .I
         cmp     #$FF                            ; A0C9 C9 FF                    ..
-        bne     $A0B3                           ; A0CB D0 E6                    ..
+        bne     MapInteractionSystem_Branch_A0B3; A0CB D0 E6                    ..
         dec     $4A                             ; A0CD C6 4A                    .J
         lda     $4A                             ; A0CF A5 4A                    .J
         cmp     #$78                            ; A0D1 C9 78                    .x
-        bcs     $A0B3                           ; A0D3 B0 DE                    ..
+        bcs     MapInteractionSystem_Branch_A0B3; A0D3 B0 DE                    ..
         rts                                     ; A0D5 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A0D6:
         ldx     #$00                            ; A0D6 A2 00                    ..
 MapInteractionSystem_Branch_A0D8:
         lda     $6C0C,x                         ; A0D8 BD 0C 6C                 ..l
@@ -4850,24 +4960,27 @@ MapInteractionSystem_Branch_A184:
         sta     $4C                             ; A18D 85 4C                    .L
         ldy     #$00                            ; A18F A0 00                    ..
         sty     $00                           ; A191 84 00                    ..
+MapInteractionSystem_Branch_A193:
         lda     ($4B),y                         ; A193 B1 4B                    .K
         and     #$1F                            ; A195 29 1F                    ).
         tax                                     ; A197 AA                       .
         lda     $6F40,x                         ; A198 BD 40 6F                 .@o
         cmp     #$04                            ; A19B C9 04                    ..
-        beq     $A1B2                           ; A19D F0 13                    ..
+        beq     MapInteractionSystem_Branch_A1B2; A19D F0 13                    ..
 MapInteractionSystem_Branch_A19F:
         inc     $4B                             ; A19F E6 4B                    .K
-        bne     $A1A5                           ; A1A1 D0 02                    ..
+        bne     MapInteractionSystem_Branch_A1A5; A1A1 D0 02                    ..
         inc     $4C                             ; A1A3 E6 4C                    .L
+MapInteractionSystem_Branch_A1A5:
         lda     $4B                             ; A1A5 A5 4B                    .K
         cmp     $49                             ; A1A7 C5 49                    .I
-        bne     $A193                           ; A1A9 D0 E8                    ..
+        bne     MapInteractionSystem_Branch_A193; A1A9 D0 E8                    ..
         lda     $4C                             ; A1AB A5 4C                    .L
         cmp     $4A                             ; A1AD C5 4A                    .J
-        bne     $A193                           ; A1AF D0 E2                    ..
+        bne     MapInteractionSystem_Branch_A193; A1AF D0 E2                    ..
         rts                                     ; A1B1 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A1B2:
         lda     $00                           ; A1B2 A5 00                    ..
         inc     $00                           ; A1B4 E6 00                    ..
         jsr     MapInteractionSystem_Entry_B3ED ; A1B6 20 ED B3                  ..
@@ -5160,9 +5273,8 @@ MapInteractionSystem_Entry_A3BA:
         jsr     UpperFixedEngine_Entry_C5BF     ; A3D2 20 BF C5                  ..
         jsr     WaitForNmi                      ; A3D5 20 74 FF                  t.
         brk                                     ; A3D8 00                       .
-        db   $10,$DB                         ; A3D9 10 DB                    ..
+        db   $10,$DB,$00                     ; A3D9 10 DB 00                 ...
 ; ----------------------------------------------------------------------------
-        brk                                     ; A3DB 00                       .
         pla                                     ; A3DC 68                       h
         tax                                     ; A3DD AA                       .
         pla                                     ; A3DE 68                       h
@@ -5195,12 +5307,9 @@ MapInteractionSystem_Branch_A3FC:
         bne     MapInteractionSystem_Branch_A453; A402 D0 4F                    .O
 MapInteractionSystem_Branch_A404:
         brk                                     ; A404 00                       .
-        db   $16,$EB                         ; A405 16 EB                    ..
+        db   $16,$EB,$40                     ; A405 16 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A407 40                       @
-; ----------------------------------------------------------------------------
-        db   $F0,$0E                         ; A408 F0 0E                    ..
-; ----------------------------------------------------------------------------
+        beq     MapInteractionSystem_Branch_A418; A408 F0 0E                    ..
 MapInteractionSystem_Branch_A40A:
         brk                                     ; A40A 00                       .
         db   $16,$DB,$BF                     ; A40B 16 DB BF                 ...
@@ -5213,8 +5322,8 @@ MapInteractionSystem_Branch_A40A:
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Entry_84B6 ; A415 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
-        db   $20,$B6,$84                     ; A418 20 B6 84                  ..
-; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A418:
+        jsr     MapInteractionSystem_Entry_84B6 ; A418 20 B6 84                  ..
 MapInteractionSystem_Branch_A41B:
         brk                                     ; A41B 00                       .
         db   $0D,$DB,$BF                     ; A41C 0D DB BF                 ...
@@ -5263,8 +5372,13 @@ MapInteractionSystem_Entry_A44D:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_A453:
         brk                                     ; A453 00                       .
-        db   $0F,$DB,$FB,$00,$0F,$CB,$02,$20 ; A454 0F DB FB 00 0F CB 02 20  .......
-        db   $15,$A6,$4C,$B6,$84             ; A45C 15 A6 4C B6 84           ..L..
+        db   $0F,$DB,$FB                     ; A454 0F DB FB                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; A457 00                       .
+        db   $0F,$CB,$02                     ; A458 0F CB 02                 ...
+; ----------------------------------------------------------------------------
+        jsr     MapInteractionSystem_Entry_A615 ; A45B 20 15 A6                  ..
+        jmp     MapInteractionSystem_Entry_84B6 ; A45E 4C B6 84                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A461:
         lda     #$80                            ; A461 A9 80                    ..
@@ -5280,7 +5394,7 @@ MapInteractionSystem_Entry_A461:
         and     #$80                            ; A476 29 80                    ).
         ora     $3D                             ; A478 05 3D                    .=
         jsr     MapInteractionSystem_Entry_9083 ; A47A 20 83 90                  ..
-        jmp     $A5F5                           ; A47D 4C F5 A5                 L..
+        jmp     MapInteractionSystem_Branch_A5F5; A47D 4C F5 A5                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A480:
         ldx     SaveCurrentChapterMinus1        ; A480 AE 5A 61                 .Za
@@ -5306,9 +5420,8 @@ MapInteractionSystem_Entry_A4A3:
         lda     #$8F                            ; A4A7 A9 8F                    ..
         jsr     MapInteractionSystem_Entry_A547 ; A4A9 20 47 A5                  G.
         brk                                     ; A4AC 00                       .
-        db   $07,$DB                         ; A4AD 07 DB                    ..
+        db   $07,$DB,$00                     ; A4AD 07 DB 00                 ...
 ; ----------------------------------------------------------------------------
-        brk                                     ; A4AF 00                       .
         ldx     #$FF                            ; A4B0 A2 FF                    ..
         rts                                     ; A4B2 60                       `
 ; ----------------------------------------------------------------------------
@@ -5353,7 +5466,7 @@ MapInteractionSystem_Entry_A4D5:
 MapInteractionSystem_Entry_A4F5:
         lda     SaveTimeOfDay                   ; A4F5 AD ED 62                 ..b
         cmp     #$FF                            ; A4F8 C9 FF                    ..
-        bne     $A535                           ; A4FA D0 39                    .9
+        bne     MapInteractionSystem_Branch_A535; A4FA D0 39                    .9
         ldx     #$0F                            ; A4FC A2 0F                    ..
         lda     $6FE6,x                         ; A4FE BD E6 6F                 ..o
         pha                                     ; A501 48                       H
@@ -5385,6 +5498,7 @@ MapInteractionSystem_Entry_A4F5:
         jsr     MapInteractionSystem_Entry_A567 ; A52D 20 67 A5                  g.
         lda     #$00                            ; A530 A9 00                    ..
         sta     $6F4A                           ; A532 8D 4A 6F                 .Jo
+MapInteractionSystem_Branch_A535:
         rts                                     ; A535 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A536:
@@ -5449,15 +5563,11 @@ MapInteractionSystem_Entry_A578:
         rts                                     ; A598 60                       `
 ; ----------------------------------------------------------------------------
         db   $02                             ; A599 02                       .
-; ----------------------------------------------------------------------------
-LA59B = $+ 1
-        ora     ($10,x)                         ; A59A 01 10                    ..
-        ora     $01,x                           ; A59C 15 01                    ..
-        ora     ($09,x)                         ; A59E 01 09                    ..
-        php                                     ; A5A0 08                       .
-        asl     $01,x                           ; A5A1 16 01                    ..
-        db   $1B,$05,$15,$03,$0C,$0F,$14,$00 ; A5A3 1B 05 15 03 0C 0F 14 00  ........
-        db   $05,$11                         ; A5AB 05 11                    ..
+        db   $01                             ; A59A 01                       .
+        db   $10                             ; A59B 10                       .
+        db   $15,$01,$01,$09,$08,$16,$01,$1B ; A59C 15 01 01 09 08 16 01 1B  ........
+        db   $05,$15,$03,$0C,$0F,$14,$00,$05 ; A5A4 05 15 03 0C 0F 14 00 05  ........
+        db   $11                             ; A5AC 11                       .
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A5AD:
         lda     #$00                            ; A5AD A9 00                    ..
@@ -5474,9 +5584,10 @@ MapInteractionSystem_Entry_A5AD:
         sta     $6E05                           ; A5CB 8D 05 6E                 ..n
         lda     #$FF                            ; A5CE A9 FF                    ..
         ldx     #$07                            ; A5D0 A2 07                    ..
+MapInteractionSystem_Branch_A5D2:
         sta     $6E31,x                         ; A5D2 9D 31 6E                 .1n
         dex                                     ; A5D5 CA                       .
-        bpl     $A5D2                           ; A5D6 10 FA                    ..
+        bpl     MapInteractionSystem_Branch_A5D2; A5D6 10 FA                    ..
         lda     #$F8                            ; A5D8 A9 F8                    ..
         sta     $0526                           ; A5DA 8D 26 05                 .&.
         lda     #$01                            ; A5DD A9 01                    ..
@@ -5492,37 +5603,39 @@ MapInteractionSystem_Entry_A5AD:
         sta     $62D5                           ; A5F1 8D D5 62                 ..b
         rts                                     ; A5F4 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_A5F5:
         ldx     #$00                            ; A5F5 A2 00                    ..
+MapInteractionSystem_Branch_A5F7:
         stx     $51                             ; A5F7 86 51                    .Q
         ldy     $6F80,x                         ; A5F9 BC 80 6F                 ..o
         lda     $6F60,x                         ; A5FC BD 60 6F                 .`o
         tax                                     ; A5FF AA                       .
         and     $6F80,x                         ; A600 3D 80 6F                 =.o
         cmp     #$FF                            ; A603 C9 FF                    ..
-        beq     $A614                           ; A605 F0 0D                    ..
+        beq     MapInteractionSystem_Branch_A614; A605 F0 0D                    ..
         jsr     UpperFixedEngine_Entry_D3E6     ; A607 20 E6 D3                  ..
         ldx     $51                             ; A60A A6 51                    .Q
         sta     $7140,x                         ; A60C 9D 40 71                 .@q
         inx                                     ; A60F E8                       .
         cpx     #$1E                            ; A610 E0 1E                    ..
-        bcc     $A5F7                           ; A612 90 E3                    ..
+        bcc     MapInteractionSystem_Branch_A5F7; A612 90 E3                    ..
+MapInteractionSystem_Branch_A614:
         rts                                     ; A614 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A615:
         lda     #$FF                            ; A615 A9 FF                    ..
         ldx     #$A0                            ; A617 A2 A0                    ..
+MapInteractionSystem_Branch_A619:
         sta     $6C0B,x                         ; A619 9D 0B 6C                 ..l
         dex                                     ; A61C CA                       .
-        bne     $A619                           ; A61D D0 FA                    ..
+        bne     MapInteractionSystem_Branch_A619; A61D D0 FA                    ..
         rts                                     ; A61F 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A620:
         brk                                     ; A620 00                       .
-        db   $0D,$EB                         ; A621 0D EB                    ..
+        db   $0D,$EB,$40                     ; A621 0D EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A623 40                       @
-; ----------------------------------------------------------------------------
-        bne     $A666                           ; A624 D0 40                    .@
+        bne     MapInteractionSystem_Branch_A666; A624 D0 40                    .@
         brk                                     ; A626 00                       .
         db   $11,$2F                         ; A627 11 2F                    ./
 ; ----------------------------------------------------------------------------
@@ -5560,6 +5673,7 @@ MapInteractionSystem_Entry_A65A:
         sta     $0530                           ; A65F 8D 30 05                 .0.
         lda     #$18                            ; A662 A9 18                    ..
         ldx     #$03                            ; A664 A2 03                    ..
+MapInteractionSystem_Branch_A666:
         rts                                     ; A666 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_A667:
@@ -6023,8 +6137,8 @@ MapInteractionSystem_Entry_A9B7:
         lda     $52                             ; A9BE A5 52                    .R
         sta     $55                             ; A9C0 85 55                    .U
         dec     $51                             ; A9C2 C6 51                    .Q
-        db   $A5,$51,$29,$03                 ; A9C4 A5 51 29 03              .Q).
-; ----------------------------------------------------------------------------
+        lda     $51                             ; A9C4 A5 51                    .Q
+        and     #$03                            ; A9C6 29 03                    ).
         sta     $51                             ; A9C8 85 51                    .Q
         and     #$01                            ; A9CA 29 01                    ).
         beq     MapInteractionSystem_Branch_A9DF; A9CC F0 11                    ..
@@ -6228,14 +6342,15 @@ MapInteractionSystem_Branch_AAFC:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_AAFF:
         cpx     #$01                            ; AAFF E0 01                    ..
-        beq     $AB0D                           ; AB01 F0 0A                    ..
+        beq     MapInteractionSystem_Branch_AB0D; AB01 F0 0A                    ..
         cpx     #$02                            ; AB03 E0 02                    ..
-        beq     $AB3D                           ; AB05 F0 36                    .6
+        beq     MapInteractionSystem_Branch_AB3D; AB05 F0 36                    .6
         cpx     #$03                            ; AB07 E0 03                    ..
-        beq     $AB5B                           ; AB09 F0 50                    .P
+        beq     MapInteractionSystem_Branch_AB5B; AB09 F0 50                    .P
         clc                                     ; AB0B 18                       .
         rts                                     ; AB0C 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB0D:
         bit     SaveVehicleFlags                ; AB0D 2C 8E 62                 ,.b
         bvs     MapInteractionSystem_Branch_AB22; AB10 70 10                    p.
         brk                                     ; AB12 00                       .
@@ -6255,12 +6370,13 @@ MapInteractionSystem_Branch_AB22:
         asl     a                               ; AB25 0A                       .
         asl     a                               ; AB26 0A                       .
         asl     a                               ; AB27 0A                       .
-        bcc     $AB2D                           ; AB28 90 03                    ..
+        bcc     MapInteractionSystem_Branch_AB2D; AB28 90 03                    ..
         lda     #$13                            ; AB2A A9 13                    ..
         rts                                     ; AB2C 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB2D:
         bit     $6281                           ; AB2D 2C 81 62                 ,.b
-        bvs     $AB3B                           ; AB30 70 09                    p.
+        bvs     MapInteractionSystem_Branch_AB3B; AB30 70 09                    p.
         lda     $6283                           ; AB32 AD 83 62                 ..b
         asl     a                               ; AB35 0A                       .
         asl     a                               ; AB36 0A                       .
@@ -6268,9 +6384,11 @@ MapInteractionSystem_Branch_AB22:
         lda     #$15                            ; AB38 A9 15                    ..
         rts                                     ; AB3A 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB3B:
         clc                                     ; AB3B 18                       .
         rts                                     ; AB3C 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB3D:
         bit     SaveVehicleFlags                ; AB3D 2C 8E 62                 ,.b
         bvc     MapInteractionSystem_Branch_AB52; AB40 50 10                    P.
         brk                                     ; AB42 00                       .
@@ -6293,8 +6411,9 @@ MapInteractionSystem_Branch_AB52:
         lda     #$15                            ; AB58 A9 15                    ..
         rts                                     ; AB5A 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB5B:
         bit     $6281                           ; AB5B 2C 81 62                 ,.b
-        bvc     $AB69                           ; AB5E 50 09                    P.
+        bvc     MapInteractionSystem_Branch_AB69; AB5E 50 09                    P.
         lda     $6283                           ; AB60 AD 83 62                 ..b
         asl     a                               ; AB63 0A                       .
         asl     a                               ; AB64 0A                       .
@@ -6302,6 +6421,7 @@ MapInteractionSystem_Branch_AB52:
         lda     #$15                            ; AB66 A9 15                    ..
         rts                                     ; AB68 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AB69:
         clc                                     ; AB69 18                       .
         rts                                     ; AB6A 60                       `
 ; ----------------------------------------------------------------------------
@@ -6362,6 +6482,7 @@ MapInteractionSystem_Branch_ABDD:
         stx     $6FE1                           ; ABE2 8E E1 6F                 ..o
         inx                                     ; ABE5 E8                       .
         stx     $6FE2                           ; ABE6 8E E2 6F                 ..o
+MapInteractionSystem_Entry_ABE9:
         lda     #$00                            ; ABE9 A9 00                    ..
         sta     $7021                           ; ABEB 8D 21 70                 .!p
         sta     $7022                           ; ABEE 8D 22 70                 ."p
@@ -6374,36 +6495,74 @@ MapInteractionSystem_Branch_ABDD:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_ABFF:
         lda     $0515                           ; ABFF AD 15 05                 ...
-        beq     $AC12                           ; AC02 F0 0E                    ..
+        beq     MapInteractionSystem_Branch_AC12; AC02 F0 0E                    ..
 MapInteractionSystem_Branch_AC04:
         lda     #$80                            ; AC04 A9 80                    ..
         sta     $7020                           ; AC06 8D 20 70                 . p
         sta     $7021                           ; AC09 8D 21 70                 .!p
         sta     $7022                           ; AC0C 8D 22 70                 ."p
         sta     $7023                           ; AC0F 8D 23 70                 .#p
+MapInteractionSystem_Branch_AC12:
         lda     #$80                            ; AC12 A9 80                    ..
         sta     $7024                           ; AC14 8D 24 70                 .$p
         sta     $7025                           ; AC17 8D 25 70                 .%p
         rts                                     ; AC1A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A0,$FF,$24,$41,$10,$06,$29,$40 ; AC1B A0 FF 24 41 10 06 29 40  ..$A..)@
-        db   $D0,$09,$F0,$53,$A9,$03,$20,$57 ; AC23 D0 09 F0 53 A9 03 20 57  ...S.. W
-        db   $B1,$90,$4C,$AD,$22,$70,$8D,$24 ; AC2B B1 90 4C AD 22 70 8D 24  ..L."p.$
-        db   $70,$AD,$E2,$70,$8D,$E4,$70,$AD ; AC33 70 AD E2 70 8D E4 70 AD  p..p..p.
-        db   $23,$70,$8D,$25,$70,$AD,$E3,$70 ; AC3B 23 70 8D 25 70 AD E3 70  #p.%p..p
-        db   $8D,$E5,$70,$AD,$21,$70,$8D,$23 ; AC43 8D E5 70 AD 21 70 8D 23  ..p.!p.#
-        db   $70,$AD,$E1,$70,$8D,$E3,$70,$C0 ; AC4B 70 AD E1 70 8D E3 70 C0  p..p..p.
-        db   $00,$F0,$1B,$AD,$E2,$6F,$8D,$E4 ; AC53 00 F0 1B AD E2 6F 8D E4  .....o..
-        db   $6F,$AD,$E3,$6F,$8D,$E5,$6F,$AD ; AC5B 6F AD E3 6F 8D E5 6F AD  o..o..o.
-        db   $E1,$6F,$8D,$E3,$6F,$A2,$04,$8E ; AC63 E1 6F 8D E3 6F A2 04 8E  .o..o...
-        db   $E1,$6F,$E8,$8E,$E2,$6F,$20,$E9 ; AC6B E1 6F E8 8E E2 6F 20 E9  .o...o .
-        db   $AB,$20,$27,$96,$4C,$92,$AC,$A9 ; AC73 AB 20 27 96 4C 92 AC A9  . '.L...
-        db   $80,$8D,$24,$70,$8D,$25,$70,$A2 ; AC7B 80 8D 24 70 8D 25 70 A2  ..$p.%p.
-        db   $01,$8E,$E1,$6F,$E8,$8E,$E2,$6F ; AC83 01 8E E1 6F E8 8E E2 6F  ...o...o
-        db   $E8,$8E,$E3,$6F,$20,$B7,$95     ; AC8B E8 8E E3 6F 20 B7 95     ...o ..
+MapInteractionSystem_Entry_AC1B:
+        ldy     #$FF                            ; AC1B A0 FF                    ..
+        bit     $41                             ; AC1D 24 41                    $A
+        bpl     MapInteractionSystem_Branch_AC27; AC1F 10 06                    ..
+        and     #$40                            ; AC21 29 40                    )@
+        bne     MapInteractionSystem_Branch_AC2E; AC23 D0 09                    ..
+        beq     MapInteractionSystem_Branch_AC7A; AC25 F0 53                    .S
+MapInteractionSystem_Branch_AC27:
+        lda     #$03                            ; AC27 A9 03                    ..
+        jsr     MapInteractionSystem_Entry_B157 ; AC29 20 57 B1                  W.
+        bcc     MapInteractionSystem_Branch_AC7A; AC2C 90 4C                    .L
+MapInteractionSystem_Branch_AC2E:
+        lda     $7022                           ; AC2E AD 22 70                 ."p
+        sta     $7024                           ; AC31 8D 24 70                 .$p
+        lda     $70E2                           ; AC34 AD E2 70                 ..p
+        sta     $70E4                           ; AC37 8D E4 70                 ..p
+        lda     $7023                           ; AC3A AD 23 70                 .#p
+        sta     $7025                           ; AC3D 8D 25 70                 .%p
+        lda     $70E3                           ; AC40 AD E3 70                 ..p
+        sta     $70E5                           ; AC43 8D E5 70                 ..p
+        lda     $7021                           ; AC46 AD 21 70                 .!p
+        sta     $7023                           ; AC49 8D 23 70                 .#p
+        lda     $70E1                           ; AC4C AD E1 70                 ..p
+        sta     $70E3                           ; AC4F 8D E3 70                 ..p
+        cpy     #$00                            ; AC52 C0 00                    ..
+        beq     MapInteractionSystem_Branch_AC71; AC54 F0 1B                    ..
+        lda     $6FE2                           ; AC56 AD E2 6F                 ..o
+        sta     $6FE4                           ; AC59 8D E4 6F                 ..o
+        lda     $6FE3                           ; AC5C AD E3 6F                 ..o
+        sta     $6FE5                           ; AC5F 8D E5 6F                 ..o
+        lda     $6FE1                           ; AC62 AD E1 6F                 ..o
+        sta     $6FE3                           ; AC65 8D E3 6F                 ..o
+        ldx     #$04                            ; AC68 A2 04                    ..
+        stx     $6FE1                           ; AC6A 8E E1 6F                 ..o
+        inx                                     ; AC6D E8                       .
+        stx     $6FE2                           ; AC6E 8E E2 6F                 ..o
+MapInteractionSystem_Branch_AC71:
+        jsr     MapInteractionSystem_Entry_ABE9 ; AC71 20 E9 AB                  ..
+        jsr     MapInteractionSystem_Entry_9627 ; AC74 20 27 96                  '.
+        jmp     MapInteractionSystem_Branch_AC92; AC77 4C 92 AC                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_AC7A:
+        lda     #$80                            ; AC7A A9 80                    ..
+        sta     $7024                           ; AC7C 8D 24 70                 .$p
+        sta     $7025                           ; AC7F 8D 25 70                 .%p
+        ldx     #$01                            ; AC82 A2 01                    ..
+        stx     $6FE1                           ; AC84 8E E1 6F                 ..o
+        inx                                     ; AC87 E8                       .
+        stx     $6FE2                           ; AC88 8E E2 6F                 ..o
+        inx                                     ; AC8B E8                       .
+        stx     $6FE3                           ; AC8C 8E E3 6F                 ..o
+        jsr     MapInteractionSystem_Entry_95B7 ; AC8F 20 B7 95                  ..
 MapInteractionSystem_Branch_AC92:
         ldy     #$00                            ; AC92 A0 00                    ..
+MapInteractionSystem_Branch_AC94:
         tya                                     ; AC94 98                       .
         pha                                     ; AC95 48                       H
         jsr     MapInteractionSystem_Entry_ACD9 ; AC96 20 D9 AC                  ..
@@ -6414,7 +6573,7 @@ MapInteractionSystem_Branch_AC92:
         sta     $7140,y                         ; AC9D 99 40 71                 .@q
         iny                                     ; ACA0 C8                       .
         cpy     #$04                            ; ACA1 C0 04                    ..
-        bne     $AC94                           ; ACA3 D0 EF                    ..
+        bne     MapInteractionSystem_Branch_AC94; ACA3 D0 EF                    ..
         lda     $7140                           ; ACA5 AD 40 71                 .@q
         pha                                     ; ACA8 48                       H
         and     #$E0                            ; ACA9 29 E0                    ).
@@ -6426,7 +6585,7 @@ MapInteractionSystem_Branch_AC92:
         sta     $059E                           ; ACB4 8D 9E 05                 ...
         lda     $0515                           ; ACB7 AD 15 05                 ...
         cmp     #$01                            ; ACBA C9 01                    ..
-        bne     $ACD8                           ; ACBC D0 1A                    ..
+        bne     MapInteractionSystem_Branch_ACD8; ACBC D0 1A                    ..
         ldy     #$03                            ; ACBE A0 03                    ..
         lda     $41                             ; ACC0 A5 41                    .A
         bmi     MapInteractionSystem_Branch_ACCD; ACC2 30 09                    0.
@@ -6440,6 +6599,7 @@ MapInteractionSystem_Branch_ACCD:
         sta     $7020,y                         ; ACD2 99 20 70                 . p
         dey                                     ; ACD5 88                       .
         bpl     MapInteractionSystem_Branch_ACCD; ACD6 10 F5                    ..
+MapInteractionSystem_Branch_ACD8:
         rts                                     ; ACD8 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_ACD9:
@@ -6447,9 +6607,10 @@ MapInteractionSystem_Entry_ACD9:
         lda     $6F80,y                         ; ACDC B9 80 6F                 ..o
         tay                                     ; ACDF A8                       .
         lda     $41                             ; ACE0 A5 41                    .A
-        bpl     $ACE7                           ; ACE2 10 03                    ..
+        bpl     MapInteractionSystem_Branch_ACE7; ACE2 10 03                    ..
         jmp     UpperFixedEngine_Entry_D3E6     ; ACE4 4C E6 D3                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_ACE7:
         jmp     UpperFixedEngine_Entry_D251     ; ACE7 4C 51 D2                 LQ.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_ACEA:
@@ -6543,7 +6704,9 @@ MapInteractionSystem_Branch_AD90:
         db   $06,$DB,$F7                     ; AD9C 06 DB F7                 ...
 ; ----------------------------------------------------------------------------
         brk                                     ; AD9F 00                       .
-        db   $05,$DB,$BF,$60                 ; ADA0 05 DB BF 60              ...`
+        db   $05,$DB,$BF                     ; ADA0 05 DB BF                 ...
+; ----------------------------------------------------------------------------
+        rts                                     ; ADA3 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_ADA4:
         jsr     UpperFixedEngine_Entry_D1F3     ; ADA4 20 F3 D1                  ..
@@ -7010,8 +7173,13 @@ MapInteractionSystem_Branch_B126:
         sec                                     ; B146 38                       8
         rts                                     ; B147 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$80,$9D,$66,$6F,$9D,$A6,$6F ; B148 A9 80 9D 66 6F 9D A6 6F  ...fo..o
-        db   $9D,$86,$6F,$9D,$C6,$6F,$60     ; B150 9D 86 6F 9D C6 6F 60     ..o..o`
+MapInteractionSystem_Entry_B148:
+        lda     #$80                            ; B148 A9 80                    ..
+        sta     $6F66,x                         ; B14A 9D 66 6F                 .fo
+        sta     $6FA6,x                         ; B14D 9D A6 6F                 ..o
+        sta     $6F86,x                         ; B150 9D 86 6F                 ..o
+        sta     $6FC6,x                         ; B153 9D C6 6F                 ..o
+        rts                                     ; B156 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_B157:
         sta     $6E0B                           ; B157 8D 0B 6E                 ..n
@@ -7055,10 +7223,10 @@ MapInteractionSystem_Branch_B17A:
         jmp     MapInteractionSystem_Branch_B275; B19A 4C 75 B2                 Lu.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B19D:
-        jmp     $B232                           ; B19D 4C 32 B2                 L2.
+        jmp     MapInteractionSystem_Branch_B232; B19D 4C 32 B2                 L2.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B1A0:
-        jmp     $B259                           ; B1A0 4C 59 B2                 LY.
+        jmp     MapInteractionSystem_Branch_B259; B1A0 4C 59 B2                 LY.
 ; ----------------------------------------------------------------------------
         db   $01                             ; B1A3 01                       .
         db   $60,$1F,$60,$3D,$60,$5B,$60,$79 ; B1A4 60 1F 60 3D 60 5B 60 79  `.`=`[`y
@@ -7140,13 +7308,14 @@ MapInteractionSystem_Branch_B22C:
         pla                                     ; B230 68                       h
         rts                                     ; B231 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B232:
         jsr     MapInteractionSystem_Entry_B1CD ; B232 20 CD B1                  ..
-        bpl     $B252                           ; B235 10 1B                    ..
+        bpl     MapInteractionSystem_Branch_B252; B235 10 1B                    ..
         ldy     #$01                            ; B237 A0 01                    ..
         lda     ($79),y                         ; B239 B1 79                    .y
         iny                                     ; B23B C8                       .
         ora     ($79),y                         ; B23C 11 79                    .y
-        bne     $B252                           ; B23E D0 12                    ..
+        bne     MapInteractionSystem_Branch_B252; B23E D0 12                    ..
         ldy     #$00                            ; B240 A0 00                    ..
         lda     ($79),y                         ; B242 B1 79                    .y
         and     #$1F                            ; B244 29 1F                    ).
@@ -7162,6 +7331,7 @@ MapInteractionSystem_Branch_B22C:
         pla                                     ; B250 68                       h
         rts                                     ; B251 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B252:
         clc                                     ; B252 18                       .
         pla                                     ; B253 68                       h
         tay                                     ; B254 A8                       .
@@ -7170,6 +7340,7 @@ MapInteractionSystem_Branch_B22C:
         pla                                     ; B257 68                       h
         rts                                     ; B258 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B259:
         lda     SaveGameStateFlags              ; B259 AD 8E 61                 ..a
         and     #$20                            ; B25C 29 20                    )
         beq     MapInteractionSystem_Branch_B26E; B25E F0 0E                    ..
@@ -7226,12 +7397,39 @@ MapInteractionSystem_Branch_B2A0:
         pla                                     ; B2A4 68                       h
         rts                                     ; B2A5 60                       `
 ; ----------------------------------------------------------------------------
-        db   $00,$62,$23,$40,$D0,$0F,$00,$07 ; B2A6 00 62 23 40 D0 0F 00 07  .b#@....
-        db   $6F,$50,$00,$C5,$2B,$20,$14,$D2 ; B2AE 6F 50 00 C5 2B 20 14 D2  oP..+ ..
-        db   $00,$07,$6F,$FF,$60,$20,$5D,$B3 ; B2B6 00 07 6F FF 60 20 5D B3  ..o.` ].
-        db   $90,$38,$A2,$03,$DD,$C8,$B3,$F0 ; B2BE 90 38 A2 03 DD C8 B3 F0  .8......
-        db   $63,$CA,$10,$F8,$20,$81,$B3,$B0 ; B2C6 63 CA 10 F8 20 81 B3 B0  c... ...
-        db   $0F,$00,$07,$6F,$43,$00,$61,$3B ; B2CE 0F 00 07 6F 43 00 61 3B  ...oC.a;
+MapInteractionSystem_Entry_B2A6:
+        brk                                     ; B2A6 00                       .
+        db   $62,$23,$40                     ; B2A7 62 23 40                 b#@
+; ----------------------------------------------------------------------------
+        bne     MapInteractionSystem_Branch_B2BB; B2AA D0 0F                    ..
+        brk                                     ; B2AC 00                       .
+        db   $07,$6F,$50                     ; B2AD 07 6F 50                 .oP
+; ----------------------------------------------------------------------------
+        brk                                     ; B2B0 00                       .
+        db   $C5,$2B                         ; B2B1 C5 2B                    .+
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_D214     ; B2B3 20 14 D2                  ..
+        brk                                     ; B2B6 00                       .
+        db   $07,$6F,$FF                     ; B2B7 07 6F FF                 .o.
+; ----------------------------------------------------------------------------
+        rts                                     ; B2BA 60                       `
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B2BB:
+        jsr     MapInteractionSystem_Entry_B35D ; B2BB 20 5D B3                  ].
+        bcc     MapInteractionSystem_Entry_B2F8 ; B2BE 90 38                    .8
+        ldx     #$03                            ; B2C0 A2 03                    ..
+MapInteractionSystem_Branch_B2C2:
+        cmp     $B3C8,x                         ; B2C2 DD C8 B3                 ...
+        beq     MapInteractionSystem_Branch_B32A; B2C5 F0 63                    .c
+        dex                                     ; B2C7 CA                       .
+        bpl     MapInteractionSystem_Branch_B2C2; B2C8 10 F8                    ..
+        jsr     MapInteractionSystem_Entry_B381 ; B2CA 20 81 B3                  ..
+        bcs     MapInteractionSystem_Branch_B2DE; B2CD B0 0F                    ..
+        brk                                     ; B2CF 00                       .
+        db   $07,$6F,$43                     ; B2D0 07 6F 43                 .oC
+; ----------------------------------------------------------------------------
+        brk                                     ; B2D3 00                       .
+        db   $61,$3B                         ; B2D4 61 3B                    a;
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B2D6:
         jsr     UpperFixedEngine_Entry_C8E1     ; B2D6 20 E1 C8                  ..
@@ -7255,13 +7453,41 @@ MapInteractionSystem_Branch_B2DE:
         sta     $6279                           ; B2F2 8D 79 62                 .yb
         jmp     MapInteractionSystem_Branch_B2D6; B2F5 4C D6 B2                 L..
 ; ----------------------------------------------------------------------------
-        db   $A5,$00,$48,$00,$07,$6F,$43,$68 ; B2F8 A5 00 48 00 07 6F 43 68  ..H..oCh
-        db   $C9,$2C,$F0,$0A,$C9,$30,$F0,$0C ; B300 C9 2C F0 0A C9 30 F0 0C  .,...0..
-        db   $00,$5E,$3B,$4C,$1D,$B3,$00,$F2 ; B308 00 5E 3B 4C 1D B3 00 F2  .^;L....
-        db   $3B,$4C,$1D,$B3,$A5,$63,$C9,$37 ; B310 3B 4C 1D B3 A5 63 C9 37  ;L...c.7
-        db   $D0,$F4,$00,$EC,$3B,$A9,$01,$8D ; B318 D0 F4 00 EC 3B A9 01 8D  ....;...
-        db   $79,$62,$4C,$D6,$B2,$20,$E1,$C8 ; B320 79 62 4C D6 B2 20 E1 C8  ybL.. ..
-        db   $38,$60                         ; B328 38 60                    8`
+MapInteractionSystem_Entry_B2F8:
+        lda     $00                           ; B2F8 A5 00                    ..
+        pha                                     ; B2FA 48                       H
+        brk                                     ; B2FB 00                       .
+        db   $07,$6F,$43                     ; B2FC 07 6F 43                 .oC
+; ----------------------------------------------------------------------------
+        pla                                     ; B2FF 68                       h
+        cmp     #$2C                            ; B300 C9 2C                    .,
+        beq     MapInteractionSystem_Branch_B30E; B302 F0 0A                    ..
+        cmp     #$30                            ; B304 C9 30                    .0
+        beq     MapInteractionSystem_Branch_B314; B306 F0 0C                    ..
+        brk                                     ; B308 00                       .
+        db   $5E,$3B                         ; B309 5E 3B                    ^;
+; ----------------------------------------------------------------------------
+        jmp     MapInteractionSystem_Branch_B31D; B30B 4C 1D B3                 L..
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B30E:
+        brk                                     ; B30E 00                       .
+        db   $F2,$3B                         ; B30F F2 3B                    .;
+; ----------------------------------------------------------------------------
+        jmp     MapInteractionSystem_Branch_B31D; B311 4C 1D B3                 L..
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B314:
+        lda     CurrentMapNumber                ; B314 A5 63                    .c
+        cmp     #$37                            ; B316 C9 37                    .7
+        bne     MapInteractionSystem_Branch_B30E; B318 D0 F4                    ..
+        brk                                     ; B31A 00                       .
+        db   $EC,$3B                         ; B31B EC 3B                    .;
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B31D:
+        lda     #$01                            ; B31D A9 01                    ..
+        sta     $6279                           ; B31F 8D 79 62                 .yb
+        jmp     MapInteractionSystem_Branch_B2D6; B322 4C D6 B2                 L..
+; ----------------------------------------------------------------------------
+        db   $20,$E1,$C8,$38,$60             ; B325 20 E1 C8 38 60            ..8`
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B32A:
         lda     $00                           ; B32A A5 00                    ..
@@ -7328,15 +7554,57 @@ MapInteractionSystem_Branch_B37A:
         tya                                     ; B37F 98                       .
         rts                                     ; B380 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$5A,$61,$C9,$03,$D0,$2F,$A9 ; B381 AD 5A 61 C9 03 D0 2F A9  .Za.../.
-        db   $09,$00,$63,$63,$03,$90,$27,$A5 ; B389 09 00 63 63 03 90 27 A5  ..cc..'.
-        db   $00,$C9,$16,$F0,$0C,$C9,$1A,$F0 ; B391 00 C9 16 F0 0C C9 1A F0  ........
-        db   $08,$C9,$1E,$F0,$04,$C9,$22,$D0 ; B399 08 C9 1E F0 04 C9 22 D0  ......".
-        db   $15,$A5,$00,$48,$00,$07,$6F,$50 ; B3A1 15 A5 00 48 00 07 6F 50  ...H..oP
-        db   $00,$A5,$3B,$20,$14,$D2,$68,$85 ; B3A9 00 A5 3B 20 14 D2 68 85  ..; ..h.
-        db   $00,$68,$68,$4C,$2A,$B3,$A2,$02 ; B3B1 00 68 68 4C 2A B3 A2 02  .hhL*...
-        db   $BD,$D8,$B3,$00,$66,$73,$B0,$05 ; B3B9 BD D8 B3 00 66 73 B0 05  ....fs..
-        db   $CA,$10,$F5,$18,$60,$38,$60     ; B3C1 CA 10 F5 18 60 38 60     ....`8`
+MapInteractionSystem_Entry_B381:
+        lda     SaveCurrentChapterMinus1        ; B381 AD 5A 61                 .Za
+        cmp     #$03                            ; B384 C9 03                    ..
+        bne     MapInteractionSystem_Branch_B3B7; B386 D0 2F                    ./
+        lda     #$09                            ; B388 A9 09                    ..
+        brk                                     ; B38A 00                       .
+        db   $63,$63,$03                     ; B38B 63 63 03                 cc.
+; ----------------------------------------------------------------------------
+        bcc     MapInteractionSystem_Branch_B3B7; B38E 90 27                    .'
+        lda     $00                           ; B390 A5 00                    ..
+        cmp     #$16                            ; B392 C9 16                    ..
+        beq     MapInteractionSystem_Branch_B3A2; B394 F0 0C                    ..
+        cmp     #$1A                            ; B396 C9 1A                    ..
+        beq     MapInteractionSystem_Branch_B3A2; B398 F0 08                    ..
+        cmp     #$1E                            ; B39A C9 1E                    ..
+        beq     MapInteractionSystem_Branch_B3A2; B39C F0 04                    ..
+        cmp     #$22                            ; B39E C9 22                    ."
+        bne     MapInteractionSystem_Branch_B3B7; B3A0 D0 15                    ..
+MapInteractionSystem_Branch_B3A2:
+        lda     $00                           ; B3A2 A5 00                    ..
+        pha                                     ; B3A4 48                       H
+        brk                                     ; B3A5 00                       .
+        db   $07,$6F,$50                     ; B3A6 07 6F 50                 .oP
+; ----------------------------------------------------------------------------
+        brk                                     ; B3A9 00                       .
+        db   $A5,$3B                         ; B3AA A5 3B                    .;
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_D214     ; B3AC 20 14 D2                  ..
+        pla                                     ; B3AF 68                       h
+        sta     $00                           ; B3B0 85 00                    ..
+        pla                                     ; B3B2 68                       h
+        pla                                     ; B3B3 68                       h
+        jmp     MapInteractionSystem_Branch_B32A; B3B4 4C 2A B3                 L*.
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B3B7:
+        ldx     #$02                            ; B3B7 A2 02                    ..
+MapInteractionSystem_Branch_B3B9:
+        lda     $B3D8,x                         ; B3B9 BD D8 B3                 ...
+        brk                                     ; B3BC 00                       .
+        db   $66,$73                         ; B3BD 66 73                    fs
+; ----------------------------------------------------------------------------
+        bcs     MapInteractionSystem_Branch_B3C6; B3BF B0 05                    ..
+        dex                                     ; B3C1 CA                       .
+        bpl     MapInteractionSystem_Branch_B3B9; B3C2 10 F5                    ..
+        clc                                     ; B3C4 18                       .
+        rts                                     ; B3C5 60                       `
+; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B3C6:
+        sec                                     ; B3C6 38                       8
+        rts                                     ; B3C7 60                       `
+; ----------------------------------------------------------------------------
         db   $14,$18,$1C,$20,$15,$19,$1D,$21 ; B3C8 14 18 1C 20 15 19 1D 21  ... ...!
         db   $16,$1A,$1E,$22,$17,$1B,$1F,$23 ; B3D0 16 1A 1E 22 17 1B 1F 23  ..."...#
         db   $71,$72,$73,$28,$68,$68,$4C,$2A ; B3D8 71 72 73 28 68 68 4C 2A  qrs(hhL*
@@ -7945,15 +8213,17 @@ MapInteractionSystem_Entry_B731:
         sta     $03                             ; B73A 85 03                    ..
         lda     $BDBF                           ; B73C AD BF BD                 ...
         sta     $04                             ; B73F 85 04                    ..
+MapInteractionSystem_Branch_B741:
         ldy     #$00                            ; B741 A0 00                    ..
         lda     ($03),y                         ; B743 B1 03                    ..
         iny                                     ; B745 C8                       .
         cmp     CurrentMapNumber                ; B746 C5 63                    .c
-        bcc     $B75F                           ; B748 90 15                    ..
-        bne     $B752                           ; B74A D0 06                    ..
+        bcc     MapInteractionSystem_Branch_B75F; B748 90 15                    ..
+        bne     MapInteractionSystem_Branch_B752; B74A D0 06                    ..
         lda     ($03),y                         ; B74C B1 03                    ..
         cmp     CurrentSubmapNumber             ; B74E C5 64                    .d
-        bcc     $B75F                           ; B750 90 0D                    ..
+        bcc     MapInteractionSystem_Branch_B75F; B750 90 0D                    ..
+MapInteractionSystem_Branch_B752:
         lda     $01                             ; B752 A5 01                    ..
         sta     $6278                           ; B754 8D 78 62                 .xb
         lda     $02                             ; B757 A5 02                    ..
@@ -7961,20 +8231,23 @@ MapInteractionSystem_Entry_B731:
         sta     $6279                           ; B75B 8D 79 62                 .yb
         rts                                     ; B75E 60                       `
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_B75F:
         iny                                     ; B75F C8                       .
         clc                                     ; B760 18                       .
         lda     ($03),y                         ; B761 B1 03                    ..
         adc     $01                             ; B763 65 01                    e.
         sta     $01                             ; B765 85 01                    ..
-        bcc     $B76B                           ; B767 90 02                    ..
+        bcc     MapInteractionSystem_Branch_B76B; B767 90 02                    ..
         inc     $02                             ; B769 E6 02                    ..
+MapInteractionSystem_Branch_B76B:
         clc                                     ; B76B 18                       .
         lda     $03                             ; B76C A5 03                    ..
         adc     #$03                            ; B76E 69 03                    i.
         sta     $03                             ; B770 85 03                    ..
-        bcc     $B776                           ; B772 90 02                    ..
+        bcc     MapInteractionSystem_Branch_B776; B772 90 02                    ..
         inc     $04                             ; B774 E6 04                    ..
-        jmp     $B741                           ; B776 4C 41 B7                 LA.
+MapInteractionSystem_Branch_B776:
+        jmp     MapInteractionSystem_Branch_B741; B776 4C 41 B7                 LA.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_B779:
         lda     $6279                           ; B779 AD 79 62                 .yb
@@ -7990,17 +8263,19 @@ MapInteractionSystem_Entry_B779:
         tay                                     ; B788 A8                       .
         lda     #$00                            ; B789 A9 00                    ..
         sec                                     ; B78B 38                       8
+MapInteractionSystem_Branch_B78C:
         ror     a                               ; B78C 6A                       j
         dey                                     ; B78D 88                       .
-        bpl     $B78C                           ; B78E 10 FC                    ..
+        bpl     MapInteractionSystem_Branch_B78C; B78E 10 FC                    ..
         rts                                     ; B790 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_B791:
         jsr     MapInteractionSystem_Entry_B779 ; B791 20 79 B7                  y.
         clc                                     ; B794 18                       .
         and     SaveStoryFlags,x                ; B795 3D 5D 62                 =]b
-        beq     $B79B                           ; B798 F0 01                    ..
+        beq     MapInteractionSystem_Branch_B79B; B798 F0 01                    ..
         sec                                     ; B79A 38                       8
+MapInteractionSystem_Branch_B79B:
         rts                                     ; B79B 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_B79C:
@@ -8086,9 +8361,8 @@ MapInteractionSystem_Entry_B81B:
         jsr     MapInteractionSystem_Entry_B791 ; B820 20 91 B7                  ..
         bcc     MapInteractionSystem_Branch_B82E; B823 90 09                    ..
         brk                                     ; B825 00                       .
-        db   $02,$CB                         ; B826 02 CB                    ..
+        db   $02,$CB,$08                     ; B826 02 CB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; B828 08                       .
         lda     #$19                            ; B829 A9 19                    ..
         jsr     MapInteractionSystem_Entry_B7F2 ; B82B 20 F2 B7                  ..
 MapInteractionSystem_Branch_B82E:
@@ -8358,9 +8632,8 @@ MapInteractionSystem_Entry_B97D:
 MapInteractionSystem_Branch_B9A3:
         pha                                     ; B9A3 48                       H
         brk                                     ; B9A4 00                       .
-        db   $13,$CB                         ; B9A5 13 CB                    ..
+        db   $13,$CB,$08                     ; B9A5 13 CB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; B9A7 08                       .
         pla                                     ; B9A8 68                       h
 MapInteractionSystem_Branch_B9A9:
         ora     $6277                           ; B9A9 0D 77 62                 .wb
@@ -8552,11 +8825,13 @@ MapInteractionSystem_Entry_BAD7:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_BAEA:
         bit     $41                             ; BAEA 24 41                    $A
-        bpl     $BAF4                           ; BAEC 10 06                    ..
+        bpl     MapInteractionSystem_Branch_BAF4; BAEC 10 06                    ..
         jsr     MapInteractionSystem_Entry_83D9 ; BAEE 20 D9 83                  ..
-        jmp     $BAF7                           ; BAF1 4C F7 BA                 L..
+        jmp     MapInteractionSystem_Branch_BAF7; BAF1 4C F7 BA                 L..
 ; ----------------------------------------------------------------------------
+MapInteractionSystem_Branch_BAF4:
         jsr     MapInteractionSystem_Entry_BAD7 ; BAF4 20 D7 BA                  ..
+MapInteractionSystem_Branch_BAF7:
         cmp     #$28                            ; BAF7 C9 28                    .(
         bne     MapInteractionSystem_Branch_BB1C; BAF9 D0 21                    .!
         brk                                     ; BAFB 00                       .

@@ -1,4 +1,8 @@
 # Bank<TAB>CPU address<TAB>end exclusive or -<TAB>source<TAB>reason
+08	B777	-	Guarded flow recovery	Coherent routine block immediately after RTI $B776; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+08	B77F	-	Guarded flow recovery	Coherent routine block immediately after RTI $B77E; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+08	B787	-	Guarded flow recovery	Coherent routine block immediately after RTI $B786; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+08	B78F	-	Guarded flow recovery	Coherent routine block immediately after RTI $B78E; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
 0E	8008	8091	Supplied ROM map	Documented code region $8008-$8090
 0E	BAF7	BB53	Supplied ROM map	Documented map-palette code region $BAF7-$BB52
 0F	C001	C004	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 00
@@ -9,13 +13,6 @@
 0F	C010	C013	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 05
 0F	C013	C016	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 06
 0F	C016	C019	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 07
-0F	C019	C01C	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 08
-0F	C01C	C01F	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 09
-0F	C01F	C022	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0A
-0F	C022	C025	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0B
-0F	C025	C028	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0C
-0F	C028	C02B	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0D
-0F	C02B	C02E	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0E
 0F	C02E	C031	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 0F
 0F	C031	C034	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 10
 0F	C034	C037	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 11
@@ -23,19 +20,110 @@
 0F	C03A	C03D	Direct ROM analysis	Lower-half fixed-bank JMP trampoline 13
 0F	C15A	-	Direct ROM analysis	Lower-half NMI body installed at RAM $0502
 0F	C408	-	CPU vector	Lower-half IRQ/BRK vector target
+0F	C54E	-	Guarded flow recovery	Coherent routine block immediately after RTS $C54D; 11 instructions, jumps and merges into existing code
+0F	C5B9	-	Guarded flow recovery	Coherent routine block immediately after RTS $C5B8; 53 instructions, returns and merges into existing code
+0F	C65A	-	Guarded flow recovery	Coherent routine block immediately after RTS $C659; 3 instructions, jumps and merges into existing code
+0F	C73E	-	Guarded flow recovery	Coherent routine block immediately after JMP $C73B; 18 instructions, returns and merges into existing code
+0F	C75E	-	Guarded flow recovery	Coherent routine block immediately after RTS $C75D; 8 instructions, jumps and merges into existing code
+0F	C770	-	Guarded flow recovery	Coherent routine block immediately after JMP $C76D; 12 instructions, jumps and merges into existing code
+0F	C7FA	-	Guarded flow recovery	Coherent routine block immediately after JMP $C7F7; 8 instructions, returns
+0F	C807	-	Guarded flow recovery	Coherent routine block immediately after RTS $C806; 7 instructions, returns and merges into existing code
+0F	C888	-	Guarded flow recovery	Coherent routine block immediately after RTS $C887; 5 instructions, returns
+0F	CADF	-	Guarded flow recovery	Coherent routine block immediately after JMP $CADC; 4 instructions, jumps and merges into existing code
+0F	D04A	-	Guarded flow recovery	Coherent routine block immediately after RTI $D049; 2 instructions, jumps and merges into existing code
+0F	D210	-	Guarded flow recovery	Coherent routine block immediately after JMP $D20D; 4 instructions, merges into existing code
+0F	D277	-	Guarded flow recovery	Coherent routine block immediately after RTS $D276; 10 instructions, returns and merges into existing code
+0F	E4F6	-	Guarded flow recovery	Coherent routine block immediately after RTS $E4F5; 6 instructions, returns
+0F	E501	-	Guarded flow recovery	Coherent routine block immediately after RTS $E500; 20 instructions, returns and jumps
+0F	E52C	-	Guarded flow recovery	Coherent routine block immediately after RTS $E52B; 16 instructions, returns
+0F	E8F8	-	Guarded flow recovery	Coherent routine block immediately after RTS $E8F7; 7 instructions, returns
+0F	E904	-	Guarded flow recovery	Coherent routine block immediately after RTS $E903; 7 instructions, returns and merges into existing code
+0F	E910	-	Guarded flow recovery	Coherent routine block immediately after RTS $E90F; 22 instructions, returns and merges into existing code
 0F	E9AD	-	Supplied ROM map	Map-data bank selection routine at headerless ROM offset $3E9AD
 0F	FFD8	-	CPU vector	Lower-half RESET vector target
 10	8080	-	Direct ROM analysis	Wrapper immediately following the 64-entry bank service directory
+10	8831	-	Guarded flow recovery	Coherent routine block immediately after RTS $8830; 5 instructions, returns and merges into existing code
+10	9CB1	-	Guarded flow recovery	Coherent routine block immediately after RTS $9CB0; 25 instructions, returns and merges into existing code
+10	9DCD	-	Guarded flow recovery	Coherent routine block immediately after RTI $9DCC; 12 instructions, 1 BRK service calls, returns
+10	A09F	-	Guarded flow recovery	Coherent routine block immediately after JMP $A09C; 18 instructions, jumps and merges into existing code
+10	AF82	-	Guarded flow recovery	Coherent routine block immediately after JMP $AF7F; 19 instructions, jumps and merges into existing code
+11	8B91	-	Guarded flow recovery	Coherent routine block immediately after RTS $8B90; 3 instructions, 1 BRK service calls, returns
+11	B929	-	Guarded flow recovery	Coherent routine block immediately after RTS $B928; 7 instructions, returns
+11	B9CE	-	Guarded flow recovery	Coherent routine block immediately after RTS $B9CD; 21 instructions, 2 BRK service calls, returns
+12	9548	-	Guarded flow recovery	Coherent routine block immediately after RTS $9547; 7 instructions, 1 BRK service calls, returns
 12	97A9	-	Direct ROM analysis	Coherent battle setup routine block immediately after RTS $97A8 and before service entry $9BFD
 12	986B	-	Direct ROM analysis	Coherent nested countdown routine ending at RTS $9886 before the existing entry at $9887
+12	9C50	-	Guarded flow recovery	Coherent routine block immediately after RTS $9C4F; 15 instructions, 2 BRK service calls, returns and merges into existing code
+12	9CE5	-	Guarded flow recovery	Coherent routine block immediately after RTS $9CE4; 25 instructions, 2 BRK service calls, jumps
 12	9D6D	-	Direct ROM analysis	Coherent BRK-based battle setup routine after RTS $9D6C with a local call to $9D7A
-15	BBD4	-	Overlapping continuation	STA $DA begins on the third operand of BRK service $62,$33 at $BBD1
+12	9EC5	-	Guarded flow recovery	Coherent routine block immediately after RTS $9EC4; 63 instructions, 1 BRK service calls, returns and merges into existing code
+12	B540	-	Guarded flow recovery	Coherent routine block immediately after RTS $B53F; 3 instructions, 1 BRK service calls, returns
+12	B55C	-	Guarded flow recovery	Coherent routine block immediately after RTS $B55B; 4 instructions, 1 BRK service calls, returns
+13	81FB	-	Guarded flow recovery	Coherent routine block immediately after RTS $81FA; 13 instructions, returns and jumps and merges into existing code
+13	8308	-	Guarded flow recovery	Coherent routine block immediately after RTS $8307; 9 instructions, returns and merges into existing code
+13	8806	-	Guarded flow recovery	Coherent routine block immediately after RTS $8805; 5 instructions, jumps and merges into existing code
+13	8A56	-	Guarded flow recovery	Coherent routine block immediately after RTS $8A55; 4 instructions, returns
+13	8A94	-	Guarded flow recovery	Coherent routine block immediately after RTS $8A93; 12 instructions, returns and merges into existing code
+13	9481	-	Guarded flow recovery	Coherent routine block immediately after RTS $9480; 43 instructions, returns
+13	957B	-	Guarded flow recovery	Coherent routine block immediately after RTS $957A; 3 instructions, jumps and merges into existing code
+13	971C	-	Guarded flow recovery	Coherent routine block immediately after RTS $971B; 10 instructions, jumps and merges into existing code
+13	9CD2	-	Guarded flow recovery	Coherent routine block immediately after RTS $9CD1; 4 instructions, jumps and merges into existing code
+13	A8C0	-	Guarded flow recovery	Coherent routine block immediately after JMP $A8BD; 3 instructions, returns
+13	AC22	-	Guarded flow recovery	Coherent routine block immediately after RTS $AC21; 12 instructions, jumps and merges into existing code
+13	AC46	-	Guarded flow recovery	Coherent routine block immediately after RTS $AC45; 12 instructions, jumps and merges into existing code
+13	ADA0	-	Guarded flow recovery	Coherent routine block immediately after RTS $AD9F; 15 instructions, returns and merges into existing code
+13	B6E0	-	Guarded flow recovery	Coherent routine block immediately after RTS $B6DF; 28 instructions, 2 BRK service calls, returns
+14	AF53	-	Direct ROM analysis	Unreferenced routine after the parallel tables at $AF1D-$AF52: five JSRs to decoded fixed-bank routines ($C891, $C90C, $C770, $C73E) and JMP $FF74, two internal JSR $AF89 calls, and a CMP $AF1D,X loop shared with the decoded routine at $AEEC
+15	9B03	-	Guarded flow recovery	Coherent routine block immediately after RTI $9B02; 3 instructions, merges into existing code
+15	9C82	-	Guarded flow recovery	Coherent routine block immediately after RTS $9C81; 9 instructions, returns
+15	A006	-	Guarded flow recovery	Coherent routine block immediately after RTI $A005; 3 instructions, jumps and merges into existing code
+15	A21B	-	Guarded flow recovery	Coherent routine block immediately after RTS $A21A; 15 instructions, 5 BRK service calls, returns and jumps and merges into existing code
+15	A63F	-	Guarded flow recovery	Coherent routine block immediately after RTI $A63E; 3 instructions, 1 BRK service calls, jumps and merges into existing code
+15	A77E	-	Guarded flow recovery	Coherent routine block immediately after RTS $A77D; 15 instructions, 2 BRK service calls, returns
+15	AC45	-	Guarded flow recovery	Coherent routine block immediately after RTI $AC44; 8 instructions, jumps and merges into existing code
+15	ACB5	-	Guarded flow recovery	Coherent routine block immediately after RTI $ACB4; 13 instructions, 1 BRK service calls, returns and jumps and merges into existing code
+15	ACDB	-	Guarded flow recovery	Coherent routine block immediately after RTI $ACDA; 28 instructions, 2 BRK service calls, returns and jumps and merges into existing code
+15	ADDA	-	Guarded flow recovery	Coherent routine block immediately after RTS $ADD9; 9 instructions, 2 BRK service calls, jumps and merges into existing code
+16	8C6F	-	Guarded flow recovery	Coherent routine block immediately after RTS $8C6E; 7 instructions, returns and merges into existing code
+16	942B	-	Guarded flow recovery	Coherent routine block immediately after RTS $942A; 6 instructions, returns and merges into existing code
+16	943D	-	Guarded flow recovery	Coherent routine block immediately after RTS $943C; 14 instructions, returns and merges into existing code
+16	9458	-	Guarded flow recovery	Coherent routine block immediately after RTS $9457; 9 instructions, returns
+16	946A	-	Guarded flow recovery	Coherent routine block immediately after RTS $9469; 14 instructions, returns and merges into existing code
+16	94C9	-	Guarded flow recovery	Coherent routine block immediately after RTS $94C8; 4 instructions, merges into existing code
 16	9CBF	-	Direct ROM analysis	Four-byte compare-and-return routine immediately after the UI metric tables
 16	9CD7	-	Direct ROM analysis	Coherent text/UI routine block immediately after RTS $9CD6 and before decoded entry $9F58
 16	9EE7	-	Direct ROM analysis	Coherent text/UI selection routine block immediately after indexed lookup tables
+16	9F82	-	Guarded flow recovery	Coherent routine block immediately after JMP $9F7F; 7 instructions, 1 BRK service calls, jumps and merges into existing code
 16	9FB6	-	Direct ROM analysis	Coherent text/UI routine family after the terminal jump at $9FB3 with bounded loops and local helper calls
 16	9FBB	9FBD	Direct ROM analysis	Alternate LDA #$20 entry joining the main text/UI routine at $9FBD
 16	A0E1	A0E8	Direct ROM analysis	Dormant helper after the terminal JMP at $A0DE; calls $9FB6, invokes BRK service $03,$E7, and returns
+16	B4BF	-	Guarded flow recovery	Coherent routine block immediately after RTS $B4BE; 3 instructions, 1 BRK service calls, merges into existing code
+16	B4C9	-	Guarded flow recovery	Coherent routine block immediately after RTS $B4C8; 3 instructions, 1 BRK service calls, merges into existing code
+16	B4D3	-	Guarded flow recovery	Coherent routine block immediately after RTS $B4D2; 3 instructions, 1 BRK service calls, merges into existing code
+16	B4DD	-	Guarded flow recovery	Coherent routine block immediately after RTS $B4DC; 18 instructions, 1 BRK service calls, merges into existing code
+16	B517	-	Guarded flow recovery	Coherent routine block immediately after RTS $B516; 16 instructions, 1 BRK service calls, merges into existing code
+16	B53E	-	Guarded flow recovery	Coherent routine block immediately after RTS $B53D; 4 instructions, 1 BRK service calls, merges into existing code
+16	B55B	-	Guarded flow recovery	Coherent routine block immediately after RTS $B55A; 21 instructions, 2 BRK service calls, returns and merges into existing code
+16	B574	-	Guarded flow recovery	Coherent routine block immediately after RTS $B573; 23 instructions, 2 BRK service calls, returns and merges into existing code
+16	B590	-	Guarded flow recovery	Coherent routine block immediately after RTS $B58F; 6 instructions, returns
+16	B5B2	-	Guarded flow recovery	Coherent routine block immediately after RTS $B5B1; 45 instructions, 4 BRK service calls, jumps and merges into existing code
+16	B61B	-	Guarded flow recovery	Coherent routine block immediately after RTS $B61A; 3 instructions, 1 BRK service calls, merges into existing code
+16	B625	-	Guarded flow recovery	Coherent routine block immediately after RTS $B624; 5 instructions, 1 BRK service calls, merges into existing code
+16	B636	-	Guarded flow recovery	Coherent routine block immediately after RTS $B635; 4 instructions, 1 BRK service calls, merges into existing code
+16	B641	-	Guarded flow recovery	Coherent routine block immediately after RTS $B640; 7 instructions, 1 BRK service calls, merges into existing code
+16	B726	-	Guarded flow recovery	Coherent routine block immediately after RTS $B725; 3 instructions, merges into existing code
+16	B72D	-	Guarded flow recovery	Coherent routine block immediately after RTS $B72C; 4 instructions, 1 BRK service calls, merges into existing code
+16	B7A6	-	Guarded flow recovery	Coherent routine block immediately after RTS $B7A5; 9 instructions, merges into existing code
+16	B7B7	-	Guarded flow recovery	Coherent routine block immediately after RTS $B7B6; 3 instructions, merges into existing code
+16	B882	-	Guarded flow recovery	Coherent routine block immediately after RTS $B881; 12 instructions, returns
+16	B8DE	-	Guarded flow recovery	Coherent routine block immediately after RTS $B8DD; 45 instructions, jumps and merges into existing code
+16	B92C	-	Guarded flow recovery	Coherent routine block immediately after RTS $B92B; 11 instructions, merges into existing code
+16	B944	-	Guarded flow recovery	Coherent routine block immediately after RTS $B943; 5 instructions, merges into existing code
+16	B9BF	-	Guarded flow recovery	Coherent routine block immediately after RTS $B9BE; 39 instructions, returns and jumps and merges into existing code
+16	B9E2	-	Guarded flow recovery	Coherent routine block immediately after RTS $B9E1; 19 instructions, returns
+16	BA88	-	Guarded flow recovery	Coherent routine block immediately after RTS $BA87; 12 instructions, returns and merges into existing code
+16	BE90	-	Guarded flow recovery	Coherent routine block immediately after RTS $BE8F; 3 instructions, jumps and merges into existing code
+16	BF64	-	Guarded flow recovery	Coherent routine block immediately after RTS $BF63; 19 instructions, returns and jumps and merges into existing code
 17	806C	-	Direct ROM analysis	Resume after three-byte inline BRK service at $8068
 17	80BC	-	Direct ROM analysis	Resume after two-byte inline BRK service at $80B9
 17	817C	-	Direct ROM analysis	Resume after two-byte inline BRK service at $8179; jumps directly to $8654
@@ -153,16 +241,24 @@
 1B	A4D7	-	Direct ROM scan	JSR to fixed trampoline $C00A
 1B	A7BE	-	Direct ROM scan	JSR to fixed trampoline $C03A
 1B	ACA0	-	Direct ROM scan	JSR to fixed trampoline $C031
-1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
 1B	AD25	-	Direct ROM analysis	Coherent dormant handler ending with RTI at $AD39; branches and BRK continuations stay within the bounded block
 1B	AD3A	-	Direct ROM analysis	Coherent dormant handler ending with RTS at $AD48 after three-byte BRK service $2A,$CB,$40
+1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
 1B	B0B0	-	Direct ROM analysis	Coherent dormant sibling of the active eight-call loop at $B05E, ending with RTS at $B0DB
 1B	B0E7	-	Direct ROM analysis	Coherent decrementing sibling of $B0DC, ending with JMP $B511 at $B0EF
 1B	B55A	-	Direct ROM scan	JSR to fixed trampoline $C034
 1C	A010	-	Runtime and direct call analysis	Runtime-executed map/submap key dispatcher called directly from bank $1C:$9EAE
 1C	A0C6	-	Direct call analysis	Map-event routine called directly from bank $1C:$A0AA
+1C	A1C4	-	Guarded flow recovery	Coherent routine block immediately after RTI $A1C3; 4 instructions, returns and merges into existing code
+1C	A1E3	-	Guarded flow recovery	Coherent routine block immediately after RTS $A1E2; 6 instructions, jumps and merges into existing code
+1C	A25E	-	Guarded flow recovery	Coherent routine block immediately after RTS $A25D; 3 instructions, merges into existing code
+1C	A70E	-	Guarded flow recovery	Coherent routine block immediately after RTI $A70D; 6 instructions, 1 BRK service calls, merges into existing code
+1C	A9A4	-	Guarded flow recovery	Coherent routine block immediately after RTI $A9A3; 4 instructions, merges into existing code
+1C	B6FB	-	Guarded flow recovery	Coherent routine block immediately after RTI $B6FA; 23 instructions, 3 BRK service calls, returns and merges into existing code
 1C	B83A	-	Direct ROM analysis	Coherent adjacent map-entity initialization and transition routine family after RTS $B839 and before the registered service at $B8F5
 1C	B8CD	-	Direct ROM analysis	Standalone map-coordinate initializer after the terminal jump at $B8CA and ending with RTS at $B8DD
+1C	B9E5	-	Guarded flow recovery	Coherent routine block immediately after RTI $B9E4; 8 instructions, 1 BRK service calls, jumps and merges into existing code
+1C	BA38	-	Guarded flow recovery	Coherent routine block immediately after RTI $BA37; 25 instructions, 8 BRK service calls, returns and jumps and merges into existing code
 1C	BDD2	-	Entry pointer analysis	BRK-backed map-event handler targeted by pointer $1C:$BFA5
 1C	BED3	-	Direct call analysis	BRK-backed map-event helper called directly from bank $1C:$AE03/$AE13
 1C	BED6	-	Direct call analysis	BRK-backed map-event helper called or jumped to from bank $1C:$AE40/$AEF9
@@ -219,6 +315,11 @@
 1E	AABE	-	Direct ROM scan	JSR to fixed trampoline $C010
 1E	AAC1	-	Direct ROM scan	JSR to fixed trampoline $C010
 1E	AAC4	-	Direct ROM scan	JSR to fixed trampoline $C010
+1E	AC1B	-	Guarded flow recovery	Coherent routine block immediately after RTS $AC1A; 46 instructions, jumps and merges into existing code
+1E	B148	-	Guarded flow recovery	Coherent routine block immediately after RTS $B147; 6 instructions, returns
+1E	B2A6	-	Guarded flow recovery	Coherent routine block immediately after RTS $B2A5; 72 instructions, 14 BRK service calls, returns and jumps and merges into existing code
+1E	B2F8	-	Guarded flow recovery	Coherent routine block immediately after JMP $B2F5; 19 instructions, 4 BRK service calls, jumps and merges into existing code
+1E	B381	-	Guarded flow recovery	Coherent routine block immediately after RTS $B380; 35 instructions, 4 BRK service calls, returns and jumps and merges into existing code
 1E	B3F3	-	Direct ROM analysis	Coherent map-interaction routine block immediately after the entry at $B3ED
 1E	B5B6	-	Inline service continuation	Code resumes after the three operands consumed by BRK service $65,$23 at $B5B2
 1E	B79C	-	Direct ROM analysis	Coherent story-flag helper block calling the decoded bit-selector at $B779
@@ -266,6 +367,8 @@
 1F	C03A	C03D	Direct ROM analysis	Fixed-bank JMP trampoline 13
 1F	C15A	-	Direct ROM analysis	NMI body installed as JMP $C15A at RAM vector $0502
 1F	C408	-	CPU vector	IRQ/BRK vector target
+1F	C75E	-	Guarded flow recovery	Coherent routine block immediately after RTS $C75D; 8 instructions, jumps and merges into existing code
+1F	CADF	-	Guarded flow recovery	Coherent routine block immediately after JMP $CADC; 4 instructions, jumps and merges into existing code
 1F	CE09	-	Direct ROM analysis	Coherent fixed-bank event routine immediately after RTS $CE08 with calls into the adjacent CFxx helper family
 1F	CE80	-	Direct ROM analysis	Coherent fixed-bank event helper after the terminal jump at $CE7D and before RTS $CEBD
 1F	CEBE	-	Direct ROM analysis	Coherent selector routine after RTS $CEBD indexing the eleven-byte table at $CEF8
@@ -274,6 +377,23 @@
 1F	CF41	-	Direct ROM analysis	Coherent chapter and coordinate event helper called by the recovered helper at $CEA1
 1F	CF56	-	Direct ROM analysis	Compact BRK-backed event helper called by recovered routines at $CE31/$CE80
 1F	CF5F	-	Direct ROM analysis	Coherent fixed-bank event-state update routine called by the recovered routine at $CE39
+1F	D1E1	-	Guarded flow recovery	Coherent routine block immediately after RTS $D1E0; 20 instructions, returns and merges into existing code
+1F	D277	-	Guarded flow recovery	Coherent routine block immediately after RTS $D276; 31 instructions, returns and merges into existing code
+1F	D41A	-	Guarded flow recovery	Coherent routine block immediately after RTS $D419; 16 instructions, returns and merges into existing code
+1F	D437	-	Guarded flow recovery	Coherent routine block immediately after RTS $D436; 19 instructions, returns and merges into existing code
+1F	E869	-	Guarded flow recovery	Coherent routine block immediately after JMP $E866; 6 instructions, merges into existing code
+1F	E87E	-	Guarded flow recovery	Coherent routine block immediately after JMP $E87B; 2 instructions, jumps and merges into existing code
+1F	E89A	-	Guarded flow recovery	Coherent routine block immediately after RTS $E899; 8 instructions, jumps and merges into existing code
+1F	E8AE	-	Guarded flow recovery	Coherent routine block immediately after JMP $E8AB; 4 instructions, jumps and merges into existing code
+1F	E8BA	-	Guarded flow recovery	Coherent routine block immediately after JMP $E8B7; 12 instructions, jumps and merges into existing code
+1F	E8D8	-	Guarded flow recovery	Coherent routine block immediately after JMP $E8D5; 8 instructions, jumps and merges into existing code
+1F	E8EA	-	Guarded flow recovery	Coherent routine block immediately after JMP $E8E7; 2 instructions, jumps and merges into existing code
+1F	E8F0	-	Guarded flow recovery	Coherent routine block immediately after JMP $E8ED; 2 instructions, jumps and merges into existing code
+1F	E941	-	Guarded flow recovery	Coherent routine block immediately after JMP $E93E; 3 instructions, jumps and merges into existing code
+1F	E94A	-	Guarded flow recovery	Coherent routine block immediately after JMP $E947; 4 instructions, jumps and merges into existing code
+1F	E968	-	Guarded flow recovery	Coherent routine block immediately after JMP $E965; 3 instructions, jumps and merges into existing code
+1F	EC45	-	Guarded flow recovery	Coherent routine block immediately after RTS $EC44; 5 instructions, returns and merges into existing code
+1F	F051	-	Guarded flow recovery	Coherent routine block immediately after JMP $F04E; 2 instructions, jumps and merges into existing code
 1F	F11C	-	Inline service continuation	Coherent fixed-bank routine resumes after the two operands consumed by BRK service $12,$DF at $F119 and returns at $F19A
 1F	F271	-	Direct ROM analysis	Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662
 1F	F29E	-	Direct ROM analysis	Coherent routine after the $F29C stream pointer that copies $7608-$760B into $52-$55 and returns at $F2B2

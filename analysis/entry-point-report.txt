@@ -1,15 +1,15 @@
 Dragon Warrior IV entry-point and pointer-boundary audit
 Every declared table is read as contiguous, non-overlapping two-byte little-endian entries.
 
-Declared tables: 75
+Declared tables: 80
 Explicit pointer fields: 126
-Pointer entries: 2066
-Executable targets decoded: 1968 / 1968
-excluded-data: 62
+Pointer entries: 2143
+Executable targets decoded: 2032 / 2032
+excluded-data: 80
 fixed-bank-code: 2
-local-bank-code: 1966
+local-bank-code: 2030
 non-code-value: 17
-unsupported-target-value: 18
+unsupported-target-value: 13
 vector-data-value: 1
 
 Bank $08:$8000-$803B (30 entries)
@@ -33,7 +33,7 @@ Bank $08:$8000-$803B (30 entries)
   $8022 -> bank $08:$8710 [local-bank-code, decoded]
   $8024 -> bank $08:$8796 [local-bank-code, decoded]
   $8026 -> bank $08:$B4E5 [local-bank-code, decoded]
-  $8028 -> bank $08:$B7AE [local-bank-code, decoded]
+  $8028 -> bank $08:$B7AE [excluded-data]
   $802A -> bank $08:$84C2 [local-bank-code, decoded]
   $802C -> bank $08:$979B [excluded-data]
   $802E -> bank $08:$A1D0 [excluded-data]
@@ -43,6 +43,16 @@ Bank $08:$8000-$803B (30 entries)
   $8036 -> bank $08:$BE94 [excluded-data]
   $8038 -> bank $08:$B725 [local-bank-code, decoded]
   $803A -> bank $08:$8097 [local-bank-code, decoded]
+
+Bank $0B:$8000-$800F (8 entries)
+  $8000 -> bank $0B:$A590 [excluded-data]
+  $8002 -> bank $0B:$AB65 [excluded-data]
+  $8004 -> bank $0B:$BFA6 [local-bank-code, decoded]
+  $8006 -> bank $0B:$AE89 [excluded-data]
+  $8008 -> bank $0B:$AF61 [local-bank-code, decoded]
+  $800A -> bank $0B:$BF7C [local-bank-code, decoded]
+  $800C -> bank $0B:$BE1F [local-bank-code, decoded]
+  $800E -> bank $0B:$BF36 [local-bank-code, decoded]
 
 Bank $0E:$8000-$8007 (4 entries)
   $8000 -> bank $0E:$8010 [local-bank-code, decoded]
@@ -151,8 +161,8 @@ Bank $10:$8000-$807F (64 entries)
   $803A -> bank $10:$B146 [local-bank-code, decoded]
   $803C -> bank $10:$B158 [local-bank-code, decoded]
   $803E -> bank $10:$B15A [local-bank-code, decoded]
-  $8040 -> bank $10:$8DE2 [local-bank-code, decoded]
-  $8042 -> bank $10:$8E61 [local-bank-code, decoded]
+  $8040 -> bank $10:$8DE2 [excluded-data]
+  $8042 -> bank $10:$8E61 [excluded-data]
   $8044 -> bank $10:$AB74 [local-bank-code, decoded]
   $8046 -> bank $10:$AB88 [local-bank-code, decoded]
   $8048 -> bank $10:$AB9C [local-bank-code, decoded]
@@ -178,11 +188,11 @@ Bank $10:$8000-$807F (64 entries)
   $8070 -> bank $10:$90EC [local-bank-code, decoded]
   $8072 -> bank $10:$ACAF [local-bank-code, decoded]
   $8074 -> bank $10:$A2DB [local-bank-code, decoded]
-  $8076 -> bank $10:$BCC7 [local-bank-code, decoded]
+  $8076 -> bank $10:$BCC7 [excluded-data]
   $8078 -> bank $10:$BCEC [unsupported-target-value]
-  $807A -> bank $10:$BD0E [local-bank-code, decoded]
+  $807A -> bank $10:$BD0E [excluded-data]
   $807C -> bank $10:$BD1F [unsupported-target-value]
-  $807E -> bank $10:$BD28 [local-bank-code, decoded]
+  $807E -> bank $10:$BD28 [excluded-data]
 
 Bank $10:$9E30-$9F11 (113 entries)
   $9E30 -> bank $10:$84E9 [local-bank-code, decoded]
@@ -871,9 +881,9 @@ Bank $12:$8000-$8063 (50 entries)
   $8058 -> bank $12:$B6DE [local-bank-code, decoded]
   $805A -> bank $12:$90EC [local-bank-code, decoded]
   $805C -> bank $12:$A304 [local-bank-code, decoded]
-  $805E -> bank $12:$BDC9 [local-bank-code, decoded]
-  $8060 -> bank $12:$BE4E [local-bank-code, decoded]
-  $8062 -> bank $12:$BECD [local-bank-code, decoded]
+  $805E -> bank $12:$BDC9 [excluded-data]
+  $8060 -> bank $12:$BE4E [excluded-data]
+  $8062 -> bank $12:$BECD [excluded-data]
 
 Bank $12:$8493-$84A0 (7 entries)
   $8493 -> bank $12:$83E2 [local-bank-code, decoded]
@@ -971,7 +981,7 @@ Bank $13:$8000-$8037 (28 entries)
   $8018 -> bank $13:$B930 [local-bank-code, decoded]
   $801A -> bank $13:$B937 [local-bank-code, decoded]
   $801C -> bank $13:$B949 [local-bank-code, decoded]
-  $801E -> bank $13:$B7E3 [local-bank-code, decoded]
+  $801E -> bank $13:$B7E3 [excluded-data]
   $8020 -> bank $13:$8366 [local-bank-code, decoded]
   $8022 -> bank $13:$89B6 [local-bank-code, decoded]
   $8024 -> bank $13:$83F4 [local-bank-code, decoded]
@@ -1718,6 +1728,42 @@ Bank $16:$80C4-$80E9 (19 entries)
   $80E6 -> bank $16:$821C [local-bank-code, decoded]
   $80E8 -> bank $16:$81EA [local-bank-code, decoded]
 
+Bank $16:$93F0-$940F (16 entries)
+  $93F0 -> bank $16:$941B (RTS dispatch of stored $941A) [local-bank-code, decoded]
+  $93F2 -> bank $16:$941B (RTS dispatch of stored $941A) [local-bank-code, decoded]
+  $93F4 -> bank $16:$9487 (RTS dispatch of stored $9486) [local-bank-code, decoded]
+  $93F6 -> bank $16:$94E1 (RTS dispatch of stored $94E0) [local-bank-code, decoded]
+  $93F8 -> bank $16:$942B (RTS dispatch of stored $942A) [local-bank-code, decoded]
+  $93FA -> bank $16:$9458 (RTS dispatch of stored $9457) [local-bank-code, decoded]
+  $93FC -> bank $16:$9494 (RTS dispatch of stored $9493) [local-bank-code, decoded]
+  $93FE -> bank $16:$94E1 (RTS dispatch of stored $94E0) [local-bank-code, decoded]
+  $9400 -> bank $16:$943D (RTS dispatch of stored $943C) [local-bank-code, decoded]
+  $9402 -> bank $16:$946A (RTS dispatch of stored $9469) [local-bank-code, decoded]
+  $9404 -> bank $16:$94B9 (RTS dispatch of stored $94B8) [local-bank-code, decoded]
+  $9406 -> bank $16:$941B (RTS dispatch of stored $941A) [local-bank-code, decoded]
+  $9408 -> bank $16:$941B (RTS dispatch of stored $941A) [local-bank-code, decoded]
+  $940A -> bank $16:$9477 (RTS dispatch of stored $9476) [local-bank-code, decoded]
+  $940C -> bank $16:$94C9 (RTS dispatch of stored $94C8) [local-bank-code, decoded]
+  $940E -> bank $16:$94E9 (RTS dispatch of stored $94E8) [local-bank-code, decoded]
+
+Bank $16:$99A3-$99B6 (10 entries)
+  $99A3 -> bank $16:$9F82 (RTS dispatch of stored $9F81) [local-bank-code, decoded]
+  $99A5 -> bank $16:$9F94 (RTS dispatch of stored $9F93) [local-bank-code, decoded]
+  $99A7 -> bank $16:$9CD7 (RTS dispatch of stored $9CD6) [local-bank-code, decoded]
+  $99A9 -> bank $16:$9EE7 (RTS dispatch of stored $9EE6) [local-bank-code, decoded]
+  $99AB -> bank $16:$9F58 (RTS dispatch of stored $9F57) [local-bank-code, decoded]
+  $99AD -> bank $16:$9FA6 (RTS dispatch of stored $9FA5) [local-bank-code, decoded]
+  $99AF -> bank $16:$A39B (RTS dispatch of stored $A39A) [local-bank-code, decoded]
+  $99B1 -> bank $16:$A0E8 (RTS dispatch of stored $A0E7) [local-bank-code, decoded]
+  $99B3 -> bank $16:$A0E1 (RTS dispatch of stored $A0E0) [local-bank-code, decoded]
+  $99B5 -> bank $16:$9FBB (RTS dispatch of stored $9FBA) [local-bank-code, decoded]
+
+Bank $16:$A3A7-$A3AE (4 entries)
+  $A3A7 -> bank $16:$A3AF (RTS dispatch of stored $A3AE) [local-bank-code, decoded]
+  $A3A9 -> bank $16:$A3FA (RTS dispatch of stored $A3F9) [local-bank-code, decoded]
+  $A3AB -> bank $16:$A3B5 (RTS dispatch of stored $A3B4) [local-bank-code, decoded]
+  $A3AD -> bank $16:$A3C8 (RTS dispatch of stored $A3C7) [local-bank-code, decoded]
+
 Bank $16:$A5E9-$A654 (54 entries)
   $A5E9 -> bank $16:$AAEF [excluded-data]
   $A5EB -> bank $16:$AAF7 [local-bank-code, decoded]
@@ -1774,9 +1820,6 @@ Bank $16:$A5E9-$A654 (54 entries)
   $A651 -> bank $16:$B021 [local-bank-code, decoded]
   $A653 -> bank $16:$B037 [local-bank-code, decoded]
 
-Bank $16:$A68D-$A68E (1 entries)
-  $A68D -> bank $16:$B0FA [local-bank-code, decoded]
-
 Bank $16:$A6DF-$A6F2 (10 entries)
   $A6DF -> bank $16:$B1C1 [local-bank-code, decoded]
   $A6E1 -> bank $16:$B1D8 [local-bank-code, decoded]
@@ -1788,9 +1831,6 @@ Bank $16:$A6DF-$A6F2 (10 entries)
   $A6ED -> bank $16:$B307 [local-bank-code, decoded]
   $A6EF -> bank $16:$B342 [local-bank-code, decoded]
   $A6F1 -> bank $16:$B37F [local-bank-code, decoded]
-
-Bank $16:$A703-$A704 (1 entries)
-  $A703 -> bank $16:$B3FC [local-bank-code, decoded]
 
 Bank $16:$A73B-$A776 (30 entries)
   $A73B -> bank $16:$B4B5 [local-bank-code, decoded]
@@ -1835,26 +1875,37 @@ Bank $16:$A777-$A786 (8 entries)
   $A785 -> bank $16:$B7B6 [local-bank-code, decoded]
 
 Bank $16:$A787-$A792 (6 entries)
-  $A787 -> bank $16:$B7BD [local-bank-code, decoded]
-  $A789 -> bank $16:$B83A [unsupported-target-value]
-  $A78B -> bank $16:$B867 [unsupported-target-value]
-  $A78D -> bank $16:$B874 [unsupported-target-value]
-  $A78F -> bank $16:$B881 [local-bank-code, decoded]
-  $A791 -> bank $16:$B89F [local-bank-code, decoded]
+  $A787 -> bank $16:$B7BE (RTS dispatch of stored $B7BD) [local-bank-code, decoded]
+  $A789 -> bank $16:$B83B (RTS dispatch of stored $B83A) [local-bank-code, decoded]
+  $A78B -> bank $16:$B868 (RTS dispatch of stored $B867) [local-bank-code, decoded]
+  $A78D -> bank $16:$B875 (RTS dispatch of stored $B874) [local-bank-code, decoded]
+  $A78F -> bank $16:$B882 (RTS dispatch of stored $B881) [local-bank-code, decoded]
+  $A791 -> bank $16:$B8A0 (RTS dispatch of stored $B89F) [local-bank-code, decoded]
 
 Bank $16:$A793-$A7AA (12 entries)
-  $A793 -> bank $16:$B8C1 [local-bank-code, decoded]
-  $A795 -> bank $16:$B8D0 [local-bank-code, decoded]
-  $A797 -> bank $16:$B8D5 [local-bank-code, decoded]
-  $A799 -> bank $16:$B8DD [local-bank-code, decoded]
-  $A79B -> bank $16:$B92B [local-bank-code, decoded]
-  $A79D -> bank $16:$B943 [local-bank-code, decoded]
-  $A79F -> bank $16:$B94F [local-bank-code, decoded]
-  $A7A1 -> bank $16:$B974 [unsupported-target-value]
-  $A7A3 -> bank $16:$B988 [local-bank-code, decoded]
-  $A7A5 -> bank $16:$B9AF [unsupported-target-value]
-  $A7A7 -> bank $16:$B9BE [local-bank-code, decoded]
-  $A7A9 -> bank $16:$B9E1 [local-bank-code, decoded]
+  $A793 -> bank $16:$B8C2 (RTS dispatch of stored $B8C1) [local-bank-code, decoded]
+  $A795 -> bank $16:$B8D1 (RTS dispatch of stored $B8D0) [local-bank-code, decoded]
+  $A797 -> bank $16:$B8D6 (RTS dispatch of stored $B8D5) [local-bank-code, decoded]
+  $A799 -> bank $16:$B8DE (RTS dispatch of stored $B8DD) [local-bank-code, decoded]
+  $A79B -> bank $16:$B92C (RTS dispatch of stored $B92B) [local-bank-code, decoded]
+  $A79D -> bank $16:$B944 (RTS dispatch of stored $B943) [local-bank-code, decoded]
+  $A79F -> bank $16:$B950 (RTS dispatch of stored $B94F) [local-bank-code, decoded]
+  $A7A1 -> bank $16:$B975 (RTS dispatch of stored $B974) [local-bank-code, decoded]
+  $A7A3 -> bank $16:$B989 (RTS dispatch of stored $B988) [local-bank-code, decoded]
+  $A7A5 -> bank $16:$B9B0 (RTS dispatch of stored $B9AF) [local-bank-code, decoded]
+  $A7A7 -> bank $16:$B9BF (RTS dispatch of stored $B9BE) [local-bank-code, decoded]
+  $A7A9 -> bank $16:$B9E2 (RTS dispatch of stored $B9E1) [local-bank-code, decoded]
+
+Bank $16:$BCD9-$BCEA (9 entries)
+  $BCD9 -> bank $16:$BB8D (RTS dispatch of stored $BB8C) [local-bank-code, decoded]
+  $BCDB -> bank $16:$BBB9 (RTS dispatch of stored $BBB8) [local-bank-code, decoded]
+  $BCDD -> bank $16:$BBD0 (RTS dispatch of stored $BBCF) [local-bank-code, decoded]
+  $BCDF -> bank $16:$BBC1 (RTS dispatch of stored $BBC0) [local-bank-code, decoded]
+  $BCE1 -> bank $16:$BBF8 (RTS dispatch of stored $BBF7) [local-bank-code, decoded]
+  $BCE3 -> bank $16:$BBB9 (RTS dispatch of stored $BBB8) [local-bank-code, decoded]
+  $BCE5 -> bank $16:$BBC1 (RTS dispatch of stored $BBC0) [local-bank-code, decoded]
+  $BCE7 -> bank $16:$BBFD (RTS dispatch of stored $BBFC) [local-bank-code, decoded]
+  $BCE9 -> bank $16:$BA78 (RTS dispatch of stored $BA77) [local-bank-code, decoded]
 
 Bank $17:$8000-$804B (38 entries)
   $8000 -> bank $17:$804C [local-bank-code, decoded]
@@ -1926,12 +1977,12 @@ Bank $18:$8000-$8045 (35 entries)
   $8034 -> bank $18:$BDBD [unsupported-target-value]
   $8036 -> bank $18:$BE7D [local-bank-code, decoded]
   $8038 -> bank $18:$BEEE [unsupported-target-value]
-  $803A -> bank $18:$BF55 [local-bank-code, decoded]
-  $803C -> bank $18:$BF90 [local-bank-code, decoded]
-  $803E -> bank $18:$BF8C [local-bank-code, decoded]
-  $8040 -> bank $18:$B620 [local-bank-code, decoded]
+  $803A -> bank $18:$BF55 [excluded-data]
+  $803C -> bank $18:$BF90 [excluded-data]
+  $803E -> bank $18:$BF8C [excluded-data]
+  $8040 -> bank $18:$B620 [excluded-data]
   $8042 -> bank $18:$B655 [unsupported-target-value]
-  $8044 -> bank $18:$B65A [local-bank-code, decoded]
+  $8044 -> bank $18:$B65A [excluded-data]
 
 Bank $19:$8000-$8013 (10 entries)
   $8000 -> $0000 [non-code-value]
@@ -2375,6 +2426,16 @@ Bank $1E:$8000-$808F (72 entries)
   $808C -> bank $1E:$B722 [local-bank-code, decoded]
   $808E -> bank $1E:$BC1E [local-bank-code, decoded]
 
+Bank $1E:$80AA-$80B9 (8 entries)
+  $80AA -> bank $1E:$80BA (RTS dispatch of stored $80B9) [local-bank-code, decoded]
+  $80AC -> bank $1E:$81CD (RTS dispatch of stored $81CC) [local-bank-code, decoded]
+  $80AE -> bank $1E:$81D1 (RTS dispatch of stored $81D0) [local-bank-code, decoded]
+  $80B0 -> bank $1E:$8261 (RTS dispatch of stored $8260) [local-bank-code, decoded]
+  $80B2 -> bank $1E:$8265 (RTS dispatch of stored $8264) [local-bank-code, decoded]
+  $80B4 -> bank $1E:$83FE (RTS dispatch of stored $83FD) [local-bank-code, decoded]
+  $80B6 -> bank $1E:$8343 (RTS dispatch of stored $8342) [local-bank-code, decoded]
+  $80B8 -> bank $1E:$8340 (RTS dispatch of stored $833F) [local-bank-code, decoded]
+
 Bank $1E:$A499-$A4A2 (5 entries)
   $A499 -> bank $1E:$A4A3 [local-bank-code, decoded]
   $A49B -> bank $1E:$A4B3 [local-bank-code, decoded]
@@ -2479,3 +2540,29 @@ Bank $1F:$DF64-$DF79 (11 entries)
   $DF74 -> bank $1F:$DEE5 [local-bank-code, decoded]
   $DF76 -> bank $1F:$DEE5 [local-bank-code, decoded]
   $DF78 -> bank $1F:$DEE5 [local-bank-code, decoded]
+
+Bank $1F:$E812-$E841 (24 entries)
+  $E812 -> bank $1F:$E968 (RTS dispatch of stored $E967) [local-bank-code, decoded]
+  $E814 -> bank $1F:$E970 (RTS dispatch of stored $E96F) [local-bank-code, decoded]
+  $E816 -> bank $1F:$E98F (RTS dispatch of stored $E98E) [local-bank-code, decoded]
+  $E818 -> bank $1F:$E88D (RTS dispatch of stored $E88C) [local-bank-code, decoded]
+  $E81A -> bank $1F:$E941 (RTS dispatch of stored $E940) [local-bank-code, decoded]
+  $E81C -> bank $1F:$E900 (RTS dispatch of stored $E8FF) [local-bank-code, decoded]
+  $E81E -> bank $1F:$E8F6 (RTS dispatch of stored $E8F5) [local-bank-code, decoded]
+  $E820 -> bank $1F:$E95E (RTS dispatch of stored $E95D) [local-bank-code, decoded]
+  $E822 -> bank $1F:$E954 (RTS dispatch of stored $E953) [local-bank-code, decoded]
+  $E824 -> bank $1F:$E8D8 (RTS dispatch of stored $E8D7) [local-bank-code, decoded]
+  $E826 -> bank $1F:$E8EA (RTS dispatch of stored $E8E9) [local-bank-code, decoded]
+  $E828 -> bank $1F:$E8F0 (RTS dispatch of stored $E8EF) [local-bank-code, decoded]
+  $E82A -> bank $1F:$E842 (RTS dispatch of stored $E841) [local-bank-code, decoded]
+  $E82C -> bank $1F:$E8AE (RTS dispatch of stored $E8AD) [local-bank-code, decoded]
+  $E82E -> bank $1F:$E89A (RTS dispatch of stored $E899) [local-bank-code, decoded]
+  $E830 -> bank $1F:$E8BA (RTS dispatch of stored $E8B9) [local-bank-code, decoded]
+  $E832 -> bank $1F:$F051 (RTS dispatch of stored $F050) [local-bank-code, decoded]
+  $E834 -> bank $1F:$E92D (RTS dispatch of stored $E92C) [local-bank-code, decoded]
+  $E836 -> bank $1F:$E884 (RTS dispatch of stored $E883) [local-bank-code, decoded]
+  $E838 -> bank $1F:$E856 (RTS dispatch of stored $E855) [local-bank-code, decoded]
+  $E83A -> bank $1F:$E87E (RTS dispatch of stored $E87D) [local-bank-code, decoded]
+  $E83C -> bank $1F:$E85A (RTS dispatch of stored $E859) [local-bank-code, decoded]
+  $E83E -> bank $1F:$E869 (RTS dispatch of stored $E868) [local-bank-code, decoded]
+  $E840 -> bank $1F:$E94A (RTS dispatch of stored $E949) [local-bank-code, decoded]

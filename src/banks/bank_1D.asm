@@ -241,190 +241,189 @@ Bank1D_MapGraphics:
         db   $F9,$FD,$FD,$FE,$FD,$FB,$07,$07 ; 854E F9 FD FD FE FD FB 07 07  ........
         db   $1F,$FF,$FD,$06,$05,$FB,$77,$77 ; 8556 1F FF FD 06 05 FB 77 77  ......ww
         db   $EF,$DF,$9F,$7F,$FF,$BF,$FF,$DF ; 855E EF DF 9F 7F FF BF FF DF  ........
-        db   $E0,$C0                         ; 8566 E0 C0                    ..
-        db   $80,$20,$20,$00,$C0,$C0,$DB,$ED ; 8568 80 20 20 00 C0 C0 DB ED  .  .....
-        db   $E6,$F9,$FF,$F7,$F3,$E7,$1B,$0D ; 8570 E6 F9 FF F7 F3 E7 1B 0D  ........
-        db   $06,$11,$13,$03,$03,$07,$9F,$BF ; 8578 06 11 13 03 03 07 9F BF  ........
-        db   $3F,$DF,$DF,$DF,$E0,$E0,$F8,$FF ; 8580 3F DF DF DF E0 E0 F8 FF  ?.......
-        db   $3F,$C0,$C0,$DF,$EE,$EE,$F7,$E7 ; 8588 3F C0 C0 DF EE EE F7 E7  ?.......
-        db   $E1,$E4,$ED,$EB,$17,$47,$77,$F7 ; 8590 E1 E4 ED EB 17 47 77 F7  .....Gw.
-        db   $F9,$1C,$0D,$EB,$D7,$47,$EC,$D0 ; 8598 F9 1C 0D EB D7 47 EC D0  .....G..
-        db   $38,$BC,$D3,$D0,$E8,$E4,$03,$07 ; 85A0 38 BC D3 D0 E8 E4 03 07  8.......
-        db   $07,$07,$0F,$0F,$07,$07,$CB,$C5 ; 85A8 07 07 0F 0F 07 07 CB C5  ........
-        db   $C6,$CD,$F3,$03,$07,$0F,$F0,$F8 ; 85B0 C6 CD F3 03 07 0F F0 F8  ........
-        db   $F8,$F8,$FC,$FC,$F8,$F8,$D0,$A0 ; 85B8 F8 F8 FC FC F8 F8 D0 A0  ........
-        db   $78,$78,$B8,$DF,$E0,$E8,$0C,$1F ; 85C0 78 78 B8 DF E0 E8 0C 1F  xx......
-        db   $1F,$1F,$07,$07,$07,$00,$03,$01 ; 85C8 1F 1F 07 07 07 00 03 01  ........
-        db   $01,$06,$05,$FB,$7F,$07,$0F,$FF ; 85D0 01 06 05 FB 7F 07 0F FF  ........
-        db   $FE,$F8,$F8,$F8,$78,$78,$E3,$C3 ; 85D8 FE F8 F8 F8 78 78 E3 C3  ....xx..
-        db   $23,$B3,$CF,$C0,$E0,$F0,$0F,$1F ; 85E0 23 B3 CF C0 E0 F0 0F 1F  #.......
-        db   $1F,$1F,$3F,$3F,$1F,$1F,$1B,$1D ; 85E8 1F 1F 3F 3F 1F 1F 1B 1D  ..??....
-        db   $1E,$3D,$CB,$07,$17,$37,$C0,$E0 ; 85F0 1E 3D CB 07 17 37 C0 E0  .=...7..
-        db   $E0,$E0,$F0,$F0,$E0,$E0,$C0,$80 ; 85F8 E0 E0 F0 F0 E0 E0 C0 80  ........
-        db   $00,$60,$A0,$DF,$FE,$E0,$F0,$FF ; 8600 00 60 A0 DF FE E0 F0 FF  .`......
-        db   $7F,$1F,$1F,$1F,$1E,$1E,$07,$03 ; 8608 7F 1F 1F 1F 1E 1E 07 03  ........
-        db   $1D,$1C,$1D,$FB,$17,$07,$30,$F8 ; 8610 1D 1C 1D FB 17 07 30 F8  ......0.
-        db   $F8,$F8,$E0,$E0,$E0,$00,$EC,$D0 ; 8618 F8 F8 E0 E0 E0 00 EC D0  ........
-        db   $38,$B8,$D0,$C0,$E0,$E0,$03,$07 ; 8620 38 B8 D0 C0 E0 E0 03 07  8.......
-        db   $07,$07,$0F,$1F,$1F,$1F,$0B,$05 ; 8628 07 07 0F 1F 1F 1F 0B 05  ........
-        db   $06,$05,$03,$03,$03,$03,$F0,$F8 ; 8630 06 05 03 03 03 03 F0 F8  ........
-        db   $F8,$F8,$F8,$FC,$FC,$FC,$C0,$A0 ; 8638 F8 F8 F8 FC FC FC C0 A0  ........
-        db   $7F,$7F,$BF,$D7,$EB,$E8,$1F,$0F ; 8640 7F 7F BF D7 EB E8 1F 0F  ........
-        db   $08,$18,$1F,$00,$03,$00,$07,$1F ; 8648 08 18 1F 00 03 00 07 1F  ........
-        db   $FD,$F8,$FB,$FB,$77,$77,$FE,$E2 ; 8650 FD F8 FB FB 77 77 FE E2  ....ww..
-        db   $00,$00,$F8,$00,$70,$70,$E0,$C0 ; 8658 00 00 F8 00 70 70 E0 C0  ....pp..
-        db   $20,$A0,$C0,$C0,$C0,$C0,$0F,$1F ; 8660 20 A0 C0 C0 C0 C0 0F 1F   .......
-        db   $1F,$1F,$1F,$3F,$3F,$3F,$1B,$1D ; 8668 1F 1F 1F 3F 3F 3F 1B 1D  ...???..
-        db   $1E,$1D,$03,$07,$07,$07,$C0,$E0 ; 8670 1E 1D 03 07 07 07 C0 E0  ........
-        db   $E0,$E0,$F0,$F8,$F8,$F8,$E0,$F8 ; 8678 E0 E0 F0 F8 F8 F8 E0 F8  ........
-        db   $3F,$5F,$9F,$DF,$EE,$EE,$7F,$47 ; 8680 3F 5F 9F DF EE EE 7F 47  ?_.....G
-        db   $00,$00,$1F,$00,$0E,$0E,$07,$03 ; 8688 00 00 1F 00 0E 0E 07 03  ........
-        db   $FD,$FC,$FB,$EB,$D7,$37,$F8,$F0 ; 8690 FD FC FB EB D7 37 F8 F0  .....7..
-        db   $10,$18,$F8,$00,$C0,$00,$EF,$D7 ; 8698 10 18 F8 00 C0 00 EF D7  ........
-        db   $3F,$B9,$DE,$DF,$EF,$E1,$EC,$D0 ; 86A0 3F B9 DE DF EF E1 EC D0  ?.......
-        db   $38,$B8,$D0,$D0,$E8,$E2,$FB,$FD ; 86A8 38 B8 D0 D0 E8 E2 FB FD  8.......
-        db   $FE,$E6,$1D,$FF,$FF,$E7,$0B,$05 ; 86B0 FE E6 1D FF FF E7 0B 05  ........
-        db   $06,$06,$01,$03,$07,$17,$DF,$BF ; 86B8 06 06 01 03 07 17 DF BF  ........
-        db   $67,$67,$B8,$D8,$E7,$E8,$D7,$A7 ; 86C0 67 67 B8 D8 E7 E8 D7 A7  gg......
-        db   $7F,$7F,$B8,$DF,$E0,$E8,$FC,$FE ; 86C8 7F 7F B8 DF E0 E8 FC FE  ........
-        db   $FE,$3E,$05,$03,$07,$7F,$FB,$F9 ; 86D0 FE 3E 05 03 07 7F FB F9  .>......
-        db   $F8,$3E,$C5,$FB,$7F,$07,$EF,$DF ; 86D8 F8 3E C5 FB 7F 07 EF DF  .>......
-        db   $3F,$A7,$F8,$FF,$FF,$E7,$E0,$C0 ; 86E0 3F A7 F8 FF FF E7 E0 C0  ?.......
-        db   $20,$A0,$C0,$C0,$E0,$E8,$DB,$FD ; 86E8 20 A0 C0 C0 E0 E8 DB FD   .......
-        db   $FE,$9D,$7B,$F7,$F7,$B7,$1B,$1D ; 86F0 FE 9D 7B F7 F7 B7 1B 1D  ..{.....
-        db   $1E,$1D,$0B,$07,$17,$77,$3F,$7F ; 86F8 1E 1D 0B 07 17 77 3F 7F  .....w?.
-        db   $7F,$7C,$A0,$C0,$E0,$FE,$DF,$9F ; 8700 7F 7C A0 C0 E0 FE DF 9F  .|......
-        db   $1F,$7C,$A3,$DF,$FE,$E0,$F7,$FB ; 8708 1F 7C A3 DF FE E0 F7 FB  .|......
-        db   $E5,$E4,$1D,$1B,$F7,$07,$E7,$E3 ; 8710 E5 E4 1D 1B F7 07 E7 E3  ........
-        db   $FD,$FC,$1D,$FB,$17,$07,$B8,$06 ; 8718 FD FC 1D FB 17 07 B8 06  ........
-        db   $01,$02,$84,$73,$C4,$02,$FF,$FF ; 8720 01 02 84 73 C4 02 FF FF  ...s....
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$01,$02 ; 8728 FF FF FF FF FF FF 01 02  ........
-        db   $8C,$72,$8E,$01,$00,$01,$FF,$FF ; 8730 8C 72 8E 01 00 01 FF FF  .r......
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$03,$84 ; 8738 FF FF FF FF FF FF 03 84  ........
-        db   $78,$84,$03,$07,$07,$0B,$FF,$FF ; 8740 78 84 03 07 07 0B FF FF  x.......
-        db   $FF,$FF,$FC,$FA,$FB,$F5,$B3,$0C ; 8748 FF FF FC FA FB F5 B3 0C  ........
-        db   $02,$01,$01,$E6,$98,$46,$FF,$FF ; 8750 02 01 01 E6 98 46 FF FF  .....F..
-        db   $FF,$FF,$FF,$7F,$7F,$BF,$B8,$06 ; 8758 FF FF FF 7F 7F BF B8 06  ........
-        db   $01,$00,$83,$77,$CF,$0F,$FF,$FF ; 8760 01 00 83 77 CF 0F FF FF  ...w....
-        db   $FF,$FF,$FC,$F9,$F3,$F7,$01,$02 ; 8768 FF FF FC F9 F3 F7 01 02  ........
-        db   $8C,$32,$CE,$E1,$F0,$F1,$FF,$FF ; 8770 8C 32 CE E1 F0 F1 FF FF  .2......
-        db   $FF,$FF,$3F,$9F,$8F,$4F,$0F,$87 ; 8778 FF FF 3F 9F 8F 4F 0F 87  ..?..O..
-        db   $65,$85,$01,$11,$05,$03,$F5,$F9 ; 8780 65 85 01 11 05 03 F5 F9  e.......
-        db   $FA,$FA,$FE,$EE,$FA,$FF,$F3,$E4 ; 8788 FA FA FE EE FA FF F3 E4  ........
-        db   $A2,$81,$81,$AE,$98,$A4,$6F,$1F ; 8790 A2 81 81 AE 98 A4 6F 1F  ......o.
-        db   $5F,$7F,$7F,$77,$7F,$5F,$B8,$04 ; 8798 5F 7F 7F 77 7F 5F B8 04  _..w._..
-        db   $03,$07,$8F,$6B,$CB,$16,$FF,$FF ; 87A0 03 07 8F 6B CB 16 FF FF  ...k....
-        db   $FC,$F9,$F2,$F5,$F7,$ED,$01,$02 ; 87A8 FC F9 F2 F5 F7 ED 01 02  ........
-        db   $6C,$F2,$FA,$E9,$E8,$B5,$FF,$FF ; 87B0 6C F2 FA E9 E8 B5 FF FF  l.......
-        db   $9F,$4F,$A7,$57,$77,$5B,$55,$9D ; 87B8 9F 4F A7 57 77 5B 55 9D  .O.Ww[U.
-        db   $3F,$BF,$17,$87,$22,$0B,$AB,$EB ; 87C0 3F BF 17 87 22 0B AB EB  ?..."...
-        db   $D7,$D7,$EA,$7A,$DD,$F7,$55,$DC ; 87C8 D7 D7 EA 7A DD F7 55 DC  ...z..U.
-        db   $FE,$FE,$75,$76,$28,$0F,$EA,$6B ; 87D0 FE FE 75 76 28 0F EA 6B  ..uv(..k
-        db   $F5,$75,$AB,$AF,$DF,$F6,$B8,$06 ; 87D8 F5 75 AB AF DF F6 B8 06  .u......
-        db   $01,$02,$84,$72,$C4,$03,$FF,$FF ; 87E0 01 02 84 72 C4 03 FF FF  ...r....
-        db   $FF,$FF,$FF,$FF,$FF,$FC,$01,$02 ; 87E8 FF FF FF FF FF FC 01 02  ........
-        db   $8C,$72,$8E,$01,$00,$C1,$FF,$FF ; 87F0 8C 72 8E 01 00 C1 FF FF  .r......
-        db   $FF,$FF,$FF,$FF,$FF,$3F,$07,$8F ; 87F8 FF FF FF FF FF 3F 07 8F  .....?..
-        db   $4F,$A7,$45,$41,$A1,$19,$FB,$F7 ; 8800 4F A7 45 41 A1 19 FB F7  O.EA....
-        db   $F3,$D9,$BA,$BE,$5E,$E6,$E3,$F0 ; 8808 F3 D9 BA BE 5E E6 E3 F0  ....^...
-        db   $F4,$A3,$A1,$A2,$84,$5A,$9F,$CF ; 8810 F4 A3 A1 A2 84 5A 9F CF  .....Z..
-        db   $8B,$5D,$5F,$7D,$7B,$A5,$B8,$04 ; 8818 8B 5D 5F 7D 7B A5 B8 04  .]_}{...
-        db   $03,$07,$8F,$6B,$CB,$16,$FF,$FF ; 8820 03 07 8F 6B CB 16 FF FF  ...k....
-        db   $FC,$F9,$F2,$F5,$F7,$ED,$01,$02 ; 8828 FC F9 F2 F5 F7 ED 01 02  ........
-        db   $6C,$F2,$FA,$E9,$E8,$B5,$FF,$FF ; 8830 6C F2 FA E9 E8 B5 FF FF  l.......
-        db   $9F,$4F,$A7,$57,$77,$5B,$55,$9D ; 8838 9F 4F A7 57 77 5B 55 9D  .O.Ww[U.
-        db   $3F,$BF,$17,$87,$22,$0B,$AB,$EB ; 8840 3F BF 17 87 22 0B AB EB  ?..."...
-        db   $D7,$D7,$EA,$7A,$DD,$F7,$55,$DC ; 8848 D7 D7 EA 7A DD F7 55 DC  ...z..U.
-        db   $FE,$FE,$75,$76,$28,$0F,$EA,$6B ; 8850 FE FE 75 76 28 0F EA 6B  ..uv(..k
-        db   $F5,$75,$AB,$AF,$DF,$F6,$00,$06 ; 8858 F5 75 AB AF DF F6 00 06  .u......
-        db   $4B,$1F,$16,$BF,$3D,$1F,$FF,$F9 ; 8860 4B 1F 16 BF 3D 1F FF F9  K...=...
-        db   $B4,$E6,$ED,$53,$D3,$EF,$00,$30 ; 8868 B4 E6 ED 53 D3 EF 00 30  ...S...0
-        db   $59,$FC,$B4,$DE,$FE,$FC,$FF,$CF ; 8870 59 FC B4 DE FE FC FF CF  Y.......
-        db   $A6,$B3,$DB,$E5,$E5,$FB,$3F,$BF ; 8878 A6 B3 DB E5 E5 FB 3F BF  ......?.
-        db   $39,$19,$15,$96,$5C,$9B,$D9,$51 ; 8880 39 19 15 96 5C 9B D9 51  9...\..Q
-        db   $D6,$E6,$EA,$6D,$B7,$64,$BE,$FE ; 8888 D6 E6 EA 6D B7 64 BE FE  ...m.d..
-        db   $CE,$CC,$D4,$B4,$9D,$6C,$CD,$C5 ; 8890 CE CC D4 B4 9D 6C CD C5  .....l..
-        db   $B5,$B3,$AB,$5B,$76,$93,$0E,$1F ; 8898 B5 B3 AB 5B 76 93 0E 1F  ...[v...
-        db   $1F,$3F,$3F,$3F,$7F,$7F,$F1,$E6 ; 88A0 1F 3F 3F 3F 7F 7F F1 E6  .???....
-        db   $E2,$CD,$D3,$D1,$A6,$AE,$38,$7C ; 88A8 E2 CD D3 D1 A6 AE 38 7C  ......8|
-        db   $FC,$FE,$FE,$FE,$FF,$FF,$C7,$B3 ; 88B0 FC FE FE FE FF FF C7 B3  ........
-        db   $A3,$59,$E5,$C5,$B2,$BA,$7F,$7F ; 88B8 A3 59 E5 C5 B2 BA 7F 7F  .Y......
-        db   $6F,$7B,$77,$7F,$3E,$AF,$95,$91 ; 88C0 6F 7B 77 7F 3E AF 95 91  o{w.>...
-        db   $94,$AC,$AA,$A6,$C7,$71,$FF,$FF ; 88C8 94 AC AA A6 C7 71 FF FF  .....q..
-        db   $FB,$EF,$F7,$FF,$BE,$FA,$54,$C4 ; 88D0 FB EF F7 FF BE FA 54 C4  ......T.
-        db   $94,$9A,$2A,$3A,$71,$47,$B8,$06 ; 88D8 94 9A 2A 3A 71 47 B8 06  ..*:qG..
-        db   $01,$02,$84,$72,$C5,$03,$FF,$FF ; 88E0 01 02 84 72 C5 03 FF FF  ...r....
-        db   $FF,$FF,$FF,$FF,$FE,$FC,$01,$02 ; 88E8 FF FF FF FF FE FC 01 02  ........
-        db   $8C,$72,$8E,$01,$80,$C1,$FF,$FF ; 88F0 8C 72 8E 01 80 C1 FF FF  .r......
-        db   $FF,$FF,$FF,$FF,$7F,$3F,$07,$87 ; 88F8 FF FF FF FF 7F 3F 07 87  .....?..
-        db   $6B,$8D,$0D,$16,$01,$07,$FB,$F9 ; 8900 6B 8D 0D 16 01 07 FB F9  k.......
-        db   $F5,$F6,$F6,$EB,$FE,$FB,$E3,$EC ; 8908 F5 F6 F6 EB FE FB E3 EC  ........
-        db   $F2,$D1,$71,$AE,$58,$16,$9F,$5F ; 8910 F2 D1 71 AE 58 16 9F 5F  ..q.X.._
-        db   $4F,$AF,$EF,$D7,$BF,$EF,$21,$0F ; 8918 4F AF EF D7 BF EF 21 0F  O.....!.
-        db   $9F,$3D,$9E,$BD,$9E,$CE,$3E,$74 ; 8920 9F 3D 9E BD 9E CE 3E 74  .=....>t
-        db   $EB,$C7,$EB,$C6,$6B,$74,$F4,$80 ; 8928 EB C7 EB C6 6B 74 F4 80  ....kt..
-        db   $29,$7C,$FE,$FE,$D6,$2F,$3C,$FE ; 8930 29 7C FE FE D6 2F 3C FE  )|.../<.
-        db   $D7,$83,$55,$AB,$7D,$5C,$F4,$6B ; 8938 D7 83 55 AB 7D 5C F4 6B  ..U.}\.k
-        db   $7F,$7F,$3E,$94,$01,$27,$3A,$BE ; 8940 7F 7F 3E 94 01 27 3A BE  ..>..':.
-        db   $D5,$AA,$C1,$EB,$7F,$3E,$73,$79 ; 8948 D5 AA C1 EB 7F 3E 73 79  .....>sy
-        db   $BD,$79,$BC,$F9,$F0,$84,$2E,$D6 ; 8950 BD 79 BC F9 F0 84 2E D6  .y......
-        db   $63,$D7,$E3,$D7,$2E,$7C,$21,$0F ; 8958 63 D7 E3 D7 2E 7C 21 0F  c....|!.
-        db   $9F,$3D,$9E,$BD,$9E,$CE,$3E,$74 ; 8960 9F 3D 9E BD 9E CE 3E 74  .=....>t
-        db   $EB,$C7,$EB,$C6,$6B,$74,$F4,$80 ; 8968 EB C7 EB C6 6B 74 F4 80  ....kt..
-        db   $29,$7C,$FE,$FE,$D6,$2F,$3C,$FE ; 8970 29 7C FE FE D6 2F 3C FE  )|.../<.
-        db   $D7,$83,$55,$AB,$7D,$5C,$F4,$6B ; 8978 D7 83 55 AB 7D 5C F4 6B  ..U.}\.k
-        db   $7F,$7F,$3E,$94,$01,$27,$3A,$BE ; 8980 7F 7F 3E 94 01 27 3A BE  ..>..':.
-        db   $D5,$AA,$C1,$EB,$7F,$3E,$73,$79 ; 8988 D5 AA C1 EB 7F 3E 73 79  .....>sy
-        db   $BD,$79,$BC,$F9,$F0,$84,$2E,$D6 ; 8990 BD 79 BC F9 F0 84 2E D6  .y......
-        db   $63,$D7,$E3,$D7,$2E,$7C,$1D,$73 ; 8998 63 D7 E3 D7 2E 7C 1D 73  c....|.s
-        db   $67,$C7,$EB,$C6,$E3,$F4,$3E,$7C ; 89A0 67 C7 EB C6 E3 F4 3E 7C  g.....>|
-        db   $F9,$F9,$75,$F9,$7C,$78,$F8,$FE ; 89A8 F9 F9 75 F9 7C 78 F8 FE  ..u.|x..
-        db   $D6,$83,$11,$AD,$7E,$5F,$2C,$FE ; 89B0 D6 83 11 AD 7E 5F 2C FE  ....~_,.
-        db   $FF,$FF,$EF,$53,$01,$3C,$FA,$7E ; 89B8 FF FF EF 53 01 3C FA 7E  ...S.<.~
-        db   $B5,$88,$C1,$6B,$7F,$1F,$3C,$80 ; 89C0 B5 88 C1 6B 7F 1F 3C 80  ...k..<.
-        db   $CA,$F7,$FF,$FF,$7F,$34,$2F,$C7 ; 89C8 CA F7 FF FF 7F 34 2F C7  .....4/.
-        db   $63,$D7,$E3,$E6,$CE,$B8,$1E,$3E ; 89D0 63 D7 E3 E6 CE B8 1E 3E  c......>
-        db   $9F,$AE,$9F,$9F,$3E,$7C,$1D,$73 ; 89D8 9F AE 9F 9F 3E 7C 1D 73  ....>|.s
-        db   $67,$C7,$EB,$C6,$E3,$F4,$3E,$7C ; 89E0 67 C7 EB C6 E3 F4 3E 7C  g.....>|
-        db   $F9,$F9,$75,$F9,$7C,$78,$F8,$FE ; 89E8 F9 F9 75 F9 7C 78 F8 FE  ..u.|x..
-        db   $D6,$83,$11,$AD,$7E,$5F,$2C,$FE ; 89F0 D6 83 11 AD 7E 5F 2C FE  ....~_,.
-        db   $FF,$FF,$EF,$53,$01,$3C,$FA,$7E ; 89F8 FF FF EF 53 01 3C FA 7E  ...S.<.~
-        db   $B5,$88,$C1,$6B,$7F,$1F,$3C,$80 ; 8A00 B5 88 C1 6B 7F 1F 3C 80  ...k..<.
-        db   $CA,$F7,$FF,$FF,$7F,$34,$2F,$C7 ; 8A08 CA F7 FF FF 7F 34 2F C7  .....4/.
-        db   $63,$D7,$E3,$E6,$CE,$B8,$1E,$3E ; 8A10 63 D7 E3 E6 CE B8 1E 3E  c......>
-        db   $9F,$AE,$9F,$9F,$3E,$7C,$1C,$73 ; 8A18 9F AE 9F 9F 3E 7C 1C 73  ....>|.s
-        db   $6B,$C7,$CB,$C7,$EA,$F6,$2F,$3C ; 8A20 6B C7 CB C7 EA F6 2F 3C  k...../<
-        db   $FC,$79,$75,$7A,$77,$3C,$F8,$FE ; 8A28 FC 79 75 7A 77 3C F8 FE  .yuzw<..
-        db   $C6,$83,$55,$A9,$FE,$3E,$04,$7C ; 8A30 C6 83 55 A9 FE 3E 04 7C  ..U..>.|
-        db   $FF,$FE,$AF,$D7,$61,$59,$7C,$7F ; 8A38 FF FE AF D7 61 59 7C 7F  ....aY|.
-        db   $95,$AA,$C1,$63,$7F,$1F,$9A,$86 ; 8A40 95 AA C1 63 7F 1F 9A 86  ...c....
-        db   $EB,$F5,$7F,$FF,$3E,$20,$6F,$57 ; 8A48 EB F5 7F FF 3E 20 6F 57  ....> oW
-        db   $E3,$D3,$E3,$D6,$CE,$38,$3C,$EE ; 8A50 E3 D3 E3 D6 CE 38 3C EE  .....8<.
-        db   $5E,$AE,$9E,$3F,$3C,$F4,$1C,$73 ; 8A58 5E AE 9E 3F 3C F4 1C 73  ^..?<..s
-        db   $6B,$C7,$CB,$C7,$EA,$F6,$2F,$3C ; 8A60 6B C7 CB C7 EA F6 2F 3C  k...../<
-        db   $FC,$79,$75,$7A,$77,$3C,$F8,$FE ; 8A68 FC 79 75 7A 77 3C F8 FE  .yuzw<..
-        db   $C6,$83,$55,$A9,$FE,$3E,$04,$7C ; 8A70 C6 83 55 A9 FE 3E 04 7C  ..U..>.|
-        db   $FF,$FE,$AF,$D7,$61,$59,$7C,$7F ; 8A78 FF FE AF D7 61 59 7C 7F  ....aY|.
-        db   $95,$AA,$C1,$63,$7F,$1F,$9A,$86 ; 8A80 95 AA C1 63 7F 1F 9A 86  ...c....
-        db   $EB,$F5,$7F,$FF,$3E,$20,$6F,$57 ; 8A88 EB F5 7F FF 3E 20 6F 57  ....> oW
-        db   $E3,$D3,$E3,$D6,$CE,$38,$3C,$EE ; 8A90 E3 D3 E3 D6 CE 38 3C EE  .....8<.
-        db   $5E,$AE,$9E,$3F,$3C,$F4,$1F,$7A ; 8A98 5E AE 9E 3F 3C F4 1F 7A  ^..?<..z
-        db   $74,$F9,$F5,$FB,$77,$7C,$20,$0F ; 8AA0 74 F9 F5 FB 77 7C 20 0F  t...w| .
-        db   $9F,$3E,$1E,$3D,$9C,$8B,$38,$FE ; 8AA8 9F 3E 1E 3D 9C 8B 38 FE  .>.=..8.
-        db   $FE,$FF,$AB,$D5,$63,$79,$C4,$00 ; 8AB0 FE FF AB D5 63 79 C4 00  ....cy..
-        db   $29,$7C,$FE,$7E,$9E,$A6,$9E,$C6 ; 8AB8 29 7C FE 7E 9E A6 9E C6  )|.~....
-        db   $AB,$D5,$FF,$7F,$7F,$1C,$65,$79 ; 8AC0 AB D5 FF 7F 7F 1C 65 79  ......ey
-        db   $7E,$7F,$3E,$94,$00,$23,$3E,$EE ; 8AC8 7E 7F 3E 94 00 23 3E EE  ~.>..#>.
-        db   $DF,$AF,$9F,$2E,$5E,$F8,$D1,$39 ; 8AD0 DF AF 9F 2E 5E F8 D1 39  ....^..9
-        db   $BC,$78,$7C,$F9,$F0,$04,$1F,$7A ; 8AD8 BC 78 7C F9 F0 04 1F 7A  .x|....z
-        db   $74,$F9,$F5,$FB,$77,$7C,$20,$0F ; 8AE0 74 F9 F5 FB 77 7C 20 0F  t...w| .
-        db   $9F,$3E,$1E,$3D,$9C,$8B,$38,$FE ; 8AE8 9F 3E 1E 3D 9C 8B 38 FE  .>.=..8.
-        db   $FE,$FF,$AB,$D5,$63,$79,$C4,$00 ; 8AF0 FE FF AB D5 63 79 C4 00  ....cy..
-        db   $29,$7C,$FE,$7E,$9E,$A6,$9E,$C6 ; 8AF8 29 7C FE 7E 9E A6 9E C6  )|.~....
-        db   $AB,$D5,$FF,$7F,$7F,$1C,$65,$79 ; 8B00 AB D5 FF 7F 7F 1C 65 79  ......ey
-        db   $7E,$7F,$3E,$94,$00,$23,$3E,$EE ; 8B08 7E 7F 3E 94 00 23 3E EE  ~.>..#>.
-        db   $DF,$AF,$9F,$2E,$5E,$F8,$D1,$39 ; 8B10 DF AF 9F 2E 5E F8 D1 39  ....^..9
-        db   $BC,$78,$7C,$F9,$F0,$04         ; 8B18 BC 78 7C F9 F0 04        .x|...
+        db   $E0,$C0,$80,$20,$20,$00,$C0,$C0 ; 8566 E0 C0 80 20 20 00 C0 C0  ...  ...
+        db   $DB,$ED,$E6,$F9,$FF,$F7,$F3,$E7 ; 856E DB ED E6 F9 FF F7 F3 E7  ........
+        db   $1B,$0D,$06,$11,$13,$03,$03,$07 ; 8576 1B 0D 06 11 13 03 03 07  ........
+        db   $9F,$BF,$3F,$DF,$DF,$DF,$E0,$E0 ; 857E 9F BF 3F DF DF DF E0 E0  ..?.....
+        db   $F8,$FF,$3F,$C0,$C0,$DF,$EE,$EE ; 8586 F8 FF 3F C0 C0 DF EE EE  ..?.....
+        db   $F7,$E7,$E1,$E4,$ED,$EB,$17,$47 ; 858E F7 E7 E1 E4 ED EB 17 47  .......G
+        db   $77,$F7,$F9,$1C,$0D,$EB,$D7,$47 ; 8596 77 F7 F9 1C 0D EB D7 47  w......G
+        db   $EC,$D0,$38,$BC,$D3,$D0,$E8,$E4 ; 859E EC D0 38 BC D3 D0 E8 E4  ..8.....
+        db   $03,$07,$07,$07,$0F,$0F,$07,$07 ; 85A6 03 07 07 07 0F 0F 07 07  ........
+        db   $CB,$C5,$C6,$CD,$F3,$03,$07,$0F ; 85AE CB C5 C6 CD F3 03 07 0F  ........
+        db   $F0,$F8,$F8,$F8,$FC,$FC,$F8,$F8 ; 85B6 F0 F8 F8 F8 FC FC F8 F8  ........
+        db   $D0,$A0,$78,$78,$B8,$DF,$E0,$E8 ; 85BE D0 A0 78 78 B8 DF E0 E8  ..xx....
+        db   $0C,$1F,$1F,$1F,$07,$07,$07,$00 ; 85C6 0C 1F 1F 1F 07 07 07 00  ........
+        db   $03,$01,$01,$06,$05,$FB,$7F,$07 ; 85CE 03 01 01 06 05 FB 7F 07  ........
+        db   $0F,$FF,$FE,$F8,$F8,$F8,$78,$78 ; 85D6 0F FF FE F8 F8 F8 78 78  ......xx
+        db   $E3,$C3,$23,$B3,$CF,$C0,$E0,$F0 ; 85DE E3 C3 23 B3 CF C0 E0 F0  ..#.....
+        db   $0F,$1F,$1F,$1F,$3F,$3F,$1F,$1F ; 85E6 0F 1F 1F 1F 3F 3F 1F 1F  ....??..
+        db   $1B,$1D,$1E,$3D,$CB,$07,$17,$37 ; 85EE 1B 1D 1E 3D CB 07 17 37  ...=...7
+        db   $C0,$E0,$E0,$E0,$F0,$F0,$E0,$E0 ; 85F6 C0 E0 E0 E0 F0 F0 E0 E0  ........
+        db   $C0,$80,$00,$60,$A0,$DF,$FE,$E0 ; 85FE C0 80 00 60 A0 DF FE E0  ...`....
+        db   $F0,$FF,$7F,$1F,$1F,$1F,$1E,$1E ; 8606 F0 FF 7F 1F 1F 1F 1E 1E  ........
+        db   $07,$03,$1D,$1C,$1D,$FB,$17,$07 ; 860E 07 03 1D 1C 1D FB 17 07  ........
+        db   $30,$F8,$F8,$F8,$E0,$E0,$E0,$00 ; 8616 30 F8 F8 F8 E0 E0 E0 00  0.......
+        db   $EC,$D0,$38,$B8,$D0,$C0,$E0,$E0 ; 861E EC D0 38 B8 D0 C0 E0 E0  ..8.....
+        db   $03,$07,$07,$07,$0F,$1F,$1F,$1F ; 8626 03 07 07 07 0F 1F 1F 1F  ........
+        db   $0B,$05,$06,$05,$03,$03,$03,$03 ; 862E 0B 05 06 05 03 03 03 03  ........
+        db   $F0,$F8,$F8,$F8,$F8,$FC,$FC,$FC ; 8636 F0 F8 F8 F8 F8 FC FC FC  ........
+        db   $C0,$A0,$7F,$7F,$BF,$D7,$EB,$E8 ; 863E C0 A0 7F 7F BF D7 EB E8  ........
+        db   $1F,$0F,$08,$18,$1F,$00,$03,$00 ; 8646 1F 0F 08 18 1F 00 03 00  ........
+        db   $07,$1F,$FD,$F8,$FB,$FB,$77,$77 ; 864E 07 1F FD F8 FB FB 77 77  ......ww
+        db   $FE,$E2,$00,$00,$F8,$00,$70,$70 ; 8656 FE E2 00 00 F8 00 70 70  ......pp
+        db   $E0,$C0,$20,$A0,$C0,$C0,$C0,$C0 ; 865E E0 C0 20 A0 C0 C0 C0 C0  .. .....
+        db   $0F,$1F,$1F,$1F,$1F,$3F,$3F,$3F ; 8666 0F 1F 1F 1F 1F 3F 3F 3F  .....???
+        db   $1B,$1D,$1E,$1D,$03,$07,$07,$07 ; 866E 1B 1D 1E 1D 03 07 07 07  ........
+        db   $C0,$E0,$E0,$E0,$F0,$F8,$F8,$F8 ; 8676 C0 E0 E0 E0 F0 F8 F8 F8  ........
+        db   $E0,$F8,$3F,$5F,$9F,$DF,$EE,$EE ; 867E E0 F8 3F 5F 9F DF EE EE  ..?_....
+        db   $7F,$47,$00,$00,$1F,$00,$0E,$0E ; 8686 7F 47 00 00 1F 00 0E 0E  .G......
+        db   $07,$03,$FD,$FC,$FB,$EB,$D7,$37 ; 868E 07 03 FD FC FB EB D7 37  .......7
+        db   $F8,$F0,$10,$18,$F8,$00,$C0,$00 ; 8696 F8 F0 10 18 F8 00 C0 00  ........
+        db   $EF,$D7,$3F,$B9,$DE,$DF,$EF,$E1 ; 869E EF D7 3F B9 DE DF EF E1  ..?.....
+        db   $EC,$D0,$38,$B8,$D0,$D0,$E8,$E2 ; 86A6 EC D0 38 B8 D0 D0 E8 E2  ..8.....
+        db   $FB,$FD,$FE,$E6,$1D,$FF,$FF,$E7 ; 86AE FB FD FE E6 1D FF FF E7  ........
+        db   $0B,$05,$06,$06,$01,$03,$07,$17 ; 86B6 0B 05 06 06 01 03 07 17  ........
+        db   $DF,$BF,$67,$67,$B8,$D8,$E7,$E8 ; 86BE DF BF 67 67 B8 D8 E7 E8  ..gg....
+        db   $D7,$A7,$7F,$7F,$B8,$DF,$E0,$E8 ; 86C6 D7 A7 7F 7F B8 DF E0 E8  ........
+        db   $FC,$FE,$FE,$3E,$05,$03,$07,$7F ; 86CE FC FE FE 3E 05 03 07 7F  ...>....
+        db   $FB,$F9,$F8,$3E,$C5,$FB,$7F,$07 ; 86D6 FB F9 F8 3E C5 FB 7F 07  ...>....
+        db   $EF,$DF,$3F,$A7,$F8,$FF,$FF,$E7 ; 86DE EF DF 3F A7 F8 FF FF E7  ..?.....
+        db   $E0,$C0,$20,$A0,$C0,$C0,$E0,$E8 ; 86E6 E0 C0 20 A0 C0 C0 E0 E8  .. .....
+        db   $DB,$FD,$FE,$9D,$7B,$F7,$F7,$B7 ; 86EE DB FD FE 9D 7B F7 F7 B7  ....{...
+        db   $1B,$1D,$1E,$1D,$0B,$07,$17,$77 ; 86F6 1B 1D 1E 1D 0B 07 17 77  .......w
+        db   $3F,$7F,$7F,$7C,$A0,$C0,$E0,$FE ; 86FE 3F 7F 7F 7C A0 C0 E0 FE  ?..|....
+        db   $DF,$9F,$1F,$7C,$A3,$DF,$FE,$E0 ; 8706 DF 9F 1F 7C A3 DF FE E0  ...|....
+        db   $F7,$FB,$E5,$E4,$1D,$1B,$F7,$07 ; 870E F7 FB E5 E4 1D 1B F7 07  ........
+        db   $E7,$E3,$FD,$FC,$1D,$FB,$17,$07 ; 8716 E7 E3 FD FC 1D FB 17 07  ........
+        db   $B8,$06,$01,$02,$84,$73,$C4,$02 ; 871E B8 06 01 02 84 73 C4 02  .....s..
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; 8726 FF FF FF FF FF FF FF FF  ........
+        db   $01,$02,$8C,$72,$8E,$01,$00,$01 ; 872E 01 02 8C 72 8E 01 00 01  ...r....
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; 8736 FF FF FF FF FF FF FF FF  ........
+        db   $03,$84,$78,$84,$03,$07,$07,$0B ; 873E 03 84 78 84 03 07 07 0B  ..x.....
+        db   $FF,$FF,$FF,$FF,$FC,$FA,$FB,$F5 ; 8746 FF FF FF FF FC FA FB F5  ........
+        db   $B3,$0C,$02,$01,$01,$E6,$98,$46 ; 874E B3 0C 02 01 01 E6 98 46  .......F
+        db   $FF,$FF,$FF,$FF,$FF,$7F,$7F,$BF ; 8756 FF FF FF FF FF 7F 7F BF  ........
+        db   $B8,$06,$01,$00,$83,$77,$CF,$0F ; 875E B8 06 01 00 83 77 CF 0F  .....w..
+        db   $FF,$FF,$FF,$FF,$FC,$F9,$F3,$F7 ; 8766 FF FF FF FF FC F9 F3 F7  ........
+        db   $01,$02,$8C,$32,$CE,$E1,$F0,$F1 ; 876E 01 02 8C 32 CE E1 F0 F1  ...2....
+        db   $FF,$FF,$FF,$FF,$3F,$9F,$8F,$4F ; 8776 FF FF FF FF 3F 9F 8F 4F  ....?..O
+        db   $0F,$87,$65,$85,$01,$11,$05,$03 ; 877E 0F 87 65 85 01 11 05 03  ..e.....
+        db   $F5,$F9,$FA,$FA,$FE,$EE,$FA,$FF ; 8786 F5 F9 FA FA FE EE FA FF  ........
+        db   $F3,$E4,$A2,$81,$81,$AE,$98,$A4 ; 878E F3 E4 A2 81 81 AE 98 A4  ........
+        db   $6F,$1F,$5F,$7F,$7F,$77,$7F,$5F ; 8796 6F 1F 5F 7F 7F 77 7F 5F  o._..w._
+        db   $B8,$04,$03,$07,$8F,$6B,$CB,$16 ; 879E B8 04 03 07 8F 6B CB 16  .....k..
+        db   $FF,$FF,$FC,$F9,$F2,$F5,$F7,$ED ; 87A6 FF FF FC F9 F2 F5 F7 ED  ........
+        db   $01,$02,$6C,$F2,$FA,$E9,$E8,$B5 ; 87AE 01 02 6C F2 FA E9 E8 B5  ..l.....
+        db   $FF,$FF,$9F,$4F,$A7,$57,$77,$5B ; 87B6 FF FF 9F 4F A7 57 77 5B  ...O.Ww[
+        db   $55,$9D,$3F,$BF,$17,$87,$22,$0B ; 87BE 55 9D 3F BF 17 87 22 0B  U.?...".
+        db   $AB,$EB,$D7,$D7,$EA,$7A,$DD,$F7 ; 87C6 AB EB D7 D7 EA 7A DD F7  .....z..
+        db   $55,$DC,$FE,$FE,$75,$76,$28,$0F ; 87CE 55 DC FE FE 75 76 28 0F  U...uv(.
+        db   $EA,$6B,$F5,$75,$AB,$AF,$DF,$F6 ; 87D6 EA 6B F5 75 AB AF DF F6  .k.u....
+        db   $B8,$06,$01,$02,$84,$72,$C4,$03 ; 87DE B8 06 01 02 84 72 C4 03  .....r..
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FC ; 87E6 FF FF FF FF FF FF FF FC  ........
+        db   $01,$02,$8C,$72,$8E,$01,$00,$C1 ; 87EE 01 02 8C 72 8E 01 00 C1  ...r....
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$3F ; 87F6 FF FF FF FF FF FF FF 3F  .......?
+        db   $07,$8F,$4F,$A7,$45,$41,$A1,$19 ; 87FE 07 8F 4F A7 45 41 A1 19  ..O.EA..
+        db   $FB,$F7,$F3,$D9,$BA,$BE,$5E,$E6 ; 8806 FB F7 F3 D9 BA BE 5E E6  ......^.
+        db   $E3,$F0,$F4,$A3,$A1,$A2,$84,$5A ; 880E E3 F0 F4 A3 A1 A2 84 5A  .......Z
+        db   $9F,$CF,$8B,$5D,$5F,$7D,$7B,$A5 ; 8816 9F CF 8B 5D 5F 7D 7B A5  ...]_}{.
+        db   $B8,$04,$03,$07,$8F,$6B,$CB,$16 ; 881E B8 04 03 07 8F 6B CB 16  .....k..
+        db   $FF,$FF,$FC,$F9,$F2,$F5,$F7,$ED ; 8826 FF FF FC F9 F2 F5 F7 ED  ........
+        db   $01,$02,$6C,$F2,$FA,$E9,$E8,$B5 ; 882E 01 02 6C F2 FA E9 E8 B5  ..l.....
+        db   $FF,$FF,$9F,$4F,$A7,$57,$77,$5B ; 8836 FF FF 9F 4F A7 57 77 5B  ...O.Ww[
+        db   $55,$9D,$3F,$BF,$17,$87,$22,$0B ; 883E 55 9D 3F BF 17 87 22 0B  U.?...".
+        db   $AB,$EB,$D7,$D7,$EA,$7A,$DD,$F7 ; 8846 AB EB D7 D7 EA 7A DD F7  .....z..
+        db   $55,$DC,$FE,$FE,$75,$76,$28,$0F ; 884E 55 DC FE FE 75 76 28 0F  U...uv(.
+        db   $EA,$6B,$F5,$75,$AB,$AF,$DF,$F6 ; 8856 EA 6B F5 75 AB AF DF F6  .k.u....
+        db   $00,$06,$4B,$1F,$16,$BF,$3D,$1F ; 885E 00 06 4B 1F 16 BF 3D 1F  ..K...=.
+        db   $FF,$F9,$B4,$E6,$ED,$53,$D3,$EF ; 8866 FF F9 B4 E6 ED 53 D3 EF  .....S..
+        db   $00,$30,$59,$FC,$B4,$DE,$FE,$FC ; 886E 00 30 59 FC B4 DE FE FC  .0Y.....
+        db   $FF,$CF,$A6,$B3,$DB,$E5,$E5,$FB ; 8876 FF CF A6 B3 DB E5 E5 FB  ........
+        db   $3F,$BF,$39,$19,$15,$96,$5C,$9B ; 887E 3F BF 39 19 15 96 5C 9B  ?.9...\.
+        db   $D9,$51,$D6,$E6,$EA,$6D,$B7,$64 ; 8886 D9 51 D6 E6 EA 6D B7 64  .Q...m.d
+        db   $BE,$FE,$CE,$CC,$D4,$B4,$9D,$6C ; 888E BE FE CE CC D4 B4 9D 6C  .......l
+        db   $CD,$C5,$B5,$B3,$AB,$5B,$76,$93 ; 8896 CD C5 B5 B3 AB 5B 76 93  .....[v.
+        db   $0E,$1F,$1F,$3F,$3F,$3F,$7F,$7F ; 889E 0E 1F 1F 3F 3F 3F 7F 7F  ...???..
+        db   $F1,$E6,$E2,$CD,$D3,$D1,$A6,$AE ; 88A6 F1 E6 E2 CD D3 D1 A6 AE  ........
+        db   $38,$7C,$FC,$FE,$FE,$FE,$FF,$FF ; 88AE 38 7C FC FE FE FE FF FF  8|......
+        db   $C7,$B3,$A3,$59,$E5,$C5,$B2,$BA ; 88B6 C7 B3 A3 59 E5 C5 B2 BA  ...Y....
+        db   $7F,$7F,$6F,$7B,$77,$7F,$3E,$AF ; 88BE 7F 7F 6F 7B 77 7F 3E AF  ..o{w.>.
+        db   $95,$91,$94,$AC,$AA,$A6,$C7,$71 ; 88C6 95 91 94 AC AA A6 C7 71  .......q
+        db   $FF,$FF,$FB,$EF,$F7,$FF,$BE,$FA ; 88CE FF FF FB EF F7 FF BE FA  ........
+        db   $54,$C4,$94,$9A,$2A,$3A,$71,$47 ; 88D6 54 C4 94 9A 2A 3A 71 47  T...*:qG
+        db   $B8,$06,$01,$02,$84,$72,$C5,$03 ; 88DE B8 06 01 02 84 72 C5 03  .....r..
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FE,$FC ; 88E6 FF FF FF FF FF FF FE FC  ........
+        db   $01,$02,$8C,$72,$8E,$01,$80,$C1 ; 88EE 01 02 8C 72 8E 01 80 C1  ...r....
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$7F,$3F ; 88F6 FF FF FF FF FF FF 7F 3F  .......?
+        db   $07,$87,$6B,$8D,$0D,$16,$01,$07 ; 88FE 07 87 6B 8D 0D 16 01 07  ..k.....
+        db   $FB,$F9,$F5,$F6,$F6,$EB,$FE,$FB ; 8906 FB F9 F5 F6 F6 EB FE FB  ........
+        db   $E3,$EC,$F2,$D1,$71,$AE,$58,$16 ; 890E E3 EC F2 D1 71 AE 58 16  ....q.X.
+        db   $9F,$5F,$4F,$AF,$EF,$D7,$BF,$EF ; 8916 9F 5F 4F AF EF D7 BF EF  ._O.....
+        db   $21,$0F,$9F,$3D,$9E,$BD,$9E,$CE ; 891E 21 0F 9F 3D 9E BD 9E CE  !..=....
+        db   $3E,$74,$EB,$C7,$EB,$C6,$6B,$74 ; 8926 3E 74 EB C7 EB C6 6B 74  >t....kt
+        db   $F4,$80,$29,$7C,$FE,$FE,$D6,$2F ; 892E F4 80 29 7C FE FE D6 2F  ..)|.../
+        db   $3C,$FE,$D7,$83,$55,$AB,$7D,$5C ; 8936 3C FE D7 83 55 AB 7D 5C  <...U.}\
+        db   $F4,$6B,$7F,$7F,$3E,$94,$01,$27 ; 893E F4 6B 7F 7F 3E 94 01 27  .k..>..'
+        db   $3A,$BE,$D5,$AA,$C1,$EB,$7F,$3E ; 8946 3A BE D5 AA C1 EB 7F 3E  :......>
+        db   $73,$79,$BD,$79,$BC,$F9,$F0,$84 ; 894E 73 79 BD 79 BC F9 F0 84  sy.y....
+        db   $2E,$D6,$63,$D7,$E3,$D7,$2E,$7C ; 8956 2E D6 63 D7 E3 D7 2E 7C  ..c....|
+        db   $21,$0F,$9F,$3D,$9E,$BD,$9E,$CE ; 895E 21 0F 9F 3D 9E BD 9E CE  !..=....
+        db   $3E,$74,$EB,$C7,$EB,$C6,$6B,$74 ; 8966 3E 74 EB C7 EB C6 6B 74  >t....kt
+        db   $F4,$80,$29,$7C,$FE,$FE,$D6,$2F ; 896E F4 80 29 7C FE FE D6 2F  ..)|.../
+        db   $3C,$FE,$D7,$83,$55,$AB,$7D,$5C ; 8976 3C FE D7 83 55 AB 7D 5C  <...U.}\
+        db   $F4,$6B,$7F,$7F,$3E,$94,$01,$27 ; 897E F4 6B 7F 7F 3E 94 01 27  .k..>..'
+        db   $3A,$BE,$D5,$AA,$C1,$EB,$7F,$3E ; 8986 3A BE D5 AA C1 EB 7F 3E  :......>
+        db   $73,$79,$BD,$79,$BC,$F9,$F0,$84 ; 898E 73 79 BD 79 BC F9 F0 84  sy.y....
+        db   $2E,$D6,$63,$D7,$E3,$D7,$2E,$7C ; 8996 2E D6 63 D7 E3 D7 2E 7C  ..c....|
+        db   $1D,$73,$67,$C7,$EB,$C6,$E3,$F4 ; 899E 1D 73 67 C7 EB C6 E3 F4  .sg.....
+        db   $3E,$7C,$F9,$F9,$75,$F9,$7C,$78 ; 89A6 3E 7C F9 F9 75 F9 7C 78  >|..u.|x
+        db   $F8,$FE,$D6,$83,$11,$AD,$7E,$5F ; 89AE F8 FE D6 83 11 AD 7E 5F  ......~_
+        db   $2C,$FE,$FF,$FF,$EF,$53,$01,$3C ; 89B6 2C FE FF FF EF 53 01 3C  ,....S.<
+        db   $FA,$7E,$B5,$88,$C1,$6B,$7F,$1F ; 89BE FA 7E B5 88 C1 6B 7F 1F  .~...k..
+        db   $3C,$80,$CA,$F7,$FF,$FF,$7F,$34 ; 89C6 3C 80 CA F7 FF FF 7F 34  <......4
+        db   $2F,$C7,$63,$D7,$E3,$E6,$CE,$B8 ; 89CE 2F C7 63 D7 E3 E6 CE B8  /.c.....
+        db   $1E,$3E,$9F,$AE,$9F,$9F,$3E,$7C ; 89D6 1E 3E 9F AE 9F 9F 3E 7C  .>....>|
+        db   $1D,$73,$67,$C7,$EB,$C6,$E3,$F4 ; 89DE 1D 73 67 C7 EB C6 E3 F4  .sg.....
+        db   $3E,$7C,$F9,$F9,$75,$F9,$7C,$78 ; 89E6 3E 7C F9 F9 75 F9 7C 78  >|..u.|x
+        db   $F8,$FE,$D6,$83,$11,$AD,$7E,$5F ; 89EE F8 FE D6 83 11 AD 7E 5F  ......~_
+        db   $2C,$FE,$FF,$FF,$EF,$53,$01,$3C ; 89F6 2C FE FF FF EF 53 01 3C  ,....S.<
+        db   $FA,$7E,$B5,$88,$C1,$6B,$7F,$1F ; 89FE FA 7E B5 88 C1 6B 7F 1F  .~...k..
+        db   $3C,$80,$CA,$F7,$FF,$FF,$7F,$34 ; 8A06 3C 80 CA F7 FF FF 7F 34  <......4
+        db   $2F,$C7,$63,$D7,$E3,$E6,$CE,$B8 ; 8A0E 2F C7 63 D7 E3 E6 CE B8  /.c.....
+        db   $1E,$3E,$9F,$AE,$9F,$9F,$3E,$7C ; 8A16 1E 3E 9F AE 9F 9F 3E 7C  .>....>|
+        db   $1C,$73,$6B,$C7,$CB,$C7,$EA,$F6 ; 8A1E 1C 73 6B C7 CB C7 EA F6  .sk.....
+        db   $2F,$3C,$FC,$79,$75,$7A,$77,$3C ; 8A26 2F 3C FC 79 75 7A 77 3C  /<.yuzw<
+        db   $F8,$FE,$C6,$83,$55,$A9,$FE,$3E ; 8A2E F8 FE C6 83 55 A9 FE 3E  ....U..>
+        db   $04,$7C,$FF,$FE,$AF,$D7,$61,$59 ; 8A36 04 7C FF FE AF D7 61 59  .|....aY
+        db   $7C,$7F,$95,$AA,$C1,$63,$7F,$1F ; 8A3E 7C 7F 95 AA C1 63 7F 1F  |....c..
+        db   $9A,$86,$EB,$F5,$7F,$FF,$3E,$20 ; 8A46 9A 86 EB F5 7F FF 3E 20  ......>
+        db   $6F,$57,$E3,$D3,$E3,$D6,$CE,$38 ; 8A4E 6F 57 E3 D3 E3 D6 CE 38  oW.....8
+        db   $3C,$EE,$5E,$AE,$9E,$3F,$3C,$F4 ; 8A56 3C EE 5E AE 9E 3F 3C F4  <.^..?<.
+        db   $1C,$73,$6B,$C7,$CB,$C7,$EA,$F6 ; 8A5E 1C 73 6B C7 CB C7 EA F6  .sk.....
+        db   $2F,$3C,$FC,$79,$75,$7A,$77,$3C ; 8A66 2F 3C FC 79 75 7A 77 3C  /<.yuzw<
+        db   $F8,$FE,$C6,$83,$55,$A9,$FE,$3E ; 8A6E F8 FE C6 83 55 A9 FE 3E  ....U..>
+        db   $04,$7C,$FF,$FE,$AF,$D7,$61,$59 ; 8A76 04 7C FF FE AF D7 61 59  .|....aY
+        db   $7C,$7F,$95,$AA,$C1,$63,$7F,$1F ; 8A7E 7C 7F 95 AA C1 63 7F 1F  |....c..
+        db   $9A,$86,$EB,$F5,$7F,$FF,$3E,$20 ; 8A86 9A 86 EB F5 7F FF 3E 20  ......>
+        db   $6F,$57,$E3,$D3,$E3,$D6,$CE,$38 ; 8A8E 6F 57 E3 D3 E3 D6 CE 38  oW.....8
+        db   $3C,$EE,$5E,$AE,$9E,$3F,$3C,$F4 ; 8A96 3C EE 5E AE 9E 3F 3C F4  <.^..?<.
+        db   $1F,$7A,$74,$F9,$F5,$FB,$77,$7C ; 8A9E 1F 7A 74 F9 F5 FB 77 7C  .zt...w|
+        db   $20,$0F,$9F,$3E,$1E,$3D,$9C,$8B ; 8AA6 20 0F 9F 3E 1E 3D 9C 8B   ..>.=..
+        db   $38,$FE,$FE,$FF,$AB,$D5,$63,$79 ; 8AAE 38 FE FE FF AB D5 63 79  8.....cy
+        db   $C4,$00,$29,$7C,$FE,$7E,$9E,$A6 ; 8AB6 C4 00 29 7C FE 7E 9E A6  ..)|.~..
+        db   $9E,$C6,$AB,$D5,$FF,$7F,$7F,$1C ; 8ABE 9E C6 AB D5 FF 7F 7F 1C  ........
+        db   $65,$79,$7E,$7F,$3E,$94,$00,$23 ; 8AC6 65 79 7E 7F 3E 94 00 23  ey~.>..#
+        db   $3E,$EE,$DF,$AF,$9F,$2E,$5E,$F8 ; 8ACE 3E EE DF AF 9F 2E 5E F8  >.....^.
+        db   $D1,$39,$BC,$78,$7C,$F9,$F0,$04 ; 8AD6 D1 39 BC 78 7C F9 F0 04  .9.x|...
+        db   $1F,$7A,$74,$F9,$F5,$FB,$77,$7C ; 8ADE 1F 7A 74 F9 F5 FB 77 7C  .zt...w|
+        db   $20,$0F,$9F,$3E,$1E,$3D,$9C,$8B ; 8AE6 20 0F 9F 3E 1E 3D 9C 8B   ..>.=..
+        db   $38,$FE,$FE,$FF,$AB,$D5,$63,$79 ; 8AEE 38 FE FE FF AB D5 63 79  8.....cy
+        db   $C4,$00,$29,$7C,$FE,$7E,$9E,$A6 ; 8AF6 C4 00 29 7C FE 7E 9E A6  ..)|.~..
+        db   $9E,$C6,$AB,$D5,$FF,$7F,$7F,$1C ; 8AFE 9E C6 AB D5 FF 7F 7F 1C  ........
+        db   $65,$79,$7E,$7F,$3E,$94,$00,$23 ; 8B06 65 79 7E 7F 3E 94 00 23  ey~.>..#
+        db   $3E,$EE,$DF,$AF,$9F,$2E,$5E,$F8 ; 8B0E 3E EE DF AF 9F 2E 5E F8  >.....^.
+        db   $D1,$39,$BC,$78,$7C,$F9,$F0,$04 ; 8B16 D1 39 BC 78 7C F9 F0 04  .9.x|...
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_8B1E:
         lda     $3E                             ; 8B1E A5 3E                    .>
@@ -456,7 +455,7 @@ MapEventSystem_Branch_8B47:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_8B4A:
         ldy     $28                             ; 8B4A A4 28                    .(
-        bne     $8BCB                           ; 8B4C D0 7D                    .}
+        bne     MapEventSystem_Branch_8BCB      ; 8B4C D0 7D                    .}
         and     #$0F                            ; 8B4E 29 0F                    ).
         cmp     #$0F                            ; 8B50 C9 0F                    ..
         bne     MapEventSystem_Branch_8B47      ; 8B52 D0 F3                    ..
@@ -510,10 +509,12 @@ MapEventSystem_Entry_8B4A:
 MapEventSystem_Branch_8BC8:
         jmp     MapEventSystem_Branch_8C4B      ; 8BC8 4C 4B 8C                 LK.
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_8BCB:
         cpy     #$18                            ; 8BCB C0 18                    ..
-        beq     $8BD2                           ; 8BCD F0 03                    ..
-        jmp     $8C52                           ; 8BCF 4C 52 8C                 LR.
+        beq     MapEventSystem_Branch_8BD2      ; 8BCD F0 03                    ..
+        jmp     MapEventSystem_Branch_8C52      ; 8BCF 4C 52 8C                 LR.
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_8BD2:
         ldy     $050A                           ; 8BD2 AC 0A 05                 ...
         tax                                     ; 8BD5 AA                       .
         lda     #$BF                            ; 8BD6 A9 BF                    ..
@@ -577,15 +578,18 @@ MapEventSystem_Branch_8C4B:
         sta     $1F                             ; 8C4F 85 1F                    ..
         rts                                     ; 8C51 60                       `
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_8C52:
         txa                                     ; 8C52 8A                       .
         tay                                     ; 8C53 A8                       .
         lda     $0573                           ; 8C54 AD 73 05                 .s.
+MapEventSystem_Branch_8C57:
         asl     a                               ; 8C57 0A                       .
         dex                                     ; 8C58 CA                       .
-        bpl     $8C57                           ; 8C59 10 FC                    ..
-        bcs     $8C5E                           ; 8C5B B0 01                    ..
+        bpl     MapEventSystem_Branch_8C57      ; 8C59 10 FC                    ..
+        bcs     MapEventSystem_Branch_8C5E      ; 8C5B B0 01                    ..
         rts                                     ; 8C5D 60                       `
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_8C5E:
         tya                                     ; 8C5E 98                       .
         lda     $0584,y                         ; 8C5F B9 84 05                 ...
         sta     $02                             ; 8C62 85 02                    ..
@@ -1954,8 +1958,13 @@ MapEventSystem_Entry_96DF:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_96EE:
         brk                                     ; 96EE 00                       .
-        db   $04,$EB,$02,$F0,$05,$A9,$03,$8D ; 96EF 04 EB 02 F0 05 A9 03 8D  ........
-        db   $72,$78,$60                     ; 96F7 72 78 60                 rx`
+        db   $04,$EB,$02                     ; 96EF 04 EB 02                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEventSystem_Branch_96F9      ; 96F2 F0 05                    ..
+        lda     #$03                            ; 96F4 A9 03                    ..
+        sta     $7872                           ; 96F6 8D 72 78                 .rx
+MapEventSystem_Branch_96F9:
+        rts                                     ; 96F9 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_96FA:
         brk                                     ; 96FA 00                       .
@@ -1975,8 +1984,15 @@ MapEventSystem_Branch_9712:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_9713:
         brk                                     ; 9713 00                       .
-        db   $16,$EB,$02,$F0,$0A,$AD,$4A,$79 ; 9714 16 EB 02 F0 0A AD 4A 79  ......Jy
-        db   $29,$1F,$09,$20,$8D,$69,$79,$60 ; 971C 29 1F 09 20 8D 69 79 60  ).. .iy`
+        db   $16,$EB,$02                     ; 9714 16 EB 02                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEventSystem_Branch_9723      ; 9717 F0 0A                    ..
+        lda     $794A                           ; 9719 AD 4A 79                 .Jy
+        and     #$1F                            ; 971C 29 1F                    ).
+        ora     #$20                            ; 971E 09 20                    .
+        sta     $7969                           ; 9720 8D 69 79                 .iy
+MapEventSystem_Branch_9723:
+        rts                                     ; 9723 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_9724:
         brk                                     ; 9724 00                       .
@@ -2266,14 +2282,26 @@ MapEventSystem_Entry_99A5:
         jsr     MapEventSystem_Entry_9B6B       ; 99B8 20 6B 9B                  k.
         pla                                     ; 99BB 68                       h
         brk                                     ; 99BC 00                       .
-        db   $01,$EB,$02,$F0,$02,$18,$60,$00 ; 99BD 01 EB 02 F0 02 18 60 00  ......`.
-        db   $01,$CB,$02,$38,$60             ; 99C5 01 CB 02 38 60           ...8`
+        db   $01,$EB,$02                     ; 99BD 01 EB 02                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEventSystem_Branch_99C4      ; 99C0 F0 02                    ..
+        clc                                     ; 99C2 18                       .
+        rts                                     ; 99C3 60                       `
+; ----------------------------------------------------------------------------
+MapEventSystem_Branch_99C4:
+        brk                                     ; 99C4 00                       .
+        db   $01,$CB,$02                     ; 99C5 01 CB 02                 ...
+; ----------------------------------------------------------------------------
+        sec                                     ; 99C8 38                       8
+        rts                                     ; 99C9 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_99CA:
         brk                                     ; 99CA 00                       .
-        db   $01,$DB                         ; 99CB 01 DB                    ..
+        db   $01,$DB,$FD                     ; 99CB 01 DB FD                 ...
 ; ----------------------------------------------------------------------------
-        sbc     $6018,x                         ; 99CD FD 18 60                 ..`
+        clc                                     ; 99CE 18                       .
+        rts                                     ; 99CF 60                       `
+; ----------------------------------------------------------------------------
 MapEventSystem_Entry_99D0:
         lda     PlayerLocalY                    ; 99D0 A5 45                    .E
         cmp     #$09                            ; 99D2 C9 09                    ..
@@ -2408,9 +2436,9 @@ MapEventSystem_Entry_9AC5:
         cmp     #$04                            ; 9AD8 C9 04                    ..
         bne     MapEventSystem_Branch_9B2D      ; 9ADA D0 51                    .Q
         brk                                     ; 9ADC 00                       .
-        db   $16,$EB                         ; 9ADD 16 EB                    ..
+        db   $16,$EB,$20                     ; 9ADD 16 EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $49D0                           ; 9ADF 20 D0 49                  .I
+        bne     MapEventSystem_Branch_9B2B      ; 9AE0 D0 49                    .I
         jsr     UpperFixedEngine_Entry_C891     ; 9AE2 20 91 C8                  ..
         and     #$1F                            ; 9AE5 29 1F                    ).
         bne     MapEventSystem_Branch_9B2B      ; 9AE7 D0 42                    .B
@@ -2760,11 +2788,19 @@ MapEventSystem_Entry_9CB7:
         cmp     #$0E                            ; 9CC2 C9 0E                    ..
         bne     MapEventSystem_Branch_9CD7      ; 9CC4 D0 11                    ..
         brk                                     ; 9CC6 00                       .
-        db   $02,$CB                         ; 9CC7 02 CB                    ..
+        db   $02,$CB,$20                     ; 9CC7 02 CB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $1F00                           ; 9CC9 20 00 1F                  ..
-        db   $DB,$FC,$00,$1F,$CB,$02,$00,$95 ; 9CCC DB FC 00 1F CB 02 00 95  ........
-        db   $FB,$38,$60                     ; 9CD4 FB 38 60                 .8`
+        brk                                     ; 9CCA 00                       .
+        db   $1F,$DB,$FC                     ; 9CCB 1F DB FC                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; 9CCE 00                       .
+        db   $1F,$CB,$02                     ; 9CCF 1F CB 02                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; 9CD2 00                       .
+        db   $95,$FB                         ; 9CD3 95 FB                    ..
+; ----------------------------------------------------------------------------
+        sec                                     ; 9CD5 38                       8
+        rts                                     ; 9CD6 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_9CD7:
         brk                                     ; 9CD7 00                       .
@@ -3320,13 +3356,15 @@ MapEventSystem_Entry_A05D:
         db   $09,$9F                         ; A07C 09 9F                    ..
 ; ----------------------------------------------------------------------------
         jsr     MapEventSystem_Entry_A7A4       ; A07E 20 A4 A7                  ..
-        bcc     $A089                           ; A081 90 06                    ..
+        bcc     MapEventSystem_Branch_A089      ; A081 90 06                    ..
         brk                                     ; A083 00                       .
         db   $8E,$4B                         ; A084 8E 4B                    .K
 ; ----------------------------------------------------------------------------
         jmp     MapEventSystem_Branch_A08C      ; A086 4C 8C A0                 L..
 ; ----------------------------------------------------------------------------
-        db   $00,$27,$4B                     ; A089 00 27 4B                 .'K
+MapEventSystem_Branch_A089:
+        brk                                     ; A089 00                       .
+        db   $27,$4B                         ; A08A 27 4B                    'K
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_A08C:
         jsr     UpperFixedEngine_Entry_D214     ; A08C 20 14 D2                  ..
@@ -3573,7 +3611,8 @@ MapEventSystem_Entry_A25A:
         sta     PlayerLocalY                    ; A26A 85 45                    .E
         lda     #$83                            ; A26C A9 83                    ..
         brk                                     ; A26E 00                       .
-        and     ($EF),y                         ; A26F 31 EF                    1.
+        db   $31,$EF                         ; A26F 31 EF                    1.
+; ----------------------------------------------------------------------------
         lda     #$06                            ; A271 A9 06                    ..
         sta     $51                             ; A273 85 51                    .Q
         jsr     UpperFixedEngine_Entry_C5BF     ; A275 20 BF C5                  ..
@@ -3865,9 +3904,9 @@ MapEventSystem_Entry_A443:
 MapEventSystem_Entry_A44D:
         jsr     MapEventSystem_Entry_B73E       ; A44D 20 3E B7                  >.
         brk                                     ; A450 00                       .
-        db   $08,$CB                         ; A451 08 CB                    ..
+        db   $08,$CB,$20                     ; A451 08 CB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $00A9                           ; A453 20 A9 00                  ..
+        lda     #$00                            ; A454 A9 00                    ..
         sta     $0530                           ; A456 8D 30 05                 .0.
         sec                                     ; A459 38                       8
         rts                                     ; A45A 60                       `
@@ -3917,10 +3956,12 @@ MapEventSystem_Entry_A45B:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_A49D:
         brk                                     ; A49D 00                       .
-        db   $0F,$DB                         ; A49E 0F DB                    ..
+        db   $0F,$DB,$FE                     ; A49E 0F DB FE                 ...
 ; ----------------------------------------------------------------------------
-MapEventSystem_Branch_A4A1 = $+ 1
-        inc     $6018,x                         ; A4A0 FE 18 60                 ..`
+MapEventSystem_Branch_A4A1:
+        clc                                     ; A4A1 18                       .
+        rts                                     ; A4A2 60                       `
+; ----------------------------------------------------------------------------
 MapEventSystem_Branch_A4A3:
         jsr     UpperFixedEngine_Entry_D1F3     ; A4A3 20 F3 D1                  ..
         clc                                     ; A4A6 18                       .
@@ -4039,8 +4080,12 @@ MapEventSystem_Entry_A549:
         ldx     #$10                            ; A578 A2 10                    ..
         sta     $7046,x                         ; A57A 9D 46 70                 .Fp
         brk                                     ; A57D 00                       .
-        db   $08,$DB,$DF,$A9,$00,$8D,$30,$05 ; A57E 08 DB DF A9 00 8D 30 05  ......0.
-        db   $38,$60                         ; A586 38 60                    8`
+        db   $08,$DB,$DF                     ; A57E 08 DB DF                 ...
+; ----------------------------------------------------------------------------
+        lda     #$00                            ; A581 A9 00                    ..
+        sta     $0530                           ; A583 8D 30 05                 .0.
+        sec                                     ; A586 38                       8
+        rts                                     ; A587 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_A588:
         lda     PlayerLocalY                    ; A588 A5 45                    .E
@@ -4499,7 +4544,10 @@ MapEventSystem_Branch_A825:
         ora     $A851,x                         ; A83A 1D 51 A8                 .Q.
         sta     $7000,y                         ; A83D 99 00 70                 ..p
         brk                                     ; A840 00                       .
-        db   $08,$CB,$04,$38,$60             ; A841 08 CB 04 38 60           ...8`
+        db   $08,$CB,$04                     ; A841 08 CB 04                 ...
+; ----------------------------------------------------------------------------
+        sec                                     ; A844 38                       8
+        rts                                     ; A845 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_A846:
         inx                                     ; A846 E8                       .
@@ -4560,9 +4608,8 @@ MapEventSystem_Entry_A893:
         ora     #$02                            ; A8A6 09 02                    ..
         sta     $7000                           ; A8A8 8D 00 70                 ..p
         brk                                     ; A8AB 00                       .
-        db   $0C,$DB                         ; A8AC 0C DB                    ..
+        db   $0C,$DB,$F8                     ; A8AC 0C DB F8                 ...
 ; ----------------------------------------------------------------------------
-        sed                                     ; A8AE F8                       .
         ldx     #$0D                            ; A8AF A2 0D                    ..
         ldy     #$01                            ; A8B1 A0 01                    ..
         jsr     MapEventSystem_Entry_A90D       ; A8B3 20 0D A9                  ..
@@ -4636,9 +4683,7 @@ MapEventSystem_Entry_A90D:
         sta     $6FA6,x                         ; A916 9D A6 6F                 ..o
         lda     $6F80,y                         ; A919 B9 80 6F                 ..o
         sta     $6F86,x                         ; A91C 9D 86 6F                 ..o
-        db   $B9                             ; A91F B9                       .
-; ----------------------------------------------------------------------------
-        cpy     #$6F                            ; A920 C0 6F                    .o
+        lda     $6FC0,y                         ; A91F B9 C0 6F                 ..o
         sta     $6FC6,x                         ; A922 9D C6 6F                 ..o
         lda     $6FE0,y                         ; A925 B9 E0 6F                 ..o
         sta     $6FE6,x                         ; A928 9D E6 6F                 ..o
@@ -4887,9 +4932,11 @@ MapEventSystem_Entry_AA9F:
         lda     #$00                            ; AAB4 A9 00                    ..
         sta     $0530                           ; AAB6 8D 30 05                 .0.
         brk                                     ; AAB9 00                       .
-        db   $0C,$CB                         ; AABA 0C CB                    ..
+        db   $0C,$CB,$20                     ; AABA 0C CB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $6038                           ; AABC 20 38 60                  8`
+        sec                                     ; AABD 38                       8
+        rts                                     ; AABE 60                       `
+; ----------------------------------------------------------------------------
 MapEventSystem_Entry_AABF:
         lda     $6FA0                           ; AABF AD A0 6F                 ..o
         cmp     #$0E                            ; AAC2 C9 0E                    ..
@@ -5119,13 +5166,15 @@ MapEventSystem_Entry_AC0B:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_AC60:
         brk                                     ; AC60 00                       .
-        db   $05,$EB                         ; AC61 05 EB                    ..
+        db   $05,$EB,$20                     ; AC61 05 EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $02F0                           ; AC63 20 F0 02                  ..
+        beq     MapEventSystem_Branch_AC68      ; AC64 F0 02                    ..
         sec                                     ; AC66 38                       8
         rts                                     ; AC67 60                       `
 ; ----------------------------------------------------------------------------
-        db   $18,$60                         ; AC68 18 60                    .`
+MapEventSystem_Branch_AC68:
+        clc                                     ; AC68 18                       .
+        rts                                     ; AC69 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_AC6A:
         lda     SaveCurrentChapterMinus1        ; AC6A AD 5A 61                 .Za
@@ -5146,7 +5195,13 @@ MapEventSystem_Entry_AC6A:
         and     #$F7                            ; AC8A 29 F7                    ).
         sta     $70E0,x                         ; AC8C 9D E0 70                 ..p
         brk                                     ; AC8F 00                       .
-        db   $05,$DB,$DF,$00,$15,$5F,$38,$60 ; AC90 05 DB DF 00 15 5F 38 60  ....._8`
+        db   $05,$DB,$DF                     ; AC90 05 DB DF                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; AC93 00                       .
+        db   $15,$5F                         ; AC94 15 5F                    ._
+; ----------------------------------------------------------------------------
+        sec                                     ; AC96 38                       8
+        rts                                     ; AC97 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_AC98:
         clc                                     ; AC98 18                       .
@@ -5215,8 +5270,15 @@ MapEventSystem_Entry_ACD2:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_ACF5:
         brk                                     ; ACF5 00                       .
-        db   $05,$EB,$02,$F0,$02,$38,$60,$18 ; ACF6 05 EB 02 F0 02 38 60 18  .....8`.
-        db   $60                             ; ACFE 60                       `
+        db   $05,$EB,$02                     ; ACF6 05 EB 02                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEventSystem_Branch_ACFD      ; ACF9 F0 02                    ..
+        sec                                     ; ACFB 38                       8
+        rts                                     ; ACFC 60                       `
+; ----------------------------------------------------------------------------
+MapEventSystem_Branch_ACFD:
+        clc                                     ; ACFD 18                       .
+        rts                                     ; ACFE 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_ACFF:
         jsr     UpperFixedEngine_Entry_C5C5     ; ACFF 20 C5 C5                  ..
@@ -5629,8 +5691,8 @@ MapEventSystem_Entry_AF85:
         cmp     #$0E                            ; AF89 C9 0E                    ..
         bne     MapEventSystem_Branch_AF95      ; AF8B D0 08                    ..
         lda     PlayerLocalY                    ; AF8D A5 45                    .E
-        db   $C9,$15,$D0,$02                 ; AF8F C9 15 D0 02              ....
-; ----------------------------------------------------------------------------
+        cmp     #$15                            ; AF8F C9 15                    ..
+        bne     MapEventSystem_Branch_AF95      ; AF91 D0 02                    ..
         sec                                     ; AF93 38                       8
         rts                                     ; AF94 60                       `
 ; ----------------------------------------------------------------------------
@@ -5652,7 +5714,8 @@ MapEventSystem_Entry_AF97:
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_D218     ; AFAA 20 18 D2                  ..
         lda     #$25                            ; AFAD A9 25                    .%
-        db   $00,$07,$CF                     ; AFAF 00 07 CF                 ...
+        brk                                     ; AFAF 00                       .
+        db   $07,$CF                         ; AFB0 07 CF                    ..
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_AFB2:
         lda     #$1E                            ; AFB2 A9 1E                    ..
@@ -5857,9 +5920,8 @@ MapEventSystem_Branch_B0F4:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_B0F6:
         brk                                     ; B0F6 00                       .
-        db   $16,$EB                         ; B0F7 16 EB                    ..
+        db   $16,$EB,$08                     ; B0F7 16 EB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; B0F9 08                       .
         bne     MapEventSystem_Branch_B169      ; B0FA D0 6D                    .m
         lda     $6FA0                           ; B0FC AD A0 6F                 ..o
         cmp     #$12                            ; B0FF C9 12                    ..
@@ -6000,10 +6062,11 @@ MapEventSystem_Entry_B1AC:
         lda     #$00                            ; B1CC A9 00                    ..
         sta     $0530                           ; B1CE 8D 30 05                 .0.
         brk                                     ; B1D1 00                       .
-        db   $19,$CB                         ; B1D2 19 CB                    ..
+        db   $19,$CB,$20                     ; B1D2 19 CB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $8568                           ; B1D4 20 68 85                  h.
-        eor     ($38),y                         ; B1D7 51 38                    Q8
+        pla                                     ; B1D5 68                       h
+        sta     $51                             ; B1D6 85 51                    .Q
+        sec                                     ; B1D8 38                       8
         rts                                     ; B1D9 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_B1DA:
@@ -6307,9 +6370,7 @@ MapEventSystem_Branch_B3B4:
         cmp     #$01                            ; B3BC C9 01                    ..
         bne     MapEventSystem_Branch_B3C4      ; B3BE D0 04                    ..
         brk                                     ; B3C0 00                       .
-        db   $1E,$CB                         ; B3C1 1E CB                    ..
-; ----------------------------------------------------------------------------
-        rti                                     ; B3C3 40                       @
+        db   $1E,$CB,$40                     ; B3C1 1E CB 40                 ..@
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_B3C4:
         stx     $F9                             ; B3C4 86 F9                    ..
@@ -6413,9 +6474,9 @@ MapEventSystem_Entry_B433:
         sta     $6F80,x                         ; B46D 9D 80 6F                 ..o
         sta     $6FC0,x                         ; B470 9D C0 6F                 ..o
         brk                                     ; B473 00                       .
-        db   $1A,$CB                         ; B474 1A CB                    ..
+        db   $1A,$CB,$01                     ; B474 1A CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($38,x)                         ; B476 01 38                    .8
+        sec                                     ; B477 38                       8
         rts                                     ; B478 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_B479:
@@ -7038,8 +7099,8 @@ MapEventSystem_Branch_B921:
         pha                                     ; B922 48                       H
         ldx     $B955,y                         ; B923 BE 55 B9                 .U.
         lda     $6FE0,x                         ; B926 BD E0 6F                 ..o
-        db   $BE,$54,$B9,$9D,$E0,$6F         ; B929 BE 54 B9 9D E0 6F        .T...o
-; ----------------------------------------------------------------------------
+        ldx     $B954,y                         ; B929 BE 54 B9                 .T.
+        sta     $6FE0,x                         ; B92C 9D E0 6F                 ..o
         ldx     $B955,y                         ; B92F BE 55 B9                 .U.
         lda     $7000,x                         ; B932 BD 00 70                 ..p
         and     #$03                            ; B935 29 03                    ).
@@ -7509,7 +7570,7 @@ MapEventSystem_Entry_BD87:
         sta     $01                             ; BD96 85 01                    ..
         jsr     UpperFixedEngine_Entry_C662     ; BD98 20 62 C6                  b.
         bit     $1B                             ; BD9B 24 1B                    $.
-        bpl     $BDAE                           ; BD9D 10 0F                    ..
+        bpl     MapEventSystem_Branch_BDAE      ; BD9D 10 0F                    ..
         ldx     #$04                            ; BD9F A2 04                    ..
         lda     $0500                           ; BDA1 AD 00 05                 ...
         lsr     a                               ; BDA4 4A                       J
@@ -7519,12 +7580,14 @@ MapEventSystem_Branch_BDA9:
         txa                                     ; BDA9 8A                       .
         eor     $1C                             ; BDAA 45 1C                    E.
         sta     $1C                             ; BDAC 85 1C                    ..
+MapEventSystem_Branch_BDAE:
         rts                                     ; BDAE 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BDAF:
         lda     $050B                           ; BDAF AD 0B 05                 ...
-        beq     $BDB7                           ; BDB2 F0 03                    ..
+        beq     MapEventSystem_Branch_BDB7      ; BDB2 F0 03                    ..
         jsr     UpperFixedEngine_Entry_C62D     ; BDB4 20 2D C6                  -.
+MapEventSystem_Branch_BDB7:
         rts                                     ; BDB7 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BDB8:
@@ -7548,14 +7611,16 @@ MapEventSystem_Entry_BDB8:
         sec                                     ; BDD4 38                       8
         sbc     $01                             ; BDD5 E5 01                    ..
         sta     $03                             ; BDD7 85 03                    ..
-        bcs     $BDDF                           ; BDD9 B0 04                    ..
+        bcs     MapEventSystem_Branch_BDDF      ; BDD9 B0 04                    ..
         lda     $16                             ; BDDB A5 16                    ..
         sta     $01                             ; BDDD 85 01                    ..
+MapEventSystem_Branch_BDDF:
         rts                                     ; BDDF 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BDE0:
         ldy     #$00                            ; BDE0 A0 00                    ..
         sty     $04                             ; BDE2 84 04                    ..
+MapEventSystem_Branch_BDE4:
         ldx     $050A                           ; BDE4 AE 0A 05                 ...
         lda     $1C                             ; BDE7 A5 1C                    ..
         sta     $19                             ; BDE9 85 19                    ..
@@ -7575,7 +7640,7 @@ MapEventSystem_Entry_BDE0:
         pla                                     ; BE07 68                       h
         sta     $1C                             ; BE08 85 1C                    ..
         dec     $17                             ; BE0A C6 17                    ..
-        bne     $BDE4                           ; BE0C D0 D6                    ..
+        bne     MapEventSystem_Branch_BDE4      ; BE0C D0 D6                    ..
         rts                                     ; BE0E 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BE0F:
@@ -7590,20 +7655,21 @@ MapEventSystem_Entry_BE0F:
         lda     $1D                             ; BE1F A5 1D                    ..
         sta     $0300,x                         ; BE21 9D 00 03                 ...
         inx                                     ; BE24 E8                       .
+MapEventSystem_Branch_BE25:
         lda     $0480,y                         ; BE25 B9 80 04                 ...
         sta     $0300,x                         ; BE28 9D 00 03                 ...
         iny                                     ; BE2B C8                       .
         inx                                     ; BE2C E8                       .
         dec     $02                             ; BE2D C6 02                    ..
-        bne     $BE25                           ; BE2F D0 F4                    ..
+        bne     MapEventSystem_Branch_BE25      ; BE2F D0 F4                    ..
         inc     $050B                           ; BE31 EE 0B 05                 ...
         stx     $050A                           ; BE34 8E 0A 05                 ...
         rts                                     ; BE37 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BE38:
         lda     $03                             ; BE38 A5 03                    ..
-        beq     $BE6A                           ; BE3A F0 2E                    ..
-        bmi     $BE6A                           ; BE3C 30 2C                    0,
+        beq     MapEventSystem_Branch_BE6A      ; BE3A F0 2E                    ..
+        bmi     MapEventSystem_Branch_BE6A      ; BE3C 30 2C                    0,
         lda     $1C                             ; BE3E A5 1C                    ..
         eor     #$04                            ; BE40 49 04                    I.
         ora     #$80                            ; BE42 09 80                    ..
@@ -7617,40 +7683,45 @@ MapEventSystem_Entry_BE38:
         and     #$E0                            ; BE52 29 E0                    ).
         sta     $0300,x                         ; BE54 9D 00 03                 ...
         inx                                     ; BE57 E8                       .
+MapEventSystem_Branch_BE58:
         lda     $0480,y                         ; BE58 B9 80 04                 ...
         sta     $0300,x                         ; BE5B 9D 00 03                 ...
         iny                                     ; BE5E C8                       .
         inx                                     ; BE5F E8                       .
         dec     $02                             ; BE60 C6 02                    ..
-        bne     $BE58                           ; BE62 D0 F4                    ..
+        bne     MapEventSystem_Branch_BE58      ; BE62 D0 F4                    ..
         inc     $050B                           ; BE64 EE 0B 05                 ...
         stx     $050A                           ; BE67 8E 0A 05                 ...
+MapEventSystem_Branch_BE6A:
         lda     $1D                             ; BE6A A5 1D                    ..
         clc                                     ; BE6C 18                       .
         adc     #$20                            ; BE6D 69 20                    i
         sta     $1D                             ; BE6F 85 1D                    ..
-        bcc     $BE75                           ; BE71 90 02                    ..
+        bcc     MapEventSystem_Branch_BE75      ; BE71 90 02                    ..
         inc     $1C                             ; BE73 E6 1C                    ..
+MapEventSystem_Branch_BE75:
         cmp     #$C0                            ; BE75 C9 C0                    ..
-        bcc     $BE8D                           ; BE77 90 14                    ..
+        bcc     MapEventSystem_Branch_BE8D      ; BE77 90 14                    ..
         lda     $1C                             ; BE79 A5 1C                    ..
         and     #$FB                            ; BE7B 29 FB                    ).
         cmp     #$23                            ; BE7D C9 23                    .#
-        bcc     $BE8D                           ; BE7F 90 0C                    ..
+        bcc     MapEventSystem_Branch_BE8D      ; BE7F 90 0C                    ..
         lda     $1C                             ; BE81 A5 1C                    ..
         and     #$FC                            ; BE83 29 FC                    ).
         sta     $1C                             ; BE85 85 1C                    ..
         lda     $1D                             ; BE87 A5 1D                    ..
         and     #$1F                            ; BE89 29 1F                    ).
         sta     $1D                             ; BE8B 85 1D                    ..
+MapEventSystem_Branch_BE8D:
         rts                                     ; BE8D 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BE8E:
         bit     $1B                             ; BE8E 24 1B                    $.
-        bvs     $BEC3                           ; BE90 70 31                    p1
+        bvs     MapEventSystem_Branch_BEC3      ; BE90 70 31                    p1
         lda     $04F3                           ; BE92 AD F3 04                 ...
         and     #$0F                            ; BE95 29 0F                    ).
         sta     $1A                             ; BE97 85 1A                    ..
+MapEventSystem_Branch_BE99:
         lda     $18                             ; BE99 A5 18                    ..
         sta     $1D                             ; BE9B 85 1D                    ..
         lda     $19                             ; BE9D A5 19                    ..
@@ -7665,38 +7736,44 @@ MapEventSystem_Entry_BE8E:
         adc     #$02                            ; BEB1 69 02                    i.
         sta     $18                             ; BEB3 85 18                    ..
         and     #$1F                            ; BEB5 29 1F                    ).
-        bne     $BEBF                           ; BEB7 D0 06                    ..
+        bne     MapEventSystem_Branch_BEBF      ; BEB7 D0 06                    ..
         lda     $19                             ; BEB9 A5 19                    ..
         eor     #$04                            ; BEBB 49 04                    I.
         sta     $19                             ; BEBD 85 19                    ..
+MapEventSystem_Branch_BEBF:
         dec     $1A                             ; BEBF C6 1A                    ..
-        bne     $BE99                           ; BEC1 D0 D6                    ..
+        bne     MapEventSystem_Branch_BE99      ; BEC1 D0 D6                    ..
+MapEventSystem_Branch_BEC3:
         rts                                     ; BEC3 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BEC4:
         pha                                     ; BEC4 48                       H
         ldx     #$00                            ; BEC5 A2 00                    ..
+MapEventSystem_Branch_BEC7:
         cpx     $050A                           ; BEC7 EC 0A 05                 ...
-        beq     $BEED                           ; BECA F0 21                    .!
+        beq     MapEventSystem_Branch_BEED      ; BECA F0 21                    .!
         lda     $0300,x                         ; BECC BD 00 03                 ...
-        bmi     $BEE2                           ; BECF 30 11                    0.
+        bmi     MapEventSystem_Branch_BEE2      ; BECF 30 11                    0.
         cmp     $0E                             ; BED1 C5 0E                    ..
-        bne     $BEDC                           ; BED3 D0 07                    ..
+        bne     MapEventSystem_Branch_BEDC      ; BED3 D0 07                    ..
         lda     $0301,x                         ; BED5 BD 01 03                 ...
         cmp     $0F                             ; BED8 C5 0F                    ..
-        beq     $BF05                           ; BEDA F0 29                    .)
+        beq     MapEventSystem_Branch_BF05      ; BEDA F0 29                    .)
+MapEventSystem_Branch_BEDC:
         inx                                     ; BEDC E8                       .
         inx                                     ; BEDD E8                       .
         inx                                     ; BEDE E8                       .
-        jmp     $BEC7                           ; BEDF 4C C7 BE                 L..
+        jmp     MapEventSystem_Branch_BEC7      ; BEDF 4C C7 BE                 L..
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BEE2:
         txa                                     ; BEE2 8A                       .
         clc                                     ; BEE3 18                       .
         adc     $0301,x                         ; BEE4 7D 01 03                 }..
         adc     #$03                            ; BEE7 69 03                    i.
         tax                                     ; BEE9 AA                       .
-        jmp     $BEC7                           ; BEEA 4C C7 BE                 L..
+        jmp     MapEventSystem_Branch_BEC7      ; BEEA 4C C7 BE                 L..
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BEED:
         lda     $0E                             ; BEED A5 0E                    ..
         sta     $0300,x                         ; BEEF 9D 00 03                 ...
         inx                                     ; BEF2 E8                       .
@@ -7710,6 +7787,7 @@ MapEventSystem_Entry_BEC4:
         inc     $050B                           ; BF01 EE 0B 05                 ...
         rts                                     ; BF04 60                       `
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BF05:
         pla                                     ; BF05 68                       h
         sta     NextTextCharacter,x             ; BF06 9D 02 03                 ...
         rts                                     ; BF09 60                       `
@@ -7717,20 +7795,23 @@ MapEventSystem_Entry_BEC4:
 MapEventSystem_Entry_BF0A:
         lda     #$00                            ; BF0A A9 00                    ..
         sta     $05                             ; BF0C 85 05                    ..
+MapEventSystem_Branch_BF0E:
         ldx     $05                             ; BF0E A6 05                    ..
         cpx     $050A                           ; BF10 EC 0A 05                 ...
-        bcc     $BF16                           ; BF13 90 01                    ..
+        bcc     MapEventSystem_Branch_BF16      ; BF13 90 01                    ..
         rts                                     ; BF15 60                       `
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BF16:
         lda     $0300,x                         ; BF16 BD 00 03                 ...
-        bpl     $BF27                           ; BF19 10 0C                    ..
+        bpl     MapEventSystem_Branch_BF27      ; BF19 10 0C                    ..
         txa                                     ; BF1B 8A                       .
         clc                                     ; BF1C 18                       .
         adc     $0301,x                         ; BF1D 7D 01 03                 }..
         adc     #$03                            ; BF20 69 03                    i.
         sta     $05                             ; BF22 85 05                    ..
-        jmp     $BF0E                           ; BF24 4C 0E BF                 L..
+        jmp     MapEventSystem_Branch_BF0E      ; BF24 4C 0E BF                 L..
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BF27:
         sta     $0E                             ; BF27 85 0E                    ..
         lda     #$01                            ; BF29 A9 01                    ..
         sta     $04                             ; BF2B 85 04                    ..
@@ -7741,27 +7822,31 @@ MapEventSystem_Entry_BF0A:
         iny                                     ; BF31 C8                       .
         lda     $0301,x                         ; BF32 BD 01 03                 ...
         sta     $0F                             ; BF35 85 0F                    ..
+MapEventSystem_Branch_BF37:
         inc     $0F                             ; BF37 E6 0F                    ..
-        bne     $BF3D                           ; BF39 D0 02                    ..
+        bne     MapEventSystem_Branch_BF3D      ; BF39 D0 02                    ..
         inc     $0E                             ; BF3B E6 0E                    ..
+MapEventSystem_Branch_BF3D:
         lda     $0E                             ; BF3D A5 0E                    ..
         cmp     $0300,y                         ; BF3F D9 00 03                 ...
-        bne     $BF55                           ; BF42 D0 11                    ..
+        bne     MapEventSystem_Branch_BF55      ; BF42 D0 11                    ..
         lda     $0F                             ; BF44 A5 0F                    ..
         cmp     $0301,y                         ; BF46 D9 01 03                 ...
-        bne     $BF55                           ; BF49 D0 0A                    ..
+        bne     MapEventSystem_Branch_BF55      ; BF49 D0 0A                    ..
         iny                                     ; BF4B C8                       .
         iny                                     ; BF4C C8                       .
         iny                                     ; BF4D C8                       .
         inc     $04                             ; BF4E E6 04                    ..
         cpy     $050A                           ; BF50 CC 0A 05                 ...
-        bne     $BF37                           ; BF53 D0 E2                    ..
+        bne     MapEventSystem_Branch_BF37      ; BF53 D0 E2                    ..
+MapEventSystem_Branch_BF55:
         sty     $05                             ; BF55 84 05                    ..
         lda     $04                             ; BF57 A5 04                    ..
         cmp     #$02                            ; BF59 C9 02                    ..
-        bcs     $BF60                           ; BF5B B0 03                    ..
-        jmp     $BF0E                           ; BF5D 4C 0E BF                 L..
+        bcs     MapEventSystem_Branch_BF60      ; BF5B B0 03                    ..
+        jmp     MapEventSystem_Branch_BF0E      ; BF5D 4C 0E BF                 L..
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BF60:
         tya                                     ; BF60 98                       .
         pha                                     ; BF61 48                       H
         lda     $04                             ; BF62 A5 04                    ..
@@ -7776,15 +7861,17 @@ MapEventSystem_Entry_BF0A:
         sec                                     ; BF71 38                       8
         sbc     $0F                             ; BF72 E5 0F                    ..
         sta     $05                             ; BF74 85 05                    ..
+MapEventSystem_Branch_BF76:
         lda     $02FF,y                         ; BF76 B9 FF 02                 ...
         pha                                     ; BF79 48                       H
         dec     $04                             ; BF7A C6 04                    ..
-        beq     $BF84                           ; BF7C F0 06                    ..
+        beq     MapEventSystem_Branch_BF84      ; BF7C F0 06                    ..
         dey                                     ; BF7E 88                       .
         dey                                     ; BF7F 88                       .
         dey                                     ; BF80 88                       .
-        jmp     $BF76                           ; BF81 4C 76 BF                 Lv.
+        jmp     MapEventSystem_Branch_BF76      ; BF81 4C 76 BF                 Lv.
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BF84:
         lda     $0301,x                         ; BF84 BD 01 03                 ...
         sta     NextTextCharacter,x             ; BF87 9D 02 03                 ...
         lda     $0E                             ; BF8A A5 0E                    ..
@@ -7793,21 +7880,24 @@ MapEventSystem_Entry_BF0A:
         lda     $0300,x                         ; BF91 BD 00 03                 ...
         ora     #$80                            ; BF94 09 80                    ..
         sta     $0300,x                         ; BF96 9D 00 03                 ...
+MapEventSystem_Branch_BF99:
         pla                                     ; BF99 68                       h
         sta     $0303,x                         ; BF9A 9D 03 03                 ...
         inx                                     ; BF9D E8                       .
         dec     $0E                             ; BF9E C6 0E                    ..
-        bne     $BF99                           ; BFA0 D0 F7                    ..
+        bne     MapEventSystem_Branch_BF99      ; BFA0 D0 F7                    ..
         pla                                     ; BFA2 68                       h
         tay                                     ; BFA3 A8                       .
+MapEventSystem_Branch_BFA4:
         cpy     $050A                           ; BFA4 CC 0A 05                 ...
-        beq     $BFB4                           ; BFA7 F0 0B                    ..
+        beq     MapEventSystem_Branch_BFB4      ; BFA7 F0 0B                    ..
         lda     $0300,y                         ; BFA9 B9 00 03                 ...
         sta     $0303,x                         ; BFAC 9D 03 03                 ...
         iny                                     ; BFAF C8                       .
         inx                                     ; BFB0 E8                       .
-        jmp     $BFA4                           ; BFB1 4C A4 BF                 L..
+        jmp     MapEventSystem_Branch_BFA4      ; BFB1 4C A4 BF                 L..
 ; ----------------------------------------------------------------------------
+MapEventSystem_Branch_BFB4:
         inx                                     ; BFB4 E8                       .
         inx                                     ; BFB5 E8                       .
         inx                                     ; BFB6 E8                       .
@@ -7817,7 +7907,7 @@ MapEventSystem_Entry_BF0A:
         sec                                     ; BFBF 38                       8
         sbc     $0F                             ; BFC0 E5 0F                    ..
         sta     $050B                           ; BFC2 8D 0B 05                 ...
-        jmp     $BF0E                           ; BFC5 4C 0E BF                 L..
+        jmp     MapEventSystem_Branch_BF0E      ; BFC5 4C 0E BF                 L..
 ; ----------------------------------------------------------------------------
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC8 FF FF FF FF FF FF FF FF  ........
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFD0 FF FF FF FF FF FF FF FF  ........

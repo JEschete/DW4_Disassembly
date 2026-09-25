@@ -297,10 +297,24 @@ BattlePresentation_Branch_81F6:
 BattlePresentation_Branch_81FA:
         rts                                     ; 81FA 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$33,$82,$C9,$01,$F0,$13,$C9 ; 81FB 20 33 82 C9 01 F0 13 C9   3......
-        db   $02,$F0,$0B,$C9,$04,$F0,$03,$4C ; 8203 02 F0 0B C9 04 F0 03 4C  .......L
-        db   $27,$C8,$16,$00,$36,$01,$16,$00 ; 820B 27 C8 16 00 36 01 16 00  '...6...
-        db   $36,$01,$60                     ; 8213 36 01 60                 6.`
+BattlePresentation_Entry_81FB:
+        jsr     BattlePresentation_Entry_8233   ; 81FB 20 33 82                  3.
+        cmp     #$01                            ; 81FE C9 01                    ..
+        beq     BattlePresentation_Branch_8215  ; 8200 F0 13                    ..
+        cmp     #$02                            ; 8202 C9 02                    ..
+        beq     BattlePresentation_Branch_8211  ; 8204 F0 0B                    ..
+        cmp     #$04                            ; 8206 C9 04                    ..
+        beq     BattlePresentation_Branch_820D  ; 8208 F0 03                    ..
+        jmp     MultiplyPointerWord             ; 820A 4C 27 C8                 L'.
+; ----------------------------------------------------------------------------
+BattlePresentation_Branch_820D:
+        asl     $00,x                         ; 820D 16 00                    ..
+        rol     $01,x                           ; 820F 36 01                    6.
+BattlePresentation_Branch_8211:
+        asl     $00,x                         ; 8211 16 00                    ..
+        rol     $01,x                           ; 8213 36 01                    6.
+BattlePresentation_Branch_8215:
+        rts                                     ; 8215 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_8216:
         jsr     BattlePresentation_Entry_8233   ; 8216 20 33 82                  3.
@@ -439,9 +453,16 @@ BattlePresentation_Branch_82F3:
         sta     $75BE                           ; 8304 8D BE 75                 ..u
         rts                                     ; 8307 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$36,$82,$A5,$94,$18,$6D,$BF ; 8308 20 36 82 A5 94 18 6D BF   6....m.
-        db   $75,$8D,$BF,$75,$A5,$95,$6D,$C0 ; 8310 75 8D BF 75 A5 95 6D C0  u..u..m.
-        db   $75,$8D,$C0,$75,$60             ; 8318 75 8D C0 75 60           u..u`
+BattlePresentation_Entry_8308:
+        jsr     BattlePresentation_Entry_8236   ; 8308 20 36 82                  6.
+        lda     $94                             ; 830B A5 94                    ..
+        clc                                     ; 830D 18                       .
+        adc     $75BF                           ; 830E 6D BF 75                 m.u
+        sta     $75BF                           ; 8311 8D BF 75                 ..u
+        lda     $95                             ; 8314 A5 95                    ..
+        adc     $75C0                           ; 8316 6D C0 75                 m.u
+        sta     $75C0                           ; 8319 8D C0 75                 ..u
+        rts                                     ; 831C 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_831D:
         lda     $82                             ; 831D A5 82                    ..
@@ -1203,8 +1224,12 @@ BattlePresentation_Branch_8800:
         bpl     BattlePresentation_Branch_87E1  ; 8803 10 DC                    ..
         rts                                     ; 8805 60                       `
 ; ----------------------------------------------------------------------------
-        db   $8A,$20,$9C,$89,$A0,$03,$A2,$0C ; 8806 8A 20 9C 89 A0 03 A2 0C  . ......
-        db   $4C,$19,$88                     ; 880E 4C 19 88                 L..
+BattlePresentation_Entry_8806:
+        txa                                     ; 8806 8A                       .
+        jsr     BattlePresentation_Entry_899C   ; 8807 20 9C 89                  ..
+        ldy     #$03                            ; 880A A0 03                    ..
+        ldx     #$0C                            ; 880C A2 0C                    ..
+        jmp     BattlePresentation_Entry_8819   ; 880E 4C 19 88                 L..
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_8811:
         txa                                     ; 8811 8A                       .
@@ -1561,7 +1586,11 @@ BattlePresentation_Entry_8A48:
         cmp     #$80                            ; 8A53 C9 80                    ..
         rts                                     ; 8A55 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A0,$05,$B1,$79,$29,$C4,$60     ; 8A56 A0 05 B1 79 29 C4 60     ...y).`
+BattlePresentation_Entry_8A56:
+        ldy     #$05                            ; 8A56 A0 05                    ..
+        lda     ($79),y                         ; 8A58 B1 79                    .y
+        and     #$C4                            ; 8A5A 29 C4                    ).
+        rts                                     ; 8A5C 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_8A5D:
         ldy     #$06                            ; 8A5D A0 06                    ..
@@ -1605,9 +1634,17 @@ BattlePresentation_Branch_8A90:
         sec                                     ; 8A92 38                       8
         rts                                     ; 8A93 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$AB,$8A,$90,$10,$8D,$65,$73 ; 8A94 20 AB 8A 90 10 8D 65 73   .....es
-        db   $20,$32,$8A,$A0,$00,$20,$D3,$8A ; 8A9C 20 32 8A A0 00 20 D3 8A   2... ..
-        db   $90,$03,$98,$38,$60             ; 8AA4 90 03 98 38 60           ...8`
+BattlePresentation_Entry_8A94:
+        jsr     BattlePresentation_Entry_8AAB   ; 8A94 20 AB 8A                  ..
+        bcc     BattlePresentation_Branch_8AA9  ; 8A97 90 10                    ..
+        sta     $7365                           ; 8A99 8D 65 73                 .es
+        jsr     BattlePresentation_Entry_8A32   ; 8A9C 20 32 8A                  2.
+        ldy     #$00                            ; 8A9F A0 00                    ..
+        jsr     BattlePresentation_Entry_8AD3   ; 8AA1 20 D3 8A                  ..
+        bcc     BattlePresentation_Branch_8AA9  ; 8AA4 90 03                    ..
+        tya                                     ; 8AA6 98                       .
+        sec                                     ; 8AA7 38                       8
+        rts                                     ; 8AA8 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Branch_8AA9:
         clc                                     ; 8AA9 18                       .
@@ -1645,8 +1682,9 @@ BattlePresentation_Branch_8AD0:
         txa                                     ; 8AD1 8A                       .
         rts                                     ; 8AD2 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$03,$8D,$64,$73             ; 8AD3 A9 03 8D 64 73           ...ds
-; ----------------------------------------------------------------------------
+BattlePresentation_Entry_8AD3:
+        lda     #$03                            ; 8AD3 A9 03                    ..
+        sta     $7364                           ; 8AD5 8D 64 73                 .ds
 BattlePresentation_Branch_8AD8:
         lda     SavePartyCharacter1,x           ; 8AD8 BD 6A 61                 .ja
         bpl     BattlePresentation_Branch_8AE5  ; 8ADB 10 08                    ..
@@ -2708,7 +2746,7 @@ BattlePresentation_Entry_934A:
         jsr     BattlePresentation_Entry_B620   ; 934D 20 20 B6                   .
         asl     a                               ; 9350 0A                       .
         tax                                     ; 9351 AA                       .
-        lda     BattlePresentation_Entry_B7E3,x ; 9352 BD E3 B7                 ...
+        lda     $B7E3,x                         ; 9352 BD E3 B7                 ...
         sta     $8A                             ; 9355 85 8A                    ..
         lda     $B7E4,x                         ; 9357 BD E4 B7                 ...
         lsr     a                               ; 935A 4A                       J
@@ -2917,16 +2955,54 @@ BattlePresentation_Entry_9477:
         tax                                     ; 947F AA                       .
         rts                                     ; 9480 60                       `
 ; ----------------------------------------------------------------------------
-        db   $B9,$00,$00,$85,$19,$B9,$01,$00 ; 9481 B9 00 00 85 19 B9 01 00  ........
-        db   $85,$1A,$98,$48,$A0,$18,$A9,$00 ; 9489 85 1A 98 48 A0 18 A9 00  ...H....
-        db   $85,$1B,$85,$16,$85,$17,$85,$18 ; 9491 85 1B 85 16 85 17 85 18  ........
-        db   $16,$00,$36,$01,$36,$02,$26,$16 ; 9499 16 00 36 01 36 02 26 16  ..6.6.&.
-        db   $26,$17,$26,$18,$F6,$00,$A5,$16 ; 94A1 26 17 26 18 F6 00 A5 16  &.&.....
-        db   $38,$E5,$19,$48,$A5,$17,$E5,$1A ; 94A9 38 E5 19 48 A5 17 E5 1A  8..H....
-        db   $48,$A5,$18,$E5,$1B,$B0,$06,$D6 ; 94B1 48 A5 18 E5 1B B0 06 D6  H.......
-        db   $00,$68,$68,$90,$08,$85,$18,$68 ; 94B9 00 68 68 90 08 85 18 68  .hh....h
-        db   $85,$17,$68,$85,$16,$88,$D0,$D0 ; 94C1 85 17 68 85 16 88 D0 D0  ..h.....
-        db   $68,$A8,$60                     ; 94C9 68 A8 60                 h.`
+BattlePresentation_Entry_9481:
+        lda     $0000,y                         ; 9481 B9 00 00                 ...
+        sta     $19                             ; 9484 85 19                    ..
+        lda     $01,y                           ; 9486 B9 01 00                 ...
+        sta     $1A                             ; 9489 85 1A                    ..
+        tya                                     ; 948B 98                       .
+        pha                                     ; 948C 48                       H
+        ldy     #$18                            ; 948D A0 18                    ..
+        lda     #$00                            ; 948F A9 00                    ..
+        sta     $1B                             ; 9491 85 1B                    ..
+        sta     $16                             ; 9493 85 16                    ..
+        sta     $17                             ; 9495 85 17                    ..
+        sta     $18                             ; 9497 85 18                    ..
+BattlePresentation_Branch_9499:
+        asl     $00,x                         ; 9499 16 00                    ..
+        rol     $01,x                           ; 949B 36 01                    6.
+        rol     $02,x                         ; 949D 36 02                    6.
+        rol     $16                             ; 949F 26 16                    &.
+        rol     $17                             ; 94A1 26 17                    &.
+        rol     $18                             ; 94A3 26 18                    &.
+        inc     $00,x                         ; 94A5 F6 00                    ..
+        lda     $16                             ; 94A7 A5 16                    ..
+        sec                                     ; 94A9 38                       8
+        sbc     $19                             ; 94AA E5 19                    ..
+        pha                                     ; 94AC 48                       H
+        lda     $17                             ; 94AD A5 17                    ..
+        sbc     $1A                             ; 94AF E5 1A                    ..
+        pha                                     ; 94B1 48                       H
+        lda     $18                             ; 94B2 A5 18                    ..
+        sbc     $1B                             ; 94B4 E5 1B                    ..
+        bcs     BattlePresentation_Branch_94BE  ; 94B6 B0 06                    ..
+        dec     $00,x                         ; 94B8 D6 00                    ..
+        pla                                     ; 94BA 68                       h
+        pla                                     ; 94BB 68                       h
+        bcc     BattlePresentation_Branch_94C6  ; 94BC 90 08                    ..
+BattlePresentation_Branch_94BE:
+        sta     $18                             ; 94BE 85 18                    ..
+        pla                                     ; 94C0 68                       h
+        sta     $17                             ; 94C1 85 17                    ..
+        pla                                     ; 94C3 68                       h
+        sta     $16                             ; 94C4 85 16                    ..
+BattlePresentation_Branch_94C6:
+        dey                                     ; 94C6 88                       .
+        bne     BattlePresentation_Branch_9499  ; 94C7 D0 D0                    ..
+        pla                                     ; 94C9 68                       h
+        tay                                     ; 94CA A8                       .
+        rts                                     ; 94CB 60                       `
+; ----------------------------------------------------------------------------
         db   $02,$01,$00,$05,$04,$03,$08,$07 ; 94CC 02 01 00 05 04 03 08 07  ........
         db   $06,$0B,$0A,$09,$0E,$0D,$0C     ; 94D4 06 0B 0A 09 0E 0D 0C     .......
         db   $4C                             ; 94DB 4C                       L
@@ -2993,8 +3069,10 @@ BattlePresentation_Branch_9570:
         bpl     BattlePresentation_Branch_9570  ; 9578 10 F6                    ..
         rts                                     ; 957A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$01,$92,$20,$BD,$93,$4C,$1C ; 957B 20 01 92 20 BD 93 4C 1C   .. ..L.
-        db   $97                             ; 9583 97                       .
+BattlePresentation_Entry_957B:
+        jsr     BattlePresentation_Entry_9201   ; 957B 20 01 92                  ..
+        jsr     BattlePresentation_Entry_93BD   ; 957E 20 BD 93                  ..
+        jmp     BattlePresentation_Entry_971C   ; 9581 4C 1C 97                 L..
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_9584:
         lda     $75F0                           ; 9584 AD F0 75                 ..u
@@ -3226,10 +3304,18 @@ BattlePresentation_Branch_9711:
 BattlePresentation_Branch_971B:
         rts                                     ; 971B 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$58,$96,$A9,$07,$85,$81,$20 ; 971C 20 58 96 A9 07 85 81 20   X.....
-        db   $76,$92,$20,$AD,$96,$20,$6B,$96 ; 9724 76 92 20 AD 96 20 6B 96  v. .. k.
-        db   $C6,$81,$10,$F3,$20,$95,$96,$4C ; 972C C6 81 10 F3 20 95 96 4C  .... ..L
-        db   $C2,$A9                         ; 9734 C2 A9                    ..
+BattlePresentation_Entry_971C:
+        jsr     BattlePresentation_Entry_9658   ; 971C 20 58 96                  X.
+        lda     #$07                            ; 971F A9 07                    ..
+        sta     $81                             ; 9721 85 81                    ..
+BattlePresentation_Branch_9723:
+        jsr     BattlePresentation_Entry_9276   ; 9723 20 76 92                  v.
+        jsr     BattlePresentation_Entry_96AD   ; 9726 20 AD 96                  ..
+        jsr     BattlePresentation_Entry_966B   ; 9729 20 6B 96                  k.
+        dec     $81                             ; 972C C6 81                    ..
+        bpl     BattlePresentation_Branch_9723  ; 972E 10 F3                    ..
+        jsr     BattlePresentation_Entry_9695   ; 9730 20 95 96                  ..
+        jmp     BattlePresentation_Entry_A9C2   ; 9733 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_9736:
         jsr     BattlePresentation_Entry_9658   ; 9736 20 58 96                  X.
@@ -4000,7 +4086,7 @@ BattlePresentation_Entry_9C89:
         cmp     #$9D                            ; 9C98 C9 9D                    ..
         beq     BattlePresentation_Branch_9D04  ; 9C9A F0 68                    .h
         cmp     #$8D                            ; 9C9C C9 8D                    ..
-        beq     BattlePresentation_Branch_9CDC  ; 9C9E F0 3C                    .<
+        beq     BattlePresentation_Entry_9CDC   ; 9C9E F0 3C                    .<
         cmp     #$1A                            ; 9CA0 C9 1A                    ..
         beq     BattlePresentation_Branch_9CA5  ; 9CA2 F0 01                    ..
         rts                                     ; 9CA4 60                       `
@@ -4031,10 +4117,13 @@ BattlePresentation_Entry_9CB2:
 BattlePresentation_Branch_9CD1:
         rts                                     ; 9CD1 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$DC,$9C,$A5,$0F,$10,$2A,$4C ; 9CD2 20 DC 9C A5 0F 10 2A 4C   .....*L
-        db   $A3,$AC                         ; 9CDA A3 AC                    ..
+BattlePresentation_Entry_9CD2:
+        jsr     BattlePresentation_Entry_9CDC   ; 9CD2 20 DC 9C                  ..
+        lda     $0F                             ; 9CD5 A5 0F                    ..
+        bpl     BattlePresentation_Branch_9D03  ; 9CD7 10 2A                    .*
+        jmp     BattlePresentation_Branch_ACA3  ; 9CD9 4C A3 AC                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9CDC:
+BattlePresentation_Entry_9CDC:
         jsr     BattlePresentation_Entry_96C6   ; 9CDC 20 C6 96                  ..
         bcc     BattlePresentation_Branch_9D03  ; 9CDF 90 22                    ."
         ldy     #$05                            ; 9CE1 A0 05                    ..
@@ -4772,12 +4861,9 @@ BattlePresentation_Entry_A1F2:
         stx     $81                             ; A1FB 86 81                    ..
         jsr     BattlePresentation_Entry_899C   ; A1FD 20 9C 89                  ..
         ldy     #$05                            ; A200 A0 05                    ..
-        db   $B1                             ; A202 B1                       .
-; ----------------------------------------------------------------------------
-        stx     $29                             ; A203 86 29                    .)
-        cpy     #$D0                            ; A205 C0 D0                    ..
-        db   $33                             ; A207 33                       3
-; ----------------------------------------------------------------------------
+        lda     ($86),y                       ; A202 B1 86                    ..
+        and     #$C0                            ; A204 29 C0                    ).
+        bne     BattlePresentation_Branch_A23B  ; A206 D0 33                    .3
 BattlePresentation_Branch_A208:
         lda     #$00                            ; A208 A9 00                    ..
         sta     $7B                             ; A20A 85 7B                    .{
@@ -5424,14 +5510,12 @@ BattlePresentation_Entry_A61A:
         db   $98,$9C,$9D,$31,$9E,$8B,$9E,$54 ; A647 98 9C 9D 31 9E 8B 9E 54  ...1...T
         db   $95,$69,$95,$BB,$9B,$BB,$9B,$E2 ; A64F 95 69 95 BB 9B BB 9B E2  .i......
         db   $9F,$0D,$A0,$0B,$98,$0B,$98,$0B ; A657 9F 0D A0 0B 98 0B 98 0B  ........
-        db   $98                             ; A65F 98                       .
-; ----------------------------------------------------------------------------
-        eor     $3198                           ; A660 4D 98 31                 M.1
-        db   $9E,$35,$9E,$1B,$95,$1B,$95,$1B ; A663 9E 35 9E 1B 95 1B 95 1B  .5......
-        db   $95,$33,$95,$33,$95,$33,$95,$48 ; A66B 95 33 95 33 95 33 95 48  .3.3.3.H
-        db   $95,$48,$95,$48,$95,$C3,$9E,$5A ; A673 95 48 95 48 95 C3 9E 5A  .H.H...Z
-        db   $9F,$B8,$9F,$1B,$95,$33,$95,$48 ; A67B 9F B8 9F 1B 95 33 95 48  .....3.H
-        db   $95,$33,$95,$CD,$9B,$C3,$9E     ; A683 95 33 95 CD 9B C3 9E     .3.....
+        db   $98,$4D,$98,$31,$9E,$35,$9E,$1B ; A65F 98 4D 98 31 9E 35 9E 1B  .M.1.5..
+        db   $95,$1B,$95,$1B,$95,$33,$95,$33 ; A667 95 1B 95 1B 95 33 95 33  .....3.3
+        db   $95,$33,$95,$48,$95,$48,$95,$48 ; A66F 95 33 95 48 95 48 95 48  .3.H.H.H
+        db   $95,$C3,$9E,$5A,$9F,$B8,$9F,$1B ; A677 95 C3 9E 5A 9F B8 9F 1B  ...Z....
+        db   $95,$33,$95,$48,$95,$33,$95,$CD ; A67F 95 33 95 48 95 33 95 CD  .3.H.3..
+        db   $9B,$C3,$9E                     ; A687 9B C3 9E                 ...
         db   $E2,$9B,$5A,$9F,$76,$9F,$8D,$9F ; A68A E2 9B 5A 9F 76 9F 8D 9F  ..Z.v...
         db   $C7,$9F,$4C,$A5                 ; A692 C7 9F 4C A5              ..L.
         db   $13,$14,$19,$1A,$21,$22,$29,$2A ; A696 13 14 19 1A 21 22 29 2A  ....!")*
@@ -5729,7 +5813,10 @@ BattlePresentation_Entry_A8AA:
         sta     $05                             ; A8BB 85 05                    ..
         jmp     BattlePresentation_Entry_A85B   ; A8BD 4C 5B A8                 L[.
 ; ----------------------------------------------------------------------------
-        db   $AD,$80,$6E,$C9,$04,$60         ; A8C0 AD 80 6E C9 04 60        ..n..`
+BattlePresentation_Entry_A8C0:
+        lda     $6E80                           ; A8C0 AD 80 6E                 ..n
+        cmp     #$04                            ; A8C3 C9 04                    ..
+        rts                                     ; A8C5 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Branch_A8C6:
         jsr     BattlePresentation_Entry_A8D5   ; A8C6 20 D5 A8                  ..
@@ -6202,10 +6289,19 @@ BattlePresentation_Entry_AC19:
         sta     $0B                             ; AC1F 85 0B                    ..
         rts                                     ; AC21 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$02,$85,$0A,$A5,$03,$85,$0B ; AC22 A5 02 85 0A A5 03 85 0B  ........
-        db   $A5,$00,$A2,$0A,$20,$30,$83,$A5 ; AC2A A5 00 A2 0A 20 30 83 A5  .... 0..
-        db   $0B,$85,$0A,$A5,$19,$85,$0B,$4C ; AC32 0B 85 0A A5 19 85 0B 4C  .......L
-        db   $87,$81                         ; AC3A 87 81                    ..
+BattlePresentation_Entry_AC22:
+        lda     $02                           ; AC22 A5 02                    ..
+        sta     $0A                             ; AC24 85 0A                    ..
+        lda     $03                             ; AC26 A5 03                    ..
+        sta     $0B                             ; AC28 85 0B                    ..
+        lda     $00                           ; AC2A A5 00                    ..
+        ldx     #$0A                            ; AC2C A2 0A                    ..
+        jsr     BattlePresentation_Entry_8330   ; AC2E 20 30 83                  0.
+        lda     $0B                             ; AC31 A5 0B                    ..
+        sta     $0A                             ; AC33 85 0A                    ..
+        lda     $19                             ; AC35 A5 19                    ..
+        sta     $0B                             ; AC37 85 0B                    ..
+        jmp     BattlePresentation_Entry_8187   ; AC39 4C 87 81                 L..
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_AC3C:
         lda     $75D4                           ; AC3C AD D4 75                 ..u
@@ -6214,10 +6310,19 @@ BattlePresentation_Entry_AC3C:
         sta     $0D                             ; AC43 85 0D                    ..
         rts                                     ; AC45 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$D7,$75,$85,$0C,$AD,$D8,$75 ; AC46 AD D7 75 85 0C AD D8 75  ..u....u
-        db   $85,$0D,$AD,$D4,$75,$A2,$0C,$20 ; AC4E 85 0D AD D4 75 A2 0C 20  ....u..
-        db   $30,$83,$A5,$0D,$85,$0C,$A5,$19 ; AC56 30 83 A5 0D 85 0C A5 19  0.......
-        db   $85,$0D,$4C,$87,$81             ; AC5E 85 0D 4C 87 81           ..L..
+BattlePresentation_Entry_AC46:
+        lda     $75D7                           ; AC46 AD D7 75                 ..u
+        sta     $0C                             ; AC49 85 0C                    ..
+        lda     $75D8                           ; AC4B AD D8 75                 ..u
+        sta     $0D                             ; AC4E 85 0D                    ..
+        lda     $75D4                           ; AC50 AD D4 75                 ..u
+        ldx     #$0C                            ; AC53 A2 0C                    ..
+        jsr     BattlePresentation_Entry_8330   ; AC55 20 30 83                  0.
+        lda     $0D                             ; AC58 A5 0D                    ..
+        sta     $0C                             ; AC5A 85 0C                    ..
+        lda     $19                             ; AC5C A5 19                    ..
+        sta     $0D                             ; AC5E 85 0D                    ..
+        jmp     BattlePresentation_Entry_8187   ; AC60 4C 87 81                 L..
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_AC63:
         lda     $75DB                           ; AC63 AD DB 75                 ..u
@@ -6389,10 +6494,27 @@ BattlePresentation_Branch_AD95:
         sta     $8D                             ; AD9D 85 8D                    ..
         rts                                     ; AD9F 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$82,$20,$6B,$8A,$A0,$13,$B1 ; ADA0 A5 82 20 6B 8A A0 13 B1  .. k....
-        db   $79,$29,$7F,$C9,$7F,$F0,$0F,$A2 ; ADA8 79 29 7F C9 7F F0 0F A2  y)......
-        db   $09,$DD,$BF,$AD,$F0,$05,$CA,$10 ; ADB0 09 DD BF AD F0 05 CA 10  ........
-        db   $F8,$30,$03,$20,$C0,$AD,$60,$00 ; ADB8 F8 30 03 20 C0 AD 60 00  .0. ..`.
+BattlePresentation_Entry_ADA0:
+        lda     $82                             ; ADA0 A5 82                    ..
+        jsr     BattlePresentation_Entry_8A6B   ; ADA2 20 6B 8A                  k.
+        ldy     #$13                            ; ADA5 A0 13                    ..
+        lda     ($79),y                         ; ADA7 B1 79                    .y
+        and     #$7F                            ; ADA9 29 7F                    ).
+        cmp     #$7F                            ; ADAB C9 7F                    ..
+        beq     BattlePresentation_Branch_ADBE  ; ADAD F0 0F                    ..
+        ldx     #$09                            ; ADAF A2 09                    ..
+BattlePresentation_Branch_ADB1:
+        cmp     $ADBF,x                         ; ADB1 DD BF AD                 ...
+        beq     BattlePresentation_Branch_ADBB  ; ADB4 F0 05                    ..
+        dex                                     ; ADB6 CA                       .
+        bpl     BattlePresentation_Branch_ADB1  ; ADB7 10 F8                    ..
+        bmi     BattlePresentation_Branch_ADBE  ; ADB9 30 03                    0.
+BattlePresentation_Branch_ADBB:
+        jsr     BattlePresentation_Entry_ADC0   ; ADBB 20 C0 AD                  ..
+BattlePresentation_Branch_ADBE:
+        rts                                     ; ADBE 60                       `
+; ----------------------------------------------------------------------------
+        db   $00                             ; ADBF 00                       .
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_ADC0:
         lda     $0D                             ; ADC0 A5 0D                    ..
@@ -7505,7 +7627,7 @@ BattlePresentation_Entry_B5E4:
         jsr     BattlePresentation_Entry_B61D   ; B5EC 20 1D B6                  ..
         asl     a                               ; B5EF 0A                       .
         tax                                     ; B5F0 AA                       .
-        lda     BattlePresentation_Entry_B7E3,x ; B5F1 BD E3 B7                 ...
+        lda     $B7E3,x                         ; B5F1 BD E3 B7                 ...
         sta     $00                           ; B5F4 85 00                    ..
         lda     $B7E4,x                         ; B5F6 BD E4 B7                 ...
         cmp     #$FF                            ; B5F9 C9 FF                    ..
@@ -7642,13 +7764,43 @@ BattlePresentation_Entry_B6DD:
         sta     $00                           ; B6DD 85 00                    ..
         rts                                     ; B6DF 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$63,$73,$30,$30,$00,$67,$73 ; B6E0 AD 63 73 30 30 00 67 73  .cs00.gs
-        db   $AA,$00,$23,$53,$38,$A9,$80,$E5 ; B6E8 AA 00 23 53 38 A9 80 E5  ..#S8...
-        db   $72,$85,$01,$A9,$01,$E9,$00,$85 ; B6F0 72 85 01 A9 01 E9 00 85  r.......
-        db   $02,$46,$02,$66,$01,$A2,$01,$A5 ; B6F8 02 46 02 66 01 A2 01 A5  .F.f....
-        db   $00,$20,$27,$C8,$A9,$80,$20,$51 ; B700 00 20 27 C8 A9 80 20 51  . '... Q
-        db   $C8,$06,$01,$26,$02,$B0,$03,$A5 ; B708 C8 06 01 26 02 B0 03 A5  ...&....
-        db   $02,$60,$A9,$FF,$60,$A5,$00,$60 ; B710 02 60 A9 FF 60 A5 00 60  .`..`..`
+BattlePresentation_Entry_B6E0:
+        lda     $7363                           ; B6E0 AD 63 73                 .cs
+        bmi     BattlePresentation_Branch_B715  ; B6E3 30 30                    00
+        brk                                     ; B6E5 00                       .
+        db   $67,$73                         ; B6E6 67 73                    gs
+; ----------------------------------------------------------------------------
+        tax                                     ; B6E8 AA                       .
+        brk                                     ; B6E9 00                       .
+        db   $23,$53                         ; B6EA 23 53                    #S
+; ----------------------------------------------------------------------------
+        sec                                     ; B6EC 38                       8
+        lda     #$80                            ; B6ED A9 80                    ..
+        sbc     $72                             ; B6EF E5 72                    .r
+        sta     $01                             ; B6F1 85 01                    ..
+        lda     #$01                            ; B6F3 A9 01                    ..
+        sbc     #$00                            ; B6F5 E9 00                    ..
+        sta     $02                           ; B6F7 85 02                    ..
+        lsr     $02                           ; B6F9 46 02                    F.
+        ror     $01                             ; B6FB 66 01                    f.
+        ldx     #$01                            ; B6FD A2 01                    ..
+        lda     $00                           ; B6FF A5 00                    ..
+        jsr     MultiplyPointerWord             ; B701 20 27 C8                  '.
+        lda     #$80                            ; B704 A9 80                    ..
+        jsr     UpperFixedEngine_Entry_C851     ; B706 20 51 C8                  Q.
+        asl     $01                             ; B709 06 01                    ..
+        rol     $02                           ; B70B 26 02                    &.
+        bcs     BattlePresentation_Branch_B712  ; B70D B0 03                    ..
+        lda     $02                           ; B70F A5 02                    ..
+        rts                                     ; B711 60                       `
+; ----------------------------------------------------------------------------
+BattlePresentation_Branch_B712:
+        lda     #$FF                            ; B712 A9 FF                    ..
+        rts                                     ; B714 60                       `
+; ----------------------------------------------------------------------------
+BattlePresentation_Branch_B715:
+        lda     $00                           ; B715 A5 00                    ..
+        rts                                     ; B717 60                       `
 ; ----------------------------------------------------------------------------
 BattlePresentation_Entry_B718:
         jsr     BattlePresentation_Entry_B66B   ; B718 20 6B B6                  k.
@@ -7694,29 +7846,19 @@ BattlePresentation_Entry_B732:
         db   $11,$0A,$07,$1E,$0B,$3C,$15,$37 ; B796 11 0A 07 1E 0B 3C 15 37  .....<.7
         db   $0D,$06,$0D,$0E,$15,$1E,$21,$46 ; B79E 0D 06 0D 0E 15 1E 21 46  ......!F
         db   $15,$AF,$33,$FF,$33,$06,$05,$1E ; B7A6 15 AF 33 FF 33 06 05 1E  ..3.3...
-        db   $0B,$50                         ; B7AE 0B 50                    .P
-; ----------------------------------------------------------------------------
-        ora     $09,x                           ; B7B0 15 09                    ..
-        ora     $28                             ; B7B2 05 28                    .(
-        ora     CurrentSubmapNumber,x           ; B7B4 15 64                    .d
-        and     #$12                            ; B7B6 29 12                    ).
-        ora     $2D                             ; B7B8 05 2D                    .-
-        db   $0B,$0A,$06                     ; B7BA 0B 0A 06                 ...
+        db   $0B,$50,$15,$09,$05,$28,$15,$64 ; B7AE 0B 50 15 09 05 28 15 64  .P...(.d
+        db   $29,$12,$05,$2D,$0B,$0A,$06     ; B7B6 29 12 05 2D 0B 0A 06     )..-...
         db   $09,$03,$39,$05,$6E,$12,$0E,$04 ; B7BD 09 03 39 05 6E 12 0E 04  ..9.n...
         db   $1C,$06,$32,$05,$50,$08,$0D,$03 ; B7C5 1C 06 32 05 50 08 0D 03  ..2.P...
         db   $23,$05,$3D,$06,$0C,$06,$18,$0A ; B7CD 23 05 3D 06 0C 06 18 0A  #.=.....
         db   $2E,$10                         ; B7D5 2E 10                    ..
         db   $08,$02,$23,$05,$5A,$0A,$0B,$02 ; B7D7 08 02 23 05 5A 0A 0B 02  ..#.Z...
         db   $32,$0A,$78,$14                 ; B7DF 32 0A 78 14              2.x.
-; ----------------------------------------------------------------------------
-BattlePresentation_Entry_B7E3:
-LB7E4 = $+ 1
-        asl     $4B0B,x                         ; B7E3 1E 0B 4B                 ..K
-        ora     $FF,x                           ; B7E6 15 FF                    ..
-        db   $FF,$1E,$0B,$32,$0B,$14,$0B,$0A ; B7E8 FF 1E 0B 32 0B 14 0B 0A  ...2....
-        db   $06,$01,$03,$04,$03,$03,$03,$01 ; B7F0 06 01 03 04 03 03 03 01  ........
-        db   $02,$03,$05,$05,$06,$0F,$06,$64 ; B7F8 02 03 05 05 06 0F 06 64  .......d
-        db   $15,$32,$0B                     ; B800 15 32 0B                 .2.
+        db   $1E                             ; B7E3 1E                       .
+        db   $0B,$4B,$15,$FF,$FF,$1E,$0B,$32 ; B7E4 0B 4B 15 FF FF 1E 0B 32  .K.....2
+        db   $0B,$14,$0B,$0A,$06,$01,$03,$04 ; B7EC 0B 14 0B 0A 06 01 03 04  ........
+        db   $03,$03,$03,$01,$02,$03,$05,$05 ; B7F4 03 03 03 01 02 03 05 05  ........
+        db   $06,$0F,$06,$64,$15,$32,$0B     ; B7FC 06 0F 06 64 15 32 0B     ...d.2.
         db   $FF,$D8,$66,$00,$FF,$FF,$B2,$00 ; B803 FF D8 66 00 FF FF B2 00  ..f.....
 Bank13_BattlePresentationLookup:
         db   $E2,$E2,$E2,$E1,$E1,$E1,$E0,$E0 ; B80B E2 E2 E2 E1 E1 E1 E0 E0  ........

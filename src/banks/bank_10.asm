@@ -169,10 +169,11 @@ BattlePartyServices_Entry_8157:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_815F:
         ldx     #$0F                            ; 815F A2 0F                    ..
+BattlePartyServices_Branch_8161:
         lda     $00,x                         ; 8161 B5 00                    ..
         pha                                     ; 8163 48                       H
         dex                                     ; 8164 CA                       .
-        bpl     $8161                           ; 8165 10 FA                    ..
+        bpl     BattlePartyServices_Branch_8161 ; 8165 10 FA                    ..
         lda     $6E0A                           ; 8167 AD 0A 6E                 ..n
         pha                                     ; 816A 48                       H
         jsr     BattlePartyServices_Entry_8196  ; 816B 20 96 81                  ..
@@ -186,11 +187,12 @@ BattlePartyServices_Branch_815F:
         sta     $6E0A                           ; 8181 8D 0A 6E                 ..n
         ldy     #$10                            ; 8184 A0 10                    ..
         ldx     #$00                            ; 8186 A2 00                    ..
+BattlePartyServices_Branch_8188:
         pla                                     ; 8188 68                       h
         sta     $00,x                         ; 8189 95 00                    ..
         inx                                     ; 818B E8                       .
         dey                                     ; 818C 88                       .
-        bne     $8188                           ; 818D D0 F9                    ..
+        bne     BattlePartyServices_Branch_8188 ; 818D D0 F9                    ..
         pla                                     ; 818F 68                       h
         tay                                     ; 8190 A8                       .
         pla                                     ; 8191 68                       h
@@ -204,16 +206,19 @@ BattlePartyServices_Entry_8198:
         inx                                     ; 8198 E8                       .
         stx     $6E0C                           ; 8199 8E 0C 6E                 ..n
         jsr     BattlePartyServices_Entry_82F0  ; 819C 20 F0 82                  ..
-        bcs     $81B8                           ; 819F B0 17                    ..
+        bcs     BattlePartyServices_Branch_81B8 ; 819F B0 17                    ..
         jsr     BattlePartyServices_Entry_8241  ; 81A1 20 41 82                  A.
-        bcc     $81AB                           ; 81A4 90 05                    ..
+        bcc     BattlePartyServices_Branch_81AB ; 81A4 90 05                    ..
         jsr     BattlePartyServices_Entry_8278  ; 81A6 20 78 82                  x.
-        beq     $81B5                           ; 81A9 F0 0A                    ..
+        beq     BattlePartyServices_Branch_81B5 ; 81A9 F0 0A                    ..
+BattlePartyServices_Branch_81AB:
         jsr     BattlePartyServices_Entry_825F  ; 81AB 20 5F 82                  _.
         bcc     BattlePartyServices_Entry_81B9  ; 81AE 90 09                    ..
         jsr     BattlePartyServices_Entry_8278  ; 81B0 20 78 82                  x.
         bne     BattlePartyServices_Entry_81B9  ; 81B3 D0 04                    ..
+BattlePartyServices_Branch_81B5:
         sty     $6E0C                           ; 81B5 8C 0C 6E                 ..n
+BattlePartyServices_Branch_81B8:
         rts                                     ; 81B8 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_81B9:
@@ -279,7 +284,7 @@ BattlePartyServices_Entry_8214:
         rts                                     ; 8220 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8221:
-        bcc     $823E                           ; 8221 90 1B                    ..
+        bcc     BattlePartyServices_Branch_823E ; 8221 90 1B                    ..
         ldy     $6E0E                           ; 8223 AC 0E 6E                 ..n
         jsr     BattlePartyServices_Entry_8392  ; 8226 20 92 83                  ..
         lda     $6E0B                           ; 8229 AD 0B 6E                 ..n
@@ -292,33 +297,38 @@ BattlePartyServices_Entry_8221:
         ldy     $6E0E                           ; 8238 AC 0E 6E                 ..n
         jmp     ($0000)                         ; 823B 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_823E:
         jmp     BattlePartyServices_Entry_81B9  ; 823E 4C B9 81                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8241:
         ldy     #$00                            ; 8241 A0 00                    ..
         lda     SaveGameStateFlags              ; 8243 AD 8E 61                 ..a
-        bpl     $824A                           ; 8246 10 02                    ..
+        bpl     BattlePartyServices_Branch_824A ; 8246 10 02                    ..
         ldy     #$04                            ; 8248 A0 04                    ..
+BattlePartyServices_Branch_824A:
         bit     SaveGameStateFlags              ; 824A 2C 8E 61                 ,.a
-        bvc     $8254                           ; 824D 50 05                    P.
+        bvc     BattlePartyServices_Branch_8254 ; 824D 50 05                    P.
         tya                                     ; 824F 98                       .
         clc                                     ; 8250 18                       .
         adc     #$1C                            ; 8251 69 1C                    i.
         tay                                     ; 8253 A8                       .
+BattlePartyServices_Branch_8254:
         lda     $6E0A                           ; 8254 AD 0A 6E                 ..n
         and     #$80                            ; 8257 29 80                    ).
-        bne     $825D                           ; 8259 D0 02                    ..
+        bne     BattlePartyServices_Branch_825D ; 8259 D0 02                    ..
         sec                                     ; 825B 38                       8
         rts                                     ; 825C 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_825D:
         clc                                     ; 825D 18                       .
         rts                                     ; 825E 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_825F:
         ldy     #$08                            ; 825F A0 08                    ..
         bit     SaveGameStateFlags              ; 8261 2C 8E 61                 ,.a
-        bvc     $8268                           ; 8264 50 02                    P.
+        bvc     BattlePartyServices_Branch_8268 ; 8264 50 02                    P.
         ldy     #$12                            ; 8266 A0 12                    ..
+BattlePartyServices_Branch_8268:
         jsr     BattlePartyServices_Entry_8498  ; 8268 20 98 84                  ..
         bcc     BattlePartyServices_Branch_8276 ; 826B 90 09                    ..
         lda     $6E0A                           ; 826D AD 0A 6E                 ..n
@@ -340,6 +350,7 @@ BattlePartyServices_Entry_8278:
         lda     #$0A                            ; 8282 A9 0A                    ..
 BattlePartyServices_Branch_8284:
         sta     $00                           ; 8284 85 00                    ..
+BattlePartyServices_Branch_8286:
         tya                                     ; 8286 98                       .
         pha                                     ; 8287 48                       H
         lda     SavePartyCharacter1,y           ; 8288 B9 6A 61                 .ja
@@ -347,20 +358,22 @@ BattlePartyServices_Branch_8284:
         bpl     BattlePartyServices_Branch_82DF ; 828D 10 50                    .P
         jsr     BattlePartyServices_Entry_8301  ; 828F 20 01 83                  ..
         lda     $6E0A                           ; 8292 AD 0A 6E                 ..n
-        beq     $82DA                           ; 8295 F0 43                    .C
+        beq     BattlePartyServices_Branch_82DA ; 8295 F0 43                    .C
         sta     $02                             ; 8297 85 02                    ..
         ldy     #$00                            ; 8299 A0 00                    ..
         lsr     $02                             ; 829B 46 02                    F.
-        bcc     $82A3                           ; 829D 90 04                    ..
+        bcc     BattlePartyServices_Branch_82A3 ; 829D 90 04                    ..
         lda     ($79),y                         ; 829F B1 79                    .y
         bpl     BattlePartyServices_Branch_82DF ; 82A1 10 3C                    .<
+BattlePartyServices_Branch_82A3:
         lsr     $02                             ; 82A3 46 02                    F.
-        bcc     $82AC                           ; 82A5 90 05                    ..
+        bcc     BattlePartyServices_Branch_82AC ; 82A5 90 05                    ..
         lda     ($79),y                         ; 82A7 B1 79                    .y
         asl     a                               ; 82A9 0A                       .
         bmi     BattlePartyServices_Branch_82DF ; 82AA 30 33                    03
+BattlePartyServices_Branch_82AC:
         lsr     $02                             ; 82AC 46 02                    F.
-        bcc     $82CE                           ; 82AE 90 1E                    ..
+        bcc     BattlePartyServices_Branch_82CE ; 82AE 90 1E                    ..
         lda     $01                             ; 82B0 A5 01                    ..
         and     #$1F                            ; 82B2 29 1F                    ).
         cmp     #$05                            ; 82B4 C9 05                    ..
@@ -379,23 +392,26 @@ BattlePartyServices_Branch_82C0:
 BattlePartyServices_Branch_82CB:
         tax                                     ; 82CB AA                       .
         beq     BattlePartyServices_Branch_82DF ; 82CC F0 11                    ..
+BattlePartyServices_Branch_82CE:
         lsr     $02                             ; 82CE 46 02                    F.
-        bcc     $82DA                           ; 82D0 90 08                    ..
+        bcc     BattlePartyServices_Branch_82DA ; 82D0 90 08                    ..
         lda     $01                             ; 82D2 A5 01                    ..
         and     #$1F                            ; 82D4 29 1F                    ).
         cmp     #$09                            ; 82D6 C9 09                    ..
         bcs     BattlePartyServices_Branch_82DF ; 82D8 B0 05                    ..
+BattlePartyServices_Branch_82DA:
         dec     $6E0C                           ; 82DA CE 0C 6E                 ..n
-        beq     $82EA                           ; 82DD F0 0B                    ..
+        beq     BattlePartyServices_Branch_82EA ; 82DD F0 0B                    ..
 BattlePartyServices_Branch_82DF:
         pla                                     ; 82DF 68                       h
         tay                                     ; 82E0 A8                       .
         iny                                     ; 82E1 C8                       .
         dec     $00                           ; 82E2 C6 00                    ..
-        bne     $8286                           ; 82E4 D0 A0                    ..
+        bne     BattlePartyServices_Branch_8286 ; 82E4 D0 A0                    ..
         lda     $6E0C                           ; 82E6 AD 0C 6E                 ..n
         rts                                     ; 82E9 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_82EA:
         pla                                     ; 82EA 68                       h
         tay                                     ; 82EB A8                       .
         lda     $6E0C                           ; 82EC AD 0C 6E                 ..n
@@ -406,10 +422,11 @@ BattlePartyServices_Entry_82F0:
         lda     $9F12,x                         ; 82F3 BD 12 9F                 ...
         and     #$1F                            ; 82F6 29 1F                    ).
         cmp     #$0C                            ; 82F8 C9 0C                    ..
-        beq     $82FF                           ; 82FA F0 03                    ..
+        beq     BattlePartyServices_Branch_82FF ; 82FA F0 03                    ..
         cmp     #$15                            ; 82FC C9 15                    ..
         rts                                     ; 82FE 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_82FF:
         sec                                     ; 82FF 38                       8
         rts                                     ; 8300 60                       `
 ; ----------------------------------------------------------------------------
@@ -436,7 +453,7 @@ BattlePartyServices_Entry_8313:
 BattlePartyServices_Entry_831E:
         jsr     BattlePartyServices_Entry_82F0  ; 831E 20 F0 82                  ..
         tax                                     ; 8321 AA                       .
-        bcs     $833E                           ; 8322 B0 1A                    ..
+        bcs     BattlePartyServices_Branch_833E ; 8322 B0 1A                    ..
         lda     $9FC1,x                         ; 8324 BD C1 9F                 ...
         tay                                     ; 8327 A8                       .
         lda     $9FD6,x                         ; 8328 BD D6 9F                 ...
@@ -451,8 +468,9 @@ BattlePartyServices_Branch_833C:
         clc                                     ; 833C 18                       .
         rts                                     ; 833D 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_833E:
         cmp     #$18                            ; 833E C9 18                    ..
-        beq     $8355                           ; 8340 F0 13                    ..
+        beq     BattlePartyServices_Branch_8355 ; 8340 F0 13                    ..
         tax                                     ; 8342 AA                       .
         ldy     $9FD6,x                         ; 8343 BC D6 9F                 ...
         sty     $6E0D                           ; 8346 8C 0D 6E                 ..n
@@ -462,6 +480,7 @@ BattlePartyServices_Branch_833C:
         sta     $79                             ; 834E 85 79                    .y
         lda     $9FC6,x                         ; 8350 BD C6 9F                 ...
         sta     $7A                             ; 8353 85 7A                    .z
+BattlePartyServices_Branch_8355:
         ldy     #$00                            ; 8355 A0 00                    ..
 BattlePartyServices_Branch_8357:
         sty     $6E0E                           ; 8357 8C 0E 6E                 ..n
@@ -509,21 +528,23 @@ BattlePartyServices_Entry_8392:
         pha                                     ; 8393 48                       H
         jsr     BattlePartyServices_Entry_82F0  ; 8394 20 F0 82                  ..
         cmp     #$0D                            ; 8397 C9 0D                    ..
-        beq     $83B7                           ; 8399 F0 1C                    ..
+        beq     BattlePartyServices_Branch_83B7 ; 8399 F0 1C                    ..
         cmp     #$0E                            ; 839B C9 0E                    ..
-        beq     $83B7                           ; 839D F0 18                    ..
+        beq     BattlePartyServices_Branch_83B7 ; 839D F0 18                    ..
         cmp     #$18                            ; 839F C9 18                    ..
-        beq     $83B7                           ; 83A1 F0 14                    ..
+        beq     BattlePartyServices_Branch_83B7 ; 83A1 F0 14                    ..
         lda     $9F12,x                         ; 83A3 BD 12 9F                 ...
         and     #$40                            ; 83A6 29 40                    )@
-        bne     $83B7                           ; 83A8 D0 0D                    ..
+        bne     BattlePartyServices_Branch_83B7 ; 83A8 D0 0D                    ..
         ldx     #$00                            ; 83AA A2 00                    ..
+BattlePartyServices_Branch_83AC:
         lda     ($79),y                         ; 83AC B1 79                    .y
         sta     $72,x                           ; 83AE 95 72                    .r
         iny                                     ; 83B0 C8                       .
         inx                                     ; 83B1 E8                       .
         cpx     $6E0D                           ; 83B2 EC 0D 6E                 ..n
-        bne     $83AC                           ; 83B5 D0 F5                    ..
+        bne     BattlePartyServices_Branch_83AC ; 83B5 D0 F5                    ..
+BattlePartyServices_Branch_83B7:
         pla                                     ; 83B7 68                       h
         tay                                     ; 83B8 A8                       .
         rts                                     ; 83B9 60                       `
@@ -862,10 +883,11 @@ BattlePartyServices_Branch_85A0:
         sta     $03E3,x                         ; 85AD 9D E3 03                 ...
 BattlePartyServices_Branch_85B0:
         ldx     #$03                            ; 85B0 A2 03                    ..
+BattlePartyServices_Branch_85B2:
         lda     $03E3,x                         ; 85B2 BD E3 03                 ...
         sta     $72,x                           ; 85B5 95 72                    .r
         dex                                     ; 85B7 CA                       .
-        bpl     $85B2                           ; 85B8 10 F8                    ..
+        bpl     BattlePartyServices_Branch_85B2 ; 85B8 10 F8                    ..
         rts                                     ; 85BA 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_85BB:
@@ -1276,8 +1298,12 @@ BattlePartyServices_Branch_882C:
         sta     $72                             ; 882E 85 72                    .r
         rts                                     ; 8830 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$87,$83,$B0,$E9,$29,$0F,$85 ; 8831 20 87 83 B0 E9 29 0F 85   ....)..
-        db   $72,$60                         ; 8839 72 60                    r`
+BattlePartyServices_Entry_8831:
+        jsr     BattlePartyServices_Entry_8387  ; 8831 20 87 83                  ..
+        bcs     BattlePartyServices_Branch_881F ; 8834 B0 E9                    ..
+        and     #$0F                            ; 8836 29 0F                    ).
+        sta     $72                             ; 8838 85 72                    .r
+        rts                                     ; 883A 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_883B:
         jsr     BattlePartyServices_Entry_8AD7  ; 883B 20 D7 8A                  ..
@@ -1534,18 +1560,21 @@ BattlePartyServices_Entry_89AA:
         tya                                     ; 89AB 98                       .
         pha                                     ; 89AC 48                       H
         cpx     #$04                            ; 89AD E0 04                    ..
-        bcs     $89C7                           ; 89AF B0 16                    ..
+        bcs     BattlePartyServices_Branch_89C7 ; 89AF B0 16                    ..
         stx     $07                             ; 89B1 86 07                    ..
         ldy     #$13                            ; 89B3 A0 13                    ..
+BattlePartyServices_Branch_89B5:
         lda     ($79),y                         ; 89B5 B1 79                    .y
         jsr     BattlePartyServices_Entry_8AE7  ; 89B7 20 E7 8A                  ..
         cpx     $07                             ; 89BA E4 07                    ..
-        bne     $89C2                           ; 89BC D0 04                    ..
+        bne     BattlePartyServices_Branch_89C2 ; 89BC D0 04                    ..
         and     #$7F                            ; 89BE 29 7F                    ).
         sta     ($79),y                         ; 89C0 91 79                    .y
+BattlePartyServices_Branch_89C2:
         iny                                     ; 89C2 C8                       .
         cpy     #$1B                            ; 89C3 C0 1B                    ..
-        bcc     $89B5                           ; 89C5 90 EE                    ..
+        bcc     BattlePartyServices_Branch_89B5 ; 89C5 90 EE                    ..
+BattlePartyServices_Branch_89C7:
         ldx     $07                             ; 89C7 A6 07                    ..
         pla                                     ; 89C9 68                       h
         tay                                     ; 89CA A8                       .
@@ -1652,19 +1681,22 @@ BattlePartyServices_Branch_8A59:
 BattlePartyServices_Entry_8A5D:
         ldx     $76                             ; 8A5D A6 76                    .v
         ldy     #$13                            ; 8A5F A0 13                    ..
+BattlePartyServices_Branch_8A61:
         jsr     BattlePartyServices_Entry_8A97  ; 8A61 20 97 8A                  ..
-        beq     $8A71                           ; 8A64 F0 0B                    ..
+        beq     BattlePartyServices_Branch_8A71 ; 8A64 F0 0B                    ..
         jsr     BattlePartyServices_Entry_8AE7  ; 8A66 20 E7 8A                  ..
         cpx     $07                             ; 8A69 E4 07                    ..
-        bne     $8A71                           ; 8A6B D0 04                    ..
+        bne     BattlePartyServices_Branch_8A71 ; 8A6B D0 04                    ..
         dec     $76                             ; 8A6D C6 76                    .v
-        bmi     $8A78                           ; 8A6F 30 07                    0.
+        bmi     BattlePartyServices_Branch_8A78 ; 8A6F 30 07                    0.
+BattlePartyServices_Branch_8A71:
         iny                                     ; 8A71 C8                       .
         cpy     #$1B                            ; 8A72 C0 1B                    ..
-        bcc     $8A61                           ; 8A74 90 EB                    ..
+        bcc     BattlePartyServices_Branch_8A61 ; 8A74 90 EB                    ..
         clc                                     ; 8A76 18                       .
         rts                                     ; 8A77 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_8A78:
         sec                                     ; 8A78 38                       8
         rts                                     ; 8A79 60                       `
 ; ----------------------------------------------------------------------------
@@ -1825,29 +1857,40 @@ BattlePartyServices_Branch_8B54:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B59:
         jsr     BattlePartyServices_Entry_8C18  ; 8B59 20 18 8C                  ..
-        db   $01,$60                         ; 8B5C 01 60                    .`
+        db   $01                             ; 8B5C 01                       .
+; ----------------------------------------------------------------------------
+        rts                                     ; 8B5D 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B5E:
         jsr     BattlePartyServices_Entry_8C18  ; 8B5E 20 18 8C                  ..
-        brk                                     ; 8B61 00                       .
-        db   $60                             ; 8B62 60                       `
+        db   $00                             ; 8B61 00                       .
+; ----------------------------------------------------------------------------
+        rts                                     ; 8B62 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B63:
         jsr     BattlePartyServices_Entry_8C18  ; 8B63 20 18 8C                  ..
         db   $02                             ; 8B66 02                       .
+; ----------------------------------------------------------------------------
         rts                                     ; 8B67 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B68:
         jsr     BattlePartyServices_Entry_8C18  ; 8B68 20 18 8C                  ..
-        db   $03,$60                         ; 8B6B 03 60                    .`
+        db   $03                             ; 8B6B 03                       .
+; ----------------------------------------------------------------------------
+        rts                                     ; 8B6C 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B6D:
         jsr     BattlePartyServices_Entry_8C18  ; 8B6D 20 18 8C                  ..
-        db   $04,$60                         ; 8B70 04 60                    .`
+        db   $04                             ; 8B70 04                       .
+; ----------------------------------------------------------------------------
+        rts                                     ; 8B71 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B72:
         jsr     BattlePartyServices_Entry_8C18  ; 8B72 20 18 8C                  ..
-        ora     $60                             ; 8B75 05 60                    .`
+        db   $05                             ; 8B75 05                       .
+; ----------------------------------------------------------------------------
+        rts                                     ; 8B76 60                       `
+; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8B77:
         sta     $6E0F                           ; 8B77 8D 0F 6E                 ..n
         pha                                     ; 8B7A 48                       H
@@ -1882,7 +1925,7 @@ BattlePartyServices_Entry_8BA1:
         txa                                     ; 8BA5 8A                       .
         pha                                     ; 8BA6 48                       H
         jsr     BattlePartyServices_Entry_8C5E  ; 8BA7 20 5E 8C                  ^.
-        lda     BattlePartyServices_Entry_8DE2,x; 8BAA BD E2 8D                 ...
+        lda     $8DE2,x                         ; 8BAA BD E2 8D                 ...
         and     #$80                            ; 8BAD 29 80                    ).
         jsr     BattlePartyServices_Entry_8C58  ; 8BAF 20 58 8C                  X.
         pla                                     ; 8BB2 68                       h
@@ -1915,7 +1958,7 @@ BattlePartyServices_Branch_8BD4:
 BattlePartyServices_Branch_8BDC:
         pla                                     ; 8BDC 68                       h
         tax                                     ; 8BDD AA                       .
-        lda     BattlePartyServices_Entry_8DE2,x; 8BDE BD E2 8D                 ...
+        lda     $8DE2,x                         ; 8BDE BD E2 8D                 ...
         and     #$7F                            ; 8BE1 29 7F                    ).
         ldx     $6E0F                           ; 8BE3 AE 0F 6E                 ..n
         jsr     BattlePartyServices_Entry_A035  ; 8BE6 20 35 A0                  5.
@@ -1958,8 +2001,9 @@ BattlePartyServices_Entry_8C18:
         pha                                     ; 8C22 48                       H
         tsx                                     ; 8C23 BA                       .
         inc     $0104,x                         ; 8C24 FE 04 01                 ...
-        bne     $8C2C                           ; 8C27 D0 03                    ..
+        bne     BattlePartyServices_Branch_8C2C ; 8C27 D0 03                    ..
         inc     $0105,x                         ; 8C29 FE 05 01                 ...
+BattlePartyServices_Branch_8C2C:
         lda     $0104,x                         ; 8C2C BD 04 01                 ...
         sta     $00                           ; 8C2F 85 00                    ..
         lda     $0105,x                         ; 8C31 BD 05 01                 ...
@@ -1985,10 +2029,11 @@ BattlePartyServices_Entry_8C18:
         rts                                     ; 8C57 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8C58:
-        beq     $8C5C                           ; 8C58 F0 02                    ..
+        beq     BattlePartyServices_Branch_8C5C ; 8C58 F0 02                    ..
         sec                                     ; 8C5A 38                       8
         rts                                     ; 8C5B 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_8C5C:
         clc                                     ; 8C5C 18                       .
         rts                                     ; 8C5D 60                       `
 ; ----------------------------------------------------------------------------
@@ -2046,61 +2091,42 @@ BattlePartyServices_Entry_8C5E:
         db   $0D,$09,$09,$09,$09,$09,$0D,$09 ; 8DCB 0D 09 09 09 09 09 0D 09  ........
         db   $1D,$1D,$1D,$1D,$CD,$09,$19,$08 ; 8DD3 1D 1D 1D 1D CD 09 19 08  ........
         db   $08,$08,$08,$09,$09,$19,$09     ; 8DDB 08 08 08 09 09 19 09     .......
+        db   $0A,$1E,$64,$0F,$37,$58,$14,$37 ; 8DE2 0A 1E 64 0F 37 58 14 37  ..d.7X.7
+        db   $32,$14,$7D,$A3,$90,$3E,$80,$8D ; 8DEA 32 14 7D A3 90 3E 80 8D  2.}..>..
+        db   $19                             ; 8DF2 19                       .
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Entry_8DE2:
-        asl     a                               ; 8DE2 0A                       .
-        asl     $0F64,x                         ; 8DE3 1E 64 0F                 .d.
-        db   $37,$58,$14,$37,$32,$14,$7D,$A3 ; 8DE6 37 58 14 37 32 14 7D A3  7X.72.}.
-        db   $90,$3E,$80,$8D,$19             ; 8DEE 90 3E 80 8D 19           .>...
-; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_8DF3:
         sty     $3C,x                           ; 8DF3 94 3C                    .<
-BattlePartyServices_Branch_8DF5:
         lda     ($80,x)                         ; 8DF5 A1 80                    ..
-        db   $8F,$CB                         ; 8DF7 8F CB                    ..
-        db   $AB,$D0,$CB,$E4,$D0,$DF,$A8,$80 ; 8DF9 AB D0 CB E4 D0 DF A8 80  ........
-        db   $94,$BC                         ; 8E01 94 BC                    ..
-        db   $80                             ; 8E03 80                       .
-        db   $DA                             ; 8E04 DA                       .
-        db   $A3,$0A,$46,$12,$23,$78,$0F,$17 ; 8E05 A3 0A 46 12 23 78 0F 17  ..F.#x..
-        db   $6E,$28,$46,$0F,$3C,$19,$3F,$34 ; 8E0D 6E 28 46 0F 3C 19 3F 34  n(F.<.?4
-        db   $1E,$2C,$0F,$4B,$80,$E2,$3C,$57 ; 8E15 1E 2C 0F 4B 80 E2 3C 57  .,.K..<W
-        db   $58,$64,$5A,$12,$41,$0D,$5A,$AF ; 8E1D 58 64 5A 12 41 0D 5A AF  XdZ.A.Z.
-        db   $47,$00,$00,$41,$0C,$6E,$23,$1C ; 8E25 47 00 00 41 0C 6E 23 1C  G..A.n#.
-        db   $00,$08,$36,$0F,$00,$00,$64,$00 ; 8E2D 00 08 36 0F 00 00 64 00  ..6...d.
-        db   $08,$0A,$94,$19,$00,$1E,$00,$1E ; 8E35 08 0A 94 19 00 1E 00 1E  ........
-        db   $00,$00,$80,$8F,$00,$00,$0C,$5A ; 8E3D 00 00 80 8F 00 00 0C 5A  .......Z
-        db   $46,$19,$37,$80,$00,$00,$00,$00 ; 8E45 46 19 37 80 00 00 00 00  F.7.....
-        db   $00,$00,$00,$00,$00,$00,$00,$00 ; 8E4D 00 00 00 00 00 00 00 00  ........
-        db   $00,$0A,$00,$00,$00,$00,$02,$00 ; 8E55 00 0A 00 00 00 00 02 00  ........
-        db   $00,$00,$00,$00                 ; 8E5D 00 00 00 00              ....
-; ----------------------------------------------------------------------------
-BattlePartyServices_Entry_8E61:
-        bcc     BattlePartyServices_Branch_8DF3 ; 8E61 90 90                    ..
-        bcc     BattlePartyServices_Branch_8DF5 ; 8E63 90 90                    ..
-        bcc     $8DF7                           ; 8E65 90 90                    ..
-        bcc     $8DF9                           ; 8E67 90 90                    ..
-        sta     ($90),y                         ; 8E69 91 90                    ..
-        bcc     BattlePartyServices_Branch_8E6D ; 8E6B 90 00                    ..
-BattlePartyServices_Branch_8E6D:
-        sta     ($90),y                         ; 8E6D 91 90                    ..
-        bcc     $8E03                           ; 8E6F 90 92                    ..
-        bcc     $8E04                           ; 8E71 90 91                    ..
-        bcc     $8E05                           ; 8E73 90 90                    ..
-        db   $93,$90,$90,$91,$91,$90,$91,$91 ; 8E75 93 90 90 91 91 90 91 91  ........
-        db   $90,$91,$91,$91,$91,$01,$91,$91 ; 8E7D 90 91 91 91 91 01 91 91  ........
-        db   $90,$90,$90,$90,$90,$90,$90,$90 ; 8E85 90 90 90 90 90 90 90 90  ........
-        db   $95,$90,$90,$90,$90,$90,$96,$90 ; 8E8D 95 90 90 90 90 90 96 90  ........
-        db   $97,$96,$98,$98,$90,$98,$98,$97 ; 8E95 97 96 98 98 90 98 98 97  ........
-        db   $98,$90,$90,$90,$91,$97,$91,$96 ; 8E9D 98 90 90 90 91 97 91 96  ........
-        db   $91,$91,$90,$90,$90,$90,$90,$90 ; 8EA5 91 91 90 90 90 90 90 90  ........
-        db   $98,$99,$98,$90,$9A,$9B,$98,$9C ; 8EAD 98 99 98 90 9A 9B 98 9C  ........
-        db   $9C,$9D,$9E,$9F,$A0,$A1,$A1,$A2 ; 8EB5 9C 9D 9E 9F A0 A1 A1 A2  ........
-        db   $98,$A3,$A4,$02,$A3,$A6,$9A,$9B ; 8EBD 98 A3 A4 02 A3 A6 9A 9B  ........
-        db   $A7,$A8,$98,$00,$A9,$A9,$A9,$A9 ; 8EC5 A7 A8 98 00 A9 A9 A9 A9  ........
-        db   $A9,$A9,$A9,$A9,$A9,$90,$90,$90 ; 8ECD A9 A9 A9 A9 A9 90 90 90  ........
-        db   $AA,$9C,$98,$AB,$AB,$AC,$A9,$A9 ; 8ED5 AA 9C 98 AB AB AC A9 A9  ........
-        db   $A9,$A9,$9C                     ; 8EDD A9 A9 9C                 ...
+        db   $8F,$CB,$AB,$D0,$CB,$E4,$D0,$DF ; 8DF7 8F CB AB D0 CB E4 D0 DF  ........
+        db   $A8,$80,$94,$BC,$80,$DA,$A3,$0A ; 8DFF A8 80 94 BC 80 DA A3 0A  ........
+        db   $46,$12,$23,$78,$0F,$17,$6E,$28 ; 8E07 46 12 23 78 0F 17 6E 28  F.#x..n(
+        db   $46,$0F,$3C,$19,$3F,$34,$1E,$2C ; 8E0F 46 0F 3C 19 3F 34 1E 2C  F.<.?4.,
+        db   $0F,$4B,$80,$E2,$3C,$57,$58,$64 ; 8E17 0F 4B 80 E2 3C 57 58 64  .K..<WXd
+        db   $5A,$12,$41,$0D,$5A,$AF,$47,$00 ; 8E1F 5A 12 41 0D 5A AF 47 00  Z.A.Z.G.
+        db   $00,$41,$0C,$6E,$23,$1C,$00,$08 ; 8E27 00 41 0C 6E 23 1C 00 08  .A.n#...
+        db   $36,$0F,$00,$00,$64,$00,$08,$0A ; 8E2F 36 0F 00 00 64 00 08 0A  6...d...
+        db   $94,$19,$00,$1E,$00,$1E,$00,$00 ; 8E37 94 19 00 1E 00 1E 00 00  ........
+        db   $80,$8F,$00,$00,$0C,$5A,$46,$19 ; 8E3F 80 8F 00 00 0C 5A 46 19  .....ZF.
+        db   $37,$80,$00,$00,$00,$00,$00,$00 ; 8E47 37 80 00 00 00 00 00 00  7.......
+        db   $00,$00,$00,$00,$00,$00,$00,$0A ; 8E4F 00 00 00 00 00 00 00 0A  ........
+        db   $00,$00,$00,$00,$02,$00,$00,$00 ; 8E57 00 00 00 00 02 00 00 00  ........
+        db   $00,$00,$90,$90,$90,$90,$90,$90 ; 8E5F 00 00 90 90 90 90 90 90  ........
+        db   $90,$90,$91,$90,$90,$00,$91,$90 ; 8E67 90 90 91 90 90 00 91 90  ........
+        db   $90,$92,$90,$91,$90,$90,$93,$90 ; 8E6F 90 92 90 91 90 90 93 90  ........
+        db   $90,$91,$91,$90,$91,$91,$90,$91 ; 8E77 90 91 91 90 91 91 90 91  ........
+        db   $91,$91,$91,$01,$91,$91,$90,$90 ; 8E7F 91 91 91 01 91 91 90 90  ........
+        db   $90,$90,$90,$90,$90,$90,$95,$90 ; 8E87 90 90 90 90 90 90 95 90  ........
+        db   $90,$90,$90,$90,$96,$90,$97,$96 ; 8E8F 90 90 90 90 96 90 97 96  ........
+        db   $98,$98,$90,$98,$98,$97,$98,$90 ; 8E97 98 98 90 98 98 97 98 90  ........
+        db   $90,$90,$91,$97,$91,$96,$91,$91 ; 8E9F 90 90 91 97 91 96 91 91  ........
+        db   $90,$90,$90,$90,$90,$90,$98,$99 ; 8EA7 90 90 90 90 90 90 98 99  ........
+        db   $98,$90,$9A,$9B,$98,$9C,$9C,$9D ; 8EAF 98 90 9A 9B 98 9C 9C 9D  ........
+        db   $9E,$9F,$A0,$A1,$A1,$A2,$98,$A3 ; 8EB7 9E 9F A0 A1 A1 A2 98 A3  ........
+        db   $A4,$02,$A3,$A6,$9A,$9B,$A7,$A8 ; 8EBF A4 02 A3 A6 9A 9B A7 A8  ........
+        db   $98,$00,$A9,$A9,$A9,$A9,$A9,$A9 ; 8EC7 98 00 A9 A9 A9 A9 A9 A9  ........
+        db   $A9,$A9,$A9,$90,$90,$90,$AA,$9C ; 8ECF A9 A9 A9 90 90 90 AA 9C  ........
+        db   $98,$AB,$AB,$AC,$A9,$A9,$A9,$A9 ; 8ED7 98 AB AB AC A9 A9 A9 A9  ........
+        db   $9C                             ; 8EDF 9C                       .
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_8EE0:
         jsr     BattlePartyServices_Entry_8815  ; 8EE0 20 15 88                  ..
@@ -3105,12 +3131,13 @@ BattlePartyServices_Entry_9572:
         inx                                     ; 957B E8                       .
 BattlePartyServices_Branch_957C:
         dex                                     ; 957C CA                       .
-        beq     $9589                           ; 957D F0 0A                    ..
+        beq     BattlePartyServices_Branch_9589 ; 957D F0 0A                    ..
         asl     $07                             ; 957F 06 07                    ..
         bcc     BattlePartyServices_Branch_957C ; 9581 90 F9                    ..
         rol     $07                             ; 9583 26 07                    &.
         inc     $08                             ; 9585 E6 08                    ..
         bne     BattlePartyServices_Branch_957C ; 9587 D0 F3                    ..
+BattlePartyServices_Branch_9589:
         rts                                     ; 9589 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_958A:
@@ -3390,18 +3417,21 @@ BattlePartyServices_Branch_9760:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_9765:
         ldy     #$13                            ; 9765 A0 13                    ..
+BattlePartyServices_Branch_9767:
         lda     ($79),y                         ; 9767 B1 79                    .y
-        bpl     $9774                           ; 9769 10 09                    ..
+        bpl     BattlePartyServices_Branch_9774 ; 9769 10 09                    ..
         cmp     #$FF                            ; 976B C9 FF                    ..
-        beq     $9774                           ; 976D F0 05                    ..
+        beq     BattlePartyServices_Branch_9774 ; 976D F0 05                    ..
         jsr     BattlePartyServices_Entry_8B59  ; 976F 20 59 8B                  Y.
-        bcs     $977B                           ; 9772 B0 07                    ..
+        bcs     BattlePartyServices_Branch_977B ; 9772 B0 07                    ..
+BattlePartyServices_Branch_9774:
         iny                                     ; 9774 C8                       .
         cpy     #$1B                            ; 9775 C0 1B                    ..
-        bcc     $9767                           ; 9777 90 EE                    ..
+        bcc     BattlePartyServices_Branch_9767 ; 9777 90 EE                    ..
         clc                                     ; 9779 18                       .
         rts                                     ; 977A 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_977B:
         tya                                     ; 977B 98                       .
         sbc     #$13                            ; 977C E9 13                    ..
         sta     $73                             ; 977E 85 73                    .s
@@ -3498,7 +3528,7 @@ BattlePartyServices_Entry_97EA:
         jsr     BattlePartyServices_Entry_8301  ; 97ED 20 01 83                  ..
         lda     $76                             ; 97F0 A5 76                    .v
         cmp     #$10                            ; 97F2 C9 10                    ..
-        bcs     $9805                           ; 97F4 B0 0F                    ..
+        bcs     BattlePartyServices_Branch_9805 ; 97F4 B0 0F                    ..
         tax                                     ; 97F6 AA                       .
         jsr     BattlePartyServices_Entry_8490  ; 97F7 20 90 84                  ..
         pha                                     ; 97FA 48                       H
@@ -3509,6 +3539,7 @@ BattlePartyServices_Entry_97EA:
         pla                                     ; 9803 68                       h
         rts                                     ; 9804 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_9805:
         pha                                     ; 9805 48                       H
         jsr     BattlePartyServices_Entry_835C  ; 9806 20 5C 83                  \.
         pla                                     ; 9809 68                       h
@@ -4231,13 +4262,35 @@ BattlePartyServices_Branch_9CAD:
         sta     $0F                             ; 9CAE 85 0F                    ..
         rts                                     ; 9CB0 60                       `
 ; ----------------------------------------------------------------------------
-        db   $48,$8A,$48,$98,$48,$AD,$0A,$6E ; 9CB1 48 8A 48 98 48 AD 0A 6E  H.H.H..n
-        db   $48,$A9,$00,$8D,$0A,$6E,$20,$2B ; 9CB9 48 A9 00 8D 0A 6E 20 2B  H....n +
-        db   $98,$20,$98,$84,$90,$0F,$A9,$0A ; 9CC1 98 20 98 84 90 0F A9 0A  . ......
-        db   $38,$E5,$72,$68,$8D,$0A,$6E,$68 ; 9CC9 38 E5 72 68 8D 0A 6E 68  8.rh..nh
-        db   $A8,$68,$AA,$68,$60,$A9,$04,$D0 ; 9CD1 A8 68 AA 68 60 A9 04 D0  .h.h`...
-        db   $EF                             ; 9CD9 EF                       .
+BattlePartyServices_Entry_9CB1:
+        pha                                     ; 9CB1 48                       H
+        txa                                     ; 9CB2 8A                       .
+        pha                                     ; 9CB3 48                       H
+        tya                                     ; 9CB4 98                       .
+        pha                                     ; 9CB5 48                       H
+        lda     $6E0A                           ; 9CB6 AD 0A 6E                 ..n
+        pha                                     ; 9CB9 48                       H
+        lda     #$00                            ; 9CBA A9 00                    ..
+        sta     $6E0A                           ; 9CBC 8D 0A 6E                 ..n
+        jsr     BattlePartyServices_Entry_982B  ; 9CBF 20 2B 98                  +.
+        jsr     BattlePartyServices_Entry_8498  ; 9CC2 20 98 84                  ..
+        bcc     BattlePartyServices_Branch_9CD6 ; 9CC5 90 0F                    ..
+        lda     #$0A                            ; 9CC7 A9 0A                    ..
+BattlePartyServices_Branch_9CC9:
+        sec                                     ; 9CC9 38                       8
+        sbc     $72                             ; 9CCA E5 72                    .r
+        pla                                     ; 9CCC 68                       h
+        sta     $6E0A                           ; 9CCD 8D 0A 6E                 ..n
+        pla                                     ; 9CD0 68                       h
+        tay                                     ; 9CD1 A8                       .
+        pla                                     ; 9CD2 68                       h
+        tax                                     ; 9CD3 AA                       .
+        pla                                     ; 9CD4 68                       h
+        rts                                     ; 9CD5 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_9CD6:
+        lda     #$04                            ; 9CD6 A9 04                    ..
+        bne     BattlePartyServices_Branch_9CC9 ; 9CD8 D0 EF                    ..
 BattlePartyServices_Entry_9CDA:
         sta     $6E0A                           ; 9CDA 8D 0A 6E                 ..n
 BattlePartyServices_Entry_9CDD:
@@ -4405,13 +4458,25 @@ BattlePartyServices_Entry_9DC6:
 BattlePartyServices_Entry_9DC7:
         sta     $6F                             ; 9DC7 85 6F                    .o
         brk                                     ; 9DC9 00                       .
-        db   $62,$43                         ; 9DCA 62 43                    bC
+        db   $62,$43,$40                     ; 9DCA 62 43 40                 bC@
 ; ----------------------------------------------------------------------------
-        rti                                     ; 9DCC 40                       @
+BattlePartyServices_Entry_9DCD:
+        sta     $71                             ; 9DCD 85 71                    .q
+        ldx     $71                             ; 9DCF A6 71                    .q
+        dex                                     ; 9DD1 CA                       .
+        lda     #$00                            ; 9DD2 A9 00                    ..
+BattlePartyServices_Branch_9DD4:
+        pha                                     ; 9DD4 48                       H
+        brk                                     ; 9DD5 00                       .
+        db   $46,$53                         ; 9DD6 46 53                    FS
 ; ----------------------------------------------------------------------------
-        db   $85,$71,$A6,$71,$CA,$A9,$00,$48 ; 9DCD 85 71 A6 71 CA A9 00 48  .q.q...H
-        db   $00,$46,$53,$68,$2A,$CA,$10,$F7 ; 9DD5 00 46 53 68 2A CA 10 F7  .FSh*...
-        db   $85,$70,$60                     ; 9DDD 85 70 60                 .p`
+        pla                                     ; 9DD8 68                       h
+        rol     a                               ; 9DD9 2A                       *
+        dex                                     ; 9DDA CA                       .
+        bpl     BattlePartyServices_Branch_9DD4 ; 9DDB 10 F7                    ..
+        sta     $70                             ; 9DDD 85 70                    .p
+        rts                                     ; 9DDF 60                       `
+; ----------------------------------------------------------------------------
         db   $02,$07,$0C,$26,$14,$1C,$28,$32 ; 9DE0 02 07 0C 26 14 1C 28 32  ...&..(2
         db   $15,$0E,$21,$12,$23,$16,$82,$00 ; 9DE8 15 0E 21 12 23 16 82 00  ..!.#...
         db   $37,$1D,$46,$63,$41,$5A,$05,$23 ; 9DF0 37 1D 46 63 41 5A 05 23  7.FcAZ.#
@@ -4538,7 +4603,7 @@ BattlePartyServices_Entry_A077:
         lda     $9F12,y                         ; A080 B9 12 9F                 ...
         sta     $0F                             ; A083 85 0F                    ..
         and     #$20                            ; A085 29 20                    )
-        beq     $A107                           ; A087 F0 7E                    .~
+        beq     BattlePartyServices_Branch_A107 ; A087 F0 7E                    .~
         ldy     $6E0C                           ; A089 AC 0C 6E                 ..n
         jsr     BattlePartyServices_Entry_8301  ; A08C 20 01 83                  ..
         lda     $6E0C                           ; A08F AD 0C 6E                 ..n
@@ -4547,20 +4612,32 @@ BattlePartyServices_Entry_A077:
         lda     $0F                             ; A096 A5 0F                    ..
         and     #$1F                            ; A098 29 1F                    ).
         cmp     #$18                            ; A09A C9 18                    ..
-        jmp     $A0C4                           ; A09C 4C C4 A0                 L..
+        jmp     BattlePartyServices_Branch_A0C4 ; A09C 4C C4 A0                 L..
 ; ----------------------------------------------------------------------------
-        db   $C9,$02,$F0,$21,$A4,$0E,$C0,$04 ; A09F C9 02 F0 21 A4 0E C0 04  ...!....
-        db   $B0,$5E,$C9,$0D,$F0,$61,$C9,$06 ; A0A7 B0 5E C9 0D F0 61 C9 06  .^...a..
-        db   $F0,$53,$C9,$07,$F0,$4F,$AD,$DD ; A0AF F0 53 C9 07 F0 4F AD DD  .S...O..
-        db   $6B,$09,$80,$8D,$DD,$6B,$4C,$07 ; A0B7 6B 09 80 8D DD 6B 4C 07  k....kL.
-        db   $A1                             ; A0BF A1                       .
+BattlePartyServices_Entry_A09F:
+        cmp     #$02                            ; A09F C9 02                    ..
+        beq     BattlePartyServices_Branch_A0C4 ; A0A1 F0 21                    .!
+        ldy     $0E                             ; A0A3 A4 0E                    ..
+        cpy     #$04                            ; A0A5 C0 04                    ..
+        bcs     BattlePartyServices_Branch_A107 ; A0A7 B0 5E                    .^
+        cmp     #$0D                            ; A0A9 C9 0D                    ..
+        beq     BattlePartyServices_Branch_A10E ; A0AB F0 61                    .a
+        cmp     #$06                            ; A0AD C9 06                    ..
+        beq     BattlePartyServices_Branch_A104 ; A0AF F0 53                    .S
+        cmp     #$07                            ; A0B1 C9 07                    ..
+        beq     BattlePartyServices_Branch_A104 ; A0B3 F0 4F                    .O
+        lda     $6BDD                           ; A0B5 AD DD 6B                 ..k
+        ora     #$80                            ; A0B8 09 80                    ..
+        sta     $6BDD                           ; A0BA 8D DD 6B                 ..k
+        jmp     BattlePartyServices_Branch_A107 ; A0BD 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A0C0:
         jsr     BattlePartyServices_Entry_A0CA  ; A0C0 20 CA A0                  ..
         rts                                     ; A0C3 60                       `
 ; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_A0C4:
         jsr     BattlePartyServices_Entry_A0CA  ; A0C4 20 CA A0                  ..
-        jmp     $A107                           ; A0C7 4C 07 A1                 L..
+        jmp     BattlePartyServices_Branch_A107 ; A0C7 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A0CA:
         lda     $6E0A                           ; A0CA AD 0A 6E                 ..n
@@ -4570,8 +4647,9 @@ BattlePartyServices_Entry_A0CA:
         jsr     BattlePartyServices_Entry_A14E  ; A0D3 20 4E A1                  N.
         jsr     BattlePartyServices_Entry_8241  ; A0D6 20 41 82                  A.
         ldx     #$04                            ; A0D9 A2 04                    ..
+BattlePartyServices_Branch_A0DB:
         lda     SavePartyCharacter1,y           ; A0DB B9 6A 61                 .ja
-        bpl     $A0FB                           ; A0DE 10 1B                    ..
+        bpl     BattlePartyServices_Branch_A0FB ; A0DE 10 1B                    ..
         sty     $6E0C                           ; A0E0 8C 0C 6E                 ..n
         txa                                     ; A0E3 8A                       .
         pha                                     ; A0E4 48                       H
@@ -4587,15 +4665,17 @@ BattlePartyServices_Entry_A0CA:
         tay                                     ; A0F8 A8                       .
         pla                                     ; A0F9 68                       h
         tax                                     ; A0FA AA                       .
+BattlePartyServices_Branch_A0FB:
         iny                                     ; A0FB C8                       .
         dex                                     ; A0FC CA                       .
-        bne     $A0DB                           ; A0FD D0 DC                    ..
+        bne     BattlePartyServices_Branch_A0DB ; A0FD D0 DC                    ..
         pla                                     ; A0FF 68                       h
         sta     $6E0A                           ; A100 8D 0A 6E                 ..n
         rts                                     ; A103 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$29,$A1                     ; A104 20 29 A1                  ).
-; ----------------------------------------------------------------------------
+BattlePartyServices_Branch_A104:
+        jsr     BattlePartyServices_Entry_A129  ; A104 20 29 A1                  ).
+BattlePartyServices_Branch_A107:
         pla                                     ; A107 68                       h
         tay                                     ; A108 A8                       .
         pla                                     ; A109 68                       h
@@ -4604,17 +4684,20 @@ BattlePartyServices_Entry_A0CA:
         plp                                     ; A10C 28                       (
         rts                                     ; A10D 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$64,$A1,$4C,$07,$A1         ; A10E 20 64 A1 4C 07 A1         d.L..
+BattlePartyServices_Branch_A10E:
+        jsr     BattlePartyServices_Entry_A164  ; A10E 20 64 A1                  d.
+        jmp     BattlePartyServices_Branch_A107 ; A111 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A114:
         ldy     $6E0C                           ; A114 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; A117 B9 6A 61                 .ja
         cmp     #$88                            ; A11A C9 88                    ..
-        bcc     $A128                           ; A11C 90 0A                    ..
+        bcc     BattlePartyServices_Branch_A128 ; A11C 90 0A                    ..
         ldx     $0E                             ; A11E A6 0E                    ..
         lda     $6BE7,x                         ; A120 BD E7 6B                 ..k
         ora     #$10                            ; A123 09 10                    ..
         sta     $6BE7,x                         ; A125 9D E7 6B                 ..k
+BattlePartyServices_Branch_A128:
         rts                                     ; A128 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A129:
@@ -4635,8 +4718,9 @@ BattlePartyServices_Entry_A129:
         lda     $6BE7,x                         ; A13D BD E7 6B                 ..k
         and     #$9E                            ; A140 29 9E                    ).
         ora     $0D                             ; A142 05 0D                    ..
-        bpl     $A148                           ; A144 10 02                    ..
+        bpl     BattlePartyServices_Branch_A148 ; A144 10 02                    ..
         ora     #$40                            ; A146 09 40                    .@
+BattlePartyServices_Branch_A148:
         ldx     $0E                             ; A148 A6 0E                    ..
         sta     $6BE7,x                         ; A14A 9D E7 6B                 ..k
         rts                                     ; A14D 60                       `
@@ -4644,6 +4728,7 @@ BattlePartyServices_Entry_A129:
 BattlePartyServices_Entry_A14E:
         jsr     BattlePartyServices_Entry_8241  ; A14E 20 41 82                  A.
         ldx     #$00                            ; A151 A2 00                    ..
+BattlePartyServices_Branch_A153:
         lda     SavePartyCharacter1,y           ; A153 B9 6A 61                 .ja
         eor     #$80                            ; A156 49 80                    I.
         and     #$80                            ; A158 29 80                    ).
@@ -4651,30 +4736,35 @@ BattlePartyServices_Entry_A14E:
         iny                                     ; A15D C8                       .
         inx                                     ; A15E E8                       .
         cpx     #$04                            ; A15F E0 04                    ..
-        bne     $A153                           ; A161 D0 F0                    ..
+        bne     BattlePartyServices_Branch_A153 ; A161 D0 F0                    ..
         rts                                     ; A163 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A164:
         ldx     #$00                            ; A164 A2 00                    ..
         stx     $0D                             ; A166 86 0D                    ..
+BattlePartyServices_Branch_A168:
         lda     $A199,x                         ; A168 BD 99 A1                 ...
         cmp     #$FF                            ; A16B C9 FF                    ..
-        beq     $A18C                           ; A16D F0 1D                    ..
+        beq     BattlePartyServices_Branch_A18C ; A16D F0 1D                    ..
         ora     #$80                            ; A16F 09 80                    ..
         sta     $76                             ; A171 85 76                    .v
         ldy     #$13                            ; A173 A0 13                    ..
+BattlePartyServices_Branch_A175:
         lda     ($79),y                         ; A175 B1 79                    .y
         cmp     $76                             ; A177 C5 76                    .v
-        beq     $A182                           ; A179 F0 07                    ..
+        beq     BattlePartyServices_Branch_A182 ; A179 F0 07                    ..
         iny                                     ; A17B C8                       .
         cpy     #$1B                            ; A17C C0 1B                    ..
-        bne     $A175                           ; A17E D0 F5                    ..
-        beq     $A189                           ; A180 F0 07                    ..
+        bne     BattlePartyServices_Branch_A175 ; A17E D0 F5                    ..
+        beq     BattlePartyServices_Branch_A189 ; A180 F0 07                    ..
+BattlePartyServices_Branch_A182:
         lda     $A19C,x                         ; A182 BD 9C A1                 ...
         ora     $0D                             ; A185 05 0D                    ..
         sta     $0D                             ; A187 85 0D                    ..
+BattlePartyServices_Branch_A189:
         inx                                     ; A189 E8                       .
-        bne     $A168                           ; A18A D0 DC                    ..
+        bne     BattlePartyServices_Branch_A168 ; A18A D0 DC                    ..
+BattlePartyServices_Branch_A18C:
         ldx     $0E                             ; A18C A6 0E                    ..
         lda     $6BE7,x                         ; A18E BD E7 6B                 ..k
         and     #$F1                            ; A191 29 F1                    ).
@@ -4687,13 +4777,15 @@ BattlePartyServices_Entry_A164:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_A19E:
         bit     SaveGameStateFlags              ; A19E 2C 8E 61                 ,.a
-        bpl     $A1A6                           ; A1A1 10 03                    ..
+        bpl     BattlePartyServices_Branch_A1A6 ; A1A1 10 03                    ..
         sec                                     ; A1A3 38                       8
         sbc     #$04                            ; A1A4 E9 04                    ..
+BattlePartyServices_Branch_A1A6:
         bit     SaveGameStateFlags              ; A1A6 2C 8E 61                 ,.a
-        bvc     $A1AE                           ; A1A9 50 03                    P.
+        bvc     BattlePartyServices_Branch_A1AE ; A1A9 50 03                    P.
         sec                                     ; A1AB 38                       8
         sbc     #$1C                            ; A1AC E9 1C                    ..
+BattlePartyServices_Branch_A1AE:
         cmp     #$04                            ; A1AE C9 04                    ..
         bcc     BattlePartyServices_Branch_A1BC ; A1B0 90 0A                    ..
         sbc     #$04                            ; A1B2 E9 04                    ..
@@ -6906,12 +6998,29 @@ BattlePartyServices_Branch_AF73:
         bcc     BattlePartyServices_Branch_AFAF ; AF7D 90 30                    .0
         jmp     BattlePartyServices_Branch_AFAF ; AF7F 4C AF AF                 L..
 ; ----------------------------------------------------------------------------
-        db   $20,$22,$B0,$90,$19,$A2,$14,$DD ; AF82 20 22 B0 90 19 A2 14 DD   "......
-        db   $28,$B0,$F0,$05,$CA,$10,$F8,$30 ; AF8A 28 B0 F0 05 CA 10 F8 30  (......0
-        db   $0D,$EC,$74,$73,$90,$08,$20,$FB ; AF92 0D EC 74 73 90 08 20 FB  ..ts.. .
-        db   $AF,$90,$03,$8E,$74,$73,$C6,$6F ; AF9A AF 90 03 8E 74 73 C6 6F  ....ts.o
-        db   $10,$DE,$AE,$74,$73,$F0,$06,$BD ; AFA2 10 DE AE 74 73 F0 06 BD  ...ts...
-        db   $28,$B0,$4C,$F2,$AF             ; AFAA 28 B0 4C F2 AF           (.L..
+BattlePartyServices_Entry_AF82:
+        jsr     BattlePartyServices_Entry_B022  ; AF82 20 22 B0                  ".
+        bcc     BattlePartyServices_Branch_AFA0 ; AF85 90 19                    ..
+        ldx     #$14                            ; AF87 A2 14                    ..
+BattlePartyServices_Branch_AF89:
+        cmp     $B028,x                         ; AF89 DD 28 B0                 .(.
+        beq     BattlePartyServices_Branch_AF93 ; AF8C F0 05                    ..
+        dex                                     ; AF8E CA                       .
+        bpl     BattlePartyServices_Branch_AF89 ; AF8F 10 F8                    ..
+        bmi     BattlePartyServices_Branch_AFA0 ; AF91 30 0D                    0.
+BattlePartyServices_Branch_AF93:
+        cpx     $7374                           ; AF93 EC 74 73                 .ts
+        bcc     BattlePartyServices_Branch_AFA0 ; AF96 90 08                    ..
+        jsr     BattlePartyServices_Entry_AFFB  ; AF98 20 FB AF                  ..
+        bcc     BattlePartyServices_Branch_AFA0 ; AF9B 90 03                    ..
+        stx     $7374                           ; AF9D 8E 74 73                 .ts
+BattlePartyServices_Branch_AFA0:
+        dec     $6F                             ; AFA0 C6 6F                    .o
+        bpl     BattlePartyServices_Entry_AF82  ; AFA2 10 DE                    ..
+        ldx     $7374                           ; AFA4 AE 74 73                 .ts
+        beq     BattlePartyServices_Branch_AFAF ; AFA7 F0 06                    ..
+        lda     $B028,x                         ; AFA9 BD 28 B0                 .(.
+        jmp     BattlePartyServices_Branch_AFF2 ; AFAC 4C F2 AF                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_AFAF:
         lda     $7375                           ; AFAF AD 75 73                 .us
@@ -7919,9 +8028,9 @@ BattlePartyServices_Branch_B63D:
         ldx     $D6                             ; B644 A6 D6                    ..
 BattlePartyServices_Branch_B646:
         brk                                     ; B646 00                       .
-        db   $1C,$63                         ; B647 1C 63                    .c
+        db   $1C,$63,$01                     ; B647 1C 63 01                 .c.
 ; ----------------------------------------------------------------------------
-        ora     ($38,x)                         ; B649 01 38                    .8
+        sec                                     ; B64A 38                       8
         bne     BattlePartyServices_Branch_B64E ; B64B D0 01                    ..
         clc                                     ; B64D 18                       .
 BattlePartyServices_Branch_B64E:
@@ -7962,10 +8071,9 @@ BattlePartyServices_Branch_B67A:
         ldx     $D6                             ; B67D A6 D6                    ..
 BattlePartyServices_Branch_B67F:
         brk                                     ; B67F 00                       .
-        db   $1C,$63                         ; B680 1C 63                    .c
+        db   $1C,$63,$01                     ; B680 1C 63 01                 .c.
 ; ----------------------------------------------------------------------------
-        ora     ($D0,x)                         ; B682 01 D0                    ..
-        ror     a                               ; B684 6A                       j
+        bne     BattlePartyServices_Branch_B6EF ; B683 D0 6A                    .j
         dex                                     ; B685 CA                       .
         bpl     BattlePartyServices_Branch_B67F ; B686 10 F7                    ..
 BattlePartyServices_Branch_B688:
@@ -7994,13 +8102,21 @@ BattlePartyServices_Entry_B69F:
         lda     #$FF                            ; B6A1 A9 FF                    ..
         sta     $0D                             ; B6A3 85 0D                    ..
         ldx     $D6                             ; B6A5 A6 D6                    ..
+BattlePartyServices_Branch_B6A7:
         brk                                     ; B6A7 00                       .
-        db   $1C,$63                         ; B6A8 1C 63                    .c
+        db   $1C,$63,$01                     ; B6A8 1C 63 01                 .c.
 ; ----------------------------------------------------------------------------
-        ora     ($C9,x)                         ; B6AA 01 C9                    ..
-        db   $E7,$90,$04,$A5,$73,$C9,$03,$26 ; B6AC E7 90 04 A5 73 C9 03 26  ....s..&
-        db   $0D,$CA,$10,$EF,$A5,$0D,$49,$0F ; B6B4 0D CA 10 EF A5 0D 49 0F  ......I.
-        db   $4C,$1B,$B9                     ; B6BC 4C 1B B9                 L..
+        cmp     #$E7                            ; B6AB C9 E7                    ..
+        bcc     BattlePartyServices_Branch_B6B3 ; B6AD 90 04                    ..
+        lda     $73                             ; B6AF A5 73                    .s
+        cmp     #$03                            ; B6B1 C9 03                    ..
+BattlePartyServices_Branch_B6B3:
+        rol     $0D                             ; B6B3 26 0D                    &.
+        dex                                     ; B6B5 CA                       .
+        bpl     BattlePartyServices_Branch_B6A7 ; B6B6 10 EF                    ..
+        lda     $0D                             ; B6B8 A5 0D                    ..
+        eor     #$0F                            ; B6BA 49 0F                    I.
+        jmp     BattlePartyServices_Entry_B91B  ; B6BC 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B6BF:
         lda     #$FF                            ; B6BF A9 FF                    ..
@@ -8026,18 +8142,24 @@ BattlePartyServices_Entry_B6DC:
         tay                                     ; B6DC A8                       .
         bmi     BattlePartyServices_Branch_B6F6 ; B6DD 30 17                    0.
         ldx     $D6                             ; B6DF A6 D6                    ..
+BattlePartyServices_Branch_B6E1:
         brk                                     ; B6E1 00                       .
-        db   $1C,$63                         ; B6E2 1C 63                    .c
+        db   $1C,$63,$01                     ; B6E2 1C 63 01                 .c.
 ; ----------------------------------------------------------------------------
-        ora     ($C9,x)                         ; B6E4 01 C9                    ..
-        db   $E7,$90,$06,$A5,$73,$C9,$03,$B0 ; B6E6 E7 90 06 A5 73 C9 03 B0  ....s...
-        db   $02                             ; B6EE 02                       .
-; ----------------------------------------------------------------------------
+        cmp     #$E7                            ; B6E5 C9 E7                    ..
+        bcc     BattlePartyServices_Branch_B6EF ; B6E7 90 06                    ..
+        lda     $73                             ; B6E9 A5 73                    .s
+        cmp     #$03                            ; B6EB C9 03                    ..
+        bcs     BattlePartyServices_Branch_B6F1 ; B6ED B0 02                    ..
 BattlePartyServices_Branch_B6EF:
         sec                                     ; B6EF 38                       8
         rts                                     ; B6F0 60                       `
 ; ----------------------------------------------------------------------------
-        db   $CA,$10,$ED,$18,$60             ; B6F1 CA 10 ED 18 60           ....`
+BattlePartyServices_Branch_B6F1:
+        dex                                     ; B6F1 CA                       .
+        bpl     BattlePartyServices_Branch_B6E1 ; B6F2 10 ED                    ..
+        clc                                     ; B6F4 18                       .
+        rts                                     ; B6F5 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B6F6:
         ldx     #$07                            ; B6F6 A2 07                    ..
@@ -8072,9 +8194,9 @@ BattlePartyServices_Entry_B717:
         ldx     $D6                             ; B71A A6 D6                    ..
 BattlePartyServices_Branch_B71C:
         brk                                     ; B71C 00                       .
-        db   $14,$63                         ; B71D 14 63                    .c
+        db   $14,$63,$01                     ; B71D 14 63 01                 .c.
 ; ----------------------------------------------------------------------------
-        ora     ($A8,x)                         ; B71F 01 A8                    ..
+        tay                                     ; B720 A8                       .
         iny                                     ; B721 C8                       .
         bne     BattlePartyServices_Branch_B6EF ; B722 D0 CB                    ..
         dex                                     ; B724 CA                       .
@@ -8120,12 +8242,15 @@ BattlePartyServices_Entry_B74F:
         lda     #$00                            ; B751 A9 00                    ..
         sta     $0D                             ; B753 85 0D                    ..
         ldx     $D6                             ; B755 A6 D6                    ..
+BattlePartyServices_Branch_B757:
         brk                                     ; B757 00                       .
-        db   $0C,$43                         ; B758 0C 43                    .C
+        db   $0C,$43,$01                     ; B758 0C 43 01                 .C.
 ; ----------------------------------------------------------------------------
-        ora     ($26,x)                         ; B75A 01 26                    .&
-        ora     $10CA                           ; B75C 0D CA 10                 ...
-        db   $F7,$A5,$0D,$4C,$1B,$B9         ; B75F F7 A5 0D 4C 1B B9        ...L..
+        rol     $0D                             ; B75B 26 0D                    &.
+        dex                                     ; B75D CA                       .
+        bpl     BattlePartyServices_Branch_B757 ; B75E 10 F7                    ..
+        lda     $0D                             ; B760 A5 0D                    ..
+        jmp     BattlePartyServices_Entry_B91B  ; B762 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B765:
         lda     #$01                            ; B765 A9 01                    ..
@@ -8469,10 +8594,10 @@ BattlePartyServices_Branch_B92D:
         sta     $6F                             ; B92F 85 6F                    .o
 BattlePartyServices_Branch_B931:
         brk                                     ; B931 00                       .
-        db   $3C,$43                         ; B932 3C 43                    <C
+        db   $3C,$43,$01                     ; B932 3C 43 01                 <C.
 ; ----------------------------------------------------------------------------
-        ora     ($D0,x)                         ; B934 01 D0                    ..
-        asl     $6FC6,x                         ; B936 1E C6 6F                 ..o
+        bne     BattlePartyServices_Branch_B955 ; B935 D0 1E                    ..
+        dec     $6F                             ; B937 C6 6F                    .o
         bpl     BattlePartyServices_Branch_B931 ; B939 10 F6                    ..
         dex                                     ; B93B CA                       .
         bpl     BattlePartyServices_Branch_B92D ; B93C 10 EF                    ..
@@ -8493,6 +8618,7 @@ BattlePartyServices_Entry_B94C:
         jsr     BattlePartyServices_Entry_B957  ; B94E 20 57 B9                  W.
         lda     $0D                             ; B951 A5 0D                    ..
         beq     BattlePartyServices_Branch_B93E ; B953 F0 E9                    ..
+BattlePartyServices_Branch_B955:
         sec                                     ; B955 38                       8
         rts                                     ; B956 60                       `
 ; ----------------------------------------------------------------------------
@@ -8638,9 +8764,14 @@ BattlePartyServices_Branch_BA05:
         bmi     BattlePartyServices_Branch_BA18 ; BA08 30 0E                    0.
         bcc     BattlePartyServices_Branch_BA05 ; BA0A 90 F9                    ..
         brk                                     ; BA0C 00                       .
-        db   $6B,$93,$02,$90,$03,$18,$90,$F0 ; BA0D 6B 93 02 90 03 18 90 F0  k.......
-        db   $38,$B0,$ED                     ; BA15 38 B0 ED                 8..
+        db   $6B,$93,$02                     ; BA0D 6B 93 02                 k..
 ; ----------------------------------------------------------------------------
+        bcc     BattlePartyServices_Branch_BA15 ; BA10 90 03                    ..
+        clc                                     ; BA12 18                       .
+        bcc     BattlePartyServices_Branch_BA05 ; BA13 90 F0                    ..
+BattlePartyServices_Branch_BA15:
+        sec                                     ; BA15 38                       8
+        bcs     BattlePartyServices_Branch_BA05 ; BA16 B0 ED                    ..
 BattlePartyServices_Branch_BA18:
         clc                                     ; BA18 18                       .
         lda     $09                             ; BA19 A5 09                    ..
@@ -8740,16 +8871,31 @@ BattlePartyServices_Entry_BA89:
 BattlePartyServices_Entry_BA97:
         ldx     #$FF                            ; BA97 A2 FF                    ..
         brk                                     ; BA99 00                       .
-        db   $04,$C3,$02,$49,$FF,$25,$09,$85 ; BA9A 04 C3 02 49 FF 25 09 85  ...I.%..
-        db   $09,$60                         ; BAA2 09 60                    .`
+        db   $04,$C3,$02                     ; BA9A 04 C3 02                 ...
+; ----------------------------------------------------------------------------
+        eor     #$FF                            ; BA9D 49 FF                    I.
+        and     $09                             ; BA9F 25 09                    %.
+        sta     $09                             ; BAA1 85 09                    ..
+        rts                                     ; BAA3 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_BAA4:
         bmi     BattlePartyServices_Branch_BABB ; BAA4 30 15                    0.
         ldx     $D6                             ; BAA6 A6 D6                    ..
         ldy     #$00                            ; BAA8 A0 00                    ..
+BattlePartyServices_Branch_BAAA:
         brk                                     ; BAAA 00                       .
-        db   $6B,$83,$02,$01,$B0,$05,$C8,$C0 ; BAAB 6B 83 02 01 B0 05 C8 C0  k.......
-        db   $02,$B0,$04,$CA,$10,$F1,$18,$60 ; BAB3 02 B0 04 CA 10 F1 18 60  .......`
+        db   $6B,$83,$02,$01                 ; BAAB 6B 83 02 01              k...
+; ----------------------------------------------------------------------------
+        bcs     BattlePartyServices_Branch_BAB6 ; BAAF B0 05                    ..
+        iny                                     ; BAB1 C8                       .
+        cpy     #$02                            ; BAB2 C0 02                    ..
+        bcs     BattlePartyServices_Branch_BABA ; BAB4 B0 04                    ..
+BattlePartyServices_Branch_BAB6:
+        dex                                     ; BAB6 CA                       .
+        bpl     BattlePartyServices_Branch_BAAA ; BAB7 10 F1                    ..
+        clc                                     ; BAB9 18                       .
+BattlePartyServices_Branch_BABA:
+        rts                                     ; BABA 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_BABB:
         ldx     #$07                            ; BABB A2 07                    ..
@@ -8758,14 +8904,20 @@ BattlePartyServices_Branch_BABF:
         asl     $09                             ; BABF 06 09                    ..
         bcc     BattlePartyServices_Branch_BAD3 ; BAC1 90 10                    ..
         brk                                     ; BAC3 00                       .
-        db   $04,$C3,$02,$B0,$0A,$20,$26,$AD ; BAC4 04 C3 02 B0 0A 20 26 AD  ..... &.
-        db   $B0,$09,$C8,$C0,$02,$B0,$04     ; BACC B0 09 C8 C0 02 B0 04     .......
+        db   $04,$C3,$02                     ; BAC4 04 C3 02                 ...
 ; ----------------------------------------------------------------------------
+        bcs     BattlePartyServices_Branch_BAD3 ; BAC7 B0 0A                    ..
+        jsr     BattlePartyServices_Entry_AD26  ; BAC9 20 26 AD                  &.
+        bcs     BattlePartyServices_Branch_BAD7 ; BACC B0 09                    ..
+        iny                                     ; BACE C8                       .
+        cpy     #$02                            ; BACF C0 02                    ..
+        bcs     BattlePartyServices_Branch_BAD7 ; BAD1 B0 04                    ..
 BattlePartyServices_Branch_BAD3:
         dex                                     ; BAD3 CA                       .
         bpl     BattlePartyServices_Branch_BABF ; BAD4 10 E9                    ..
 BattlePartyServices_Branch_BAD6:
         clc                                     ; BAD6 18                       .
+BattlePartyServices_Branch_BAD7:
         rts                                     ; BAD7 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Entry_BAD8:
@@ -8964,15 +9116,15 @@ BattlePartyServices_Branch_BBDB:
         brk                                     ; BBE1 00                       .
         db   $64,$33                         ; BBE2 64 33                    d3
 ; ----------------------------------------------------------------------------
-        jmp     $BBEB                           ; BBE4 4C EB BB                 L..
+        jmp     BattlePartyServices_Branch_BBEB ; BBE4 4C EB BB                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_BBE7:
         brk                                     ; BBE7 00                       .
-        db   $64,$23                         ; BBE8 64 23                    d#
+        db   $64,$23,$49                     ; BBE8 64 23 49                 d#I
 ; ----------------------------------------------------------------------------
-LBBEB = $+ 1
-        eor     #$A5                            ; BBEA 49 A5                    I.
-        adc     $38,x                           ; BBEC 75 38                    u8
+BattlePartyServices_Branch_BBEB:
+        lda     $75                             ; BBEB A5 75                    .u
+        sec                                     ; BBED 38                       8
         sbc     $7396                           ; BBEE ED 96 73                 ..s
         bcc     BattlePartyServices_Branch_BBF5 ; BBF1 90 02                    ..
         cmp     #$05                            ; BBF3 C9 05                    ..
@@ -9092,145 +9244,109 @@ BattlePartyServices_Entry_BC7C:
         db   $78,$65,$86,$00,$15,$17,$18,$1A ; BCA6 78 65 86 00 15 17 18 1A  xe......
         db   $1C,$1D,$B5,$00,$6C,$0C,$FF,$73 ; BCAE 1C 1D B5 00 6C 0C FF 73  ....l..s
         db   $1D,$FF,$6E,$21,$FF,$69,$24,$FF ; BCB6 1D FF 6E 21 FF 69 24 FF  ..n!.i$.
-        db   $64,$73                         ; BCBE 64 73                    ds
-; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_BCC0:
-        bmi     BattlePartyServices_Branch_BCE8 ; BCC0 30 26                    0&
-        sta     $98,x                           ; BCC2 95 98                    ..
-        brk                                     ; BCC4 00                       .
-        db   $94,$00                         ; BCC5 94 00                    ..
-; ----------------------------------------------------------------------------
-BattlePartyServices_Entry_BCC7:
-        sbc     ($3E,x)                         ; BCC7 E1 3E                    .>
-        db   $F7,$FB,$05,$0C,$1C,$1C,$1F,$1F ; BCC9 F7 FB 05 0C 1C 1C 1F 1F  ........
-        db   $1D,$1D,$1C,$21,$1C,$1C,$1C,$1C ; BCD1 1D 1D 1C 21 1C 1C 1C 1C  ...!....
-        db   $19,$19,$19,$15,$11,$13,$15,$17 ; BCD9 19 19 19 15 11 13 15 17  ........
-        db   $18,$1A,$1C,$1D,$21,$18,$21     ; BCE1 18 1A 1C 1D 21 18 21     ....!.!
-; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_BCE8:
-        jsr     $4A23                           ; BCE8 20 23 4A                  #J
-        eor     #$FB                            ; BCEB 49 FB                    I.
-        ora     $57                             ; BCED 05 57                    .W
-        db   $0C,$B5                         ; BCEF 0C B5                    ..
-        db   $0B,$1F,$24,$24,$24,$24,$24,$21 ; BCF1 0B 1F 24 24 24 24 24 21  ..$$$$$!
-        db   $25,$25,$25,$25,$21,$21,$1F,$65 ; BCF9 25 25 25 25 21 21 1F 65  %%%%!!.e
-        db   $B0,$2F                         ; BD01 B0 2F                    ./
-        db   $1A,$67,$8C,$00,$23,$14,$10,$5E ; BD03 1A 67 8C 00 23 14 10 5E  .g..#..^
-        db   $3C,$94,$00                     ; BD0B 3C 94 00                 <..
-; ----------------------------------------------------------------------------
-BattlePartyServices_Entry_BD0E:
-        bvc     $BCF1                           ; BD0E 50 E1                    P.
-        brk                                     ; BD10 00                       .
-        db   $74,$84                         ; BD11 74 84                    t.
-        db   $04,$29,$29,$74,$08,$27,$2B,$74 ; BD13 04 29 29 74 08 27 2B 74  .))t.'+t
-        db   $A4,$18,$94,$00,$F7,$24,$23,$22 ; BD1B A4 18 94 00 F7 24 23 22  .....$#"
-        db   $21,$1F,$22,$21,$49             ; BD23 21 1F 22 21 49           !."!I
-; ----------------------------------------------------------------------------
-BattlePartyServices_Entry_BD28:
-        sty     $00,x                         ; BD28 94 00                    ..
-        iny                                     ; BD2A C8                       .
-        jsr     $0101                           ; BD2B 20 01 01                  ..
-        bvs     BattlePartyServices_Branch_BD40 ; BD2E 70 10                    p.
-        iny                                     ; BD30 C8                       .
-        bmi     $BD13                           ; BD31 30 E0                    0.
-        cpx     #$98                            ; BD33 E0 98                    ..
-        php                                     ; BD35 08                       .
-        bpl     BattlePartyServices_Branch_BCC0 ; BD36 10 88                    ..
-        php                                     ; BD38 08                       .
-        bpl     $BD03                           ; BD39 10 C8                    ..
-        and     ($03),y                         ; BD3B 31 03                    1.
-        brk                                     ; BD3D 00                       .
-        db   $60,$10                         ; BD3E 60 10                    `.
-; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_BD40:
-        iny                                     ; BD40 C8                       .
-        eor     ($F9,x)                         ; BD41 41 F9                    A.
-        db   $3F,$80,$40,$20,$40,$30,$08,$60 ; BD43 3F 80 40 20 40 30 08 60  ?.@ @0.`
-        db   $D0,$E8,$78,$30,$0C,$C8,$51,$80 ; BD4B D0 E8 78 30 0C C8 51 80  ..x0..Q.
-        db   $80,$04,$06,$C8,$12,$01,$00,$05 ; BD53 80 04 06 C8 12 01 00 05  ........
-        db   $C8,$22,$FF,$03,$08,$10,$0A,$16 ; BD5B C8 22 FF 03 08 10 0A 16  ."......
-        db   $36,$0E,$26,$23,$43,$43,$C8,$32 ; BD63 36 0E 26 23 43 43 C8 32  6.&#CC.2
-        db   $FD,$A1,$14,$20,$18,$23,$33,$3D ; BD6B FD A1 14 20 18 23 33 3D  ... .#3=
-        db   $3F,$1C,$07,$18,$C8,$42,$FE,$C6 ; BD73 3F 1C 07 18 C8 42 FE C6  ?....B..
-        db   $08,$05,$80,$40,$38,$25,$43,$40 ; BD7B 08 05 80 40 38 25 43 40  ...@8%C@
-        db   $80,$80,$40,$C8,$62,$00,$1C,$02 ; BD83 80 80 40 C8 62 00 1C 02  ..@.b...
-        db   $06,$0C,$C8,$23,$FF,$03,$64,$98 ; BD8B 06 0C C8 23 FF 03 64 98  ...#..d.
-        db   $80,$A0,$A0,$A0,$90,$48,$E4,$9A ; BD93 80 A0 A0 A0 90 48 E4 9A  .....H..
-        db   $C0,$33,$0A,$1A,$14,$30,$60,$90 ; BD9B C0 33 0A 1A 14 30 60 90  .3...0`.
-        db   $2C,$12,$4A,$FA,$F4,$F0,$E0,$80 ; BDA3 2C 12 4A FA F4 F0 E0 80  ,.J.....
-        db   $0C,$1E,$C8,$43,$FC,$FC,$09,$08 ; BDAB 0C 1E C8 43 FC FC 09 08  ...C....
-        db   $04,$04,$02,$01,$1F,$2F,$87,$07 ; BDB3 04 04 02 01 1F 2F 87 07  ...../..
-        db   $03,$01,$C8,$63,$00,$07,$02,$06 ; BDBB 03 01 C8 63 00 07 02 06  ...c....
-        db   $0C,$C8,$34,$3F,$03,$04,$08,$02 ; BDC3 0C C8 34 3F 03 04 08 02  ..4?....
-        db   $04,$04,$0A,$0D,$09,$C8,$44,$BE ; BDCB 04 04 0A 0D 09 C8 44 BE  ......D.
-        db   $FE,$16,$18,$0C,$10,$10,$30,$E0 ; BDD3 FE 16 18 0C 10 10 30 E0  ......0.
-        db   $06,$A0,$B0,$F0,$F0,$E0,$A8,$18 ; BDDB 06 A0 B0 F0 F0 E0 A8 18  ........
-        db   $01,$03,$01,$D0,$DC,$FF,$A8,$08 ; BDE3 01 03 01 D0 DC FF A8 08  ........
-        db   $02,$01,$00,$02,$A8,$10,$02,$0F ; BDEB 02 01 00 02 A8 10 02 0F  ........
-        db   $02,$20,$07,$1F,$3F,$7F,$A8,$13 ; BDF3 02 20 07 1F 3F 7F A8 13  . ..?...
-        db   $09,$DF,$F2,$01,$7F,$FF,$C1,$80 ; BDFB 09 DF F2 01 7F FF C1 80  ........
-        db   $07,$80,$3E,$FF,$FF,$D7,$AB,$A0 ; BE03 07 80 3E FF FF D7 AB A0  ..>.....
-        db   $1B,$09,$00,$00,$80,$C0,$60,$20 ; BE0B 1B 09 00 00 80 C0 60 20  ......`
-        db   $14,$12,$F8,$F8,$78,$38,$98,$DE ; BE13 14 12 F8 F8 78 38 98 DE  ....x8..
-        db   $EF,$EF,$A8,$0B,$09,$7F,$1F,$19 ; BE1B EF EF A8 0B 09 7F 1F 19  ........
-        db   $21,$02,$02,$21,$1F,$0F,$1E,$3E ; BE23 21 02 02 21 1F 0F 1E 3E  !..!...>
-        db   $3D,$7D,$7F,$A8,$13,$11,$F8,$00 ; BE2B 3D 7D 7F A8 13 11 F8 00  =}......
-        db   $4A,$4A,$0A,$88,$01,$A0,$1B,$11 ; BE33 4A 4A 0A 88 01 A0 1B 11  JJ......
-        db   $42,$42,$50,$28,$10,$0C,$00,$00 ; BE3B 42 42 50 28 10 0C 00 00  BBP(....
-        db   $FF,$FF,$FE,$7E,$1C,$CE,$04,$05 ; BE43 FF FF FE 7E 1C CE 04 05  ...~....
-        db   $A0,$0B,$11,$42,$52,$24,$24,$24 ; BE4B A0 0B 11 42 52 24 24 24  ...BR$$$
-        db   $10,$08,$04,$7F,$7E,$7E,$7C,$7E ; BE53 10 08 04 7F 7E 7E 7C 7E  ....~~|~
-        db   $3C,$08,$04,$A0,$1D,$19,$00,$00 ; BE5B 3C 08 04 A0 1D 19 00 00  <.......
-        db   $40,$44,$20,$20,$10,$08,$1C,$3A ; BE63 40 44 20 20 10 08 1C 3A  @D  ...:
-        db   $6E,$EE,$74,$34,$14,$08,$88,$10 ; BE6B 6E EE 74 34 14 08 88 10  n.t4....
-        db   $17,$E0,$00,$0C,$08,$0C,$A0,$0C ; BE73 17 E0 00 0C 08 0C A0 0C  ........
-        db   $19,$18,$08,$08,$14,$02,$02,$04 ; BE7B 19 18 08 08 14 02 02 04  ........
-        db   $08,$58,$38,$58,$7C,$2A,$D6,$54 ; BE83 08 58 38 58 7C 2A D6 54  .X8X|*.T
-        db   $58,$A8,$0C,$21,$E0,$E0,$20,$10 ; BE8B 58 A8 0C 21 E0 E0 20 10  X..!.. .
-        db   $10,$68,$30,$10,$88,$00,$18,$3F ; BE93 10 68 30 10 88 00 18 3F  .h0....?
-        db   $F8,$60,$F0,$E4,$6C,$18,$04,$0C ; BE9B F8 60 F0 E4 6C 18 04 0C  .`..l...
-        db   $1A,$06,$03,$01,$88,$08,$1F,$87 ; BEA3 1A 06 03 01 88 08 1F 87  ........
-        db   $00,$80,$04,$06,$03,$88,$0F,$27 ; BEAB 00 80 04 06 03 88 0F 27  .......'
-        db   $F0,$00,$C0,$60,$30,$10,$88,$20 ; BEB3 F0 00 C0 60 30 10 88 20  ...`0..
-        db   $38,$70,$00,$10,$18,$0C,$98,$10 ; BEBB 38 70 00 10 18 0C 98 10  8p......
-        db   $1E,$00,$6F,$03,$02,$18,$3C,$3F ; BEC3 1E 00 6F 03 02 18 3C 3F  ..o...<?
-        db   $3F,$98,$18,$1E,$00,$EF,$40,$C0 ; BECB 3F 98 18 1E 00 EF 40 C0  ?.....@.
-        db   $C0,$10,$70,$F8,$F4,$98,$0F,$26 ; BED3 C0 10 70 F8 F4 98 0F 26  ..p....&
-        db   $07,$FD,$0F,$01,$03,$03,$07,$01 ; BEDB 07 FD 0F 01 03 03 07 01  ........
-        db   $01,$08,$3E,$FF,$98,$17,$26,$07 ; BEE3 01 08 3E FF 98 17 26 07  ..>...&.
-        db   $FE,$76,$8E,$FF,$FF,$F8,$E0,$80 ; BEEB FE 76 8E FF FF F8 E0 80  .v......
-        db   $07,$1F,$7F,$98,$1F,$26,$07,$1F ; BEF3 07 1F 7F 98 1F 26 07 1F  .....&..
-        db   $80,$40,$80,$40,$20,$80,$C0,$E0 ; BEFB 80 40 80 40 20 80 C0 E0  .@.@ ...
-        db   $90,$0E,$2E,$03,$0F,$19,$06,$81 ; BF03 90 0E 2E 03 0F 19 06 81  ........
-        db   $60,$18,$00,$FF,$FF,$F9,$FE,$FF ; BF0B 60 18 00 FF FF F9 FE FF  `.......
-        db   $7E,$1C,$00,$90,$17,$2E,$00,$0E ; BF13 7E 1C 00 90 17 2E 00 0E  ~.......
-        db   $0B,$05,$04,$42,$22,$50,$FF,$FF ; BF1B 0B 05 04 42 22 50 FF FF  ...B"P..
-        db   $FB,$FD,$7C,$7E,$3E,$1C,$98,$1F ; BF23 FB FD 7C 7E 3E 1C 98 1F  ..|~>...
-        db   $2E,$F0,$F0,$20,$60,$E0,$C0,$E0 ; BF2B 2E F0 F0 20 60 E0 C0 E0  ... `...
-        db   $E0,$E0,$C0,$98,$16,$36,$F0,$F8 ; BF33 E0 E0 C0 98 16 36 F0 F8  .....6..
-        db   $24,$30,$10,$10,$10,$C4,$40,$20 ; BF3B 24 30 10 10 10 C4 40 20  $0....@
-        db   $20,$98,$1C,$37,$F8,$FC,$08,$0C ; BF43 20 98 1C 37 F8 FC 08 0C   ..7....
-        db   $14,$14,$30,$E0,$10,$30,$20,$20 ; BF4B 14 14 30 E0 10 30 20 20  ..0..0
-        db   $40,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF53 40 FF FF FF FF FF FF FF  @.......
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF5B FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF63 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF6B FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF73 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF7B FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF83 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF8B FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF93 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF9B FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFA3 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFAB FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFB3 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFBB FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC3 FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFCB FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$FF,$FF,$78,$EE,$DF ; BFD3 FF FF FF FF FF 78 EE DF  .....x..
-        db   $BF,$4C,$8E,$FF,$80,$20,$44,$52 ; BFDB BF 4C 8E FF 80 20 44 52  .L... DR
-        db   $41,$47,$4F,$4E,$20,$51,$55,$45 ; BFE3 41 47 4F 4E 20 51 55 45  AGON QUE
-        db   $53,$54,$20,$49,$56,$00,$00,$00 ; BFEB 53 54 20 49 56 00 00 00  ST IV...
-        db   $00,$48,$04,$01,$0E,$07,$9E,$D8 ; BFF3 00 48 04 01 0E 07 9E D8  .H......
-        db   $BF,$D8,$BF,$D8,$BF             ; BFFB BF D8 BF D8 BF           .....
+        db   $64,$73,$30,$26,$95,$98,$00,$94 ; BCBE 64 73 30 26 95 98 00 94  ds0&....
+        db   $00,$E1,$3E,$F7,$FB,$05,$0C,$1C ; BCC6 00 E1 3E F7 FB 05 0C 1C  ..>.....
+        db   $1C,$1F,$1F,$1D,$1D,$1C,$21,$1C ; BCCE 1C 1F 1F 1D 1D 1C 21 1C  ......!.
+        db   $1C,$1C,$1C,$19,$19,$19,$15,$11 ; BCD6 1C 1C 1C 19 19 19 15 11  ........
+        db   $13,$15,$17,$18,$1A,$1C,$1D,$21 ; BCDE 13 15 17 18 1A 1C 1D 21  .......!
+        db   $18,$21,$20,$23,$4A,$49,$FB,$05 ; BCE6 18 21 20 23 4A 49 FB 05  .! #JI..
+        db   $57,$0C,$B5,$0B,$1F,$24,$24,$24 ; BCEE 57 0C B5 0B 1F 24 24 24  W....$$$
+        db   $24,$24,$21,$25,$25,$25,$25,$21 ; BCF6 24 24 21 25 25 25 25 21  $$!%%%%!
+        db   $21,$1F,$65,$B0,$2F,$1A,$67,$8C ; BCFE 21 1F 65 B0 2F 1A 67 8C  !.e./.g.
+        db   $00,$23,$14,$10,$5E,$3C,$94,$00 ; BD06 00 23 14 10 5E 3C 94 00  .#..^<..
+        db   $50,$E1,$00,$74,$84,$04,$29,$29 ; BD0E 50 E1 00 74 84 04 29 29  P..t..))
+        db   $74,$08,$27,$2B,$74,$A4,$18,$94 ; BD16 74 08 27 2B 74 A4 18 94  t.'+t...
+        db   $00,$F7,$24,$23,$22,$21,$1F,$22 ; BD1E 00 F7 24 23 22 21 1F 22  ..$#"!."
+        db   $21,$49,$94,$00,$C8,$20,$01,$01 ; BD26 21 49 94 00 C8 20 01 01  !I... ..
+        db   $70,$10,$C8,$30,$E0,$E0,$98,$08 ; BD2E 70 10 C8 30 E0 E0 98 08  p..0....
+        db   $10,$88,$08,$10,$C8,$31,$03,$00 ; BD36 10 88 08 10 C8 31 03 00  .....1..
+        db   $60,$10,$C8,$41,$F9,$3F,$80,$40 ; BD3E 60 10 C8 41 F9 3F 80 40  `..A.?.@
+        db   $20,$40,$30,$08,$60,$D0,$E8,$78 ; BD46 20 40 30 08 60 D0 E8 78   @0.`..x
+        db   $30,$0C,$C8,$51,$80,$80,$04,$06 ; BD4E 30 0C C8 51 80 80 04 06  0..Q....
+        db   $C8,$12,$01,$00,$05,$C8,$22,$FF ; BD56 C8 12 01 00 05 C8 22 FF  ......".
+        db   $03,$08,$10,$0A,$16,$36,$0E,$26 ; BD5E 03 08 10 0A 16 36 0E 26  .....6.&
+        db   $23,$43,$43,$C8,$32,$FD,$A1,$14 ; BD66 23 43 43 C8 32 FD A1 14  #CC.2...
+        db   $20,$18,$23,$33,$3D,$3F,$1C,$07 ; BD6E 20 18 23 33 3D 3F 1C 07   .#3=?..
+        db   $18,$C8,$42,$FE,$C6,$08,$05,$80 ; BD76 18 C8 42 FE C6 08 05 80  ..B.....
+        db   $40,$38,$25,$43,$40,$80,$80,$40 ; BD7E 40 38 25 43 40 80 80 40  @8%C@..@
+        db   $C8,$62,$00,$1C,$02,$06,$0C,$C8 ; BD86 C8 62 00 1C 02 06 0C C8  .b......
+        db   $23,$FF,$03,$64,$98,$80,$A0,$A0 ; BD8E 23 FF 03 64 98 80 A0 A0  #..d....
+        db   $A0,$90,$48,$E4,$9A,$C0,$33,$0A ; BD96 A0 90 48 E4 9A C0 33 0A  ..H...3.
+        db   $1A,$14,$30,$60,$90,$2C,$12,$4A ; BD9E 1A 14 30 60 90 2C 12 4A  ..0`.,.J
+        db   $FA,$F4,$F0,$E0,$80,$0C,$1E,$C8 ; BDA6 FA F4 F0 E0 80 0C 1E C8  ........
+        db   $43,$FC,$FC,$09,$08,$04,$04,$02 ; BDAE 43 FC FC 09 08 04 04 02  C.......
+        db   $01,$1F,$2F,$87,$07,$03,$01,$C8 ; BDB6 01 1F 2F 87 07 03 01 C8  ../.....
+        db   $63,$00,$07,$02,$06,$0C,$C8,$34 ; BDBE 63 00 07 02 06 0C C8 34  c......4
+        db   $3F,$03,$04,$08,$02,$04,$04,$0A ; BDC6 3F 03 04 08 02 04 04 0A  ?.......
+        db   $0D,$09,$C8,$44,$BE,$FE,$16,$18 ; BDCE 0D 09 C8 44 BE FE 16 18  ...D....
+        db   $0C,$10,$10,$30,$E0,$06,$A0,$B0 ; BDD6 0C 10 10 30 E0 06 A0 B0  ...0....
+        db   $F0,$F0,$E0,$A8,$18,$01,$03,$01 ; BDDE F0 F0 E0 A8 18 01 03 01  ........
+        db   $D0,$DC,$FF,$A8,$08,$02,$01,$00 ; BDE6 D0 DC FF A8 08 02 01 00  ........
+        db   $02,$A8,$10,$02,$0F,$02,$20,$07 ; BDEE 02 A8 10 02 0F 02 20 07  ...... .
+        db   $1F,$3F,$7F,$A8,$13,$09,$DF,$F2 ; BDF6 1F 3F 7F A8 13 09 DF F2  .?......
+        db   $01,$7F,$FF,$C1,$80,$07,$80,$3E ; BDFE 01 7F FF C1 80 07 80 3E  .......>
+        db   $FF,$FF,$D7,$AB,$A0,$1B,$09,$00 ; BE06 FF FF D7 AB A0 1B 09 00  ........
+        db   $00,$80,$C0,$60,$20,$14,$12,$F8 ; BE0E 00 80 C0 60 20 14 12 F8  ...` ...
+        db   $F8,$78,$38,$98,$DE,$EF,$EF,$A8 ; BE16 F8 78 38 98 DE EF EF A8  .x8.....
+        db   $0B,$09,$7F,$1F,$19,$21,$02,$02 ; BE1E 0B 09 7F 1F 19 21 02 02  .....!..
+        db   $21,$1F,$0F,$1E,$3E,$3D,$7D,$7F ; BE26 21 1F 0F 1E 3E 3D 7D 7F  !...>=}.
+        db   $A8,$13,$11,$F8,$00,$4A,$4A,$0A ; BE2E A8 13 11 F8 00 4A 4A 0A  .....JJ.
+        db   $88,$01,$A0,$1B,$11,$42,$42,$50 ; BE36 88 01 A0 1B 11 42 42 50  .....BBP
+        db   $28,$10,$0C,$00,$00,$FF,$FF,$FE ; BE3E 28 10 0C 00 00 FF FF FE  (.......
+        db   $7E,$1C,$CE,$04,$05,$A0,$0B,$11 ; BE46 7E 1C CE 04 05 A0 0B 11  ~.......
+        db   $42,$52,$24,$24,$24,$10,$08,$04 ; BE4E 42 52 24 24 24 10 08 04  BR$$$...
+        db   $7F,$7E,$7E,$7C,$7E,$3C,$08,$04 ; BE56 7F 7E 7E 7C 7E 3C 08 04  .~~|~<..
+        db   $A0,$1D,$19,$00,$00,$40,$44,$20 ; BE5E A0 1D 19 00 00 40 44 20  .....@D
+        db   $20,$10,$08,$1C,$3A,$6E,$EE,$74 ; BE66 20 10 08 1C 3A 6E EE 74   ...:n.t
+        db   $34,$14,$08,$88,$10,$17,$E0,$00 ; BE6E 34 14 08 88 10 17 E0 00  4.......
+        db   $0C,$08,$0C,$A0,$0C,$19,$18,$08 ; BE76 0C 08 0C A0 0C 19 18 08  ........
+        db   $08,$14,$02,$02,$04,$08,$58,$38 ; BE7E 08 14 02 02 04 08 58 38  ......X8
+        db   $58,$7C,$2A,$D6,$54,$58,$A8,$0C ; BE86 58 7C 2A D6 54 58 A8 0C  X|*.TX..
+        db   $21,$E0,$E0,$20,$10,$10,$68,$30 ; BE8E 21 E0 E0 20 10 10 68 30  !.. ..h0
+        db   $10,$88,$00,$18,$3F,$F8,$60,$F0 ; BE96 10 88 00 18 3F F8 60 F0  ....?.`.
+        db   $E4,$6C,$18,$04,$0C,$1A,$06,$03 ; BE9E E4 6C 18 04 0C 1A 06 03  .l......
+        db   $01,$88,$08,$1F,$87,$00,$80,$04 ; BEA6 01 88 08 1F 87 00 80 04  ........
+        db   $06,$03,$88,$0F,$27,$F0,$00,$C0 ; BEAE 06 03 88 0F 27 F0 00 C0  ....'...
+        db   $60,$30,$10,$88,$20,$38,$70,$00 ; BEB6 60 30 10 88 20 38 70 00  `0.. 8p.
+        db   $10,$18,$0C,$98,$10,$1E,$00,$6F ; BEBE 10 18 0C 98 10 1E 00 6F  .......o
+        db   $03,$02,$18,$3C,$3F,$3F,$98,$18 ; BEC6 03 02 18 3C 3F 3F 98 18  ...<??..
+        db   $1E,$00,$EF,$40,$C0,$C0,$10,$70 ; BECE 1E 00 EF 40 C0 C0 10 70  ...@...p
+        db   $F8,$F4,$98,$0F,$26,$07,$FD,$0F ; BED6 F8 F4 98 0F 26 07 FD 0F  ....&...
+        db   $01,$03,$03,$07,$01,$01,$08,$3E ; BEDE 01 03 03 07 01 01 08 3E  .......>
+        db   $FF,$98,$17,$26,$07,$FE,$76,$8E ; BEE6 FF 98 17 26 07 FE 76 8E  ...&..v.
+        db   $FF,$FF,$F8,$E0,$80,$07,$1F,$7F ; BEEE FF FF F8 E0 80 07 1F 7F  ........
+        db   $98,$1F,$26,$07,$1F,$80,$40,$80 ; BEF6 98 1F 26 07 1F 80 40 80  ..&...@.
+        db   $40,$20,$80,$C0,$E0,$90,$0E,$2E ; BEFE 40 20 80 C0 E0 90 0E 2E  @ ......
+        db   $03,$0F,$19,$06,$81,$60,$18,$00 ; BF06 03 0F 19 06 81 60 18 00  .....`..
+        db   $FF,$FF,$F9,$FE,$FF,$7E,$1C,$00 ; BF0E FF FF F9 FE FF 7E 1C 00  .....~..
+        db   $90,$17,$2E,$00,$0E,$0B,$05,$04 ; BF16 90 17 2E 00 0E 0B 05 04  ........
+        db   $42,$22,$50,$FF,$FF,$FB,$FD,$7C ; BF1E 42 22 50 FF FF FB FD 7C  B"P....|
+        db   $7E,$3E,$1C,$98,$1F,$2E,$F0,$F0 ; BF26 7E 3E 1C 98 1F 2E F0 F0  ~>......
+        db   $20,$60,$E0,$C0,$E0,$E0,$E0,$C0 ; BF2E 20 60 E0 C0 E0 E0 E0 C0   `......
+        db   $98,$16,$36,$F0,$F8,$24,$30,$10 ; BF36 98 16 36 F0 F8 24 30 10  ..6..$0.
+        db   $10,$10,$C4,$40,$20,$20,$98,$1C ; BF3E 10 10 C4 40 20 20 98 1C  ...@  ..
+        db   $37,$F8,$FC,$08,$0C,$14,$14,$30 ; BF46 37 F8 FC 08 0C 14 14 30  7......0
+        db   $E0,$10,$30,$20,$20,$40,$FF,$FF ; BF4E E0 10 30 20 20 40 FF FF  ..0  @..
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF56 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF5E FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF66 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF6E FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF76 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF7E FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF86 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF8E FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF96 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BF9E FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFA6 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFAE FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFB6 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFBE FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC6 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFCE FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$78,$EE,$DF,$BF,$4C,$8E ; BFD6 FF FF 78 EE DF BF 4C 8E  ..x...L.
+        db   $FF,$80,$20,$44,$52,$41,$47,$4F ; BFDE FF 80 20 44 52 41 47 4F  .. DRAGO
+        db   $4E,$20,$51,$55,$45,$53,$54,$20 ; BFE6 4E 20 51 55 45 53 54 20  N QUEST
+        db   $49,$56,$00,$00,$00,$00,$48,$04 ; BFEE 49 56 00 00 00 00 48 04  IV....H.
+        db   $01,$0E,$07,$9E,$D8,$BF,$D8,$BF ; BFF6 01 0E 07 9E D8 BF D8 BF  ........
+        db   $D8,$BF                         ; BFFE D8 BF                    ..
 Bank10_End:

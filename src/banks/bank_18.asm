@@ -1240,9 +1240,10 @@ MonsterBattleFont_Branch_9BF3:
         cmp     #$02                            ; 9BF9 C9 02                    ..
         beq     MonsterBattleFont_Branch_9C18   ; 9BFB F0 1B                    ..
         lda     $41                             ; 9BFD A5 41                    .A
-        bpl     $9C04                           ; 9BFF 10 03                    ..
-        jmp     $9F79                           ; 9C01 4C 79 9F                 Ly.
+        bpl     MonsterBattleFont_Branch_9C04   ; 9BFF 10 03                    ..
+        jmp     MonsterBattleFont_Branch_9F79   ; 9C01 4C 79 9F                 Ly.
 ; ----------------------------------------------------------------------------
+MonsterBattleFont_Branch_9C04:
         jsr     MonsterBattleFont_Entry_9C19    ; 9C04 20 19 9C                  ..
         jsr     MonsterBattleFont_Entry_9CCC    ; 9C07 20 CC 9C                  ..
         jsr     MonsterBattleFont_Entry_9CB2    ; 9C0A 20 B2 9C                  ..
@@ -1796,9 +1797,10 @@ MonsterBattleFont_Branch_9F5D:
         sta     $6E4A                           ; 9F75 8D 4A 6E                 .Jn
         rts                                     ; 9F78 60                       `
 ; ----------------------------------------------------------------------------
+MonsterBattleFont_Branch_9F79:
         lda     CurrentMapNumber                ; 9F79 A5 63                    .c
         cmp     #$37                            ; 9F7B C9 37                    .7
-        bne     $9F8F                           ; 9F7D D0 10                    ..
+        bne     MonsterBattleFont_Branch_9F8F   ; 9F7D D0 10                    ..
         brk                                     ; 9F7F 00                       .
         db   $62,$23,$40                     ; 9F80 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -1809,6 +1811,7 @@ MonsterBattleFont_Branch_9F5D:
         db   $63,$63,$40                     ; 9F8A 63 63 40                 cc@
 ; ----------------------------------------------------------------------------
         bcc     MonsterBattleFont_Branch_9FB7   ; 9F8D 90 28                    .(
+MonsterBattleFont_Branch_9F8F:
         jsr     MonsterBattleFont_Entry_9FB8    ; 9F8F 20 B8 9F                  ..
         jsr     MonsterBattleFont_Entry_A069    ; 9F92 20 69 A0                  i.
         jsr     MonsterBattleFont_Entry_9C88    ; 9F95 20 88 9C                  ..
@@ -1941,36 +1944,40 @@ MonsterBattleFont_Branch_A060:
 MonsterBattleFont_Entry_A069:
         lda     SaveCurrentChapterMinus1        ; A069 AD 5A 61                 .Za
         cmp     #$04                            ; A06C C9 04                    ..
-        beq     $A07D                           ; A06E F0 0D                    ..
+        beq     MonsterBattleFont_Branch_A07D   ; A06E F0 0D                    ..
         lda     $A23B                           ; A070 AD 3B A2                 .;.
         sta     $0E                             ; A073 85 0E                    ..
         lda     $A23C                           ; A075 AD 3C A2                 .<.
         sta     $0F                             ; A078 85 0F                    ..
-        jmp     $A087                           ; A07A 4C 87 A0                 L..
+        jmp     MonsterBattleFont_Branch_A087   ; A07A 4C 87 A0                 L..
 ; ----------------------------------------------------------------------------
+MonsterBattleFont_Branch_A07D:
         lda     $A23D                           ; A07D AD 3D A2                 .=.
         sta     $0E                             ; A080 85 0E                    ..
         lda     $A23E                           ; A082 AD 3E A2                 .>.
         sta     $0F                             ; A085 85 0F                    ..
+MonsterBattleFont_Branch_A087:
         ldy     #$00                            ; A087 A0 00                    ..
         lda     ($0E),y                         ; A089 B1 0E                    ..
         cmp     CurrentMapNumber                ; A08B C5 63                    .c
-        beq     $A0A5                           ; A08D F0 16                    ..
+        beq     MonsterBattleFont_Branch_A0A5   ; A08D F0 16                    ..
         tax                                     ; A08F AA                       .
         lda     Bank18_MapEncounterStrides,x    ; A090 BD 74 A4                 .t.
         sec                                     ; A093 38                       8
         adc     $0E                             ; A094 65 0E                    e.
         sta     $0E                             ; A096 85 0E                    ..
-        bcc     $A09C                           ; A098 90 02                    ..
+        bcc     MonsterBattleFont_Branch_A09C   ; A098 90 02                    ..
         inc     $0F                             ; A09A E6 0F                    ..
+MonsterBattleFont_Branch_A09C:
         lda     ($0E),y                         ; A09C B1 0E                    ..
         cmp     #$FF                            ; A09E C9 FF                    ..
-        bne     $A087                           ; A0A0 D0 E5                    ..
+        bne     MonsterBattleFont_Branch_A087   ; A0A0 D0 E5                    ..
 MonsterBattleFont_Branch_A0A2:
         pla                                     ; A0A2 68                       h
         pla                                     ; A0A3 68                       h
         rts                                     ; A0A4 60                       `
 ; ----------------------------------------------------------------------------
+MonsterBattleFont_Branch_A0A5:
         lda     CurrentMapNumber                ; A0A5 A5 63                    .c
         sta     $6E07                           ; A0A7 8D 07 6E                 ..n
         ldy     CurrentSubmapNumber             ; A0AA A4 64                    .d
@@ -4098,61 +4105,54 @@ Bank18_BattleAnimationCommands:
         db   $01,$08,$0B,$00,$0A,$0D,$01,$06 ; B605 01 08 0B 00 0A 0D 01 06  ........
         db   $1A,$00,$0A,$07,$00,$08,$40,$05 ; B60D 1A 00 0A 07 00 08 40 05  ......@.
         db   $05,$19,$00,$05,$19,$01,$05,$22 ; B615 05 19 00 05 19 01 05 22  ......."
-        db   $00,$0A,$FF                     ; B61D 00 0A FF                 ...
-; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B620:
-        adc     #$E1                            ; B620 69 E1                    i.
-        ror     $ED,x                           ; B622 76 ED                    v.
-        db   $FF,$EE,$E0,$FE,$93,$B6,$ED,$B1 ; B624 FF EE E0 FE 93 B6 ED B1  ........
-        db   $FE,$C3,$B6,$ED,$FF,$E1,$76,$FE ; B62C FE C3 B6 ED FF E1 76 FE  ......v.
-        db   $A5,$B6,$ED,$B1,$FE,$C3,$B6,$ED ; B634 A5 B6 ED B1 FE C3 B6 ED  ........
-        db   $FF,$E1,$76,$FE,$E6,$B6,$ED,$00 ; B63C FF E1 76 FE E6 B6 ED 00  ..v.....
-        db   $FE,$FA,$B6,$FE,$FA,$B6,$ED,$FF ; B644 FE FA B6 FE FA B6 ED FF  ........
-        db   $FE,$85,$B7,$FE,$E6,$B6,$FE,$21 ; B64C FE 85 B7 FE E6 B6 FE 21  .......!
-        db   $B6,$FB,$FB,$FE,$21,$B6         ; B654 B6 FB FB FE 21 B6        ....!.
-; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B65A:
-        sty     $18,x                           ; B65A 94 18                    ..
-        db   $AB,$14,$FA,$08,$F9,$FB,$05,$FE ; B65C AB 14 FA 08 F9 FB 05 FE  ........
-        db   $C3,$B6,$FB,$00,$94,$18,$AB,$14 ; B664 C3 B6 FB 00 94 18 AB 14  ........
-        db   $FA,$08,$F9,$FB,$05,$FE,$C3,$B6 ; B66C FA 08 F9 FB 05 FE C3 B6  ........
-        db   $FB,$00,$94,$18,$AB,$14,$FA,$04 ; B674 FB 00 94 18 AB 14 FA 04  ........
-        db   $F9,$AB,$06,$FA,$30,$FB,$FB,$03 ; B67C F9 AB 06 FA 30 FB FB 03  ....0...
-        db   $FE,$85,$B7,$FB,$00,$94,$18,$AB ; B684 FE 85 B7 FB 00 94 18 AB  ........
-        db   $14,$FA,$04,$F9,$FE,$5A,$B6,$60 ; B68C 14 FA 04 F9 FE 5A B6 60  .....Z.`
-        db   $C8,$00,$62,$0C,$18,$65,$C8,$00 ; B694 C8 00 62 0C 18 65 C8 00  ..b..e..
-        db   $63,$0C,$17,$60,$30,$13,$11,$13 ; B69C 63 0C 17 60 30 13 11 13  c..`0...
-        db   $FD,$62,$C8,$00,$63,$0C,$1A,$67 ; B6A4 FD 62 C8 00 63 0C 1A 67  .b..c..g
-        db   $18,$68,$0C,$67,$18,$1A,$63,$0C ; B6AC 18 68 0C 67 18 1A 63 0C  .h.g..c.
-        db   $65,$18,$66,$0C,$65,$18,$18,$62 ; B6B4 65 18 66 0C 65 18 18 62  e.f.e..b
-        db   $0C,$60,$18,$13,$11,$13,$FD,$5B ; B6BC 0C 60 18 13 11 13 FD 5B  .`.....[
-        db   $8C,$0C,$1C,$28,$7F,$98,$0E,$72 ; B6C4 8C 0C 1C 28 7F 98 0E 72  ...(...r
-        db   $8C,$0C,$1A,$27,$7F,$86,$04,$30 ; B6CC 8C 0C 1A 27 7F 86 04 30  ...'...0
-        db   $2C,$28,$24,$20,$1C,$17,$14,$64 ; B6D4 2C 28 24 20 1C 17 14 64  ,($ ...d
-        db   $8C,$04,$69,$86,$04,$23,$28,$2D ; B6DC 8C 04 69 86 04 23 28 2D  ..i..#(-
-        db   $32,$FD,$62,$C8,$00,$62,$04,$1A ; B6E4 32 FD 62 C8 00 62 04 1A  2.b..b..
-        db   $1D,$20,$23,$26,$61,$48,$61,$04 ; B6EC 1D 20 23 26 61 48 61 04  . #&aHa.
-        db   $19,$1C,$1F,$22,$25,$FD,$E1,$64 ; B6F4 19 1C 1F 22 25 FD E1 64  ..."%..d
-        db   $60,$86,$06,$AE,$02,$AB,$02,$B0 ; B6FC 60 86 06 AE 02 AB 02 B0  `.......
-        db   $07,$4A,$AB,$02,$AE,$0A,$4A,$AB ; B704 07 4A AB 02 AE 0A 4A AB  .J....J.
-        db   $06,$AE,$06,$4A,$AB,$06,$B0,$0A ; B70C 06 AE 06 4A AB 06 B0 0A  ...J....
-        db   $4A,$AB,$06,$AE,$07,$4A,$AB,$02 ; B714 4A AB 06 AE 07 4A AB 02  J....J..
-        db   $B0,$0A,$4A,$AB,$06,$AE,$06,$4A ; B71C B0 0A 4A AB 06 AE 06 4A  ..J....J
-        db   $AB,$00,$B0,$0A,$4A,$B1,$06,$B0 ; B724 AB 00 B0 0A 4A B1 06 B0  ....J...
-        db   $07,$4A,$AE,$02,$17,$16,$AB,$00 ; B72C 07 4A AE 02 17 16 AB 00  .J......
-        db   $AE,$02,$15,$1A,$4A,$AB,$06,$AE ; B734 AE 02 15 1A 4A AB 06 AE  ....J...
-        db   $02,$15,$1A,$4A,$AB,$06,$AE,$02 ; B73C 02 15 1A 4A AB 06 AE 02  ...J....
-        db   $15,$B0,$06,$A9,$02,$15,$4A,$AB ; B744 15 B0 06 A9 02 15 4A AB  ......J.
-        db   $06,$B0,$02,$13,$15,$4A,$AB,$00 ; B74C 06 B0 02 13 15 4A AB 00  .....J..
-        db   $B0,$02,$13,$15,$4A,$AB,$06,$B0 ; B754 B0 02 13 15 4A AB 06 B0  ....J...
-        db   $02,$13,$15,$4A,$B1,$0A,$4A,$B0 ; B75C 02 13 15 4A B1 0A 4A B0  ...J..J.
-        db   $02,$AE,$07,$4A,$B0,$02,$18,$AD ; B764 02 AE 07 4A B0 02 18 AD  ...J....
-        db   $07,$4A,$AE,$02,$17,$16,$AB,$04 ; B76C 07 4A AE 02 17 16 AB 04  .J......
-        db   $4A,$13,$4A,$5C,$92,$11,$A9,$00 ; B774 4A 13 4A 5C 92 11 A9 00  J.J\....
-        db   $AB,$0F,$AD,$11,$63,$8C,$06,$1A ; B77C AB 0F AD 11 63 8C 06 1A  ....c...
-        db   $FD,$66,$86,$00,$1E,$21,$24,$27 ; B784 FD 66 86 00 1E 21 24 27  .f...!$'
-        db   $2A,$2D,$30,$33,$2E,$29,$24,$1E ; B78C 2A 2D 30 33 2E 29 24 1E  *-03.)$.
-        db   $1A,$15,$18,$FD                 ; B794 1A 15 18 FD              ....
+        db   $00,$0A,$FF,$69,$E1,$76,$ED,$FF ; B61D 00 0A FF 69 E1 76 ED FF  ...i.v..
+        db   $EE,$E0,$FE,$93,$B6,$ED,$B1,$FE ; B625 EE E0 FE 93 B6 ED B1 FE  ........
+        db   $C3,$B6,$ED,$FF,$E1,$76,$FE,$A5 ; B62D C3 B6 ED FF E1 76 FE A5  .....v..
+        db   $B6,$ED,$B1,$FE,$C3,$B6,$ED,$FF ; B635 B6 ED B1 FE C3 B6 ED FF  ........
+        db   $E1,$76,$FE,$E6,$B6,$ED,$00,$FE ; B63D E1 76 FE E6 B6 ED 00 FE  .v......
+        db   $FA,$B6,$FE,$FA,$B6,$ED,$FF,$FE ; B645 FA B6 FE FA B6 ED FF FE  ........
+        db   $85,$B7,$FE,$E6,$B6,$FE,$21,$B6 ; B64D 85 B7 FE E6 B6 FE 21 B6  ......!.
+        db   $FB,$FB,$FE,$21,$B6,$94,$18,$AB ; B655 FB FB FE 21 B6 94 18 AB  ...!....
+        db   $14,$FA,$08,$F9,$FB,$05,$FE,$C3 ; B65D 14 FA 08 F9 FB 05 FE C3  ........
+        db   $B6,$FB,$00,$94,$18,$AB,$14,$FA ; B665 B6 FB 00 94 18 AB 14 FA  ........
+        db   $08,$F9,$FB,$05,$FE,$C3,$B6,$FB ; B66D 08 F9 FB 05 FE C3 B6 FB  ........
+        db   $00,$94,$18,$AB,$14,$FA,$04,$F9 ; B675 00 94 18 AB 14 FA 04 F9  ........
+        db   $AB,$06,$FA,$30,$FB,$FB,$03,$FE ; B67D AB 06 FA 30 FB FB 03 FE  ...0....
+        db   $85,$B7,$FB,$00,$94,$18,$AB,$14 ; B685 85 B7 FB 00 94 18 AB 14  ........
+        db   $FA,$04,$F9,$FE,$5A,$B6,$60,$C8 ; B68D FA 04 F9 FE 5A B6 60 C8  ....Z.`.
+        db   $00,$62,$0C,$18,$65,$C8,$00,$63 ; B695 00 62 0C 18 65 C8 00 63  .b..e..c
+        db   $0C,$17,$60,$30,$13,$11,$13,$FD ; B69D 0C 17 60 30 13 11 13 FD  ..`0....
+        db   $62,$C8,$00,$63,$0C,$1A,$67,$18 ; B6A5 62 C8 00 63 0C 1A 67 18  b..c..g.
+        db   $68,$0C,$67,$18,$1A,$63,$0C,$65 ; B6AD 68 0C 67 18 1A 63 0C 65  h.g..c.e
+        db   $18,$66,$0C,$65,$18,$18,$62,$0C ; B6B5 18 66 0C 65 18 18 62 0C  .f.e..b.
+        db   $60,$18,$13,$11,$13,$FD,$5B,$8C ; B6BD 60 18 13 11 13 FD 5B 8C  `.....[.
+        db   $0C,$1C,$28,$7F,$98,$0E,$72,$8C ; B6C5 0C 1C 28 7F 98 0E 72 8C  ..(...r.
+        db   $0C,$1A,$27,$7F,$86,$04,$30,$2C ; B6CD 0C 1A 27 7F 86 04 30 2C  ..'...0,
+        db   $28,$24,$20,$1C,$17,$14,$64,$8C ; B6D5 28 24 20 1C 17 14 64 8C  ($ ...d.
+        db   $04,$69,$86,$04,$23,$28,$2D,$32 ; B6DD 04 69 86 04 23 28 2D 32  .i..#(-2
+        db   $FD,$62,$C8,$00,$62,$04,$1A,$1D ; B6E5 FD 62 C8 00 62 04 1A 1D  .b..b...
+        db   $20,$23,$26,$61,$48,$61,$04,$19 ; B6ED 20 23 26 61 48 61 04 19   #&aHa..
+        db   $1C,$1F,$22,$25,$FD,$E1,$64,$60 ; B6F5 1C 1F 22 25 FD E1 64 60  .."%..d`
+        db   $86,$06,$AE,$02,$AB,$02,$B0,$07 ; B6FD 86 06 AE 02 AB 02 B0 07  ........
+        db   $4A,$AB,$02,$AE,$0A,$4A,$AB,$06 ; B705 4A AB 02 AE 0A 4A AB 06  J....J..
+        db   $AE,$06,$4A,$AB,$06,$B0,$0A,$4A ; B70D AE 06 4A AB 06 B0 0A 4A  ..J....J
+        db   $AB,$06,$AE,$07,$4A,$AB,$02,$B0 ; B715 AB 06 AE 07 4A AB 02 B0  ....J...
+        db   $0A,$4A,$AB,$06,$AE,$06,$4A,$AB ; B71D 0A 4A AB 06 AE 06 4A AB  .J....J.
+        db   $00,$B0,$0A,$4A,$B1,$06,$B0,$07 ; B725 00 B0 0A 4A B1 06 B0 07  ...J....
+        db   $4A,$AE,$02,$17,$16,$AB,$00,$AE ; B72D 4A AE 02 17 16 AB 00 AE  J.......
+        db   $02,$15,$1A,$4A,$AB,$06,$AE,$02 ; B735 02 15 1A 4A AB 06 AE 02  ...J....
+        db   $15,$1A,$4A,$AB,$06,$AE,$02,$15 ; B73D 15 1A 4A AB 06 AE 02 15  ..J.....
+        db   $B0,$06,$A9,$02,$15,$4A,$AB,$06 ; B745 B0 06 A9 02 15 4A AB 06  .....J..
+        db   $B0,$02,$13,$15,$4A,$AB,$00,$B0 ; B74D B0 02 13 15 4A AB 00 B0  ....J...
+        db   $02,$13,$15,$4A,$AB,$06,$B0,$02 ; B755 02 13 15 4A AB 06 B0 02  ...J....
+        db   $13,$15,$4A,$B1,$0A,$4A,$B0,$02 ; B75D 13 15 4A B1 0A 4A B0 02  ..J..J..
+        db   $AE,$07,$4A,$B0,$02,$18,$AD,$07 ; B765 AE 07 4A B0 02 18 AD 07  ..J.....
+        db   $4A,$AE,$02,$17,$16,$AB,$04,$4A ; B76D 4A AE 02 17 16 AB 04 4A  J......J
+        db   $13,$4A,$5C,$92,$11,$A9,$00,$AB ; B775 13 4A 5C 92 11 A9 00 AB  .J\.....
+        db   $0F,$AD,$11,$63,$8C,$06,$1A,$FD ; B77D 0F AD 11 63 8C 06 1A FD  ...c....
+        db   $66,$86,$00,$1E,$21,$24,$27,$2A ; B785 66 86 00 1E 21 24 27 2A  f...!$'*
+        db   $2D,$30,$33,$2E,$29,$24,$1E,$1A ; B78D 2D 30 33 2E 29 24 1E 1A  -03.)$..
+        db   $15,$18,$FD                     ; B795 15 18 FD                 ...
 ; ----------------------------------------------------------------------------
 Bank18_LoadFontTiles:
         ldy     #$8C                            ; B798 A0 8C                    ..
@@ -4190,9 +4190,10 @@ MonsterBattleFont_Branch_B7C5:
 MonsterBattleFont_Entry_B7D8:
         ldx     #$08                            ; B7D8 A2 08                    ..
         lda     #$00                            ; B7DA A9 00                    ..
+MonsterBattleFont_Branch_B7DC:
         sta     PPUDATA                         ; B7DC 8D 07 20                 ..
         dex                                     ; B7DF CA                       .
-        bne     $B7DC                           ; B7E0 D0 FA                    ..
+        bne     MonsterBattleFont_Branch_B7DC   ; B7E0 D0 FA                    ..
         rts                                     ; B7E2 60                       `
 ; ----------------------------------------------------------------------------
         db   $3D                             ; B7E3 3D                       =
@@ -4231,12 +4232,13 @@ MonsterBattleFont_Entry_B81C:
         txa                                     ; B824 8A                       .
         and     #$07                            ; B825 29 07                    ).
         bne     MonsterBattleFont_Entry_B81C    ; B827 D0 F3                    ..
+MonsterBattleFont_Branch_B829:
         lda     #$00                            ; B829 A9 00                    ..
         sta     $0303,x                         ; B82B 9D 03 03                 ...
         inx                                     ; B82E E8                       .
         txa                                     ; B82F 8A                       .
         and     #$0F                            ; B830 29 0F                    ).
-        bne     $B829                           ; B832 D0 F5                    ..
+        bne     MonsterBattleFont_Branch_B829   ; B832 D0 F5                    ..
         rts                                     ; B834 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$00,$00,$00,$00,$00,$00,$00 ; B835 00 00 00 00 00 00 00 00  ........
@@ -4474,39 +4476,26 @@ MonsterBattleFont_Entry_BE7D:
         db   $23,$23,$21,$21,$1F,$1D,$1C,$1D ; BF39 23 23 21 21 1F 1D 1C 1D  ##!!....
         db   $1F,$23,$21,$23,$25,$23,$21,$23 ; BF41 1F 23 21 23 25 23 21 23  .#!#%#!#
         db   $25,$23,$F8,$94,$60,$94,$48,$F7 ; BF49 25 23 F8 94 60 94 48 F7  %#..`.H.
-        db   $23,$FE,$F7,$BE                 ; BF51 23 FE F7 BE              #...
-; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_BF55:
-        stx     $E1,y                           ; BF55 96 E1                    ..
-        asl     $6A                             ; BF57 06 6A                    .j
-        stx     $00                             ; BF59 86 00                    ..
-        and     ($20,x)                         ; BF5B 21 20                    !
-        db   $1C,$18,$14,$10,$95,$18,$E1,$24 ; BF5D 1C 18 14 10 95 18 E1 24  .......$
-        db   $52,$06,$11,$17,$21,$28,$2F,$32 ; BF65 52 06 11 17 21 28 2F 32  R...!(/2
-        db   $2D,$26,$21,$1A,$15,$0E,$15,$1C ; BF6D 2D 26 21 1A 15 0E 15 1C  -&!.....
-        db   $21,$28,$2D,$32,$2D,$26,$21,$1A ; BF75 21 28 2D 32 2D 26 21 1A  !(-2-&!.
-        db   $15,$07,$11,$17,$1D,$23,$29,$13 ; BF7D 15 07 11 17 1D 23 29 13  .....#).
-        db   $1A,$21,$26,$2D,$32,$82,$30     ; BF85 1A 21 26 2D 32 82 30     .!&-2.0
-; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_BF8C:
-        sty     $18,x                           ; BF8C 94 18                    ..
-        sty     $00,x                           ; BF8E 94 00                    ..
-MonsterBattleFont_Entry_BF90:
-        sbc     ($06,x)                         ; BF90 E1 06                    ..
-        sty     $83,x                           ; BF92 94 83                    ..
-        brk                                     ; BF94 00                       .
-        db   $6B,$06,$22,$1E,$1A,$16,$12,$59 ; BF95 6B 06 22 1E 1A 16 12 59  k."....Y
-        db   $1E,$E1,$24,$59,$06,$15,$1C,$23 ; BF9D 1E E1 24 59 06 15 1C 23  ..$Y...#
-        db   $2D,$34,$2F,$29,$23,$1D,$17,$11 ; BFA5 2D 34 2F 29 23 1D 17 11  -4/)#...
-        db   $11,$18,$1D,$24,$29,$30,$30,$29 ; BFAD 11 18 1D 24 29 30 30 29  ...$)00)
-        db   $24,$1D,$18,$11,$0E,$15,$1A,$21 ; BFB5 24 1D 18 11 0E 15 1A 21  $......!
-        db   $26,$2D,$17,$1D,$23,$29,$2F,$7D ; BFBD 26 2D 17 1D 23 29 2F 7D  &-..#)/}
-        db   $33,$94,$00,$FF,$FF,$FF,$FF,$FF ; BFC5 33 94 00 FF FF FF FF FF  3.......
-        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFCD FF FF FF FF FF FF FF FF  ........
-        db   $FF,$FF,$FF,$78,$EE,$DF,$BF,$4C ; BFD5 FF FF FF 78 EE DF BF 4C  ...x...L
-        db   $8E,$FF,$80,$20,$44,$52,$41,$47 ; BFDD 8E FF 80 20 44 52 41 47  ... DRAG
-        db   $4F,$4E,$20,$51,$55,$45,$53,$54 ; BFE5 4F 4E 20 51 55 45 53 54  ON QUEST
-        db   $20,$49,$56,$00,$00,$00,$00,$48 ; BFED 20 49 56 00 00 00 00 48   IV....H
-        db   $04,$01,$0E,$07,$9E,$D8,$BF,$D8 ; BFF5 04 01 0E 07 9E D8 BF D8  ........
-        db   $BF,$D8,$BF                     ; BFFD BF D8 BF                 ...
+        db   $23,$FE,$F7,$BE,$96,$E1,$06,$6A ; BF51 23 FE F7 BE 96 E1 06 6A  #......j
+        db   $86,$00,$21,$20,$1C,$18,$14,$10 ; BF59 86 00 21 20 1C 18 14 10  ..! ....
+        db   $95,$18,$E1,$24,$52,$06,$11,$17 ; BF61 95 18 E1 24 52 06 11 17  ...$R...
+        db   $21,$28,$2F,$32,$2D,$26,$21,$1A ; BF69 21 28 2F 32 2D 26 21 1A  !(/2-&!.
+        db   $15,$0E,$15,$1C,$21,$28,$2D,$32 ; BF71 15 0E 15 1C 21 28 2D 32  ....!(-2
+        db   $2D,$26,$21,$1A,$15,$07,$11,$17 ; BF79 2D 26 21 1A 15 07 11 17  -&!.....
+        db   $1D,$23,$29,$13,$1A,$21,$26,$2D ; BF81 1D 23 29 13 1A 21 26 2D  .#)..!&-
+        db   $32,$82,$30,$94,$18,$94,$00,$E1 ; BF89 32 82 30 94 18 94 00 E1  2.0.....
+        db   $06,$94,$83,$00,$6B,$06,$22,$1E ; BF91 06 94 83 00 6B 06 22 1E  ....k.".
+        db   $1A,$16,$12,$59,$1E,$E1,$24,$59 ; BF99 1A 16 12 59 1E E1 24 59  ...Y..$Y
+        db   $06,$15,$1C,$23,$2D,$34,$2F,$29 ; BFA1 06 15 1C 23 2D 34 2F 29  ...#-4/)
+        db   $23,$1D,$17,$11,$11,$18,$1D,$24 ; BFA9 23 1D 17 11 11 18 1D 24  #......$
+        db   $29,$30,$30,$29,$24,$1D,$18,$11 ; BFB1 29 30 30 29 24 1D 18 11  )00)$...
+        db   $0E,$15,$1A,$21,$26,$2D,$17,$1D ; BFB9 0E 15 1A 21 26 2D 17 1D  ...!&-..
+        db   $23,$29,$2F,$7D,$33,$94,$00,$FF ; BFC1 23 29 2F 7D 33 94 00 FF  #)/}3...
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFC9 FF FF FF FF FF FF FF FF  ........
+        db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$78 ; BFD1 FF FF FF FF FF FF FF 78  .......x
+        db   $EE,$DF,$BF,$4C,$8E,$FF,$80,$20 ; BFD9 EE DF BF 4C 8E FF 80 20  ...L...
+        db   $44,$52,$41,$47,$4F,$4E,$20,$51 ; BFE1 44 52 41 47 4F 4E 20 51  DRAGON Q
+        db   $55,$45,$53,$54,$20,$49,$56,$00 ; BFE9 55 45 53 54 20 49 56 00  UEST IV.
+        db   $00,$00,$00,$48,$04,$01,$0E,$07 ; BFF1 00 00 00 48 04 01 0E 07  ...H....
+        db   $9E,$D8,$BF,$D8,$BF,$D8,$BF     ; BFF9 9E D8 BF D8 BF D8 BF     .......
 Bank18_End:

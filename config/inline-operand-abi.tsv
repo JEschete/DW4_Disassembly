@@ -1,0 +1,42 @@
+# Kind<TAB>Key<TAB>OperandCount<TAB>Handler<TAB>Evidence
+# BrkSelector keys are the second byte after BRK. The IRQ/BRK dispatcher ($0F/$1F:$C408, byte-identical in both fixed banks) routes low nibbles $3 and $B on this byte alone, so every selector in those two families is listed.
+# Default BRK services (other low nibbles) return through $C38B or $C3CE, whose RTS resumes at BRK+3, unless a BrkService row names a handler that advances the stacked return address.
+# BrkService keys are bank:entry, where bank = ((selector >> 3) & 1) * $10 + (selector >> 4) and entry = first byte; first bytes >= $80 take the $C3CE pointer path and always resume at BRK+3.
+# JsrInline keys are bank:target for a JSR whose callee advances its own stacked return address past inline bytes.
+BrkSelector	03	2	10:808A	$C4F8 routes selector $03 to bank $10 entry $00; $809D sets $79/$7A=BRK+1 and Y=0, one INY, and $80B3 stores $79+Y, so RTS resumes at BRK+3
+BrkSelector	13	2	10:80C5	Bank $10 entry $01 joins the $8091 path: one INY before $80B3 stores the return, so RTS resumes at BRK+3
+BrkSelector	23	3	10:80D1	Bank $10 entry $02: $77=$23 fails CMP #$33 at $80E0, so a second INY consumes BRK+3 via $78 before $80B3 stores the return; RTS resumes at BRK+4
+BrkSelector	33	2	10:80D1	Bank $10 entry $03 shares $80D1: CMP #$33 at $80E0 matches and skips the second INY; RTS resumes at BRK+3
+BrkSelector	43	3	10:80ED	Bank $10 entry $04: $77=$43 fails CMP #$53 at $80FE, so a second INY consumes BRK+3 via $78; RTS resumes at BRK+4
+BrkSelector	53	2	10:80ED	Bank $10 entry $05 shares $80ED: CMP #$53 matches and skips the second INY; RTS resumes at BRK+3
+BrkSelector	63	3	10:810B	Bank $10 entry $06: $77=$63 fails CMP #$73 at $811E, so a second INY consumes BRK+3 via $78; RTS resumes at BRK+4
+BrkSelector	73	2	10:810B	Bank $10 entry $07 shares $810B: CMP #$73 matches and skips the second INY; RTS resumes at BRK+3
+BrkSelector	83	4	10:812B	Bank $10 entry $08: $77=$83 fails CMP #$93 at $813C; INY to 3 and JSR $8157 reads BRK+4 through ($79),Y into $6E0A before $80B3 stores the return; RTS resumes at BRK+5
+BrkSelector	93	3	10:812B	Bank $10 entry $09 shares $812B: CMP #$93 matches, $814F takes one more INY for $78; RTS resumes at BRK+4
+BrkSelector	A3	2	10:AB74	$C50C-$C516 route high nibble $A to bank $10 entry $22; $AB4F sets $84/$85=BRK+1 and Y=0, one INY, and $AB62 stores $84+Y; RTS resumes at BRK+3
+BrkSelector	B3	2	10:AB88	Bank $10 entry $23: one INY before $AB62 stores the return; RTS resumes at BRK+3
+BrkSelector	C3	3	10:AB9C	Bank $10 entry $24: two INY and a read of BRK+3 through ($84),Y into $7C before $AB62 stores the return; RTS resumes at BRK+4
+BrkSelector	D3	3	12:8157	$C527 routes high nibble $D to bank $12 entry $01; $8177 calls $8199, whose INC $010B,x advances the stacked BRK return and reads BRK+3 into $8D; RTS resumes at BRK+4
+BrkSelector	E3	2	12:8165	Bank $12 entry $02 calls $817D, which skips $8199; bank $12's only TSX is $8199, so the stacked return is unchanged and RTS resumes at BRK+3
+BrkSelector	F3	2	12:84B2	Bank $12 entry $03 contains no stack access (bank $12's only TSX is $8199), so the stacked return is unchanged and RTS resumes at BRK+3
+BrkSelector	0B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	1B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	2B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	3B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	4B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	5B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	6B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	7B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	8B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	9B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	AB	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	BB	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkSelector	CB	3	1F:C4A1	$C4A1 increments the stacked return ($0103,x/$0104,x) for $CB <= selector < $FB; $C4CA ORs BRK+3 into flag byte $627B+first byte; RTS resumes at BRK+4
+BrkSelector	DB	3	1F:C4A1	$C4A1 increments the stacked return for $CB <= selector < $FB; $C4E1 ANDs flag byte $627B+first byte with BRK+3; RTS resumes at BRK+4
+BrkSelector	EB	3	1F:C4A1	$C4A1 increments the stacked return for $CB <= selector < $FB; $C4B6 tests flag byte $627B+first byte against BRK+3; RTS resumes at BRK+4
+BrkSelector	FB	2	1F:C46C	Selector $FB takes $C46C to bank $19 entry $03 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkService	16:01	3	16:8A18	TSX and INC $0105,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
+BrkService	16:07	3	16:8A45	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
+BrkService	16:09	3	16:8A72	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
+JsrInline	11:BF2E	1	11:BF2E	Adds one to the stacked JSR return ($0101,x/$0102,x) and reads that byte through ($00),Y; RTS resumes after the inline byte
+JsrInline	10:8C18	1	10:8C18	TSX and INC $0104,x/$0105,x advance the stacked JSR return, then the byte is read through ($00,x); RTS resumes after the inline byte

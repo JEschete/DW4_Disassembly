@@ -762,27 +762,43 @@ BattleSetupServices_Entry_84B2:
         lda     #$00                            ; 84C0 A9 00                    ..
         sta     $96                             ; 84C2 85 96                    ..
         sta     $735C                           ; 84C4 8D 5C 73                 .\s
+BattleSetupServices_Branch_84C7:
         ldx     $96                             ; 84C7 A6 96                    ..
         lda     $6E45,x                         ; 84C9 BD 45 6E                 .En
         cmp     #$FF                            ; 84CC C9 FF                    ..
-        beq     $84DC                           ; 84CE F0 0C                    ..
-        jsr     $85AB                           ; 84D0 20 AB 85                  ..
+        beq     BattleSetupServices_Branch_84DC ; 84CE F0 0C                    ..
+        jsr     BattleSetupServices_Entry_85AB  ; 84D0 20 AB 85                  ..
         txa                                     ; 84D3 8A                       .
         ora     #$C0                            ; 84D4 09 C0                    ..
         sta     $F9                             ; 84D6 85 F9                    ..
         brk                                     ; 84D8 00                       .
-        db   $CC,$D3                         ; 84D9 CC D3                    ..
+        db   $CC,$D3,$05                     ; 84D9 CC D3 05                 ...
 ; ----------------------------------------------------------------------------
-L84DC = $+ 1
-        ora     $E6                             ; 84DB 05 E6                    ..
-        stx     $A5,y                           ; 84DD 96 A5                    ..
-        stx     $C9,y                           ; 84DF 96 C9                    ..
-        db   $04,$D0,$E3,$A9,$C0,$85,$F9,$AD ; 84E1 04 D0 E3 A9 C0 85 F9 AD  ........
-        db   $44,$6E,$29,$03,$F0,$24,$C9,$01 ; 84E9 44 6E 29 03 F0 24 C9 01  Dn)..$..
-        db   $F0,$08,$C9,$02,$D0,$1C,$A0,$DF ; 84F1 F0 08 C9 02 D0 1C A0 DF  ........
-        db   $D0,$02,$A0,$DB,$00,$1B,$0F,$29 ; 84F9 D0 02 A0 DB 00 1B 0F 29  .......)
-        db   $01,$0A,$85,$00                 ; 8501 01 0A 85 00              ....
+BattleSetupServices_Branch_84DC:
+        inc     $96                             ; 84DC E6 96                    ..
+        lda     $96                             ; 84DE A5 96                    ..
+        cmp     #$04                            ; 84E0 C9 04                    ..
+        bne     BattleSetupServices_Branch_84C7 ; 84E2 D0 E3                    ..
+        lda     #$C0                            ; 84E4 A9 C0                    ..
+        sta     $F9                             ; 84E6 85 F9                    ..
+        lda     $6E44                           ; 84E8 AD 44 6E                 .Dn
+        and     #$03                            ; 84EB 29 03                    ).
+        beq     BattleSetupServices_Branch_8513 ; 84ED F0 24                    .$
+        cmp     #$01                            ; 84EF C9 01                    ..
+        beq     BattleSetupServices_Branch_84FB ; 84F1 F0 08                    ..
+        cmp     #$02                            ; 84F3 C9 02                    ..
+        bne     BattleSetupServices_Branch_8513 ; 84F5 D0 1C                    ..
+        ldy     #$DF                            ; 84F7 A0 DF                    ..
+        bne     BattleSetupServices_Branch_84FD ; 84F9 D0 02                    ..
+BattleSetupServices_Branch_84FB:
+        ldy     #$DB                            ; 84FB A0 DB                    ..
+BattleSetupServices_Branch_84FD:
+        brk                                     ; 84FD 00                       .
+        db   $1B,$0F                         ; 84FE 1B 0F                    ..
 ; ----------------------------------------------------------------------------
+        and     #$01                            ; 8500 29 01                    ).
+        asl     a                               ; 8502 0A                       .
+        sta     $00                           ; 8503 85 00                    ..
         tya                                     ; 8505 98                       .
         adc     $00                           ; 8506 65 00                    e.
         tay                                     ; 8508 A8                       .
@@ -794,6 +810,7 @@ BattleSetupServices_Branch_850F:
         brk                                     ; 8510 00                       .
         db   $C1,$E3                         ; 8511 C1 E3                    ..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_8513:
         brk                                     ; 8513 00                       .
         db   $13,$2F                         ; 8514 13 2F                    ./
 ; ----------------------------------------------------------------------------
@@ -905,9 +922,22 @@ BattleSetupServices_Branch_85A3:
         bcc     BattleSetupServices_Branch_8543 ; 85A8 90 99                    ..
         rts                                     ; 85AA 60                       `
 ; ----------------------------------------------------------------------------
-        db   $48,$8A,$A2,$FF,$00,$2D,$B3,$A2 ; 85AB 48 8A A2 FF 00 2D B3 A2  H....-..
-        db   $FF,$F0,$04,$4A,$E8,$90,$FC,$68 ; 85B3 FF F0 04 4A E8 90 FC 68  ...J...h
-        db   $60                             ; 85BB 60                       `
+BattleSetupServices_Entry_85AB:
+        pha                                     ; 85AB 48                       H
+        txa                                     ; 85AC 8A                       .
+        ldx     #$FF                            ; 85AD A2 FF                    ..
+        brk                                     ; 85AF 00                       .
+        db   $2D,$B3                         ; 85B0 2D B3                    -.
+; ----------------------------------------------------------------------------
+        ldx     #$FF                            ; 85B2 A2 FF                    ..
+        beq     $85BA                           ; 85B4 F0 04                    ..
+BattleSetupServices_Branch_85B6:
+        lsr     a                               ; 85B6 4A                       J
+        inx                                     ; 85B7 E8                       .
+        bcc     BattleSetupServices_Branch_85B6 ; 85B8 90 FC                    ..
+        pla                                     ; 85BA 68                       h
+        rts                                     ; 85BB 60                       `
+; ----------------------------------------------------------------------------
         db   $FF,$7F,$1F,$0F,$07,$03,$00     ; 85BC FF 7F 1F 0F 07 03 00     .......
         db   $01,$01,$02                     ; 85C3 01 01 02                 ...
         db   $00,$0D,$02,$06                 ; 85C6 00 0D 02 06              ....
@@ -1342,9 +1372,9 @@ BattleSetupServices_Branch_882D:
         ldx     #$00                            ; 883C A2 00                    ..
 BattleSetupServices_Branch_883E:
         brk                                     ; 883E 00                       .
-        db   $27,$43                         ; 883F 27 43                    'C
+        db   $27,$43,$09                     ; 883F 27 43 09                 'C.
 ; ----------------------------------------------------------------------------
-        ora     #$E8                            ; 8841 09 E8                    ..
+        inx                                     ; 8842 E8                       .
         cpx     $00                           ; 8843 E4 00                    ..
         bne     BattleSetupServices_Branch_883E ; 8845 D0 F7                    ..
 BattleSetupServices_Branch_8847:
@@ -1847,6 +1877,7 @@ BattleSetupServices_Branch_8EF4:
         bne     BattleSetupServices_Branch_8EF4 ; 8EFA D0 F8                    ..
 BattleSetupServices_Branch_8EFC:
         ldx     #$00                            ; 8EFC A2 00                    ..
+BattleSetupServices_Branch_8EFE:
         txa                                     ; 8EFE 8A                       .
         pha                                     ; 8EFF 48                       H
         lda     SaveCurrentChapterMinus1        ; 8F00 AD 5A 61                 .Za
@@ -1877,6 +1908,7 @@ BattleSetupServices_Branch_8F12:
         jsr     AddWordToPointer                ; 8F32 20 1D C8                  ..
         lda     #$00                            ; 8F35 A9 00                    ..
         sta     $03                             ; 8F37 85 03                    ..
+BattleSetupServices_Branch_8F39:
         asl     a                               ; 8F39 0A                       .
         tax                                     ; 8F3A AA                       .
         lda     #$00                            ; 8F3B A9 00                    ..
@@ -1891,12 +1923,13 @@ BattleSetupServices_Branch_8F12:
         adc     $07                             ; 8F4D 65 07                    e.
         tay                                     ; 8F4F A8                       .
         dey                                     ; 8F50 88                       .
+BattleSetupServices_Branch_8F51:
         lda     ($04),y                         ; 8F51 B1 04                    ..
         asl     a                               ; 8F53 0A                       .
         rol     $02                           ; 8F54 26 02                    &.
         dey                                     ; 8F56 88                       .
         dex                                     ; 8F57 CA                       .
-        bne     $8F51                           ; 8F58 D0 F7                    ..
+        bne     BattleSetupServices_Branch_8F51 ; 8F58 D0 F7                    ..
         ldx     $03                             ; 8F5A A6 03                    ..
         ldy     $915C,x                         ; 8F5C BC 5C 91                 .\.
         lda     $02                           ; 8F5F A5 02                    ..
@@ -1904,7 +1937,7 @@ BattleSetupServices_Branch_8F12:
         inc     $03                             ; 8F63 E6 03                    ..
         lda     $03                             ; 8F65 A5 03                    ..
         cmp     #$06                            ; 8F67 C9 06                    ..
-        bne     $8F39                           ; 8F69 D0 CE                    ..
+        bne     BattleSetupServices_Branch_8F39 ; 8F69 D0 CE                    ..
         ldy     $06                             ; 8F6B A4 06                    ..
         lda     $A289,y                         ; 8F6D B9 89 A2                 ...
         ldy     #$0C                            ; 8F70 A0 0C                    ..
@@ -1919,9 +1952,10 @@ BattleSetupServices_Branch_8F12:
         ldy     #$0E                            ; 8F82 A0 0E                    ..
         lda     $06                             ; 8F84 A5 06                    ..
         cmp     #$06                            ; 8F86 C9 06                    ..
-        bcc     $8F8E                           ; 8F88 90 04                    ..
+        bcc     BattleSetupServices_Branch_8F8E ; 8F88 90 04                    ..
         lda     #$00                            ; 8F8A A9 00                    ..
         sta     ($79),y                         ; 8F8C 91 79                    .y
+BattleSetupServices_Branch_8F8E:
         lda     ($79),y                         ; 8F8E B1 79                    .y
         ldy     #$03                            ; 8F90 A0 03                    ..
         sta     ($79),y                         ; 8F92 91 79                    .y
@@ -1936,7 +1970,7 @@ BattleSetupServices_Branch_8F12:
         sta     ($79),y                         ; 8FA3 91 79                    .y
         lda     $06                             ; 8FA5 A5 06                    ..
         cmp     #$05                            ; 8FA7 C9 05                    ..
-        bcs     $8FFE                           ; 8FA9 B0 53                    .S
+        bcs     BattleSetupServices_Branch_8FFE ; 8FA9 B0 53                    .S
         asl     a                               ; 8FAB 0A                       .
         tax                                     ; 8FAC AA                       .
         lda     $9164,x                         ; 8FAD BD 64 91                 .d.
@@ -1989,26 +2023,29 @@ BattleSetupServices_Branch_8FF0:
         lda     $00                           ; 8FF8 A5 00                    ..
         cmp     #$08                            ; 8FFA C9 08                    ..
         bne     BattleSetupServices_Branch_8FC7 ; 8FFC D0 C9                    ..
+BattleSetupServices_Branch_8FFE:
         lda     $06                             ; 8FFE A5 06                    ..
         asl     a                               ; 9000 0A                       .
         asl     a                               ; 9001 0A                       .
         asl     a                               ; 9002 0A                       .
         tax                                     ; 9003 AA                       .
         ldy     #$13                            ; 9004 A0 13                    ..
+BattleSetupServices_Branch_9006:
         lda     $9191,x                         ; 9006 BD 91 91                 ...
         sta     ($79),y                         ; 9009 91 79                    .y
         iny                                     ; 900B C8                       .
         inx                                     ; 900C E8                       .
         cpy     #$1B                            ; 900D C0 1B                    ..
-        bne     $9006                           ; 900F D0 F5                    ..
+        bne     BattleSetupServices_Branch_9006 ; 900F D0 F5                    ..
 BattleSetupServices_Branch_9011:
         pla                                     ; 9011 68                       h
         tax                                     ; 9012 AA                       .
         inx                                     ; 9013 E8                       .
         cpx     #$08                            ; 9014 E0 08                    ..
-        beq     $901B                           ; 9016 F0 03                    ..
-        jmp     $8EFE                           ; 9018 4C FE 8E                 L..
+        beq     BattleSetupServices_Branch_901B ; 9016 F0 03                    ..
+        jmp     BattleSetupServices_Branch_8EFE ; 9018 4C FE 8E                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_901B:
         lda     #$00                            ; 901B A9 00                    ..
         sta     $6158                           ; 901D 8D 58 61                 .Xa
         sta     $6159                           ; 9020 8D 59 61                 .Ya
@@ -2021,15 +2058,16 @@ BattleSetupServices_Branch_9011:
         adc     SaveCurrentChapterMinus1        ; 9031 6D 5A 61                 mZa
         tax                                     ; 9034 AA                       .
         ldy     #$00                            ; 9035 A0 00                    ..
+BattleSetupServices_Branch_9037:
         lda     $9178,x                         ; 9037 BD 78 91                 .x.
         sta     $6165,y                         ; 903A 99 65 61                 .ea
         inx                                     ; 903D E8                       .
         iny                                     ; 903E C8                       .
         cpy     #$05                            ; 903F C0 05                    ..
-        bne     $9037                           ; 9041 D0 F4                    ..
+        bne     BattleSetupServices_Branch_9037 ; 9041 D0 F4                    ..
         lda     SaveCurrentChapterMinus1        ; 9043 AD 5A 61                 .Za
         cmp     #$03                            ; 9046 C9 03                    ..
-        bne     $905E                           ; 9048 D0 14                    ..
+        bne     BattleSetupServices_Branch_905E ; 9048 D0 14                    ..
         lda     #$00                            ; 904A A9 00                    ..
         sta     $07C6                           ; 904C 8D C6 07                 ...
         sta     $07C7                           ; 904F 8D C7 07                 ...
@@ -2037,9 +2075,10 @@ BattleSetupServices_Branch_9011:
         sta     $62E7                           ; 9055 8D E7 62                 ..b
         sta     $62E8                           ; 9058 8D E8 62                 ..b
         sta     $62E9                           ; 905B 8D E9 62                 ..b
+BattleSetupServices_Branch_905E:
         lda     SaveCurrentChapterMinus1        ; 905E AD 5A 61                 .Za
         cmp     #$05                            ; 9061 C9 05                    ..
-        bcc     $908C                           ; 9063 90 27                    .'
+        bcc     BattleSetupServices_Branch_908C ; 9063 90 27                    .'
         lda     #$04                            ; 9065 A9 04                    ..
         sta     SaveCurrentChapterMinus1        ; 9067 8D 5A 61                 .Za
         lda     #$20                            ; 906A A9 20                    .
@@ -2055,7 +2094,9 @@ BattleSetupServices_Branch_9011:
         sta     $6001,x                         ; 9083 9D 01 60                 ..`
         sta     $6002,x                         ; 9086 9D 02 60                 ..`
         sta     $6003,x                         ; 9089 9D 03 60                 ..`
+BattleSetupServices_Branch_908C:
         lda     #$00                            ; 908C A9 00                    ..
+BattleSetupServices_Branch_908E:
         pha                                     ; 908E 48                       H
         sta     $79                             ; 908F 85 79                    .y
         lda     #$00                            ; 9091 A9 00                    ..
@@ -2067,27 +2108,31 @@ BattleSetupServices_Branch_9011:
         ldy     $9163                           ; 909F AC 63 91                 .c.
         jsr     AddWordToPointer                ; 90A2 20 1D C8                  ..
         ldy     #$13                            ; 90A5 A0 13                    ..
+BattleSetupServices_Branch_90A7:
         lda     ($79),y                         ; 90A7 B1 79                    .y
         cmp     #$6B                            ; 90A9 C9 6B                    .k
-        bne     $90B1                           ; 90AB D0 04                    ..
+        bne     BattleSetupServices_Branch_90B1 ; 90AB D0 04                    ..
         lda     #$FF                            ; 90AD A9 FF                    ..
         sta     ($79),y                         ; 90AF 91 79                    .y
+BattleSetupServices_Branch_90B1:
         lda     ($79),y                         ; 90B1 B1 79                    .y
         cmp     #$6C                            ; 90B3 C9 6C                    .l
-        bne     $90BB                           ; 90B5 D0 04                    ..
+        bne     BattleSetupServices_Branch_90BB ; 90B5 D0 04                    ..
         lda     #$FF                            ; 90B7 A9 FF                    ..
         sta     ($79),y                         ; 90B9 91 79                    .y
+BattleSetupServices_Branch_90BB:
         lda     ($79),y                         ; 90BB B1 79                    .y
         cmp     #$5D                            ; 90BD C9 5D                    .]
-        bne     $90C5                           ; 90BF D0 04                    ..
+        bne     BattleSetupServices_Branch_90C5 ; 90BF D0 04                    ..
         lda     #$FF                            ; 90C1 A9 FF                    ..
         sta     ($79),y                         ; 90C3 91 79                    .y
+BattleSetupServices_Branch_90C5:
         lda     ($79),y                         ; 90C5 B1 79                    .y
         cmp     #$FF                            ; 90C7 C9 FF                    ..
-        bne     $90DB                           ; 90C9 D0 10                    ..
+        bne     BattleSetupServices_Branch_90DB ; 90C9 D0 10                    ..
         iny                                     ; 90CB C8                       .
         cpy     #$1B                            ; 90CC C0 1B                    ..
-        beq     $90DC                           ; 90CE F0 0C                    ..
+        beq     BattleSetupServices_Branch_90DC ; 90CE F0 0C                    ..
         lda     ($79),y                         ; 90D0 B1 79                    .y
         pha                                     ; 90D2 48                       H
         lda     #$FF                            ; 90D3 A9 FF                    ..
@@ -2095,14 +2140,16 @@ BattleSetupServices_Branch_9011:
         pla                                     ; 90D7 68                       h
         dey                                     ; 90D8 88                       .
         sta     ($79),y                         ; 90D9 91 79                    .y
+BattleSetupServices_Branch_90DB:
         iny                                     ; 90DB C8                       .
+BattleSetupServices_Branch_90DC:
         cpy     #$1B                            ; 90DC C0 1B                    ..
-        bne     $90A7                           ; 90DE D0 C7                    ..
+        bne     BattleSetupServices_Branch_90A7 ; 90DE D0 C7                    ..
         pla                                     ; 90E0 68                       h
         clc                                     ; 90E1 18                       .
         adc     #$01                            ; 90E2 69 01                    i.
         cmp     #$08                            ; 90E4 C9 08                    ..
-        bne     $908E                           ; 90E6 D0 A6                    ..
+        bne     BattleSetupServices_Branch_908E ; 90E6 D0 A6                    ..
         brk                                     ; 90E8 00                       .
         db   $05,$5F                         ; 90E9 05 5F                    ._
 ; ----------------------------------------------------------------------------
@@ -2358,9 +2405,8 @@ BattleSetupServices_Branch_92D0:
         and     #$03                            ; 92DA 29 03                    ).
         tax                                     ; 92DC AA                       .
         brk                                     ; 92DD 00                       .
-        db   $2B,$C3                         ; 92DE 2B C3                    +.
+        db   $2B,$C3,$0A                     ; 92DE 2B C3 0A                 +..
 ; ----------------------------------------------------------------------------
-        asl     a                               ; 92E0 0A                       .
         lda     #$FF                            ; 92E1 A9 FF                    ..
         sta     $7D                             ; 92E3 85 7D                    .}
         brk                                     ; 92E5 00                       .
@@ -2839,8 +2885,16 @@ BattleSetupServices_Entry_953E:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9547 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$00,$85,$6E,$A9,$08,$00,$2D ; 9548 A9 00 85 6E A9 08 00 2D  ...n...-
-        db   $0F,$A5,$72,$85,$6E,$60         ; 9550 0F A5 72 85 6E 60        ..r.n`
+BattleSetupServices_Entry_9548:
+        lda     #$00                            ; 9548 A9 00                    ..
+        sta     $6E                             ; 954A 85 6E                    .n
+        lda     #$08                            ; 954C A9 08                    ..
+        brk                                     ; 954E 00                       .
+        db   $2D,$0F                         ; 954F 2D 0F                    -.
+; ----------------------------------------------------------------------------
+        lda     $72                             ; 9551 A5 72                    .r
+        sta     $6E                             ; 9553 85 6E                    .n
+        rts                                     ; 9555 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9556:
         brk                                     ; 9556 00                       .
@@ -3766,9 +3820,8 @@ BattleSetupServices_Entry_9BFD:
         sta     $6E                             ; 9C06 85 6E                    .n
 BattleSetupServices_Branch_9C08:
         brk                                     ; 9C08 00                       .
-        db   $2B,$23                         ; 9C09 2B 23                    +#
+        db   $2B,$23,$08                     ; 9C09 2B 23 08                 +#.
 ; ----------------------------------------------------------------------------
-        php                                     ; 9C0B 08                       .
         sta     $09                             ; 9C0C 85 09                    ..
         bne     BattleSetupServices_Branch_9C17 ; 9C0E D0 07                    ..
         bit     SaveGameStateFlags              ; 9C10 2C 8E 61                 ,.a
@@ -3783,23 +3836,20 @@ BattleSetupServices_Branch_9C17:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_9C22:
         brk                                     ; 9C22 00                       .
-        db   $0F,$43                         ; 9C23 0F 43                    .C
+        db   $0F,$43,$08                     ; 9C23 0F 43 08                 .C.
 ; ----------------------------------------------------------------------------
-        php                                     ; 9C25 08                       .
         cmp     #$63                            ; 9C26 C9 63                    .c
         beq     BattleSetupServices_Branch_9C4F ; 9C28 F0 25                    .%
         brk                                     ; 9C2A 00                       .
-        db   $2B,$23                         ; 9C2B 2B 23                    +#
+        db   $2B,$23,$08                     ; 9C2B 2B 23 08                 +#.
 ; ----------------------------------------------------------------------------
-        php                                     ; 9C2D 08                       .
         sta     $00                           ; 9C2E 85 00                    ..
         asl     a                               ; 9C30 0A                       .
         adc     $00                           ; 9C31 65 00                    e.
         tay                                     ; 9C33 A8                       .
         brk                                     ; 9C34 00                       .
-        db   $25,$43                         ; 9C35 25 43                    %C
+        db   $25,$43,$08                     ; 9C35 25 43 08                 %C.
 ; ----------------------------------------------------------------------------
-        php                                     ; 9C37 08                       .
         lda     $6E19,y                         ; 9C38 B9 19 6E                 ..n
         sec                                     ; 9C3B 38                       8
         sbc     $72                             ; 9C3C E5 72                    .r
@@ -3814,11 +3864,28 @@ BattleSetupServices_Entry_9C22:
 BattleSetupServices_Branch_9C4F:
         rts                                     ; 9C4F 60                       `
 ; ----------------------------------------------------------------------------
-        db   $00,$62,$23,$08,$F0,$1B,$8D,$3C ; 9C50 00 62 23 08 F0 1B 8D 3C  .b#....<
-        db   $6E,$A9,$00,$85,$6E,$00,$0F,$23 ; 9C58 6E A9 00 85 6E 00 0F 23  n...n..#
-        db   $08,$C9,$63,$F0,$05,$85,$0A,$20 ; 9C60 08 C9 63 F0 05 85 0A 20  ..c....
-        db   $29,$9D,$E6,$6E,$CE,$3C,$6E,$D0 ; 9C68 29 9D E6 6E CE 3C 6E D0  )..n.<n.
-        db   $EC,$60                         ; 9C70 EC 60                    .`
+BattleSetupServices_Entry_9C50:
+        brk                                     ; 9C50 00                       .
+        db   $62,$23,$08                     ; 9C51 62 23 08                 b#.
+; ----------------------------------------------------------------------------
+        beq     BattleSetupServices_Branch_9C71 ; 9C54 F0 1B                    ..
+        sta     $6E3C                           ; 9C56 8D 3C 6E                 .<n
+        lda     #$00                            ; 9C59 A9 00                    ..
+        sta     $6E                             ; 9C5B 85 6E                    .n
+BattleSetupServices_Branch_9C5D:
+        brk                                     ; 9C5D 00                       .
+        db   $0F,$23,$08                     ; 9C5E 0F 23 08                 .#.
+; ----------------------------------------------------------------------------
+        cmp     #$63                            ; 9C61 C9 63                    .c
+        beq     BattleSetupServices_Branch_9C6A ; 9C63 F0 05                    ..
+        sta     $0A                             ; 9C65 85 0A                    ..
+        jsr     BattleSetupServices_Entry_9D29  ; 9C67 20 29 9D                  ).
+BattleSetupServices_Branch_9C6A:
+        inc     $6E                             ; 9C6A E6 6E                    .n
+        dec     $6E3C                           ; 9C6C CE 3C 6E                 .<n
+        bne     BattleSetupServices_Branch_9C5D ; 9C6F D0 EC                    ..
+BattleSetupServices_Branch_9C71:
+        rts                                     ; 9C71 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_9C72:
         lda     #$00                            ; 9C72 A9 00                    ..
@@ -3834,18 +3901,40 @@ BattleSetupServices_Branch_9C7F:
         sta     $6E3C                           ; 9C85 8D 3C 6E                 .<n
         lda     #$00                            ; 9C88 A9 00                    ..
         sta     $6E                             ; 9C8A 85 6E                    .n
+BattleSetupServices_Branch_9C8C:
         brk                                     ; 9C8C 00                       .
-        db   $0F,$23                         ; 9C8D 0F 23                    .#
+        db   $0F,$23,$09                     ; 9C8D 0F 23 09                 .#.
 ; ----------------------------------------------------------------------------
-        ora     #$C9                            ; 9C8F 09 C9                    ..
-        db   $63,$F0,$2D,$85,$0A,$E6,$0A,$00 ; 9C91 63 F0 2D 85 0A E6 0A 00  c.-.....
-        db   $2B,$23,$09,$85,$09,$00,$25,$23 ; 9C99 2B 23 09 85 09 00 25 23  +#....%#
-        db   $09,$A5,$09,$0A,$65,$09,$AA,$A5 ; 9CA1 09 A5 09 0A 65 09 AA A5  ....e...
-        db   $74,$DD,$1B,$6E,$90,$12,$D0,$34 ; 9CA9 74 DD 1B 6E 90 12 D0 34  t..n...4
-        db   $A5,$73,$DD,$1A,$6E,$90,$09,$D0 ; 9CB1 A5 73 DD 1A 6E 90 09 D0  .s..n...
-        db   $2B,$A5,$72,$DD,$19,$6E,$B0,$24 ; 9CB9 2B A5 72 DD 19 6E B0 24  +.r..n.$
-        db   $E6,$6E,$CE,$3C,$6E,$D0,$C4     ; 9CC1 E6 6E CE 3C 6E D0 C4     .n.<n..
+        cmp     #$63                            ; 9C90 C9 63                    .c
+        beq     BattleSetupServices_Branch_9CC1 ; 9C92 F0 2D                    .-
+        sta     $0A                             ; 9C94 85 0A                    ..
+        inc     $0A                             ; 9C96 E6 0A                    ..
+        brk                                     ; 9C98 00                       .
+        db   $2B,$23,$09                     ; 9C99 2B 23 09                 +#.
 ; ----------------------------------------------------------------------------
+        sta     $09                             ; 9C9C 85 09                    ..
+        brk                                     ; 9C9E 00                       .
+        db   $25,$23,$09                     ; 9C9F 25 23 09                 %#.
+; ----------------------------------------------------------------------------
+        lda     $09                             ; 9CA2 A5 09                    ..
+        asl     a                               ; 9CA4 0A                       .
+        adc     $09                             ; 9CA5 65 09                    e.
+        tax                                     ; 9CA7 AA                       .
+        lda     $74                             ; 9CA8 A5 74                    .t
+        cmp     $6E1B,x                         ; 9CAA DD 1B 6E                 ..n
+        bcc     BattleSetupServices_Branch_9CC1 ; 9CAD 90 12                    ..
+        bne     BattleSetupServices_Entry_9CE5  ; 9CAF D0 34                    .4
+        lda     $73                             ; 9CB1 A5 73                    .s
+        cmp     $6E1A,x                         ; 9CB3 DD 1A 6E                 ..n
+        bcc     BattleSetupServices_Branch_9CC1 ; 9CB6 90 09                    ..
+        bne     BattleSetupServices_Entry_9CE5  ; 9CB8 D0 2B                    .+
+        lda     $72                             ; 9CBA A5 72                    .r
+        cmp     $6E19,x                         ; 9CBC DD 19 6E                 ..n
+        bcs     BattleSetupServices_Entry_9CE5  ; 9CBF B0 24                    .$
+BattleSetupServices_Branch_9CC1:
+        inc     $6E                             ; 9CC1 E6 6E                    .n
+        dec     $6E3C                           ; 9CC3 CE 3C 6E                 .<n
+        bne     BattleSetupServices_Branch_9C8C ; 9CC6 D0 C4                    ..
 BattleSetupServices_Branch_9CC8:
         brk                                     ; 9CC8 00                       .
         db   $64,$33                         ; 9CC9 64 33                    d3
@@ -3867,15 +3956,45 @@ BattleSetupServices_Branch_9CE3:
         clc                                     ; 9CE3 18                       .
         rts                                     ; 9CE4 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$DE,$6B,$30,$21,$AD,$03,$6E ; 9CE5 AD DE 6B 30 21 AD 03 6E  ..k0!..n
-        db   $D0,$1C,$A5,$6E,$48,$A5,$6F,$48 ; 9CED D0 1C A5 6E 48 A5 6F 48  ...nH.oH
-        db   $A5,$0A,$48,$A5,$09,$48,$00,$07 ; 9CF5 A5 0A 48 A5 09 48 00 07  ..H..H..
-        db   $6F,$43,$68,$85,$09,$68,$85,$0A ; 9CFD 6F 43 68 85 09 68 85 0A  oCh..h..
-        db   $68,$85,$6F,$68,$85,$6E,$00,$2B ; 9D05 68 85 6F 68 85 6E 00 2B  h.oh.n.+
-        db   $23,$09,$85,$09,$00,$6C,$23,$09 ; 9D0D 23 09 85 09 00 6C 23 09  #....l#.
-        db   $20,$6D,$9D,$AC,$0C,$6E,$B9,$6A ; 9D15 20 6D 9D AC 0C 6E B9 6A   m...n.j
-        db   $61,$29,$7F,$20,$41,$9D,$EE,$03 ; 9D1D 61 29 7F 20 41 9D EE 03  a). A...
-        db   $6E,$4C,$8C,$9C                 ; 9D25 6E 4C 8C 9C              nL..
+BattleSetupServices_Entry_9CE5:
+        lda     $6BDE                           ; 9CE5 AD DE 6B                 ..k
+        bmi     BattleSetupServices_Branch_9D0B ; 9CE8 30 21                    0!
+        lda     $6E03                           ; 9CEA AD 03 6E                 ..n
+        bne     BattleSetupServices_Branch_9D0B ; 9CED D0 1C                    ..
+        lda     $6E                             ; 9CEF A5 6E                    .n
+        pha                                     ; 9CF1 48                       H
+        lda     $6F                             ; 9CF2 A5 6F                    .o
+        pha                                     ; 9CF4 48                       H
+        lda     $0A                             ; 9CF5 A5 0A                    ..
+        pha                                     ; 9CF7 48                       H
+        lda     $09                             ; 9CF8 A5 09                    ..
+        pha                                     ; 9CFA 48                       H
+        brk                                     ; 9CFB 00                       .
+        db   $07,$6F,$43                     ; 9CFC 07 6F 43                 .oC
+; ----------------------------------------------------------------------------
+        pla                                     ; 9CFF 68                       h
+        sta     $09                             ; 9D00 85 09                    ..
+        pla                                     ; 9D02 68                       h
+        sta     $0A                             ; 9D03 85 0A                    ..
+        pla                                     ; 9D05 68                       h
+        sta     $6F                             ; 9D06 85 6F                    .o
+        pla                                     ; 9D08 68                       h
+        sta     $6E                             ; 9D09 85 6E                    .n
+BattleSetupServices_Branch_9D0B:
+        brk                                     ; 9D0B 00                       .
+        db   $2B,$23,$09                     ; 9D0C 2B 23 09                 +#.
+; ----------------------------------------------------------------------------
+        sta     $09                             ; 9D0F 85 09                    ..
+        brk                                     ; 9D11 00                       .
+        db   $6C,$23,$09                     ; 9D12 6C 23 09                 l#.
+; ----------------------------------------------------------------------------
+        jsr     BattleSetupServices_Entry_9D6D  ; 9D15 20 6D 9D                  m.
+        ldy     $6E0C                           ; 9D18 AC 0C 6E                 ..n
+        lda     SavePartyCharacter1,y           ; 9D1B B9 6A 61                 .ja
+        and     #$7F                            ; 9D1E 29 7F                    ).
+        jsr     BattleSetupServices_Entry_9D41  ; 9D20 20 41 9D                  A.
+        inc     $6E03                           ; 9D23 EE 03 6E                 ..n
+        jmp     BattleSetupServices_Branch_9C8C ; 9D26 4C 8C 9C                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_9D29:
         ldx     #$07                            ; 9D29 A2 07                    ..
@@ -3902,7 +4021,7 @@ BattleSetupServices_Entry_9D41:
         ldy     #$05                            ; 9D44 A0 05                    ..
         lda     ($79),y                         ; 9D46 B1 79                    .y
         cmp     #$63                            ; 9D48 C9 63                    .c
-        beq     $9D6C                           ; 9D4A F0 20                    .
+        beq     BattleSetupServices_Branch_9D6C ; 9D4A F0 20                    .
         sta     $0A                             ; 9D4C 85 0A                    ..
         inc     $0A                             ; 9D4E E6 0A                    ..
         lda     #$00                            ; 9D50 A9 00                    ..
@@ -3918,6 +4037,7 @@ BattleSetupServices_Entry_9D41:
         sta     $6E1A,x                         ; 9D64 9D 1A 6E                 ..n
         lda     $02                           ; 9D67 A5 02                    ..
         sta     $6E1B,x                         ; 9D69 9D 1B 6E                 ..n
+BattleSetupServices_Branch_9D6C:
         rts                                     ; 9D6C 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_9D6D:
@@ -4118,11 +4238,12 @@ BattleSetupServices_Branch_9E98:
         lda     $09                             ; 9EA0 A5 09                    ..
         sta     $6F                             ; 9EA2 85 6F                    .o
         brk                                     ; 9EA4 00                       .
-        db   $6D,$23                         ; 9EA5 6D 23                    m#
+        db   $6D,$23,$09                     ; 9EA5 6D 23 09                 m#.
 ; ----------------------------------------------------------------------------
-        ora     #$B0                            ; 9EA7 09 B0                    ..
-        db   $03,$20,$C5,$9E,$E6,$7B         ; 9EA9 03 20 C5 9E E6 7B        . ...{
-; ----------------------------------------------------------------------------
+        bcs     BattleSetupServices_Branch_9EAD ; 9EA8 B0 03                    ..
+        jsr     BattleSetupServices_Entry_9EC5  ; 9EAA 20 C5 9E                  ..
+BattleSetupServices_Branch_9EAD:
+        inc     $7B                             ; 9EAD E6 7B                    .{
 BattleSetupServices_Branch_9EAF:
         inc     $8C                             ; 9EAF E6 8C                    ..
         lda     $8C                             ; 9EB1 A5 8C                    ..
@@ -4138,20 +4259,76 @@ BattleSetupServices_Branch_9EAF:
 BattleSetupServices_Branch_9EC4:
         rts                                     ; 9EC4 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A4,$7B,$B1,$02,$29,$7F,$C5,$0A ; 9EC5 A4 7B B1 02 29 7F C5 0A  .{..)...
-        db   $F0,$02,$B0,$21,$B1,$02,$10,$24 ; 9ECD F0 02 B0 21 B1 02 10 24  ...!...$
-        db   $29,$7F,$18,$6D,$FF,$6D,$C5,$0A ; 9ED5 29 7F 18 6D FF 6D C5 0A  )..m.m..
-        db   $F0,$1A,$90,$18,$B1,$02,$29,$7F ; 9EDD F0 1A 90 18 B1 02 29 7F  ......).
-        db   $38,$E9,$01,$18,$6D,$FF,$6D,$C5 ; 9EE5 38 E9 01 18 6D FF 6D C5  8...m.m.
-        db   $0A,$F0,$03,$90,$01,$60,$20,$91 ; 9EED 0A F0 03 90 01 60 20 91  .....` .
-        db   $C8,$A8,$30,$F9,$A5,$8C,$85,$70 ; 9EF5 C8 A8 30 F9 A5 8C 85 70  ..0....p
-        db   $85,$F9,$00,$6E,$23,$09,$A2,$08 ; 9EFD 85 F9 00 6E 23 09 A2 08  ...n#...
-        db   $A5,$7B,$48,$A5,$00,$48,$A5,$01 ; 9F05 A5 7B 48 A5 00 48 A5 01  .{H..H..
-        db   $48,$A5,$02,$48,$A5,$03,$48,$A5 ; 9F0D 48 A5 02 48 A5 03 48 A5  H..H..H.
-        db   $09,$48,$A5,$0A,$48,$20,$40,$9E ; 9F15 09 48 A5 0A 48 20 40 9E  .H..H @.
-        db   $68,$85,$0A,$68,$85,$09,$68,$85 ; 9F1D 68 85 0A 68 85 09 68 85  h..h..h.
-        db   $03,$68,$85,$02,$68,$85,$01,$68 ; 9F25 03 68 85 02 68 85 01 68  .h..h..h
-        db   $85,$00,$68,$85,$7B,$60         ; 9F2D 85 00 68 85 7B 60        ..h.{`
+BattleSetupServices_Entry_9EC5:
+        ldy     $7B                             ; 9EC5 A4 7B                    .{
+        lda     ($02),y                       ; 9EC7 B1 02                    ..
+        and     #$7F                            ; 9EC9 29 7F                    ).
+        cmp     $0A                             ; 9ECB C5 0A                    ..
+        beq     BattleSetupServices_Branch_9ED1 ; 9ECD F0 02                    ..
+        bcs     BattleSetupServices_Branch_9EF2 ; 9ECF B0 21                    .!
+BattleSetupServices_Branch_9ED1:
+        lda     ($02),y                       ; 9ED1 B1 02                    ..
+        bpl     BattleSetupServices_Branch_9EF9 ; 9ED3 10 24                    .$
+        and     #$7F                            ; 9ED5 29 7F                    ).
+        clc                                     ; 9ED7 18                       .
+        adc     $6DFF                           ; 9ED8 6D FF 6D                 m.m
+        cmp     $0A                             ; 9EDB C5 0A                    ..
+        beq     BattleSetupServices_Branch_9EF9 ; 9EDD F0 1A                    ..
+        bcc     BattleSetupServices_Branch_9EF9 ; 9EDF 90 18                    ..
+        lda     ($02),y                       ; 9EE1 B1 02                    ..
+        and     #$7F                            ; 9EE3 29 7F                    ).
+        sec                                     ; 9EE5 38                       8
+        sbc     #$01                            ; 9EE6 E9 01                    ..
+        clc                                     ; 9EE8 18                       .
+        adc     $6DFF                           ; 9EE9 6D FF 6D                 m.m
+        cmp     $0A                             ; 9EEC C5 0A                    ..
+        beq     BattleSetupServices_Branch_9EF3 ; 9EEE F0 03                    ..
+        bcc     BattleSetupServices_Branch_9EF3 ; 9EF0 90 01                    ..
+BattleSetupServices_Branch_9EF2:
+        rts                                     ; 9EF2 60                       `
+; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_9EF3:
+        jsr     UpperFixedEngine_Entry_C891     ; 9EF3 20 91 C8                  ..
+        tay                                     ; 9EF6 A8                       .
+        bmi     BattleSetupServices_Branch_9EF2 ; 9EF7 30 F9                    0.
+BattleSetupServices_Branch_9EF9:
+        lda     $8C                             ; 9EF9 A5 8C                    ..
+        sta     $70                             ; 9EFB 85 70                    .p
+        sta     $F9                             ; 9EFD 85 F9                    ..
+        brk                                     ; 9EFF 00                       .
+        db   $6E,$23,$09                     ; 9F00 6E 23 09                 n#.
+; ----------------------------------------------------------------------------
+        ldx     #$08                            ; 9F03 A2 08                    ..
+        lda     $7B                             ; 9F05 A5 7B                    .{
+        pha                                     ; 9F07 48                       H
+        lda     $00                           ; 9F08 A5 00                    ..
+        pha                                     ; 9F0A 48                       H
+        lda     $01                             ; 9F0B A5 01                    ..
+        pha                                     ; 9F0D 48                       H
+        lda     $02                           ; 9F0E A5 02                    ..
+        pha                                     ; 9F10 48                       H
+        lda     $03                             ; 9F11 A5 03                    ..
+        pha                                     ; 9F13 48                       H
+        lda     $09                             ; 9F14 A5 09                    ..
+        pha                                     ; 9F16 48                       H
+        lda     $0A                             ; 9F17 A5 0A                    ..
+        pha                                     ; 9F19 48                       H
+        jsr     BattleSetupServices_Entry_9E40  ; 9F1A 20 40 9E                  @.
+        pla                                     ; 9F1D 68                       h
+        sta     $0A                             ; 9F1E 85 0A                    ..
+        pla                                     ; 9F20 68                       h
+        sta     $09                             ; 9F21 85 09                    ..
+        pla                                     ; 9F23 68                       h
+        sta     $03                             ; 9F24 85 03                    ..
+        pla                                     ; 9F26 68                       h
+        sta     $02                           ; 9F27 85 02                    ..
+        pla                                     ; 9F29 68                       h
+        sta     $01                             ; 9F2A 85 01                    ..
+        pla                                     ; 9F2C 68                       h
+        sta     $00                           ; 9F2D 85 00                    ..
+        pla                                     ; 9F2F 68                       h
+        sta     $7B                             ; 9F30 85 7B                    .{
+        rts                                     ; 9F32 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_9F33:
         lda     $09                             ; 9F33 A5 09                    ..
@@ -4174,12 +4351,10 @@ BattleSetupServices_Entry_9F4C:
         sta     $0B                             ; 9F53 85 0B                    ..
         jsr     BattleSetupServices_Entry_9F7C  ; 9F55 20 7C 9F                  |.
         brk                                     ; 9F58 00                       .
-        db   $21,$23                         ; 9F59 21 23                    !#
+        db   $21,$23,$09                     ; 9F59 21 23 09                 !#.
 ; ----------------------------------------------------------------------------
-        ora     #$A5                            ; 9F5B 09 A5                    ..
-        brk                                     ; 9F5D 00                       .
-        db   $C5,$72                         ; 9F5E C5 72                    .r
-; ----------------------------------------------------------------------------
+        lda     $00                           ; 9F5C A5 00                    ..
+        cmp     $72                             ; 9F5E C5 72                    .r
         beq     BattleSetupServices_Branch_9F70 ; 9F60 F0 0E                    ..
         bcc     BattleSetupServices_Branch_9F74 ; 9F62 90 10                    ..
         lda     $72                             ; 9F64 A5 72                    .r
@@ -4202,11 +4377,12 @@ BattleSetupServices_Branch_9F74:
 BattleSetupServices_Entry_9F7C:
         lda     $0B                             ; 9F7C A5 0B                    ..
         cmp     #$06                            ; 9F7E C9 06                    ..
-        beq     $9F88                           ; 9F80 F0 06                    ..
+        beq     BattleSetupServices_Branch_9F88 ; 9F80 F0 06                    ..
 BattleSetupServices_Entry_9F82:
         jsr     BattleSetupServices_Entry_9F9C  ; 9F82 20 9C 9F                  ..
-        jmp     $9FB9                           ; 9F85 4C B9 9F                 L..
+        jmp     BattleSetupServices_Branch_9FB9 ; 9F85 4C B9 9F                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_9F88:
         pha                                     ; 9F88 48                       H
         lda     #$03                            ; 9F89 A9 03                    ..
         sta     $0B                             ; 9F8B 85 0B                    ..
@@ -4236,6 +4412,7 @@ BattleSetupServices_Entry_9F9C:
         sta     $0D                             ; 9FB6 85 0D                    ..
         rts                                     ; 9FB8 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_9FB9:
         jsr     BattleSetupServices_Entry_A038  ; 9FB9 20 38 A0                  8.
         lda     #$00                            ; 9FBC A9 00                    ..
         sta     $6E3B                           ; 9FBE 8D 3B 6E                 .;n
@@ -4243,19 +4420,21 @@ BattleSetupServices_Entry_9F9C:
         inc     $0E                             ; 9FC3 E6 0E                    ..
         inc     $0E                             ; 9FC5 E6 0E                    ..
         tax                                     ; 9FC7 AA                       .
+BattleSetupServices_Branch_9FC8:
         sta     $00,x                         ; 9FC8 95 00                    ..
         inx                                     ; 9FCA E8                       .
         cpx     #$08                            ; 9FCB E0 08                    ..
-        bne     $9FC8                           ; 9FCD D0 F9                    ..
+        bne     BattleSetupServices_Branch_9FC8 ; 9FCD D0 F9                    ..
         lda     $7B                             ; 9FCF A5 7B                    .{
         sta     $00                           ; 9FD1 85 00                    ..
         sta     $04                             ; 9FD3 85 04                    ..
         lda     $0B                             ; 9FD5 A5 0B                    ..
-        beq     $9FE1                           ; 9FD7 F0 08                    ..
+        beq     BattleSetupServices_Branch_9FE1 ; 9FD7 F0 08                    ..
         lda     $6E39                           ; 9FD9 AD 39 6E                 .9n
         sta     $04                             ; 9FDC 85 04                    ..
         jmp     BattleSetupServices_Branch_9FE9 ; 9FDE 4C E9 9F                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_9FE1:
         lda     $0A                             ; 9FE1 A5 0A                    ..
         cmp     #$02                            ; 9FE3 C9 02                    ..
         beq     BattleSetupServices_Branch_A037 ; 9FE5 F0 50                    .P
@@ -4306,19 +4485,21 @@ BattleSetupServices_Entry_A038:
         ldy     #$00                            ; A038 A0 00                    ..
         lda     ($0C),y                         ; A03A B1 0C                    ..
         pha                                     ; A03C 48                       H
+BattleSetupServices_Branch_A03D:
         lda     ($0C),y                         ; A03D B1 0C                    ..
         asl     a                               ; A03F 0A                       .
         ror     $7B                             ; A040 66 7B                    f{
         iny                                     ; A042 C8                       .
         cpy     #$05                            ; A043 C0 05                    ..
-        bne     $A03D                           ; A045 D0 F6                    ..
+        bne     BattleSetupServices_Branch_A03D ; A045 D0 F6                    ..
         lsr     $7B                             ; A047 46 7B                    F{
         lsr     $7B                             ; A049 46 7B                    F{
         lsr     $7B                             ; A04B 46 7B                    F{
         lda     $0B                             ; A04D A5 0B                    ..
-        beq     $A056                           ; A04F F0 05                    ..
+        beq     BattleSetupServices_Branch_A056 ; A04F F0 05                    ..
         lda     ($0C),y                         ; A051 B1 0C                    ..
         sta     $6E39                           ; A053 8D 39 6E                 .9n
+BattleSetupServices_Branch_A056:
         pla                                     ; A056 68                       h
         and     #$60                            ; A057 29 60                    )`
         lsr     a                               ; A059 4A                       J
@@ -4328,9 +4509,10 @@ BattleSetupServices_Entry_A038:
         lsr     a                               ; A05F 4A                       J
         adc     $6E3A                           ; A060 6D 3A 6E                 m:n
         ldx     $0B                             ; A063 A6 0B                    ..
-        beq     $A06A                           ; A065 F0 03                    ..
+        beq     BattleSetupServices_Branch_A06A ; A065 F0 03                    ..
         clc                                     ; A067 18                       .
         adc     #$18                            ; A068 69 18                    i.
+BattleSetupServices_Branch_A06A:
         sta     $6E3A                           ; A06A 8D 3A 6E                 .:n
         rts                                     ; A06D 60                       `
 ; ----------------------------------------------------------------------------
@@ -4341,9 +4523,10 @@ BattleSetupServices_Entry_A06E:
         clc                                     ; A072 18                       .
         adc     $0F                             ; A073 65 0F                    e.
         ldx     $0B                             ; A075 A6 0B                    ..
-        beq     $A07C                           ; A077 F0 03                    ..
+        beq     BattleSetupServices_Branch_A07C ; A077 F0 03                    ..
         clc                                     ; A079 18                       .
         adc     $0F                             ; A07A 65 0F                    e.
+BattleSetupServices_Branch_A07C:
         rts                                     ; A07C 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A07D:
@@ -4841,9 +5024,10 @@ BattleSetupServices_Entry_A51B:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A520:
         brk                                     ; A520 00                       .
-        db   $45,$93                         ; A521 45 93                    E.
+        db   $45,$93,$06                     ; A521 45 93 06                 E..
 ; ----------------------------------------------------------------------------
-        asl     $60                             ; A523 06 60                    .`
+        rts                                     ; A524 60                       `
+; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A525:
         brk                                     ; A525 00                       .
         db   $44,$93,$07                     ; A526 44 93 07                 D..
@@ -4852,9 +5036,10 @@ BattleSetupServices_Entry_A525:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A52A:
         brk                                     ; A52A 00                       .
-        db   $45,$93                         ; A52B 45 93                    E.
+        db   $45,$93,$05                     ; A52B 45 93 05                 E..
 ; ----------------------------------------------------------------------------
-        ora     $60                             ; A52D 05 60                    .`
+        rts                                     ; A52E 60                       `
+; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A52F:
         brk                                     ; A52F 00                       .
         db   $42,$53                         ; A530 42 53                    BS
@@ -4954,7 +5139,7 @@ BattleSetupServices_Entry_A5B7:
         brk                                     ; A5B8 00                       .
         db   $3E,$53                         ; A5B9 3E 53                    >S
 ; ----------------------------------------------------------------------------
-        beq     $A5C4                           ; A5BB F0 07                    ..
+        beq     BattleSetupServices_Branch_A5C4 ; A5BB F0 07                    ..
         brk                                     ; A5BD 00                       .
         db   $3D,$33                         ; A5BE 3D 33                    =3
 ; ----------------------------------------------------------------------------
@@ -4962,6 +5147,7 @@ BattleSetupServices_Entry_A5B7:
         clc                                     ; A5C2 18                       .
         rts                                     ; A5C3 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_A5C4:
         brk                                     ; A5C4 00                       .
         db   $07,$6F,$43                     ; A5C5 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5423,10 +5609,9 @@ BattleSetupServices_Entry_A858:
         ldx     #$00                            ; A86F A2 00                    ..
 BattleSetupServices_Branch_A871:
         brk                                     ; A871 00                       .
-        db   $45,$93                         ; A872 45 93                    E.
+        db   $45,$93,$06                     ; A872 45 93 06                 E..
 ; ----------------------------------------------------------------------------
-        asl     $90                             ; A874 06 90                    ..
-        sec                                     ; A876 38                       8
+        bcc     BattleSetupServices_Branch_A8AF ; A875 90 38                    .8
         lda     $00                           ; A877 A5 00                    ..
         pha                                     ; A879 48                       H
         lda     $01                             ; A87A A5 01                    ..
@@ -5486,11 +5671,13 @@ BattleSetupServices_Entry_A8B7:
         ldx     $0591                           ; A8C1 AE 91 05                 ...
         stx     $F9                             ; A8C4 86 F9                    ..
         brk                                     ; A8C6 00                       .
-        db   $45,$93                         ; A8C7 45 93                    E.
+        db   $45,$93,$05                     ; A8C7 45 93 05                 E..
 ; ----------------------------------------------------------------------------
-        ora     $00                           ; A8C9 05 00                    ..
-        cpy     $4C2B                           ; A8CB CC 2B 4C                 .+L
-        sbc     ($C8,x)                         ; A8CE E1 C8                    ..
+        brk                                     ; A8CA 00                       .
+        db   $CC,$2B                         ; A8CB CC 2B                    .+
+; ----------------------------------------------------------------------------
+        jmp     UpperFixedEngine_Entry_C8E1     ; A8CD 4C E1 C8                 L..
+; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_A8D0:
         jsr     BattleSetupServices_Entry_A93B  ; A8D0 20 3B A9                  ;.
         jsr     BattleSetupServices_Entry_A5B2  ; A8D3 20 B2 A5                  ..
@@ -5635,7 +5822,6 @@ BattleSetupServices_Entry_A974:
         bne     BattleSetupServices_Branch_A9C5 ; A992 D0 31                    .1
 BattleSetupServices_Branch_A994:
         cpx     #$29                            ; A994 E0 29                    .)
-LA997 = $+ 1
         beq     BattleSetupServices_Branch_A9C5 ; A996 F0 2D                    .-
         cpx     #$44                            ; A998 E0 44                    .D
         beq     BattleSetupServices_Branch_A9C5 ; A99A F0 29                    .)
@@ -5690,22 +5876,15 @@ BattleSetupServices_Branch_A9C8:
         php                                     ; A9E8 08                       .
         ora     $06                             ; A9E9 05 06                    ..
         db   $07,$09                         ; A9EB 07 09                    ..
-; ----------------------------------------------------------------------------
 Bank12_BattleSetupEventPointers:
-LA9EE = $+ 1
-        lsr     $A6                             ; A9ED 46 A6                    F.
-        bcc     $A997                           ; A9EF 90 A6                    ..
-        inx                                     ; A9F1 E8                       .
-        ldx     $F2                             ; A9F2 A6 F2                    ..
-        ldx     ButtonsPressed                  ; A9F4 A6 14                    ..
+        db   $46                             ; A9ED 46                       F
+        db   $A6,$90,$A6,$E8,$A6,$F2,$A6,$14 ; A9EE A6 90 A6 E8 A6 F2 A6 14  ........
         db   $A7,$55,$A7,$83,$A7,$8C,$A7,$D1 ; A9F6 A7 55 A7 83 A7 8C A7 D1  .U......
         db   $A7,$E3,$A7,$F9,$A7,$58,$A8,$B7 ; A9FE A7 E3 A7 F9 A7 58 A8 B7  .....X..
         db   $A8,$D0,$A8,$EE,$A8,$14,$A7     ; AA06 A8 D0 A8 EE A8 14 A7     .......
-; ----------------------------------------------------------------------------
 Bank12_BattleSetupEventIds:
-        and     $33,x                           ; AA0D 35 33                    53
-        db   $3B,$36,$37,$38,$39,$29,$2A,$2B ; AA0F 3B 36 37 38 39 29 2A 2B  ;6789)*+
-        db   $2C,$2E,$3A,$30,$31,$37         ; AA17 2C 2E 3A 30 31 37        ,.:017
+        db   $35,$33,$3B,$36,$37,$38,$39,$29 ; AA0D 35 33 3B 36 37 38 39 29  53;6789)
+        db   $2A,$2B,$2C,$2E,$3A,$30,$31,$37 ; AA15 2A 2B 2C 2E 3A 30 31 37  *+,.:017
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AA1D:
         lda     #$80                            ; AA1D A9 80                    ..
@@ -5728,7 +5907,7 @@ BattleSetupServices_Branch_AA34:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AA41:
         jsr     BattleSetupServices_Entry_AC73  ; AA41 20 73 AC                  s.
-        bcs     $AA5A                           ; AA44 B0 14                    ..
+        bcs     BattleSetupServices_Branch_AA5A ; AA44 B0 14                    ..
         jsr     BattleSetupServices_Entry_AC8C  ; AA46 20 8C AC                  ..
         lda     #$00                            ; AA49 A9 00                    ..
         sta     $8A                             ; AA4B 85 8A                    ..
@@ -5738,6 +5917,7 @@ BattleSetupServices_Entry_AA41:
         inc     $8A                             ; AA55 E6 8A                    ..
         jmp     BattleSetupServices_Entry_AC01  ; AA57 4C 01 AC                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_AA5A:
         rts                                     ; AA5A 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AA5B:
@@ -5745,18 +5925,20 @@ BattleSetupServices_Entry_AA5B:
         sta     $6BDB                           ; AA5D 8D DB 6B                 ..k
         lda     #$02                            ; AA60 A9 02                    ..
         sta     $8A                             ; AA62 85 8A                    ..
+BattleSetupServices_Branch_AA64:
         lda     #$D6                            ; AA64 A9 D6                    ..
         jsr     BattleSetupServices_Entry_AA7F  ; AA66 20 7F AA                  ..
         jsr     BattleSetupServices_Entry_ACBD  ; AA69 20 BD AC                  ..
-        beq     $AA7A                           ; AA6C F0 0C                    ..
+        beq     BattleSetupServices_Branch_AA7A ; AA6C F0 0C                    ..
         pha                                     ; AA6E 48                       H
         lda     #$00                            ; AA6F A9 00                    ..
         jsr     BattleSetupServices_Entry_AA7F  ; AA71 20 7F AA                  ..
         pla                                     ; AA74 68                       h
-        bpl     $AA7A                           ; AA75 10 03                    ..
+        bpl     BattleSetupServices_Branch_AA7A ; AA75 10 03                    ..
         jsr     BattleSetupServices_Entry_AA85  ; AA77 20 85 AA                  ..
+BattleSetupServices_Branch_AA7A:
         dec     $8A                             ; AA7A C6 8A                    ..
-        bpl     $AA64                           ; AA7C 10 E6                    ..
+        bpl     BattleSetupServices_Branch_AA64 ; AA7C 10 E6                    ..
         rts                                     ; AA7E 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AA7F:
@@ -5794,11 +5976,12 @@ BattleSetupServices_Entry_AA85:
 ; ----------------------------------------------------------------------------
         lda     #$80                            ; AAB1 A9 80                    ..
         sta     $6BDE                           ; AAB3 8D DE 6B                 ..k
+BattleSetupServices_Branch_AAB6:
         rts                                     ; AAB6 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AAB7:
         cmp     #$05                            ; AAB7 C9 05                    ..
-        bcs     $AAB6                           ; AAB9 B0 FB                    ..
+        bcs     BattleSetupServices_Branch_AAB6 ; AAB9 B0 FB                    ..
         asl     a                               ; AABB 0A                       .
         tax                                     ; AABC AA                       .
         lda     $AACA,x                         ; AABD BD CA AA                 ...
@@ -6006,11 +6189,12 @@ BattleSetupServices_Branch_AC0B:
 BattleSetupServices_Branch_AC10:
         jsr     BattleSetupServices_Entry_AD15  ; AC10 20 15 AD                  ..
         jsr     BattleSetupServices_Entry_AD3F  ; AC13 20 3F AD                  ?.
+BattleSetupServices_Branch_AC16:
         ldy     #$00                            ; AC16 A0 00                    ..
         lda     #$4B                            ; AC18 A9 4B                    .K
         sta     ($00),y                       ; AC1A 91 00                    ..
         jsr     BattleSetupServices_Entry_AD03  ; AC1C 20 03 AD                  ..
-        bne     $AC16                           ; AC1F D0 F5                    ..
+        bne     BattleSetupServices_Branch_AC16 ; AC1F D0 F5                    ..
         rts                                     ; AC21 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AC22:
@@ -6025,14 +6209,16 @@ BattleSetupServices_Entry_AC22:
         jsr     AddByteToPointer                ; AC36 20 13 C8                  ..
 BattleSetupServices_Entry_AC39:
         jsr     BattleSetupServices_Entry_AD34  ; AC39 20 34 AD                  4.
+BattleSetupServices_Branch_AC3C:
         ldy     #$00                            ; AC3C A0 00                    ..
         lda     ($00),y                       ; AC3E B1 00                    ..
         sta     ($04),y                         ; AC40 91 04                    ..
         inc     $04                             ; AC42 E6 04                    ..
-        bne     $AC48                           ; AC44 D0 02                    ..
+        bne     BattleSetupServices_Branch_AC48 ; AC44 D0 02                    ..
         inc     $05                             ; AC46 E6 05                    ..
+BattleSetupServices_Branch_AC48:
         jsr     BattleSetupServices_Entry_AD03  ; AC48 20 03 AD                  ..
-        bne     $AC3C                           ; AC4B D0 EF                    ..
+        bne     BattleSetupServices_Branch_AC3C ; AC4B D0 EF                    ..
         lda     $8A                             ; AC4D A5 8A                    ..
         sta     $6BDC                           ; AC4F 8D DC 6B                 ..k
         rts                                     ; AC52 60                       `
@@ -6054,13 +6240,15 @@ BattleSetupServices_Entry_AC53:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AC73:
         ldx     #$0C                            ; AC73 A2 0C                    ..
+BattleSetupServices_Branch_AC75:
         lda     $AD71,x                         ; AC75 BD 71 AD                 .q.
         cmp     $6BBF,x                         ; AC78 DD BF 6B                 ..k
-        beq     $AC82                           ; AC7B F0 05                    ..
+        beq     BattleSetupServices_Branch_AC82 ; AC7B F0 05                    ..
         cmp     $6BCC,x                         ; AC7D DD CC 6B                 ..k
         bne     BattleSetupServices_Branch_AC8A ; AC80 D0 08                    ..
+BattleSetupServices_Branch_AC82:
         dex                                     ; AC82 CA                       .
-        bpl     $AC75                           ; AC83 10 F0                    ..
+        bpl     BattleSetupServices_Branch_AC75 ; AC83 10 F0                    ..
         jsr     BattleSetupServices_Entry_AC8C  ; AC85 20 8C AC                  ..
         sec                                     ; AC88 38                       8
         rts                                     ; AC89 60                       `
@@ -6071,11 +6259,12 @@ BattleSetupServices_Branch_AC8A:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AC8C:
         ldx     #$0C                            ; AC8C A2 0C                    ..
+BattleSetupServices_Branch_AC8E:
         lda     $AD71,x                         ; AC8E BD 71 AD                 .q.
         sta     $6BBF,x                         ; AC91 9D BF 6B                 ..k
         sta     $6BCC,x                         ; AC94 9D CC 6B                 ..k
         dex                                     ; AC97 CA                       .
-        bpl     $AC8E                           ; AC98 10 F4                    ..
+        bpl     BattleSetupServices_Branch_AC8E ; AC98 10 F4                    ..
         rts                                     ; AC9A 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AC9B:
@@ -6087,17 +6276,18 @@ BattleSetupServices_Entry_AC9B:
         lda     #$3A                            ; ACA8 A9 3A                    .:
         sta     $12                             ; ACAA 85 12                    ..
         sta     $13                             ; ACAC 85 13                    ..
+BattleSetupServices_Branch_ACAE:
         ldy     #$00                            ; ACAE A0 00                    ..
         lda     ($00),y                       ; ACB0 B1 00                    ..
         sta     $16                             ; ACB2 85 16                    ..
         jsr     UpperFixedEngine_Entry_C8AD     ; ACB4 20 AD C8                  ..
         jsr     BattleSetupServices_Entry_AD03  ; ACB7 20 03 AD                  ..
-        bne     $ACAE                           ; ACBA D0 F2                    ..
+        bne     BattleSetupServices_Branch_ACAE ; ACBA D0 F2                    ..
         rts                                     ; ACBC 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_ACBD:
         jsr     BattleSetupServices_Entry_ACF1  ; ACBD 20 F1 AC                  ..
-        bcc     $ACD9                           ; ACC0 90 17                    ..
+        bcc     BattleSetupServices_Branch_ACD9 ; ACC0 90 17                    ..
         jsr     BattleSetupServices_Entry_AC9B  ; ACC2 20 9B AC                  ..
         jsr     BattleSetupServices_Entry_AD15  ; ACC5 20 15 AD                  ..
         sec                                     ; ACC8 38                       8
@@ -6107,13 +6297,15 @@ BattleSetupServices_Entry_ACBD:
         iny                                     ; ACCF C8                       .
         lda     $13                             ; ACD0 A5 13                    ..
         sbc     ($00),y                       ; ACD2 F1 00                    ..
-        bne     $ACDC                           ; ACD4 D0 06                    ..
+        bne     BattleSetupServices_Branch_ACDC ; ACD4 D0 06                    ..
         lda     #$00                            ; ACD6 A9 00                    ..
         rts                                     ; ACD8 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_ACD9:
         lda     #$01                            ; ACD9 A9 01                    ..
         rts                                     ; ACDB 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_ACDC:
         lda     #$80                            ; ACDC A9 80                    ..
         rts                                     ; ACDE 60                       `
 ; ----------------------------------------------------------------------------
@@ -6131,21 +6323,24 @@ BattleSetupServices_Entry_ACDF:
 BattleSetupServices_Entry_ACF1:
         jsr     BattleSetupServices_Entry_AD15  ; ACF1 20 15 AD                  ..
         ldy     #$04                            ; ACF4 A0 04                    ..
+BattleSetupServices_Branch_ACF6:
         lda     ($00),y                       ; ACF6 B1 00                    ..
         cmp     #$4B                            ; ACF8 C9 4B                    .K
-        bne     $AD01                           ; ACFA D0 05                    ..
+        bne     BattleSetupServices_Branch_AD01 ; ACFA D0 05                    ..
         dey                                     ; ACFC 88                       .
-        bpl     $ACF6                           ; ACFD 10 F7                    ..
+        bpl     BattleSetupServices_Branch_ACF6 ; ACFD 10 F7                    ..
         clc                                     ; ACFF 18                       .
         rts                                     ; AD00 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_AD01:
         sec                                     ; AD01 38                       8
         rts                                     ; AD02 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AD03:
         inc     $00                           ; AD03 E6 00                    ..
-        bne     $AD09                           ; AD05 D0 02                    ..
+        bne     BattleSetupServices_Branch_AD09 ; AD05 D0 02                    ..
         inc     $01                             ; AD07 E6 01                    ..
+BattleSetupServices_Branch_AD09:
         ldx     #$02                            ; AD09 A2 02                    ..
         lda     #$01                            ; AD0B A9 01                    ..
         jsr     UpperFixedEngine_Entry_C7FB     ; AD0D 20 FB C7                  ..
@@ -6155,10 +6350,11 @@ BattleSetupServices_Entry_AD03:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AD15:
         ldx     #$00                            ; AD15 A2 00                    ..
-        jmp     $AD1C                           ; AD17 4C 1C AD                 L..
+        jmp     BattleSetupServices_Branch_AD1C ; AD17 4C 1C AD                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_AD1A:
         ldx     #$04                            ; AD1A A2 04                    ..
+BattleSetupServices_Branch_AD1C:
         lda     $AD80                           ; AD1C AD 80 AD                 ...
         sta     $00,x                         ; AD1F 95 00                    ..
         lda     $AD81                           ; AD21 AD 81 AD                 ...
@@ -6186,13 +6382,15 @@ BattleSetupServices_Entry_AD3F:
 BattleSetupServices_Entry_AD4A:
         ldx     #$6F                            ; AD4A A2 6F                    .o
         lda     #$00                            ; AD4C A9 00                    ..
+BattleSetupServices_Branch_AD4E:
         sta     $0480,x                         ; AD4E 9D 80 04                 ...
         dex                                     ; AD51 CA                       .
-        bpl     $AD4E                           ; AD52 10 FA                    ..
+        bpl     BattleSetupServices_Branch_AD4E ; AD52 10 FA                    ..
         lda     #$1D                            ; AD54 A9 1D                    ..
         sta     $04F3                           ; AD56 8D F3 04                 ...
         lda     #$D1                            ; AD59 A9 D1                    ..
         sta     $8B                             ; AD5B 85 8B                    ..
+BattleSetupServices_Branch_AD5D:
         lda     $8B                             ; AD5D A5 8B                    ..
         sta     $04F2                           ; AD5F 8D F2 04                 ...
         brk                                     ; AD62 00                       .
@@ -6203,7 +6401,7 @@ BattleSetupServices_Entry_AD4A:
         sbc     #$10                            ; AD68 E9 10                    ..
         sta     $8B                             ; AD6A 85 8B                    ..
         and     #$F0                            ; AD6C 29 F0                    ).
-        bne     $AD5D                           ; AD6E D0 ED                    ..
+        bne     BattleSetupServices_Branch_AD5D ; AD6E D0 ED                    ..
         rts                                     ; AD70 60                       `
 ; ----------------------------------------------------------------------------
         db   $4D,$41,$4E,$41,$42,$55,$20,$59 ; AD71 4D 41 4E 41 42 55 20 59  MANABU Y
@@ -6242,12 +6440,14 @@ BattleSetupServices_Branch_ADA9:
         db   $44,$93,$07                     ; ADAA 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         brk                                     ; ADAD 00                       .
-        db   $45,$93                         ; ADAE 45 93                    E.
+        db   $45,$93,$06                     ; ADAE 45 93 06                 E..
 ; ----------------------------------------------------------------------------
-        asl     $00                           ; ADB0 06 00                    ..
-        eor     $93                             ; ADB2 45 93                    E.
-        ora     $00                           ; ADB4 05 00                    ..
-        ora     $53                             ; ADB6 05 53                    .S
+        brk                                     ; ADB1 00                       .
+        db   $45,$93,$05                     ; ADB2 45 93 05                 E..
+; ----------------------------------------------------------------------------
+        brk                                     ; ADB5 00                       .
+        db   $05,$53                         ; ADB6 05 53                    .S
+; ----------------------------------------------------------------------------
         brk                                     ; ADB8 00                       .
         db   $0E,$53                         ; ADB9 0E 53                    .S
 ; ----------------------------------------------------------------------------
@@ -6282,13 +6482,14 @@ BattleSetupServices_Branch_ADDF:
         db   $44,$93,$07                     ; ADE9 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         brk                                     ; ADEC 00                       .
-        db   $45,$93                         ; ADED 45 93                    E.
+        db   $45,$93,$06                     ; ADED 45 93 06                 E..
 ; ----------------------------------------------------------------------------
-        asl     $00                           ; ADEF 06 00                    ..
-        eor     $93                             ; ADF1 45 93                    E.
-        ora     $A0                             ; ADF3 05 A0                    ..
-        db   $FF,$84,$70,$98                 ; ADF5 FF 84 70 98              ..p.
+        brk                                     ; ADF0 00                       .
+        db   $45,$93,$05                     ; ADF1 45 93 05                 E..
 ; ----------------------------------------------------------------------------
+        ldy     #$FF                            ; ADF4 A0 FF                    ..
+        sty     $70                             ; ADF6 84 70                    .p
+        tya                                     ; ADF8 98                       .
         brk                                     ; ADF9 00                       .
         db   $04,$73                         ; ADFA 04 73                    .s
 ; ----------------------------------------------------------------------------
@@ -6857,10 +7058,10 @@ BattleSetupServices_Entry_B17B:
         sta     $6E                             ; B189 85 6E                    .n
 BattleSetupServices_Branch_B18B:
         brk                                     ; B18B 00                       .
-        db   $05,$23                         ; B18C 05 23                    .#
+        db   $05,$23,$01                     ; B18C 05 23 01                 .#.
 ; ----------------------------------------------------------------------------
-        ora     ($E6,x)                         ; B18E 01 E6                    ..
-        ror     a:$C6                           ; B190 6E C6 00                 n..
+        inc     $6E                             ; B18F E6 6E                    .n
+        dec     $00                           ; B191 C6 00                    ..
         bne     BattleSetupServices_Branch_B18B ; B193 D0 F6                    ..
         jsr     BattleSetupServices_Entry_B56D  ; B195 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF49 ; B198 4C 49 AF                 LI.
@@ -7447,7 +7648,12 @@ BattleSetupServices_Entry_B533:
         clc                                     ; B53E 18                       .
         rts                                     ; B53F 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AE,$7A,$62,$00,$02,$73,$60     ; B540 AE 7A 62 00 02 73 60     .zb..s`
+BattleSetupServices_Entry_B540:
+        ldx     $627A                           ; B540 AE 7A 62                 .zb
+        brk                                     ; B543 00                       .
+        db   $02,$73                         ; B544 02 73                    .s
+; ----------------------------------------------------------------------------
+        rts                                     ; B546 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_B547:
         brk                                     ; B547 00                       .
@@ -7468,8 +7674,13 @@ BattleSetupServices_Branch_B55A:
         sec                                     ; B55A 38                       8
         rts                                     ; B55B 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AE,$7A,$62,$00,$2B,$73,$C9,$08 ; B55C AE 7A 62 00 2B 73 C9 08  .zb.+s..
-        db   $60                             ; B564 60                       `
+BattleSetupServices_Entry_B55C:
+        ldx     $627A                           ; B55C AE 7A 62                 .zb
+        brk                                     ; B55F 00                       .
+        db   $2B,$73                         ; B560 2B 73                    +s
+; ----------------------------------------------------------------------------
+        cmp     #$08                            ; B562 C9 08                    ..
+        rts                                     ; B564 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Entry_B565:
         lda     #$03                            ; B565 A9 03                    ..
@@ -8144,10 +8355,12 @@ BattleSetupServices_Branch_BAC0:
         bne     BattleSetupServices_Branch_BAF3 ; BAD0 D0 21                    .!
         dec     $01                             ; BAD2 C6 01                    ..
         ldy     #$00                            ; BAD4 A0 00                    ..
+BattleSetupServices_Branch_BAD6:
         lda     #$65                            ; BAD6 A9 65                    .e
         cpy     $02                           ; BAD8 C4 02                    ..
-        bne     $BADE                           ; BADA D0 02                    ..
+        bne     BattleSetupServices_Branch_BADE ; BADA D0 02                    ..
         lda     #$85                            ; BADC A9 85                    ..
+BattleSetupServices_Branch_BADE:
         jsr     UpperFixedEngine_Entry_C65A     ; BADE 20 5A C6                  Z.
         dec     $01                             ; BAE1 C6 01                    ..
         lda     $03E3,y                         ; BAE3 B9 E3 03                 ...
@@ -8156,7 +8369,7 @@ BattleSetupServices_Branch_BAC0:
         inc     $00                           ; BAEB E6 00                    ..
         iny                                     ; BAED C8                       .
         cpy     #$08                            ; BAEE C0 08                    ..
-        bne     $BAD6                           ; BAF0 D0 E4                    ..
+        bne     BattleSetupServices_Branch_BAD6 ; BAF0 D0 E4                    ..
         rts                                     ; BAF2 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BAF3:
@@ -8223,16 +8436,17 @@ BattleSetupServices_Entry_BB62:
         sta     $03D1                           ; BB67 8D D1 03                 ...
         lda     $F8                             ; BB6A A5 F8                    ..
         cpy     #$01                            ; BB6C C0 01                    ..
-        beq     $BB7B                           ; BB6E F0 0B                    ..
+        beq     BattleSetupServices_Branch_BB7B ; BB6E F0 0B                    ..
         lsr     a                               ; BB70 4A                       J
         cpy     #$02                            ; BB71 C0 02                    ..
-        beq     $BB7B                           ; BB73 F0 06                    ..
+        beq     BattleSetupServices_Branch_BB7B ; BB73 F0 06                    ..
         lsr     a                               ; BB75 4A                       J
         cpy     #$04                            ; BB76 C0 04                    ..
-        beq     $BB7B                           ; BB78 F0 01                    ..
+        beq     BattleSetupServices_Branch_BB7B ; BB78 F0 01                    ..
         lsr     a                               ; BB7A 4A                       J
+BattleSetupServices_Branch_BB7B:
         sta     $03DA                           ; BB7B 8D DA 03                 ...
-        lda     $BBCB,y                         ; BB7E B9 CB BB                 ...
+        lda     BattleSetupServices_Branch_BBCB,y; BB7E B9 CB BB                ...
         and     $F8                             ; BB81 25 F8                    %.
         clc                                     ; BB83 18                       .
         adc     #$01                            ; BB84 69 01                    i.
@@ -8245,7 +8459,7 @@ BattleSetupServices_Entry_BB62:
         lda     $03D5                           ; BB90 AD D5 03                 ...
         and     #$0F                            ; BB93 29 0F                    ).
         tay                                     ; BB95 A8                       .
-        beq     $BBB5                           ; BB96 F0 1D                    ..
+        beq     BattleSetupServices_Branch_BBB5 ; BB96 F0 1D                    ..
         lda     $03DA                           ; BB98 AD DA 03                 ...
         sty     $03DA                           ; BB9B 8C DA 03                 ...
 BattleSetupServices_Branch_BB9E:
@@ -8261,14 +8475,16 @@ BattleSetupServices_Branch_BBAA:
         sec                                     ; BBAE 38                       8
         sbc     $03DA                           ; BBAF ED DA 03                 ...
         sta     $03D1                           ; BBB2 8D D1 03                 ...
+BattleSetupServices_Branch_BBB5:
         lda     $03DA                           ; BBB5 AD DA 03                 ...
         ora     TextCursorPosition              ; BBB8 0D CF 03                 ...
         sta     TextCursorPosition              ; BBBB 8D CF 03                 ...
         lda     $03CE                           ; BBBE AD CE 03                 ...
         cmp     #$0B                            ; BBC1 C9 0B                    ..
-        bne     $BBCB                           ; BBC3 D0 06                    ..
+        bne     BattleSetupServices_Branch_BBCB ; BBC3 D0 06                    ..
         inc     TextCursorPosition              ; BBC5 EE CF 03                 ...
         inc     TextCursorPosition              ; BBC8 EE CF 03                 ...
+BattleSetupServices_Branch_BBCB:
         rts                                     ; BBCB 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$01,$00,$03,$00,$00,$00,$07 ; BBCC 00 01 00 03 00 00 00 07  ........
@@ -8291,7 +8507,7 @@ BattleSetupServices_Branch_BBE0:
         jsr     MultiplyPointerWord             ; BBED 20 27 C8                  '.
         sty     $05                             ; BBF0 84 05                    ..
         cpy     #$01                            ; BBF2 C0 01                    ..
-        bne     $BC10                           ; BBF4 D0 1A                    ..
+        bne     BattleSetupServices_Branch_BC10 ; BBF4 D0 1A                    ..
         lda     $BC3A                           ; BBF6 AD 3A BC                 .:.
         sta     $02                           ; BBF9 85 02                    ..
         lda     $BC3B                           ; BBFB AD 3B BC                 .;.
@@ -8303,6 +8519,7 @@ BattleSetupServices_Branch_BBE0:
         lda     $02                           ; BC09 A5 02                    ..
         ldy     $03                             ; BC0B A4 03                    ..
         jsr     AddWordToPointer                ; BC0D 20 1D C8                  ..
+BattleSetupServices_Branch_BC10:
         lda     $05                             ; BC10 A5 05                    ..
         asl     a                               ; BC12 0A                       .
         tay                                     ; BC13 A8                       .
@@ -8331,6 +8548,7 @@ BattleSetupServices_Branch_BBE0:
 BattleSetupServices_Entry_BC3C:
         asl     $03CC                           ; BC3C 0E CC 03                 ...
         lsr     $03CC                           ; BC3F 4E CC 03                 N..
+BattleSetupServices_Branch_BC42:
         jsr     UpperFixedEngine_Entry_C8EC     ; BC42 20 EC C8                  ..
         lda     $F5                             ; BC45 A5 F5                    ..
         and     #$02                            ; BC47 29 02                    ).
@@ -8345,53 +8563,59 @@ BattleSetupServices_Branch_BC53:
         lda     $03CC                           ; BC53 AD CC 03                 ...
         and     #$0F                            ; BC56 29 0F                    ).
         sta     $03DA                           ; BC58 8D DA 03                 ...
-        beq     $BC8F                           ; BC5B F0 32                    .2
+        beq     BattleSetupServices_Branch_BC8F ; BC5B F0 32                    .2
         lda     $07B4                           ; BC5D AD B4 07                 ...
         ora     #$20                            ; BC60 09 20                    .
         sta     $07B4                           ; BC62 8D B4 07                 ...
         lda     $03DA                           ; BC65 AD DA 03                 ...
         cmp     #$01                            ; BC68 C9 01                    ..
-        beq     $BC76                           ; BC6A F0 0A                    ..
+        beq     BattleSetupServices_Branch_BC76 ; BC6A F0 0A                    ..
         cmp     #$02                            ; BC6C C9 02                    ..
-        beq     $BC76                           ; BC6E F0 06                    ..
+        beq     BattleSetupServices_Branch_BC76 ; BC6E F0 06                    ..
         lda     ButtonsPressed                  ; BC70 A5 14                    ..
         and     #$03                            ; BC72 29 03                    ).
-        bne     $BCB3                           ; BC74 D0 3D                    .=
+        bne     BattleSetupServices_Branch_BCB3 ; BC74 D0 3D                    .=
+BattleSetupServices_Branch_BC76:
         lda     #$08                            ; BC76 A9 08                    ..
         sec                                     ; BC78 38                       8
         sbc     $03DA                           ; BC79 ED DA 03                 ...
         tay                                     ; BC7C A8                       .
         lda     $BD17,y                         ; BC7D B9 17 BD                 ...
         and     ButtonsPressed                  ; BC80 25 14                    %.
-        beq     $BC8F                           ; BC82 F0 0B                    ..
+        beq     BattleSetupServices_Branch_BC8F ; BC82 F0 0B                    ..
         jsr     WaitForNmi                      ; BC84 20 74 FF                  t.
         jsr     BattleSetupServices_Entry_BCEF  ; BC87 20 EF BC                  ..
-        bcc     $BC42                           ; BC8A 90 B6                    ..
-        jmp     $BCB6                           ; BC8C 4C B6 BC                 L..
+        bcc     BattleSetupServices_Branch_BC42 ; BC8A 90 B6                    ..
+        jmp     BattleSetupServices_Branch_BCB6 ; BC8C 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_BC8F:
         lda     $07B4                           ; BC8F AD B4 07                 ...
         and     #$DF                            ; BC92 29 DF                    ).
         sta     $07B4                           ; BC94 8D B4 07                 ...
         jsr     BattleSetupServices_Entry_BCDB  ; BC97 20 DB BC                  ..
+BattleSetupServices_Branch_BC9A:
         jsr     UpperFixedEngine_Entry_C8EC     ; BC9A 20 EC C8                  ..
         lda     ButtonsPressed                  ; BC9D A5 14                    ..
         and     #$F3                            ; BC9F 29 F3                    ).
-        bne     $BCB3                           ; BCA1 D0 10                    ..
+        bne     BattleSetupServices_Branch_BCB3 ; BCA1 D0 10                    ..
         lda     #$00                            ; BCA3 A9 00                    ..
         sta     $03CC                           ; BCA5 8D CC 03                 ...
         jsr     WaitForNmi                      ; BCA8 20 74 FF                  t.
         jsr     BattleSetupServices_Entry_BCEF  ; BCAB 20 EF BC                  ..
-        bcc     $BC9A                           ; BCAE 90 EA                    ..
-        jmp     $BCB6                           ; BCB0 4C B6 BC                 L..
+        bcc     BattleSetupServices_Branch_BC9A ; BCAE 90 EA                    ..
+        jmp     BattleSetupServices_Branch_BCB6 ; BCB0 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_BCB3:
         jsr     BattleSetupServices_Entry_BCC4  ; BCB3 20 C4 BC                  ..
+BattleSetupServices_Branch_BCB6:
         lda     $03CC                           ; BCB6 AD CC 03                 ...
         and     #$0F                            ; BCB9 29 0F                    ).
         cmp     #$01                            ; BCBB C9 01                    ..
-        bne     $BCC2                           ; BCBD D0 03                    ..
+        bne     BattleSetupServices_Branch_BCC2 ; BCBD D0 03                    ..
         brk                                     ; BCBF 00                       .
         db   $85,$FB                         ; BCC0 85 FB                    ..
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_BCC2:
         clc                                     ; BCC2 18                       .
         rts                                     ; BCC3 60                       `
 ; ----------------------------------------------------------------------------
@@ -8414,8 +8638,9 @@ BattleSetupServices_Entry_BCDB:
         ldx     #$0C                            ; BCDB A2 0C                    ..
         lda     $07B4                           ; BCDD AD B4 07                 ...
         and     #$20                            ; BCE0 29 20                    )
-        beq     $BCE6                           ; BCE2 F0 02                    ..
+        beq     BattleSetupServices_Branch_BCE6 ; BCE2 F0 02                    ..
         ldx     #$06                            ; BCE4 A2 06                    ..
+BattleSetupServices_Branch_BCE6:
         txa                                     ; BCE6 8A                       .
         clc                                     ; BCE7 18                       .
         adc     $050C                           ; BCE8 6D 0C 05                 m..
@@ -8425,11 +8650,11 @@ BattleSetupServices_Entry_BCDB:
 BattleSetupServices_Entry_BCEF:
         lda     $03CD                           ; BCEF AD CD 03                 ...
         cmp     $050C                           ; BCF2 CD 0C 05                 ...
-        bmi     $BD12                           ; BCF5 30 1B                    0.
+        bmi     BattleSetupServices_Branch_BD12 ; BCF5 30 1B                    0.
         lda     $03E2                           ; BCF7 AD E2 03                 ...
         cmp     $050C                           ; BCFA CD 0C 05                 ...
         clc                                     ; BCFD 18                       .
-        bpl     $BD16                           ; BCFE 10 16                    ..
+        bpl     BattleSetupServices_Branch_BD16 ; BCFE 10 16                    ..
         lda     $050C                           ; BD00 AD 0C 05                 ...
         clc                                     ; BD03 18                       .
         adc     #$0F                            ; BD04 69 0F                    i.
@@ -8440,8 +8665,10 @@ BattleSetupServices_Entry_BCEF:
         sec                                     ; BD10 38                       8
         rts                                     ; BD11 60                       `
 ; ----------------------------------------------------------------------------
+BattleSetupServices_Branch_BD12:
         jsr     BattleSetupServices_Entry_BCDB  ; BD12 20 DB BC                  ..
         sec                                     ; BD15 38                       8
+BattleSetupServices_Branch_BD16:
         rts                                     ; BD16 60                       `
 ; ----------------------------------------------------------------------------
         db   $80,$40,$20,$10,$08,$04,$02,$01 ; BD17 80 40 20 10 08 04 02 01  .@ .....
@@ -8547,55 +8774,41 @@ BattleSetupServices_Branch_BDB9:
         rts                                     ; BDBC 60                       `
 ; ----------------------------------------------------------------------------
         db   $09,$03,$03,$05,$05,$00,$00,$00 ; BDBD 09 03 03 05 05 00 00 00  ........
-        db   $04,$05,$09,$09                 ; BDC5 04 05 09 09              ....
+        db   $04,$05,$09,$09,$6C,$EE,$F0,$E1 ; BDC5 04 05 09 09 6C EE F0 E1  ....l...
+        db   $76,$ED,$FF,$5E,$86,$00,$16,$19 ; BDCD 76 ED FF 5E 86 00 16 19  v..^....
+        db   $1C,$6A,$60,$95,$18,$EE,$C0,$C0 ; BDD5 1C 6A 60 95 18 EE C0 C0  .j`.....
+        db   $16,$1D,$19,$BA,$00,$28,$4A,$2B ; BDDD 16 1D 19 BA 00 28 4A 2B  .....(J+
+        db   $20,$4A,$B7,$16,$26,$66,$98,$16 ; BDE5 20 4A B7 16 26 66 98 16   J..&f..
+        db   $27,$28,$2D,$6D,$04,$29,$22,$68 ; BDED 27 28 2D 6D 04 29 22 68  '(-m.)"h
+        db   $BC,$00,$80,$84,$02,$25,$21,$34 ; BDF5 BC 00 80 84 02 25 21 34  .....%!4
+        db   $24,$20,$FB,$02,$F9,$E7,$FB,$F4 ; BDFD 24 20 FB 02 F9 E7 FB F4  $ ......
+        db   $64,$8C,$03,$1A,$FA,$10,$F9,$FE ; BE05 64 8C 03 1A FA 10 F9 FE  d.......
+        db   $1E,$BE,$FE,$1E,$BE,$65,$8C,$03 ; BE0D 1E BE FE 1E BE 65 8C 03  .....e..
+        db   $1B,$FA,$0F,$F9,$FB,$00,$FE,$CA ; BE15 1B FA 0F F9 FB 00 FE CA  ........
+        db   $BD,$EE,$F0,$64,$8C,$03,$1A,$FA ; BE1D BD EE F0 64 8C 03 1A FA  ...d....
+        db   $08,$F9,$1A,$1B,$FA,$08,$FB,$64 ; BE25 08 F9 1A 1B FA 08 FB 64  .......d
+        db   $8C,$08,$67,$86,$04,$1D,$FA,$0C ; BE2D 8C 08 67 86 04 1D FA 0C  ..g.....
+        db   $F6,$6A,$8C,$08,$71,$06,$BB,$04 ; BE35 F6 6A 8C 08 71 06 BB 04  .j..q...
+        db   $EE,$F0,$5E,$8C,$08,$EE,$C0,$71 ; BE3D EE F0 5E 8C 08 EE C0 71  ..^....q
+        db   $06,$BB,$04,$F9,$EC,$FD,$FE,$CA ; BE45 06 BB 04 F9 EC FD FE CA  ........
+        db   $BD,$E1,$76,$ED,$FF,$EE,$F0,$5A ; BE4D BD E1 76 ED FF EE F0 5A  ..v....Z
+        db   $86,$00,$12,$15,$18,$66,$60,$95 ; BE55 86 00 12 15 18 66 60 95  .....f`.
+        db   $18,$EE,$C0,$F7,$26,$19,$15,$F8 ; BE5D 18 EE C0 F7 26 19 15 F8  ....&...
+        db   $6B,$CE,$00,$73,$06,$24,$1C,$EE ; BE65 6B CE 00 73 06 24 1C EE  k..s.$..
+        db   $80,$63,$8C,$06,$1C,$18,$1C,$16 ; BE6D 80 63 8C 06 1C 18 1C 16  .c......
+        db   $1B,$16,$1B,$EE,$80,$63,$8C,$06 ; BE75 1B 16 1B EE 80 63 8C 06  .....c..
+        db   $1C,$18,$1C,$19,$1D,$19,$1D,$19 ; BE7D 1C 18 1C 19 1D 19 1D 19  ........
+        db   $19,$49,$19,$19,$19,$EE,$C0,$F7 ; BE85 19 49 19 19 19 EE C0 F7  .I......
+        db   $ED,$00,$EE,$F0,$31,$21,$1D,$30 ; BE8D ED 00 EE F0 31 21 1D 30  ....1!.0
+        db   $20,$1C,$ED,$FF,$F8,$FB,$02,$F9 ; BE95 20 1C ED FF F8 FB 02 F9   .......
+        db   $DA,$FB,$00,$5F,$8C,$03,$13,$FA ; BE9D DA FB 00 5F 8C 03 13 FA  ..._....
+        db   $10,$F9,$FE,$B6,$BE,$FE,$B6,$BE ; BEA5 10 F9 FE B6 BE FE B6 BE  ........
+        db   $AB,$03,$14,$FA,$0F,$FA,$FE,$4E ; BEAD AB 03 14 FA 0F FA FE 4E  .......N
+        db   $BE,$5F,$8C,$03,$13,$FA,$08,$F9 ; BEB5 BE 5F 8C 03 13 FA 08 F9  ._......
+        db   $15,$14,$FA,$08,$FB,$17,$16,$FA ; BEBD 15 14 FA 08 FB 17 16 FA  ........
+        db   $0C,$FB,$1D,$1C,$FA,$04,$FB,$FD ; BEC5 0C FB 1D 1C FA 04 FB FD  ........
+        db   $F0,$01,$63                     ; BECD F0 01 63                 ..c
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BDC9:
-        jmp     ($F0EE)                         ; BDC9 6C EE F0                 l..
-; ----------------------------------------------------------------------------
-        db   $E1,$76,$ED,$FF,$5E,$86,$00,$16 ; BDCC E1 76 ED FF 5E 86 00 16  .v..^...
-        db   $19,$1C,$6A,$60,$95,$18,$EE,$C0 ; BDD4 19 1C 6A 60 95 18 EE C0  ..j`....
-        db   $C0,$16,$1D,$19,$BA,$00,$28,$4A ; BDDC C0 16 1D 19 BA 00 28 4A  ......(J
-        db   $2B,$20,$4A,$B7,$16,$26,$66,$98 ; BDE4 2B 20 4A B7 16 26 66 98  + J..&f.
-        db   $16,$27,$28,$2D,$6D,$04,$29,$22 ; BDEC 16 27 28 2D 6D 04 29 22  .'(-m.)"
-        db   $68,$BC,$00,$80,$84,$02,$25,$21 ; BDF4 68 BC 00 80 84 02 25 21  h.....%!
-        db   $34,$24,$20,$FB,$02,$F9,$E7,$FB ; BDFC 34 24 20 FB 02 F9 E7 FB  4$ .....
-        db   $F4,$64,$8C,$03,$1A,$FA,$10,$F9 ; BE04 F4 64 8C 03 1A FA 10 F9  .d......
-        db   $FE,$1E,$BE,$FE,$1E,$BE,$65,$8C ; BE0C FE 1E BE FE 1E BE 65 8C  ......e.
-        db   $03,$1B,$FA,$0F,$F9,$FB,$00,$FE ; BE14 03 1B FA 0F F9 FB 00 FE  ........
-        db   $CA,$BD,$EE,$F0,$64,$8C,$03,$1A ; BE1C CA BD EE F0 64 8C 03 1A  ....d...
-        db   $FA,$08,$F9,$1A,$1B,$FA,$08,$FB ; BE24 FA 08 F9 1A 1B FA 08 FB  ........
-        db   $64,$8C,$08,$67,$86,$04,$1D,$FA ; BE2C 64 8C 08 67 86 04 1D FA  d..g....
-        db   $0C,$F6,$6A,$8C,$08,$71,$06,$BB ; BE34 0C F6 6A 8C 08 71 06 BB  ..j..q..
-        db   $04,$EE,$F0,$5E,$8C,$08,$EE,$C0 ; BE3C 04 EE F0 5E 8C 08 EE C0  ...^....
-        db   $71,$06,$BB,$04,$F9,$EC,$FD,$FE ; BE44 71 06 BB 04 F9 EC FD FE  q.......
-        db   $CA,$BD                         ; BE4C CA BD                    ..
-; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BE4E:
-        sbc     ($76,x)                         ; BE4E E1 76                    .v
-        sbc     $EEFF                           ; BE50 ED FF EE                 ...
-        beq     $BEAF                           ; BE53 F0 5A                    .Z
-        stx     $00                           ; BE55 86 00                    ..
-        db   $12,$15,$18,$66,$60,$95,$18,$EE ; BE57 12 15 18 66 60 95 18 EE  ...f`...
-        db   $C0,$F7,$26,$19,$15,$F8,$6B,$CE ; BE5F C0 F7 26 19 15 F8 6B CE  ..&...k.
-        db   $00,$73,$06,$24,$1C,$EE,$80,$63 ; BE67 00 73 06 24 1C EE 80 63  .s.$...c
-        db   $8C,$06,$1C,$18,$1C,$16,$1B,$16 ; BE6F 8C 06 1C 18 1C 16 1B 16  ........
-        db   $1B,$EE,$80,$63,$8C,$06,$1C,$18 ; BE77 1B EE 80 63 8C 06 1C 18  ...c....
-        db   $1C,$19,$1D,$19,$1D,$19,$19,$49 ; BE7F 1C 19 1D 19 1D 19 19 49  .......I
-        db   $19,$19,$19,$EE,$C0,$F7,$ED,$00 ; BE87 19 19 19 EE C0 F7 ED 00  ........
-        db   $EE,$F0,$31,$21,$1D,$30,$20,$1C ; BE8F EE F0 31 21 1D 30 20 1C  ..1!.0 .
-        db   $ED,$FF,$F8,$FB,$02,$F9,$DA,$FB ; BE97 ED FF F8 FB 02 F9 DA FB  ........
-        db   $00,$5F,$8C,$03,$13,$FA,$10,$F9 ; BE9F 00 5F 8C 03 13 FA 10 F9  ._......
-        db   $FE,$B6,$BE,$FE,$B6,$BE,$AB,$03 ; BEA7 FE B6 BE FE B6 BE AB 03  ........
-        db   $14,$FA,$0F,$FA,$FE,$4E,$BE,$5F ; BEAF 14 FA 0F FA FE 4E BE 5F  .....N._
-        db   $8C,$03,$13,$FA,$08,$F9,$15,$14 ; BEB7 8C 03 13 FA 08 F9 15 14  ........
-        db   $FA,$08,$FB,$17,$16,$FA,$0C,$FB ; BEBF FA 08 FB 17 16 FA 0C FB  ........
-        db   $1D,$1C,$FA,$04,$FB,$FD         ; BEC7 1D 1C FA 04 FB FD        ......
-; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BECD:
-        beq     BattleSetupServices_Branch_BED0 ; BECD F0 01                    ..
-        db   $63                             ; BECF 63                       c
-; ----------------------------------------------------------------------------
-BattleSetupServices_Branch_BED0:
         stx     $04                             ; BED0 86 04                    ..
         db   $1B,$1E,$21,$6F,$98,$14,$63,$B0 ; BED2 1B 1E 21 6F 98 14 63 B0  ..!o..c.
         db   $28,$18,$F7,$2F,$22,$1E,$F8,$74 ; BEDA 28 18 F7 2F 22 1E F8 74  (../"..t

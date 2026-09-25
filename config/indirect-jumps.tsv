@@ -13,7 +13,6 @@
 12	A643	registered	12:A9ED-AA0D	Sixteen-entry battle-setup event table
 12	AAC7	registered	12:AACA-AAD4	Five-entry bounded battle-setup handler table
 12	AF2D	registered	12:B67A-B6BC	Thirty-three map-transition handlers parallel to terminated IDs
-12	BDC9	static-trap	1F:F0EE-F0F0	Service-directory target jumps through fixed ROM operand bytes to unsupported $8D06
 13	8071	registered	13:8078-8088	Eight-entry battle-state handler table
 13	8509	registered	13:8B8B-8C5B	Battle-action handler table
 13	8F9F	registered	13:9100-9110	Eight-entry arithmetic handler table loaded into $00/$01 at $8F95-$8F9D and dispatched by JMP ($0000)
@@ -38,5 +37,3 @@
 1F	D8B7	registered	1F:DF02-DF64	Low map-object command table with explicit out-of-range fallback to entry zero
 1F	D8C8	registered	1F:DF64-DF7A	High-bit map-object command table
 1F	DEA2	registered	1F:DEA5-DEA9	Two-entry map-object operation table
-1F	FB8E	false-positive-data	1F:FA5D-FCFA	Linear decode inside raw NES graphics data
-1F	FD00	false-positive-data	1F:FCFA-FD6B	Linear decode inside raw NES graphics data

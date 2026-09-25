@@ -2,6 +2,10 @@ Dragon Warrior IV static code-analysis report
 Generated from explicit seeds using official 6502 opcodes only.
 
 Seeds:
+  bank $08:$B777 | Guarded flow recovery | Coherent routine block immediately after RTI $B776; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+  bank $08:$B77F | Guarded flow recovery | Coherent routine block immediately after RTI $B77E; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+  bank $08:$B787 | Guarded flow recovery | Coherent routine block immediately after RTI $B786; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
+  bank $08:$B78F | Guarded flow recovery | Coherent routine block immediately after RTI $B78E; 4 instructions, 1 BRK service calls, returns from interrupt and merges into existing code
   bank $0E:$8008-$8090 | Supplied ROM map | Documented code region $8008-$8090
   bank $0E:$BAF7-$BB52 | Supplied ROM map | Documented map-palette code region $BAF7-$BB52
   bank $0F:$C001-$C003 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 00
@@ -12,13 +16,6 @@ Seeds:
   bank $0F:$C010-$C012 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 05
   bank $0F:$C013-$C015 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 06
   bank $0F:$C016-$C018 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 07
-  bank $0F:$C019-$C01B | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 08
-  bank $0F:$C01C-$C01E | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 09
-  bank $0F:$C01F-$C021 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0A
-  bank $0F:$C022-$C024 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0B
-  bank $0F:$C025-$C027 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0C
-  bank $0F:$C028-$C02A | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0D
-  bank $0F:$C02B-$C02D | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0E
   bank $0F:$C02E-$C030 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 0F
   bank $0F:$C031-$C033 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 10
   bank $0F:$C034-$C036 | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 11
@@ -26,19 +23,110 @@ Seeds:
   bank $0F:$C03A-$C03C | Direct ROM analysis | Lower-half fixed-bank JMP trampoline 13
   bank $0F:$C15A | Direct ROM analysis | Lower-half NMI body installed at RAM $0502
   bank $0F:$C408 | CPU vector | Lower-half IRQ/BRK vector target
+  bank $0F:$C54E | Guarded flow recovery | Coherent routine block immediately after RTS $C54D; 11 instructions, jumps and merges into existing code
+  bank $0F:$C5B9 | Guarded flow recovery | Coherent routine block immediately after RTS $C5B8; 53 instructions, returns and merges into existing code
+  bank $0F:$C65A | Guarded flow recovery | Coherent routine block immediately after RTS $C659; 3 instructions, jumps and merges into existing code
+  bank $0F:$C73E | Guarded flow recovery | Coherent routine block immediately after JMP $C73B; 18 instructions, returns and merges into existing code
+  bank $0F:$C75E | Guarded flow recovery | Coherent routine block immediately after RTS $C75D; 8 instructions, jumps and merges into existing code
+  bank $0F:$C770 | Guarded flow recovery | Coherent routine block immediately after JMP $C76D; 12 instructions, jumps and merges into existing code
+  bank $0F:$C7FA | Guarded flow recovery | Coherent routine block immediately after JMP $C7F7; 8 instructions, returns
+  bank $0F:$C807 | Guarded flow recovery | Coherent routine block immediately after RTS $C806; 7 instructions, returns and merges into existing code
+  bank $0F:$C888 | Guarded flow recovery | Coherent routine block immediately after RTS $C887; 5 instructions, returns
+  bank $0F:$CADF | Guarded flow recovery | Coherent routine block immediately after JMP $CADC; 4 instructions, jumps and merges into existing code
+  bank $0F:$D04A | Guarded flow recovery | Coherent routine block immediately after RTI $D049; 2 instructions, jumps and merges into existing code
+  bank $0F:$D210 | Guarded flow recovery | Coherent routine block immediately after JMP $D20D; 4 instructions, merges into existing code
+  bank $0F:$D277 | Guarded flow recovery | Coherent routine block immediately after RTS $D276; 10 instructions, returns and merges into existing code
+  bank $0F:$E4F6 | Guarded flow recovery | Coherent routine block immediately after RTS $E4F5; 6 instructions, returns
+  bank $0F:$E501 | Guarded flow recovery | Coherent routine block immediately after RTS $E500; 20 instructions, returns and jumps
+  bank $0F:$E52C | Guarded flow recovery | Coherent routine block immediately after RTS $E52B; 16 instructions, returns
+  bank $0F:$E8F8 | Guarded flow recovery | Coherent routine block immediately after RTS $E8F7; 7 instructions, returns
+  bank $0F:$E904 | Guarded flow recovery | Coherent routine block immediately after RTS $E903; 7 instructions, returns and merges into existing code
+  bank $0F:$E910 | Guarded flow recovery | Coherent routine block immediately after RTS $E90F; 22 instructions, returns and merges into existing code
   bank $0F:$E9AD | Supplied ROM map | Map-data bank selection routine at headerless ROM offset $3E9AD
   bank $0F:$FFD8 | CPU vector | Lower-half RESET vector target
   bank $10:$8080 | Direct ROM analysis | Wrapper immediately following the 64-entry bank service directory
+  bank $10:$8831 | Guarded flow recovery | Coherent routine block immediately after RTS $8830; 5 instructions, returns and merges into existing code
+  bank $10:$9CB1 | Guarded flow recovery | Coherent routine block immediately after RTS $9CB0; 25 instructions, returns and merges into existing code
+  bank $10:$9DCD | Guarded flow recovery | Coherent routine block immediately after RTI $9DCC; 12 instructions, 1 BRK service calls, returns
+  bank $10:$A09F | Guarded flow recovery | Coherent routine block immediately after JMP $A09C; 18 instructions, jumps and merges into existing code
+  bank $10:$AF82 | Guarded flow recovery | Coherent routine block immediately after JMP $AF7F; 19 instructions, jumps and merges into existing code
+  bank $11:$8B91 | Guarded flow recovery | Coherent routine block immediately after RTS $8B90; 3 instructions, 1 BRK service calls, returns
+  bank $11:$B929 | Guarded flow recovery | Coherent routine block immediately after RTS $B928; 7 instructions, returns
+  bank $11:$B9CE | Guarded flow recovery | Coherent routine block immediately after RTS $B9CD; 21 instructions, 2 BRK service calls, returns
+  bank $12:$9548 | Guarded flow recovery | Coherent routine block immediately after RTS $9547; 7 instructions, 1 BRK service calls, returns
   bank $12:$97A9 | Direct ROM analysis | Coherent battle setup routine block immediately after RTS $97A8 and before service entry $9BFD
   bank $12:$986B | Direct ROM analysis | Coherent nested countdown routine ending at RTS $9886 before the existing entry at $9887
+  bank $12:$9C50 | Guarded flow recovery | Coherent routine block immediately after RTS $9C4F; 15 instructions, 2 BRK service calls, returns and merges into existing code
+  bank $12:$9CE5 | Guarded flow recovery | Coherent routine block immediately after RTS $9CE4; 25 instructions, 2 BRK service calls, jumps
   bank $12:$9D6D | Direct ROM analysis | Coherent BRK-based battle setup routine after RTS $9D6C with a local call to $9D7A
-  bank $15:$BBD4 | Overlapping continuation | STA $DA begins on the third operand of BRK service $62,$33 at $BBD1
+  bank $12:$9EC5 | Guarded flow recovery | Coherent routine block immediately after RTS $9EC4; 63 instructions, 1 BRK service calls, returns and merges into existing code
+  bank $12:$B540 | Guarded flow recovery | Coherent routine block immediately after RTS $B53F; 3 instructions, 1 BRK service calls, returns
+  bank $12:$B55C | Guarded flow recovery | Coherent routine block immediately after RTS $B55B; 4 instructions, 1 BRK service calls, returns
+  bank $13:$81FB | Guarded flow recovery | Coherent routine block immediately after RTS $81FA; 13 instructions, returns and jumps and merges into existing code
+  bank $13:$8308 | Guarded flow recovery | Coherent routine block immediately after RTS $8307; 9 instructions, returns and merges into existing code
+  bank $13:$8806 | Guarded flow recovery | Coherent routine block immediately after RTS $8805; 5 instructions, jumps and merges into existing code
+  bank $13:$8A56 | Guarded flow recovery | Coherent routine block immediately after RTS $8A55; 4 instructions, returns
+  bank $13:$8A94 | Guarded flow recovery | Coherent routine block immediately after RTS $8A93; 12 instructions, returns and merges into existing code
+  bank $13:$9481 | Guarded flow recovery | Coherent routine block immediately after RTS $9480; 43 instructions, returns
+  bank $13:$957B | Guarded flow recovery | Coherent routine block immediately after RTS $957A; 3 instructions, jumps and merges into existing code
+  bank $13:$971C | Guarded flow recovery | Coherent routine block immediately after RTS $971B; 10 instructions, jumps and merges into existing code
+  bank $13:$9CD2 | Guarded flow recovery | Coherent routine block immediately after RTS $9CD1; 4 instructions, jumps and merges into existing code
+  bank $13:$A8C0 | Guarded flow recovery | Coherent routine block immediately after JMP $A8BD; 3 instructions, returns
+  bank $13:$AC22 | Guarded flow recovery | Coherent routine block immediately after RTS $AC21; 12 instructions, jumps and merges into existing code
+  bank $13:$AC46 | Guarded flow recovery | Coherent routine block immediately after RTS $AC45; 12 instructions, jumps and merges into existing code
+  bank $13:$ADA0 | Guarded flow recovery | Coherent routine block immediately after RTS $AD9F; 15 instructions, returns and merges into existing code
+  bank $13:$B6E0 | Guarded flow recovery | Coherent routine block immediately after RTS $B6DF; 28 instructions, 2 BRK service calls, returns
+  bank $14:$AF53 | Direct ROM analysis | Unreferenced routine after the parallel tables at $AF1D-$AF52: five JSRs to decoded fixed-bank routines ($C891, $C90C, $C770, $C73E) and JMP $FF74, two internal JSR $AF89 calls, and a CMP $AF1D,X loop shared with the decoded routine at $AEEC
+  bank $15:$9B03 | Guarded flow recovery | Coherent routine block immediately after RTI $9B02; 3 instructions, merges into existing code
+  bank $15:$9C82 | Guarded flow recovery | Coherent routine block immediately after RTS $9C81; 9 instructions, returns
+  bank $15:$A006 | Guarded flow recovery | Coherent routine block immediately after RTI $A005; 3 instructions, jumps and merges into existing code
+  bank $15:$A21B | Guarded flow recovery | Coherent routine block immediately after RTS $A21A; 15 instructions, 5 BRK service calls, returns and jumps and merges into existing code
+  bank $15:$A63F | Guarded flow recovery | Coherent routine block immediately after RTI $A63E; 3 instructions, 1 BRK service calls, jumps and merges into existing code
+  bank $15:$A77E | Guarded flow recovery | Coherent routine block immediately after RTS $A77D; 15 instructions, 2 BRK service calls, returns
+  bank $15:$AC45 | Guarded flow recovery | Coherent routine block immediately after RTI $AC44; 8 instructions, jumps and merges into existing code
+  bank $15:$ACB5 | Guarded flow recovery | Coherent routine block immediately after RTI $ACB4; 13 instructions, 1 BRK service calls, returns and jumps and merges into existing code
+  bank $15:$ACDB | Guarded flow recovery | Coherent routine block immediately after RTI $ACDA; 28 instructions, 2 BRK service calls, returns and jumps and merges into existing code
+  bank $15:$ADDA | Guarded flow recovery | Coherent routine block immediately after RTS $ADD9; 9 instructions, 2 BRK service calls, jumps and merges into existing code
+  bank $16:$8C6F | Guarded flow recovery | Coherent routine block immediately after RTS $8C6E; 7 instructions, returns and merges into existing code
+  bank $16:$942B | Guarded flow recovery | Coherent routine block immediately after RTS $942A; 6 instructions, returns and merges into existing code
+  bank $16:$943D | Guarded flow recovery | Coherent routine block immediately after RTS $943C; 14 instructions, returns and merges into existing code
+  bank $16:$9458 | Guarded flow recovery | Coherent routine block immediately after RTS $9457; 9 instructions, returns
+  bank $16:$946A | Guarded flow recovery | Coherent routine block immediately after RTS $9469; 14 instructions, returns and merges into existing code
+  bank $16:$94C9 | Guarded flow recovery | Coherent routine block immediately after RTS $94C8; 4 instructions, merges into existing code
   bank $16:$9CBF | Direct ROM analysis | Four-byte compare-and-return routine immediately after the UI metric tables
   bank $16:$9CD7 | Direct ROM analysis | Coherent text/UI routine block immediately after RTS $9CD6 and before decoded entry $9F58
   bank $16:$9EE7 | Direct ROM analysis | Coherent text/UI selection routine block immediately after indexed lookup tables
+  bank $16:$9F82 | Guarded flow recovery | Coherent routine block immediately after JMP $9F7F; 7 instructions, 1 BRK service calls, jumps and merges into existing code
   bank $16:$9FB6 | Direct ROM analysis | Coherent text/UI routine family after the terminal jump at $9FB3 with bounded loops and local helper calls
   bank $16:$9FBB-$9FBC | Direct ROM analysis | Alternate LDA #$20 entry joining the main text/UI routine at $9FBD
   bank $16:$A0E1-$A0E7 | Direct ROM analysis | Dormant helper after the terminal JMP at $A0DE; calls $9FB6, invokes BRK service $03,$E7, and returns
+  bank $16:$B4BF | Guarded flow recovery | Coherent routine block immediately after RTS $B4BE; 3 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B4C9 | Guarded flow recovery | Coherent routine block immediately after RTS $B4C8; 3 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B4D3 | Guarded flow recovery | Coherent routine block immediately after RTS $B4D2; 3 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B4DD | Guarded flow recovery | Coherent routine block immediately after RTS $B4DC; 18 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B517 | Guarded flow recovery | Coherent routine block immediately after RTS $B516; 16 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B53E | Guarded flow recovery | Coherent routine block immediately after RTS $B53D; 4 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B55B | Guarded flow recovery | Coherent routine block immediately after RTS $B55A; 21 instructions, 2 BRK service calls, returns and merges into existing code
+  bank $16:$B574 | Guarded flow recovery | Coherent routine block immediately after RTS $B573; 23 instructions, 2 BRK service calls, returns and merges into existing code
+  bank $16:$B590 | Guarded flow recovery | Coherent routine block immediately after RTS $B58F; 6 instructions, returns
+  bank $16:$B5B2 | Guarded flow recovery | Coherent routine block immediately after RTS $B5B1; 45 instructions, 4 BRK service calls, jumps and merges into existing code
+  bank $16:$B61B | Guarded flow recovery | Coherent routine block immediately after RTS $B61A; 3 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B625 | Guarded flow recovery | Coherent routine block immediately after RTS $B624; 5 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B636 | Guarded flow recovery | Coherent routine block immediately after RTS $B635; 4 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B641 | Guarded flow recovery | Coherent routine block immediately after RTS $B640; 7 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B726 | Guarded flow recovery | Coherent routine block immediately after RTS $B725; 3 instructions, merges into existing code
+  bank $16:$B72D | Guarded flow recovery | Coherent routine block immediately after RTS $B72C; 4 instructions, 1 BRK service calls, merges into existing code
+  bank $16:$B7A6 | Guarded flow recovery | Coherent routine block immediately after RTS $B7A5; 9 instructions, merges into existing code
+  bank $16:$B7B7 | Guarded flow recovery | Coherent routine block immediately after RTS $B7B6; 3 instructions, merges into existing code
+  bank $16:$B882 | Guarded flow recovery | Coherent routine block immediately after RTS $B881; 12 instructions, returns
+  bank $16:$B8DE | Guarded flow recovery | Coherent routine block immediately after RTS $B8DD; 45 instructions, jumps and merges into existing code
+  bank $16:$B92C | Guarded flow recovery | Coherent routine block immediately after RTS $B92B; 11 instructions, merges into existing code
+  bank $16:$B944 | Guarded flow recovery | Coherent routine block immediately after RTS $B943; 5 instructions, merges into existing code
+  bank $16:$B9BF | Guarded flow recovery | Coherent routine block immediately after RTS $B9BE; 39 instructions, returns and jumps and merges into existing code
+  bank $16:$B9E2 | Guarded flow recovery | Coherent routine block immediately after RTS $B9E1; 19 instructions, returns
+  bank $16:$BA88 | Guarded flow recovery | Coherent routine block immediately after RTS $BA87; 12 instructions, returns and merges into existing code
+  bank $16:$BE90 | Guarded flow recovery | Coherent routine block immediately after RTS $BE8F; 3 instructions, jumps and merges into existing code
+  bank $16:$BF64 | Guarded flow recovery | Coherent routine block immediately after RTS $BF63; 19 instructions, returns and jumps and merges into existing code
   bank $17:$806C | Direct ROM analysis | Resume after three-byte inline BRK service at $8068
   bank $17:$80BC | Direct ROM analysis | Resume after two-byte inline BRK service at $80B9
   bank $17:$817C | Direct ROM analysis | Resume after two-byte inline BRK service at $8179; jumps directly to $8654
@@ -156,16 +244,24 @@ Seeds:
   bank $1B:$A4D7 | Direct ROM scan | JSR to fixed trampoline $C00A
   bank $1B:$A7BE | Direct ROM scan | JSR to fixed trampoline $C03A
   bank $1B:$ACA0 | Direct ROM scan | JSR to fixed trampoline $C031
-  bank $1B:$AD6B | Direct ROM scan | JSR to fixed trampoline $C037
   bank $1B:$AD25 | Direct ROM analysis | Coherent dormant handler ending with RTI at $AD39; branches and BRK continuations stay within the bounded block
   bank $1B:$AD3A | Direct ROM analysis | Coherent dormant handler ending with RTS at $AD48 after three-byte BRK service $2A,$CB,$40
+  bank $1B:$AD6B | Direct ROM scan | JSR to fixed trampoline $C037
   bank $1B:$B0B0 | Direct ROM analysis | Coherent dormant sibling of the active eight-call loop at $B05E, ending with RTS at $B0DB
   bank $1B:$B0E7 | Direct ROM analysis | Coherent decrementing sibling of $B0DC, ending with JMP $B511 at $B0EF
   bank $1B:$B55A | Direct ROM scan | JSR to fixed trampoline $C034
   bank $1C:$A010 | Runtime and direct call analysis | Runtime-executed map/submap key dispatcher called directly from bank $1C:$9EAE
   bank $1C:$A0C6 | Direct call analysis | Map-event routine called directly from bank $1C:$A0AA
+  bank $1C:$A1C4 | Guarded flow recovery | Coherent routine block immediately after RTI $A1C3; 4 instructions, returns and merges into existing code
+  bank $1C:$A1E3 | Guarded flow recovery | Coherent routine block immediately after RTS $A1E2; 6 instructions, jumps and merges into existing code
+  bank $1C:$A25E | Guarded flow recovery | Coherent routine block immediately after RTS $A25D; 3 instructions, merges into existing code
+  bank $1C:$A70E | Guarded flow recovery | Coherent routine block immediately after RTI $A70D; 6 instructions, 1 BRK service calls, merges into existing code
+  bank $1C:$A9A4 | Guarded flow recovery | Coherent routine block immediately after RTI $A9A3; 4 instructions, merges into existing code
+  bank $1C:$B6FB | Guarded flow recovery | Coherent routine block immediately after RTI $B6FA; 23 instructions, 3 BRK service calls, returns and merges into existing code
   bank $1C:$B83A | Direct ROM analysis | Coherent adjacent map-entity initialization and transition routine family after RTS $B839 and before the registered service at $B8F5
   bank $1C:$B8CD | Direct ROM analysis | Standalone map-coordinate initializer after the terminal jump at $B8CA and ending with RTS at $B8DD
+  bank $1C:$B9E5 | Guarded flow recovery | Coherent routine block immediately after RTI $B9E4; 8 instructions, 1 BRK service calls, jumps and merges into existing code
+  bank $1C:$BA38 | Guarded flow recovery | Coherent routine block immediately after RTI $BA37; 25 instructions, 8 BRK service calls, returns and jumps and merges into existing code
   bank $1C:$BDD2 | Entry pointer analysis | BRK-backed map-event handler targeted by pointer $1C:$BFA5
   bank $1C:$BED3 | Direct call analysis | BRK-backed map-event helper called directly from bank $1C:$AE03/$AE13
   bank $1C:$BED6 | Direct call analysis | BRK-backed map-event helper called or jumped to from bank $1C:$AE40/$AEF9
@@ -222,6 +318,11 @@ Seeds:
   bank $1E:$AABE | Direct ROM scan | JSR to fixed trampoline $C010
   bank $1E:$AAC1 | Direct ROM scan | JSR to fixed trampoline $C010
   bank $1E:$AAC4 | Direct ROM scan | JSR to fixed trampoline $C010
+  bank $1E:$AC1B | Guarded flow recovery | Coherent routine block immediately after RTS $AC1A; 46 instructions, jumps and merges into existing code
+  bank $1E:$B148 | Guarded flow recovery | Coherent routine block immediately after RTS $B147; 6 instructions, returns
+  bank $1E:$B2A6 | Guarded flow recovery | Coherent routine block immediately after RTS $B2A5; 72 instructions, 14 BRK service calls, returns and jumps and merges into existing code
+  bank $1E:$B2F8 | Guarded flow recovery | Coherent routine block immediately after JMP $B2F5; 19 instructions, 4 BRK service calls, jumps and merges into existing code
+  bank $1E:$B381 | Guarded flow recovery | Coherent routine block immediately after RTS $B380; 35 instructions, 4 BRK service calls, returns and jumps and merges into existing code
   bank $1E:$B3F3 | Direct ROM analysis | Coherent map-interaction routine block immediately after the entry at $B3ED
   bank $1E:$B5B6 | Inline service continuation | Code resumes after the three operands consumed by BRK service $65,$23 at $B5B2
   bank $1E:$B79C | Direct ROM analysis | Coherent story-flag helper block calling the decoded bit-selector at $B779
@@ -269,6 +370,8 @@ Seeds:
   bank $1F:$C03A-$C03C | Direct ROM analysis | Fixed-bank JMP trampoline 13
   bank $1F:$C15A | Direct ROM analysis | NMI body installed as JMP $C15A at RAM vector $0502
   bank $1F:$C408 | CPU vector | IRQ/BRK vector target
+  bank $1F:$C75E | Guarded flow recovery | Coherent routine block immediately after RTS $C75D; 8 instructions, jumps and merges into existing code
+  bank $1F:$CADF | Guarded flow recovery | Coherent routine block immediately after JMP $CADC; 4 instructions, jumps and merges into existing code
   bank $1F:$CE09 | Direct ROM analysis | Coherent fixed-bank event routine immediately after RTS $CE08 with calls into the adjacent CFxx helper family
   bank $1F:$CE80 | Direct ROM analysis | Coherent fixed-bank event helper after the terminal jump at $CE7D and before RTS $CEBD
   bank $1F:$CEBE | Direct ROM analysis | Coherent selector routine after RTS $CEBD indexing the eleven-byte table at $CEF8
@@ -277,6 +380,23 @@ Seeds:
   bank $1F:$CF41 | Direct ROM analysis | Coherent chapter and coordinate event helper called by the recovered helper at $CEA1
   bank $1F:$CF56 | Direct ROM analysis | Compact BRK-backed event helper called by recovered routines at $CE31/$CE80
   bank $1F:$CF5F | Direct ROM analysis | Coherent fixed-bank event-state update routine called by the recovered routine at $CE39
+  bank $1F:$D1E1 | Guarded flow recovery | Coherent routine block immediately after RTS $D1E0; 20 instructions, returns and merges into existing code
+  bank $1F:$D277 | Guarded flow recovery | Coherent routine block immediately after RTS $D276; 31 instructions, returns and merges into existing code
+  bank $1F:$D41A | Guarded flow recovery | Coherent routine block immediately after RTS $D419; 16 instructions, returns and merges into existing code
+  bank $1F:$D437 | Guarded flow recovery | Coherent routine block immediately after RTS $D436; 19 instructions, returns and merges into existing code
+  bank $1F:$E869 | Guarded flow recovery | Coherent routine block immediately after JMP $E866; 6 instructions, merges into existing code
+  bank $1F:$E87E | Guarded flow recovery | Coherent routine block immediately after JMP $E87B; 2 instructions, jumps and merges into existing code
+  bank $1F:$E89A | Guarded flow recovery | Coherent routine block immediately after RTS $E899; 8 instructions, jumps and merges into existing code
+  bank $1F:$E8AE | Guarded flow recovery | Coherent routine block immediately after JMP $E8AB; 4 instructions, jumps and merges into existing code
+  bank $1F:$E8BA | Guarded flow recovery | Coherent routine block immediately after JMP $E8B7; 12 instructions, jumps and merges into existing code
+  bank $1F:$E8D8 | Guarded flow recovery | Coherent routine block immediately after JMP $E8D5; 8 instructions, jumps and merges into existing code
+  bank $1F:$E8EA | Guarded flow recovery | Coherent routine block immediately after JMP $E8E7; 2 instructions, jumps and merges into existing code
+  bank $1F:$E8F0 | Guarded flow recovery | Coherent routine block immediately after JMP $E8ED; 2 instructions, jumps and merges into existing code
+  bank $1F:$E941 | Guarded flow recovery | Coherent routine block immediately after JMP $E93E; 3 instructions, jumps and merges into existing code
+  bank $1F:$E94A | Guarded flow recovery | Coherent routine block immediately after JMP $E947; 4 instructions, jumps and merges into existing code
+  bank $1F:$E968 | Guarded flow recovery | Coherent routine block immediately after JMP $E965; 3 instructions, jumps and merges into existing code
+  bank $1F:$EC45 | Guarded flow recovery | Coherent routine block immediately after RTS $EC44; 5 instructions, returns and merges into existing code
+  bank $1F:$F051 | Guarded flow recovery | Coherent routine block immediately after JMP $F04E; 2 instructions, jumps and merges into existing code
   bank $1F:$F11C | Inline service continuation | Coherent fixed-bank routine resumes after the two operands consumed by BRK service $12,$DF at $F119 and returns at $F19A
   bank $1F:$F271 | Direct ROM analysis | Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662
   bank $1F:$F29E | Direct ROM analysis | Coherent routine after the $F29C stream pointer that copies $7608-$760B into $52-$55 and returns at $F2B2
@@ -301,11 +421,15 @@ Seeds:
   bank $08:$8710 | Entry pointer table | Bank $08 pointer at $8022: 30-entry map and tile service directory
   bank $08:$8796 | Entry pointer table | Bank $08 pointer at $8024: 30-entry map and tile service directory
   bank $08:$B4E5 | Entry pointer table | Bank $08 pointer at $8026: 30-entry map and tile service directory
-  bank $08:$B7AE | Entry pointer table | Bank $08 pointer at $8028: 30-entry map and tile service directory
   bank $08:$84C2 | Entry pointer table | Bank $08 pointer at $802A: 30-entry map and tile service directory
   bank $08:$B304 | Entry pointer table | Bank $08 pointer at $8034: 30-entry map and tile service directory
   bank $08:$B725 | Entry pointer table | Bank $08 pointer at $8038: 30-entry map and tile service directory
   bank $08:$8097 | Entry pointer table | Bank $08 pointer at $803A: 30-entry map and tile service directory
+  bank $0B:$BFA6 | Entry pointer table | Bank $0B pointer at $8004: Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
+  bank $0B:$AF61 | Entry pointer table | Bank $0B pointer at $8008: Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
+  bank $0B:$BF7C | Entry pointer table | Bank $0B pointer at $800A: Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
+  bank $0B:$BE1F | Entry pointer table | Bank $0B pointer at $800C: Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
+  bank $0B:$BF36 | Entry pointer table | Bank $0B pointer at $800E: Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
   bank $0E:$8010 | Entry pointer table | Bank $0E pointer at $8000: Four-entry graphics and palette service directory
   bank $0E:$802D | Entry pointer table | Bank $0E pointer at $8002: Four-entry graphics and palette service directory
   bank $0E:$BEEA | Entry pointer table | Bank $0E pointer at $8006: Four-entry graphics and palette service directory
@@ -403,8 +527,6 @@ Seeds:
   bank $10:$B146 | Entry pointer table | Bank $10 pointer at $803A: 64-entry code dispatch table followed by code at $8080
   bank $10:$B158 | Entry pointer table | Bank $10 pointer at $803C: 64-entry code dispatch table followed by code at $8080
   bank $10:$B15A | Entry pointer table | Bank $10 pointer at $803E: 64-entry code dispatch table followed by code at $8080
-  bank $10:$8DE2 | Entry pointer table | Bank $10 pointer at $8040: 64-entry code dispatch table followed by code at $8080
-  bank $10:$8E61 | Entry pointer table | Bank $10 pointer at $8042: 64-entry code dispatch table followed by code at $8080
   bank $10:$AB74 | Entry pointer table | Bank $10 pointer at $8044: 64-entry code dispatch table followed by code at $8080
   bank $10:$AB88 | Entry pointer table | Bank $10 pointer at $8046: 64-entry code dispatch table followed by code at $8080
   bank $10:$AB9C | Entry pointer table | Bank $10 pointer at $8048: 64-entry code dispatch table followed by code at $8080
@@ -429,9 +551,6 @@ Seeds:
   bank $10:$90EC | Entry pointer table | Bank $10 pointer at $8070: 64-entry code dispatch table followed by code at $8080
   bank $10:$ACAF | Entry pointer table | Bank $10 pointer at $8072: 64-entry code dispatch table followed by code at $8080
   bank $10:$A2DB | Entry pointer table | Bank $10 pointer at $8074: 64-entry code dispatch table followed by code at $8080
-  bank $10:$BCC7 | Entry pointer table | Bank $10 pointer at $8076: 64-entry code dispatch table followed by code at $8080
-  bank $10:$BD0E | Entry pointer table | Bank $10 pointer at $807A: 64-entry code dispatch table followed by code at $8080
-  bank $10:$BD28 | Entry pointer table | Bank $10 pointer at $807E: 64-entry code dispatch table followed by code at $8080
   bank $10:$84E9 | Entry pointer table | Bank $10 pointer at $9E30: 113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B
   bank $10:$86D5 | Entry pointer table | Bank $10 pointer at $9E32: 113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B
   bank $10:$865B | Entry pointer table | Bank $10 pointer at $9E34: 113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B
@@ -1102,9 +1221,6 @@ Seeds:
   bank $12:$B6DE | Entry pointer table | Bank $12 pointer at $8058: 50-entry code dispatch table; first target is $8064
   bank $12:$90EC | Entry pointer table | Bank $12 pointer at $805A: 50-entry code dispatch table; first target is $8064
   bank $12:$A304 | Entry pointer table | Bank $12 pointer at $805C: 50-entry code dispatch table; first target is $8064
-  bank $12:$BDC9 | Entry pointer table | Bank $12 pointer at $805E: 50-entry code dispatch table; first target is $8064
-  bank $12:$BE4E | Entry pointer table | Bank $12 pointer at $8060: 50-entry code dispatch table; first target is $8064
-  bank $12:$BECD | Entry pointer table | Bank $12 pointer at $8062: 50-entry code dispatch table; first target is $8064
   bank $12:$83E2 | Entry pointer table | Bank $12 pointer at $8493: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
   bank $12:$83EE | Entry pointer table | Bank $12 pointer at $8495: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
   bank $12:$83E8 | Entry pointer table | Bank $12 pointer at $8497: Seven-entry battle-setup handler table selected by nonzero three-bit fields and dispatched at $83DF
@@ -1190,7 +1306,6 @@ Seeds:
   bank $13:$B930 | Entry pointer table | Bank $13 pointer at $8018: 28-entry code dispatch table; first target is $8038
   bank $13:$B937 | Entry pointer table | Bank $13 pointer at $801A: 28-entry code dispatch table; first target is $8038
   bank $13:$B949 | Entry pointer table | Bank $13 pointer at $801C: 28-entry code dispatch table; first target is $8038
-  bank $13:$B7E3 | Entry pointer table | Bank $13 pointer at $801E: 28-entry code dispatch table; first target is $8038
   bank $13:$8366 | Entry pointer table | Bank $13 pointer at $8020: 28-entry code dispatch table; first target is $8038
   bank $13:$89B6 | Entry pointer table | Bank $13 pointer at $8022: 28-entry code dispatch table; first target is $8038
   bank $13:$83F4 | Entry pointer table | Bank $13 pointer at $8024: 28-entry code dispatch table; first target is $8038
@@ -1494,6 +1609,36 @@ Seeds:
   bank $16:$8332 | Entry pointer table | Bank $16 pointer at $80E4: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
   bank $16:$821C | Entry pointer table | Bank $16 pointer at $80E6: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
   bank $16:$81EA | Entry pointer table | Bank $16 pointer at $80E8: Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
+  bank $16:$941B | Entry pointer table | Bank $16 pointer at $93F0: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$941B | Entry pointer table | Bank $16 pointer at $93F2: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$9487 | Entry pointer table | Bank $16 pointer at $93F4: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$94E1 | Entry pointer table | Bank $16 pointer at $93F6: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$942B | Entry pointer table | Bank $16 pointer at $93F8: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$9458 | Entry pointer table | Bank $16 pointer at $93FA: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$9494 | Entry pointer table | Bank $16 pointer at $93FC: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$94E1 | Entry pointer table | Bank $16 pointer at $93FE: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$943D | Entry pointer table | Bank $16 pointer at $9400: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$946A | Entry pointer table | Bank $16 pointer at $9402: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$94B9 | Entry pointer table | Bank $16 pointer at $9404: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$941B | Entry pointer table | Bank $16 pointer at $9406: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$941B | Entry pointer table | Bank $16 pointer at $9408: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$9477 | Entry pointer table | Bank $16 pointer at $940A: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$94C9 | Entry pointer table | Bank $16 pointer at $940C: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$94E9 | Entry pointer table | Bank $16 pointer at $940E: Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests
+  bank $16:$9F82 | Entry pointer table | Bank $16 pointer at $99A3: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9F94 | Entry pointer table | Bank $16 pointer at $99A5: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9CD7 | Entry pointer table | Bank $16 pointer at $99A7: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9EE7 | Entry pointer table | Bank $16 pointer at $99A9: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9F58 | Entry pointer table | Bank $16 pointer at $99AB: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9FA6 | Entry pointer table | Bank $16 pointer at $99AD: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$A39B | Entry pointer table | Bank $16 pointer at $99AF: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$A0E8 | Entry pointer table | Bank $16 pointer at $99B1: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$A0E1 | Entry pointer table | Bank $16 pointer at $99B3: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$9FBB | Entry pointer table | Bank $16 pointer at $99B5: Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime
+  bank $16:$A3AF | Entry pointer table | Bank $16 pointer at $A3A7: Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table
+  bank $16:$A3FA | Entry pointer table | Bank $16 pointer at $A3A9: Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table
+  bank $16:$A3B5 | Entry pointer table | Bank $16 pointer at $A3AB: Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table
+  bank $16:$A3C8 | Entry pointer table | Bank $16 pointer at $A3AD: Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table
   bank $16:$AAF7 | Entry pointer table | Bank $16 pointer at $A5EB: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$AB2F | Entry pointer table | Bank $16 pointer at $A5ED: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$AB3A | Entry pointer table | Bank $16 pointer at $A5EF: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
@@ -1547,7 +1692,6 @@ Seeds:
   bank $16:$B014 | Entry pointer table | Bank $16 pointer at $A64F: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B021 | Entry pointer table | Bank $16 pointer at $A651: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B037 | Entry pointer table | Bank $16 pointer at $A653: Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
-  bank $16:$B0FA | Entry pointer table | Bank $16 pointer at $A68D: Primary text/UI escape handler at the seventh command-pointer low-byte wrap, dispatched through $9841/$987F
   bank $16:$B1C1 | Entry pointer table | Bank $16 pointer at $A6DF: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B1D8 | Entry pointer table | Bank $16 pointer at $A6E1: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B1F9 | Entry pointer table | Bank $16 pointer at $A6E3: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
@@ -1558,7 +1702,6 @@ Seeds:
   bank $16:$B307 | Entry pointer table | Bank $16 pointer at $A6ED: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B342 | Entry pointer table | Bank $16 pointer at $A6EF: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
   bank $16:$B37F | Entry pointer table | Bank $16 pointer at $A6F1: Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
-  bank $16:$B3FC | Entry pointer table | Bank $16 pointer at $A703: Secondary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
   bank $16:$B4B5 | Entry pointer table | Bank $16 pointer at $A73B: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
   bank $16:$B4BE | Entry pointer table | Bank $16 pointer at $A73D: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
   bank $16:$B4C8 | Entry pointer table | Bank $16 pointer at $A73F: Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
@@ -1595,19 +1738,33 @@ Seeds:
   bank $16:$B7A2 | Entry pointer table | Bank $16 pointer at $A781: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
   bank $16:$B7A5 | Entry pointer table | Bank $16 pointer at $A783: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
   bank $16:$B7B6 | Entry pointer table | Bank $16 pointer at $A785: Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
-  bank $16:$B7BD | Entry pointer table | Bank $16 pointer at $A787: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
-  bank $16:$B881 | Entry pointer table | Bank $16 pointer at $A78F: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
-  bank $16:$B89F | Entry pointer table | Bank $16 pointer at $A791: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
-  bank $16:$B8C1 | Entry pointer table | Bank $16 pointer at $A793: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B8D0 | Entry pointer table | Bank $16 pointer at $A795: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B8D5 | Entry pointer table | Bank $16 pointer at $A797: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B8DD | Entry pointer table | Bank $16 pointer at $A799: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B92B | Entry pointer table | Bank $16 pointer at $A79B: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B943 | Entry pointer table | Bank $16 pointer at $A79D: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B94F | Entry pointer table | Bank $16 pointer at $A79F: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B988 | Entry pointer table | Bank $16 pointer at $A7A3: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B9BE | Entry pointer table | Bank $16 pointer at $A7A7: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
-  bank $16:$B9E1 | Entry pointer table | Bank $16 pointer at $A7A9: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+  bank $16:$B7BE | Entry pointer table | Bank $16 pointer at $A787: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B83B | Entry pointer table | Bank $16 pointer at $A789: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B868 | Entry pointer table | Bank $16 pointer at $A78B: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B875 | Entry pointer table | Bank $16 pointer at $A78D: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B882 | Entry pointer table | Bank $16 pointer at $A78F: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B8A0 | Entry pointer table | Bank $16 pointer at $A791: Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1
+  bank $16:$B8C2 | Entry pointer table | Bank $16 pointer at $A793: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B8D1 | Entry pointer table | Bank $16 pointer at $A795: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B8D6 | Entry pointer table | Bank $16 pointer at $A797: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B8DE | Entry pointer table | Bank $16 pointer at $A799: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B92C | Entry pointer table | Bank $16 pointer at $A79B: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B944 | Entry pointer table | Bank $16 pointer at $A79D: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B950 | Entry pointer table | Bank $16 pointer at $A79F: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B975 | Entry pointer table | Bank $16 pointer at $A7A1: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B989 | Entry pointer table | Bank $16 pointer at $A7A3: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B9B0 | Entry pointer table | Bank $16 pointer at $A7A5: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B9BF | Entry pointer table | Bank $16 pointer at $A7A7: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$B9E2 | Entry pointer table | Bank $16 pointer at $A7A9: Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1
+  bank $16:$BB8D | Entry pointer table | Bank $16 pointer at $BCD9: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBB9 | Entry pointer table | Bank $16 pointer at $BCDB: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBD0 | Entry pointer table | Bank $16 pointer at $BCDD: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBC1 | Entry pointer table | Bank $16 pointer at $BCDF: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBF8 | Entry pointer table | Bank $16 pointer at $BCE1: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBB9 | Entry pointer table | Bank $16 pointer at $BCE3: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBC1 | Entry pointer table | Bank $16 pointer at $BCE5: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BBFD | Entry pointer table | Bank $16 pointer at $BCE7: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
+  bank $16:$BA78 | Entry pointer table | Bank $16 pointer at $BCE9: Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB
   bank $17:$804C | Entry pointer table | Bank $17 pointer at $8000: 38-entry mixed map-system directory followed by code at $804C
   bank $17:$9BFA | Entry pointer table | Bank $17 pointer at $8004: 38-entry mixed map-system directory followed by code at $804C
   bank $17:$89A7 | Entry pointer table | Bank $17 pointer at $804A: 38-entry mixed map-system directory followed by code at $804C
@@ -1629,11 +1786,6 @@ Seeds:
   bank $18:$A813 | Entry pointer table | Bank $18 pointer at $8028: 35-entry mixed bank directory; known data targets are excluded
   bank $18:$AAE0 | Entry pointer table | Bank $18 pointer at $8032: 35-entry mixed bank directory; known data targets are excluded
   bank $18:$BE7D | Entry pointer table | Bank $18 pointer at $8036: 35-entry mixed bank directory; known data targets are excluded
-  bank $18:$BF55 | Entry pointer table | Bank $18 pointer at $803A: 35-entry mixed bank directory; known data targets are excluded
-  bank $18:$BF90 | Entry pointer table | Bank $18 pointer at $803C: 35-entry mixed bank directory; known data targets are excluded
-  bank $18:$BF8C | Entry pointer table | Bank $18 pointer at $803E: 35-entry mixed bank directory; known data targets are excluded
-  bank $18:$B620 | Entry pointer table | Bank $18 pointer at $8040: 35-entry mixed bank directory; known data targets are excluded
-  bank $18:$B65A | Entry pointer table | Bank $18 pointer at $8044: 35-entry mixed bank directory; known data targets are excluded
   bank $19:$8014 | Entry pointer table | Bank $19 pointer at $8004: Ten-entry mixed map and tileset service directory
   bank $19:$8017 | Entry pointer table | Bank $19 pointer at $8006: Ten-entry mixed map and tileset service directory
   bank $19:$801A | Entry pointer table | Bank $19 pointer at $8008: Ten-entry mixed map and tileset service directory
@@ -2033,6 +2185,14 @@ Seeds:
   bank $1E:$A232 | Entry pointer table | Bank $1E pointer at $808A: 72-entry map and entity interaction service directory
   bank $1E:$B722 | Entry pointer table | Bank $1E pointer at $808C: 72-entry map and entity interaction service directory
   bank $1E:$BC1E | Entry pointer table | Bank $1E pointer at $808E: 72-entry map and entity interaction service directory
+  bank $1E:$80BA | Entry pointer table | Bank $1E pointer at $80AA: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$81CD | Entry pointer table | Bank $1E pointer at $80AC: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$81D1 | Entry pointer table | Bank $1E pointer at $80AE: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$8261 | Entry pointer table | Bank $1E pointer at $80B0: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$8265 | Entry pointer table | Bank $1E pointer at $80B2: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$83FE | Entry pointer table | Bank $1E pointer at $80B4: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$8343 | Entry pointer table | Bank $1E pointer at $80B6: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
+  bank $1E:$8340 | Entry pointer table | Bank $1E pointer at $80B8: Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table
   bank $1E:$A4A3 | Entry pointer table | Bank $1E pointer at $A499: Five-entry chapter map-interaction handler table selected by SaveCurrentChapterMinus1 and dispatched at $A496
   bank $1E:$A4B3 | Entry pointer table | Bank $1E pointer at $A49B: Five-entry chapter map-interaction handler table selected by SaveCurrentChapterMinus1 and dispatched at $A496
   bank $1E:$A4C4 | Entry pointer table | Bank $1E pointer at $A49D: Five-entry chapter map-interaction handler table selected by SaveCurrentChapterMinus1 and dispatched at $A496
@@ -2124,6 +2284,30 @@ Seeds:
   bank $1F:$DEE5 | Entry pointer table | Bank $1F pointer at $DF74: Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8
   bank $1F:$DEE5 | Entry pointer table | Bank $1F pointer at $DF76: Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8
   bank $1F:$DEE5 | Entry pointer table | Bank $1F pointer at $DF78: Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8
+  bank $1F:$E968 | Entry pointer table | Bank $1F pointer at $E812: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E970 | Entry pointer table | Bank $1F pointer at $E814: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E98F | Entry pointer table | Bank $1F pointer at $E816: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E88D | Entry pointer table | Bank $1F pointer at $E818: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E941 | Entry pointer table | Bank $1F pointer at $E81A: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E900 | Entry pointer table | Bank $1F pointer at $E81C: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8F6 | Entry pointer table | Bank $1F pointer at $E81E: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E95E | Entry pointer table | Bank $1F pointer at $E820: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E954 | Entry pointer table | Bank $1F pointer at $E822: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8D8 | Entry pointer table | Bank $1F pointer at $E824: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8EA | Entry pointer table | Bank $1F pointer at $E826: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8F0 | Entry pointer table | Bank $1F pointer at $E828: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E842 | Entry pointer table | Bank $1F pointer at $E82A: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8AE | Entry pointer table | Bank $1F pointer at $E82C: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E89A | Entry pointer table | Bank $1F pointer at $E82E: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E8BA | Entry pointer table | Bank $1F pointer at $E830: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$F051 | Entry pointer table | Bank $1F pointer at $E832: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E92D | Entry pointer table | Bank $1F pointer at $E834: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E884 | Entry pointer table | Bank $1F pointer at $E836: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E856 | Entry pointer table | Bank $1F pointer at $E838: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E87E | Entry pointer table | Bank $1F pointer at $E83A: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E85A | Entry pointer table | Bank $1F pointer at $E83C: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E869 | Entry pointer table | Bank $1F pointer at $E83E: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
+  bank $1F:$E94A | Entry pointer table | Bank $1F pointer at $E840: Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS
   bank $15:$9D36 | Entry pointer table | Bank $15 pointer at $8050: Command $00 callback operand parsed from a pointer-delimited effect script
   bank $15:$9D2A | Entry pointer table | Bank $15 pointer at $8085: Command $01 callback operand parsed from a pointer-delimited effect script
   bank $15:$A4B6 | Entry pointer table | Bank $15 pointer at $80B7: Command $00 callback operand parsed from a pointer-delimited effect script
@@ -2250,223 +2434,96 @@ Seeds:
   bank $15:$AEBC | Entry pointer table | Bank $15 pointer at $95C9: Command $01 callback operand parsed from a pointer-delimited effect script
   bank $15:$A99A | Entry pointer table | Bank $15 pointer at $9604: Command $00 callback operand parsed from a pointer-delimited effect script
   bank $15:$B017 | Entry pointer table | Bank $15 pointer at $963F: Command $00 callback operand parsed from a pointer-delimited effect script and overlapping the script pointer table boundary
-  Ghidra headless observations: 50611 instruction starts
-  FCEUX runtime observations: 16553 instruction starts
+  Ghidra headless observations: 50544 instruction starts
+  FCEUX runtime observations: 16921 instruction starts
+
+Supplementary Ghidra evidence not accepted:
+  bank $0F:$D049 contradicted: starts inside an established instruction or inline operand
+  bank $0F:$DDD8 contradicted: starts inside an established instruction or inline operand
+  bank $0F:$D049 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $0F:$DDD8 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $0F:$F5DB block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $0F:$F620 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $10:$BCC0 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $10:$BCE8 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $10:$BD40 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $12:$85A9 contradicted: starts inside an established instruction or inline operand
+  bank $12:$884C contradicted: starts inside an established instruction or inline operand
+  bank $12:$85A9 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $12:$884C block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $12:$A9ED block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $12:$AA0D block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $13:$A089 contradicted: starts inside an established instruction or inline operand
+  bank $13:$A203 contradicted: starts inside an established instruction or inline operand
+  bank $13:$A205 contradicted: starts inside an established instruction or inline operand
+  bank $13:$A089 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $13:$A203 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $13:$A660 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1B:$8F20 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1B:$8F6E block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1B:$A0F5 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1D:$A26F contradicted: starts inside an established instruction or inline operand
+  bank $1D:$A905 contradicted: starts inside an established instruction or inline operand
+  bank $1D:$A911 contradicted: starts inside an established instruction or inline operand
+  bank $1D:$A920 contradicted: starts inside an established instruction or inline operand
+  bank $1D:$B960 contradicted: starts inside an established instruction or inline operand
+  bank $1D:$A26F block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1D:$A905 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1D:$A911 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1D:$A920 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1D:$B960 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1E:$8D68 contradicted: starts inside an established instruction or inline operand
+  bank $1E:$8D68 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1E:$A59A block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$CE4C contradicted: starts inside an established instruction or inline operand
+  bank $1F:$CE4F contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D000 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D002 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D036 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D038 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D078 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D07A contradicted: starts inside an established instruction or inline operand
+  bank $1F:$D07C contradicted: starts inside an established instruction or inline operand
+  bank $1F:$DDD8 contradicted: starts inside an established instruction or inline operand
+  bank $1F:$C996 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$CE4C block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$D000 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$D036 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$D078 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$DDD8 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$ED45 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$ED4B block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F5DB block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F620 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F6F3 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F710 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F7FB block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F9D0 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$F9F8 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$FA2A block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$FAD0 block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$FB8E block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $1F:$FCFA block rejected: its decode raised an analyzer warning or overlapped a verified content range
 
 Coverage:
-  bank $08: 2382 instructions, 4642 bytes, 3 warnings
+  bank $08: 2392 instructions, 4662 bytes, 0 warnings
+  bank $0B: 283 instructions, 547 bytes, 0 warnings
   bank $0E: 162 instructions, 319 bytes, 0 warnings
-  bank $0F: 6163 instructions, 12688 bytes, 0 warnings
-  bank $10: 6819 instructions, 12812 bytes, 22 warnings
-  bank $11: 6199 instructions, 11361 bytes, 60 warnings
-  bank $12: 5708 instructions, 11225 bytes, 7 warnings
-  bank $13: 6052 instructions, 12553 bytes, 1 warnings
-  bank $14: 5413 instructions, 10592 bytes, 0 warnings
-  bank $15: 4094 instructions, 8125 bytes, 18 warnings
-  bank $16: 5665 instructions, 11681 bytes, 5 warnings
-  bank $17: 3174 instructions, 6540 bytes, 0 warnings
-  bank $18: 2352 instructions, 4680 bytes, 4 warnings
+  bank $0F: 6505 instructions, 13397 bytes, 0 warnings
+  bank $10: 6905 instructions, 12969 bytes, 0 warnings
+  bank $11: 6534 instructions, 11859 bytes, 0 warnings
+  bank $12: 5862 instructions, 11500 bytes, 0 warnings
+  bank $13: 6217 instructions, 12891 bytes, 0 warnings
+  bank $14: 5454 instructions, 10677 bytes, 0 warnings
+  bank $15: 4306 instructions, 8555 bytes, 0 warnings
+  bank $16: 6090 instructions, 12563 bytes, 0 warnings
+  bank $17: 3175 instructions, 6542 bytes, 0 warnings
+  bank $18: 2340 instructions, 4657 bytes, 0 warnings
   bank $19: 121 instructions, 235 bytes, 0 warnings
-  bank $1B: 3335 instructions, 6889 bytes, 2 warnings
-  bank $1C: 3581 instructions, 7430 bytes, 27 warnings
-  bank $1D: 5380 instructions, 10959 bytes, 9 warnings
-  bank $1E: 6356 instructions, 12787 bytes, 14 warnings
-  bank $1F: 5794 instructions, 12015 bytes, 4 warnings
+  bank $1B: 3325 instructions, 6877 bytes, 0 warnings
+  bank $1C: 4020 instructions, 8403 bytes, 0 warnings
+  bank $1D: 5417 instructions, 11002 bytes, 0 warnings
+  bank $1E: 6486 instructions, 13059 bytes, 0 warnings
+  bank $1F: 6062 instructions, 12628 bytes, 0 warnings
 
-Warnings: 176 total
-
-Control-flow conflicts: 3
-  bank $10: 1
-    $BBEB: control flow enters an existing instruction operand
-  bank $16: 1
-    $B84A: control flow enters an existing instruction operand
-  bank $1F: 1
-    $CE50: control flow enters an existing instruction operand
-
-Unsupported opcodes / probable data walks: 173
-  bank $11: 60
-    $8A2C: unsupported opcode $89; path stopped
-    $8AF6: unsupported opcode $23; path stopped
-    $8B40: unsupported opcode $14; path stopped
-    $8B66: unsupported opcode $04; path stopped
-    $8BBB: unsupported opcode $13; path stopped
-    $8BD7: unsupported opcode $D3; path stopped
-    $8BE4: unsupported opcode $8B; path stopped
-    $8D84: unsupported opcode $0F; path stopped
-    $8EF5: unsupported opcode $8F; path stopped
-    $8F09: unsupported opcode $8F; path stopped
-    $9121: unsupported opcode $17; path stopped
-    $9221: unsupported opcode $92; path stopped
-    $9275: unsupported opcode $07; path stopped
-    $9AF5: unsupported opcode $23; path stopped
-    $9B6C: unsupported opcode $0F; path stopped
-    $9C09: unsupported opcode $02; path stopped
-    $9C71: unsupported opcode $F7; path stopped
-    $A144: unsupported opcode $1A; path stopped
-    $A2AA: unsupported opcode $0F; path stopped
-    $A6C8: unsupported opcode $4F; path stopped
-    $A7A7: unsupported opcode $6B; path stopped
-    $A866: unsupported opcode $6B; path stopped
-    $A86B: unsupported opcode $E7; path stopped
-    $A8A5: unsupported opcode $83; path stopped
-    $AA88: unsupported opcode $0C; path stopped
-    $AAAC: unsupported opcode $89; path stopped
-    $AACC: unsupported opcode $02; path stopped
-    $ABD5: unsupported opcode $13; path stopped
-    $AC31: unsupported opcode $62; path stopped
-    $AC55: unsupported opcode $0B; path stopped
-    $AC5A: unsupported opcode $1B; path stopped
-    $AE82: unsupported opcode $0F; path stopped
-    $AE9B: unsupported opcode $74; path stopped
-    $AED6: unsupported opcode $A3; path stopped
-    $AF0B: unsupported opcode $03; path stopped
-    $AF36: unsupported opcode $A3; path stopped
-    $AF67: unsupported opcode $13; path stopped
-    $B113: unsupported opcode $A3; path stopped
-    $B11D: unsupported opcode $7B; path stopped
-    $B127: unsupported opcode $0C; path stopped
-    $B153: unsupported opcode $1C; path stopped
-    $B1A2: unsupported opcode $73; path stopped
-    $B1FA: unsupported opcode $03; path stopped
-    $B262: unsupported opcode $47; path stopped
-    $B31A: unsupported opcode $63; path stopped
-    $B32C: unsupported opcode $43; path stopped
-    $B38B: unsupported opcode $12; path stopped
-    $B390: unsupported opcode $13; path stopped
-    $B3C9: unsupported opcode $CF; path stopped
-    $B3D2: unsupported opcode $1A; path stopped
-    $B3E4: unsupported opcode $BF; path stopped
-    $B415: unsupported opcode $07; path stopped
-    $B423: unsupported opcode $1C; path stopped
-    $B451: unsupported opcode $14; path stopped
-    $B46E: unsupported opcode $27; path stopped
-    $B4A6: unsupported opcode $89; path stopped
-    $B751: unsupported opcode $57; path stopped
-    $B781: unsupported opcode $0F; path stopped
-    $B7ED: unsupported opcode $1F; path stopped
-    $BCC7: unsupported opcode $1B; path stopped
-  bank $1C: 27
-    $9C7D: unsupported opcode $80; path stopped
-    $A12E: unsupported opcode $0F; path stopped
-    $A162: unsupported opcode $1A; path stopped
-    $A166: unsupported opcode $F3; path stopped
-    $A176: unsupported opcode $0B; path stopped
-    $A2D8: unsupported opcode $04; path stopped
-    $A497: unsupported opcode $04; path stopped
-    $A54C: unsupported opcode $02; path stopped
-    $A591: unsupported opcode $80; path stopped
-    $A8A5: unsupported opcode $03; path stopped
-    $A913: unsupported opcode $42; path stopped
-    $A98E: unsupported opcode $80; path stopped
-    $A9DD: unsupported opcode $0F; path stopped
-    $AA20: unsupported opcode $FC; path stopped
-    $AD7D: unsupported opcode $80; path stopped
-    $AE46: unsupported opcode $BF; path stopped
-    $B299: unsupported opcode $17; path stopped
-    $B334: unsupported opcode $80; path stopped
-    $B5CC: unsupported opcode $1F; path stopped
-    $B645: unsupported opcode $02; path stopped
-    $B7C7: unsupported opcode $72; path stopped
-    $B904: unsupported opcode $02; path stopped
-    $B99D: unsupported opcode $04; path stopped
-    $B9AD: unsupported opcode $04; path stopped
-    $BA02: unsupported opcode $80; path stopped
-    $BA6F: unsupported opcode $EF; path stopped
-    $BAA3: unsupported opcode $1F; path stopped
-  bank $10: 21
-    $8B6B: unsupported opcode $03; path stopped
-    $8B70: unsupported opcode $04; path stopped
-    $8DE6: unsupported opcode $37; path stopped
-    $8DF7: unsupported opcode $8F; path stopped
-    $8DF9: unsupported opcode $AB; path stopped
-    $8E03: unsupported opcode $80; path stopped
-    $8E04: unsupported opcode $DA; path stopped
-    $8E05: unsupported opcode $A3; path stopped
-    $8E75: unsupported opcode $93; path stopped
-    $B6AC: unsupported opcode $E7; path stopped
-    $B6E6: unsupported opcode $E7; path stopped
-    $B75F: unsupported opcode $F7; path stopped
-    $BA0F: unsupported opcode $02; path stopped
-    $BA9C: unsupported opcode $02; path stopped
-    $BAAD: unsupported opcode $02; path stopped
-    $BAC6: unsupported opcode $02; path stopped
-    $BCC9: unsupported opcode $F7; path stopped
-    $BCF1: unsupported opcode $0B; path stopped
-    $BD03: unsupported opcode $1A; path stopped
-    $BD13: unsupported opcode $04; path stopped
-    $BD43: unsupported opcode $3F; path stopped
-  bank $15: 18
-    $9CFC: unsupported opcode $04; path stopped
-    $9D17: unsupported opcode $02; path stopped
-    $9D28: unsupported opcode $04; path stopped
-    $9D52: unsupported opcode $04; path stopped
-    $9E39: unsupported opcode $FA; path stopped
-    $9F82: unsupported opcode $BF; path stopped
-    $9FFB: unsupported opcode $80; path stopped
-    $A214: unsupported opcode $02; path stopped
-    $A51A: unsupported opcode $04; path stopped
-    $A9A7: unsupported opcode $FF; path stopped
-    $AC2B: unsupported opcode $04; path stopped
-    $AC8D: unsupported opcode $03; path stopped
-    $ADCF: unsupported opcode $CB; path stopped
-    $B10D: unsupported opcode $FF; path stopped
-    $B13C: unsupported opcode $FF; path stopped
-    $B142: unsupported opcode $80; path stopped
-    $B18C: unsupported opcode $FF; path stopped
-    $B632: unsupported opcode $04; path stopped
-  bank $1E: 14
-    $81F7: unsupported opcode $0B; path stopped
-    $81FE: unsupported opcode $52; path stopped
-    $8228: unsupported opcode $0C; path stopped
-    $828C: unsupported opcode $6F; path stopped
-    $82AE: unsupported opcode $6F; path stopped
-    $82AF: unsupported opcode $1C; path stopped
-    $82CD: unsupported opcode $6F; path stopped
-    $82CE: unsupported opcode $1B; path stopped
-    $82EC: unsupported opcode $6F; path stopped
-    $82ED: unsupported opcode $1A; path stopped
-    $952F: unsupported opcode $6F; path stopped
-    $9572: unsupported opcode $7F; path stopped
-    $A456: unsupported opcode $FB; path stopped
-    $ADA2: unsupported opcode $BF; path stopped
-  bank $1D: 9
-    $96F1: unsupported opcode $02; path stopped
-    $9716: unsupported opcode $02; path stopped
-    $99BF: unsupported opcode $02; path stopped
-    $9CCC: unsupported opcode $DB; path stopped
-    $A580: unsupported opcode $DF; path stopped
-    $A843: unsupported opcode $04; path stopped
-    $A908: unsupported opcode $73; path stopped
-    $AC92: unsupported opcode $DF; path stopped
-    $ACF8: unsupported opcode $02; path stopped
-  bank $12: 7
-    $84E1: unsupported opcode $04; path stopped
-    $9C91: unsupported opcode $63; path stopped
-    $9EA9: unsupported opcode $03; path stopped
-    $ADF5: unsupported opcode $FF; path stopped
-    $BE57: unsupported opcode $12; path stopped
-    $BEAF: unsupported opcode $14; path stopped
-    $BECF: unsupported opcode $63; path stopped
-  bank $16: 4
-    $B0FC: unsupported opcode $34; path stopped
-    $B40C: unsupported opcode $0B; path stopped
-    $B871: unsupported opcode $03; path stopped
-    $B8A1: unsupported opcode $3C; path stopped
-  bank $18: 4
-    $B624: unsupported opcode $FF; path stopped
-    $B65C: unsupported opcode $AB; path stopped
-    $BF5D: unsupported opcode $1C; path stopped
-    $BF97: unsupported opcode $22; path stopped
-  bank $08: 3
-    $AF5B: unsupported opcode $02; path stopped
-    $B67D: unsupported opcode $7F; path stopped
-    $B7B0: unsupported opcode $04; path stopped
-  bank $1F: 3
-    $F6D3: unsupported opcode $F7; path stopped
-    $F791: unsupported opcode $92; path stopped
-    $F793: unsupported opcode $1F; path stopped
-  bank $1B: 2
-    $8F25: unsupported opcode $E2; path stopped
-    $A100: unsupported opcode $FB; path stopped
-  bank $13: 1
-    $B7E8: unsupported opcode $FF; path stopped
+Warnings: 0 total

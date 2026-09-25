@@ -1,0 +1,4 @@
+# SHA256<TAB>File
+# Any intentional warning-ledger or original-inventory edit must update this manifest in the same reviewed change.
+D75B2030AA30BCC429C07D32553E66521900C38F126222CBBC15476AA63C6038	analyzer-warning-ledger.tsv
+F17B8DB36D2D428ECF01C9654019C3D9F256F521AEBD40CD11A0ADCEE0309E27	original-analyzer-warnings.tsv

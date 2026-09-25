@@ -6213,17 +6213,55 @@ BattleTurnEngine_Branch_AF1C:
         db   $57,$57                         ; AF3F 57 57                    WW
         db   $01,$09,$14,$14,$01,$09,$14,$14 ; AF41 01 09 14 14 01 09 14 14  ........
         db   $0A,$14,$14,$0A,$14,$14,$0A,$14 ; AF49 0A 14 14 0A 14 14 0A 14  ........
-        db   $14,$14,$20,$91,$C8,$29,$01,$F0 ; AF51 14 14 20 91 C8 29 01 F0  .. ..)..
-        db   $02,$09,$03,$85,$06,$20,$91,$C8 ; AF59 02 09 03 85 06 20 91 C8  ..... ..
-        db   $48,$29,$01,$85,$07,$E6,$07,$68 ; AF61 48 29 01 85 07 E6 07 68  H).....h
-        db   $30,$08,$A5,$05,$49,$FF,$85,$07 ; AF69 30 08 A5 05 49 FF 85 07  0...I...
-        db   $E6,$07,$20,$89,$AF,$A2,$0A,$20 ; AF71 E6 07 20 89 AF A2 0A 20  .. ....
-        db   $0C,$C9,$A5,$07,$49,$FF,$85,$07 ; AF79 0C C9 A5 07 49 FF 85 07  ....I...
-        db   $E6,$07,$20,$89,$AF,$4C,$74,$FF ; AF81 E6 07 20 89 AF 4C 74 FF  .. ..Lt.
-        db   $A4,$0A,$A2,$00,$20,$70,$C7,$A6 ; AF89 A4 0A A2 00 20 70 C7 A6  .... p..
-        db   $06,$B5,$00,$18,$65,$07,$95,$00 ; AF91 06 B5 00 18 65 07 95 00  ....e...
-        db   $A2,$00,$20,$3E,$C7,$C8,$98,$A6 ; AF99 A2 00 20 3E C7 C8 98 A6  .. >....
-        db   $04,$DD,$1D,$AF,$90,$E4,$60     ; AFA1 04 DD 1D AF 90 E4 60     ......`
+        db   $14,$14                         ; AF51 14 14                    ..
+; ----------------------------------------------------------------------------
+BattleTurnEngine_Entry_AF53:
+        jsr     UpperFixedEngine_Entry_C891     ; AF53 20 91 C8                  ..
+        and     #$01                            ; AF56 29 01                    ).
+        beq     BattleTurnEngine_Branch_AF5C    ; AF58 F0 02                    ..
+        ora     #$03                            ; AF5A 09 03                    ..
+BattleTurnEngine_Branch_AF5C:
+        sta     $06                             ; AF5C 85 06                    ..
+        jsr     UpperFixedEngine_Entry_C891     ; AF5E 20 91 C8                  ..
+        pha                                     ; AF61 48                       H
+        and     #$01                            ; AF62 29 01                    ).
+        sta     $07                             ; AF64 85 07                    ..
+        inc     $07                             ; AF66 E6 07                    ..
+        pla                                     ; AF68 68                       h
+        bmi     BattleTurnEngine_Branch_AF73    ; AF69 30 08                    0.
+        lda     $05                             ; AF6B A5 05                    ..
+        eor     #$FF                            ; AF6D 49 FF                    I.
+        sta     $07                             ; AF6F 85 07                    ..
+        inc     $07                             ; AF71 E6 07                    ..
+BattleTurnEngine_Branch_AF73:
+        jsr     BattleTurnEngine_Entry_AF89     ; AF73 20 89 AF                  ..
+        ldx     #$0A                            ; AF76 A2 0A                    ..
+        jsr     UpperFixedEngine_Entry_C90C     ; AF78 20 0C C9                  ..
+        lda     $07                             ; AF7B A5 07                    ..
+        eor     #$FF                            ; AF7D 49 FF                    I.
+        sta     $07                             ; AF7F 85 07                    ..
+        inc     $07                             ; AF81 E6 07                    ..
+        jsr     BattleTurnEngine_Entry_AF89     ; AF83 20 89 AF                  ..
+        jmp     WaitForNmi                      ; AF86 4C 74 FF                 Lt.
+; ----------------------------------------------------------------------------
+BattleTurnEngine_Entry_AF89:
+        ldy     $0A                             ; AF89 A4 0A                    ..
+BattleTurnEngine_Branch_AF8B:
+        ldx     #$00                            ; AF8B A2 00                    ..
+        jsr     UpperFixedEngine_Entry_C770     ; AF8D 20 70 C7                  p.
+        ldx     $06                             ; AF90 A6 06                    ..
+        lda     $00,x                         ; AF92 B5 00                    ..
+        clc                                     ; AF94 18                       .
+        adc     $07                             ; AF95 65 07                    e.
+        sta     $00,x                         ; AF97 95 00                    ..
+        ldx     #$00                            ; AF99 A2 00                    ..
+        jsr     UpperFixedEngine_Entry_C73E     ; AF9B 20 3E C7                  >.
+        iny                                     ; AF9E C8                       .
+        tya                                     ; AF9F 98                       .
+        ldx     $04                             ; AFA0 A6 04                    ..
+        cmp     $AF1D,x                         ; AFA2 DD 1D AF                 ...
+        bcc     BattleTurnEngine_Branch_AF8B    ; AFA5 90 E4                    ..
+        rts                                     ; AFA7 60                       `
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_Entry_AFA8:
         lda     $08                             ; AFA8 A5 08                    ..

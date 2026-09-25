@@ -1,5 +1,6 @@
 # Bank<TAB>Start<TAB>EndExclusive<TAB>Source<TAB>Reason
 08	8000	803C	Direct ROM analysis	30-entry map and tile service directory
+0B	8000	8010	Direct ROM analysis	Eight-entry mixed service directory selected by BRK selector $B7; data targets are excluded
 0E	8000	8008	Direct ROM analysis	Four-entry graphics and palette service directory
 0F	DEA5	DEA9	Direct ROM analysis	Two-entry map-object operation table selected and dispatched at $DE92-$DEA2
 0F	DF02	DF64	Direct ROM analysis	49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero
@@ -45,14 +46,16 @@
 15	8000	8034	Direct ROM analysis	26-entry code dispatch table
 16	8000	8028	Direct ROM analysis	20-entry text and user-interface service directory
 16	80C4	80EA	Direct ROM analysis	Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2
+16	93F0	9410	Direct ROM analysis	Sixteen text/UI handlers pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 and entered by RTS at $93EF; CMP #$C6 at $93ED sets the flags that handler $9477 tests	rts
+16	99A3	99B7	Direct ROM analysis	Ten text/UI command handlers for command values of 6 and above, dispatched by LDA $99A4,Y/$99A3,Y and RTS at $99A2; the table ends at $99B7, the BEQ $99B7 target at $9991 executed at runtime	rts
+16	A3A7	A3AF	Direct ROM analysis	Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table	rts
 16	A5E9	A655	Direct ROM analysis	Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
-16	A68D	A68F	Direct ROM analysis	Primary text/UI escape handler at the seventh command-pointer low-byte wrap, dispatched through $9841/$987F
 16	A6DF	A6F3	Direct ROM analysis	Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
-16	A703	A705	Direct ROM analysis	Secondary text/UI escape handler at the third command-pointer low-byte wrap, dispatched through $9841/$987F
 16	A73B	A777	Direct ROM analysis	Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
 16	A777	A787	Direct ROM analysis	Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
-16	A787	A793	Direct ROM analysis	Six text/UI handlers dispatched through the RTS-stack helper at $A4DE
-16	A793	A7AB	Direct ROM analysis	Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4
+16	A787	A793	Direct ROM analysis	Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1	rts
+16	A793	A7AB	Direct ROM analysis	Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1	rts
+16	BCD9	BCEB	Direct ROM analysis	Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB	rts
 17	8000	804C	Direct ROM analysis	38-entry mixed map-system directory followed by code at $804C
 18	8000	8046	Direct ROM analysis	35-entry mixed bank directory; known data targets are excluded
 19	8000	8014	Direct ROM analysis	Ten-entry mixed map and tileset service directory
@@ -67,6 +70,7 @@
 1D	B62A	B72A	Direct ROM analysis	128-entry low-half map-event handler table selected by event ID and dispatched at $98AD
 1D	B72A	B73E	Direct ROM analysis	Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA
 1E	8000	8090	Direct ROM analysis	72-entry map and entity interaction service directory
+1E	80AA	80BA	Direct ROM analysis	Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table	rts
 1E	A499	A4A3	Direct ROM analysis	Five-entry chapter map-interaction handler table selected by SaveCurrentChapterMinus1 and dispatched at $A496
 1E	BBAE	BBB6	Direct ROM analysis	Four-entry map-interaction handler table selected by keys $BBAA-$BBAD and dispatched through $0000 at $BB2B
 1E	BC3D	BC4D	Direct ROM analysis	Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476
@@ -74,3 +78,4 @@
 1F	DEA5	DEA9	Direct ROM analysis	Two-entry map-object operation table selected and dispatched at $DE92-$DEA2
 1F	DF02	DF64	Direct ROM analysis	49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero
 1F	DF64	DF7A	Direct ROM analysis	Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8
+1F	E812	E842	Direct ROM analysis	Twenty-four audio command handlers for command bytes $E8-$FF; $E7F4-$E809 complements and doubles the command, loads the stored handler-minus-one value, and returns into value+1 through RTS	rts

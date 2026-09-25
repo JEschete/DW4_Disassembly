@@ -11,27 +11,36 @@
 08	8229	822F	Content classification	Graphics-page base pointer table
 08	8ADB	979B	Content classification	Fifty-one 64-byte tilesets
 08	979B	AEE3	Content classification	Auxiliary tile data, increment data, explicit pointers, tile definitions, and animated pointers
+08	B7AE	B7AF	Content classification	Target of service directory entry $14 at $8028: no decoded BRK selects the entry, linear decode reaches unsupported opcode $04 at $B7B0, and FCEUX never executed it
 08	B7F7	BE94	Content classification	Map routing pointers, fixed records, variable submap stream, and coordinate records
 08	BE94	BF64	Content classification	Twenty-six fixed eight-byte map records selected by mixed directory entry $8036
 08	BF64	C000	Content classification	Padding and compatibility footer
 08	B66A	B66D	Content classification	Three operands for BRK service $07,$EB at $B669
 09	8000	C000	Content classification	Compressed map data
 0A	8000	C000	Content classification	Compressed map data
-0B	8000	C000	Content classification	Compressed map and overworld data with row-pointer tables
+0B	A590	A591	Content classification	Data target of bank $0B directory entry $00: the 256-record main overworld row table at $A590
+0B	AB65	AB66	Content classification	Data target of bank $0B directory entry $01: the 64-record Gottside row table at $AB65
+0B	AE89	AE8A	Content classification	Data target of bank $0B directory entry $03: the 54-record underworld row table at $AE89
 0C	8000	C000	Content classification	Raw map tile graphics
 0D	8000	C000	Content classification	Raw map and character graphics with padding
 0E	8000	8008	Content classification	Graphics and palette service pointer directory
 0E	8091	8097	Content classification	Palette source and destination pointers
 0E	8097	BAD7	Content classification	Character sprite graphics
-0E	BB53	BE13	Content classification	Palette override, lookup, color-set, and color tables
+0E	BB53	BE0B	Content classification	Palette override, lookup, color-set, and color tables
+0E	BE0B	BE0C	Content classification	Data target of directory entry $02, fetched in pointer mode by BRK $82,$E7 at bank $08:$AEE5 and $B06C
 0E	BF48	C000	Content classification	Padding and compatibility footer
+0F	C019	C02E	Content classification	Zero-filled lower fixed-bank trampoline slots 08-0E; upper fixed bank $1F holds JMP instructions in the same slots
 0F	FB6C	FF74	Content classification	Consumer-bounded PPU upload pointers, tile streams, attribute bytes, and masks
 10	8000	8080	Content classification	Battle and party service pointer directory
+10	8DE2	8DE3	Content classification	Target of service directory entry $20 at $8040: no decoded BRK selects the entry, linear decode reaches unsupported opcode $37 at $8DE6, and FCEUX never executed it
+10	8E61	8E62	Content classification	Target of service directory entry $21 at $8042: no decoded BRK selects the entry, linear decode reaches unsupported opcode $93 at $8E75, and FCEUX never executed it
 10	9E30	9F12	Content classification	Battle action handler pointer table
 10	AAA6	AB06	Content classification	Battle-record operation handler pointer table
 10	B499	B58B	Content classification	Battle effect pointer-table address and 120-entry handler directory
+10	BCC7	BCC8	Content classification	Target of service directory entry $3B at $8076: no decoded BRK selects the entry, linear decode reaches unsupported opcode $F7 at $BCC9, and FCEUX never executed it
+10	BD0E	BD0F	Content classification	Target of service directory entry $3D at $807A: no decoded BRK selects the entry, linear decode reaches unsupported opcode $04 at $BD13, and FCEUX never executed it
+10	BD28	BD29	Content classification	Target of service directory entry $3F at $807E: no decoded BRK selects the entry, linear decode reaches unsupported opcode $3F at $BD43, and FCEUX never executed it
 11	8000	8032	Content classification	Battle action and state service pointer directory
-10	8B5C	8B5E	Content classification	Two operands ($01,$60) consumed by ora ($60,x) after jsr $8C18 at $8B59
 10	8B66	8B67	Content classification	One operand ($02) consumed by jsr $8C18 at $8B63
 10	8485	8486	Ghidra headless	Ghidra starts at the high operand byte of LDX $6E0D at $8483 and overlaps verified code at $8486
 10	8202	8203	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $FD at $8201; fallthrough resumes at BRK $8203
@@ -70,23 +79,16 @@
 12	9B80	9B88	Content classification	Eight bounded battle position masks
 12	9BDD	9BFD	Content classification	OAM motion sequence and signed coordinate deltas
 12	8A36	8EAD	Content classification	Pointer-selected setup maps and parser-consumed battle setup records before code resumes at $8EAD
-12	84DC	84DD	Content classification	Operand byte of branch instruction at $84CE
-12	85AB	85AC	Control-flow analysis	Speculative path enters the high operand byte of STA $4860,Y at $85A9
 12	96A6	96A7	Ghidra headless	Ghidra starts at the operand byte of STA $6E at $96A5 and overlaps verified code at $96A7
 12	B932	B933	Control-flow analysis	Speculative path enters the relative operand byte of BCC $B951 at $B931
 12	A997	A998	Ghidra headless	Ghidra starts at the relative operand of the verified BEQ $A9C5 at $A996; fallthrough resumes at CPX #$44 at $A998
 12	B0A5	B0A6	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $FE at $B0A4; fallthrough resumes at STA $FF at $B0A6
 12	B1C8	B1C9	Ghidra headless	Ghidra starts at the high operand byte of the verified LDA $B1E7,X at $B1C6, creating overlapping decodes at $B1C8 and $B1CA
+12	BDC9	BDCA	Content classification	Target of service directory entry $2F at $805E: no decoded BRK selects the entry, and decoding it yields JMP ($F0EE), which jumps through fixed-bank operand bytes into data
+12	BE4E	BE4F	Content classification	Target of service directory entry $30 at $8060: no decoded BRK selects the entry, linear decode reaches unsupported opcode $12 at $BE57, and FCEUX never executed it
+12	BECD	BECE	Content classification	Target of service directory entry $31 at $8062: no decoded BRK selects the entry, linear decode reaches unsupported opcode $63 at $BECF, and FCEUX never executed it
 12	BF68	BFD8	Content classification	Contiguous $FF padding before the compatibility footer
-11	8BFC	8BFD	Content classification	Operand byte in middle of loop; Ghidra misidentifies as entry
 11	9933	9934	Content classification	Low byte of jsr operand at $9932
-11	9C68	9C69	Content classification	Operand byte of branch instruction at $9C5F
-11	AA86	AA87	Content classification	Operand byte of branch instruction at $AA6B
-11	AC29	AC2A	Content classification	Operand byte of branch instruction at $AC21
-11	B09C	B09D	Content classification	Operand byte of branch instruction at $B08E
-11	B11A	B11B	Content classification	Operand byte of branch instruction at $B0F4
-11	B19E	B19F	Content classification	Operand byte of jmp instruction at $B197
-11	B1CB	B1CC	Content classification	Operand byte of branch instruction at $B1C4
 11	B1F5	B1F6	Content classification	Operand byte of branch instruction at $B1F4
 13	8000	8038	Content classification	Battle presentation and state pointer directory
 13	8AEF	8B8B	Content classification	Two explicitly bounded battle-presentation lookup arrays before the action-handler pointer table
@@ -97,6 +99,8 @@
 13	8DFF	8E00	Ghidra headless	Ghidra starts at the low operand byte of the verified JSR $8198 at $8DFE; fallthrough resumes at LDY #$00 at $8E01
 13	9C20	9C21	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $8C at $9C1F, creating overlapping decodes through $9C25
 13	A102	A103	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $94 at $A101; fallthrough resumes at LDA $7C at $A103
+13	B7B0	B7BA	Ghidra headless	Supplementary Ghidra decode has no static or runtime code predecessor and lies inside the larger $B74D-$B80A indexed battle-presentation data neighborhood; keep unclassified until an exact data reader or code path proves these bytes
+13	B7E3	B7E4	Content classification	Data target of service directory entry $0F at $801E: the only decoded caller, BRK $8F,$3F at bank $12:$A94C, sets bit 7 of the entry byte, so dispatcher path $C3CE returns the pointer instead of calling it
 13	B80B	B90B	Content classification	Directly indexed 256-byte battle presentation lookup table before code at $B90B
 13	B967	BA4E	Content classification	Directly indexed battle presentation lookup table misidentified as code by the Ghidra range ending at $B96F
 13	BBCB	BFD8	Content classification	Seven directory-delimited battle-presentation command streams followed by contiguous $FF padding
@@ -112,7 +116,6 @@
 16	9D49	9D4F	Content classification	Six cursor-position values
 16	9DED	9DF1	Content classification	Four menu-mode values
 16	9E7F	9EE7	Content classification	Two indexed text/UI selection maps
-16	8896	8897	Content classification	Operand byte of branch instruction at $8895
 16	A4FF	AAF7	Content classification	Text/UI interpreter pointer directories, dispatch tables, and variable records before code at $AAF7
 17	8000	804C	Content classification	Mixed map-system service and data directory
 17	8069	806C	Content classification	Inline operands for fixed-bank BRK service at $8068
@@ -203,7 +206,7 @@
 17	9D30	9D32	Content classification	Inline operands for fixed-bank BRK service at $9D2F
 17	9D3A	9D3C	Content classification	Inline operands for fixed-bank BRK service at $9D39
 17	9D3E	9D40	Content classification	Inline operands for fixed-bank BRK service at $9D3D
-17	9DC6	9DD0	Content classification	Ten-value numeric lookup table
+17	9DC8	9DD0	Content classification	Bytes after BCS $9D70 at $9DC6, which is always taken because it is reached only when BCC $9D8C at $9DC4 falls through; no consumer is known
 17	9E14	9E16	Content classification	Inline operands for fixed-bank BRK service at $9E13
 17	9E58	9E68	Content classification	Eight little-endian numeric values
 17	9ED7	9EE6	Content classification	Three five-byte map comparison tables
@@ -231,7 +234,12 @@
 18	92AA	995A	Direct ROM analysis	107 fixed-size 16-byte monster encounter records
 18	A27B	A813	Content classification	Encounter rates, weights, formations, world grids, map records, and battle data pointer
 18	B23F	B40D	Content classification	Battle animation pointers and three parallel 152-byte arrays
+18	B620	B621	Content classification	Target of service directory entry $20 at $8040: no decoded BRK selects the entry, linear decode reaches unsupported opcode $FF at $B624, and FCEUX never executed it
+18	B65A	B65B	Content classification	Target of service directory entry $22 at $8044: no decoded BRK selects the entry, linear decode reaches unsupported opcode $AB at $B65C, and FCEUX never executed it
 18	B83D	BDBD	Direct ROM analysis	One-bitplane font glyph data uploaded by bank $18:$B798
+18	BF55	BF56	Content classification	Target of service directory entry $1D at $803A: no decoded BRK selects the entry, linear decode reaches unsupported opcode $1C at $BF5D, and FCEUX never executed it
+18	BF8C	BF8D	Content classification	Target of service directory entry $1F at $803E: no decoded BRK selects the entry, linear decode reaches unsupported opcode $22 at $BF97, and FCEUX never executed it
+18	BF90	BF91	Content classification	Target of service directory entry $1E at $803C: no decoded BRK selects the entry, and linear decode reaches BRK $6B,$06, whose selector names bank $00 without a service directory
 19	8000	8014	Content classification	Mixed map and tileset service directory
 19	804D	8050	Content classification	Inline operands for fixed-bank BRK service at $804C
 19	806C	806F	Content classification	Inline operands for fixed-bank BRK service at $806B
@@ -335,13 +343,8 @@
 1D	BBB4	BBF3	Content classification	Statically reachable display command pattern bytes
 1D	B8BB	B904	Content classification	Twelve fixed-size map-event routing records and terminal $FF
 1D	BA9B	BAEB	Content classification	Bounded 48-byte display payload and 32-byte OAM initialization template
-1D	A087	A08A	Ghidra headless	Ghidra starts at the low operand byte of the verified JMP $A08C at $A086
 1D	A420	A421	Ghidra headless	Ghidra starts at the operand byte of LDX #$00 at $A41F
 1D	AD60	AD62	Ghidra headless	Ghidra starts inside the STA $7046,X operand at $AD5F
-1D	AF8E	AF92	Ghidra headless	Ghidra range starts inside LDA PlayerLocalY at $AF8D and conflicts with the following immediate comparison
-1D	AFAE	AFB0	Ghidra headless	Ghidra starts at the immediate operand of LDA #$25 at $AFAD
-1D	B1D6	B1D7	Ghidra headless	Static path enters the high operand byte of JSR $8568 at $B1D4
-1D	B92B	B92E	Ghidra headless	Ghidra starts inside the absolute indexed operand preceding the verified STA $6FE0,X path
 1D	9D97	9D98	Ghidra headless	Ghidra starts at the low operand byte of the verified JMP $9E20 at $9D96; the branch target at $9D99 is a real BRK service path
 1E	8000	8090	Content classification	Map and entity interaction service pointer directory
 1E	8BD1	8C48	Content classification	Seven row offsets and seven sixteen-step map animation motion curves
@@ -360,18 +363,11 @@
 1E	BC34	BC7A	Content classification	Count-bounded map event and object keys, handler pointers, and result lookup
 1E	BCED	BDAB	Content classification	Twenty-seven seven-byte coordinate event records and terminal $FF
 1E	BDAB	C000	Content classification	Consumer-bounded map event tables, interaction records, padding, and compatibility footer
-1E	A9C5	A9C7	Ghidra headless	Ghidra starts at the operand byte of LDA $51 at $A9C4 and overlaps the following AND #$03
 1E	9BBD	9BBE	Ghidra headless	Ghidra starts at the high operand byte of the verified LDA SaveCurrentChapterMinus1 at $9BBB; fallthrough resumes at CMP #$04 at $9BBE
-1C	A175	A176	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1C	A1A1	A1A2	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
-1C	A1D0	A1D4	Ghidra headless	Ghidra starts at overlapping instruction operands in recovered map-event code
 1C	A3E6	A3E7	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
-1C	A4B7	A4B8	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1C	A71F	A720	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1C	A7B0	A7B1	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
-1C	AA4C	AA4D	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
-1C	AB15	AB16	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
-1C	B9AA	B9AB	Ghidra headless	Ghidra starts at an instruction operand in recovered map-event code
 1F	F7F5	F7F8	Direct ROM analysis	Repeated graphic/table bytes misdecoded as INC absolute
 1F	EC85	ED45	Content classification	Ninety-six little-endian audio period values; Ghidra misidentifies the leading table bytes as code
 1F	CEF8	CF03	Content classification	Eleven selector values consumed by the bounded loop at $CEBE

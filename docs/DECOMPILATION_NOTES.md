@@ -913,3 +913,134 @@ The next pass raised detailed coverage by another 4,237 bytes, from 96.56% to 97
 - Several false instruction paths were removed, including bank `$13` command streams and the lookup table beginning at `$B967`; this reduced decoded indirect jumps from 42 to 41 and recovered-path warning cases from 45 to 42.
 
 Cumulative unclassified PRG fell by 7,411 bytes from the original 21,219-byte checkpoint to 13,808 bytes in 708 ranges. The completion gate passes with 2,066 typed pointers, 1,968/1,968 executable targets decoded, 41/41 indirect jumps audited, 3/3 control-flow conflicts audited, and exact ROM reproduction.
+## Inline-Operand ABI And Evidence-Priority Pass - 2026-09-23/24
+
+This pass started from a provisional 99.41% claim and first reduced it to 98.38%, from 510,480 bytes (97.37%) at
+the previous commit. It then rebuilt the evidence rules and reached 519,498 / 524,288 bytes (99.09%), leaving
+4,790 unclassified bytes in 223 ranges. Several earlier claims turned out to be wrong and were withdrawn; they are
+listed below with the reasons.
+
+### Withdrawn provisional claims
+
+- Lookup spans: a traced indexed consumer proves a table base, not every byte to the end of the enclosing
+  unclassified interval. All 242 inferred spans (5,400 bytes) were removed. A table's extent is now taken only
+  from a decoded format, an index bound in code, a sentinel, a fixed record count, runtime reads, or an
+  independently proven adjacent boundary.
+- A per-call-site BRK registration pass concluded that `$25,$23` was a "two-operand exception". It is not: the
+  handler for selector `$23` consumes three operands, and `$12:$9C9E` decodes coherently only as
+  `BRK $25,$23,$09; LDA $09; ASL A; ADC $09; TAX`.
+
+### Inline-operand ABI from handler code
+
+The IRQ/BRK dispatcher (`$C408`, byte-identical in both fixed banks) routes selector low nibbles `$3` and `$B`
+before any service lookup. The operand counts therefore follow from the handlers themselves:
+
+- `$C4F8` sends `$x3` selectors to bank `$10` entries `$00-$09`, bank `$10` entries `$22-$24`, or bank `$12` entries
+  `$01-$03`. Each handler advances the stacked return address by an amount that depends only on the selector. For
+  example, `$80D1` takes a second `INY` unless `CMP #$33` matches. This gives `$03/$13/$33/$53/$73/$A3/$B3/$E3/$F3`
+  two operands, `$23/$43/$63/$93/$C3/$D3` three, and `$83` four.
+- `$C4A1` increments the stacked return for `$CB/$DB/$EB`, the three-operand flag services. The other `$xB`
+  selectors return through `$C38B` untouched.
+- Default-family services resume at BRK+3 unless their handler moves the return address. Bank `$16` entries
+  `$01/$07/$09` (`$8A18/$8A45/$8A72`) do, with `INC $0105,x` or `INC $0106,x`.
+- `JSR $11:$BF2E` and `JSR $10:$8C18` each consume one inline byte. The six `$10:$8B59-$8B76` stubs are
+  `JSR $8C18 / .byte n / RTS`.
+
+`config/inline-operand-abi.tsv` records each rule with its handler. Fixed-bank BRKs now follow the same ABI. They
+had been treated as terminal, which left 99 operand ranges unclassified. The original deduplicated execution trace
+proved that no inline operand byte was executed, but it could not prove causal returns. Stack-correlated tracing now
+proves the declared continuation for 115 call sites; 103 historical sites are retained as `legacy-address-only`.
+Extraction rejects any causal observation that disagrees with the handler-derived ABI.
+
+### Evidence priority and invalid-code rules
+
+- Curated, pointer, runtime, and flow evidence decode first. Imported Ghidra blocks are supplementary, decoded
+  with the ABI, and rejected if they start inside established code, raise any warning, or overlap a verified
+  content range. The rejected Ghidra decodes included the "intentional overlap" at `$1F:$CE50`, two indirect
+  jumps inside the `$1F` tile graphics, the chapter-record table at `$1E:$A599`, and the SRAM routine image at
+  `$1F:$C98F` (it executes at `$6CAD`).
+- A BRK whose selector names a bank without a verified service directory, or a JSR/JMP into `$0800-$5FFF`, stops
+  its path. A branch that immediately follows its complement (`BCS`/`BCC`, `BNE`/`BEQ`, ...) ends fallthrough.
+- A single executed-instruction observation no longer shadows real flow. The queue is keyed by visit mode, so
+  the jump into `$1F:$ED4B` now reaches the fallthrough code at `$ED60`.
+- Executed code inside a code exclusion is an error. That rule exposed bank `$0B`. Its whole-bank map-data claim
+  had hidden a mixed service directory at `$8000` and 255 runtime-executed instructions at `$AF61`, `$BE1F`, and
+  `$BF36`, which an earlier pass had dismissed as Ghidra false positives.
+
+### Corrected existing claims
+
+- Twenty-four code exclusions and three `OverlappingCode` ranges existed only because of wrong BRK counts. Their
+  stated reasons, such as "operand byte of branch instruction", no longer matched the ROM, and they are removed.
+- Fifteen directory entries typed as executable point to data. Their decodes reach unsupported opcodes, and bank
+  `$13` entry `$0F` is fetched only in pointer mode. Bank `$12` entry `$2F` produced the audited "static trap"
+  `JMP ($F0EE)`.
+- RTS-dispatch tables store handler-1. The bank `$16` tables at `$A787/$A793` had seeded the wrong byte, which
+  created the phantom `$16:$B84A` overlap. Tables now carry an `rts` dispatch column.
+- Bank `$0F:$C019-$C02D` holds zero-filled trampoline slots, not JMP trampolines.
+- `$0E` palette data ends at `$BE0A`. The next 223 bytes are map-coordinate link records fetched through
+  directory entry `$02`.
+- `$17:$9DC6` is `BCS $9D70`, not the first entry of a "ten-value table". The remaining 8 bytes have no consumer
+  and are unclassified.
+
+### Warning accounting by identity
+
+The previous gate reported "143/143 original warnings" by arithmetic. By identity, 26 of those warnings were
+neither current nor recorded as resolved. `config/analyzer-warning-ledger.tsv` now records all 215 warning
+identities ever tracked, including the original 143 recovered from commit `36054ed` into
+`config/original-analyzer-warnings.tsv`. Extraction requires current warnings to match the ledger exactly, and it
+re-checks every resolved disposition. There are 0 current warnings and 0 control-flow conflicts. This replaces
+`scripts/triage-conflicts.ps1`, `config/resolved-unsupported-opcodes.tsv`, and
+`config/control-flow-conflicts.tsv`.
+
+The warning ledger and original inventory are also covered by `config/analyzer-warning-manifest.tsv`. Extraction
+fails if reason text changes or a post-original resolved identity is deleted without updating the reviewed manifest.
+The final code/content intersection must exactly match `config/code-data-overlaps.tsv`, so runtime, curated, pointer,
+guarded, and Ghidra seeds cannot silently create new code inside typed data.
+
+### Newly typed content
+
+The new ranges fall into these kinds:
+
+- Index-bounded tables, with each citation checked by extraction.
+- Sentinel-terminated record lists.
+- RTS-dispatch tables whose value+1 targets all decode.
+- Fully runtime-read tables, since FCEUX does not log dummy reads.
+- The structurally tiled map regions in bank `$0B`.
+- Fixed-bank footers and the NMI trampoline pointer.
+
+The largest items are:
+
+- Bank `$0B`: rows, row records, location maps, and composition tables, all proven by exact tiling or by
+  simulating the consumer over every record.
+- Bank `$12:$9135-$91DC`: eleven loop-bounded tables.
+- Bank `$1C:$9F8A-$A00F`: two `$FF`-terminated record lists.
+- Bank `$14:$A621-$A67E`: step and palette tables.
+
+The unreferenced routine at `$14:$AF53` is seeded from call consistency. It makes five JSRs to decoded
+fixed-bank routines and two internal calls.
+
+### Remaining backlog
+
+The remaining 4,790 bytes have no evidence strong enough to type them:
+
+- The bank `$12`, `$10`, and `$18` script-like regions need their interpreter identified.
+- Several tables need variable ranges that are not yet proven (`$62D5`, `$7599`).
+- Short unreferenced fragments between routines stay unclassified rather than being called padding or code
+  without a consumer.
+
+## Evidence-Hardening Stopping Point - 2026-09-24
+
+After hardening the validators and classifying only ranges with explicit masks, loop counts, sentinels, record
+counts, RTS-dispatch targets, or independently proven boundaries, detailed coverage is 520,308 / 524,288 bytes
+(99.24%). The remaining backlog is 3,980 bytes in 212 ranges. This is an 810-byte net reduction from the 99.09%
+checkpoint while also removing ten unsupported instruction bytes at bank `$13:$B7B0-$B7B9`.
+
+Newly closed content includes exact map-override and tile-pattern tables in bank `$08`, duplicated bounded battle
+tables in banks `$10/$13`, fixed-size battle and map records in banks `$12-$1E`, masked fixed-bank tables, and the
+24-entry bank `$1F:$E812-$E841` audio RTS-dispatch table. Registering that table recovered all 36 handler bytes at
+`$E842-$E865` as code through value+1 targets rather than opcode appearance.
+
+The remaining large ranges are intentionally open. Directory targets alone do not prove the extents of bank `$10`
+and `$12` data, `$12:$B977-$BA3D` has no consumer, bank `$18:$ADA3-$AE4E` depends on the unbounded value `$62D5`,
+and the larger bank `$13/$1E` tables still have variable-derived endpoints. Further classification requires new
+interpreter discovery, variable-range proof, or targeted runtime reads.

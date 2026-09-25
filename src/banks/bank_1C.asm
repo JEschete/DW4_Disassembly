@@ -764,6 +764,7 @@ MapEntitySystem_Entry_96E7:
         stx     $DA                             ; 96E9 86 DA                    ..
         ldx     $3B                             ; 96EB A6 3B                    .;
         stx     $DB                             ; 96ED 86 DB                    ..
+MapEntitySystem_Branch_96EF:
         rts                                     ; 96EF 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_96F0:
@@ -778,31 +779,33 @@ MapEntitySystem_Entry_96FC:
         jsr     MapEntitySystem_Entry_96E7      ; 96FC 20 E7 96                  ..
         tax                                     ; 96FF AA                       .
         beq     MapEntitySystem_Branch_971A     ; 9700 F0 18                    ..
+MapEntitySystem_Branch_9702:
         ldy     #$00                            ; 9702 A0 00                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9704 20 4E 99                  N.
-        beq     $96EF                           ; 9707 F0 E6                    ..
+        beq     MapEntitySystem_Branch_96EF     ; 9707 F0 E6                    ..
         jsr     MapEntitySystem_Entry_9B71      ; 9709 20 71 9B                  q.
         jsr     MapEntitySystem_Entry_9BB0      ; 970C 20 B0 9B                  ..
         jsr     MapEntitySystem_Entry_9BBA      ; 970F 20 BA 9B                  ..
         jsr     MapEntitySystem_Entry_9798      ; 9712 20 98 97                  ..
-        bcs     $9702                           ; 9715 B0 EB                    ..
+        bcs     MapEntitySystem_Branch_9702     ; 9715 B0 EB                    ..
         dex                                     ; 9717 CA                       .
-        bne     $9702                           ; 9718 D0 E8                    ..
+        bne     MapEntitySystem_Branch_9702     ; 9718 D0 E8                    ..
 MapEntitySystem_Branch_971A:
         jsr     MapEntitySystem_Entry_9798      ; 971A 20 98 97                  ..
-        bcc     $972B                           ; 971D 90 0C                    ..
+        bcc     MapEntitySystem_Branch_972B     ; 971D 90 0C                    ..
         jsr     MapEntitySystem_Entry_9B71      ; 971F 20 71 9B                  q.
         jsr     MapEntitySystem_Entry_9BB0      ; 9722 20 B0 9B                  ..
         jsr     MapEntitySystem_Entry_9BBA      ; 9725 20 BA 9B                  ..
         jmp     MapEntitySystem_Branch_971A     ; 9728 4C 1A 97                 L..
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_972B:
         ldy     #$00                            ; 972B A0 00                    ..
         jsr     MapEntitySystem_Entry_994E      ; 972D 20 4E 99                  N.
         sta     $02                             ; 9730 85 02                    ..
         and     #$80                            ; 9732 29 80                    ).
         sta     $04                             ; 9734 85 04                    ..
         jsr     MapEntitySystem_Entry_9BD9      ; 9736 20 D9 9B                  ..
-        bcs     $975A                           ; 9739 B0 1F                    ..
+        bcs     MapEntitySystem_Branch_975A     ; 9739 B0 1F                    ..
         ldy     #$05                            ; 973B A0 05                    ..
         jsr     MapEntitySystem_Entry_96F0      ; 973D 20 F0 96                  ..
         jsr     MapEntitySystem_Entry_994E      ; 9740 20 4E 99                  N.
@@ -820,6 +823,7 @@ MapEntitySystem_Branch_974B:
         sta     $01                             ; 9754 85 01                    ..
         ldy     #$04                            ; 9756 A0 04                    ..
         bne     MapEntitySystem_Branch_9792     ; 9758 D0 38                    .8
+MapEntitySystem_Branch_975A:
         ldy     #$06                            ; 975A A0 06                    ..
         jsr     MapEntitySystem_Entry_96F0      ; 975C 20 F0 96                  ..
         lda     $02                             ; 975F A5 02                    ..
@@ -857,14 +861,16 @@ MapEntitySystem_Branch_9792:
 MapEntitySystem_Entry_9798:
         ldy     #$00                            ; 9798 A0 00                    ..
         jsr     MapEntitySystem_Entry_9BD9      ; 979A 20 D9 9B                  ..
-        bcs     $97A8                           ; 979D B0 09                    ..
+        bcs     MapEntitySystem_Branch_97A8     ; 979D B0 09                    ..
         jsr     MapEntitySystem_Entry_994E      ; 979F 20 4E 99                  N.
         and     #$10                            ; 97A2 29 10                    ).
         beq     MapEntitySystem_Branch_97B1     ; 97A4 F0 0B                    ..
-        bne     $97AF                           ; 97A6 D0 07                    ..
+        bne     MapEntitySystem_Branch_97AF     ; 97A6 D0 07                    ..
+MapEntitySystem_Branch_97A8:
         jsr     MapEntitySystem_Entry_994E      ; 97A8 20 4E 99                  N.
         and     #$08                            ; 97AB 29 08                    ).
         beq     MapEntitySystem_Branch_97B1     ; 97AD F0 02                    ..
+MapEntitySystem_Branch_97AF:
         clc                                     ; 97AF 18                       .
         rts                                     ; 97B0 60                       `
 ; ----------------------------------------------------------------------------
@@ -881,9 +887,10 @@ MapEntitySystem_Entry_97B3:
 Bank1C_MapEntityServices:
         ldx     #$0F                            ; 97BC A2 0F                    ..
         lda     #$FF                            ; 97BE A9 FF                    ..
+MapEntitySystem_Branch_97C0:
         sta     $6E5E,x                         ; 97C0 9D 5E 6E                 .^n
         dex                                     ; 97C3 CA                       .
-        bpl     $97C0                           ; 97C4 10 FA                    ..
+        bpl     MapEntitySystem_Branch_97C0     ; 97C4 10 FA                    ..
         rts                                     ; 97C6 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_97C7:
@@ -962,7 +969,7 @@ MapEntitySystem_Branch_9849:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_984A:
         bit     $07BA                           ; 984A 2C BA 07                 ,..
-        bpl     $9859                           ; 984D 10 0A                    ..
+        bpl     MapEntitySystem_Branch_9859     ; 984D 10 0A                    ..
         lda     #$09                            ; 984F A9 09                    ..
         brk                                     ; 9851 00                       .
         db   $04,$87                         ; 9852 04 87                    ..
@@ -971,6 +978,7 @@ MapEntitySystem_Entry_984A:
         brk                                     ; 9856 00                       .
         db   $04,$87                         ; 9857 04 87                    ..
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9859:
         rts                                     ; 9859 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_985A:
@@ -1049,7 +1057,7 @@ MapEntitySystem_Entry_98D8:
         jsr     MapEntitySystem_Entry_994E      ; 98DA 20 4E 99                  N.
         sta     $01                             ; 98DD 85 01                    ..
         jsr     MapEntitySystem_Entry_9BD9      ; 98DF 20 D9 9B                  ..
-        bcs     $9901                           ; 98E2 B0 1D                    ..
+        bcs     MapEntitySystem_Branch_9901     ; 98E2 B0 1D                    ..
         lda     $01                             ; 98E4 A5 01                    ..
         and     #$10                            ; 98E6 29 10                    ).
         beq     MapEntitySystem_Branch_9945     ; 98E8 F0 5B                    .[
@@ -1068,6 +1076,7 @@ MapEntitySystem_Branch_98FC:
         inx                                     ; 98FF E8                       .
         rts                                     ; 9900 60                       `
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9901:
         lda     $01                             ; 9901 A5 01                    ..
         and     #$08                            ; 9903 29 08                    ).
         beq     MapEntitySystem_Branch_9945     ; 9905 F0 3E                    .>
@@ -1129,13 +1138,14 @@ MapEntitySystem_Entry_995C:
         sty     $DC                             ; 995F 84 DC                    ..
         sta     $0F                             ; 9961 85 0F                    ..
         cmp     #$00                            ; 9963 C9 00                    ..
-        bne     $998F                           ; 9965 D0 28                    .(
+        bne     MapEntitySystem_Branch_998F     ; 9965 D0 28                    .(
         ldy     #$01                            ; 9967 A0 01                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9969 20 4E 99                  N.
         and     #$40                            ; 996C 29 40                    )@
-        beq     $9974                           ; 996E F0 04                    ..
+        beq     MapEntitySystem_Branch_9974     ; 996E F0 04                    ..
         lda     #$80                            ; 9970 A9 80                    ..
         sta     $DC                             ; 9972 85 DC                    ..
+MapEntitySystem_Branch_9974:
         ldy     #$05                            ; 9974 A0 05                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9976 20 4E 99                  N.
         and     #$80                            ; 9979 29 80                    ).
@@ -1148,8 +1158,9 @@ MapEntitySystem_Entry_995C:
         lsr     a                               ; 9987 4A                       J
         lsr     a                               ; 9988 4A                       J
         jsr     MapEntitySystem_Entry_9A74      ; 9989 20 74 9A                  t.
-        jmp     $99B3                           ; 998C 4C B3 99                 L..
+        jmp     MapEntitySystem_Branch_99B3     ; 998C 4C B3 99                 L..
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_998F:
         ldy     #$01                            ; 998F A0 01                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9991 20 4E 99                  N.
         and     #$20                            ; 9994 29 20                    )
@@ -1167,6 +1178,7 @@ MapEntitySystem_Branch_999C:
         jsr     MapEntitySystem_Entry_9A2B      ; 99AB 20 2B 9A                  +.
         and     #$0F                            ; 99AE 29 0F                    ).
         jsr     MapEntitySystem_Entry_9A74      ; 99B0 20 74 9A                  t.
+MapEntitySystem_Branch_99B3:
         ldy     $06                             ; 99B3 A4 06                    ..
         jsr     MapEntitySystem_Entry_994E      ; 99B5 20 4E 99                  N.
         and     #$03                            ; 99B8 29 03                    ).
@@ -1178,10 +1190,12 @@ MapEntitySystem_Branch_999C:
         pha                                     ; 99C4 48                       H
         lda     $06                             ; 99C5 A5 06                    ..
         cmp     #$03                            ; 99C7 C9 03                    ..
-        bne     $99CF                           ; 99C9 D0 04                    ..
+        bne     MapEntitySystem_Branch_99CF     ; 99C9 D0 04                    ..
         ldy     #$00                            ; 99CB A0 00                    ..
-        beq     $99D1                           ; 99CD F0 02                    ..
+        beq     MapEntitySystem_Branch_99D1     ; 99CD F0 02                    ..
+MapEntitySystem_Branch_99CF:
         ldy     #$01                            ; 99CF A0 01                    ..
+MapEntitySystem_Branch_99D1:
         jsr     MapEntitySystem_Entry_994E      ; 99D1 20 4E 99                  N.
         asl     a                               ; 99D4 0A                       .
         pla                                     ; 99D5 68                       h
@@ -1205,7 +1219,7 @@ MapEntitySystem_Branch_999C:
         sta     $6FC0,x                         ; 99F8 9D C0 6F                 ..o
         jsr     MapEntitySystem_Entry_9B71      ; 99FB 20 71 9B                  q.
         pla                                     ; 99FE 68                       h
-        beq     $9A16                           ; 99FF F0 15                    ..
+        beq     MapEntitySystem_Branch_9A16     ; 99FF F0 15                    ..
         jsr     MapEntitySystem_Entry_9BB0      ; 9A01 20 B0 9B                  ..
         lda     $DA                             ; 9A04 A5 DA                    ..
         clc                                     ; 9A06 18                       .
@@ -1216,6 +1230,7 @@ MapEntitySystem_Branch_999C:
         sta     $7060,x                         ; 9A10 9D 60 70                 .`p
         jmp     MapEntitySystem_Entry_9BBA      ; 9A13 4C BA 9B                 L..
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9A16:
         lda     $DA                             ; 9A16 A5 DA                    ..
         clc                                     ; 9A18 18                       .
         adc     #$01                            ; 9A19 69 01                    i.
@@ -1236,17 +1251,19 @@ MapEntitySystem_Entry_9A2B:
 MapEntitySystem_Entry_9A37:
         sta     $00                           ; 9A37 85 00                    ..
         ldy     #$00                            ; 9A39 A0 00                    ..
+MapEntitySystem_Branch_9A3B:
         lda     $6E5E,y                         ; 9A3B B9 5E 6E                 .^n
         cmp     #$FF                            ; 9A3E C9 FF                    ..
-        beq     $9A4F                           ; 9A40 F0 0D                    ..
+        beq     MapEntitySystem_Branch_9A4F     ; 9A40 F0 0D                    ..
         cmp     $00                           ; 9A42 C5 00                    ..
-        beq     $9A61                           ; 9A44 F0 1B                    ..
+        beq     MapEntitySystem_Branch_9A61     ; 9A44 F0 1B                    ..
         iny                                     ; 9A46 C8                       .
         cpy     #$10                            ; 9A47 C0 10                    ..
-        bcc     $9A3B                           ; 9A49 90 F0                    ..
+        bcc     MapEntitySystem_Branch_9A3B     ; 9A49 90 F0                    ..
         dey                                     ; 9A4B 88                       .
         jmp     MapEntitySystem_Branch_9A54     ; 9A4C 4C 54 9A                 LT.
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9A4F:
         lda     $00                           ; 9A4F A5 00                    ..
         sta     $6E5E,y                         ; 9A51 99 5E 6E                 .^n
 MapEntitySystem_Branch_9A54:
@@ -1262,21 +1279,24 @@ MapEntitySystem_Branch_9A54:
         tax                                     ; 9A5E AA                       .
         pla                                     ; 9A5F 68                       h
         tay                                     ; 9A60 A8                       .
+MapEntitySystem_Branch_9A61:
         tya                                     ; 9A61 98                       .
         clc                                     ; 9A62 18                       .
         adc     #$04                            ; 9A63 69 04                    i.
         bit     $07BA                           ; 9A65 2C BA 07                 ,..
-        bpl     $9A6C                           ; 9A68 10 02                    ..
+        bpl     MapEntitySystem_Branch_9A6C     ; 9A68 10 02                    ..
         adc     #$02                            ; 9A6A 69 02                    i.
+MapEntitySystem_Branch_9A6C:
         cpx     #$00                            ; 9A6C E0 00                    ..
-        beq     $9A73                           ; 9A6E F0 03                    ..
+        beq     MapEntitySystem_Branch_9A73     ; 9A6E F0 03                    ..
         sta     $6FE0,x                         ; 9A70 9D E0 6F                 ..o
+MapEntitySystem_Branch_9A73:
         rts                                     ; 9A73 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9A74:
         sta     $00                           ; 9A74 85 00                    ..
         cmp     #$08                            ; 9A76 C9 08                    ..
-        bcs     $9A89                           ; 9A78 B0 0F                    ..
+        bcs     MapEntitySystem_Branch_9A89     ; 9A78 B0 0F                    ..
         sta     $7040,x                         ; 9A7A 9D 40 70                 .@p
         lda     $00                           ; 9A7D A5 00                    ..
         jsr     MapEntitySystem_Entry_9AFB      ; 9A7F 20 FB 9A                  ..
@@ -1284,11 +1304,12 @@ MapEntitySystem_Entry_9A74:
         sta     $7040,x                         ; 9A85 9D 40 70                 .@p
         rts                                     ; 9A88 60                       `
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9A89:
         sec                                     ; 9A89 38                       8
         sbc     #$02                            ; 9A8A E9 02                    ..
         lsr     a                               ; 9A8C 4A                       J
         tay                                     ; 9A8D A8                       .
-        bcc     $9AB9                           ; 9A8E 90 29                    .)
+        bcc     MapEntitySystem_Branch_9AB9     ; 9A8E 90 29                    .)
         lda     $DF,y                           ; 9A90 B9 DF 00                 ...
         and     #$0F                            ; 9A93 29 0F                    ).
         jsr     MapEntitySystem_Entry_9AE7      ; 9A95 20 E7 9A                  ..
@@ -1311,6 +1332,7 @@ MapEntitySystem_Branch_9AB0:
         sta     $DF,y                           ; 9AB5 99 DF 00                 ...
         rts                                     ; 9AB8 60                       `
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9AB9:
         lda     $DF,y                           ; 9AB9 B9 DF 00                 ...
         lsr     a                               ; 9ABC 4A                       J
         lsr     a                               ; 9ABD 4A                       J
@@ -1318,7 +1340,7 @@ MapEntitySystem_Branch_9AB0:
         lsr     a                               ; 9ABF 4A                       J
         jsr     MapEntitySystem_Entry_9AE7      ; 9AC0 20 E7 9A                  ..
         cmp     $00                           ; 9AC3 C5 00                    ..
-        bcs     $9ADE                           ; 9AC5 B0 17                    ..
+        bcs     MapEntitySystem_Branch_9ADE     ; 9AC5 B0 17                    ..
         clc                                     ; 9AC7 18                       .
         adc     #$01                            ; 9AC8 69 01                    i.
         pha                                     ; 9ACA 48                       H
@@ -1331,6 +1353,7 @@ MapEntitySystem_Branch_9AB0:
         sta     $DF,y                           ; 9ADA 99 DF 00                 ...
         rts                                     ; 9ADD 60                       `
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9ADE:
         lda     $DF,y                           ; 9ADE B9 DF 00                 ...
         and     #$0F                            ; 9AE1 29 0F                    ).
         sta     $DF,y                           ; 9AE3 99 DF 00                 ...
@@ -1357,9 +1380,10 @@ MapEntitySystem_Entry_9AFB:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9B00:
         jsr     MapEntitySystem_Entry_9CC1      ; 9B00 20 C1 9C                  ..
-        bcc     $9B08                           ; 9B03 90 03                    ..
+        bcc     MapEntitySystem_Branch_9B08     ; 9B03 90 03                    ..
         jmp     MapEntitySystem_Branch_9B68     ; 9B05 4C 68 9B                 Lh.
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9B08:
         lda     #$80                            ; 9B08 A9 80                    ..
         sta     $E1                             ; 9B0A 85 E1                    ..
         ldy     #$00                            ; 9B0C A0 00                    ..
@@ -1386,27 +1410,31 @@ Bank1C_LoadMapEntityPointer:
         sta     $DB                             ; 9B33 85 DB                    ..
         lda     CurrentMapNumber                ; 9B35 A5 63                    .c
         cmp     #$FF                            ; 9B37 C9 FF                    ..
-        bcc     $9B3F                           ; 9B39 90 04                    ..
+        bcc     MapEntitySystem_Branch_9B3F     ; 9B39 90 04                    ..
         lda     #$1C                            ; 9B3B A9 1C                    ..
         sta     $67                             ; 9B3D 85 67                    .g
+MapEntitySystem_Branch_9B3F:
         lda     CurrentSubmapNumber             ; 9B3F A5 64                    .d
         sta     $02                             ; 9B41 85 02                    ..
-        bne     $9B47                           ; 9B43 D0 02                    ..
+        bne     MapEntitySystem_Branch_9B47     ; 9B43 D0 02                    ..
         beq     MapEntitySystem_Branch_9B68     ; 9B45 F0 21                    .!
+MapEntitySystem_Branch_9B47:
         ldy     #$00                            ; 9B47 A0 00                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9B49 20 4E 99                  N.
-        beq     $9B5E                           ; 9B4C F0 10                    ..
+        beq     MapEntitySystem_Branch_9B5E     ; 9B4C F0 10                    ..
         jsr     MapEntitySystem_Entry_9B71      ; 9B4E 20 71 9B                  q.
         jsr     MapEntitySystem_Entry_9BB0      ; 9B51 20 B0 9B                  ..
         jsr     MapEntitySystem_Entry_9BBA      ; 9B54 20 BA 9B                  ..
         ldy     #$00                            ; 9B57 A0 00                    ..
         jsr     MapEntitySystem_Entry_994E      ; 9B59 20 4E 99                  N.
-        bne     $9B47                           ; 9B5C D0 E9                    ..
+        bne     MapEntitySystem_Branch_9B47     ; 9B5C D0 E9                    ..
+MapEntitySystem_Branch_9B5E:
         inc     $DA                             ; 9B5E E6 DA                    ..
-        bne     $9B64                           ; 9B60 D0 02                    ..
+        bne     MapEntitySystem_Branch_9B64     ; 9B60 D0 02                    ..
         inc     $DB                             ; 9B62 E6 DB                    ..
+MapEntitySystem_Branch_9B64:
         dec     $02                             ; 9B64 C6 02                    ..
-        bne     $9B47                           ; 9B66 D0 DF                    ..
+        bne     MapEntitySystem_Branch_9B47     ; 9B66 D0 DF                    ..
 MapEntitySystem_Branch_9B68:
         lda     $DA                             ; 9B68 A5 DA                    ..
         sta     $3A                             ; 9B6A 85 3A                    .:
@@ -1422,23 +1450,26 @@ MapEntitySystem_Entry_9B71:
         jsr     MapEntitySystem_Entry_994E      ; 9B79 20 4E 99                  N.
         sta     $03                             ; 9B7C 85 03                    ..
         and     #$10                            ; 9B7E 29 10                    ).
-        beq     $9BA2                           ; 9B80 F0 20                    .
+        beq     MapEntitySystem_Branch_9BA2     ; 9B80 F0 20                    .
         lda     $03                             ; 9B82 A5 03                    ..
         and     #$08                            ; 9B84 29 08                    ).
-        beq     $9BA2                           ; 9B86 F0 1A                    ..
+        beq     MapEntitySystem_Branch_9BA2     ; 9B86 F0 1A                    ..
         lda     $03                             ; 9B88 A5 03                    ..
         and     #$01                            ; 9B8A 29 01                    ).
-        bne     $9B90                           ; 9B8C D0 02                    ..
+        bne     MapEntitySystem_Branch_9B90     ; 9B8C D0 02                    ..
         inc     $00                           ; 9B8E E6 00                    ..
+MapEntitySystem_Branch_9B90:
         lda     $03                             ; 9B90 A5 03                    ..
         and     #$02                            ; 9B92 29 02                    ).
-        bne     $9B98                           ; 9B94 D0 02                    ..
+        bne     MapEntitySystem_Branch_9B98     ; 9B94 D0 02                    ..
         inc     $00                           ; 9B96 E6 00                    ..
+MapEntitySystem_Branch_9B98:
         lda     $03                             ; 9B98 A5 03                    ..
         and     #$04                            ; 9B9A 29 04                    ).
-        bne     $9BA2                           ; 9B9C D0 04                    ..
+        bne     MapEntitySystem_Branch_9BA2     ; 9B9C D0 04                    ..
         inc     $00                           ; 9B9E E6 00                    ..
         inc     $00                           ; 9BA0 E6 00                    ..
+MapEntitySystem_Branch_9BA2:
         lda     $DA                             ; 9BA2 A5 DA                    ..
         clc                                     ; 9BA4 18                       .
         adc     $00                           ; 9BA5 65 00                    e.
@@ -1451,15 +1482,17 @@ MapEntitySystem_Entry_9B71:
 MapEntitySystem_Entry_9BB0:
         lda     $03                             ; 9BB0 A5 03                    ..
         and     #$10                            ; 9BB2 29 10                    ).
-        beq     $9BB9                           ; 9BB4 F0 03                    ..
+        beq     MapEntitySystem_Branch_9BB9     ; 9BB4 F0 03                    ..
         jsr     MapEntitySystem_Entry_9BC4      ; 9BB6 20 C4 9B                  ..
+MapEntitySystem_Branch_9BB9:
         rts                                     ; 9BB9 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9BBA:
         lda     $03                             ; 9BBA A5 03                    ..
         and     #$08                            ; 9BBC 29 08                    ).
-        beq     $9BC3                           ; 9BBE F0 03                    ..
+        beq     MapEntitySystem_Branch_9BC3     ; 9BBE F0 03                    ..
         jsr     MapEntitySystem_Entry_9BC4      ; 9BC0 20 C4 9B                  ..
+MapEntitySystem_Branch_9BC3:
         rts                                     ; 9BC3 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9BC4:
@@ -1468,11 +1501,13 @@ MapEntitySystem_Entry_9BC4:
         clc                                     ; 9BC9 18                       .
         adc     $DA                             ; 9BCA 65 DA                    e.
         sta     $DA                             ; 9BCC 85 DA                    ..
-        bcc     $9BD2                           ; 9BCE 90 02                    ..
+        bcc     MapEntitySystem_Branch_9BD2     ; 9BCE 90 02                    ..
         inc     $DB                             ; 9BD0 E6 DB                    ..
+MapEntitySystem_Branch_9BD2:
         inc     $DA                             ; 9BD2 E6 DA                    ..
-        bne     $9BD8                           ; 9BD4 D0 02                    ..
+        bne     MapEntitySystem_Branch_9BD8     ; 9BD4 D0 02                    ..
         inc     $DB                             ; 9BD6 E6 DB                    ..
+MapEntitySystem_Branch_9BD8:
         rts                                     ; 9BD8 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9BD9:
@@ -1503,6 +1538,7 @@ MapEntitySystem_Entry_9BE1:
 MapEntitySystem_Entry_9C0F:
         ldx     #$1F                            ; 9C0F A2 1F                    ..
         lda     #$FF                            ; 9C11 A9 FF                    ..
+MapEntitySystem_Branch_9C13:
         sta     $6F60,x                         ; 9C13 9D 60 6F                 .`o
         sta     $6F80,x                         ; 9C16 9D 80 6F                 ..o
         sta     $6FA0,x                         ; 9C19 9D A0 6F                 ..o
@@ -1510,13 +1546,14 @@ MapEntitySystem_Entry_9C0F:
         jsr     MapEntitySystem_Entry_9BE1      ; 9C1F 20 E1 9B                  ..
         dex                                     ; 9C22 CA                       .
         cpx     #$06                            ; 9C23 E0 06                    ..
-        bcs     $9C13                           ; 9C25 B0 EC                    ..
+        bcs     MapEntitySystem_Branch_9C13     ; 9C25 B0 EC                    ..
         rts                                     ; 9C27 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_9C28:
         lda     $62A5                           ; 9C28 AD A5 62                 ..b
         bmi     MapEntitySystem_Branch_9C6D     ; 9C2B 30 40                    0@
         ldx     #$00                            ; 9C2D A2 00                    ..
+MapEntitySystem_Branch_9C2F:
         lda     $9E61,x                         ; 9C2F BD 61 9E                 .a.
         cmp     #$FF                            ; 9C32 C9 FF                    ..
         beq     MapEntitySystem_Branch_9C6D     ; 9C34 F0 37                    .7
@@ -1551,7 +1588,7 @@ MapEntitySystem_Branch_9C67:
         inx                                     ; 9C68 E8                       .
         inx                                     ; 9C69 E8                       .
         inx                                     ; 9C6A E8                       .
-        bne     $9C2F                           ; 9C6B D0 C2                    ..
+        bne     MapEntitySystem_Branch_9C2F     ; 9C6B D0 C2                    ..
 MapEntitySystem_Branch_9C6D:
         sec                                     ; 9C6D 38                       8
         rts                                     ; 9C6E 60                       `
@@ -1564,8 +1601,9 @@ MapEntitySystem_Entry_9C6F:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_9C80     ; 9C78 D0 06                    ..
         brk                                     ; 9C7A 00                       .
-        db   $0C,$EB,$80,$F0,$40             ; 9C7B 0C EB 80 F0 40           ....@
+        db   $0C,$EB,$80                     ; 9C7B 0C EB 80                 ...
 ; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_9CC0     ; 9C7E F0 40                    .@
 MapEntitySystem_Branch_9C80:
         lda     CurrentMapNumber                ; 9C80 A5 63                    .c
         cmp     #$04                            ; 9C82 C9 04                    ..
@@ -1606,6 +1644,7 @@ MapEntitySystem_Branch_9CB1:
 MapEntitySystem_Branch_9CBD:
         pla                                     ; 9CBD 68                       h
         pla                                     ; 9CBE 68                       h
+MapEntitySystem_Branch_9CBF:
         clc                                     ; 9CBF 18                       .
 MapEntitySystem_Branch_9CC0:
         rts                                     ; 9CC0 60                       `
@@ -1615,23 +1654,24 @@ MapEntitySystem_Entry_9CC1:
         sta     $DC                             ; 9CC4 85 DC                    ..
         lda     $9D0F                           ; 9CC6 AD 0F 9D                 ...
         sta     $DD                             ; 9CC9 85 DD                    ..
+MapEntitySystem_Branch_9CCB:
         ldy     #$00                            ; 9CCB A0 00                    ..
         lda     ($DC),y                         ; 9CCD B1 DC                    ..
         cmp     #$FF                            ; 9CCF C9 FF                    ..
-        beq     $9CBF                           ; 9CD1 F0 EC                    ..
+        beq     MapEntitySystem_Branch_9CBF     ; 9CD1 F0 EC                    ..
         cmp     CurrentMapNumber                ; 9CD3 C5 63                    .c
-        bne     $9D00                           ; 9CD5 D0 29                    .)
+        bne     MapEntitySystem_Branch_9D00     ; 9CD5 D0 29                    .)
         lda     CurrentSubmapNumber             ; 9CD7 A5 64                    .d
         iny                                     ; 9CD9 C8                       .
         cmp     ($DC),y                         ; 9CDA D1 DC                    ..
-        bne     $9D00                           ; 9CDC D0 22                    ."
+        bne     MapEntitySystem_Branch_9D00     ; 9CDC D0 22                    ."
         ldy     #$03                            ; 9CDE A0 03                    ..
         lda     ($DC),y                         ; 9CE0 B1 DC                    ..
         tax                                     ; 9CE2 AA                       .
         lda     $627B,x                         ; 9CE3 BD 7B 62                 .{b
         ldy     #$02                            ; 9CE6 A0 02                    ..
         and     ($DC),y                         ; 9CE8 31 DC                    1.
-        beq     $9D00                           ; 9CEA F0 14                    ..
+        beq     MapEntitySystem_Branch_9D00     ; 9CEA F0 14                    ..
         ldy     #$04                            ; 9CEC A0 04                    ..
         lda     ($DC),y                         ; 9CEE B1 DC                    ..
         sta     $DA                             ; 9CF0 85 DA                    ..
@@ -1644,13 +1684,15 @@ MapEntitySystem_Entry_9CC1:
         sec                                     ; 9CFE 38                       8
         rts                                     ; 9CFF 60                       `
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9D00:
         lda     $DC                             ; 9D00 A5 DC                    ..
         clc                                     ; 9D02 18                       .
         adc     #$06                            ; 9D03 69 06                    i.
         sta     $DC                             ; 9D05 85 DC                    ..
-        bcc     $9D0B                           ; 9D07 90 02                    ..
+        bcc     MapEntitySystem_Branch_9D0B     ; 9D07 90 02                    ..
         inc     $DD                             ; 9D09 E6 DD                    ..
-        jmp     $9CCB                           ; 9D0B 4C CB 9C                 L..
+MapEntitySystem_Branch_9D0B:
+        jmp     MapEntitySystem_Branch_9CCB     ; 9D0B 4C CB 9C                 L..
 ; ----------------------------------------------------------------------------
         db   $10                             ; 9D0E 10                       .
         db   $9D,$3E,$00,$20,$26,$02,$94,$01 ; 9D0F 9D 3E 00 20 26 02 94 01  .>. &...
@@ -1736,7 +1778,7 @@ MapEntitySystem_Branch_9EBE:
 MapEntitySystem_Branch_9ECC:
         lda     $9F8A,x                         ; 9ECC BD 8A 9F                 ...
         cmp     #$FF                            ; 9ECF C9 FF                    ..
-        beq     $9EE5                           ; 9ED1 F0 12                    ..
+        beq     MapEntitySystem_Branch_9EE5     ; 9ED1 F0 12                    ..
         cmp     CurrentMapNumber                ; 9ED3 C5 63                    .c
         bne     MapEntitySystem_Branch_9EDE     ; 9ED5 D0 07                    ..
         lda     $9F8B,x                         ; 9ED7 BD 8B 9F                 ...
@@ -1749,6 +1791,7 @@ MapEntitySystem_Branch_9EDE:
         inx                                     ; 9EE1 E8                       .
         jmp     MapEntitySystem_Branch_9ECC     ; 9EE2 4C CC 9E                 L..
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_9EE5:
         rts                                     ; 9EE5 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_9EE6:
@@ -1979,14 +2022,14 @@ MapEntitySystem_Branch_A0E5:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A0E6:
         brk                                     ; A0E6 00                       .
-        db   $03,$EB                         ; A0E7 03 EB                    ..
+        db   $03,$EB,$01                     ; A0E7 03 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A0E9 01 F0                    ..
-        asl     a                               ; A0EB 0A                       .
+        beq     MapEntitySystem_Branch_A0F6     ; A0EA F0 0A                    ..
         ldx     #$00                            ; A0EC A2 00                    ..
         jsr     MapEntitySystem_Entry_A035      ; A0EE 20 35 A0                  5.
         ldx     #$01                            ; A0F1 A2 01                    ..
         jsr     MapEntitySystem_Entry_A035      ; A0F3 20 35 A0                  5.
+MapEntitySystem_Branch_A0F6:
         rts                                     ; A0F6 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A0F7:
@@ -2012,24 +2055,35 @@ MapEntitySystem_Entry_A10B:
         jsr     MapEntitySystem_Entry_A044      ; A118 20 44 A0                  D.
         bcs     MapEntitySystem_Branch_A128     ; A11B B0 0B                    ..
         brk                                     ; A11D 00                       .
-        db   $04,$EB                         ; A11E 04 EB                    ..
+        db   $04,$EB,$01                     ; A11E 04 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A120 01 F0                    ..
-        ora     $A2                             ; A122 05 A2                    ..
-        asl     a                               ; A124 0A                       .
+        beq     MapEntitySystem_Branch_A128     ; A121 F0 05                    ..
+        ldx     #$0A                            ; A123 A2 0A                    ..
         jsr     MapEntitySystem_Entry_A035      ; A125 20 35 A0                  5.
 MapEntitySystem_Branch_A128:
         rts                                     ; A128 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A129:
         brk                                     ; A129 00                       .
-        db   $19,$EB                         ; A12A 19 EB                    ..
+        db   $19,$EB,$01                     ; A12A 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A12C 01 F0                    ..
-        db   $0F,$AD,$95,$62,$30,$05,$29,$40 ; A12E 0F AD 95 62 30 05 29 40  ...b0.)@
-        db   $D0,$0B,$60,$A2,$02,$20,$35,$A0 ; A136 D0 0B 60 A2 02 20 35 A0  ..`.. 5.
-        db   $A2,$01,$20,$35,$A0,$A2,$00,$20 ; A13E A2 01 20 35 A0 A2 00 20  .. 5...
-        db   $35,$A0,$60                     ; A146 35 A0 60                 5.`
+        beq     MapEntitySystem_Branch_A13E     ; A12D F0 0F                    ..
+        lda     $6295                           ; A12F AD 95 62                 ..b
+        bmi     MapEntitySystem_Branch_A139     ; A132 30 05                    0.
+        and     #$40                            ; A134 29 40                    )@
+        bne     MapEntitySystem_Branch_A143     ; A136 D0 0B                    ..
+        rts                                     ; A138 60                       `
+; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_A139:
+        ldx     #$02                            ; A139 A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A13B 20 35 A0                  5.
+MapEntitySystem_Branch_A13E:
+        ldx     #$01                            ; A13E A2 01                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A140 20 35 A0                  5.
+MapEntitySystem_Branch_A143:
+        ldx     #$00                            ; A143 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A145 20 35 A0                  5.
+        rts                                     ; A148 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A149:
         brk                                     ; A149 00                       .
@@ -2037,46 +2091,53 @@ MapEntitySystem_Entry_A149:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A15B     ; A14D D0 0C                    ..
         brk                                     ; A14F 00                       .
-        db   $04,$EB                         ; A150 04 EB                    ..
+        db   $04,$EB,$01                     ; A150 04 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A152 01 F0                    ..
-        ora     $A2                             ; A154 05 A2                    ..
-        brk                                     ; A156 00                       .
-        db   $20,$35                         ; A157 20 35                     5
+        beq     MapEntitySystem_Branch_A15A     ; A153 F0 05                    ..
+        ldx     #$00                            ; A155 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A157 20 35 A0                  5.
+MapEntitySystem_Branch_A15A:
+        rts                                     ; A15A 60                       `
 ; ----------------------------------------------------------------------------
-        ldy     #$60                            ; A159 A0 60                    .`
 MapEntitySystem_Branch_A15B:
         brk                                     ; A15B 00                       .
-        db   $19,$EB                         ; A15C 19 EB                    ..
+        db   $19,$EB,$01                     ; A15C 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A15E 01 F0                    ..
-        asl     $00                           ; A160 06 00                    ..
-        db   $1A,$EB,$80,$F0                 ; A162 1A EB 80 F0              ....
-        db   $F3,$A2,$06,$20,$35,$A0,$A2,$03 ; A166 F3 A2 06 20 35 A0 A2 03  ... 5...
-        db   $4C,$35,$A0                     ; A16E 4C 35 A0                 L5.
+        beq     MapEntitySystem_Branch_A167     ; A15F F0 06                    ..
+        brk                                     ; A161 00                       .
+        db   $1A,$EB,$80                     ; A162 1A EB 80                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A15A     ; A165 F0 F3                    ..
+MapEntitySystem_Branch_A167:
+        ldx     #$06                            ; A167 A2 06                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A169 20 35 A0                  5.
+        ldx     #$03                            ; A16C A2 03                    ..
+        jmp     MapEntitySystem_Entry_A035      ; A16E 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A171:
         brk                                     ; A171 00                       .
-        db   $03,$EB                         ; A172 03 EB                    ..
+        db   $03,$EB,$10                     ; A172 03 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bpl     $A166                           ; A174 10 F0                    ..
-        db   $0B                             ; A176 0B                       .
-; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A182     ; A175 F0 0B                    ..
         ldy     #$09                            ; A177 A0 09                    ..
         ldx     #$0C                            ; A179 A2 0C                    ..
+MapEntitySystem_Branch_A17B:
         jsr     MapEntitySystem_Entry_A035      ; A17B 20 35 A0                  5.
         inx                                     ; A17E E8                       .
         dey                                     ; A17F 88                       .
-        bne     $A17B                           ; A180 D0 F9                    ..
+        bne     MapEntitySystem_Branch_A17B     ; A180 D0 F9                    ..
+MapEntitySystem_Branch_A182:
         brk                                     ; A182 00                       .
         db   $07,$EB,$10                     ; A183 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        beq     $A18D                           ; A186 F0 05                    ..
-        db   $A2,$00,$4C,$35,$A0             ; A188 A2 00 4C 35 A0           ..L5.
+        beq     MapEntitySystem_Branch_A18D     ; A186 F0 05                    ..
+        ldx     #$00                            ; A188 A2 00                    ..
+        jmp     MapEntitySystem_Entry_A035      ; A18A 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_A18D:
         lda     PlayerLocalY                    ; A18D A5 45                    .E
         cmp     #$15                            ; A18F C9 15                    ..
-        bne     $A1AD                           ; A191 D0 1A                    ..
+        bne     MapEntitySystem_Branch_A1AD     ; A191 D0 1A                    ..
         lda     #$11                            ; A193 A9 11                    ..
         ldx     #$00                            ; A195 A2 00                    ..
         sta     $7046,x                         ; A197 9D 46 70                 .Fp
@@ -2087,40 +2148,55 @@ MapEntitySystem_Entry_A171:
         sta     $6F86,x                         ; A1A4 9D 86 6F                 ..o
         sta     $6FC6,x                         ; A1A7 9D C6 6F                 ..o
         jsr     MapEntitySystem_Entry_AD1E      ; A1AA 20 1E AD                  ..
+MapEntitySystem_Branch_A1AD:
         rts                                     ; A1AD 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A1AE:
         brk                                     ; A1AE 00                       .
-        db   $03,$EB                         ; A1AF 03 EB                    ..
+        db   $03,$EB,$20                     ; A1AF 03 EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $08D0                           ; A1B1 20 D0 08                  ..
+        bne     MapEntitySystem_Branch_A1BC     ; A1B2 D0 08                    ..
         ldx     #$01                            ; A1B4 A2 01                    ..
         jsr     MapEntitySystem_Entry_A035      ; A1B6 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A1C0     ; A1B9 4C C0 A1                 L..
 ; ----------------------------------------------------------------------------
-        db   $00,$03,$DB,$DF                 ; A1BC 00 03 DB DF              ....
+MapEntitySystem_Branch_A1BC:
+        brk                                     ; A1BC 00                       .
+        db   $03,$DB,$DF                     ; A1BD 03 DB DF                 ...
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A1C0:
         brk                                     ; A1C0 00                       .
-        db   $03,$EB                         ; A1C1 03 EB                    ..
+        db   $03,$EB,$40                     ; A1C1 03 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A1C3 40                       @
-; ----------------------------------------------------------------------------
-        db   $D0,$05,$A2,$02,$20,$35,$A0,$60 ; A1C4 D0 05 A2 02 20 35 A0 60  .... 5.`
+MapEntitySystem_Entry_A1C4:
+        bne     MapEntitySystem_Branch_A1CB     ; A1C4 D0 05                    ..
+        ldx     #$02                            ; A1C6 A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A1C8 20 35 A0                  5.
+MapEntitySystem_Branch_A1CB:
+        rts                                     ; A1CB 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A1CC:
         brk                                     ; A1CC 00                       .
-        db   $07,$EB,$10,$D0,$11,$00,$03,$EB ; A1CD 07 EB 10 D0 11 00 03 EB  ........
-        db   $60                             ; A1D5 60                       `
+        db   $07,$EB,$10                     ; A1CD 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        beq     $A1E2                           ; A1D6 F0 0A                    ..
-        db   $20,$44,$A0,$B0,$05,$A2,$0B,$20 ; A1D8 20 44 A0 B0 05 A2 0B 20   D.....
-        db   $35,$A0                         ; A1E0 35 A0                    5.
+        bne     MapEntitySystem_Entry_A1E3      ; A1D0 D0 11                    ..
+        brk                                     ; A1D2 00                       .
+        db   $03,$EB,$60                     ; A1D3 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A1E2     ; A1D6 F0 0A                    ..
+        jsr     MapEntitySystem_Entry_A044      ; A1D8 20 44 A0                  D.
+        bcs     MapEntitySystem_Branch_A1E2     ; A1DB B0 05                    ..
+MapEntitySystem_Branch_A1DD:
+        ldx     #$0B                            ; A1DD A2 0B                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A1DF 20 35 A0                  5.
+MapEntitySystem_Branch_A1E2:
         rts                                     ; A1E2 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$44,$A0,$90,$F5,$A2,$07,$4C ; A1E3 20 44 A0 90 F5 A2 07 4C   D.....L
-        db   $35,$A0                         ; A1EB 35 A0                    5.
+MapEntitySystem_Entry_A1E3:
+        jsr     MapEntitySystem_Entry_A044      ; A1E3 20 44 A0                  D.
+        bcc     MapEntitySystem_Branch_A1DD     ; A1E6 90 F5                    ..
+        ldx     #$07                            ; A1E8 A2 07                    ..
+        jmp     MapEntitySystem_Entry_A035      ; A1EA 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A1ED:
         brk                                     ; A1ED 00                       .
@@ -2128,9 +2204,8 @@ MapEntitySystem_Entry_A1ED:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A226     ; A1F1 D0 33                    .3
         brk                                     ; A1F3 00                       .
-        db   $04,$EB                         ; A1F4 04 EB                    ..
+        db   $04,$EB,$08                     ; A1F4 04 EB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; A1F6 08                       .
         beq     MapEntitySystem_Branch_A213     ; A1F7 F0 1A                    ..
         jsr     MapEntitySystem_Entry_A044      ; A1F9 20 44 A0                  D.
         bcs     MapEntitySystem_Branch_A220     ; A1FC B0 22                    ."
@@ -2194,12 +2269,12 @@ MapEntitySystem_Entry_A24F:
         jsr     MapEntitySystem_Entry_A044      ; A255 20 44 A0                  D.
         bcc     MapEntitySystem_Branch_A265     ; A258 90 0B                    ..
         brk                                     ; A25A 00                       .
-        db   $03,$EB                         ; A25B 03 EB                    ..
+        db   $03,$EB,$60                     ; A25B 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
-        rts                                     ; A25D 60                       `
-; ----------------------------------------------------------------------------
-        db   $F0,$05,$A2,$02,$20,$35,$A0     ; A25E F0 05 A2 02 20 35 A0     .... 5.
-; ----------------------------------------------------------------------------
+MapEntitySystem_Entry_A25E:
+        beq     MapEntitySystem_Branch_A265     ; A25E F0 05                    ..
+        ldx     #$02                            ; A260 A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A262 20 35 A0                  5.
 MapEntitySystem_Branch_A265:
         rts                                     ; A265 60                       `
 ; ----------------------------------------------------------------------------
@@ -2274,16 +2349,54 @@ MapEntitySystem_Branch_A2D2:
         jsr     MapEntitySystem_Entry_A035      ; A2D2 20 35 A0                  5.
 MapEntitySystem_Branch_A2D5:
         brk                                     ; A2D5 00                       .
-        db   $05,$EB,$04,$D0,$0D,$A2,$02,$20 ; A2D6 05 EB 04 D0 0D A2 02 20  .......
-        db   $35,$A0,$A2,$03,$20,$35,$A0,$4C ; A2DE 35 A0 A2 03 20 35 A0 4C  5... 5.L
-        db   $F3,$A2,$A2,$00,$20,$35,$A0,$00 ; A2E6 F3 A2 A2 00 20 35 A0 00  .... 5..
-        db   $0B,$EB,$04,$D0,$ED,$20,$44,$A0 ; A2EE 0B EB 04 D0 ED 20 44 A0  ..... D.
-        db   $B0,$29,$00,$05,$EB,$10,$F0,$17 ; A2F6 B0 29 00 05 EB 10 F0 17  .)......
-        db   $A2,$01,$A9,$0E,$9D,$66,$6F,$9D ; A2FE A2 01 A9 0E 9D 66 6F 9D  .....fo.
-        db   $A6,$6F,$A9,$06,$9D,$86,$6F,$9D ; A306 A6 6F A9 06 9D 86 6F 9D  .o....o.
-        db   $C6,$6F,$A9,$00,$9D,$06,$70,$00 ; A30E C6 6F A9 00 9D 06 70 00  .o....p.
-        db   $0B,$EB,$20,$F0,$05,$A2,$0C,$20 ; A316 0B EB 20 F0 05 A2 0C 20  .. ....
-        db   $35,$A0,$60,$00,$05,$DB,$CF,$60 ; A31E 35 A0 60 00 05 DB CF 60  5.`....`
+        db   $05,$EB,$04                     ; A2D6 05 EB 04                 ...
+; ----------------------------------------------------------------------------
+        bne     MapEntitySystem_Branch_A2E8     ; A2D9 D0 0D                    ..
+        ldx     #$02                            ; A2DB A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A2DD 20 35 A0                  5.
+MapEntitySystem_Branch_A2E0:
+        ldx     #$03                            ; A2E0 A2 03                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A2E2 20 35 A0                  5.
+        jmp     MapEntitySystem_Branch_A2F3     ; A2E5 4C F3 A2                 L..
+; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_A2E8:
+        ldx     #$00                            ; A2E8 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A2EA 20 35 A0                  5.
+        brk                                     ; A2ED 00                       .
+        db   $0B,$EB,$04                     ; A2EE 0B EB 04                 ...
+; ----------------------------------------------------------------------------
+        bne     MapEntitySystem_Branch_A2E0     ; A2F1 D0 ED                    ..
+MapEntitySystem_Branch_A2F3:
+        jsr     MapEntitySystem_Entry_A044      ; A2F3 20 44 A0                  D.
+        bcs     MapEntitySystem_Branch_A321     ; A2F6 B0 29                    .)
+        brk                                     ; A2F8 00                       .
+        db   $05,$EB,$10                     ; A2F9 05 EB 10                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A315     ; A2FC F0 17                    ..
+        ldx     #$01                            ; A2FE A2 01                    ..
+        lda     #$0E                            ; A300 A9 0E                    ..
+        sta     $6F66,x                         ; A302 9D 66 6F                 .fo
+        sta     $6FA6,x                         ; A305 9D A6 6F                 ..o
+        lda     #$06                            ; A308 A9 06                    ..
+        sta     $6F86,x                         ; A30A 9D 86 6F                 ..o
+        sta     $6FC6,x                         ; A30D 9D C6 6F                 ..o
+        lda     #$00                            ; A310 A9 00                    ..
+        sta     $7006,x                         ; A312 9D 06 70                 ..p
+MapEntitySystem_Branch_A315:
+        brk                                     ; A315 00                       .
+        db   $0B,$EB,$20                     ; A316 0B EB 20                 ..
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A320     ; A319 F0 05                    ..
+        ldx     #$0C                            ; A31B A2 0C                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A31D 20 35 A0                  5.
+MapEntitySystem_Branch_A320:
+        rts                                     ; A320 60                       `
+; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_A321:
+        brk                                     ; A321 00                       .
+        db   $05,$DB,$CF                     ; A322 05 DB CF                 ...
+; ----------------------------------------------------------------------------
+        rts                                     ; A325 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A326:
         brk                                     ; A326 00                       .
@@ -2382,9 +2495,9 @@ MapEntitySystem_Entry_A3B9:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A3D1     ; A3C4 F0 0B                    ..
         brk                                     ; A3C6 00                       .
-        db   $0C,$EB                         ; A3C7 0C EB                    ..
+        db   $0C,$EB,$20                     ; A3C7 0C EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     $05F0                           ; A3C9 20 F0 05                  ..
+        beq     MapEntitySystem_Branch_A3D1     ; A3CA F0 05                    ..
         ldx     #$00                            ; A3CC A2 00                    ..
         jsr     MapEntitySystem_Entry_A035      ; A3CE 20 35 A0                  5.
 MapEntitySystem_Branch_A3D1:
@@ -2469,10 +2582,9 @@ MapEntitySystem_Entry_A454:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A475     ; A458 F0 1B                    ..
         brk                                     ; A45A 00                       .
-        db   $19,$EB                         ; A45B 19 EB                    ..
+        db   $19,$EB,$01                     ; A45B 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A45D 01 F0                    ..
-        plp                                     ; A45F 28                       (
+        beq     MapEntitySystem_Branch_A488     ; A45E F0 28                    .(
         jsr     MapEntitySystem_Entry_A044      ; A460 20 44 A0                  D.
         bcs     MapEntitySystem_Branch_A46A     ; A463 B0 05                    ..
         ldx     #$03                            ; A465 A2 03                    ..
@@ -2510,8 +2622,13 @@ MapEntitySystem_Entry_A489:
         jsr     MapEntitySystem_Entry_A035      ; A491 20 35 A0                  5.
 MapEntitySystem_Branch_A494:
         brk                                     ; A494 00                       .
-        db   $05,$EB,$04,$F0,$05,$A2,$02,$20 ; A495 05 EB 04 F0 05 A2 02 20  .......
-        db   $35,$A0,$60                     ; A49D 35 A0 60                 5.`
+        db   $05,$EB,$04                     ; A495 05 EB 04                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A49F     ; A498 F0 05                    ..
+        ldx     #$02                            ; A49A A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A49C 20 35 A0                  5.
+MapEntitySystem_Branch_A49F:
+        rts                                     ; A49F 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A4A0:
         brk                                     ; A4A0 00                       .
@@ -2530,15 +2647,18 @@ MapEntitySystem_Entry_A4AC:
         db   $07,$EB,$10                     ; A4B2 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A4BD     ; A4B5 D0 06                    ..
-        db   $00,$05,$EB,$08,$D0,$0A         ; A4B7 00 05 EB 08 D0 0A        ......
+        brk                                     ; A4B7 00                       .
+        db   $05,$EB,$08                     ; A4B8 05 EB 08                 ...
 ; ----------------------------------------------------------------------------
+        bne     MapEntitySystem_Branch_A4C7     ; A4BB D0 0A                    ..
 MapEntitySystem_Branch_A4BD:
         ldx     #$01                            ; A4BD A2 01                    ..
         jsr     MapEntitySystem_Entry_A035      ; A4BF 20 35 A0                  5.
         ldx     #$00                            ; A4C2 A2 00                    ..
         jmp     MapEntitySystem_Entry_A035      ; A4C4 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-        db   $60                             ; A4C7 60                       `
+MapEntitySystem_Branch_A4C7:
+        rts                                     ; A4C7 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A4C8:
         brk                                     ; A4C8 00                       .
@@ -2623,9 +2743,18 @@ MapEntitySystem_Branch_A548:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A549:
         brk                                     ; A549 00                       .
-        db   $05,$EB,$02,$D0,$06,$00,$0B,$EB ; A54A 05 EB 02 D0 06 00 0B EB  ........
-        db   $04,$D0,$05,$A2,$00,$20,$35,$A0 ; A552 04 D0 05 A2 00 20 35 A0  ..... 5.
-        db   $60                             ; A55A 60                       `
+        db   $05,$EB,$02                     ; A54A 05 EB 02                 ...
+; ----------------------------------------------------------------------------
+        bne     MapEntitySystem_Branch_A555     ; A54D D0 06                    ..
+        brk                                     ; A54F 00                       .
+        db   $0B,$EB,$04                     ; A550 0B EB 04                 ...
+; ----------------------------------------------------------------------------
+        bne     MapEntitySystem_Branch_A55A     ; A553 D0 05                    ..
+MapEntitySystem_Branch_A555:
+        ldx     #$00                            ; A555 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A557 20 35 A0                  5.
+MapEntitySystem_Branch_A55A:
+        rts                                     ; A55A 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A55B:
         lda     $62AA                           ; A55B AD AA 62                 ..b
@@ -2658,8 +2787,9 @@ MapEntitySystem_Entry_A57F:
         cmp     #$02                            ; A58A C9 02                    ..
         bne     MapEntitySystem_Branch_A59F     ; A58C D0 11                    ..
         brk                                     ; A58E 00                       .
-        db   $0C,$EB,$80,$F0,$0B             ; A58F 0C EB 80 F0 0B           .....
+        db   $0C,$EB,$80                     ; A58F 0C EB 80                 ...
 ; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A59F     ; A592 F0 0B                    ..
 MapEntitySystem_Branch_A594:
         ldx     #$00                            ; A594 A2 00                    ..
         jmp     MapEntitySystem_Entry_A035      ; A596 4C 35 A0                 L5.
@@ -2864,9 +2994,8 @@ MapEntitySystem_Branch_A6DD:
         ldx     #$00                            ; A6E2 A2 00                    ..
         jsr     MapEntitySystem_Entry_A035      ; A6E4 20 35 A0                  5.
         brk                                     ; A6E7 00                       .
-        db   $16,$EB                         ; A6E8 16 EB                    ..
+        db   $16,$EB,$08                     ; A6E8 16 EB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; A6EA 08                       .
         beq     MapEntitySystem_Branch_A70A     ; A6EB F0 1D                    ..
         ldx     #$06                            ; A6ED A2 06                    ..
         lda     $6FE6,x                         ; A6EF BD E6 6F                 ..o
@@ -2884,28 +3013,34 @@ MapEntitySystem_Branch_A6DD:
         sta     $70E6,x                         ; A707 9D E6 70                 ..p
 MapEntitySystem_Branch_A70A:
         brk                                     ; A70A 00                       .
-        db   $19,$EB                         ; A70B 19 EB                    ..
+        db   $19,$EB,$40                     ; A70B 19 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A70D 40                       @
+MapEntitySystem_Entry_A70E:
+        beq     MapEntitySystem_Branch_A728     ; A70E F0 18                    ..
+        ldx     #$06                            ; A710 A2 06                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A712 20 35 A0                  5.
+        jsr     MapEntitySystem_Entry_A732      ; A715 20 32 A7                  2.
+        brk                                     ; A718 00                       .
+        db   $17,$EB,$02                     ; A719 17 EB 02                 ...
 ; ----------------------------------------------------------------------------
-        db   $F0,$18,$A2,$06,$20,$35,$A0,$20 ; A70E F0 18 A2 06 20 35 A0 20  .... 5.
-        db   $32,$A7,$00,$17,$EB,$02,$F0,$05 ; A716 32 A7 00 17 EB 02 F0 05  2.......
-; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A723     ; A71C F0 05                    ..
 MapEntitySystem_Branch_A71E:
         ldx     #$05                            ; A71E A2 05                    ..
         jsr     MapEntitySystem_Entry_A035      ; A720 20 35 A0                  5.
+MapEntitySystem_Branch_A723:
         ldx     #$04                            ; A723 A2 04                    ..
         jsr     MapEntitySystem_Entry_A035      ; A725 20 35 A0                  5.
+MapEntitySystem_Branch_A728:
         brk                                     ; A728 00                       .
         db   $17,$EB,$10                     ; A729 17 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A731     ; A72C F0 03                    ..
-        jmp     MapEntitySystem_Branch_A732     ; A72E 4C 32 A7                 L2.
+        jmp     MapEntitySystem_Entry_A732      ; A72E 4C 32 A7                 L2.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A731:
         rts                                     ; A731 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_A732:
+MapEntitySystem_Entry_A732:
         ldx     #$03                            ; A732 A2 03                    ..
         jmp     MapEntitySystem_Entry_A035      ; A734 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
@@ -3075,7 +3210,6 @@ MapEntitySystem_Entry_A830:
         ldx     #$06                            ; A840 A2 06                    ..
         lda     $70E6,x                         ; A842 BD E6 70                 ..p
         and     #$7F                            ; A845 29 7F                    ).
-MapEntitySystem_Branch_A847:
         sta     $70E6,x                         ; A847 9D E6 70                 ..p
 MapEntitySystem_Branch_A84A:
         rts                                     ; A84A 60                       `
@@ -3139,24 +3273,28 @@ MapEntitySystem_Entry_A88E:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A89E:
         brk                                     ; A89E 00                       .
-        db   $19,$EB                         ; A89F 19 EB                    ..
+        db   $19,$EB,$01                     ; A89F 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A8A1 01 F0                    ..
-        bpl     MapEntitySystem_Branch_A847     ; A8A3 10 A2                    ..
-        db   $03,$A9,$0D,$9D,$66,$6F,$9D,$A6 ; A8A5 03 A9 0D 9D 66 6F 9D A6  ....fo..
-        db   $6F,$9D,$86,$6F,$9D,$C6,$6F     ; A8AD 6F 9D 86 6F 9D C6 6F     o..o..o
-; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A8B4     ; A8A2 F0 10                    ..
+        ldx     #$03                            ; A8A4 A2 03                    ..
+        lda     #$0D                            ; A8A6 A9 0D                    ..
+        sta     $6F66,x                         ; A8A8 9D 66 6F                 .fo
+        sta     $6FA6,x                         ; A8AB 9D A6 6F                 ..o
+        sta     $6F86,x                         ; A8AE 9D 86 6F                 ..o
+        sta     $6FC6,x                         ; A8B1 9D C6 6F                 ..o
 MapEntitySystem_Branch_A8B4:
         rts                                     ; A8B4 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A8B5:
         brk                                     ; A8B5 00                       .
-        db   $1D,$EB                         ; A8B6 1D EB                    ..
+        db   $1D,$EB,$01                     ; A8B6 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($D0,x)                         ; A8B8 01 D0                    ..
-        asl     $00                           ; A8BA 06 00                    ..
-        ora     $02EB,y                         ; A8BC 19 EB 02                 ...
+        bne     MapEntitySystem_Branch_A8C1     ; A8B9 D0 06                    ..
+        brk                                     ; A8BB 00                       .
+        db   $19,$EB,$02                     ; A8BC 19 EB 02                 ...
+; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A8C6     ; A8BF F0 05                    ..
+MapEntitySystem_Branch_A8C1:
         ldx     #$00                            ; A8C1 A2 00                    ..
         jsr     MapEntitySystem_Entry_A035      ; A8C3 20 35 A0                  5.
 MapEntitySystem_Branch_A8C6:
@@ -3201,25 +3339,45 @@ MapEntitySystem_Entry_A8FE:
         lda     SaveJoinedCharacterFlags        ; A905 AD 92 62                 ..b
         and     #$1C                            ; A908 29 1C                    ).
         cmp     #$1C                            ; A90A C9 1C                    ..
-        bne     MapEntitySystem_Branch_A957     ; A90C D0 49                    .I
+        bne     MapEntitySystem_Entry_A957      ; A90C D0 49                    .I
         brk                                     ; A90E 00                       .
-        db   $16,$EB                         ; A90F 16 EB                    ..
+        db   $16,$EB,$01                     ; A90F 16 EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; A911 01 F0                    ..
-        db   $42,$20,$57,$A9,$A2,$08,$A9,$14 ; A913 42 20 57 A9 A2 08 A9 14  B W.....
-        db   $9D,$66,$6F,$9D,$A6,$6F,$A9,$0C ; A91B 9D 66 6F 9D A6 6F A9 0C  .fo..o..
-        db   $9D,$86,$6F,$9D,$C6,$6F,$A9,$11 ; A923 9D 86 6F 9D C6 6F A9 11  ..o..o..
-        db   $9D,$46,$70,$20,$1E,$AD,$00,$19 ; A92B 9D 46 70 20 1E AD 00 19  .Fp ....
-        db   $EB,$01,$F0,$14,$A2,$08,$20,$35 ; A933 EB 01 F0 14 A2 08 20 35  ...... 5
-        db   $A0,$A2,$04,$20,$35,$A0,$A2,$05 ; A93B A0 A2 04 20 35 A0 A2 05  ... 5...
-        db   $20,$35,$A0,$A2,$06,$20,$35,$A0 ; A943 20 35 A0 A2 06 20 35 A0   5... 5.
-        db   $00,$16,$EB,$04,$F0,$05,$A2,$09 ; A94B 00 16 EB 04 F0 05 A2 09  ........
-        db   $20,$35,$A0                     ; A953 20 35 A0                  5.
+        beq     MapEntitySystem_Branch_A956     ; A912 F0 42                    .B
+        jsr     MapEntitySystem_Entry_A957      ; A914 20 57 A9                  W.
+        ldx     #$08                            ; A917 A2 08                    ..
+        lda     #$14                            ; A919 A9 14                    ..
+        sta     $6F66,x                         ; A91B 9D 66 6F                 .fo
+        sta     $6FA6,x                         ; A91E 9D A6 6F                 ..o
+        lda     #$0C                            ; A921 A9 0C                    ..
+        sta     $6F86,x                         ; A923 9D 86 6F                 ..o
+        sta     $6FC6,x                         ; A926 9D C6 6F                 ..o
+        lda     #$11                            ; A929 A9 11                    ..
+        sta     $7046,x                         ; A92B 9D 46 70                 .Fp
+        jsr     MapEntitySystem_Entry_AD1E      ; A92E 20 1E AD                  ..
+        brk                                     ; A931 00                       .
+        db   $19,$EB,$01                     ; A932 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A94B     ; A935 F0 14                    ..
+        ldx     #$08                            ; A937 A2 08                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A939 20 35 A0                  5.
+        ldx     #$04                            ; A93C A2 04                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A93E 20 35 A0                  5.
+        ldx     #$05                            ; A941 A2 05                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A943 20 35 A0                  5.
+        ldx     #$06                            ; A946 A2 06                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A948 20 35 A0                  5.
+MapEntitySystem_Branch_A94B:
+        brk                                     ; A94B 00                       .
+        db   $16,$EB,$04                     ; A94C 16 EB 04                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A956     ; A94F F0 05                    ..
+        ldx     #$09                            ; A951 A2 09                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A953 20 35 A0                  5.
 MapEntitySystem_Branch_A956:
         rts                                     ; A956 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_A957:
+MapEntitySystem_Entry_A957:
         ldx     #$03                            ; A957 A2 03                    ..
         jsr     MapEntitySystem_Entry_A035      ; A959 20 35 A0                  5.
         ldx     #$02                            ; A95C A2 02                    ..
@@ -3257,20 +3415,28 @@ MapEntitySystem_Branch_A98A:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A98B:
         brk                                     ; A98B 00                       .
-        db   $1D,$EB,$80,$F0,$0A,$A2,$0B,$20 ; A98C 1D EB 80 F0 0A A2 0B 20  .......
-        db   $35,$A0,$A2,$0C,$4C,$35,$A0,$A2 ; A994 35 A0 A2 0C 4C 35 A0 A2  5...L5..
-        db   $01,$4C,$35,$A0                 ; A99C 01 4C 35 A0              .L5.
+        db   $1D,$EB,$80                     ; A98C 1D EB 80                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A99B     ; A98F F0 0A                    ..
+        ldx     #$0B                            ; A991 A2 0B                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A993 20 35 A0                  5.
+        ldx     #$0C                            ; A996 A2 0C                    ..
+        jmp     MapEntitySystem_Entry_A035      ; A998 4C 35 A0                 L5.
+; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_A99B:
+        ldx     #$01                            ; A99B A2 01                    ..
+        jmp     MapEntitySystem_Entry_A035      ; A99D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A9A0:
         brk                                     ; A9A0 00                       .
-        db   $1D,$EB                         ; A9A1 1D EB                    ..
+        db   $1D,$EB,$40                     ; A9A1 1D EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A9A3 40                       @
-; ----------------------------------------------------------------------------
-        db   $D0,$05,$A2,$03,$20,$35,$A0,$A5 ; A9A4 D0 05 A2 03 20 35 A0 A5  .... 5..
-        db   $44                             ; A9AC 44                       D
-; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_A9AD:
+MapEntitySystem_Entry_A9A4:
+        bne     MapEntitySystem_Branch_A9AB     ; A9A4 D0 05                    ..
+        ldx     #$03                            ; A9A6 A2 03                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A9A8 20 35 A0                  5.
+MapEntitySystem_Branch_A9AB:
+        lda     PlayerLocalX                    ; A9AB A5 44                    .D
         cmp     #$01                            ; A9AD C9 01                    ..
         bne     MapEntitySystem_Branch_A9B6     ; A9AF D0 05                    ..
         lda     $0530                           ; A9B1 AD 30 05                 .0.
@@ -3302,54 +3468,75 @@ MapEntitySystem_Branch_A9D2:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A9D8:
         brk                                     ; A9D8 00                       .
-        db   $16,$EB                         ; A9D9 16 EB                    ..
+        db   $16,$EB,$10                     ; A9D9 16 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bpl     MapEntitySystem_Branch_A9AD     ; A9DB 10 D0                    ..
-        db   $0F,$A2,$02,$20,$35,$A0,$20,$44 ; A9DD 0F A2 02 20 35 A0 20 44  ... 5. D
-        db   $A0,$B0,$05,$A2,$00,$20,$35,$A0 ; A9E5 A0 B0 05 A2 00 20 35 A0  ..... 5.
-        db   $00,$1D,$EB,$01,$F0,$0A,$A2,$01 ; A9ED 00 1D EB 01 F0 0A A2 01  ........
-        db   $20,$35,$A0,$A2,$00,$20,$35,$A0 ; A9F5 20 35 A0 A2 00 20 35 A0   5... 5.
-        db   $60                             ; A9FD 60                       `
+        bne     MapEntitySystem_Branch_A9ED     ; A9DC D0 0F                    ..
+        ldx     #$02                            ; A9DE A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A9E0 20 35 A0                  5.
+        jsr     MapEntitySystem_Entry_A044      ; A9E3 20 44 A0                  D.
+        bcs     MapEntitySystem_Branch_A9ED     ; A9E6 B0 05                    ..
+        ldx     #$00                            ; A9E8 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A9EA 20 35 A0                  5.
+MapEntitySystem_Branch_A9ED:
+        brk                                     ; A9ED 00                       .
+        db   $1D,$EB,$01                     ; A9EE 1D EB 01                 ...
+; ----------------------------------------------------------------------------
+        beq     MapEntitySystem_Branch_A9FD     ; A9F1 F0 0A                    ..
+        ldx     #$01                            ; A9F3 A2 01                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A9F5 20 35 A0                  5.
+        ldx     #$00                            ; A9F8 A2 00                    ..
+        jsr     MapEntitySystem_Entry_A035      ; A9FA 20 35 A0                  5.
+MapEntitySystem_Branch_A9FD:
+        rts                                     ; A9FD 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_A9FE:
         brk                                     ; A9FE 00                       .
-        db   $1D,$EB                         ; A9FF 1D EB                    ..
+        db   $1D,$EB,$09                     ; A9FF 1D EB 09                 ...
 ; ----------------------------------------------------------------------------
-        ora     #$F0                            ; AA01 09 F0                    ..
-        sbc     $01A2,y                         ; AA03 F9 A2 01                 ...
+        beq     MapEntitySystem_Branch_A9FD     ; AA02 F0 F9                    ..
+        ldx     #$01                            ; AA04 A2 01                    ..
         jsr     MapEntitySystem_Entry_A035      ; AA06 20 35 A0                  5.
         brk                                     ; AA09 00                       .
-        db   $1D,$EB                         ; AA0A 1D EB                    ..
+        db   $1D,$EB,$01                     ; AA0A 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; AA0C 01 F0                    ..
-        inc     a:$A2                           ; AA0E EE A2 00                 ...
+        beq     MapEntitySystem_Branch_A9FD     ; AA0D F0 EE                    ..
+        ldx     #$00                            ; AA0F A2 00                    ..
         jmp     MapEntitySystem_Entry_A035      ; AA11 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AA14:
         brk                                     ; AA14 00                       .
-        db   $1D,$EB                         ; AA15 1D EB                    ..
+        db   $1D,$EB,$01                     ; AA15 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; AA17 01 F0                    ..
-        ora     ($A2),y                         ; AA19 11 A2                    ..
-        brk                                     ; AA1B 00                       .
-        db   $BD,$06                         ; AA1C BD 06                    ..
+        beq     MapEntitySystem_Branch_AA2B     ; AA18 F0 11                    ..
+        ldx     #$00                            ; AA1A A2 00                    ..
+        lda     $7006,x                         ; AA1C BD 06 70                 ..p
+        and     #$FC                            ; AA1F 29 FC                    ).
+        ora     #$01                            ; AA21 09 01                    ..
+        sta     $7006,x                         ; AA23 9D 06 70                 ..p
+        lda     #$00                            ; AA26 A9 00                    ..
+        sta     $7046,x                         ; AA28 9D 46 70                 .Fp
+MapEntitySystem_Branch_AA2B:
+        brk                                     ; AA2B 00                       .
+        db   $1D,$EB,$04                     ; AA2C 1D EB 04                 ...
 ; ----------------------------------------------------------------------------
-        bvs     MapEntitySystem_Branch_AA49     ; AA1E 70 29                    p)
-        db   $FC,$09,$01,$9D,$06,$70,$A9,$00 ; AA20 FC 09 01 9D 06 70 A9 00  .....p..
-        db   $9D,$46,$70,$00,$1D,$EB,$04,$F0 ; AA28 9D 46 70 00 1D EB 04 F0  .Fp.....
-        db   $0F,$A2,$01,$20,$35,$A0,$A2,$02 ; AA30 0F A2 01 20 35 A0 A2 02  ... 5...
-        db   $20,$35,$A0,$A2,$03,$20,$35,$A0 ; AA38 20 35 A0 A2 03 20 35 A0   5... 5.
-        db   $60                             ; AA40 60                       `
+        beq     MapEntitySystem_Branch_AA40     ; AA2F F0 0F                    ..
+        ldx     #$01                            ; AA31 A2 01                    ..
+        jsr     MapEntitySystem_Entry_A035      ; AA33 20 35 A0                  5.
+        ldx     #$02                            ; AA36 A2 02                    ..
+        jsr     MapEntitySystem_Entry_A035      ; AA38 20 35 A0                  5.
+        ldx     #$03                            ; AA3B A2 03                    ..
+        jsr     MapEntitySystem_Entry_A035      ; AA3D 20 35 A0                  5.
+MapEntitySystem_Branch_AA40:
+        rts                                     ; AA40 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AA41:
         brk                                     ; AA41 00                       .
-        db   $1D,$EB                         ; AA42 1D EB                    ..
+        db   $1D,$EB,$01                     ; AA42 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; AA44 01 F0                    ..
-        ora     $A2                             ; AA46 05 A2                    ..
-        brk                                     ; AA48 00                       .
-MapEntitySystem_Branch_AA49:
+        beq     MapEntitySystem_Branch_AA4C     ; AA45 F0 05                    ..
+        ldx     #$00                            ; AA47 A2 00                    ..
         jsr     MapEntitySystem_Entry_A035      ; AA49 20 35 A0                  5.
+MapEntitySystem_Branch_AA4C:
         rts                                     ; AA4C 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AA4D:
@@ -3462,16 +3649,17 @@ MapEntitySystem_Branch_AAE6:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AB01:
         jsr     MapEntitySystem_Entry_A044      ; AB01 20 44 A0                  D.
-        bcs     $AB15                           ; AB04 B0 0F                    ..
+        bcs     MapEntitySystem_Branch_AB15     ; AB04 B0 0F                    ..
         brk                                     ; AB06 00                       .
         db   $0A,$EB,$10                     ; AB07 0A EB 10                 ...
 ; ----------------------------------------------------------------------------
-        beq     $AB15                           ; AB0A F0 09                    ..
+        beq     MapEntitySystem_Branch_AB15     ; AB0A F0 09                    ..
         ldx     #$05                            ; AB0C A2 05                    ..
         lda     #$15                            ; AB0E A9 15                    ..
         ldy     #$11                            ; AB10 A0 11                    ..
         jsr     MapEntitySystem_Entry_A04A      ; AB12 20 4A A0                  J.
-        db   $60                             ; AB15 60                       `
+MapEntitySystem_Branch_AB15:
+        rts                                     ; AB15 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AB16:
         lda     PlayerLocalY                    ; AB16 A5 45                    .E
@@ -3584,10 +3772,10 @@ MapEntitySystem_Branch_ABDD:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_ABDE:
         brk                                     ; ABDE 00                       .
-        db   $0D,$EB                         ; ABDF 0D EB                    ..
+        db   $0D,$EB,$01                     ; ABDF 0D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($F0,x)                         ; ABE1 01 F0                    ..
-        sbc     $01A2,y                         ; ABE3 F9 A2 01                 ...
+        beq     MapEntitySystem_Branch_ABDD     ; ABE2 F0 F9                    ..
+        ldx     #$01                            ; ABE4 A2 01                    ..
         lda     $7006,x                         ; ABE6 BD 06 70                 ..p
         and     #$FC                            ; ABE9 29 FC                    ).
         sta     $7006,x                         ; ABEB 9D 06 70                 ..p
@@ -3654,8 +3842,9 @@ MapEntitySystem_Entry_AD1E:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AD32:
         ldy     #$00                            ; AD32 A0 00                    ..
+MapEntitySystem_Branch_AD34:
         lda     $AD5A,y                         ; AD34 B9 5A AD                 .Z.
-        bmi     $AD59                           ; AD37 30 20                    0
+        bmi     MapEntitySystem_Branch_AD59     ; AD37 30 20                    0
         cmp     CurrentMapNumber                ; AD39 C5 63                    .c
         bne     MapEntitySystem_Branch_AD52     ; AD3B D0 15                    ..
         lda     $AD5B,y                         ; AD3D B9 5B AD                 .[.
@@ -3671,8 +3860,9 @@ MapEntitySystem_Branch_AD52:
         iny                                     ; AD53 C8                       .
         iny                                     ; AD54 C8                       .
         iny                                     ; AD55 C8                       .
-        jmp     $AD34                           ; AD56 4C 34 AD                 L4.
+        jmp     MapEntitySystem_Branch_AD34     ; AD56 4C 34 AD                 L4.
 ; ----------------------------------------------------------------------------
+MapEntitySystem_Branch_AD59:
         rts                                     ; AD59 60                       `
 ; ----------------------------------------------------------------------------
         db   $1F                             ; AD5A 1F                       .
@@ -3700,16 +3890,48 @@ MapEntitySystem_Entry_AD6E:
         db   $12,$2F                         ; AD78 12 2F                    ./
 ; ----------------------------------------------------------------------------
         brk                                     ; AD7A 00                       .
-        db   $08,$CB,$80,$A2,$02,$20,$33,$BF ; AD7B 08 CB 80 A2 02 20 33 BF  ..... 3.
-        db   $A2,$01,$20,$33,$BF,$A2,$06,$A9 ; AD83 A2 01 20 33 BF A2 06 A9  .. 3....
-        db   $17,$A0,$11,$20,$25,$BF,$A2,$07 ; AD8B 17 A0 11 20 25 BF A2 07  ... %...
-        db   $A0,$0C,$2C,$81,$62,$70,$03,$A2 ; AD93 A0 0C 2C 81 62 70 03 A2  ..,.bp..
-        db   $08,$C8,$A9,$0F,$20,$25,$BF,$00 ; AD9B 08 C8 A9 0F 20 25 BF 00  .... %..
-        db   $08,$DF,$00,$15,$EF,$20,$46,$BF ; ADA3 08 DF 00 15 EF 20 46 BF  ..... F.
-        db   $00,$20,$3B,$A2,$00,$20,$37,$BF ; ADAB 00 20 3B A2 00 20 37 BF  . ;.. 7.
-        db   $A2,$03,$20,$37,$BF,$20,$F1,$DF ; ADB3 A2 03 20 37 BF 20 F1 DF  .. 7. ..
-        db   $20,$18,$D2,$A9,$8F,$A2,$04,$20 ; ADBB 20 18 D2 A9 8F A2 04 20   ......
-        db   $16,$BF,$00,$0D,$CB,$80,$60     ; ADC3 16 BF 00 0D CB 80 60     ......`
+        db   $08,$CB,$80                     ; AD7B 08 CB 80                 ...
+; ----------------------------------------------------------------------------
+        ldx     #$02                            ; AD7E A2 02                    ..
+        jsr     MapEntitySystem_Entry_BF33      ; AD80 20 33 BF                  3.
+        ldx     #$01                            ; AD83 A2 01                    ..
+        jsr     MapEntitySystem_Entry_BF33      ; AD85 20 33 BF                  3.
+        ldx     #$06                            ; AD88 A2 06                    ..
+        lda     #$17                            ; AD8A A9 17                    ..
+        ldy     #$11                            ; AD8C A0 11                    ..
+        jsr     MapEntitySystem_Entry_BF25      ; AD8E 20 25 BF                  %.
+        ldx     #$07                            ; AD91 A2 07                    ..
+        ldy     #$0C                            ; AD93 A0 0C                    ..
+        bit     $6281                           ; AD95 2C 81 62                 ,.b
+        bvs     MapEntitySystem_Branch_AD9D     ; AD98 70 03                    p.
+        ldx     #$08                            ; AD9A A2 08                    ..
+        iny                                     ; AD9C C8                       .
+MapEntitySystem_Branch_AD9D:
+        lda     #$0F                            ; AD9D A9 0F                    ..
+        jsr     MapEntitySystem_Entry_BF25      ; AD9F 20 25 BF                  %.
+        brk                                     ; ADA2 00                       .
+        db   $08,$DF                         ; ADA3 08 DF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; ADA5 00                       .
+        db   $15,$EF                         ; ADA6 15 EF                    ..
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_BF46      ; ADA8 20 46 BF                  F.
+        brk                                     ; ADAB 00                       .
+        db   $20,$3B                         ; ADAC 20 3B                     ;
+; ----------------------------------------------------------------------------
+        ldx     #$00                            ; ADAE A2 00                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; ADB0 20 37 BF                  7.
+        ldx     #$03                            ; ADB3 A2 03                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; ADB5 20 37 BF                  7.
+        jsr     UpperFixedEngine_Entry_DFF1     ; ADB8 20 F1 DF                  ..
+        jsr     UpperFixedEngine_Entry_D218     ; ADBB 20 18 D2                  ..
+        lda     #$8F                            ; ADBE A9 8F                    ..
+        ldx     #$04                            ; ADC0 A2 04                    ..
+        jsr     MapEntitySystem_Entry_BF16      ; ADC2 20 16 BF                  ..
+        brk                                     ; ADC5 00                       .
+        db   $0D,$CB,$80                     ; ADC6 0D CB 80                 ...
+; ----------------------------------------------------------------------------
+        rts                                     ; ADC9 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_ADCA:
         ldx     #$02                            ; ADCA A2 02                    ..
@@ -3772,26 +3994,86 @@ MapEntitySystem_Entry_ADF0:
 ; ----------------------------------------------------------------------------
         jsr     MapEntitySystem_Entry_BED6      ; AE40 20 D6 BE                  ..
         brk                                     ; AE43 00                       .
-        db   $05,$DB,$BF,$00,$06,$DB,$F7,$A9 ; AE44 05 DB BF 00 06 DB F7 A9  ........
-        db   $02,$00,$01,$8F,$A9,$02,$8D,$00 ; AE4C 02 00 01 8F A9 02 8D 00  ........
-        db   $70,$8D,$01,$70,$8D,$02,$70,$A5 ; AE54 70 8D 01 70 8D 02 70 A5  p..p..p.
-        db   $45,$8D,$81,$6F,$8D,$82,$6F,$A6 ; AE5C 45 8D 81 6F 8D 82 6F A6  E..o..o.
-        db   $44,$CA,$8E,$61,$6F,$E8,$E8,$8E ; AE64 44 CA 8E 61 6F E8 E8 8E  D..ao...
-        db   $62,$6F,$A2,$02,$DE,$86,$6F,$DE ; AE6C 62 6F A2 02 DE 86 6F DE  bo....o.
-        db   $C6,$6F,$A9,$01,$9D,$06,$70,$A2 ; AE74 C6 6F A9 01 9D 06 70 A2  .o....p.
-        db   $03,$DE,$86,$6F,$DE,$C6,$6F,$A9 ; AE7C 03 DE 86 6F DE C6 6F A9  ...o..o.
-        db   $03,$9D,$06,$70,$A9,$02,$8D,$03 ; AE84 03 9D 06 70 A9 02 8D 03  ...p....
-        db   $70,$00,$1F,$EF,$A2,$03,$A9,$C0 ; AE8C 70 00 1F EF A2 03 A9 C0  p.......
-        db   $00,$0B,$87,$A0,$03,$A2,$04,$8A ; AE94 00 0B 87 A0 03 A2 04 8A  ........
-        db   $99,$E6,$6F,$A9,$A4,$00,$0B,$87 ; AE9C 99 E6 6F A9 A4 00 0B 87  ..o.....
-        db   $A2,$02,$A9,$04,$9D,$E6,$6F,$A9 ; AEA4 A2 02 A9 04 9D E6 6F A9  ......o.
-        db   $00,$8D,$23,$70,$00,$03,$EF,$20 ; AEAC 00 8D 23 70 00 03 EF 20  ..#p...
-        db   $BF,$C5,$AD,$7F,$62,$09,$80,$8D ; AEB4 BF C5 AD 7F 62 09 80 8D  ....b...
-        db   $7F,$62,$20,$46,$BF,$A2,$03,$A9 ; AEBC 7F 62 20 46 BF A2 03 A9  .b F....
-        db   $4D,$00,$04,$6F,$20,$14,$D2,$A9 ; AEC4 4D 00 04 6F 20 14 D2 A9  M..o ...
-        db   $00,$8D,$ED,$62,$A9,$47,$85,$42 ; AECC 00 8D ED 62 A9 47 85 42  ...b.G.B
-        db   $A9,$39,$85,$43,$20,$C5,$C5,$00 ; AED4 A9 39 85 43 20 C5 C5 00  .9.C ...
-        db   $32,$EF,$60                     ; AEDC 32 EF 60                 2.`
+        db   $05,$DB,$BF                     ; AE44 05 DB BF                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; AE47 00                       .
+        db   $06,$DB,$F7                     ; AE48 06 DB F7                 ...
+; ----------------------------------------------------------------------------
+        lda     #$02                            ; AE4B A9 02                    ..
+        brk                                     ; AE4D 00                       .
+        db   $01,$8F                         ; AE4E 01 8F                    ..
+; ----------------------------------------------------------------------------
+        lda     #$02                            ; AE50 A9 02                    ..
+        sta     $7000                           ; AE52 8D 00 70                 ..p
+        sta     $7001                           ; AE55 8D 01 70                 ..p
+        sta     $7002                           ; AE58 8D 02 70                 ..p
+        lda     PlayerLocalY                    ; AE5B A5 45                    .E
+        sta     $6F81                           ; AE5D 8D 81 6F                 ..o
+        sta     $6F82                           ; AE60 8D 82 6F                 ..o
+        ldx     PlayerLocalX                    ; AE63 A6 44                    .D
+        dex                                     ; AE65 CA                       .
+        stx     $6F61                           ; AE66 8E 61 6F                 .ao
+        inx                                     ; AE69 E8                       .
+        inx                                     ; AE6A E8                       .
+        stx     $6F62                           ; AE6B 8E 62 6F                 .bo
+        ldx     #$02                            ; AE6E A2 02                    ..
+        dec     $6F86,x                         ; AE70 DE 86 6F                 ..o
+        dec     $6FC6,x                         ; AE73 DE C6 6F                 ..o
+        lda     #$01                            ; AE76 A9 01                    ..
+        sta     $7006,x                         ; AE78 9D 06 70                 ..p
+        ldx     #$03                            ; AE7B A2 03                    ..
+        dec     $6F86,x                         ; AE7D DE 86 6F                 ..o
+        dec     $6FC6,x                         ; AE80 DE C6 6F                 ..o
+        lda     #$03                            ; AE83 A9 03                    ..
+        sta     $7006,x                         ; AE85 9D 06 70                 ..p
+        lda     #$02                            ; AE88 A9 02                    ..
+        sta     $7003                           ; AE8A 8D 03 70                 ..p
+        brk                                     ; AE8D 00                       .
+        db   $1F,$EF                         ; AE8E 1F EF                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$03                            ; AE90 A2 03                    ..
+        lda     #$C0                            ; AE92 A9 C0                    ..
+        brk                                     ; AE94 00                       .
+        db   $0B,$87                         ; AE95 0B 87                    ..
+; ----------------------------------------------------------------------------
+        ldy     #$03                            ; AE97 A0 03                    ..
+        ldx     #$04                            ; AE99 A2 04                    ..
+        txa                                     ; AE9B 8A                       .
+        sta     $6FE6,y                         ; AE9C 99 E6 6F                 ..o
+        lda     #$A4                            ; AE9F A9 A4                    ..
+        brk                                     ; AEA1 00                       .
+        db   $0B,$87                         ; AEA2 0B 87                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$02                            ; AEA4 A2 02                    ..
+        lda     #$04                            ; AEA6 A9 04                    ..
+        sta     $6FE6,x                         ; AEA8 9D E6 6F                 ..o
+        lda     #$00                            ; AEAB A9 00                    ..
+        sta     $7023                           ; AEAD 8D 23 70                 .#p
+        brk                                     ; AEB0 00                       .
+        db   $03,$EF                         ; AEB1 03 EF                    ..
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_C5BF     ; AEB3 20 BF C5                  ..
+        lda     $627F                           ; AEB6 AD 7F 62                 ..b
+        ora     #$80                            ; AEB9 09 80                    ..
+        sta     $627F                           ; AEBB 8D 7F 62                 ..b
+        jsr     MapEntitySystem_Entry_BF46      ; AEBE 20 46 BF                  F.
+        ldx     #$03                            ; AEC1 A2 03                    ..
+        lda     #$4D                            ; AEC3 A9 4D                    .M
+        brk                                     ; AEC5 00                       .
+        db   $04,$6F                         ; AEC6 04 6F                    .o
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_D214     ; AEC8 20 14 D2                  ..
+        lda     #$00                            ; AECB A9 00                    ..
+        sta     SaveTimeOfDay                   ; AECD 8D ED 62                 ..b
+        lda     #$47                            ; AED0 A9 47                    .G
+        sta     PlayerWorldX                    ; AED2 85 42                    .B
+        lda     #$39                            ; AED4 A9 39                    .9
+        sta     PlayerWorldY                    ; AED6 85 43                    .C
+        jsr     UpperFixedEngine_Entry_C5C5     ; AED8 20 C5 C5                  ..
+        brk                                     ; AEDB 00                       .
+        db   $32,$EF                         ; AEDC 32 EF                    2.
+; ----------------------------------------------------------------------------
+        rts                                     ; AEDE 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AEDF:
         sta     $7006,x                         ; AEDF 9D 06 70                 ..p
@@ -4326,11 +4608,12 @@ MapEntitySystem_Branch_B275:
         sta     $6192                           ; B28E 8D 92 61                 ..a
         sta     $6196                           ; B291 8D 96 61                 ..a
         brk                                     ; B294 00                       .
-        db   $13,$CB                         ; B295 13 CB                    ..
+        db   $13,$CB,$01                     ; B295 13 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($00,x)                       ; B297 01 00                    ..
-        db   $17,$CB,$20,$A9,$05             ; B299 17 CB 20 A9 05           .. ..
+        brk                                     ; B298 00                       .
+        db   $17,$CB,$20                     ; B299 17 CB 20                 ..
 ; ----------------------------------------------------------------------------
+        lda     #$05                            ; B29C A9 05                    ..
 MapEntitySystem_Entry_B29E:
         pha                                     ; B29E 48                       H
         brk                                     ; B29F 00                       .
@@ -4399,18 +4682,16 @@ MapEntitySystem_Entry_B314:
         db   $01,$8F                         ; B317 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B319 00                       .
-        db   $1A,$CB                         ; B31A 1A CB                    ..
+        db   $1A,$CB,$40                     ; B31A 1A CB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; B31C 40                       @
-; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_B31D:
+MapEntitySystem_Entry_B31D:
         brk                                     ; B31D 00                       .
         db   $1F,$EF                         ; B31E 1F EF                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B320 00                       .
         db   $08,$CF                         ; B321 08 CF                    ..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_B323:
+MapEntitySystem_Entry_B323:
         brk                                     ; B323 00                       .
         db   $0A,$6F                         ; B324 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -4425,14 +4706,40 @@ MapEntitySystem_Entry_B32C:
         db   $01,$8F                         ; B32F 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B331 00                       .
-        db   $1A,$CB,$80,$00,$1F,$EF,$A2,$03 ; B332 1A CB 80 00 1F EF A2 03  ........
-        db   $20,$37,$BF,$A2,$0C,$BD,$00,$70 ; B33A 20 37 BF A2 0C BD 00 70   7.....p
-        db   $09,$03,$9D,$00,$70,$A9,$11,$9D ; B342 09 03 9D 00 70 A9 11 9D  ....p...
-        db   $40,$70,$A0,$04,$99,$46,$70,$A0 ; B34A 40 70 A0 04 99 46 70 A0  @p...Fp.
-        db   $05,$99,$46,$70,$A0,$02,$99,$46 ; B352 05 99 46 70 A0 02 99 46  ..Fp...F
-        db   $70,$BD,$E0,$6F,$AA,$A9,$C0,$00 ; B35A 70 BD E0 6F AA A9 C0 00  p..o....
-        db   $0B,$87,$00,$0A,$6F,$00,$03,$EF ; B362 0B 87 00 0A 6F 00 03 EF  ....o...
-        db   $A9,$8F,$20,$14,$BF,$4C,$BF,$C5 ; B36A A9 8F 20 14 BF 4C BF C5  .. ..L..
+        db   $1A,$CB,$80                     ; B332 1A CB 80                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; B335 00                       .
+        db   $1F,$EF                         ; B336 1F EF                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$03                            ; B338 A2 03                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; B33A 20 37 BF                  7.
+        ldx     #$0C                            ; B33D A2 0C                    ..
+        lda     $7000,x                         ; B33F BD 00 70                 ..p
+        ora     #$03                            ; B342 09 03                    ..
+        sta     $7000,x                         ; B344 9D 00 70                 ..p
+        lda     #$11                            ; B347 A9 11                    ..
+        sta     $7040,x                         ; B349 9D 40 70                 .@p
+        ldy     #$04                            ; B34C A0 04                    ..
+        sta     $7046,y                         ; B34E 99 46 70                 .Fp
+        ldy     #$05                            ; B351 A0 05                    ..
+        sta     $7046,y                         ; B353 99 46 70                 .Fp
+        ldy     #$02                            ; B356 A0 02                    ..
+        sta     $7046,y                         ; B358 99 46 70                 .Fp
+        lda     $6FE0,x                         ; B35B BD E0 6F                 ..o
+        tax                                     ; B35E AA                       .
+        lda     #$C0                            ; B35F A9 C0                    ..
+        brk                                     ; B361 00                       .
+        db   $0B,$87                         ; B362 0B 87                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; B364 00                       .
+        db   $0A,$6F                         ; B365 0A 6F                    .o
+; ----------------------------------------------------------------------------
+        brk                                     ; B367 00                       .
+        db   $03,$EF                         ; B368 03 EF                    ..
+; ----------------------------------------------------------------------------
+        lda     #$8F                            ; B36A A9 8F                    ..
+        jsr     MapEntitySystem_Entry_BF14      ; B36C 20 14 BF                  ..
+        jmp     UpperFixedEngine_Entry_C5BF     ; B36F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B372:
         lda     CurrentMapNumber                ; B372 A5 63                    .c
@@ -4795,18 +5102,45 @@ MapEntitySystem_Entry_B5C2:
         db   $01,$8F                         ; B5C5 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B5C7 00                       .
-        db   $19,$CB                         ; B5C8 19 CB                    ..
+        db   $19,$CB,$01                     ; B5C8 19 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($00,x)                       ; B5CA 01 00                    ..
-        db   $1F,$EF,$00,$08,$CF,$A2,$0F,$A9 ; B5CC 1F EF 00 08 CF A2 0F A9  ........
-        db   $11,$9D,$40,$70,$BD,$00,$70,$09 ; B5D4 11 9D 40 70 BD 00 70 09  ..@p..p.
-        db   $03,$9D,$00,$70,$A0,$0A,$B9,$E6 ; B5DC 03 9D 00 70 A0 0A B9 E6  ...p....
-        db   $6F,$9D,$E0,$6F,$8E,$9C,$05,$A2 ; B5E4 6F 9D E0 6F 8E 9C 05 A2  o..o....
-        db   $00,$A9,$14,$9D,$66,$6F,$9D,$A6 ; B5EC 00 A9 14 9D 66 6F 9D A6  ....fo..
-        db   $6F,$A9,$09,$9D,$86,$6F,$9D,$C6 ; B5F4 6F A9 09 9D 86 6F 9D C6  o....o..
-        db   $6F,$A9,$43,$9D,$46,$71,$00,$0A ; B5FC 6F A9 43 9D 46 71 00 0A  o.C.Fq..
-        db   $6F,$00,$03,$EF,$A9,$82,$20,$14 ; B604 6F 00 03 EF A9 82 20 14  o..... .
-        db   $BF,$00,$16,$CB,$04,$4C,$BF,$C5 ; B60C BF 00 16 CB 04 4C BF C5  .....L..
+        brk                                     ; B5CB 00                       .
+        db   $1F,$EF                         ; B5CC 1F EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; B5CE 00                       .
+        db   $08,$CF                         ; B5CF 08 CF                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$0F                            ; B5D1 A2 0F                    ..
+        lda     #$11                            ; B5D3 A9 11                    ..
+        sta     $7040,x                         ; B5D5 9D 40 70                 .@p
+        lda     $7000,x                         ; B5D8 BD 00 70                 ..p
+        ora     #$03                            ; B5DB 09 03                    ..
+        sta     $7000,x                         ; B5DD 9D 00 70                 ..p
+        ldy     #$0A                            ; B5E0 A0 0A                    ..
+        lda     $6FE6,y                         ; B5E2 B9 E6 6F                 ..o
+        sta     $6FE0,x                         ; B5E5 9D E0 6F                 ..o
+        stx     $059C                           ; B5E8 8E 9C 05                 ...
+        ldx     #$00                            ; B5EB A2 00                    ..
+        lda     #$14                            ; B5ED A9 14                    ..
+        sta     $6F66,x                         ; B5EF 9D 66 6F                 .fo
+        sta     $6FA6,x                         ; B5F2 9D A6 6F                 ..o
+        lda     #$09                            ; B5F5 A9 09                    ..
+        sta     $6F86,x                         ; B5F7 9D 86 6F                 ..o
+        sta     $6FC6,x                         ; B5FA 9D C6 6F                 ..o
+        lda     #$43                            ; B5FD A9 43                    .C
+        sta     $7146,x                         ; B5FF 9D 46 71                 .Fq
+        brk                                     ; B602 00                       .
+        db   $0A,$6F                         ; B603 0A 6F                    .o
+; ----------------------------------------------------------------------------
+        brk                                     ; B605 00                       .
+        db   $03,$EF                         ; B606 03 EF                    ..
+; ----------------------------------------------------------------------------
+        lda     #$82                            ; B608 A9 82                    ..
+        jsr     MapEntitySystem_Entry_BF14      ; B60A 20 14 BF                  ..
+        brk                                     ; B60D 00                       .
+        db   $16,$CB,$04                     ; B60E 16 CB 04                 ...
+; ----------------------------------------------------------------------------
+        jmp     UpperFixedEngine_Entry_C5BF     ; B611 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B614:
         lda     #$84                            ; B614 A9 84                    ..
@@ -4836,8 +5170,15 @@ MapEntitySystem_Entry_B638:
         lda     #$0D                            ; B63D A9 0D                    ..
         jsr     MapEntitySystem_Entry_B29E      ; B63F 20 9E B2                  ..
         brk                                     ; B642 00                       .
-        db   $1A,$CB,$02,$00,$20,$CB,$80,$A2 ; B643 1A CB 02 00 20 CB 80 A2  .... ...
-        db   $01,$A9,$11,$9D,$46,$70,$60     ; B64B 01 A9 11 9D 46 70 60     ....Fp`
+        db   $1A,$CB,$02                     ; B643 1A CB 02                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; B646 00                       .
+        db   $20,$CB,$80                     ; B647 20 CB 80                  ..
+; ----------------------------------------------------------------------------
+        ldx     #$01                            ; B64A A2 01                    ..
+        lda     #$11                            ; B64C A9 11                    ..
+        sta     $7046,x                         ; B64E 9D 46 70                 .Fp
+        rts                                     ; B651 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B652:
         ldx     #$02                            ; B652 A2 02                    ..
@@ -4924,17 +5265,38 @@ MapEntitySystem_Entry_B6F2:
         db   $01,$8F                         ; B6F5 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B6F7 00                       .
-        db   $1D,$CB                         ; B6F8 1D CB                    ..
+        db   $1D,$CB,$40                     ; B6F8 1D CB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; B6FA 40                       @
+MapEntitySystem_Entry_B6FB:
+        brk                                     ; B6FB 00                       .
+        db   $0E,$CB,$08                     ; B6FC 0E CB 08                 ...
 ; ----------------------------------------------------------------------------
-        db   $00,$0E,$CB,$08,$A9,$05,$85,$44 ; B6FB 00 0E CB 08 A9 05 85 44  .......D
-        db   $8D,$60,$6F,$A9,$08,$85,$45,$8D ; B703 8D 60 6F A9 08 85 45 8D  .`o...E.
-        db   $80,$6F,$A9,$00,$85,$3D,$00,$0F ; B70B 80 6F A9 00 85 3D 00 0F  .o...=..
-        db   $EF,$A9,$88,$20,$14,$BF,$A2,$01 ; B713 EF A9 88 20 14 BF A2 01  ... ....
-        db   $A9,$11,$9D,$46,$70,$20,$1D,$B3 ; B71B A9 11 9D 46 70 20 1D B3  ...Fp ..
-        db   $20,$46,$BF,$00,$44,$4B,$20,$0A ; B723 20 46 BF 00 44 4B 20 0A   F..DK .
-        db   $D2,$A9,$00,$85,$F9,$85,$FA,$60 ; B72B D2 A9 00 85 F9 85 FA 60  .......`
+        lda     #$05                            ; B6FF A9 05                    ..
+        sta     PlayerLocalX                    ; B701 85 44                    .D
+        sta     $6F60                           ; B703 8D 60 6F                 .`o
+        lda     #$08                            ; B706 A9 08                    ..
+        sta     PlayerLocalY                    ; B708 85 45                    .E
+        sta     $6F80                           ; B70A 8D 80 6F                 ..o
+        lda     #$00                            ; B70D A9 00                    ..
+        sta     $3D                             ; B70F 85 3D                    .=
+        brk                                     ; B711 00                       .
+        db   $0F,$EF                         ; B712 0F EF                    ..
+; ----------------------------------------------------------------------------
+        lda     #$88                            ; B714 A9 88                    ..
+        jsr     MapEntitySystem_Entry_BF14      ; B716 20 14 BF                  ..
+        ldx     #$01                            ; B719 A2 01                    ..
+        lda     #$11                            ; B71B A9 11                    ..
+        sta     $7046,x                         ; B71D 9D 46 70                 .Fp
+        jsr     MapEntitySystem_Entry_B31D      ; B720 20 1D B3                  ..
+        jsr     MapEntitySystem_Entry_BF46      ; B723 20 46 BF                  F.
+        brk                                     ; B726 00                       .
+        db   $44,$4B                         ; B727 44 4B                    DK
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_D20A     ; B729 20 0A D2                  ..
+        lda     #$00                            ; B72C A9 00                    ..
+        sta     $F9                             ; B72E 85 F9                    ..
+        sta     $FA                             ; B730 85 FA                    ..
+        rts                                     ; B732 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B733:
         tya                                     ; B733 98                       .
@@ -4953,9 +5315,7 @@ MapEntitySystem_Entry_B733:
         cmp     #$01                            ; B746 C9 01                    ..
         bne     MapEntitySystem_Branch_B74E     ; B748 D0 04                    ..
         brk                                     ; B74A 00                       .
-        db   $1E,$CB                         ; B74B 1E CB                    ..
-; ----------------------------------------------------------------------------
-        rti                                     ; B74D 40                       @
+        db   $1E,$CB,$40                     ; B74B 1E CB 40                 ..@
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_B74E:
         stx     $F9                             ; B74E 86 F9                    ..
@@ -5033,21 +5393,69 @@ MapEntitySystem_Entry_B7A5:
         db   $0C,$DF                         ; B7C0 0C DF                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B7C2 00                       .
-        db   $1D,$EB                         ; B7C3 1D EB                    ..
+        db   $1D,$EB,$01                     ; B7C3 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($D0,x)                         ; B7C5 01 D0                    ..
-        db   $72,$20,$AF,$C5,$20,$8F,$C5,$00 ; B7C7 72 20 AF C5 20 8F C5 00  r .. ...
-        db   $16,$CB,$10,$20,$CD,$B8,$00,$43 ; B7CF 16 CB 10 20 CD B8 00 43  ... ...C
-        db   $EF,$00,$16,$DB,$EF,$20,$DE,$B8 ; B7D7 EF 00 16 DB EF 20 DE B8  ..... ..
-        db   $00,$0A,$6F,$20,$AF,$C5,$00,$0D ; B7DF 00 0A 6F 20 AF C5 00 0D  ..o ....
-        db   $DF,$20,$8F,$C5,$00,$0E,$DF,$00 ; B7E7 DF 20 8F C5 00 0E DF 00  . ......
-        db   $10,$DF,$00,$0F,$DF,$A2,$00,$00 ; B7EF 10 DF 00 0F DF A2 00 00  ........
-        db   $23,$EF,$A2,$00,$00,$0D,$87,$20 ; B7F7 23 EF A2 00 00 0D 87 20  #......
-        db   $4E,$C5,$00,$28,$0F,$AD,$14,$05 ; B7FF 4E C5 00 28 0F AD 14 05  N..(....
-        db   $8D,$FD,$05,$00,$07,$6F,$43,$A2 ; B807 8D FD 05 00 07 6F 43 A2  .....oC.
-        db   $3C,$20,$0C,$C9,$20,$BF,$C5,$00 ; B80F 3C 20 0C C9 20 BF C5 00  < .. ...
-        db   $38,$4B,$20,$18,$D2,$20,$C5,$C5 ; B817 38 4B 20 18 D2 20 C5 C5  8K .. ..
-        db   $20,$EC,$B8,$00,$16,$DB,$EF,$60 ; B81F 20 EC B8 00 16 DB EF 60   ......`
+        bne     MapEntitySystem_Entry_B83A      ; B7C6 D0 72                    .r
+        jsr     UpperFixedEngine_Entry_C5AF     ; B7C8 20 AF C5                  ..
+        jsr     UpperFixedEngine_Entry_C58F     ; B7CB 20 8F C5                  ..
+        brk                                     ; B7CE 00                       .
+        db   $16,$CB,$10                     ; B7CF 16 CB 10                 ...
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B8CD      ; B7D2 20 CD B8                  ..
+        brk                                     ; B7D5 00                       .
+        db   $43,$EF                         ; B7D6 43 EF                    C.
+; ----------------------------------------------------------------------------
+        brk                                     ; B7D8 00                       .
+        db   $16,$DB,$EF                     ; B7D9 16 DB EF                 ...
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B8DE      ; B7DC 20 DE B8                  ..
+        brk                                     ; B7DF 00                       .
+        db   $0A,$6F                         ; B7E0 0A 6F                    .o
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_C5AF     ; B7E2 20 AF C5                  ..
+        brk                                     ; B7E5 00                       .
+        db   $0D,$DF                         ; B7E6 0D DF                    ..
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_C58F     ; B7E8 20 8F C5                  ..
+        brk                                     ; B7EB 00                       .
+        db   $0E,$DF                         ; B7EC 0E DF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; B7EE 00                       .
+        db   $10,$DF                         ; B7EF 10 DF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; B7F1 00                       .
+        db   $0F,$DF                         ; B7F2 0F DF                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$00                            ; B7F4 A2 00                    ..
+        brk                                     ; B7F6 00                       .
+        db   $23,$EF                         ; B7F7 23 EF                    #.
+; ----------------------------------------------------------------------------
+        ldx     #$00                            ; B7F9 A2 00                    ..
+        brk                                     ; B7FB 00                       .
+        db   $0D,$87                         ; B7FC 0D 87                    ..
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_C54E     ; B7FE 20 4E C5                  N.
+        brk                                     ; B801 00                       .
+        db   $28,$0F                         ; B802 28 0F                    (.
+; ----------------------------------------------------------------------------
+        lda     $0514                           ; B804 AD 14 05                 ...
+        sta     $05FD                           ; B807 8D FD 05                 ...
+        brk                                     ; B80A 00                       .
+        db   $07,$6F,$43                     ; B80B 07 6F 43                 .oC
+; ----------------------------------------------------------------------------
+        ldx     #$3C                            ; B80E A2 3C                    .<
+        jsr     UpperFixedEngine_Entry_C90C     ; B810 20 0C C9                  ..
+        jsr     UpperFixedEngine_Entry_C5BF     ; B813 20 BF C5                  ..
+        brk                                     ; B816 00                       .
+        db   $38,$4B                         ; B817 38 4B                    8K
+; ----------------------------------------------------------------------------
+        jsr     UpperFixedEngine_Entry_D218     ; B819 20 18 D2                  ..
+        jsr     UpperFixedEngine_Entry_C5C5     ; B81C 20 C5 C5                  ..
+        jsr     MapEntitySystem_Entry_B8EC      ; B81F 20 EC B8                  ..
+        brk                                     ; B822 00                       .
+        db   $16,$DB,$EF                     ; B823 16 DB EF                 ...
+; ----------------------------------------------------------------------------
+        rts                                     ; B826 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B827:
         lda     #$80                            ; B827 A9 80                    ..
@@ -5141,7 +5549,7 @@ MapEntitySystem_Branch_B8A0:
         brk                                     ; B8B9 00                       .
         db   $0D,$87                         ; B8BA 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Branch_B8EC     ; B8BC 4C EC B8                 L..
+        jmp     MapEntitySystem_Entry_B8EC      ; B8BC 4C EC B8                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B8BF:
         jsr     MapEntitySystem_Entry_BF37      ; B8BF 20 37 BF                  7.
@@ -5175,7 +5583,7 @@ MapEntitySystem_Branch_B8E0:
         bpl     MapEntitySystem_Branch_B8E0     ; B8E9 10 F5                    ..
         rts                                     ; B8EB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Branch_B8EC:
+MapEntitySystem_Entry_B8EC:
         lda     #$11                            ; B8EC A9 11                    ..
         sta     PlayerLocalX                    ; B8EE 85 44                    .D
         lda     #$14                            ; B8F0 A9 14                    ..
@@ -5188,15 +5596,19 @@ MapEntitySystem_Entry_B8F5:
         db   $01,$8F                         ; B8F8 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B8FA 00                       .
-        db   $1D,$CB                         ; B8FB 1D CB                    ..
+        db   $1D,$CB,$08                     ; B8FB 1D CB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; B8FD 08                       .
-        jmp     MapEntitySystem_Branch_B31D     ; B8FE 4C 1D B3                 L..
+        jmp     MapEntitySystem_Entry_B31D      ; B8FE 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B901:
         brk                                     ; B901 00                       .
-        db   $13,$CB,$02,$A9,$8F,$8D,$97,$61 ; B902 13 CB 02 A9 8F 8D 97 61  .......a
-        db   $A9,$D0,$8D,$98,$61,$60         ; B90A A9 D0 8D 98 61 60        ....a`
+        db   $13,$CB,$02                     ; B902 13 CB 02                 ...
+; ----------------------------------------------------------------------------
+        lda     #$8F                            ; B905 A9 8F                    ..
+        sta     SavePlayerWorldX                ; B907 8D 97 61                 ..a
+        lda     #$D0                            ; B90A A9 D0                    ..
+        sta     SavePlayerWorldY                ; B90C 8D 98 61                 ..a
+        rts                                     ; B90F 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B910:
         lda     $6299                           ; B910 AD 99 62                 ..b
@@ -5205,11 +5617,9 @@ MapEntitySystem_Entry_B910:
         lda     $6299                           ; B918 AD 99 62                 ..b
         pha                                     ; B91B 48                       H
         brk                                     ; B91C 00                       .
-        db   $1E,$DB                         ; B91D 1E DB                    ..
+        db   $1E,$DB,$00                     ; B91D 1E DB 00                 ...
 ; ----------------------------------------------------------------------------
-        brk                                     ; B91F 00                       .
-        db   $A2,$05                         ; B920 A2 05                    ..
-; ----------------------------------------------------------------------------
+        ldx     #$05                            ; B920 A2 05                    ..
         jsr     MapEntitySystem_Entry_BF37      ; B922 20 37 BF                  7.
         brk                                     ; B925 00                       .
         db   $0B,$DF                         ; B926 0B DF                    ..
@@ -5249,7 +5659,7 @@ MapEntitySystem_Entry_B93F:
         brk                                     ; B94E 00                       .
         db   $1F,$EF                         ; B94F 1F EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Branch_B323     ; B951 4C 23 B3                 L#.
+        jmp     MapEntitySystem_Entry_B323      ; B951 4C 23 B3                 L#.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B954:
         jsr     UpperFixedEngine_Entry_D1F3     ; B954 20 F3 D1                  ..
@@ -5293,7 +5703,9 @@ MapEntitySystem_Entry_B995:
         db   $01,$8F                         ; B998 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B99A 00                       .
-        db   $1D,$CB,$04,$4C,$1D,$B3         ; B99B 1D CB 04 4C 1D B3        ...L..
+        db   $1D,$CB,$04                     ; B99B 1D CB 04                 ...
+; ----------------------------------------------------------------------------
+        jmp     MapEntitySystem_Entry_B31D      ; B99E 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B9A1:
         lda     #$14                            ; B9A1 A9 14                    ..
@@ -5301,14 +5713,22 @@ MapEntitySystem_Entry_B9A1:
         db   $01,$8F                         ; B9A4 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B9A6 00                       .
-        db   $1D,$CB                         ; B9A7 1D CB                    ..
+        db   $1D,$CB,$01                     ; B9A7 1D CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($A9,x)                         ; B9A9 01 A9                    ..
-        ora     ($A2),y                         ; B9AB 11 A2                    ..
-        db   $04,$9D,$46,$70,$A2,$00,$BD,$E6 ; B9AD 04 9D 46 70 A2 00 BD E6  ..Fp....
-        db   $70,$29,$7F,$9D,$E6,$70,$A9,$00 ; B9B5 70 29 7F 9D E6 70 A9 00  p)...p..
-        db   $85,$3D,$8D,$30,$05,$00,$0F,$EF ; B9BD 85 3D 8D 30 05 00 0F EF  .=.0....
-        db   $4C,$1D,$B3                     ; B9C5 4C 1D B3                 L..
+        lda     #$11                            ; B9AA A9 11                    ..
+        ldx     #$04                            ; B9AC A2 04                    ..
+        sta     $7046,x                         ; B9AE 9D 46 70                 .Fp
+        ldx     #$00                            ; B9B1 A2 00                    ..
+        lda     $70E6,x                         ; B9B3 BD E6 70                 ..p
+        and     #$7F                            ; B9B6 29 7F                    ).
+        sta     $70E6,x                         ; B9B8 9D E6 70                 ..p
+        lda     #$00                            ; B9BB A9 00                    ..
+        sta     $3D                             ; B9BD 85 3D                    .=
+        sta     $0530                           ; B9BF 8D 30 05                 .0.
+        brk                                     ; B9C2 00                       .
+        db   $0F,$EF                         ; B9C3 0F EF                    ..
+; ----------------------------------------------------------------------------
+        jmp     MapEntitySystem_Entry_B31D      ; B9C5 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B9C8:
         lda     #$01                            ; B9C8 A9 01                    ..
@@ -5326,13 +5746,19 @@ MapEntitySystem_Branch_B9DD:
         db   $17,$CB,$1C                     ; B9DE 17 CB 1C                 ...
 ; ----------------------------------------------------------------------------
         brk                                     ; B9E1 00                       .
-        db   $19,$CB                         ; B9E2 19 CB                    ..
+        db   $19,$CB,$40                     ; B9E2 19 CB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; B9E4 40                       @
+MapEntitySystem_Entry_B9E5:
+        ldx     #$04                            ; B9E5 A2 04                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; B9E7 20 37 BF                  7.
+        ldx     #$06                            ; B9EA A2 06                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; B9EC 20 37 BF                  7.
+        ldx     #$03                            ; B9EF A2 03                    ..
+        jsr     MapEntitySystem_Entry_BF37      ; B9F1 20 37 BF                  7.
+        brk                                     ; B9F4 00                       .
+        db   $0A,$6F                         ; B9F5 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        db   $A2,$04,$20,$37,$BF,$A2,$06,$20 ; B9E5 A2 04 20 37 BF A2 06 20  .. 7...
-        db   $37,$BF,$A2,$03,$20,$37,$BF,$00 ; B9ED 37 BF A2 03 20 37 BF 00  7... 7..
-        db   $0A,$6F,$4C,$0A,$D2             ; B9F5 0A 6F 4C 0A D2           .oL..
+        jmp     UpperFixedEngine_Entry_D20A     ; B9F7 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B9FA:
         lda     #$15                            ; B9FA A9 15                    ..
@@ -5340,12 +5766,32 @@ MapEntitySystem_Entry_B9FA:
         db   $01,$8F                         ; B9FD 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B9FF 00                       .
-        db   $29,$CB,$80,$00,$1F,$EF,$00,$08 ; BA00 29 CB 80 00 1F EF 00 08  ).......
-        db   $CF,$A0,$06,$B9,$00,$70,$09,$03 ; BA08 CF A0 06 B9 00 70 09 03  .....p..
-        db   $99,$00,$70,$BE,$E0,$6F,$A9,$CE ; BA10 99 00 70 BE E0 6F A9 CE  ..p..o..
-        db   $00,$0B,$87,$20,$23,$B3,$20,$46 ; BA18 00 0B 87 20 23 B3 20 46  ... #. F
-        db   $BF,$A9,$06,$8D,$9C,$05,$00,$65 ; BA20 BF A9 06 8D 9C 05 00 65  .......e
-        db   $4B,$20,$CE,$BA,$4C,$0A,$D2     ; BA28 4B 20 CE BA 4C 0A D2     K ..L..
+        db   $29,$CB,$80                     ; BA00 29 CB 80                 )..
+; ----------------------------------------------------------------------------
+        brk                                     ; BA03 00                       .
+        db   $1F,$EF                         ; BA04 1F EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; BA06 00                       .
+        db   $08,$CF                         ; BA07 08 CF                    ..
+; ----------------------------------------------------------------------------
+        ldy     #$06                            ; BA09 A0 06                    ..
+        lda     $7000,y                         ; BA0B B9 00 70                 ..p
+        ora     #$03                            ; BA0E 09 03                    ..
+        sta     $7000,y                         ; BA10 99 00 70                 ..p
+        ldx     $6FE0,y                         ; BA13 BE E0 6F                 ..o
+        lda     #$CE                            ; BA16 A9 CE                    ..
+        brk                                     ; BA18 00                       .
+        db   $0B,$87                         ; BA19 0B 87                    ..
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B323      ; BA1B 20 23 B3                  #.
+        jsr     MapEntitySystem_Entry_BF46      ; BA1E 20 46 BF                  F.
+        lda     #$06                            ; BA21 A9 06                    ..
+        sta     $059C                           ; BA23 8D 9C 05                 ...
+        brk                                     ; BA26 00                       .
+        db   $65,$4B                         ; BA27 65 4B                    eK
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_BACE      ; BA29 20 CE BA                  ..
+        jmp     UpperFixedEngine_Entry_D20A     ; BA2C 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BA2F:
         lda     #$16                            ; BA2F A9 16                    ..
@@ -5353,16 +5799,33 @@ MapEntitySystem_Entry_BA2F:
         db   $01,$8F                         ; BA32 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; BA34 00                       .
-        db   $29,$CB                         ; BA35 29 CB                    ).
+        db   $29,$CB,$40                     ; BA35 29 CB 40                 ).@
 ; ----------------------------------------------------------------------------
-        rti                                     ; BA37 40                       @
+MapEntitySystem_Entry_BA38:
+        brk                                     ; BA38 00                       .
+        db   $1F,$EF                         ; BA39 1F EF                    ..
 ; ----------------------------------------------------------------------------
-        db   $00,$1F,$EF,$00,$08,$CF,$A0,$06 ; BA38 00 1F EF 00 08 CF A0 06  ........
-        db   $B9,$00,$70,$09,$03,$99,$00,$70 ; BA40 B9 00 70 09 03 99 00 70  ..p....p
-        db   $BE,$E0,$6F,$A9,$C7,$00,$0B,$87 ; BA48 BE E0 6F A9 C7 00 0B 87  ..o.....
-        db   $20,$23,$B3,$20,$46,$BF,$A9,$06 ; BA50 20 23 B3 20 46 BF A9 06   #. F...
-        db   $8D,$9C,$05,$00,$67,$4B,$20,$CE ; BA58 8D 9C 05 00 67 4B 20 CE  ....gK .
-        db   $BA,$4C,$0A,$D2                 ; BA60 BA 4C 0A D2              .L..
+        brk                                     ; BA3B 00                       .
+        db   $08,$CF                         ; BA3C 08 CF                    ..
+; ----------------------------------------------------------------------------
+        ldy     #$06                            ; BA3E A0 06                    ..
+        lda     $7000,y                         ; BA40 B9 00 70                 ..p
+        ora     #$03                            ; BA43 09 03                    ..
+        sta     $7000,y                         ; BA45 99 00 70                 ..p
+        ldx     $6FE0,y                         ; BA48 BE E0 6F                 ..o
+        lda     #$C7                            ; BA4B A9 C7                    ..
+        brk                                     ; BA4D 00                       .
+        db   $0B,$87                         ; BA4E 0B 87                    ..
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B323      ; BA50 20 23 B3                  #.
+        jsr     MapEntitySystem_Entry_BF46      ; BA53 20 46 BF                  F.
+        lda     #$06                            ; BA56 A9 06                    ..
+        sta     $059C                           ; BA58 8D 9C 05                 ...
+        brk                                     ; BA5B 00                       .
+        db   $67,$4B                         ; BA5C 67 4B                    gK
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_BACE      ; BA5E 20 CE BA                  ..
+        jmp     UpperFixedEngine_Entry_D20A     ; BA61 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BA64:
         lda     #$17                            ; BA64 A9 17                    ..
@@ -5370,15 +5833,32 @@ MapEntitySystem_Entry_BA64:
         db   $01,$8F                         ; BA67 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; BA69 00                       .
-        db   $29,$CB                         ; BA6A 29 CB                    ).
+        db   $29,$CB,$20                     ; BA6A 29 CB 20                 ).
 ; ----------------------------------------------------------------------------
-        jsr     $1F00                           ; BA6C 20 00 1F                  ..
-        db   $EF,$00,$08,$CF,$A0,$06,$B9,$00 ; BA6F EF 00 08 CF A0 06 B9 00  ........
-        db   $70,$09,$03,$99,$00,$70,$BE,$E0 ; BA77 70 09 03 99 00 70 BE E0  p....p..
-        db   $6F,$A9,$BF,$00,$0B,$87,$20,$23 ; BA7F 6F A9 BF 00 0B 87 20 23  o..... #
-        db   $B3,$20,$46,$BF,$A9,$06,$8D,$9C ; BA87 B3 20 46 BF A9 06 8D 9C  . F.....
-        db   $05,$00,$68,$4B,$20,$CE,$BA,$4C ; BA8F 05 00 68 4B 20 CE BA 4C  ..hK ..L
-        db   $0A,$D2                         ; BA97 0A D2                    ..
+        brk                                     ; BA6D 00                       .
+        db   $1F,$EF                         ; BA6E 1F EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; BA70 00                       .
+        db   $08,$CF                         ; BA71 08 CF                    ..
+; ----------------------------------------------------------------------------
+        ldy     #$06                            ; BA73 A0 06                    ..
+        lda     $7000,y                         ; BA75 B9 00 70                 ..p
+        ora     #$03                            ; BA78 09 03                    ..
+        sta     $7000,y                         ; BA7A 99 00 70                 ..p
+        ldx     $6FE0,y                         ; BA7D BE E0 6F                 ..o
+        lda     #$BF                            ; BA80 A9 BF                    ..
+        brk                                     ; BA82 00                       .
+        db   $0B,$87                         ; BA83 0B 87                    ..
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B323      ; BA85 20 23 B3                  #.
+        jsr     MapEntitySystem_Entry_BF46      ; BA88 20 46 BF                  F.
+        lda     #$06                            ; BA8B A9 06                    ..
+        sta     $059C                           ; BA8D 8D 9C 05                 ...
+        brk                                     ; BA90 00                       .
+        db   $68,$4B                         ; BA91 68 4B                    hK
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_BACE      ; BA93 20 CE BA                  ..
+        jmp     UpperFixedEngine_Entry_D20A     ; BA96 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BA99:
         lda     #$18                            ; BA99 A9 18                    ..
@@ -5386,18 +5866,51 @@ MapEntitySystem_Entry_BA99:
         db   $01,$8F                         ; BA9C 01 8F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; BA9E 00                       .
-        db   $29,$CB                         ; BA9F 29 CB                    ).
+        db   $29,$CB,$10                     ; BA9F 29 CB 10                 )..
 ; ----------------------------------------------------------------------------
-        bpl     $BAA3                           ; BAA1 10 00                    ..
-        db   $1F,$EF,$00,$08,$CF,$A0,$06,$B9 ; BAA3 1F EF 00 08 CF A0 06 B9  ........
-        db   $00,$70,$09,$03,$99,$00,$70,$BE ; BAAB 00 70 09 03 99 00 70 BE  .p....p.
-        db   $E0,$6F,$A9,$EB,$00,$0B,$87,$20 ; BAB3 E0 6F A9 EB 00 0B 87 20  .o.....
-        db   $23,$B3,$20,$46,$BF,$A9,$06,$8D ; BABB 23 B3 20 46 BF A9 06 8D  #. F....
-        db   $9C,$05,$00,$69,$4B,$20,$CE,$BA ; BAC3 9C 05 00 69 4B 20 CE BA  ...iK ..
-        db   $4C,$0A,$D2,$00,$84,$FB,$A2,$0A ; BACB 4C 0A D2 00 84 FB A2 0A  L.......
-        db   $20,$0C,$C9,$00,$8A,$FB,$A2,$0A ; BAD3 20 0C C9 00 8A FB A2 0A   .......
-        db   $20,$0C,$C9,$00,$81,$FB,$00,$66 ; BADB 20 0C C9 00 81 FB 00 66   ......f
-        db   $4B,$60                         ; BAE3 4B 60                    K`
+        brk                                     ; BAA2 00                       .
+        db   $1F,$EF                         ; BAA3 1F EF                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; BAA5 00                       .
+        db   $08,$CF                         ; BAA6 08 CF                    ..
+; ----------------------------------------------------------------------------
+        ldy     #$06                            ; BAA8 A0 06                    ..
+        lda     $7000,y                         ; BAAA B9 00 70                 ..p
+        ora     #$03                            ; BAAD 09 03                    ..
+        sta     $7000,y                         ; BAAF 99 00 70                 ..p
+        ldx     $6FE0,y                         ; BAB2 BE E0 6F                 ..o
+        lda     #$EB                            ; BAB5 A9 EB                    ..
+        brk                                     ; BAB7 00                       .
+        db   $0B,$87                         ; BAB8 0B 87                    ..
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_B323      ; BABA 20 23 B3                  #.
+        jsr     MapEntitySystem_Entry_BF46      ; BABD 20 46 BF                  F.
+        lda     #$06                            ; BAC0 A9 06                    ..
+        sta     $059C                           ; BAC2 8D 9C 05                 ...
+        brk                                     ; BAC5 00                       .
+        db   $69,$4B                         ; BAC6 69 4B                    iK
+; ----------------------------------------------------------------------------
+        jsr     MapEntitySystem_Entry_BACE      ; BAC8 20 CE BA                  ..
+        jmp     UpperFixedEngine_Entry_D20A     ; BACB 4C 0A D2                 L..
+; ----------------------------------------------------------------------------
+MapEntitySystem_Entry_BACE:
+        brk                                     ; BACE 00                       .
+        db   $84,$FB                         ; BACF 84 FB                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$0A                            ; BAD1 A2 0A                    ..
+        jsr     UpperFixedEngine_Entry_C90C     ; BAD3 20 0C C9                  ..
+        brk                                     ; BAD6 00                       .
+        db   $8A,$FB                         ; BAD7 8A FB                    ..
+; ----------------------------------------------------------------------------
+        ldx     #$0A                            ; BAD9 A2 0A                    ..
+        jsr     UpperFixedEngine_Entry_C90C     ; BADB 20 0C C9                  ..
+        brk                                     ; BADE 00                       .
+        db   $81,$FB                         ; BADF 81 FB                    ..
+; ----------------------------------------------------------------------------
+        brk                                     ; BAE1 00                       .
+        db   $66,$4B                         ; BAE2 66 4B                    fK
+; ----------------------------------------------------------------------------
+        rts                                     ; BAE4 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BAE5:
         ldx     #$02                            ; BAE5 A2 02                    ..
@@ -5851,12 +6364,13 @@ MapEntitySystem_Entry_BD96:
         db   $0D,$CB,$80                     ; BDC7 0D CB 80                 ...
 ; ----------------------------------------------------------------------------
         brk                                     ; BDCA 00                       .
-        db   $13,$CB                         ; BDCB 13 CB                    ..
+        db   $13,$CB,$01                     ; BDCB 13 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($20,x)                         ; BDCD 01 20                    .
-        nop                                     ; BDCF EA                       .
-MapEntitySystem_Entry_BDD2 = $+ 2
-        cpy     a:$60                           ; BDD0 CC 60 00                 .`.
+        jsr     UpperFixedEngine_Entry_CCEA     ; BDCE 20 EA CC                  ..
+        rts                                     ; BDD1 60                       `
+; ----------------------------------------------------------------------------
+MapEntitySystem_Entry_BDD2:
+        brk                                     ; BDD2 00                       .
         db   $62,$23,$40                     ; BDD3 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
         sta     $00                           ; BDD6 85 00                    ..
@@ -6087,10 +6601,12 @@ MapEntitySystem_Entry_BF25:
         sta     $6FC6,x                         ; BF2F 9D C6 6F                 ..o
         rts                                     ; BF32 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$80,$D0,$02                 ; BF33 A9 80 D0 02              ....
-; ----------------------------------------------------------------------------
+MapEntitySystem_Entry_BF33:
+        lda     #$80                            ; BF33 A9 80                    ..
+        bne     MapEntitySystem_Branch_BF39     ; BF35 D0 02                    ..
 MapEntitySystem_Entry_BF37:
         lda     #$81                            ; BF37 A9 81                    ..
+MapEntitySystem_Branch_BF39:
         sta     $6F66,x                         ; BF39 9D 66 6F                 .fo
         sta     $6FA6,x                         ; BF3C 9D A6 6F                 ..o
         sta     $6F86,x                         ; BF3F 9D 86 6F                 ..o

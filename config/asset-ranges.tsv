@@ -10,7 +10,7 @@ text-tail-1b	text	1B	B78A	BFD8	Compressed dialogue groups $56-$57, including gro
 map-entities	maps	05	8000	C000	Per-map entity pointers and records
 map-compressed-09	maps	09	8000	C000	Compressed location maps
 map-compressed-0a	maps	0A	8000	C000	Compressed location maps
-map-compressed-0b	maps	0B	8000	C000	Compressed location and overworld maps with row pointers
+map-compressed-0b	maps	0B	8012	AF61	Location-map continuation and location maps, plus main, Gottside, and underworld row data with their row records
 map-routing-08	maps	08	B7F7	BE94	Routing, transition, submap, and coordinate records
 map-info-17	maps	17	B08D	B4AF	Map-information pointers and records
 map-animation-17	maps	17	B4AF	BEE5	Map-animation setup and command streams
@@ -23,5 +23,5 @@ ui-graphics-17	graphics	17	9452	9BFA	CHR-RAM user-interface graphics
 font-graphics-18	graphics	18	B83D	BDBD	One-bitplane font glyphs
 sprite-graphics-1b	graphics	1B	95C9	9E90	Sprite tile IDs, layouts, and 128 NES 2bpp tiles
 fixed-graphics-1f	graphics	1F	F47B	FDFB	152 raw NES 2bpp tiles with intentional executable overlap at $F9F0
-map-palettes-0e	palettes	0E	BB53	BE13	Map palette overrides, lookups, color sets, and NES colors
+map-palettes-0e	palettes	0E	BB53	BE0B	Map palette overrides, lookups, color sets, and NES colors
 audio-bank-19	audio	19	814E	BF7E	Track pointers, bank selectors, sequences, instruments, envelopes, and effects

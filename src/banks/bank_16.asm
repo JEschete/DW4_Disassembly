@@ -28,46 +28,49 @@ TextUiSystem_Entry_8036:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_803F:
         lda     $5C                             ; 803F A5 5C                    .\
-        bne     $8091                           ; 8041 D0 4E                    .N
+        bne     TextUiSystem_Branch_8091        ; 8041 D0 4E                    .N
         jsr     TextUiSystem_Entry_8678         ; 8043 20 78 86                  x.
         lda     $55                             ; 8046 A5 55                    .U
-        beq     $8089                           ; 8048 F0 3F                    .?
+        beq     TextUiSystem_Branch_8089        ; 8048 F0 3F                    .?
         ldx     #$06                            ; 804A A2 06                    ..
         jsr     TextUiSystem_Entry_8051         ; 804C 20 51 80                  Q.
         ldx     #$09                            ; 804F A2 09                    ..
 TextUiSystem_Entry_8051:
         lda     $6E8A,x                         ; 8051 BD 8A 6E                 ..n
         cmp     #$46                            ; 8054 C9 46                    .F
-        bne     $8089                           ; 8056 D0 31                    .1
+        bne     TextUiSystem_Branch_8089        ; 8056 D0 31                    .1
         lda     $6E89,x                         ; 8058 BD 89 6E                 ..n
         cmp     #$6A                            ; 805B C9 6A                    .j
-        beq     $8089                           ; 805D F0 2A                    .*
+        beq     TextUiSystem_Branch_8089        ; 805D F0 2A                    .*
         cmp     #$6C                            ; 805F C9 6C                    .l
-        beq     $8089                           ; 8061 F0 26                    .&
+        beq     TextUiSystem_Branch_8089        ; 8061 F0 26                    .&
         cmp     #$44                            ; 8063 C9 44                    .D
-        beq     $8089                           ; 8065 F0 22                    ."
+        beq     TextUiSystem_Branch_8089        ; 8065 F0 22                    ."
         cmp     #$41                            ; 8067 C9 41                    .A
-        beq     $8089                           ; 8069 F0 1E                    ..
+        beq     TextUiSystem_Branch_8089        ; 8069 F0 1E                    ..
         cmp     #$4B                            ; 806B C9 4B                    .K
-        beq     $8089                           ; 806D F0 1A                    ..
+        beq     TextUiSystem_Branch_8089        ; 806D F0 1A                    ..
         cmp     #$40                            ; 806F C9 40                    .@
-        beq     $8089                           ; 8071 F0 16                    ..
+        beq     TextUiSystem_Branch_8089        ; 8071 F0 16                    ..
         cmp     #$78                            ; 8073 C9 78                    .x
-        beq     $8084                           ; 8075 F0 0D                    ..
+        beq     TextUiSystem_Branch_8084        ; 8075 F0 0D                    ..
         lda     #$46                            ; 8077 A9 46                    .F
         sta     $6E8B,x                         ; 8079 9D 8B 6E                 ..n
         lda     #$6A                            ; 807C A9 6A                    .j
         sta     $6E8A,x                         ; 807E 9D 8A 6E                 ..n
-        jmp     $8089                           ; 8081 4C 89 80                 L..
+        jmp     TextUiSystem_Branch_8089        ; 8081 4C 89 80                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8084:
         lda     #$6C                            ; 8084 A9 6C                    .l
         sta     $6E89,x                         ; 8086 9D 89 6E                 ..n
+TextUiSystem_Branch_8089:
         lda     #$00                            ; 8089 A9 00                    ..
         sta     $5D                             ; 808B 85 5D                    .]
         tya                                     ; 808D 98                       .
         sta     $57                             ; 808E 85 57                    .W
         rts                                     ; 8090 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8091:
         lda     $5D                             ; 8091 A5 5D                    .]
         rts                                     ; 8093 60                       `
 ; ----------------------------------------------------------------------------
@@ -78,8 +81,9 @@ TextUiSystem_Entry_8094:
         bcs     TextUiSystem_Branch_80B5        ; 809A B0 19                    ..
         sta     $5D                             ; 809C 85 5D                    .]
         cmp     #$52                            ; 809E C9 52                    .R
-        bcc     $80A4                           ; 80A0 90 02                    ..
+        bcc     TextUiSystem_Branch_80A4        ; 80A0 90 02                    ..
         lda     #$52                            ; 80A2 A9 52                    .R
+TextUiSystem_Branch_80A4:
         and     #$1F                            ; 80A4 29 1F                    ).
         asl     a                               ; 80A6 0A                       .
         tax                                     ; 80A7 AA                       .
@@ -108,21 +112,23 @@ Bank16_TextCommandHandlerPointers:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_80EA:
         lda     $5C                             ; 80EA A5 5C                    .\
-        bne     $810B                           ; 80EC D0 1D                    ..
+        bne     TextUiSystem_Branch_810B        ; 80EC D0 1D                    ..
         lda     $60                             ; 80EE A5 60                    .`
-        bne     $8107                           ; 80F0 D0 15                    ..
+        bne     TextUiSystem_Branch_8107        ; 80F0 D0 15                    ..
         ldx     $52                             ; 80F2 A6 52                    .R
         lda     $06A9,x                         ; 80F4 BD A9 06                 ...
         cmp     #$78                            ; 80F7 C9 78                    .x
-        bne     $810B                           ; 80F9 D0 10                    ..
+        bne     TextUiSystem_Branch_810B        ; 80F9 D0 10                    ..
         lda     $5D                             ; 80FB A5 5D                    .]
         cmp     #$47                            ; 80FD C9 47                    .G
-        beq     $810B                           ; 80FF F0 0A                    ..
+        beq     TextUiSystem_Branch_810B        ; 80FF F0 0A                    ..
         lda     $57                             ; 8101 A5 57                    .W
         cmp     #$6A                            ; 8103 C9 6A                    .j
         bne     TextUiSystem_Entry_8146         ; 8105 D0 3F                    .?
+TextUiSystem_Branch_8107:
         lda     #$00                            ; 8107 A9 00                    ..
         sta     $60                             ; 8109 85 60                    .`
+TextUiSystem_Branch_810B:
         rts                                     ; 810B 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_810C:
@@ -193,9 +199,10 @@ TextUiSystem_Entry_816D:
         sta     TextOutputX                     ; 816F 8D 51 05                 .Q.
         jsr     TextUiSystem_Entry_85E7         ; 8172 20 E7 85                  ..
         jsr     TextUiSystem_Entry_81CC         ; 8175 20 CC 81                  ..
-        bcs     $817E                           ; 8178 B0 04                    ..
+        bcs     TextUiSystem_Branch_817E        ; 8178 B0 04                    ..
         lda     #$00                            ; 817A A9 00                    ..
         sta     $55                             ; 817C 85 55                    .U
+TextUiSystem_Branch_817E:
         lda     #$13                            ; 817E A9 13                    ..
         sta     $56                             ; 8180 85 56                    .V
         jsr     TextUiSystem_Entry_8393         ; 8182 20 93 83                  ..
@@ -205,9 +212,10 @@ TextUiSystem_Entry_816D:
         sta     $00                           ; 818A 85 00                    ..
         lda     #$F8                            ; 818C A9 F8                    ..
         sta     $59                             ; 818E 85 59                    .Y
+TextUiSystem_Branch_8190:
         jsr     TextUiSystem_Entry_8199         ; 8190 20 99 81                  ..
         jsr     TextUiSystem_Entry_81B0         ; 8193 20 B0 81                  ..
-        jmp     $8190                           ; 8196 4C 90 81                 L..
+        jmp     TextUiSystem_Branch_8190        ; 8196 4C 90 81                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8199:
         ldx     #$80                            ; 8199 A2 80                    ..
@@ -228,7 +236,7 @@ TextUiSystem_Entry_81B0:
         jsr     UpperFixedEngine_Entry_C8EC     ; 81B0 20 EC C8                  ..
         lda     ButtonsPressed                  ; 81B3 A5 14                    ..
         and     #$03                            ; 81B5 29 03                    ).
-        beq     $81C6                           ; 81B7 F0 0D                    ..
+        beq     TextUiSystem_Branch_81C6        ; 81B7 F0 0D                    ..
         ldx     #$00                            ; 81B9 A2 00                    ..
         jsr     TextUiSystem_Entry_81A1         ; 81BB 20 A1 81                  ..
         brk                                     ; 81BE 00                       .
@@ -237,6 +245,7 @@ TextUiSystem_Entry_81B0:
         jsr     TextUiSystem_Entry_83D2         ; 81C1 20 D2 83                  ..
         pla                                     ; 81C4 68                       h
         pla                                     ; 81C5 68                       h
+TextUiSystem_Branch_81C6:
         rts                                     ; 81C6 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_81C7:
@@ -249,12 +258,13 @@ TextUiSystem_Entry_81CC:
         pha                                     ; 81CE 48                       H
         jsr     TextUiSystem_Entry_8626         ; 81CF 20 26 86                  &.
         cmp     #$01                            ; 81D2 C9 01                    ..
-        beq     $81DB                           ; 81D4 F0 05                    ..
+        beq     TextUiSystem_Branch_81DB        ; 81D4 F0 05                    ..
         pla                                     ; 81D6 68                       h
         sta     $55                             ; 81D7 85 55                    .U
         clc                                     ; 81D9 18                       .
         rts                                     ; 81DA 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_81DB:
         pla                                     ; 81DB 68                       h
         lda     #$00                            ; 81DC A9 00                    ..
         sta     TextOutputX                     ; 81DE 8D 51 05                 .Q.
@@ -498,8 +508,9 @@ TextUiSystem_Branch_8346:
         sta     $60                             ; 834A 85 60                    .`
         lda     $0553,x                         ; 834C BD 53 05                 .S.
         cmp     #$78                            ; 834F C9 78                    .x
-        bne     $8355                           ; 8351 D0 02                    ..
+        bne     TextUiSystem_Branch_8355        ; 8351 D0 02                    ..
         sta     $60                             ; 8353 85 60                    .`
+TextUiSystem_Branch_8355:
         rts                                     ; 8355 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8356:
@@ -531,14 +542,15 @@ TextUiSystem_Entry_8373:
         jsr     TextUiSystem_Entry_8386         ; 837A 20 86 83                  ..
         jsr     TextUiSystem_Entry_83C0         ; 837D 20 C0 83                  ..
         jsr     TextUiSystem_Entry_83A4         ; 8380 20 A4 83                  ..
-        jmp     $838B                           ; 8383 4C 8B 83                 L..
+        jmp     TextUiSystem_Branch_838B        ; 8383 4C 8B 83                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8386:
         lda     $57                             ; 8386 A5 57                    .W
         jmp     UpperFixedEngine_Entry_C65A     ; 8388 4C 5A C6                 LZ.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_838B:
         lda     $0553                           ; 838B AD 53 05                 .S.
-        bmi     $83A3                           ; 838E 30 13                    0.
+        bmi     TextUiSystem_Branch_83A3        ; 838E 30 13                    0.
         jmp     UpperFixedEngine_Entry_C62D     ; 8390 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8393:
@@ -550,24 +562,26 @@ TextUiSystem_Entry_8393:
         clc                                     ; 839E 18                       .
         adc     $56                             ; 839F 65 56                    eV
         sta     $01                             ; 83A1 85 01                    ..
+TextUiSystem_Branch_83A3:
         rts                                     ; 83A3 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_83A4:
         lda     $55                             ; 83A4 A5 55                    .U
-        beq     $83BF                           ; 83A6 F0 17                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83A6 F0 17                    ..
         lda     $57                             ; 83A8 A5 57                    .W
-        beq     $83BF                           ; 83AA F0 13                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83AA F0 13                    ..
         cmp     #$69                            ; 83AC C9 69                    .i
-        beq     $83BF                           ; 83AE F0 0F                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83AE F0 0F                    ..
         cmp     #$6A                            ; 83B0 C9 6A                    .j
-        beq     $83BF                           ; 83B2 F0 0B                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83B2 F0 0B                    ..
         cmp     #$6C                            ; 83B4 C9 6C                    .l
-        beq     $83BF                           ; 83B6 F0 07                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83B6 F0 07                    ..
         cmp     #$72                            ; 83B8 C9 72                    .r
-        beq     $83BF                           ; 83BA F0 03                    ..
+        beq     TextUiSystem_Branch_83BF        ; 83BA F0 03                    ..
         brk                                     ; 83BC 00                       .
         db   $96,$FB                         ; 83BD 96 FB                    ..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_83BF:
         rts                                     ; 83BF 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_83C0:
@@ -583,11 +597,12 @@ TextUiSystem_Entry_83D2:
         inc     TextOutputY                     ; 83D2 EE 52 05                 .R.
         jsr     TextUiSystem_Entry_85E7         ; 83D5 20 E7 85                  ..
         lda     $0553                           ; 83D8 AD 53 05                 .S.
-        bpl     $83E5                           ; 83DB 10 08                    ..
+        bpl     TextUiSystem_Branch_83E5        ; 83DB 10 08                    ..
         lda     $050B                           ; 83DD AD 0B 05                 ...
         beq     TextUiSystem_Branch_83FA        ; 83E0 F0 18                    ..
         jmp     UpperFixedEngine_Entry_C62D     ; 83E2 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_83E5:
         lda     TextOutputY                     ; 83E5 AD 52 05                 .R.
         cmp     #$08                            ; 83E8 C9 08                    ..
         bne     TextUiSystem_Branch_83FA        ; 83EA D0 0E                    ..
@@ -603,7 +618,7 @@ TextUiSystem_Entry_83FB:
         jsr     TextUiSystem_Entry_858F         ; 83FB 20 8F 85                  ..
         jsr     TextUiSystem_Entry_85AD         ; 83FE 20 AD 85                  ..
         lda     $6BDE                           ; 8401 AD DE 6B                 ..k
-        bmi     $8424                           ; 8404 30 1E                    0.
+        bmi     TextUiSystem_Branch_8424        ; 8404 30 1E                    0.
         jsr     TextUiSystem_Entry_844F         ; 8406 20 4F 84                  O.
         jsr     TextUiSystem_Entry_8442         ; 8409 20 42 84                  B.
         jsr     TextUiSystem_Entry_848A         ; 840C 20 8A 84                  ..
@@ -615,6 +630,7 @@ TextUiSystem_Entry_83FB:
         jsr     TextUiSystem_Entry_84C4         ; 841E 20 C4 84                  ..
         jmp     TextUiSystem_Entry_8442         ; 8421 4C 42 84                 LB.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8424:
         jsr     TextUiSystem_Entry_84EE         ; 8424 20 EE 84                  ..
         jsr     TextUiSystem_Entry_8442         ; 8427 20 42 84                  B.
         jsr     TextUiSystem_Entry_8529         ; 842A 20 29 85                  ).
@@ -653,20 +669,22 @@ TextUiSystem_Entry_844F:
         sta     $0480,y                         ; 8467 99 80 04                 ...
         dey                                     ; 846A 88                       .
         lda     #$85                            ; 846B A9 85                    ..
+TextUiSystem_Branch_846D:
         sta     $0480,y                         ; 846D 99 80 04                 ...
         dey                                     ; 8470 88                       .
-        bne     $846D                           ; 8471 D0 FA                    ..
+        bne     TextUiSystem_Branch_846D        ; 8471 D0 FA                    ..
         ldy     $58                             ; 8473 A4 58                    .X
         iny                                     ; 8475 C8                       .
         lda     $54                             ; 8476 A5 54                    .T
         sta     $59                             ; 8478 85 59                    .Y
         ldx     #$00                            ; 847A A2 00                    ..
+TextUiSystem_Branch_847C:
         lda     DialogueWindowText,x            ; 847C BD AA 06                 ...
         sta     $0480,y                         ; 847F 99 80 04                 ...
         iny                                     ; 8482 C8                       .
         inx                                     ; 8483 E8                       .
         dec     $59                             ; 8484 C6 59                    .Y
-        bne     $847C                           ; 8486 D0 F4                    ..
+        bne     TextUiSystem_Branch_847C        ; 8486 D0 F4                    ..
         beq     TextUiSystem_Branch_84AE        ; 8488 F0 24                    .$
 TextUiSystem_Entry_848A:
         jsr     TextUiSystem_Entry_85A2         ; 848A 20 A2 85                  ..
@@ -693,12 +711,13 @@ TextUiSystem_Branch_84AE:
 TextUiSystem_Entry_84B1:
         lda     $54                             ; 84B1 A5 54                    .T
         sta     $59                             ; 84B3 85 59                    .Y
+TextUiSystem_Branch_84B5:
         lda     DialogueWindowText,x            ; 84B5 BD AA 06                 ...
         sta     $0480,y                         ; 84B8 99 80 04                 ...
         iny                                     ; 84BB C8                       .
         inx                                     ; 84BC E8                       .
         dec     $59                             ; 84BD C6 59                    .Y
-        bne     $84B5                           ; 84BF D0 F4                    ..
+        bne     TextUiSystem_Branch_84B5        ; 84BF D0 F4                    ..
         iny                                     ; 84C1 C8                       .
         iny                                     ; 84C2 C8                       .
         rts                                     ; 84C3 60                       `
@@ -722,10 +741,11 @@ TextUiSystem_Entry_84C4:
         sta     $0480,y                         ; 84E0 99 80 04                 ...
         dey                                     ; 84E3 88                       .
         lda     #$8A                            ; 84E4 A9 8A                    ..
+TextUiSystem_Branch_84E6:
         sta     $0480,x                         ; 84E6 9D 80 04                 ...
         dex                                     ; 84E9 CA                       .
         dey                                     ; 84EA 88                       .
-        bne     $84E6                           ; 84EB D0 F9                    ..
+        bne     TextUiSystem_Branch_84E6        ; 84EB D0 F9                    ..
         rts                                     ; 84ED 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_84EE:
@@ -829,33 +849,37 @@ TextUiSystem_Entry_858F:
         ldx     #$1C                            ; 858F A2 1C                    ..
         ldy     #$92                            ; 8591 A0 92                    ..
         lda     $6BDE                           ; 8593 AD DE 6B                 ..k
-        bpl     $859C                           ; 8596 10 04                    ..
+        bpl     TextUiSystem_Branch_859C        ; 8596 10 04                    ..
         ldx     #$1E                            ; 8598 A2 1E                    ..
         ldy     #$91                            ; 859A A0 91                    ..
+TextUiSystem_Branch_859C:
         stx     $04F3                           ; 859C 8E F3 04                 ...
         sty     $04F2                           ; 859F 8C F2 04                 ...
 TextUiSystem_Entry_85A2:
         ldx     #$37                            ; 85A2 A2 37                    .7
         lda     #$00                            ; 85A4 A9 00                    ..
+TextUiSystem_Branch_85A6:
         sta     $0480,x                         ; 85A6 9D 80 04                 ...
         dex                                     ; 85A9 CA                       .
-        bpl     $85A6                           ; 85AA 10 FA                    ..
+        bpl     TextUiSystem_Branch_85A6        ; 85AA 10 FA                    ..
         rts                                     ; 85AC 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_85AD:
         ldy     $54                             ; 85AD A4 54                    .T
         ldx     #$00                            ; 85AF A2 00                    ..
+TextUiSystem_Branch_85B1:
         lda     DialogueWindowText,y            ; 85B1 B9 AA 06                 ...
         sta     DialogueWindowText,x            ; 85B4 9D AA 06                 ...
         iny                                     ; 85B7 C8                       .
         inx                                     ; 85B8 E8                       .
         cpx     #$A8                            ; 85B9 E0 A8                    ..
-        bne     $85B1                           ; 85BB D0 F4                    ..
+        bne     TextUiSystem_Branch_85B1        ; 85BB D0 F4                    ..
         lda     #$00                            ; 85BD A9 00                    ..
+TextUiSystem_Branch_85BF:
         sta     DialogueWindowText,x            ; 85BF 9D AA 06                 ...
         inx                                     ; 85C2 E8                       .
         cpx     #$C0                            ; 85C3 E0 C0                    ..
-        bne     $85BF                           ; 85C5 D0 F8                    ..
+        bne     TextUiSystem_Branch_85BF        ; 85C5 D0 F8                    ..
         rts                                     ; 85C7 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_85C8:
@@ -867,10 +891,11 @@ TextUiSystem_Entry_85C8:
         ldx     #$05                            ; 85D3 A2 05                    ..
         ldy     #$16                            ; 85D5 A0 16                    ..
         lda     $6BDE                           ; 85D7 AD DE 6B                 ..k
-        bpl     $85DF                           ; 85DA 10 03                    ..
+        bpl     TextUiSystem_Branch_85DF        ; 85DA 10 03                    ..
         dex                                     ; 85DC CA                       .
         iny                                     ; 85DD C8                       .
         iny                                     ; 85DE C8                       .
+TextUiSystem_Branch_85DF:
         stx     $53                             ; 85DF 86 53                    .S
         sty     $54                             ; 85E1 84 54                    .T
         iny                                     ; 85E3 C8                       .
@@ -879,10 +904,11 @@ TextUiSystem_Entry_85C8:
 TextUiSystem_Entry_85E7:
         lda     #$00                            ; 85E7 A9 00                    ..
         ldx     TextOutputY                     ; 85E9 AE 52 05                 .R.
+TextUiSystem_Branch_85EC:
         clc                                     ; 85EC 18                       .
         adc     $54                             ; 85ED 65 54                    eT
         dex                                     ; 85EF CA                       .
-        bne     $85EC                           ; 85F0 D0 FA                    ..
+        bne     TextUiSystem_Branch_85EC        ; 85F0 D0 FA                    ..
         clc                                     ; 85F2 18                       .
         adc     TextOutputX                     ; 85F3 6D 51 05                 mQ.
         sta     $52                             ; 85F6 85 52                    .R
@@ -893,44 +919,48 @@ TextUiSystem_Entry_85F9:
         stx     $55                             ; 85FB 86 55                    .U
         lda     $0595                           ; 85FD AD 95 05                 ...
         cmp     #$05                            ; 8600 C9 05                    ..
-        bcc     $8617                           ; 8602 90 13                    ..
+        bcc     TextUiSystem_Branch_8617        ; 8602 90 13                    ..
         jsr     Bank16_DecodeHuffmanSymbol      ; 8604 20 A8 87                  ..
         cmp     #$4E                            ; 8607 C9 4E                    .N
-        beq     $8617                           ; 8609 F0 0C                    ..
+        beq     TextUiSystem_Branch_8617        ; 8609 F0 0C                    ..
         sta     $6E8B                           ; 860B 8D 8B 6E                 ..n
         lda     #$69                            ; 860E A9 69                    .i
         sta     $6E8A                           ; 8610 8D 8A 6E                 ..n
         ldx     #$02                            ; 8613 A2 02                    ..
         stx     $55                             ; 8615 86 55                    .U
+TextUiSystem_Branch_8617:
         jsr     Bank16_DecodeHuffmanSymbol      ; 8617 20 A8 87                  ..
         ldx     $55                             ; 861A A6 55                    .U
         sta     $6E8A,x                         ; 861C 9D 8A 6E                 ..n
         inx                                     ; 861F E8                       .
         stx     $55                             ; 8620 86 55                    .U
         cpx     #$10                            ; 8622 E0 10                    ..
-        bcc     $8617                           ; 8624 90 F1                    ..
+        bcc     TextUiSystem_Branch_8617        ; 8624 90 F1                    ..
 TextUiSystem_Entry_8626:
         ldx     #$00                            ; 8626 A2 00                    ..
+TextUiSystem_Branch_8628:
         lda     $6E8A,x                         ; 8628 BD 8A 6E                 ..n
         cmp     #$69                            ; 862B C9 69                    .i
-        beq     $864D                           ; 862D F0 1E                    ..
+        beq     TextUiSystem_Branch_864D        ; 862D F0 1E                    ..
         cmp     #$40                            ; 862F C9 40                    .@
-        beq     $8648                           ; 8631 F0 15                    ..
+        beq     TextUiSystem_Branch_8648        ; 8631 F0 15                    ..
         cmp     #$45                            ; 8633 C9 45                    .E
-        beq     $8648                           ; 8635 F0 11                    ..
+        beq     TextUiSystem_Branch_8648        ; 8635 F0 11                    ..
         cmp     #$46                            ; 8637 C9 46                    .F
-        beq     $8648                           ; 8639 F0 0D                    ..
+        beq     TextUiSystem_Branch_8648        ; 8639 F0 0D                    ..
         cmp     #$42                            ; 863B C9 42                    .B
-        beq     $8648                           ; 863D F0 09                    ..
+        beq     TextUiSystem_Branch_8648        ; 863D F0 09                    ..
         cmp     #$44                            ; 863F C9 44                    .D
-        beq     $8648                           ; 8641 F0 05                    ..
+        beq     TextUiSystem_Branch_8648        ; 8641 F0 05                    ..
         inx                                     ; 8643 E8                       .
         cpx     #$0D                            ; 8644 E0 0D                    ..
-        bcc     $8628                           ; 8646 90 E0                    ..
+        bcc     TextUiSystem_Branch_8628        ; 8646 90 E0                    ..
+TextUiSystem_Branch_8648:
         lda     #$00                            ; 8648 A9 00                    ..
         sta     $55                             ; 864A 85 55                    .U
         rts                                     ; 864C 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_864D:
         lda     #$01                            ; 864D A9 01                    ..
         sta     $55                             ; 864F 85 55                    .U
         rts                                     ; 8651 60                       `
@@ -963,11 +993,12 @@ TextUiSystem_Entry_8678:
         sta     $6E9A                           ; 867B 8D 9A 6E                 ..n
         ldy     $6E8A                           ; 867E AC 8A 6E                 ..n
         ldx     #$01                            ; 8681 A2 01                    ..
+TextUiSystem_Branch_8683:
         lda     $6E8A,x                         ; 8683 BD 8A 6E                 ..n
         sta     $6E89,x                         ; 8686 9D 89 6E                 ..n
         inx                                     ; 8689 E8                       .
         cpx     #$11                            ; 868A E0 11                    ..
-        bne     $8683                           ; 868C D0 F5                    ..
+        bne     TextUiSystem_Branch_8683        ; 868C D0 F5                    ..
         rts                                     ; 868E 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_868F:
@@ -979,27 +1010,29 @@ TextUiSystem_Entry_868F:
         tay                                     ; 8699 A8                       .
         ldx     $52                             ; 869A A6 52                    .R
         lda     $06A9,x                         ; 869C BD A9 06                 ...
-        beq     $86B1                           ; 869F F0 10                    ..
+        beq     TextUiSystem_Branch_86B1        ; 869F F0 10                    ..
         cmp     #$72                            ; 86A1 C9 72                    .r
-        beq     $86B1                           ; 86A3 F0 0C                    ..
+        beq     TextUiSystem_Branch_86B1        ; 86A3 F0 0C                    ..
         cmp     #$6F                            ; 86A5 C9 6F                    .o
-        beq     $86B1                           ; 86A7 F0 08                    ..
+        beq     TextUiSystem_Branch_86B1        ; 86A7 F0 08                    ..
         cmp     #$69                            ; 86A9 C9 69                    .i
-        beq     $86B1                           ; 86AB F0 04                    ..
+        beq     TextUiSystem_Branch_86B1        ; 86AB F0 04                    ..
         cmp     #$77                            ; 86AD C9 77                    .w
         bne     TextUiSystem_Branch_8708        ; 86AF D0 57                    .W
+TextUiSystem_Branch_86B1:
         lda     $57                             ; 86B1 A5 57                    .W
         beq     TextUiSystem_Branch_8708        ; 86B3 F0 53                    .S
         cmp     #$65                            ; 86B5 C9 65                    .e
-        bcc     $86BD                           ; 86B7 90 04                    ..
+        bcc     TextUiSystem_Branch_86BD        ; 86B7 90 04                    ..
         lda     $5C                             ; 86B9 A5 5C                    .\
         beq     TextUiSystem_Branch_8708        ; 86BB F0 4B                    .K
+TextUiSystem_Branch_86BD:
         ldx     $5C                             ; 86BD A6 5C                    .\
-        beq     $86D7                           ; 86BF F0 16                    ..
+        beq     TextUiSystem_Branch_86D7        ; 86BF F0 16                    ..
 TextUiSystem_Branch_86C1:
         lda     $0554,x                         ; 86C1 BD 54 05                 .T.
         cmp     #$40                            ; 86C4 C9 40                    .@
-        beq     $86F3                           ; 86C6 F0 2B                    .+
+        beq     TextUiSystem_Branch_86F3        ; 86C6 F0 2B                    .+
         cmp     #$00                            ; 86C8 C9 00                    ..
         bne     TextUiSystem_Branch_86D0        ; 86CA D0 04                    ..
         lda     $60                             ; 86CC A5 60                    .`
@@ -1010,36 +1043,41 @@ TextUiSystem_Branch_86D0:
         bne     TextUiSystem_Branch_86C1        ; 86D2 D0 ED                    ..
         jmp     TextUiSystem_Entry_83CD         ; 86D4 4C CD 83                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_86D7:
         lda     $6E8A,x                         ; 86D7 BD 8A 6E                 ..n
         beq     TextUiSystem_Branch_8708        ; 86DA F0 2C                    .,
         cmp     #$6B                            ; 86DC C9 6B                    .k
-        beq     $86EC                           ; 86DE F0 0C                    ..
+        beq     TextUiSystem_Branch_86EC        ; 86DE F0 0C                    ..
         cmp     #$4C                            ; 86E0 C9 4C                    .L
-        beq     $86EC                           ; 86E2 F0 08                    ..
+        beq     TextUiSystem_Branch_86EC        ; 86E2 F0 08                    ..
         cmp     #$65                            ; 86E4 C9 65                    .e
-        bcs     $86FD                           ; 86E6 B0 15                    ..
+        bcs     TextUiSystem_Branch_86FD        ; 86E6 B0 15                    ..
         cmp     #$40                            ; 86E8 C9 40                    .@
         bcs     TextUiSystem_Branch_8708        ; 86EA B0 1C                    ..
+TextUiSystem_Branch_86EC:
         inx                                     ; 86EC E8                       .
         dey                                     ; 86ED 88                       .
-        bne     $86D7                           ; 86EE D0 E7                    ..
+        bne     TextUiSystem_Branch_86D7        ; 86EE D0 E7                    ..
 TextUiSystem_Branch_86F0:
         jmp     TextUiSystem_Entry_83CD         ; 86F0 4C CD 83                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_86F3:
         ldx     #$FF                            ; 86F3 A2 FF                    ..
         iny                                     ; 86F5 C8                       .
         lda     $6E8A                           ; 86F6 AD 8A 6E                 ..n
         cmp     #$6B                            ; 86F9 C9 6B                    .k
-        beq     $8709                           ; 86FB F0 0C                    ..
+        beq     TextUiSystem_Branch_8709        ; 86FB F0 0C                    ..
+TextUiSystem_Branch_86FD:
         inx                                     ; 86FD E8                       .
         dey                                     ; 86FE 88                       .
         beq     TextUiSystem_Branch_86F0        ; 86FF F0 EF                    ..
         lda     $6E8A,x                         ; 8701 BD 8A 6E                 ..n
         cmp     #$65                            ; 8704 C9 65                    .e
-        bcs     $86FD                           ; 8706 B0 F5                    ..
+        bcs     TextUiSystem_Branch_86FD        ; 8706 B0 F5                    ..
 TextUiSystem_Branch_8708:
         rts                                     ; 8708 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8709:
         cpy     #$04                            ; 8709 C0 04                    ..
         bcc     TextUiSystem_Branch_86F0        ; 870B 90 E3                    ..
         rts                                     ; 870D 60                       `
@@ -1072,12 +1110,14 @@ TextUiSystem_Entry_872B:
         stx     $5E                             ; 8738 86 5E                    .^
         and     #$1F                            ; 873A 29 1F                    ).
         sta     $60                             ; 873C 85 60                    .`
-        beq     $874B                           ; 873E F0 0B                    ..
+        beq     TextUiSystem_Branch_874B        ; 873E F0 0B                    ..
+TextUiSystem_Branch_8740:
         jsr     Bank16_DecodeHuffmanSymbol      ; 8740 20 A8 87                  ..
         cmp     #$46                            ; 8743 C9 46                    .F
-        bne     $8740                           ; 8745 D0 F9                    ..
+        bne     TextUiSystem_Branch_8740        ; 8745 D0 F9                    ..
         dec     $60                             ; 8747 C6 60                    .`
-        bne     $8740                           ; 8749 D0 F5                    ..
+        bne     TextUiSystem_Branch_8740        ; 8749 D0 F5                    ..
+TextUiSystem_Branch_874B:
         rts                                     ; 874B 60                       `
 ; ----------------------------------------------------------------------------
 Bank16_SelectTextGroup:
@@ -1101,11 +1141,13 @@ TextUiSystem_Entry_8769:
         tya                                     ; 8769 98                       .
         lsr     a                               ; 876A 4A                       J
         ldx     #$00                            ; 876B A2 00                    ..
+TextUiSystem_Branch_876D:
         cmp     Bank16_TextBankThresholds,x     ; 876D DD 01 8A                 ...
-        bcc     $8776                           ; 8770 90 04                    ..
+        bcc     TextUiSystem_Branch_8776        ; 8770 90 04                    ..
         inx                                     ; 8772 E8                       .
-        jmp     $876D                           ; 8773 4C 6D 87                 Lm.
+        jmp     TextUiSystem_Branch_876D        ; 8773 4C 6D 87                 Lm.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8776:
         cpx     #$05                            ; 8776 E0 05                    ..
         bcc     TextUiSystem_Branch_8783        ; 8778 90 09                    ..
         bne     TextUiSystem_Branch_8781        ; 877A D0 05                    ..
@@ -1143,27 +1185,32 @@ TextUiSystem_Branch_87A3:
 Bank16_DecodeHuffmanSymbol:
         lda     #$5C                            ; 87A8 A9 5C                    .\
         tay                                     ; 87AA A8                       .
+TextUiSystem_Branch_87AB:
         lda     $5E                             ; 87AB A5 5E                    .^
         cmp     #$18                            ; 87AD C9 18                    ..
-        bne     $87BC                           ; 87AF D0 0B                    ..
+        bne     TextUiSystem_Branch_87BC        ; 87AF D0 0B                    ..
         sty     $5F                             ; 87B1 84 5F                    ._
         jsr     UpperFixedEngine_Entry_DF7A     ; 87B3 20 7A DF                  z.
         ldy     $5F                             ; 87B6 A4 5F                    ._
         ldx     #$00                            ; 87B8 A2 00                    ..
         stx     $5E                             ; 87BA 86 5E                    .^
+TextUiSystem_Branch_87BC:
         inc     $5E                             ; 87BC E6 5E                    .^
         asl     $9A                             ; 87BE 06 9A                    ..
         rol     $99                             ; 87C0 26 99                    &.
         rol     $98                             ; 87C2 26 98                    &.
-        bcc     $87CC                           ; 87C4 90 06                    ..
+        bcc     TextUiSystem_Branch_87CC        ; 87C4 90 06                    ..
         lda     Bank16_HuffmanOneBranches,y     ; 87C6 B9 D8 87                 ...
-        jmp     $87CF                           ; 87C9 4C CF 87                 L..
+        jmp     TextUiSystem_Branch_87CF        ; 87C9 4C CF 87                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_87CC:
         lda     Bank16_HuffmanZeroBranches,y    ; 87CC B9 35 88                 .5.
-        bmi     $87D5                           ; 87CF 30 04                    0.
+TextUiSystem_Branch_87CF:
+        bmi     TextUiSystem_Branch_87D5        ; 87CF 30 04                    0.
         tay                                     ; 87D1 A8                       .
-        jmp     $87AB                           ; 87D2 4C AB 87                 L..
+        jmp     TextUiSystem_Branch_87AB        ; 87D2 4C AB 87                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_87D5:
         and     #$7F                            ; 87D5 29 7F                    ).
         rts                                     ; 87D7 60                       `
 ; ----------------------------------------------------------------------------
@@ -1187,20 +1234,18 @@ Bank16_HuffmanZeroBranches:
         db   $C8,$9B,$BE,$16,$17,$18,$94,$AB ; 884D C8 9B BE 16 17 18 94 AB  ........
         db   $B6,$1A,$A4,$AF,$A9,$B2,$1D,$A7 ; 8855 B6 1A A4 AF A9 B2 1D A7  ........
         db   $A5,$1F,$20,$21,$22,$23,$C9,$24 ; 885D A5 1F 20 21 22 23 C9 24  .. !"#.$
-        db   $26,$28                         ; 8865 26 28                    &(
-        db   $EA,$F2,$CF,$E9,$2C,$EC,$2F,$F7 ; 8867 EA F2 CF E9 2C EC 2F F7  ....,./.
-        db   $A0,$32,$AD,$33,$EB,$35,$90,$37 ; 886F A0 32 AD 33 EB 35 90 37  .2.3.5.7
-        db   $A1,$C6,$91,$3B,$3C,$3D,$3F,$40 ; 8877 A1 C6 91 3B 3C 3D 3F 40  ...;<=?@
-        db   $41,$96,$44,$46,$93,$48,$9D,$49 ; 887F 41 96 44 46 93 48 9D 49  A.DF.H.I
-        db   $4A,$4B,$4C,$4E,$8F,$51,$53,$80 ; 8887 4A 4B 4C 4E 8F 51 53 80  JKLN.QS.
-        db   $56,$58,$5A                     ; 888F 56 58 5A                 VXZ
+        db   $26,$28,$EA,$F2,$CF,$E9,$2C,$EC ; 8865 26 28 EA F2 CF E9 2C EC  &(....,.
+        db   $2F,$F7,$A0,$32,$AD,$33,$EB,$35 ; 886D 2F F7 A0 32 AD 33 EB 35  /..2.3.5
+        db   $90,$37,$A1,$C6,$91,$3B,$3C,$3D ; 8875 90 37 A1 C6 91 3B 3C 3D  .7...;<=
+        db   $3F,$40,$41,$96,$44,$46,$93,$48 ; 887D 3F 40 41 96 44 46 93 48  ?@A.DF.H
+        db   $9D,$49,$4A,$4B,$4C,$4E,$8F,$51 ; 8885 9D 49 4A 4B 4C 4E 8F 51  .IJKLN.Q
+        db   $53,$80,$56,$58,$5A             ; 888D 53 80 56 58 5A           S.VXZ
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8892:
         brk                                     ; 8892 00                       .
-        db   $16,$EB                         ; 8893 16 EB                    ..
+        db   $16,$EB,$10                     ; 8893 16 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bpl     $8867                           ; 8895 10 D0                    ..
-        plp                                     ; 8897 28                       (
+        bne     TextUiSystem_Branch_88C0        ; 8896 D0 28                    .(
         jsr     TextUiSystem_Entry_891D         ; 8898 20 1D 89                  ..
         jsr     TextUiSystem_Entry_88C1         ; 889B 20 C1 88                  ..
         ldx     #$00                            ; 889E A2 00                    ..
@@ -1222,31 +1267,35 @@ TextUiSystem_Branch_88B2:
         dex                                     ; 88BA CA                       .
         bpl     TextUiSystem_Branch_88B2        ; 88BB 10 F5                    ..
         jsr     WaitForNmi                      ; 88BD 20 74 FF                  t.
+TextUiSystem_Branch_88C0:
         rts                                     ; 88C0 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_88C1:
         jsr     TextUiSystem_Entry_88F5         ; 88C1 20 F5 88                  ..
-        bcs     $88E5                           ; 88C4 B0 1F                    ..
+        bcs     TextUiSystem_Branch_88E5        ; 88C4 B0 1F                    ..
         jsr     TextUiSystem_Entry_890E         ; 88C6 20 0E 89                  ..
-        bcs     $88E5                           ; 88C9 B0 1A                    ..
+        bcs     TextUiSystem_Branch_88E5        ; 88C9 B0 1A                    ..
         jsr     TextUiSystem_Entry_8932         ; 88CB 20 32 89                  2.
         ldx     $55                             ; 88CE A6 55                    .U
-        bcs     $88DD                           ; 88D0 B0 0B                    ..
+        bcs     TextUiSystem_Branch_88DD        ; 88D0 B0 0B                    ..
         lda     $7020,x                         ; 88D2 BD 20 70                 . p
         and     #$EF                            ; 88D5 29 EF                    ).
         sta     $7020,x                         ; 88D7 9D 20 70                 . p
-        jmp     $88E5                           ; 88DA 4C E5 88                 L..
+        jmp     TextUiSystem_Branch_88E5        ; 88DA 4C E5 88                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_88DD:
         lda     $7020,x                         ; 88DD BD 20 70                 . p
         ora     #$10                            ; 88E0 09 10                    ..
         sta     $7020,x                         ; 88E2 9D 20 70                 . p
+TextUiSystem_Branch_88E5:
         inc     $55                             ; 88E5 E6 55                    .U
         ldx     $55                             ; 88E7 A6 55                    .U
         cpx     #$20                            ; 88E9 E0 20                    .
-        bcs     $88F4                           ; 88EB B0 07                    ..
+        bcs     TextUiSystem_Branch_88F4        ; 88EB B0 07                    ..
         lda     $7020,x                         ; 88ED BD 20 70                 . p
         cmp     #$FF                            ; 88F0 C9 FF                    ..
         bne     TextUiSystem_Entry_88C1         ; 88F2 D0 CD                    ..
+TextUiSystem_Branch_88F4:
         rts                                     ; 88F4 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_88F5:
@@ -1256,12 +1305,13 @@ TextUiSystem_Entry_88F5:
         sbc     $57                             ; 88FB E5 57                    .W
         sta     $5F                             ; 88FD 85 5F                    ._
         cmp     #$10                            ; 88FF C9 10                    ..
-        bcs     $890D                           ; 8901 B0 0A                    ..
+        bcs     TextUiSystem_Branch_890D        ; 8901 B0 0A                    ..
         lda     $6F80,x                         ; 8903 BD 80 6F                 ..o
         sec                                     ; 8906 38                       8
         sbc     $54                             ; 8907 E5 54                    .T
         sta     $60                             ; 8909 85 60                    .`
         cmp     #$0F                            ; 890B C9 0F                    ..
+TextUiSystem_Branch_890D:
         rts                                     ; 890D 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_890E:
@@ -1269,10 +1319,11 @@ TextUiSystem_Entry_890E:
         lda     $7140,x                         ; 8910 BD 40 71                 .@q
         and     #$E0                            ; 8913 29 E0                    ).
         cmp     $46                             ; 8915 C5 46                    .F
-        bne     $891B                           ; 8917 D0 02                    ..
+        bne     TextUiSystem_Branch_891B        ; 8917 D0 02                    ..
         clc                                     ; 8919 18                       .
         rts                                     ; 891A 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_891B:
         sec                                     ; 891B 38                       8
         rts                                     ; 891C 60                       `
 ; ----------------------------------------------------------------------------
@@ -1483,12 +1534,13 @@ TextUiSystem_Branch_8AF7:
         cmp     #$01                            ; 8AFF C9 01                    ..
         bne     TextUiSystem_Branch_8AB3        ; 8B01 D0 B0                    ..
         lda     $07B4                           ; 8B03 AD B4 07                 ...
-        bpl     $8B11                           ; 8B06 10 09                    ..
+        bpl     TextUiSystem_Branch_8B11        ; 8B06 10 09                    ..
         lda     $F8                             ; 8B08 A5 F8                    ..
         pha                                     ; 8B0A 48                       H
         jsr     TextUiSystem_Entry_8C96         ; 8B0B 20 96 8C                  ..
         pla                                     ; 8B0E 68                       h
         sta     $F8                             ; 8B0F 85 F8                    ..
+TextUiSystem_Branch_8B11:
         lda     $F8                             ; 8B11 A5 F8                    ..
         cmp     #$F0                            ; 8B13 C9 F0                    ..
         bcc     TextUiSystem_Branch_8B27        ; 8B15 90 10                    ..
@@ -1505,9 +1557,9 @@ TextUiSystem_Branch_8B27:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8B28:
         cmp     #$FF                            ; 8B28 C9 FF                    ..
-        beq     $8B63                           ; 8B2A F0 37                    .7
+        beq     TextUiSystem_Branch_8B63        ; 8B2A F0 37                    .7
         cmp     #$FE                            ; 8B2C C9 FE                    ..
-        bne     $8B48                           ; 8B2E D0 18                    ..
+        bne     TextUiSystem_Branch_8B48        ; 8B2E D0 18                    ..
         asl     $03D4                           ; 8B30 0E D4 03                 ...
         asl     $03D4                           ; 8B33 0E D4 03                 ...
         asl     $03D4                           ; 8B36 0E D4 03                 ...
@@ -1520,9 +1572,10 @@ TextUiSystem_Branch_8B28:
         ror     $03D4                           ; 8B44 6E D4 03                 n..
         rts                                     ; 8B47 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8B48:
         lda     $07B4                           ; 8B48 AD B4 07                 ...
         and     #$04                            ; 8B4B 29 04                    ).
-        beq     $8B60                           ; 8B4D F0 11                    ..
+        beq     TextUiSystem_Branch_8B60        ; 8B4D F0 11                    ..
         lda     $03D4                           ; 8B4F AD D4 03                 ...
         clc                                     ; 8B52 18                       .
         adc     #$20                            ; 8B53 69 20                    i
@@ -1530,25 +1583,29 @@ TextUiSystem_Branch_8B28:
         lda     $07B4                           ; 8B58 AD B4 07                 ...
         and     #$FB                            ; 8B5B 29 FB                    ).
         sta     $07B4                           ; 8B5D 8D B4 07                 ...
+TextUiSystem_Branch_8B60:
         jmp     TextUiSystem_Entry_8C96         ; 8B60 4C 96 8C                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8B63:
         lda     #$D1                            ; 8B63 A9 D1                    ..
         sta     $04F2                           ; 8B65 8D F2 04                 ...
         lda     #$1E                            ; 8B68 A9 1E                    ..
         sta     $04F3                           ; 8B6A 8D F3 04                 ...
         lda     #$0C                            ; 8B6D A9 0C                    ..
         sta     $03E1                           ; 8B6F 8D E1 03                 ...
+TextUiSystem_Branch_8B72:
         lda     $03E1                           ; 8B72 AD E1 03                 ...
         asl     a                               ; 8B75 0A                       .
         tax                                     ; 8B76 AA                       .
         lda     $076C,x                         ; 8B77 BD 6C 07                 .l.
         ora     $076D,x                         ; 8B7A 1D 6D 07                 .m.
-        beq     $8BB6                           ; 8B7D F0 37                    .7
+        beq     TextUiSystem_Branch_8BB6        ; 8B7D F0 37                    .7
         lda     #$00                            ; 8B7F A9 00                    ..
         sta     $076C,x                         ; 8B81 9D 6C 07                 .l.
         sta     $076D,x                         ; 8B84 9D 6D 07                 .m.
         lda     #$0E                            ; 8B87 A9 0E                    ..
         sta     $0D                           ; 8B89 85 0D                    ..
+TextUiSystem_Branch_8B8B:
         jsr     TextUiSystem_Entry_8DD4         ; 8B8B 20 D4 8D                  ..
         lda     $0D                           ; 8B8E A5 0D                    ..
         tay                                     ; 8B90 A8                       .
@@ -1567,19 +1624,21 @@ TextUiSystem_Branch_8B28:
         lda     $03                             ; 8BAA A5 03                    ..
         sta     $049B,x                         ; 8BAC 9D 9B 04                 ...
         dec     $0D                           ; 8BAF C6 0D                    ..
-        bne     $8B8B                           ; 8BB1 D0 D8                    ..
+        bne     TextUiSystem_Branch_8B8B        ; 8BB1 D0 D8                    ..
         brk                                     ; 8BB3 00                       .
         db   $12,$DF                         ; 8BB4 12 DF                    ..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8BB6:
         lda     $04F2                           ; 8BB6 AD F2 04                 ...
         sec                                     ; 8BB9 38                       8
         sbc     #$10                            ; 8BBA E9 10                    ..
         sta     $04F2                           ; 8BBC 8D F2 04                 ...
         dec     $03E1                           ; 8BBF CE E1 03                 ...
-        bpl     $8B72                           ; 8BC2 10 AE                    ..
+        bpl     TextUiSystem_Branch_8B72        ; 8BC2 10 AE                    ..
         bit     $6BDE                           ; 8BC4 2C DE 6B                 ,.k
-        bmi     $8BCC                           ; 8BC7 30 03                    0.
+        bmi     TextUiSystem_Branch_8BCC        ; 8BC7 30 03                    0.
         jsr     TextUiSystem_Entry_8892         ; 8BC9 20 92 88                  ..
+TextUiSystem_Branch_8BCC:
         lda     $03D4                           ; 8BCC AD D4 03                 ...
         and     #$1F                            ; 8BCF 29 1F                    ).
         sta     $03D4                           ; 8BD1 8D D4 03                 ...
@@ -1595,47 +1654,51 @@ TextUiSystem_Entry_8BDA:
         ldy     #$01                            ; 8BE5 A0 01                    ..
         lda     ($EE),y                         ; 8BE7 B1 EE                    ..
         and     #$04                            ; 8BE9 29 04                    ).
-        beq     $8C04                           ; 8BEB F0 17                    ..
+        beq     TextUiSystem_Branch_8C04        ; 8BEB F0 17                    ..
         iny                                     ; 8BED C8                       .
         lda     ($EE),y                         ; 8BEE B1 EE                    ..
         and     #$30                            ; 8BF0 29 30                    )0
         tay                                     ; 8BF2 A8                       .
-        beq     $8C04                           ; 8BF3 F0 0F                    ..
+        beq     TextUiSystem_Branch_8C04        ; 8BF3 F0 0F                    ..
         cmp     #$10                            ; 8BF5 C9 10                    ..
-        beq     $8C54                           ; 8BF7 F0 5B                    .[
+        beq     TextUiSystem_Branch_8C54        ; 8BF7 F0 5B                    .[
         cmp     #$30                            ; 8BF9 C9 30                    .0
-        beq     $8C04                           ; 8BFB F0 07                    ..
+        beq     TextUiSystem_Branch_8C04        ; 8BFB F0 07                    ..
         asl     $07B4                           ; 8BFD 0E B4 07                 ...
         sec                                     ; 8C00 38                       8
         ror     $07B4                           ; 8C01 6E B4 07                 n..
+TextUiSystem_Branch_8C04:
         lda     $0788                           ; 8C04 AD 88 07                 ...
-        beq     TextUiSystem_Branch_8C5C        ; 8C07 F0 53                    .S
+        beq     TextUiSystem_Entry_8C5C         ; 8C07 F0 53                    .S
         jsr     TextUiSystem_Entry_9CCB         ; 8C09 20 CB 9C                  ..
+TextUiSystem_Branch_8C0C:
         lda     $0788,x                         ; 8C0C BD 88 07                 ...
         cmp     $F6                             ; 8C0F C5 F6                    ..
-        bne     $8C22                           ; 8C11 D0 0F                    ..
+        bne     TextUiSystem_Branch_8C22        ; 8C11 D0 0F                    ..
         cmp     #$00                            ; 8C13 C9 00                    ..
-        beq     $8C1B                           ; 8C15 F0 04                    ..
+        beq     TextUiSystem_Branch_8C1B        ; 8C15 F0 04                    ..
         cmp     #$00                            ; 8C17 C9 00                    ..
         bne     TextUiSystem_Branch_8C31        ; 8C19 D0 16                    ..
+TextUiSystem_Branch_8C1B:
         lda     $07A0,x                         ; 8C1B BD A0 07                 ...
         cmp     $F7                             ; 8C1E C5 F7                    ..
         beq     TextUiSystem_Branch_8C31        ; 8C20 F0 0F                    ..
+TextUiSystem_Branch_8C22:
         dex                                     ; 8C22 CA                       .
-        bpl     $8C0C                           ; 8C23 10 E7                    ..
+        bpl     TextUiSystem_Branch_8C0C        ; 8C23 10 E7                    ..
         lda     $03D4                           ; 8C25 AD D4 03                 ...
         clc                                     ; 8C28 18                       .
         adc     #$20                            ; 8C29 69 20                    i
         sta     $03D4                           ; 8C2B 8D D4 03                 ...
-        jmp     TextUiSystem_Branch_8C5C        ; 8C2E 4C 5C 8C                 L\.
+        jmp     TextUiSystem_Entry_8C5C         ; 8C2E 4C 5C 8C                 L\.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8C31:
         cpy     #$30                            ; 8C31 C0 30                    .0
-        beq     $8C7F                           ; 8C33 F0 4A                    .J
+        beq     TextUiSystem_Branch_8C7F        ; 8C33 F0 4A                    .J
         stx     $03DF                           ; 8C35 8E DF 03                 ...
         jsr     TextUiSystem_Entry_9CCB         ; 8C38 20 CB 9C                  ..
         cpx     $03DF                           ; 8C3B EC DF 03                 ...
-        beq     TextUiSystem_Branch_8C5C        ; 8C3E F0 1C                    ..
+        beq     TextUiSystem_Entry_8C5C         ; 8C3E F0 1C                    ..
         lda     $03D4                           ; 8C40 AD D4 03                 ...
         and     #$E0                            ; 8C43 29 E0                    ).
         ora     $03DF                           ; 8C45 0D DF 03                 ...
@@ -1647,10 +1710,11 @@ TextUiSystem_Branch_8C31:
         sta     $03DF                           ; 8C4E 8D DF 03                 ...
         jmp     TextUiSystem_Branch_8CAC        ; 8C51 4C AC 8C                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8C54:
         lda     $03D4                           ; 8C54 AD D4 03                 ...
         and     #$1F                            ; 8C57 29 1F                    ).
         sta     $03D4                           ; 8C59 8D D4 03                 ...
-TextUiSystem_Branch_8C5C:
+TextUiSystem_Entry_8C5C:
         jsr     TextUiSystem_Entry_9CCB         ; 8C5C 20 CB 9C                  ..
         lda     $F6                             ; 8C5F A5 F6                    ..
         sta     $0788,x                         ; 8C61 9D 88 07                 ...
@@ -1660,9 +1724,16 @@ TextUiSystem_Branch_8C5C:
         sta     $07A8,x                         ; 8C6B 9D A8 07                 ...
         rts                                     ; 8C6E 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$5C,$8C,$20,$96,$8C,$AD,$D4 ; 8C6F 20 5C 8C 20 96 8C AD D4   \. ....
-        db   $03,$18,$69,$20,$8D,$D4,$03,$60 ; 8C77 03 18 69 20 8D D4 03 60  ..i ...`
+TextUiSystem_Entry_8C6F:
+        jsr     TextUiSystem_Entry_8C5C         ; 8C6F 20 5C 8C                  \.
+        jsr     TextUiSystem_Entry_8C96         ; 8C72 20 96 8C                  ..
+        lda     $03D4                           ; 8C75 AD D4 03                 ...
+        clc                                     ; 8C78 18                       .
+        adc     #$20                            ; 8C79 69 20                    i
+        sta     $03D4                           ; 8C7B 8D D4 03                 ...
+        rts                                     ; 8C7E 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8C7F:
         lda     $03D4                           ; 8C7F AD D4 03                 ...
         and     #$1F                            ; 8C82 29 1F                    ).
         sta     $03D4                           ; 8C84 8D D4 03                 ...
@@ -1674,7 +1745,7 @@ TextUiSystem_Branch_8C5C:
         asl     a                               ; 8C8C 0A                       .
         ora     $03D4                           ; 8C8D 0D D4 03                 ...
         sta     $03D4                           ; 8C90 8D D4 03                 ...
-        jmp     TextUiSystem_Branch_8C5C        ; 8C93 4C 5C 8C                 L\.
+        jmp     TextUiSystem_Entry_8C5C         ; 8C93 4C 5C 8C                 L\.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8C96:
         lda     $03D4                           ; 8C96 AD D4 03                 ...
@@ -1691,18 +1762,20 @@ TextUiSystem_Entry_8C96:
         sta     $03DF                           ; 8CA9 8D DF 03                 ...
 TextUiSystem_Branch_8CAC:
         ldx     #$03                            ; 8CAC A2 03                    ..
+TextUiSystem_Branch_8CAE:
         lda     $6E,x                           ; 8CAE B5 6E                    .n
         sta     $03C2,x                         ; 8CB0 9D C2 03                 ...
         dex                                     ; 8CB3 CA                       .
-        bpl     $8CAE                           ; 8CB4 10 F8                    ..
+        bpl     TextUiSystem_Branch_8CAE        ; 8CB4 10 F8                    ..
         lda     $F8                             ; 8CB6 A5 F8                    ..
         pha                                     ; 8CB8 48                       H
         lda     $F7                             ; 8CB9 A5 F7                    ..
         pha                                     ; 8CBB 48                       H
         lda     $07B4                           ; 8CBC AD B4 07                 ...
         and     #$04                            ; 8CBF 29 04                    ).
-        beq     $8CC6                           ; 8CC1 F0 03                    ..
+        beq     TextUiSystem_Branch_8CC6        ; 8CC1 F0 03                    ..
         inc     $03DF                           ; 8CC3 EE DF 03                 ...
+TextUiSystem_Branch_8CC6:
         lda     $F5                             ; 8CC6 A5 F5                    ..
         ora     #$04                            ; 8CC8 09 04                    ..
         sta     $F5                             ; 8CCA 85 F5                    ..
@@ -1715,6 +1788,7 @@ TextUiSystem_Branch_8CAC:
         lda     $03DF                           ; 8CDA AD DF 03                 ...
         and     #$7F                            ; 8CDD 29 7F                    ).
         sta     $03DF                           ; 8CDF 8D DF 03                 ...
+TextUiSystem_Branch_8CE2:
         lda     #$00                            ; 8CE2 A9 00                    ..
         sta     $0C                             ; 8CE4 85 0C                    ..
         sta     $0D                           ; 8CE6 85 0D                    ..
@@ -1724,9 +1798,10 @@ TextUiSystem_Branch_8CAC:
         lda     $03DF                           ; 8CEF AD DF 03                 ...
         and     #$07                            ; 8CF2 29 07                    ).
         tay                                     ; 8CF4 A8                       .
+TextUiSystem_Branch_8CF5:
         jsr     TextUiSystem_Entry_8E18         ; 8CF5 20 18 8E                  ..
         dey                                     ; 8CF8 88                       .
-        bpl     $8CF5                           ; 8CF9 10 FA                    ..
+        bpl     TextUiSystem_Branch_8CF5        ; 8CF9 10 FA                    ..
         jsr     TextUiSystem_Entry_8D5E         ; 8CFB 20 5E 8D                  ^.
         jsr     TextUiSystem_Entry_8EC0         ; 8CFE 20 C0 8E                  ..
         dec     $03E1                           ; 8D01 CE E1 03                 ...
@@ -1739,8 +1814,8 @@ TextUiSystem_Branch_8CAC:
         lsr     a                               ; 8D0F 4A                       J
         lsr     a                               ; 8D10 4A                       J
         cmp     $03E1                           ; 8D11 CD E1 03                 ...
-        beq     $8CE2                           ; 8D14 F0 CC                    ..
-        bmi     $8CE2                           ; 8D16 30 CA                    0.
+        beq     TextUiSystem_Branch_8CE2        ; 8D14 F0 CC                    ..
+        bmi     TextUiSystem_Branch_8CE2        ; 8D16 30 CA                    0.
         dec     $03DF                           ; 8D18 CE DF 03                 ...
         lda     $03DF                           ; 8D1B AD DF 03                 ...
         and     #$07                            ; 8D1E 29 07                    ).
@@ -1750,10 +1825,11 @@ TextUiSystem_Branch_8CAC:
         asl     a                               ; 8D23 0A                       .
         eor     $03DF                           ; 8D24 4D DF 03                 M..
         and     #$70                            ; 8D27 29 70                    )p
-        bne     $8CC6                           ; 8D29 D0 9B                    ..
+        bne     TextUiSystem_Branch_8CC6        ; 8D29 D0 9B                    ..
         bit     $6BDE                           ; 8D2B 2C DE 6B                 ,.k
-        bmi     $8D33                           ; 8D2E 30 03                    0.
+        bmi     TextUiSystem_Branch_8D33        ; 8D2E 30 03                    0.
         jsr     TextUiSystem_Entry_8892         ; 8D30 20 92 88                  ..
+TextUiSystem_Branch_8D33:
         lda     $03D4                           ; 8D33 AD D4 03                 ...
         and     #$1F                            ; 8D36 29 1F                    ).
         sta     $03D4                           ; 8D38 8D D4 03                 ...
@@ -1770,20 +1846,22 @@ TextUiSystem_Branch_8CAC:
         pla                                     ; 8D50 68                       h
         sta     $F8                             ; 8D51 85 F8                    ..
         ldx     #$03                            ; 8D53 A2 03                    ..
+TextUiSystem_Branch_8D55:
         lda     $03C2,x                         ; 8D55 BD C2 03                 ...
         sta     $6E,x                           ; 8D58 95 6E                    .n
         dex                                     ; 8D5A CA                       .
-        bpl     $8D55                           ; 8D5B 10 F8                    ..
+        bpl     TextUiSystem_Branch_8D55        ; 8D5B 10 F8                    ..
         rts                                     ; 8D5D 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8D5E:
         ldx     #$0F                            ; 8D5E A2 0F                    ..
         lda     #$00                            ; 8D60 A9 00                    ..
+TextUiSystem_Branch_8D62:
         sta     $04E0,x                         ; 8D62 9D E0 04                 ...
         dex                                     ; 8D65 CA                       .
-        bpl     $8D62                           ; 8D66 10 FA                    ..
+        bpl     TextUiSystem_Branch_8D62        ; 8D66 10 FA                    ..
         bit     $03DF                           ; 8D68 2C DF 03                 ,..
-        bpl     $8DD3                           ; 8D6B 10 66                    .f
+        bpl     TextUiSystem_Branch_8DD3        ; 8D6B 10 66                    .f
         lda     $03E1                           ; 8D6D AD E1 03                 ...
         asl     a                               ; 8D70 0A                       .
         tax                                     ; 8D71 AA                       .
@@ -1797,11 +1875,12 @@ TextUiSystem_Entry_8D5E:
         sta     $076B,x                         ; 8D81 9D 6B 07                 .k.
         lda     #$0F                            ; 8D84 A9 0F                    ..
         sta     $0D                           ; 8D86 85 0D                    ..
+TextUiSystem_Branch_8D88:
         lsr     $0E                             ; 8D88 46 0E                    F.
         ror     $0F                             ; 8D8A 66 0F                    f.
-        bcc     $8DCF                           ; 8D8C 90 41                    .A
+        bcc     TextUiSystem_Branch_8DCF        ; 8D8C 90 41                    .A
         bit     $6BDE                           ; 8D8E 2C DE 6B                 ,.k
-        bpl     $8DA2                           ; 8D91 10 0F                    ..
+        bpl     TextUiSystem_Branch_8DA2        ; 8D91 10 0F                    ..
         lda     #$00                            ; 8D93 A9 00                    ..
         sta     $00                           ; 8D95 85 00                    ..
         sta     $01                             ; 8D97 85 01                    ..
@@ -1810,6 +1889,7 @@ TextUiSystem_Entry_8D5E:
         sta     $04                             ; 8D9D 85 04                    ..
         jmp     TextUiSystem_Branch_8DA5        ; 8D9F 4C A5 8D                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8DA2:
         jsr     TextUiSystem_Entry_8DD4         ; 8DA2 20 D4 8D                  ..
 TextUiSystem_Branch_8DA5:
         lda     $04F2                           ; 8DA5 AD F2 04                 ...
@@ -1832,17 +1912,20 @@ TextUiSystem_Branch_8DA5:
         sta     $04A0,y                         ; 8DC7 99 A0 04                 ...
         lda     $03                             ; 8DCA A5 03                    ..
         sta     $04A1,y                         ; 8DCC 99 A1 04                 ...
+TextUiSystem_Branch_8DCF:
         dec     $0D                           ; 8DCF C6 0D                    ..
-        bpl     $8D88                           ; 8DD1 10 B5                    ..
+        bpl     TextUiSystem_Branch_8D88        ; 8DD1 10 B5                    ..
+TextUiSystem_Branch_8DD3:
         rts                                     ; 8DD3 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8DD4:
         ldx     PlayerWorldX                    ; 8DD4 A6 42                    .B
         lda     PlayerWorldY                    ; 8DD6 A5 43                    .C
         bit     $41                             ; 8DD8 24 41                    $A
-        bpl     $8DE0                           ; 8DDA 10 04                    ..
+        bpl     TextUiSystem_Branch_8DE0        ; 8DDA 10 04                    ..
         ldx     PlayerLocalX                    ; 8DDC A6 44                    .D
         lda     PlayerLocalY                    ; 8DDE A5 45                    .E
+TextUiSystem_Branch_8DE0:
         sec                                     ; 8DE0 38                       8
         sbc     #$06                            ; 8DE1 E9 06                    ..
         clc                                     ; 8DE3 18                       .
@@ -1857,22 +1940,24 @@ TextUiSystem_Entry_8DD4:
         tax                                     ; 8DF1 AA                       .
         sta     $53                             ; 8DF2 85 53                    .S
         lda     $41                             ; 8DF4 A5 41                    .A
-        bmi     $8E01                           ; 8DF6 30 09                    0.
+        bmi     TextUiSystem_Branch_8E01        ; 8DF6 30 09                    0.
         jsr     UpperFixedEngine_Entry_D251     ; 8DF8 20 51 D2                  Q.
         jsr     UpperFixedEngine_Entry_D486     ; 8DFB 20 86 D4                  ..
         jmp     TextUiSystem_Branch_8E07        ; 8DFE 4C 07 8E                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8E01:
         jsr     UpperFixedEngine_Entry_D3E6     ; 8E01 20 E6 D3                  ..
         jsr     UpperFixedEngine_Entry_D4F3     ; 8E04 20 F3 D4                  ..
 TextUiSystem_Branch_8E07:
         sta     $04                             ; 8E07 85 04                    ..
         ldy     #$00                            ; 8E09 A0 00                    ..
+TextUiSystem_Branch_8E0B:
         lda     $7600,x                         ; 8E0B BD 00 76                 ..v
         sta     $0000,y                         ; 8E0E 99 00 00                 ...
         inx                                     ; 8E11 E8                       .
         iny                                     ; 8E12 C8                       .
         cpy     #$04                            ; 8E13 C0 04                    ..
-        bcc     $8E0B                           ; 8E15 90 F4                    ..
+        bcc     TextUiSystem_Branch_8E0B        ; 8E15 90 F4                    ..
         rts                                     ; 8E17 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8E18:
@@ -1885,31 +1970,34 @@ TextUiSystem_Entry_8E18:
         lsr     a                               ; 8E25 4A                       J
         lsr     a                               ; 8E26 4A                       J
         cmp     $03E1                           ; 8E27 CD E1 03                 ...
-        beq     $8E3B                           ; 8E2A F0 0F                    ..
-        bcs     $8E48                           ; 8E2C B0 1A                    ..
+        beq     TextUiSystem_Branch_8E3B        ; 8E2A F0 0F                    ..
+        bcs     TextUiSystem_Branch_8E48        ; 8E2C B0 1A                    ..
         lda     $0798,y                         ; 8E2E B9 98 07                 ...
         and     #$0F                            ; 8E31 29 0F                    ).
         cmp     $03E1                           ; 8E33 CD E1 03                 ...
-        bcc     $8E48                           ; 8E36 90 10                    ..
+        bcc     TextUiSystem_Branch_8E48        ; 8E36 90 10                    ..
         jsr     TextUiSystem_Entry_8E49         ; 8E38 20 49 8E                  I.
+TextUiSystem_Branch_8E3B:
         lda     $0798,y                         ; 8E3B B9 98 07                 ...
         and     #$0F                            ; 8E3E 29 0F                    ).
         cmp     $03E1                           ; 8E40 CD E1 03                 ...
-        beq     $8E48                           ; 8E43 F0 03                    ..
+        beq     TextUiSystem_Branch_8E48        ; 8E43 F0 03                    ..
         jsr     TextUiSystem_Entry_8E4E         ; 8E45 20 4E 8E                  N.
+TextUiSystem_Branch_8E48:
         rts                                     ; 8E48 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8E49:
         ldx     #$00                            ; 8E49 A2 00                    ..
-        jmp     $8E50                           ; 8E4B 4C 50 8E                 LP.
+        jmp     TextUiSystem_Branch_8E50        ; 8E4B 4C 50 8E                 LP.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8E4E:
         ldx     #$02                            ; 8E4E A2 02                    ..
+TextUiSystem_Branch_8E50:
         lda     $03DF                           ; 8E50 AD DF 03                 ...
         and     #$07                            ; 8E53 29 07                    ).
         sta     $02                             ; 8E55 85 02                    ..
         cpy     $02                             ; 8E57 C4 02                    ..
-        bne     $8E68                           ; 8E59 D0 0D                    ..
+        bne     TextUiSystem_Branch_8E68        ; 8E59 D0 0D                    ..
         lda     $00                           ; 8E5B A5 00                    ..
         ora     $0C,x                           ; 8E5D 15 0C                    ..
         sta     $0C,x                           ; 8E5F 95 0C                    ..
@@ -1918,22 +2006,25 @@ TextUiSystem_Entry_8E4E:
         sta     $0D,x                         ; 8E65 95 0D                    ..
         rts                                     ; 8E67 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8E68:
         lda     $00                           ; 8E68 A5 00                    ..
         and     $0C,x                           ; 8E6A 35 0C                    5.
-        beq     $8E7B                           ; 8E6C F0 0D                    ..
+        beq     TextUiSystem_Branch_8E7B        ; 8E6C F0 0D                    ..
         eor     $0C,x                           ; 8E6E 55 0C                    U.
         sta     $0C,x                           ; 8E70 95 0C                    ..
         lda     $03E0                           ; 8E72 AD E0 03                 ...
         ora     $A4CE,y                         ; 8E75 19 CE A4                 ...
         sta     $03E0                           ; 8E78 8D E0 03                 ...
+TextUiSystem_Branch_8E7B:
         lda     $01                             ; 8E7B A5 01                    ..
         and     $0D,x                         ; 8E7D 35 0D                    5.
-        beq     $8E8E                           ; 8E7F F0 0D                    ..
+        beq     TextUiSystem_Branch_8E8E        ; 8E7F F0 0D                    ..
         eor     $0D,x                         ; 8E81 55 0D                    U.
         sta     $0D,x                         ; 8E83 95 0D                    ..
         lda     $03E0                           ; 8E85 AD E0 03                 ...
         ora     $A4CE,y                         ; 8E88 19 CE A4                 ...
         sta     $03E0                           ; 8E8B 8D E0 03                 ...
+TextUiSystem_Branch_8E8E:
         rts                                     ; 8E8E 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8E8F:
@@ -1949,25 +2040,28 @@ TextUiSystem_Entry_8E8F:
         lda     $8EB8,x                         ; 8E9C BD B8 8E                 ...
         sta     $00                           ; 8E9F 85 00                    ..
         bit     $02                             ; 8EA1 24 02                    $.
-        bpl     $8EAB                           ; 8EA3 10 06                    ..
+        bpl     TextUiSystem_Branch_8EAB        ; 8EA3 10 06                    ..
         sta     $01                             ; 8EA5 85 01                    ..
         lda     #$FF                            ; 8EA7 A9 FF                    ..
         sta     $00                           ; 8EA9 85 00                    ..
+TextUiSystem_Branch_8EAB:
         lda     $02                             ; 8EAB A5 02                    ..
         and     #$0F                            ; 8EAD 29 0F                    ).
         tax                                     ; 8EAF AA                       .
+TextUiSystem_Branch_8EB0:
         lsr     $00                           ; 8EB0 46 00                    F.
         ror     $01                             ; 8EB2 66 01                    f.
         dex                                     ; 8EB4 CA                       .
-        bne     $8EB0                           ; 8EB5 D0 F9                    ..
+        bne     TextUiSystem_Branch_8EB0        ; 8EB5 D0 F9                    ..
         rts                                     ; 8EB7 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$80,$C0,$E0,$F0,$F8,$FC,$FE ; 8EB8 00 80 C0 E0 F0 F8 FC FE  ........
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8EC0:
         ldx     #$00                            ; 8EC0 A2 00                    ..
+TextUiSystem_Branch_8EC2:
         asl     $03E0                           ; 8EC2 0E E0 03                 ...
-        bcc     $8F04                           ; 8EC5 90 3D                    .=
+        bcc     TextUiSystem_Branch_8F04        ; 8EC5 90 3D                    .=
         txa                                     ; 8EC7 8A                       .
         pha                                     ; 8EC8 48                       H
         jsr     TextUiSystem_Entry_9543         ; 8EC9 20 43 95                  C.
@@ -1976,31 +2070,36 @@ TextUiSystem_Entry_8EC0:
         jsr     TextUiSystem_Entry_963D         ; 8ED2 20 3D 96                  =.
         jsr     TextUiSystem_Entry_95FF         ; 8ED5 20 FF 95                  ..
         jsr     TextUiSystem_Entry_9349         ; 8ED8 20 49 93                  I.
-        jmp     $8EE1                           ; 8EDB 4C E1 8E                 L..
+        jmp     TextUiSystem_Branch_8EE1        ; 8EDB 4C E1 8E                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8EDE:
         jsr     TextUiSystem_Entry_933F         ; 8EDE 20 3F 93                  ?.
+TextUiSystem_Branch_8EE1:
         lda     $04F2                           ; 8EE1 AD F2 04                 ...
         lsr     a                               ; 8EE4 4A                       J
         lsr     a                               ; 8EE5 4A                       J
         lsr     a                               ; 8EE6 4A                       J
         lsr     a                               ; 8EE7 4A                       J
         cmp     $03E1                           ; 8EE8 CD E1 03                 ...
-        bne     $8EDE                           ; 8EEB D0 F1                    ..
+        bne     TextUiSystem_Branch_8EDE        ; 8EEB D0 F1                    ..
         lda     $F4                             ; 8EED A5 F4                    ..
         and     #$0F                            ; 8EEF 29 0F                    ).
         cmp     #$02                            ; 8EF1 C9 02                    ..
-        beq     $8EFB                           ; 8EF3 F0 06                    ..
+        beq     TextUiSystem_Branch_8EFB        ; 8EF3 F0 06                    ..
         jsr     TextUiSystem_Entry_91C6         ; 8EF5 20 C6 91                  ..
-        jmp     $8F02                           ; 8EF8 4C 02 8F                 L..
+        jmp     TextUiSystem_Branch_8F02        ; 8EF8 4C 02 8F                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8EFB:
         lda     #$00                            ; 8EFB A9 00                    ..
         sta     $F4                             ; 8EFD 85 F4                    ..
         jsr     TextUiSystem_Entry_952B         ; 8EFF 20 2B 95                  +.
+TextUiSystem_Branch_8F02:
         pla                                     ; 8F02 68                       h
         tax                                     ; 8F03 AA                       .
+TextUiSystem_Branch_8F04:
         inx                                     ; 8F04 E8                       .
         cpx     #$08                            ; 8F05 E0 08                    ..
-        bne     $8EC2                           ; 8F07 D0 B9                    ..
+        bne     TextUiSystem_Branch_8EC2        ; 8F07 D0 B9                    ..
         lda     $03DF                           ; 8F09 AD DF 03                 ...
         and     #$07                            ; 8F0C 29 07                    ).
         tax                                     ; 8F0E AA                       .
@@ -2015,12 +2114,13 @@ TextUiSystem_Entry_8EC0:
         and     #$0F                            ; 8F1E 29 0F                    ).
         sta     $04F2                           ; 8F20 8D F2 04                 ...
         bit     $03DF                           ; 8F23 2C DF 03                 ,..
-        bmi     $8F32                           ; 8F26 30 0A                    0.
+        bmi     TextUiSystem_Branch_8F32        ; 8F26 30 0A                    0.
         asl     $03DF                           ; 8F28 0E DF 03                 ...
         sec                                     ; 8F2B 38                       8
         ror     $03DF                           ; 8F2C 6E DF 03                 n..
-        jmp     $8F73                           ; 8F2F 4C 73 8F                 Ls.
+        jmp     TextUiSystem_Branch_8F73        ; 8F2F 4C 73 8F                 Ls.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8F32:
         lda     $04F2                           ; 8F32 AD F2 04                 ...
         and     #$0F                            ; 8F35 29 0F                    ).
         sta     $04F2                           ; 8F37 8D F2 04                 ...
@@ -2048,15 +2148,17 @@ TextUiSystem_Entry_8EC0:
         tax                                     ; 8F61 AA                       .
         jsr     TextUiSystem_Entry_931B         ; 8F62 20 1B 93                  ..
         bit     $6BDE                           ; 8F65 2C DE 6B                 ,.k
-        bmi     $8F70                           ; 8F68 30 06                    0.
+        bmi     TextUiSystem_Branch_8F70        ; 8F68 30 06                    0.
         brk                                     ; 8F6A 00                       .
         db   $12,$DF                         ; 8F6B 12 DF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     $8F73                           ; 8F6D 4C 73 8F                 Ls.
+        jmp     TextUiSystem_Branch_8F73        ; 8F6D 4C 73 8F                 Ls.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8F70:
         brk                                     ; 8F70 00                       .
         db   $13,$DF                         ; 8F71 13 DF                    ..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8F73:
         lda     $04F2                           ; 8F73 AD F2 04                 ...
         and     #$0F                            ; 8F76 29 0F                    ).
         asl     a                               ; 8F78 0A                       .
@@ -2065,11 +2167,12 @@ TextUiSystem_Entry_8EC0:
         and     #$0F                            ; 8F7D 29 0F                    ).
         asl     a                               ; 8F7F 0A                       .
         tay                                     ; 8F80 A8                       .
+TextUiSystem_Branch_8F81:
         lda     $04C0,x                         ; 8F81 BD C0 04                 ...
         sta     $04A0,x                         ; 8F84 9D A0 04                 ...
         inx                                     ; 8F87 E8                       .
         dey                                     ; 8F88 88                       .
-        bne     $8F81                           ; 8F89 D0 F6                    ..
+        bne     TextUiSystem_Branch_8F81        ; 8F89 D0 F6                    ..
         rts                                     ; 8F8B 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8F8C:
@@ -2077,35 +2180,39 @@ TextUiSystem_Entry_8F8C:
         jsr     TextUiSystem_Entry_952B         ; 8F8F 20 2B 95                  +.
         jsr     TextUiSystem_Entry_933F         ; 8F92 20 3F 93                  ?.
         and     #$03                            ; 8F95 29 03                    ).
-        bne     $8F9F                           ; 8F97 D0 06                    ..
+        bne     TextUiSystem_Branch_8F9F        ; 8F97 D0 06                    ..
         jsr     TextUiSystem_Entry_91C6         ; 8F99 20 C6 91                  ..
+TextUiSystem_Branch_8F9C:
         jsr     TextUiSystem_Entry_933F         ; 8F9C 20 3F 93                  ?.
+TextUiSystem_Branch_8F9F:
         cmp     #$0F                            ; 8F9F C9 0F                    ..
-        beq     $8FA9                           ; 8FA1 F0 06                    ..
+        beq     TextUiSystem_Branch_8FA9        ; 8FA1 F0 06                    ..
         jsr     TextUiSystem_Entry_91BF         ; 8FA3 20 BF 91                  ..
-        jmp     $8F9C                           ; 8FA6 4C 9C 8F                 L..
+        jmp     TextUiSystem_Branch_8F9C        ; 8FA6 4C 9C 8F                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8FA9:
         rts                                     ; 8FA9 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8FAA:
         lda     $F5                             ; 8FAA A5 F5                    ..
         and     #$08                            ; 8FAC 29 08                    ).
-        bne     $9003                           ; 8FAE D0 53                    .S
+        bne     TextUiSystem_Branch_9003        ; 8FAE D0 53                    .S
         lda     $F5                             ; 8FB0 A5 F5                    ..
         and     #$10                            ; 8FB2 29 10                    ).
-        beq     $9015                           ; 8FB4 F0 5F                    ._
+        beq     TextUiSystem_Branch_9015        ; 8FB4 F0 5F                    ._
         lda     $07B4                           ; 8FB6 AD B4 07                 ...
         tay                                     ; 8FB9 A8                       .
         and     #$40                            ; 8FBA 29 40                    )@
-        beq     $8FEF                           ; 8FBC F0 31                    .1
+        beq     TextUiSystem_Branch_8FEF        ; 8FBC F0 31                    .1
         tya                                     ; 8FBE 98                       .
         and     #$02                            ; 8FBF 29 02                    ).
-        beq     $8FCC                           ; 8FC1 F0 09                    ..
+        beq     TextUiSystem_Branch_8FCC        ; 8FC1 F0 09                    ..
         tya                                     ; 8FC3 98                       .
         and     #$ED                            ; 8FC4 29 ED                    ).
         sta     $07B4                           ; 8FC6 8D B4 07                 ...
         jmp     TextUiSystem_Branch_8FD4        ; 8FC9 4C D4 8F                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8FCC:
         lda     $07B4                           ; 8FCC AD B4 07                 ...
         ora     #$10                            ; 8FCF 09 10                    ..
         sta     $07B4                           ; 8FD1 8D B4 07                 ...
@@ -2114,7 +2221,8 @@ TextUiSystem_Branch_8FD4:
         lda     ($EE),y                         ; 8FD7 B1 EE                    ..
         and     #$0F                            ; 8FD9 29 0F                    ).
         jsr     TextUiSystem_Entry_998C         ; 8FDB 20 8C 99                  ..
-        bcc     $8FFA                           ; 8FDE 90 1A                    ..
+        bcc     TextUiSystem_Branch_8FFA        ; 8FDE 90 1A                    ..
+TextUiSystem_Branch_8FE0:
         lda     $F5                             ; 8FE0 A5 F5                    ..
         ora     #$08                            ; 8FE2 09 08                    ..
         sta     $F5                             ; 8FE4 85 F5                    ..
@@ -2123,16 +2231,19 @@ TextUiSystem_Branch_8FD4:
         sta     $03D4                           ; 8FEB 8D D4 03                 ...
         rts                                     ; 8FEE 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8FEF:
         lda     $07B4                           ; 8FEF AD B4 07                 ...
         ora     #$40                            ; 8FF2 09 40                    .@
         sta     $07B4                           ; 8FF4 8D B4 07                 ...
-        jmp     $8FE0                           ; 8FF7 4C E0 8F                 L..
+        jmp     TextUiSystem_Branch_8FE0        ; 8FF7 4C E0 8F                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_8FFA:
         lda     $07B4                           ; 8FFA AD B4 07                 ...
         and     #$AF                            ; 8FFD 29 AF                    ).
         sta     $07B4                           ; 8FFF 8D B4 07                 ...
         rts                                     ; 9002 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9003:
         lda     $F5                             ; 9003 A5 F5                    ..
         and     #$F7                            ; 9005 29 F7                    ).
         sta     $F5                             ; 9007 85 F5                    ..
@@ -2142,11 +2253,12 @@ TextUiSystem_Branch_8FD4:
         inc     $03D4                           ; 9011 EE D4 03                 ...
         rts                                     ; 9014 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9015:
         ldy     $03D8                           ; 9015 AC D8 03                 ...
         lda     ($EE),y                         ; 9018 B1 EE                    ..
         and     #$0F                            ; 901A 29 0F                    ).
         jsr     TextUiSystem_Entry_998C         ; 901C 20 8C 99                  ..
-        jmp     $8FFA                           ; 901F 4C FA 8F                 L..
+        jmp     TextUiSystem_Branch_8FFA        ; 901F 4C FA 8F                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9022:
         jsr     TextUiSystem_Entry_9CCB         ; 9022 20 CB 9C                  ..
@@ -2178,26 +2290,26 @@ TextUiSystem_Branch_9057:
         sta     $0798,x                         ; 905A 9D 98 07                 ...
         lda     $F8                             ; 905D A5 F8                    ..
         cmp     #$FF                            ; 905F C9 FF                    ..
-        beq     $90C3                           ; 9061 F0 60                    .`
+        beq     TextUiSystem_Branch_90C3        ; 9061 F0 60                    .`
         sta     $07A8,x                         ; 9063 9D A8 07                 ...
         lda     $07B4                           ; 9066 AD B4 07                 ...
         and     #$09                            ; 9069 29 09                    ).
-        bne     $90C3                           ; 906B D0 56                    .V
+        bne     TextUiSystem_Branch_90C3        ; 906B D0 56                    .V
         lda     $03D4                           ; 906D AD D4 03                 ...
         and     #$1F                            ; 9070 29 1F                    ).
-        bne     $909E                           ; 9072 D0 2A                    .*
+        bne     TextUiSystem_Branch_909E        ; 9072 D0 2A                    .*
         lda     $03D9                           ; 9074 AD D9 03                 ...
-        beq     $90B4                           ; 9077 F0 3B                    .;
+        beq     TextUiSystem_Branch_90B4        ; 9077 F0 3B                    .;
         sta     $F0                             ; 9079 85 F0                    ..
         jsr     TextUiSystem_Entry_975A         ; 907B 20 5A 97                  Z.
         lda     $03D4                           ; 907E AD D4 03                 ...
         and     #$1F                            ; 9081 29 1F                    ).
-        bne     $909E                           ; 9083 D0 19                    ..
+        bne     TextUiSystem_Branch_909E        ; 9083 D0 19                    ..
         ldy     $03D9                           ; 9085 AC D9 03                 ...
         lda     ($EE),y                         ; 9088 B1 EE                    ..
         lsr     a                               ; 908A 4A                       J
         cmp     #$60                            ; 908B C9 60                    .`
-        beq     $909E                           ; 908D F0 0F                    ..
+        beq     TextUiSystem_Branch_909E        ; 908D F0 0F                    ..
         ldx     #$08                            ; 908F A2 08                    ..
         cmp     #$62                            ; 9091 C9 62                    .b
         beq     TextUiSystem_Branch_9097        ; 9093 F0 02                    ..
@@ -2206,24 +2318,27 @@ TextUiSystem_Branch_9097:
         txa                                     ; 9097 8A                       .
         ora     $03D4                           ; 9098 0D D4 03                 ...
         sta     $03D4                           ; 909B 8D D4 03                 ...
+TextUiSystem_Branch_909E:
         lda     $F8                             ; 909E A5 F8                    ..
         cmp     #$F0                            ; 90A0 C9 F0                    ..
-        bcs     $90B4                           ; 90A2 B0 10                    ..
+        bcs     TextUiSystem_Branch_90B4        ; 90A2 B0 10                    ..
         ldy     $03D9                           ; 90A4 AC D9 03                 ...
-        beq     $90B4                           ; 90A7 F0 0B                    ..
+        beq     TextUiSystem_Branch_90B4        ; 90A7 F0 0B                    ..
         lda     ($EE),y                         ; 90A9 B1 EE                    ..
         lsr     a                               ; 90AB 4A                       J
-        bcc     $90B4                           ; 90AC 90 06                    ..
+        bcc     TextUiSystem_Branch_90B4        ; 90AC 90 06                    ..
         iny                                     ; 90AE C8                       .
         lda     ($EE),y                         ; 90AF B1 EE                    ..
         jsr     TextUiSystem_Entry_A4F4         ; 90B1 20 F4 A4                  ..
+TextUiSystem_Branch_90B4:
         lda     $F5                             ; 90B4 A5 F5                    ..
         and     #$08                            ; 90B6 29 08                    ).
-        beq     $90C3                           ; 90B8 F0 09                    ..
+        beq     TextUiSystem_Branch_90C3        ; 90B8 F0 09                    ..
         jsr     TextUiSystem_Entry_9CCB         ; 90BA 20 CB 9C                  ..
         inx                                     ; 90BD E8                       .
         lda     $F8                             ; 90BE A5 F8                    ..
         sta     $07A0,x                         ; 90C0 9D A0 07                 ...
+TextUiSystem_Branch_90C3:
         rts                                     ; 90C3 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_90C4:
@@ -2238,8 +2353,9 @@ TextUiSystem_Entry_90C4:
         sta     $03CC                           ; 90D7 8D CC 03                 ...
         lda     ButtonsPressed                  ; 90DA A5 14                    ..
         and     #$F3                            ; 90DC 29 F3                    ).
-        beq     $90E3                           ; 90DE F0 03                    ..
+        beq     TextUiSystem_Branch_90E3        ; 90DE F0 03                    ..
         jsr     TextUiSystem_Entry_9CC7         ; 90E0 20 C7 9C                  ..
+TextUiSystem_Branch_90E3:
         lda     $050C                           ; 90E3 AD 0C 05                 ...
         clc                                     ; 90E6 18                       .
         adc     #$1E                            ; 90E7 69 1E                    i.
@@ -2250,11 +2366,11 @@ TextUiSystem_Entry_90C4:
 TextUiSystem_Entry_90F0:
         lda     $03D4                           ; 90F0 AD D4 03                 ...
         and     #$1F                            ; 90F3 29 1F                    ).
-        beq     $9173                           ; 90F5 F0 7C                    .|
+        beq     TextUiSystem_Branch_9173        ; 90F5 F0 7C                    .|
         bit     $A4D1                           ; 90F7 2C D1 A4                 ,..
-        bne     $9145                           ; 90FA D0 49                    .I
+        bne     TextUiSystem_Branch_9145        ; 90FA D0 49                    .I
         bit     $A4D2                           ; 90FC 2C D2 A4                 ,..
-        bne     $911D                           ; 90FF D0 1C                    ..
+        bne     TextUiSystem_Branch_911D        ; 90FF D0 1C                    ..
         lda     $03D4                           ; 9101 AD D4 03                 ...
         lsr     a                               ; 9104 4A                       J
         lsr     a                               ; 9105 4A                       J
@@ -2264,21 +2380,22 @@ TextUiSystem_Entry_90F0:
         sec                                     ; 9109 38                       8
         sbc     $03D4                           ; 910A ED D4 03                 ...
         and     #$08                            ; 910D 29 08                    ).
-        bne     $9173                           ; 910F D0 62                    .b
+        bne     TextUiSystem_Branch_9173        ; 910F D0 62                    .b
         lda     $03D4                           ; 9111 AD D4 03                 ...
         and     #$1F                            ; 9114 29 1F                    ).
         cmp     #$01                            ; 9116 C9 01                    ..
-        beq     $917F                           ; 9118 F0 65                    .e
+        beq     TextUiSystem_Branch_917F        ; 9118 F0 65                    .e
         jmp     TextUiSystem_Branch_9188        ; 911A 4C 88 91                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_911D:
         lda     $07B4                           ; 911D AD B4 07                 ...
         and     #$FB                            ; 9120 29 FB                    ).
         sta     $07B4                           ; 9122 8D B4 07                 ...
         lsr     a                               ; 9125 4A                       J
-        bcs     $9193                           ; 9126 B0 6B                    .k
+        bcs     TextUiSystem_Branch_9193        ; 9126 B0 6B                    .k
         lda     $F8                             ; 9128 A5 F8                    ..
         cmp     #$F0                            ; 912A C9 F0                    ..
-        bcs     $9193                           ; 912C B0 65                    .e
+        bcs     TextUiSystem_Branch_9193        ; 912C B0 65                    .e
         lda     $F5                             ; 912E A5 F5                    ..
         and     #$10                            ; 9130 29 10                    ).
         lsr     a                               ; 9132 4A                       J
@@ -2288,23 +2405,25 @@ TextUiSystem_Entry_90F0:
         lda     $03D4                           ; 913A AD D4 03                 ...
         clc                                     ; 913D 18                       .
         adc     #$20                            ; 913E 69 20                    i
-        bcs     $9173                           ; 9140 B0 31                    .1
+        bcs     TextUiSystem_Branch_9173        ; 9140 B0 31                    .1
         sta     $03D4                           ; 9142 8D D4 03                 ...
+TextUiSystem_Branch_9145:
         ldy     $03D9                           ; 9145 AC D9 03                 ...
-        beq     $9173                           ; 9148 F0 29                    .)
+        beq     TextUiSystem_Branch_9173        ; 9148 F0 29                    .)
         and     #$07                            ; 914A 29 07                    ).
         clc                                     ; 914C 18                       .
         adc     $03D9                           ; 914D 6D D9 03                 m..
         tay                                     ; 9150 A8                       .
         lda     ($EE),y                         ; 9151 B1 EE                    ..
         lsr     a                               ; 9153 4A                       J
-        bcc     $9157                           ; 9154 90 01                    ..
+        bcc     TextUiSystem_Branch_9157        ; 9154 90 01                    ..
         iny                                     ; 9156 C8                       .
+TextUiSystem_Branch_9157:
         iny                                     ; 9157 C8                       .
         cpy     $F1                             ; 9158 C4 F1                    ..
-        bcs     $9173                           ; 915A B0 17                    ..
+        bcs     TextUiSystem_Branch_9173        ; 915A B0 17                    ..
         lda     ($EE),y                         ; 915C B1 EE                    ..
-        beq     $9173                           ; 915E F0 13                    ..
+        beq     TextUiSystem_Branch_9173        ; 915E F0 13                    ..
         jsr     TextUiSystem_Entry_9CCB         ; 9160 20 CB 9C                  ..
         lda     ($EE),y                         ; 9163 B1 EE                    ..
         sta     $0788,x                         ; 9165 9D 88 07                 ...
@@ -2314,12 +2433,14 @@ TextUiSystem_Entry_90F0:
         sta     $03D4                           ; 916F 8D D4 03                 ...
         rts                                     ; 9172 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9173:
         lda     $03D4                           ; 9173 AD D4 03                 ...
         and     #$E0                            ; 9176 29 E0                    ).
         sta     $03D4                           ; 9178 8D D4 03                 ...
         inc     $03D4                           ; 917B EE D4 03                 ...
         rts                                     ; 917E 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_917F:
         lda     $03D4                           ; 917F AD D4 03                 ...
         sec                                     ; 9182 38                       8
         sbc     #$20                            ; 9183 E9 20                    .
@@ -2331,6 +2452,7 @@ TextUiSystem_Branch_9188:
         sta     $03D4                           ; 918F 8D D4 03                 ...
         rts                                     ; 9192 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9193:
         lda     $F5                             ; 9193 A5 F5                    ..
         and     #$F7                            ; 9195 29 F7                    ).
         sta     $F5                             ; 9197 85 F5                    ..
@@ -2366,19 +2488,21 @@ TextUiSystem_Entry_91C6:
         pha                                     ; 91D0 48                       H
         and     #$0F                            ; 91D1 29 0F                    ).
         cmp     #$0F                            ; 91D3 C9 0F                    ..
-        beq     $921C                           ; 91D5 F0 45                    .E
+        beq     TextUiSystem_Branch_921C        ; 91D5 F0 45                    .E
         jsr     TextUiSystem_Entry_952B         ; 91D7 20 2B 95                  +.
+TextUiSystem_Branch_91DA:
         jsr     TextUiSystem_Entry_975A         ; 91DA 20 5A 97                  Z.
         lda     a:$F4                           ; 91DD AD F4 00                 ...
         and     #$F0                            ; 91E0 29 F0                    ).
-        beq     $921C                           ; 91E2 F0 38                    .8
+        beq     TextUiSystem_Branch_921C        ; 91E2 F0 38                    .8
         lda     a:$F4                           ; 91E4 AD F4 00                 ...
         and     #$03                            ; 91E7 29 03                    ).
-        beq     $91F4                           ; 91E9 F0 09                    ..
+        beq     TextUiSystem_Branch_91F4        ; 91E9 F0 09                    ..
         lda     $03CB                           ; 91EB AD CB 03                 ...
         and     #$02                            ; 91EE 29 02                    ).
-        beq     $91F4                           ; 91F0 F0 02                    ..
+        beq     TextUiSystem_Branch_91F4        ; 91F0 F0 02                    ..
         inc     $F2                             ; 91F2 E6 F2                    ..
+TextUiSystem_Branch_91F4:
         jsr     TextUiSystem_Entry_9230         ; 91F4 20 30 92                  0.
         ldy     $F0                             ; 91F7 A4 F0                    ..
         lda     ($EE),y                         ; 91F9 B1 EE                    ..
@@ -2386,19 +2510,22 @@ TextUiSystem_Entry_91C6:
         jsr     TextUiSystem_Entry_93AE         ; 91FE 20 AE 93                  ..
         lda     a:$F4                           ; 9201 AD F4 00                 ...
         and     #$F0                            ; 9204 29 F0                    ).
-        beq     $9217                           ; 9206 F0 0F                    ..
+        beq     TextUiSystem_Branch_9217        ; 9206 F0 0F                    ..
         cmp     #$10                            ; 9208 C9 10                    ..
-        beq     $9217                           ; 920A F0 0B                    ..
+        beq     TextUiSystem_Branch_9217        ; 920A F0 0B                    ..
         lda     $03CB                           ; 920C AD CB 03                 ...
         lsr     a                               ; 920F 4A                       J
-        bcc     $91DA                           ; 9210 90 C8                    ..
+        bcc     TextUiSystem_Branch_91DA        ; 9210 90 C8                    ..
         inc     $F2                             ; 9212 E6 F2                    ..
-        jmp     $91DA                           ; 9214 4C DA 91                 L..
+        jmp     TextUiSystem_Branch_91DA        ; 9214 4C DA 91                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9217:
         ldy     #$01                            ; 9217 A0 01                    ..
-        jmp     $921E                           ; 9219 4C 1E 92                 L..
+        jmp     TextUiSystem_Branch_921E        ; 9219 4C 1E 92                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_921C:
         ldy     #$00                            ; 921C A0 00                    ..
+TextUiSystem_Branch_921E:
         pla                                     ; 921E 68                       h
         sta     a:$F4                           ; 921F 8D F4 00                 ...
         pla                                     ; 9222 68                       h
@@ -2406,41 +2533,45 @@ TextUiSystem_Entry_91C6:
         pla                                     ; 9225 68                       h
         sta     $04F2                           ; 9226 8D F2 04                 ...
         tya                                     ; 9229 98                       .
-        beq     $922F                           ; 922A F0 03                    ..
+        beq     TextUiSystem_Branch_922F        ; 922A F0 03                    ..
         jsr     TextUiSystem_Entry_924B         ; 922C 20 4B 92                  K.
+TextUiSystem_Branch_922F:
         rts                                     ; 922F 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9230:
         lda     a:$F4                           ; 9230 AD F4 00                 ...
         and     #$03                            ; 9233 29 03                    ).
-        bne     $9247                           ; 9235 D0 10                    ..
+        bne     TextUiSystem_Branch_9247        ; 9235 D0 10                    ..
         dec     $F2                             ; 9237 C6 F2                    ..
-        bmi     $9248                           ; 9239 30 0D                    0.
+        bmi     TextUiSystem_Branch_9248        ; 9239 30 0D                    0.
         jsr     TextUiSystem_Entry_9901         ; 923B 20 01 99                  ..
         cmp     #$85                            ; 923E C9 85                    ..
-        bne     $9248                           ; 9240 D0 06                    ..
+        bne     TextUiSystem_Branch_9248        ; 9240 D0 06                    ..
         lda     #$8C                            ; 9242 A9 8C                    ..
         jsr     TextUiSystem_Entry_98B3         ; 9244 20 B3 98                  ..
+TextUiSystem_Branch_9247:
         rts                                     ; 9247 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9248:
         inc     $F2                             ; 9248 E6 F2                    ..
         rts                                     ; 924A 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_924B:
         lda     $F5                             ; 924B A5 F5                    ..
         and     #$08                            ; 924D 29 08                    ).
-        bne     $92A1                           ; 924F D0 50                    .P
+        bne     TextUiSystem_Branch_92A1        ; 924F D0 50                    .P
         lda     $03D3                           ; 9251 AD D3 03                 ...
         eor     TextCursorPosition              ; 9254 4D CF 03                 M..
         and     #$0F                            ; 9257 29 0F                    ).
-        bne     $92A1                           ; 9259 D0 46                    .F
+        bne     TextUiSystem_Branch_92A1        ; 9259 D0 46                    .F
         lda     TextCursorPosition              ; 925B AD CF 03                 ...
         and     #$0F                            ; 925E 29 0F                    ).
         cmp     #$0F                            ; 9260 C9 0F                    ..
-        bne     $926A                           ; 9262 D0 06                    ..
+        bne     TextUiSystem_Branch_926A        ; 9262 D0 06                    ..
         lda     $F5                             ; 9264 A5 F5                    ..
         and     #$40                            ; 9266 29 40                    )@
-        beq     $92A1                           ; 9268 F0 37                    .7
+        beq     TextUiSystem_Branch_92A1        ; 9268 F0 37                    .7
+TextUiSystem_Branch_926A:
         jsr     TextUiSystem_Entry_9976         ; 926A 20 76 99                  v.
         lda     TextCursorPosition              ; 926D AD CF 03                 ...
         lsr     a                               ; 9270 4A                       J
@@ -2453,67 +2584,75 @@ TextUiSystem_Entry_924B:
         and     #$0F                            ; 927A 29 0F                    ).
         tay                                     ; 927C A8                       .
         cpy     #$0C                            ; 927D C0 0C                    ..
-        beq     $92A1                           ; 927F F0 20                    .
+        beq     TextUiSystem_Branch_92A1        ; 927F F0 20                    .
         lda     $9C8F,y                         ; 9281 B9 8F 9C                 ...
         clc                                     ; 9284 18                       .
         adc     $F2                             ; 9285 65 F2                    e.
 TextUiSystem_Branch_9287:
         dex                                     ; 9287 CA                       .
-        beq     $9290                           ; 9288 F0 06                    ..
+        beq     TextUiSystem_Branch_9290        ; 9288 F0 06                    ..
         adc     $9C9F,y                         ; 928A 79 9F 9C                 y..
         jmp     TextUiSystem_Branch_9287        ; 928D 4C 87 92                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9290:
         sta     $F2                             ; 9290 85 F2                    ..
         ldx     $9CAF,y                         ; 9292 BE AF 9C                 ...
         lda     $03CA                           ; 9295 AD CA 03                 ...
         dex                                     ; 9298 CA                       .
-        beq     $929E                           ; 9299 F0 03                    ..
+        beq     TextUiSystem_Branch_929E        ; 9299 F0 03                    ..
         jmp     TextUiSystem_Entry_98B3         ; 929B 4C B3 98                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_929E:
         jmp     TextUiSystem_Entry_98D2         ; 929E 4C D2 98                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_92A1:
         rts                                     ; 92A1 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_92A2:
         ldy     #$0F                            ; 92A2 A0 0F                    ..
         lda     #$00                            ; 92A4 A9 00                    ..
+TextUiSystem_Branch_92A6:
         sta     $04E0,y                         ; 92A6 99 E0 04                 ...
         dey                                     ; 92A9 88                       .
-        bpl     $92A6                           ; 92AA 10 FA                    ..
+        bpl     TextUiSystem_Branch_92A6        ; 92AA 10 FA                    ..
         jsr     TextUiSystem_Entry_932C         ; 92AC 20 2C 93                  ,.
-        bpl     $92D9                           ; 92AF 10 28                    .(
+        bpl     TextUiSystem_Branch_92D9        ; 92AF 10 28                    .(
         jsr     TextUiSystem_Entry_96E3         ; 92B1 20 E3 96                  ..
         sta     $00                           ; 92B4 85 00                    ..
         tax                                     ; 92B6 AA                       .
         ldy     #$00                            ; 92B7 A0 00                    ..
+TextUiSystem_Branch_92B9:
         lda     $04A0,y                         ; 92B9 B9 A0 04                 ...
         sta     $0480,x                         ; 92BC 9D 80 04                 ...
         inx                                     ; 92BF E8                       .
         iny                                     ; 92C0 C8                       .
         dec     $00                           ; 92C1 C6 00                    ..
-        bne     $92B9                           ; 92C3 D0 F4                    ..
+        bne     TextUiSystem_Branch_92B9        ; 92C3 D0 F4                    ..
 TextUiSystem_Entry_92C5:
         bit     $6BDE                           ; 92C5 2C DE 6B                 ,.k
-        bmi     $92D5                           ; 92C8 30 0B                    0.
+        bmi     TextUiSystem_Branch_92D5        ; 92C8 30 0B                    0.
         lda     $07B4                           ; 92CA AD B4 07                 ...
         and     #$10                            ; 92CD 29 10                    ).
-        bne     $92D5                           ; 92CF D0 04                    ..
+        bne     TextUiSystem_Branch_92D5        ; 92CF D0 04                    ..
         brk                                     ; 92D1 00                       .
         db   $12,$DF                         ; 92D2 12 DF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; 92D4 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_92D5:
         brk                                     ; 92D5 00                       .
         db   $13,$DF                         ; 92D6 13 DF                    ..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_92D8:
         rts                                     ; 92D8 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_92D9:
         tay                                     ; 92D9 A8                       .
-        bne     $92FC                           ; 92DA D0 20                    .
+        bne     TextUiSystem_Branch_92FC        ; 92DA D0 20                    .
         lda     a:$F4                           ; 92DC AD F4 00                 ...
         and     #$03                            ; 92DF 29 03                    ).
         cmp     #$03                            ; 92E1 C9 03                    ..
-        bne     $92D8                           ; 92E3 D0 F3                    ..
+        bne     TextUiSystem_Branch_92D8        ; 92E3 D0 F3                    ..
         lda     $04F3                           ; 92E5 AD F3 04                 ...
         sec                                     ; 92E8 38                       8
         sbc     #$10                            ; 92E9 E9 10                    ..
@@ -2525,6 +2664,7 @@ TextUiSystem_Entry_92C5:
         jsr     TextUiSystem_Entry_931B         ; 92F6 20 1B 93                  ..
         jmp     TextUiSystem_Entry_92C5         ; 92F9 4C C5 92                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_92FC:
         jsr     TextUiSystem_Entry_96E3         ; 92FC 20 E3 96                  ..
         sta     $00                           ; 92FF 85 00                    ..
         tay                                     ; 9301 A8                       .
@@ -2542,23 +2682,25 @@ TextUiSystem_Entry_92C5:
 TextUiSystem_Entry_931B:
         lda     $00                           ; 931B A5 00                    ..
         sta     $01                             ; 931D 85 01                    ..
+TextUiSystem_Branch_931F:
         lda     $0480,x                         ; 931F BD 80 04                 ...
         sta     $0480,y                         ; 9322 99 80 04                 ...
         inx                                     ; 9325 E8                       .
         iny                                     ; 9326 C8                       .
         dec     $01                             ; 9327 C6 01                    ..
-        bne     $931F                           ; 9329 D0 F4                    ..
+        bne     TextUiSystem_Branch_931F        ; 9329 D0 F4                    ..
         rts                                     ; 932B 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_932C:
         lda     $03C8                           ; 932C AD C8 03                 ...
         cmp     #$60                            ; 932F C9 60                    .`
-        bcs     $933C                           ; 9331 B0 09                    ..
+        bcs     TextUiSystem_Branch_933C        ; 9331 B0 09                    ..
         lda     $04F2                           ; 9333 AD F2 04                 ...
         eor     $03C9                           ; 9336 4D C9 03                 M..
         and     #$10                            ; 9339 29 10                    ).
         rts                                     ; 933B 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_933C:
         lda     #$FF                            ; 933C A9 FF                    ..
         rts                                     ; 933E 60                       `
 ; ----------------------------------------------------------------------------
@@ -2573,20 +2715,22 @@ TextUiSystem_Entry_9349:
         lda     a:$F4                           ; 9349 AD F4 00                 ...
         and     #$F0                            ; 934C 29 F0                    ).
         cmp     #$10                            ; 934E C9 10                    ..
-        beq     $939A                           ; 9350 F0 48                    .H
+        beq     TextUiSystem_Branch_939A        ; 9350 F0 48                    .H
+TextUiSystem_Branch_9352:
         jsr     TextUiSystem_Entry_93AE         ; 9352 20 AE 93                  ..
         lda     a:$F4                           ; 9355 AD F4 00                 ...
         and     #$F0                            ; 9358 29 F0                    ).
         cmp     #$10                            ; 935A C9 10                    ..
-        beq     $936D                           ; 935C F0 0F                    ..
+        beq     TextUiSystem_Branch_936D        ; 935C F0 0F                    ..
         lda     a:$F4                           ; 935E AD F4 00                 ...
         and     #$0C                            ; 9361 29 0C                    ).
         cmp     #$0C                            ; 9363 C9 0C                    ..
-        beq     $9394                           ; 9365 F0 2D                    .-
+        beq     TextUiSystem_Branch_9394        ; 9365 F0 2D                    .-
         txa                                     ; 9367 8A                       .
-        bne     $9394                           ; 9368 D0 2A                    .*
-        jmp     $9352                           ; 936A 4C 52 93                 LR.
+        bne     TextUiSystem_Branch_9394        ; 9368 D0 2A                    .*
+        jmp     TextUiSystem_Branch_9352        ; 936A 4C 52 93                 LR.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_936D:
         asl     $F5                             ; 936D 06 F5                    ..
         sec                                     ; 936F 38                       8
         ror     $F5                             ; 9370 66 F5                    f.
@@ -2599,35 +2743,37 @@ TextUiSystem_Entry_9349:
         lsr     $F5                             ; 9381 46 F5                    F.
         lda     a:$F3                           ; 9383 AD F3 00                 ...
         cmp     $03D2                           ; 9386 CD D2 03                 ...
-        bne     $9394                           ; 9389 D0 09                    ..
+        bne     TextUiSystem_Branch_9394        ; 9389 D0 09                    ..
         jsr     TextUiSystem_Entry_94F4         ; 938B 20 F4 94                  ..
         dec     $03D3                           ; 938E CE D3 03                 ...
-        jmp     $9352                           ; 9391 4C 52 93                 LR.
+        jmp     TextUiSystem_Branch_9352        ; 9391 4C 52 93                 LR.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9394:
         lda     a:$F4                           ; 9394 AD F4 00                 ...
         and     #$0F                            ; 9397 29 0F                    ).
         rts                                     ; 9399 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_939A:
         inc     a:$F3                           ; 939A EE F3 00                 ...
         lda     a:$F3                           ; 939D AD F3 00                 ...
         cmp     $03D2                           ; 93A0 CD D2 03                 ...
-        beq     $9352                           ; 93A3 F0 AD                    ..
+        beq     TextUiSystem_Branch_9352        ; 93A3 F0 AD                    ..
         jsr     TextUiSystem_Entry_94EA         ; 93A5 20 EA 94                  ..
         inc     $03D3                           ; 93A8 EE D3 03                 ...
-        jmp     $9394                           ; 93AB 4C 94 93                 L..
+        jmp     TextUiSystem_Branch_9394        ; 93AB 4C 94 93                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_93AE:
         inc     $F0                             ; 93AE E6 F0                    ..
         lda     $F0                             ; 93B0 A5 F0                    ..
         cmp     $F1                             ; 93B2 C5 F1                    ..
-        beq     $9410                           ; 93B4 F0 5A                    .Z
-        bcs     $93DB                           ; 93B6 B0 23                    .#
+        beq     TextUiSystem_Branch_9410        ; 93B4 F0 5A                    .Z
+        bcs     TextUiSystem_Branch_93DB        ; 93B6 B0 23                    .#
         tay                                     ; 93B8 A8                       .
         lda     ($EE),y                         ; 93B9 B1 EE                    ..
-        bpl     $93D1                           ; 93BB 10 14                    ..
+        bpl     TextUiSystem_Branch_93D1        ; 93BB 10 14                    ..
         and     #$E0                            ; 93BD 29 E0                    ).
         cmp     #$C0                            ; 93BF C9 C0                    ..
-        beq     $93D1                           ; 93C1 F0 0E                    ..
+        beq     TextUiSystem_Branch_93D1        ; 93C1 F0 0E                    ..
         cmp     #$E0                            ; 93C3 C9 E0                    ..
         bne     TextUiSystem_Entry_93AE         ; 93C5 D0 E7                    ..
         lda     ($EE),y                         ; 93C7 B1 EE                    ..
@@ -2635,10 +2781,12 @@ TextUiSystem_Entry_93AE:
         sta     $03C6                           ; 93CB 8D C6 03                 ...
         jmp     TextUiSystem_Entry_93AE         ; 93CE 4C AE 93                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_93D1:
         jsr     TextUiSystem_Entry_94FE         ; 93D1 20 FE 94                  ..
-        bcs     $93EF                           ; 93D4 B0 19                    ..
+        bcs     TextUiSystem_Branch_93EF        ; 93D4 B0 19                    ..
         jsr     TextUiSystem_Entry_9517         ; 93D6 20 17 95                  ..
-        bcs     $93EF                           ; 93D9 B0 14                    ..
+        bcs     TextUiSystem_Branch_93EF        ; 93D9 B0 14                    ..
+TextUiSystem_Branch_93DB:
         lda     a:$F4                           ; 93DB AD F4 00                 ...
         and     #$0F                            ; 93DE 29 0F                    ).
         asl     a                               ; 93E0 0A                       .
@@ -2650,6 +2798,7 @@ TextUiSystem_Entry_93AE:
         txa                                     ; 93EA 8A                       .
         ldx     #$00                            ; 93EB A2 00                    ..
         cmp     #$C6                            ; 93ED C9 C6                    ..
+TextUiSystem_Branch_93EF:
         rts                                     ; 93EF 60                       `
 ; ----------------------------------------------------------------------------
         db   $1A                             ; 93F0 1A                       .
@@ -2658,13 +2807,15 @@ TextUiSystem_Entry_93AE:
         db   $94,$69,$94,$B8,$94,$1A,$94,$1A ; 9401 94 69 94 B8 94 1A 94 1A  .i......
         db   $94,$76,$94,$C8,$94,$E8,$94     ; 9409 94 76 94 C8 94 E8 94     .v.....
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9410:
         jsr     TextUiSystem_Entry_94EA         ; 9410 20 EA 94                  ..
         lda     #$03                            ; 9413 A9 03                    ..
         sta     a:$F4                           ; 9415 8D F4 00                 ...
         ldx     #$01                            ; 9418 A2 01                    ..
         rts                                     ; 941A 60                       `
 ; ----------------------------------------------------------------------------
-        beq     $9437                           ; 941B F0 1A                    ..
+TextUiSystem_Entry_941B:
+        beq     TextUiSystem_Branch_9437        ; 941B F0 1A                    ..
         lda     a:$F4                           ; 941D AD F4 00                 ...
         and     #$F0                            ; 9420 29 F0                    ).
         ora     #$04                            ; 9422 09 04                    ..
@@ -2673,33 +2824,82 @@ TextUiSystem_Entry_93AE:
         sta     a:$F4                           ; 9427 8D F4 00                 ...
         rts                                     ; 942A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $F0,$0A,$AD,$F4,$00,$18,$69,$10 ; 942B F0 0A AD F4 00 18 69 10  ......i.
-        db   $8D,$F4,$00,$60                 ; 9433 8D F4 00 60              ...`
+TextUiSystem_Entry_942B:
+        beq     TextUiSystem_Branch_9437        ; 942B F0 0A                    ..
+        lda     a:$F4                           ; 942D AD F4 00                 ...
+        clc                                     ; 9430 18                       .
+        adc     #$10                            ; 9431 69 10                    i.
+        sta     a:$F4                           ; 9433 8D F4 00                 ...
+        rts                                     ; 9436 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9437:
         lda     #$08                            ; 9437 A9 08                    ..
         sta     a:$F4                           ; 9439 8D F4 00                 ...
         rts                                     ; 943C 60                       `
 ; ----------------------------------------------------------------------------
-        db   $08,$20,$EA,$94,$28,$F0,$0E,$AD ; 943D 08 20 EA 94 28 F0 0E AD  . ..(...
-        db   $F4,$00,$29,$F0,$09,$05,$18,$69 ; 9445 F4 00 29 F0 09 05 18 69  ..)....i
-        db   $10,$8D,$F4,$00,$60,$A9,$0D,$8D ; 944D 10 8D F4 00 60 A9 0D 8D  ....`...
-        db   $F4,$00,$60,$F0,$0A,$AD,$F4,$00 ; 9455 F4 00 60 F0 0A AD F4 00  ..`.....
-        db   $18,$69,$10,$8D,$F4,$00,$60,$A9 ; 945D 18 69 10 8D F4 00 60 A9  .i....`.
-        db   $09,$8D,$F4,$00,$60,$08,$20,$EA ; 9465 09 8D F4 00 60 08 20 EA  ....`. .
-        db   $94,$28,$D0,$08,$A9,$0D,$8D,$F4 ; 946D 94 28 D0 08 A9 0D 8D F4  .(......
-        db   $00,$60,$F0,$0D,$AD,$F4,$00,$29 ; 9475 00 60 F0 0D AD F4 00 29  .`.....)
-        db   $F0,$09,$05,$18,$69,$10,$8D,$F4 ; 947D F0 09 05 18 69 10 8D F4  ....i...
-        db   $00,$60                         ; 9485 00 60                    .`
+TextUiSystem_Entry_943D:
+        php                                     ; 943D 08                       .
+        jsr     TextUiSystem_Entry_94EA         ; 943E 20 EA 94                  ..
+        plp                                     ; 9441 28                       (
+        beq     TextUiSystem_Branch_9452        ; 9442 F0 0E                    ..
+        lda     a:$F4                           ; 9444 AD F4 00                 ...
+        and     #$F0                            ; 9447 29 F0                    ).
+        ora     #$05                            ; 9449 09 05                    ..
+        clc                                     ; 944B 18                       .
+        adc     #$10                            ; 944C 69 10                    i.
+        sta     a:$F4                           ; 944E 8D F4 00                 ...
+        rts                                     ; 9451 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9452:
+        lda     #$0D                            ; 9452 A9 0D                    ..
+        sta     a:$F4                           ; 9454 8D F4 00                 ...
+        rts                                     ; 9457 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9458:
+        beq     TextUiSystem_Branch_9464        ; 9458 F0 0A                    ..
+        lda     a:$F4                           ; 945A AD F4 00                 ...
+        clc                                     ; 945D 18                       .
+        adc     #$10                            ; 945E 69 10                    i.
+        sta     a:$F4                           ; 9460 8D F4 00                 ...
+        rts                                     ; 9463 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9464:
+        lda     #$09                            ; 9464 A9 09                    ..
+        sta     a:$F4                           ; 9466 8D F4 00                 ...
+        rts                                     ; 9469 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_946A:
+        php                                     ; 946A 08                       .
+        jsr     TextUiSystem_Entry_94EA         ; 946B 20 EA 94                  ..
+        plp                                     ; 946E 28                       (
+        bne     TextUiSystem_Branch_9479        ; 946F D0 08                    ..
+        lda     #$0D                            ; 9471 A9 0D                    ..
+        sta     a:$F4                           ; 9473 8D F4 00                 ...
+        rts                                     ; 9476 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9477:
+        beq     TextUiSystem_Branch_9486        ; 9477 F0 0D                    ..
+TextUiSystem_Branch_9479:
+        lda     a:$F4                           ; 9479 AD F4 00                 ...
+        and     #$F0                            ; 947C 29 F0                    ).
+        ora     #$05                            ; 947E 09 05                    ..
+        clc                                     ; 9480 18                       .
+        adc     #$10                            ; 9481 69 10                    i.
+        sta     a:$F4                           ; 9483 8D F4 00                 ...
+TextUiSystem_Branch_9486:
+        rts                                     ; 9486 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9487:
         php                                     ; 9487 08                       .
         jsr     TextUiSystem_Entry_94EA         ; 9488 20 EA 94                  ..
         plp                                     ; 948B 28                       (
-        bne     $94D0                           ; 948C D0 42                    .B
+        bne     TextUiSystem_Branch_94D0        ; 948C D0 42                    .B
         lda     #$0E                            ; 948E A9 0E                    ..
         sta     a:$F4                           ; 9490 8D F4 00                 ...
         rts                                     ; 9493 60                       `
 ; ----------------------------------------------------------------------------
-        beq     $94B3                           ; 9494 F0 1D                    ..
+TextUiSystem_Entry_9494:
+        beq     TextUiSystem_Branch_94B3        ; 9494 F0 1D                    ..
         ldy     #$01                            ; 9496 A0 01                    ..
         lda     ($EE),y                         ; 9498 B1 EE                    ..
         and     #$03                            ; 949A 29 03                    ).
@@ -2709,29 +2909,36 @@ TextUiSystem_Entry_93AE:
         asl     a                               ; 949F 0A                       .
         eor     a:$F4                           ; 94A0 4D F4 00                 M..
         and     #$F0                            ; 94A3 29 F0                    ).
-        beq     $94B1                           ; 94A5 F0 0A                    ..
+        beq     TextUiSystem_Branch_94B1        ; 94A5 F0 0A                    ..
         lda     a:$F4                           ; 94A7 AD F4 00                 ...
         clc                                     ; 94AA 18                       .
         adc     #$10                            ; 94AB 69 10                    i.
         sta     a:$F4                           ; 94AD 8D F4 00                 ...
         rts                                     ; 94B0 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_94B1:
         dec     $F0                             ; 94B1 C6 F0                    ..
+TextUiSystem_Branch_94B3:
         lda     #$0A                            ; 94B3 A9 0A                    ..
         sta     a:$F4                           ; 94B5 8D F4 00                 ...
         rts                                     ; 94B8 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_94B9:
         php                                     ; 94B9 08                       .
         jsr     TextUiSystem_Entry_94EA         ; 94BA 20 EA 94                  ..
         plp                                     ; 94BD 28                       (
-        bne     $94D0                           ; 94BE D0 10                    ..
+        bne     TextUiSystem_Branch_94D0        ; 94BE D0 10                    ..
         lda     #$0E                            ; 94C0 A9 0E                    ..
         sta     a:$F4                           ; 94C2 8D F4 00                 ...
         inc     $03D3                           ; 94C5 EE D3 03                 ...
         rts                                     ; 94C8 60                       `
 ; ----------------------------------------------------------------------------
-        db   $08,$20,$EA,$94,$28,$F0,$10     ; 94C9 08 20 EA 94 28 F0 10     . ..(..
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_94C9:
+        php                                     ; 94C9 08                       .
+        jsr     TextUiSystem_Entry_94EA         ; 94CA 20 EA 94                  ..
+        plp                                     ; 94CD 28                       (
+        beq     TextUiSystem_Branch_94E0        ; 94CE F0 10                    ..
+TextUiSystem_Branch_94D0:
         lda     a:$F4                           ; 94D0 AD F4 00                 ...
         and     #$F0                            ; 94D3 29 F0                    ).
         ora     #$06                            ; 94D5 09 06                    ..
@@ -2739,14 +2946,17 @@ TextUiSystem_Entry_93AE:
         adc     #$10                            ; 94D8 69 10                    i.
         sta     a:$F4                           ; 94DA 8D F4 00                 ...
         inc     $03D3                           ; 94DD EE D3 03                 ...
+TextUiSystem_Branch_94E0:
         rts                                     ; 94E0 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_94E1:
         lda     #$0F                            ; 94E1 A9 0F                    ..
         sta     a:$F4                           ; 94E3 8D F4 00                 ...
         ldx     #$01                            ; 94E6 A2 01                    ..
         rts                                     ; 94E8 60                       `
 ; ----------------------------------------------------------------------------
-        db   $60                             ; 94E9 60                       `
+TextUiSystem_Entry_94E9:
+        rts                                     ; 94E9 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_94EA:
         lda     $04F2                           ; 94EA AD F2 04                 ...
@@ -2766,9 +2976,9 @@ TextUiSystem_Entry_94FE:
         lda     ($EE),y                         ; 94FE B1 EE                    ..
         clc                                     ; 9500 18                       .
         adc     #$3A                            ; 9501 69 3A                    i:
-        bcs     $9515                           ; 9503 B0 10                    ..
+        bcs     TextUiSystem_Branch_9515        ; 9503 B0 10                    ..
         adc     #$06                            ; 9505 69 06                    i.
-        bcc     $9515                           ; 9507 90 0C                    ..
+        bcc     TextUiSystem_Branch_9515        ; 9507 90 0C                    ..
         jsr     TextUiSystem_Entry_94EA         ; 9509 20 EA 94                  ..
         lda     #$07                            ; 950C A9 07                    ..
         sta     a:$F4                           ; 950E 8D F4 00                 ...
@@ -2776,6 +2986,7 @@ TextUiSystem_Entry_94FE:
         sec                                     ; 9513 38                       8
         rts                                     ; 9514 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9515:
         clc                                     ; 9515 18                       .
         rts                                     ; 9516 60                       `
 ; ----------------------------------------------------------------------------
@@ -2784,10 +2995,11 @@ TextUiSystem_Entry_9517:
         tax                                     ; 9519 AA                       .
         and     #$F0                            ; 951A 29 F0                    ).
         cmp     #$D0                            ; 951C C9 D0                    ..
-        beq     $9522                           ; 951E F0 02                    ..
+        beq     TextUiSystem_Branch_9522        ; 951E F0 02                    ..
         clc                                     ; 9520 18                       .
         rts                                     ; 9521 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9522:
         lda     #$02                            ; 9522 A9 02                    ..
         sta     a:$F4                           ; 9524 8D F4 00                 ...
         ldx     #$01                            ; 9527 A2 01                    ..
@@ -2797,8 +3009,9 @@ TextUiSystem_Entry_9517:
 TextUiSystem_Entry_952B:
         lda     $F5                             ; 952B A5 F5                    ..
         and     #$04                            ; 952D 29 04                    ).
-        bne     $9534                           ; 952F D0 03                    ..
+        bne     TextUiSystem_Branch_9534        ; 952F D0 03                    ..
         jsr     TextUiSystem_Entry_991D         ; 9531 20 1D 99                  ..
+TextUiSystem_Branch_9534:
         jsr     TextUiSystem_Entry_9976         ; 9534 20 76 99                  v.
         lda     $03CB                           ; 9537 AD CB 03                 ...
         rol     a                               ; 953A 2A                       *
@@ -2827,15 +3040,18 @@ TextUiSystem_Entry_9553:
         lda     $A500                           ; 9564 AD 00 A5                 ...
         sta     $0B                             ; 9567 85 0B                    ..
         pla                                     ; 9569 68                       h
-        bpl     $956E                           ; 956A 10 02                    ..
+        bpl     TextUiSystem_Branch_956E        ; 956A 10 02                    ..
         inc     $0B                             ; 956C E6 0B                    ..
+TextUiSystem_Branch_956E:
         asl     a                               ; 956E 0A                       .
         clc                                     ; 956F 18                       .
         adc     $0A                           ; 9570 65 0A                    e.
         sta     $0A                           ; 9572 85 0A                    ..
-        bcc     $9578                           ; 9574 90 02                    ..
+        bcc     TextUiSystem_Branch_9578        ; 9574 90 02                    ..
         inc     $0B                             ; 9576 E6 0B                    ..
+TextUiSystem_Branch_9578:
         ldy     #$00                            ; 9578 A0 00                    ..
+TextUiSystem_Branch_957A:
         lda     ($0A),y                       ; 957A B1 0A                    ..
         sta     $EE                             ; 957C 85 EE                    ..
         iny                                     ; 957E C8                       .
@@ -2845,9 +3061,9 @@ TextUiSystem_Entry_9553:
         lda     ($EE,x)                         ; 9585 A1 EE                    ..
         and     #$F0                            ; 9587 29 F0                    ).
         cmp     #$10                            ; 9589 C9 10                    ..
-        bne     $95A2                           ; 958B D0 15                    ..
+        bne     TextUiSystem_Branch_95A2        ; 958B D0 15                    ..
         lda     $03D5                           ; 958D AD D5 03                 ...
-        bne     $959E                           ; 9590 D0 0C                    ..
+        bne     TextUiSystem_Branch_959E        ; 9590 D0 0C                    ..
         lda     ($EE,x)                         ; 9592 A1 EE                    ..
         asl     a                               ; 9594 0A                       .
         asl     a                               ; 9595 0A                       .
@@ -2855,9 +3071,11 @@ TextUiSystem_Entry_9553:
         asl     a                               ; 9597 0A                       .
         sta     $03D5                           ; 9598 8D D5 03                 ...
         inc     $03D5                           ; 959B EE D5 03                 ...
+TextUiSystem_Branch_959E:
         iny                                     ; 959E C8                       .
-        jmp     $957A                           ; 959F 4C 7A 95                 Lz.
+        jmp     TextUiSystem_Branch_957A        ; 959F 4C 7A 95                 Lz.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_95A2:
         iny                                     ; 95A2 C8                       .
         lda     ($0A),y                       ; 95A3 B1 0A                    ..
         sec                                     ; 95A5 38                       8
@@ -2878,10 +3096,11 @@ TextUiSystem_Entry_95AF:
         lda     ($EE),y                         ; 95C1 B1 EE                    ..
         sta     $03C8                           ; 95C3 8D C8 03                 ...
         and     #$F0                            ; 95C6 29 F0                    ).
-        bne     $95D1                           ; 95C8 D0 07                    ..
+        bne     TextUiSystem_Branch_95D1        ; 95C8 D0 07                    ..
         lda     ($EE),y                         ; 95CA B1 EE                    ..
         and     #$0F                            ; 95CC 29 0F                    ).
         jsr     TextUiSystem_Entry_A4DE         ; 95CE 20 DE A4                  ..
+TextUiSystem_Branch_95D1:
         inc     $F0                             ; 95D1 E6 F0                    ..
         ldy     #$01                            ; 95D3 A0 01                    ..
         lda     ($EE),y                         ; 95D5 B1 EE                    ..
@@ -2891,20 +3110,22 @@ TextUiSystem_Entry_95AF:
         lda     ($EE),y                         ; 95DF B1 EE                    ..
         pha                                     ; 95E1 48                       H
         and     #$08                            ; 95E2 29 08                    ).
-        beq     $95ED                           ; 95E4 F0 07                    ..
+        beq     TextUiSystem_Branch_95ED        ; 95E4 F0 07                    ..
         lsr     a                               ; 95E6 4A                       J
         lsr     a                               ; 95E7 4A                       J
         lsr     a                               ; 95E8 4A                       J
         lsr     a                               ; 95E9 4A                       J
         jsr     TextUiSystem_Entry_A4E9         ; 95EA 20 E9 A4                  ..
+TextUiSystem_Branch_95ED:
         lda     #$03                            ; 95ED A9 03                    ..
         sta     $03CB                           ; 95EF 8D CB 03                 ...
         pla                                     ; 95F2 68                       h
         and     #$04                            ; 95F3 29 04                    ).
-        beq     $95FE                           ; 95F5 F0 07                    ..
+        beq     TextUiSystem_Branch_95FE        ; 95F5 F0 07                    ..
         ldy     #$02                            ; 95F7 A0 02                    ..
         lda     ($EE),y                         ; 95F9 B1 EE                    ..
         sta     $03CB                           ; 95FB 8D CB 03                 ...
+TextUiSystem_Branch_95FE:
         rts                                     ; 95FE 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_95FF:
@@ -2918,8 +3139,9 @@ TextUiSystem_Entry_95FF:
         ldy     #$01                            ; 9611 A0 01                    ..
         lda     ($EE),y                         ; 9613 B1 EE                    ..
         and     #$04                            ; 9615 29 04                    ).
-        beq     $961A                           ; 9617 F0 01                    ..
+        beq     TextUiSystem_Branch_961A        ; 9617 F0 01                    ..
         iny                                     ; 9619 C8                       .
+TextUiSystem_Branch_961A:
         sty     $F0                             ; 961A 84 F0                    ..
         lda     $04F2                           ; 961C AD F2 04                 ...
         and     #$0F                            ; 961F 29 0F                    ).
@@ -2942,17 +3164,19 @@ TextUiSystem_Entry_963D:
         lda     $03D5                           ; 9642 AD D5 03                 ...
         and     #$F0                            ; 9645 29 F0                    ).
         sta     $03D5                           ; 9647 8D D5 03                 ...
+TextUiSystem_Branch_964A:
         jsr     TextUiSystem_Entry_9349         ; 964A 20 49 93                  I.
         cmp     #$0F                            ; 964D C9 0F                    ..
-        beq     $967C                           ; 964F F0 2B                    .+
+        beq     TextUiSystem_Branch_967C        ; 964F F0 2B                    .+
         cmp     #$02                            ; 9651 C9 02                    ..
-        beq     $9661                           ; 9653 F0 0C                    ..
+        beq     TextUiSystem_Branch_9661        ; 9653 F0 0C                    ..
         cmp     #$07                            ; 9655 C9 07                    ..
-        bne     $964A                           ; 9657 D0 F1                    ..
+        bne     TextUiSystem_Branch_964A        ; 9657 D0 F1                    ..
         lda     $F0                             ; 9659 A5 F0                    ..
         sta     $03D9                           ; 965B 8D D9 03                 ...
-        jmp     $964A                           ; 965E 4C 4A 96                 LJ.
+        jmp     TextUiSystem_Branch_964A        ; 965E 4C 4A 96                 LJ.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9661:
         jsr     TextUiSystem_Entry_96C5         ; 9661 20 C5 96                  ..
         ldy     $F0                             ; 9664 A4 F0                    ..
         sty     $03D8                           ; 9666 8C D8 03                 ...
@@ -2964,18 +3188,20 @@ TextUiSystem_Entry_963D:
         jsr     TextUiSystem_Entry_998C         ; 9672 20 8C 99                  ..
         asl     $F5                             ; 9675 06 F5                    ..
         lsr     $F5                             ; 9677 46 F5                    F.
-        jmp     $964A                           ; 9679 4C 4A 96                 LJ.
+        jmp     TextUiSystem_Branch_964A        ; 9679 4C 4A 96                 LJ.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_967C:
         lda     $F5                             ; 967C A5 F5                    ..
         and     #$04                            ; 967E 29 04                    ).
-        bne     $96C4                           ; 9680 D0 42                    .B
+        bne     TextUiSystem_Branch_96C4        ; 9680 D0 42                    .B
         bit     $6BDE                           ; 9682 2C DE 6B                 ,.k
-        bmi     $9694                           ; 9685 30 0D                    0.
+        bmi     TextUiSystem_Branch_9694        ; 9685 30 0D                    0.
         lda     $07B4                           ; 9687 AD B4 07                 ...
         and     #$10                            ; 968A 29 10                    ).
-        bne     $9694                           ; 968C D0 06                    ..
+        bne     TextUiSystem_Branch_9694        ; 968C D0 06                    ..
         jsr     TextUiSystem_Entry_96F3         ; 968E 20 F3 96                  ..
         jsr     TextUiSystem_Entry_8892         ; 9691 20 92 88                  ..
+TextUiSystem_Branch_9694:
         lda     $03C9                           ; 9694 AD C9 03                 ...
         and     #$F0                            ; 9697 29 F0                    ).
         sta     $03C9                           ; 9699 8D C9 03                 ...
@@ -2988,7 +3214,7 @@ TextUiSystem_Entry_963D:
         sta     $03C9                           ; 96A6 8D C9 03                 ...
         lda     $07B4                           ; 96A9 AD B4 07                 ...
         and     #$40                            ; 96AC 29 40                    )@
-        bne     $96C4                           ; 96AE D0 14                    ..
+        bne     TextUiSystem_Branch_96C4        ; 96AE D0 14                    ..
         lda     $07B4                           ; 96B0 AD B4 07                 ...
         and     #$FB                            ; 96B3 29 FB                    ).
         sta     $07B4                           ; 96B5 8D B4 07                 ...
@@ -2998,13 +3224,14 @@ TextUiSystem_Entry_963D:
         lsr     a                               ; 96BD 4A                       J
         ora     $07B4                           ; 96BE 0D B4 07                 ...
         sta     $07B4                           ; 96C1 8D B4 07                 ...
+TextUiSystem_Branch_96C4:
         rts                                     ; 96C4 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_96C5:
         ldy     $F0                             ; 96C5 A4 F0                    ..
 TextUiSystem_Branch_96C7:
         cpy     $F1                             ; 96C7 C4 F1                    ..
-        beq     $96E2                           ; 96C9 F0 17                    ..
+        beq     TextUiSystem_Branch_96E2        ; 96C9 F0 17                    ..
         lda     ($EE),y                         ; 96CB B1 EE                    ..
         iny                                     ; 96CD C8                       .
         clc                                     ; 96CE 18                       .
@@ -3017,6 +3244,7 @@ TextUiSystem_Branch_96C7:
         sta     $03D5                           ; 96DC 8D D5 03                 ...
         jmp     TextUiSystem_Branch_96C7        ; 96DF 4C C7 96                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_96E2:
         rts                                     ; 96E2 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_96E3:
@@ -3033,7 +3261,7 @@ TextUiSystem_Entry_96E3:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_96F3:
         bit     $6BDE                           ; 96F3 2C DE 6B                 ,.k
-        bmi     $9751                           ; 96F6 30 59                    0Y
+        bmi     TextUiSystem_Branch_9751        ; 96F6 30 59                    0Y
         lda     #$00                            ; 96F8 A9 00                    ..
         sta     $01                             ; 96FA 85 01                    ..
         lda     $03C8                           ; 96FC AD C8 03                 ...
@@ -3046,17 +3274,19 @@ TextUiSystem_Entry_96F3:
         lda     $9752,x                         ; 9706 BD 52 97                 .R.
         sta     $00                           ; 9709 85 00                    ..
         bit     $03C8                           ; 970B 2C C8 03                 ,..
-        bpl     $9716                           ; 970E 10 06                    ..
+        bpl     TextUiSystem_Branch_9716        ; 970E 10 06                    ..
         sta     $01                             ; 9710 85 01                    ..
         lda     #$FF                            ; 9712 A9 FF                    ..
         sta     $00                           ; 9714 85 00                    ..
+TextUiSystem_Branch_9716:
         lda     $03C8                           ; 9716 AD C8 03                 ...
         and     #$0F                            ; 9719 29 0F                    ).
         tax                                     ; 971B AA                       .
+TextUiSystem_Branch_971C:
         lsr     $00                           ; 971C 46 00                    F.
         ror     $01                             ; 971E 66 01                    f.
         dex                                     ; 9720 CA                       .
-        bne     $971C                           ; 9721 D0 F9                    ..
+        bne     TextUiSystem_Branch_971C        ; 9721 D0 F9                    ..
         lda     $03C9                           ; 9723 AD C9 03                 ...
         lsr     a                               ; 9726 4A                       J
         lsr     a                               ; 9727 4A                       J
@@ -3073,6 +3303,7 @@ TextUiSystem_Entry_96F3:
         sec                                     ; 9736 38                       8
         sbc     $02                             ; 9737 E5 02                    ..
         sta     $02                             ; 9739 85 02                    ..
+TextUiSystem_Branch_973B:
         lda     $076A,x                         ; 973B BD 6A 07                 .j.
         ora     $00                           ; 973E 05 00                    ..
         sta     $076A,x                         ; 9740 9D 6A 07                 .j.
@@ -3082,7 +3313,8 @@ TextUiSystem_Entry_96F3:
         dex                                     ; 974B CA                       .
         dex                                     ; 974C CA                       .
         dec     $02                             ; 974D C6 02                    ..
-        bpl     $973B                           ; 974F 10 EA                    ..
+        bpl     TextUiSystem_Branch_973B        ; 974F 10 EA                    ..
+TextUiSystem_Branch_9751:
         rts                                     ; 9751 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$80,$C0,$E0,$F0,$F8,$FC,$FE ; 9752 00 80 C0 E0 F0 F8 FC FE  ........
@@ -3091,30 +3323,34 @@ TextUiSystem_Entry_975A:
         ldy     #$01                            ; 975A A0 01                    ..
         lda     ($EE),y                         ; 975C B1 EE                    ..
         and     #$04                            ; 975E 29 04                    ).
-        beq     $9763                           ; 9760 F0 01                    ..
+        beq     TextUiSystem_Branch_9763        ; 9760 F0 01                    ..
         iny                                     ; 9762 C8                       .
+TextUiSystem_Branch_9763:
         sty     $03DA                           ; 9763 8C DA 03                 ...
         ldy     $F0                             ; 9766 A4 F0                    ..
+TextUiSystem_Branch_9768:
         dey                                     ; 9768 88                       .
         cpy     $03DA                           ; 9769 CC DA 03                 ...
-        beq     $97BA                           ; 976C F0 4C                    .L
+        beq     TextUiSystem_Branch_97BA        ; 976C F0 4C                    .L
         lda     ($EE),y                         ; 976E B1 EE                    ..
-        bpl     $97BA                           ; 9770 10 48                    .H
+        bpl     TextUiSystem_Branch_97BA        ; 9770 10 48                    .H
         asl     a                               ; 9772 0A                       .
-        bmi     $97BA                           ; 9773 30 45                    0E
+        bmi     TextUiSystem_Branch_97BA        ; 9773 30 45                    0E
         tya                                     ; 9775 98                       .
         pha                                     ; 9776 48                       H
         lda     ($EE),y                         ; 9777 B1 EE                    ..
         clc                                     ; 9779 18                       .
         adc     #$60                            ; 977A 69 60                    i`
-        bcs     $9784                           ; 977C B0 06                    ..
+        bcs     TextUiSystem_Branch_9784        ; 977C B0 06                    ..
         jsr     TextUiSystem_Entry_978C         ; 977E 20 8C 97                  ..
-        jmp     $9787                           ; 9781 4C 87 97                 L..
+        jmp     TextUiSystem_Branch_9787        ; 9781 4C 87 97                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9784:
         jsr     TextUiSystem_Entry_97BB         ; 9784 20 BB 97                  ..
+TextUiSystem_Branch_9787:
         pla                                     ; 9787 68                       h
         tay                                     ; 9788 A8                       .
-        jmp     $9768                           ; 9789 4C 68 97                 Lh.
+        jmp     TextUiSystem_Branch_9768        ; 9789 4C 68 97                 Lh.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_978C:
         lda     ($EE),y                         ; 978C B1 EE                    ..
@@ -3122,7 +3358,7 @@ TextUiSystem_Entry_978C:
         tay                                     ; 978F A8                       .
         ldx     $03D7                           ; 9790 AE D7 03                 ...
         cmp     $A739,x                         ; 9793 DD 39 A7                 .9.
-        bcc     $97B0                           ; 9796 90 18                    ..
+        bcc     TextUiSystem_Branch_97B0        ; 9796 90 18                    ..
 TextUiSystem_Entry_9798:
         lda     $03D7                           ; 9798 AD D7 03                 ...
         asl     a                               ; 979B 0A                       .
@@ -3139,38 +3375,44 @@ TextUiSystem_Entry_9798:
         pha                                     ; 97AE 48                       H
         rts                                     ; 97AF 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97B0:
         bit     $F5                             ; 97B0 24 F5                    $.
-        bpl     $97BA                           ; 97B2 10 06                    ..
+        bpl     TextUiSystem_Branch_97BA        ; 97B2 10 06                    ..
         jsr     TextUiSystem_Entry_9798         ; 97B4 20 98 97                  ..
         sta     $03D2                           ; 97B7 8D D2 03                 ...
+TextUiSystem_Branch_97BA:
         rts                                     ; 97BA 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_97BB:
         cmp     #$04                            ; 97BB C9 04                    ..
-        bcs     $97C3                           ; 97BD B0 04                    ..
+        bcs     TextUiSystem_Branch_97C3        ; 97BD B0 04                    ..
         sta     $03D7                           ; 97BF 8D D7 03                 ...
         rts                                     ; 97C2 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97C3:
         cmp     #$08                            ; 97C3 C9 08                    ..
-        bcs     $97CE                           ; 97C5 B0 07                    ..
+        bcs     TextUiSystem_Branch_97CE        ; 97C5 B0 07                    ..
         sec                                     ; 97C7 38                       8
         sbc     #$04                            ; 97C8 E9 04                    ..
         sta     $03D6                           ; 97CA 8D D6 03                 ...
         rts                                     ; 97CD 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97CE:
         clc                                     ; 97CE 18                       .
         adc     #$F0                            ; 97CF 69 F0                    i.
-        bcs     $97DF                           ; 97D1 B0 0C                    ..
+        bcs     TextUiSystem_Branch_97DF        ; 97D1 B0 0C                    ..
         bit     $F5                             ; 97D3 24 F5                    $.
-        bmi     $97DE                           ; 97D5 30 07                    0.
+        bmi     TextUiSystem_Branch_97DE        ; 97D5 30 07                    0.
         clc                                     ; 97D7 18                       .
         adc     #$08                            ; 97D8 69 08                    i.
         adc     $F2                             ; 97DA 65 F2                    e.
         sta     $F2                             ; 97DC 85 F2                    ..
+TextUiSystem_Branch_97DE:
         rts                                     ; 97DE 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97DF:
         tay                                     ; 97DF A8                       .
-        bne     $97ED                           ; 97E0 D0 0B                    ..
+        bne     TextUiSystem_Branch_97ED        ; 97E0 D0 0B                    ..
         bit     $F5                             ; 97E2 24 F5                    $.
         bpl     TextUiSystem_Branch_97EC        ; 97E4 10 06                    ..
         lda     $F5                             ; 97E6 A5 F5                    ..
@@ -3179,15 +3421,18 @@ TextUiSystem_Entry_97BB:
 TextUiSystem_Branch_97EC:
         rts                                     ; 97EC 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97ED:
         cmp     #$0F                            ; 97ED C9 0F                    ..
-        bne     $97FC                           ; 97EF D0 0B                    ..
+        bne     TextUiSystem_Branch_97FC        ; 97EF D0 0B                    ..
         bit     $F5                             ; 97F1 24 F5                    $.
-        bpl     $97FB                           ; 97F3 10 06                    ..
+        bpl     TextUiSystem_Branch_97FB        ; 97F3 10 06                    ..
         lda     $F5                             ; 97F5 A5 F5                    ..
         ora     #$10                            ; 97F7 09 10                    ..
         sta     $F5                             ; 97F9 85 F5                    ..
+TextUiSystem_Branch_97FB:
         rts                                     ; 97FB 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_97FC:
         bit     $F5                             ; 97FC 24 F5                    $.
         bpl     TextUiSystem_Branch_982C        ; 97FE 10 2C                    .,
         lda     $03D2                           ; 9800 AD D2 03                 ...
@@ -3221,42 +3466,49 @@ TextUiSystem_Entry_982D:
         sta     $0B                             ; 9839 85 0B                    ..
         lda     $0F                             ; 983B A5 0F                    ..
         sta     $0C                             ; 983D 85 0C                    ..
-        bcs     $9844                           ; 983F B0 03                    ..
+        bcs     TextUiSystem_Branch_9844        ; 983F B0 03                    ..
         jmp     ($000A)                         ; 9841 6C 0A 00                 l..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9844:
         ldy     #$00                            ; 9844 A0 00                    ..
+TextUiSystem_Branch_9846:
         cpy     $0C                             ; 9846 C4 0C                    ..
-        beq     $9855                           ; 9848 F0 0B                    ..
+        beq     TextUiSystem_Branch_9855        ; 9848 F0 0B                    ..
         lda     ($0A),y                       ; 984A B1 0A                    ..
-        bmi     $9856                           ; 984C 30 08                    0.
+        bmi     TextUiSystem_Branch_9856        ; 984C 30 08                    0.
         iny                                     ; 984E C8                       .
         jsr     TextUiSystem_Entry_98B3         ; 984F 20 B3 98                  ..
-        jmp     $9846                           ; 9852 4C 46 98                 LF.
+        jmp     TextUiSystem_Branch_9846        ; 9852 4C 46 98                 LF.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9855:
         rts                                     ; 9855 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9856:
         tya                                     ; 9856 98                       .
         pha                                     ; 9857 48                       H
         lda     ($0A),y                       ; 9858 B1 0A                    ..
         ldx     $03D6                           ; 985A AE D6 03                 ...
         jsr     TextUiSystem_Entry_9882         ; 985D 20 82 98                  ..
-        bcs     $9868                           ; 9860 B0 06                    ..
+        bcs     TextUiSystem_Branch_9868        ; 9860 B0 06                    ..
         jsr     TextUiSystem_Entry_987F         ; 9862 20 7F 98                  ..
-        jmp     $9879                           ; 9865 4C 79 98                 Ly.
+        jmp     TextUiSystem_Branch_9879        ; 9865 4C 79 98                 Ly.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9868:
         ldy     #$00                            ; 9868 A0 00                    ..
+TextUiSystem_Branch_986A:
         cpy     $0F                             ; 986A C4 0F                    ..
-        beq     $9879                           ; 986C F0 0B                    ..
+        beq     TextUiSystem_Branch_9879        ; 986C F0 0B                    ..
         lda     ($0D),y                       ; 986E B1 0D                    ..
         iny                                     ; 9870 C8                       .
-        bmi     $986A                           ; 9871 30 F7                    0.
+        bmi     TextUiSystem_Branch_986A        ; 9871 30 F7                    0.
         jsr     TextUiSystem_Entry_98B3         ; 9873 20 B3 98                  ..
-        jmp     $986A                           ; 9876 4C 6A 98                 Lj.
+        jmp     TextUiSystem_Branch_986A        ; 9876 4C 6A 98                 Lj.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9879:
         pla                                     ; 9879 68                       h
         tay                                     ; 987A A8                       .
         iny                                     ; 987B C8                       .
-        jmp     $9846                           ; 987C 4C 46 98                 LF.
+        jmp     TextUiSystem_Branch_9846        ; 987C 4C 46 98                 LF.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_987F:
         jmp     ($000D)                         ; 987F 6C 0D 00                 l..
@@ -3316,7 +3568,7 @@ TextUiSystem_Branch_98CC:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_98D2:
         cmp     #$FF                            ; 98D2 C9 FF                    ..
-        beq     $98E8                           ; 98D4 F0 12                    ..
+        beq     TextUiSystem_Branch_98E8        ; 98D4 F0 12                    ..
         stx     $09                             ; 98D6 86 09                    ..
         ldx     $F2                             ; 98D8 A6 F2                    ..
         pha                                     ; 98DA 48                       H
@@ -3325,11 +3577,13 @@ TextUiSystem_Entry_98D2:
         lsr     a                               ; 98DE 4A                       J
         lsr     a                               ; 98DF 4A                       J
         pla                                     ; 98E0 68                       h
-        bcs     $98E9                           ; 98E1 B0 06                    ..
+        bcs     TextUiSystem_Branch_98E9        ; 98E1 B0 06                    ..
         sta     $04A0,x                         ; 98E3 9D A0 04                 ...
         ldx     $09                             ; 98E6 A6 09                    ..
+TextUiSystem_Branch_98E8:
         rts                                     ; 98E8 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_98E9:
         pha                                     ; 98E9 48                       H
         lda     $F4                             ; 98EA A5 F4                    ..
         and     #$03                            ; 98EC 29 03                    ).
@@ -3355,12 +3609,13 @@ TextUiSystem_Entry_9901:
         ldy     $F2                             ; 9903 A4 F2                    ..
         lda     $F5                             ; 9905 A5 F5                    ..
         and     #$04                            ; 9907 29 04                    ).
-        bne     $9914                           ; 9909 D0 09                    ..
+        bne     TextUiSystem_Branch_9914        ; 9909 D0 09                    ..
         lda     $04C0,y                         ; 990B B9 C0 04                 ...
         ldx     $04A0,y                         ; 990E BE A0 04                 ...
         ldy     $09                             ; 9911 A4 09                    ..
         rts                                     ; 9913 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9914:
         lda     $0480,y                         ; 9914 B9 80 04                 ...
         ldx     $04C0,y                         ; 9917 BE C0 04                 ...
         ldy     $09                             ; 991A A4 09                    ..
@@ -3385,42 +3640,48 @@ TextUiSystem_Entry_991D:
         ora     $04F3                           ; 993F 0D F3 04                 ...
         sta     $04F3                           ; 9942 8D F3 04                 ...
         jsr     TextUiSystem_Entry_932C         ; 9945 20 2C 93                  ,.
-        bpl     $9959                           ; 9948 10 0F                    ..
+        bpl     TextUiSystem_Branch_9959        ; 9948 10 0F                    ..
         jsr     TextUiSystem_Entry_96E3         ; 994A 20 E3 96                  ..
         tax                                     ; 994D AA                       .
         dex                                     ; 994E CA                       .
+TextUiSystem_Branch_994F:
         lda     $04C0,x                         ; 994F BD C0 04                 ...
         sta     $0480,x                         ; 9952 9D 80 04                 ...
         dex                                     ; 9955 CA                       .
-        bpl     $994F                           ; 9956 10 F7                    ..
+        bpl     TextUiSystem_Branch_994F        ; 9956 10 F7                    ..
         rts                                     ; 9958 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9959:
         tay                                     ; 9959 A8                       .
         lda     $04F3                           ; 995A AD F3 04                 ...
         and     #$0F                            ; 995D 29 0F                    ).
         ora     #$20                            ; 995F 09 20                    .
         sta     $04F3                           ; 9961 8D F3 04                 ...
         tya                                     ; 9964 98                       .
-        bne     $9975                           ; 9965 D0 0E                    ..
+        bne     TextUiSystem_Branch_9975        ; 9965 D0 0E                    ..
         jsr     TextUiSystem_Entry_96E3         ; 9967 20 E3 96                  ..
         tay                                     ; 996A A8                       .
         dey                                     ; 996B 88                       .
+TextUiSystem_Branch_996C:
         lda     $04D0,y                         ; 996C B9 D0 04                 ...
         sta     $0480,y                         ; 996F 99 80 04                 ...
         dey                                     ; 9972 88                       .
-        bpl     $996C                           ; 9973 10 F7                    ..
+        bpl     TextUiSystem_Branch_996C        ; 9973 10 F7                    ..
+TextUiSystem_Branch_9975:
         rts                                     ; 9975 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9976:
         lda     $F5                             ; 9976 A5 F5                    ..
         and     #$04                            ; 9978 29 04                    ).
-        bne     $9986                           ; 997A D0 0A                    ..
+        bne     TextUiSystem_Branch_9986        ; 997A D0 0A                    ..
         jsr     TextUiSystem_Entry_932C         ; 997C 20 2C 93                  ,.
-        bpl     $9983                           ; 997F 10 02                    ..
+        bpl     TextUiSystem_Branch_9983        ; 997F 10 02                    ..
         lda     #$00                            ; 9981 A9 00                    ..
+TextUiSystem_Branch_9983:
         sta     $F2                             ; 9983 85 F2                    ..
         rts                                     ; 9985 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9986:
         jsr     TextUiSystem_Entry_96E3         ; 9986 20 E3 96                  ..
         stx     $F2                             ; 9989 86 F2                    ..
         rts                                     ; 998B 60                       `
@@ -3428,10 +3689,10 @@ TextUiSystem_Entry_9976:
 TextUiSystem_Entry_998C:
         sta     $03CE                           ; 998C 8D CE 03                 ...
         cmp     #$00                            ; 998F C9 00                    ..
-        beq     $99B7                           ; 9991 F0 24                    .$
+        beq     TextUiSystem_Branch_99B7        ; 9991 F0 24                    .$
         clc                                     ; 9993 18                       .
         adc     #$FA                            ; 9994 69 FA                    i.
-        bcc     $99EB                           ; 9996 90 53                    .S
+        bcc     TextUiSystem_Branch_99EB        ; 9996 90 53                    .S
         asl     a                               ; 9998 0A                       .
         tay                                     ; 9999 A8                       .
         lda     $99A4,y                         ; 999A B9 A4 99                 ...
@@ -3445,8 +3706,9 @@ TextUiSystem_Entry_998C:
         db   $9F,$A5,$9F,$9A,$A3,$E7,$A0,$E0 ; 99AC 9F A5 9F 9A A3 E7 A0 E0  ........
         db   $A0,$BA,$9F                     ; 99B4 A0 BA 9F                 ...
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_99B7:
         lda     $F5                             ; 99B7 A5 F5                    ..
-        bmi     $99D1                           ; 99B9 30 16                    0.
+        bmi     TextUiSystem_Branch_99D1        ; 99B9 30 16                    0.
         and     #$40                            ; 99BB 29 40                    )@
         beq     TextUiSystem_Branch_99CF        ; 99BD F0 10                    ..
 TextUiSystem_Branch_99BF:
@@ -3460,6 +3722,7 @@ TextUiSystem_Branch_99CF:
         clc                                     ; 99CF 18                       .
         rts                                     ; 99D0 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_99D1:
         jsr     TextUiSystem_Entry_9BB4         ; 99D1 20 B4 9B                  ..
         lda     #$1F                            ; 99D4 A9 1F                    ..
         sta     TextCursorPosition              ; 99D6 8D CF 03                 ...
@@ -3477,36 +3740,42 @@ TextUiSystem_Branch_99E9:
         clc                                     ; 99E9 18                       .
         rts                                     ; 99EA 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_99EB:
         lda     $F5                             ; 99EB A5 F5                    ..
-        bmi     $9A29                           ; 99ED 30 3A                    0:
+        bmi     TextUiSystem_Branch_9A29        ; 99ED 30 3A                    0:
+TextUiSystem_Branch_99EF:
         jsr     TextUiSystem_Entry_9CC3         ; 99EF 20 C3 9C                  ..
-        bcs     $9A20                           ; 99F2 B0 2C                    .,
+        bcs     TextUiSystem_Branch_9A20        ; 99F2 B0 2C                    .,
         jsr     TextUiSystem_Entry_9A32         ; 99F4 20 32 9A                  2.
-        bcs     $9A27                           ; 99F7 B0 2E                    ..
+        bcs     TextUiSystem_Branch_9A27        ; 99F7 B0 2E                    ..
         jsr     TextUiSystem_Entry_9A80         ; 99F9 20 80 9A                  ..
-        bcs     $9A27                           ; 99FC B0 29                    .)
+        bcs     TextUiSystem_Branch_9A27        ; 99FC B0 29                    .)
         jsr     TextUiSystem_Entry_9AC0         ; 99FE 20 C0 9A                  ..
         jsr     TextUiSystem_Entry_9AD7         ; 9A01 20 D7 9A                  ..
-        bcs     $9A15                           ; 9A04 B0 0F                    ..
+        bcs     TextUiSystem_Branch_9A15        ; 9A04 B0 0F                    ..
         jsr     TextUiSystem_Entry_9B25         ; 9A06 20 25 9B                  %.
-        bcs     $9A15                           ; 9A09 B0 0A                    ..
+        bcs     TextUiSystem_Branch_9A15        ; 9A09 B0 0A                    ..
         jsr     TextUiSystem_Entry_9B5A         ; 9A0B 20 5A 9B                  Z.
-        bcs     $9A15                           ; 9A0E B0 05                    ..
+        bcs     TextUiSystem_Branch_9A15        ; 9A0E B0 05                    ..
         jsr     TextUiSystem_Entry_9B7D         ; 9A10 20 7D 9B                  }.
-        bcc     $99EF                           ; 9A13 90 DA                    ..
+        bcc     TextUiSystem_Branch_99EF        ; 9A13 90 DA                    ..
+TextUiSystem_Branch_9A15:
         lda     $F5                             ; 9A15 A5 F5                    ..
         and     #$10                            ; 9A17 29 10                    ).
-        beq     $99EF                           ; 9A19 F0 D4                    ..
+        beq     TextUiSystem_Branch_99EF        ; 9A19 F0 D4                    ..
         jsr     TextUiSystem_Entry_9BBE         ; 9A1B 20 BE 9B                  ..
         sec                                     ; 9A1E 38                       8
         rts                                     ; 9A1F 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9A20:
         lda     #$FD                            ; 9A20 A9 FD                    ..
         sta     $F8                             ; 9A22 85 F8                    ..
         jsr     TextUiSystem_Entry_9C0F         ; 9A24 20 0F 9C                  ..
+TextUiSystem_Branch_9A27:
         clc                                     ; 9A27 18                       .
         rts                                     ; 9A28 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9A29:
         jsr     TextUiSystem_Entry_9BB4         ; 9A29 20 B4 9B                  ..
         lda     #$81                            ; 9A2C A9 81                    ..
         sta     $03CA                           ; 9A2E 8D CA 03                 ...
@@ -3515,11 +3784,11 @@ TextUiSystem_Branch_99E9:
 TextUiSystem_Entry_9A32:
         lda     #$01                            ; 9A32 A9 01                    ..
         cmp     $03CC                           ; 9A34 CD CC 03                 ...
-        bne     $9A7E                           ; 9A37 D0 45                    .E
+        bne     TextUiSystem_Branch_9A7E        ; 9A37 D0 45                    .E
         lda     TextCursorPosition              ; 9A39 AD CF 03                 ...
         and     #$0F                            ; 9A3C 29 0F                    ).
         cmp     #$0F                            ; 9A3E C9 0F                    ..
-        bne     $9A67                           ; 9A40 D0 25                    .%
+        bne     TextUiSystem_Branch_9A67        ; 9A40 D0 25                    .%
         lda     $F5                             ; 9A42 A5 F5                    ..
         lsr     a                               ; 9A44 4A                       J
         bcs     TextUiSystem_Branch_9A6D        ; 9A45 B0 26                    .&
@@ -3538,12 +3807,14 @@ TextUiSystem_Branch_9A57:
         sta     $07B4                           ; 9A61 8D B4 07                 ...
         jmp     TextUiSystem_Branch_9A79        ; 9A64 4C 79 9A                 Ly.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9A67:
         jsr     TextUiSystem_Entry_9BBE         ; 9A67 20 BE 9B                  ..
-        jmp     $9A71                           ; 9A6A 4C 71 9A                 Lq.
+        jmp     TextUiSystem_Branch_9A71        ; 9A6A 4C 71 9A                 Lq.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_9A6D:
         lda     #$FE                            ; 9A6D A9 FE                    ..
         sta     $F8                             ; 9A6F 85 F8                    ..
+TextUiSystem_Branch_9A71:
         lda     $07B4                           ; 9A71 AD B4 07                 ...
         and     #$F7                            ; 9A74 29 F7                    ).
         sta     $07B4                           ; 9A76 8D B4 07                 ...
@@ -3552,13 +3823,14 @@ TextUiSystem_Branch_9A79:
         sec                                     ; 9A7C 38                       8
         rts                                     ; 9A7D 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9A7E:
         clc                                     ; 9A7E 18                       .
         rts                                     ; 9A7F 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9A80:
         lda     #$02                            ; 9A80 A9 02                    ..
         cmp     $03CC                           ; 9A82 CD CC 03                 ...
-        bne     $9ABE                           ; 9A85 D0 37                    .7
+        bne     TextUiSystem_Branch_9ABE        ; 9A85 D0 37                    .7
         lda     TextCursorPosition              ; 9A87 AD CF 03                 ...
         and     #$0F                            ; 9A8A 29 0F                    ).
         cmp     #$0F                            ; 9A8C C9 0F                    ..
@@ -3591,37 +3863,40 @@ TextUiSystem_Branch_9AB5:
         sec                                     ; 9ABC 38                       8
         rts                                     ; 9ABD 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9ABE:
         clc                                     ; 9ABE 18                       .
         rts                                     ; 9ABF 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9AC0:
         bit     $03CC                           ; 9AC0 2C CC 03                 ,..
-        bpl     $9AD6                           ; 9AC3 10 11                    ..
+        bpl     TextUiSystem_Branch_9AD6        ; 9AC3 10 11                    ..
         lda     #$FF                            ; 9AC5 A9 FF                    ..
         ldy     $03CA                           ; 9AC7 AC CA 03                 ...
         cpy     #$FF                            ; 9ACA C0 FF                    ..
-        bne     $9AD0                           ; 9ACC D0 02                    ..
+        bne     TextUiSystem_Branch_9AD0        ; 9ACC D0 02                    ..
         lda     #$81                            ; 9ACE A9 81                    ..
+TextUiSystem_Branch_9AD0:
         sta     $03CA                           ; 9AD0 8D CA 03                 ...
         jsr     TextUiSystem_Entry_9C19         ; 9AD3 20 19 9C                  ..
+TextUiSystem_Branch_9AD6:
         rts                                     ; 9AD6 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9AD7:
         lda     #$05                            ; 9AD7 A9 05                    ..
         cmp     $03CC                           ; 9AD9 CD CC 03                 ...
-        bne     $9B08                           ; 9ADC D0 2A                    .*
+        bne     TextUiSystem_Branch_9B08        ; 9ADC D0 2A                    .*
         lda     $03CE                           ; 9ADE AD CE 03                 ...
         cmp     #$0B                            ; 9AE1 C9 0B                    ..
-        beq     $9B08                           ; 9AE3 F0 23                    .#
+        beq     TextUiSystem_Branch_9B08        ; 9AE3 F0 23                    .#
         lda     TextCursorPosition              ; 9AE5 AD CF 03                 ...
         and     #$0F                            ; 9AE8 29 0F                    ).
         cmp     #$0F                            ; 9AEA C9 0F                    ..
-        beq     $9B08                           ; 9AEC F0 1A                    ..
+        beq     TextUiSystem_Branch_9B08        ; 9AEC F0 1A                    ..
         tax                                     ; 9AEE AA                       .
-        bne     $9B0A                           ; 9AEF D0 19                    ..
+        bne     TextUiSystem_Branch_9B0A        ; 9AEF D0 19                    ..
         lda     $F5                             ; 9AF1 A5 F5                    ..
         and     #$40                            ; 9AF3 29 40                    )@
-        beq     $9B08                           ; 9AF5 F0 11                    ..
+        beq     TextUiSystem_Branch_9B08        ; 9AF5 F0 11                    ..
         jsr     TextUiSystem_Entry_9C06         ; 9AF7 20 06 9C                  ..
         lda     #$1F                            ; 9AFA A9 1F                    ..
         sta     TextCursorPosition              ; 9AFC 8D CF 03                 ...
@@ -3629,9 +3904,11 @@ TextUiSystem_Entry_9AD7:
         and     #$10                            ; 9B01 29 10                    ).
         bne     TextUiSystem_Branch_9B15        ; 9B03 D0 10                    ..
         jsr     TextUiSystem_Entry_9C0F         ; 9B05 20 0F 9C                  ..
+TextUiSystem_Branch_9B08:
         clc                                     ; 9B08 18                       .
         rts                                     ; 9B09 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9B0A:
         jsr     TextUiSystem_Entry_9C06         ; 9B0A 20 06 9C                  ..
         dec     TextCursorPosition              ; 9B0D CE CF 03                 ...
 TextUiSystem_Branch_9B10:
@@ -3650,38 +3927,40 @@ TextUiSystem_Branch_9B15:
 TextUiSystem_Entry_9B25:
         lda     #$06                            ; 9B25 A9 06                    ..
         cmp     $03CC                           ; 9B27 CD CC 03                 ...
-        bne     $9B58                           ; 9B2A D0 2C                    .,
+        bne     TextUiSystem_Branch_9B58        ; 9B2A D0 2C                    .,
         lda     $03CE                           ; 9B2C AD CE 03                 ...
         cmp     #$0B                            ; 9B2F C9 0B                    ..
-        beq     $9B08                           ; 9B31 F0 D5                    ..
+        beq     TextUiSystem_Branch_9B08        ; 9B31 F0 D5                    ..
         lda     $03D3                           ; 9B33 AD D3 03                 ...
         eor     TextCursorPosition              ; 9B36 4D CF 03                 M..
         and     #$0F                            ; 9B39 29 0F                    ).
-        beq     $9B58                           ; 9B3B F0 1B                    ..
+        beq     TextUiSystem_Branch_9B58        ; 9B3B F0 1B                    ..
         jsr     TextUiSystem_Entry_9C06         ; 9B3D 20 06 9C                  ..
         inc     TextCursorPosition              ; 9B40 EE CF 03                 ...
         lda     TextCursorPosition              ; 9B43 AD CF 03                 ...
         and     #$0F                            ; 9B46 29 0F                    ).
-        bne     $9B53                           ; 9B48 D0 09                    ..
+        bne     TextUiSystem_Branch_9B53        ; 9B48 D0 09                    ..
         lda     TextCursorPosition              ; 9B4A AD CF 03                 ...
         sec                                     ; 9B4D 38                       8
         sbc     #$10                            ; 9B4E E9 10                    ..
         sta     TextCursorPosition              ; 9B50 8D CF 03                 ...
+TextUiSystem_Branch_9B53:
         jsr     TextUiSystem_Entry_9C0F         ; 9B53 20 0F 9C                  ..
         sec                                     ; 9B56 38                       8
         rts                                     ; 9B57 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9B58:
         clc                                     ; 9B58 18                       .
         rts                                     ; 9B59 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9B5A:
         lda     #$07                            ; 9B5A A9 07                    ..
         cmp     $03CC                           ; 9B5C CD CC 03                 ...
-        bne     $9B7B                           ; 9B5F D0 1A                    ..
+        bne     TextUiSystem_Branch_9B7B        ; 9B5F D0 1A                    ..
         lda     TextCursorPosition              ; 9B61 AD CF 03                 ...
         and     #$F0                            ; 9B64 29 F0                    ).
         cmp     #$10                            ; 9B66 C9 10                    ..
-        beq     $9B7B                           ; 9B68 F0 11                    ..
+        beq     TextUiSystem_Branch_9B7B        ; 9B68 F0 11                    ..
         jsr     TextUiSystem_Entry_9C06         ; 9B6A 20 06 9C                  ..
         lda     TextCursorPosition              ; 9B6D AD CF 03                 ...
         sec                                     ; 9B70 38                       8
@@ -3691,13 +3970,14 @@ TextUiSystem_Entry_9B5A:
         sec                                     ; 9B79 38                       8
         rts                                     ; 9B7A 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9B7B:
         clc                                     ; 9B7B 18                       .
         rts                                     ; 9B7C 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9B7D:
         lda     #$08                            ; 9B7D A9 08                    ..
         cmp     $03CC                           ; 9B7F CD CC 03                 ...
-        bne     $9BB2                           ; 9B82 D0 2E                    ..
+        bne     TextUiSystem_Branch_9BB2        ; 9B82 D0 2E                    ..
         ldx     $03CE                           ; 9B84 AE CE 03                 ...
         lda     TextCursorPosition              ; 9B87 AD CF 03                 ...
         lsr     a                               ; 9B8A 4A                       J
@@ -3705,7 +3985,7 @@ TextUiSystem_Entry_9B7D:
         lsr     a                               ; 9B8C 4A                       J
         lsr     a                               ; 9B8D 4A                       J
         cmp     Bank16_TextUiMetricTables,x     ; 9B8E DD 7F 9C                 ...
-        beq     $9BB2                           ; 9B91 F0 1F                    ..
+        beq     TextUiSystem_Branch_9BB2        ; 9B91 F0 1F                    ..
         jsr     TextUiSystem_Entry_9C06         ; 9B93 20 06 9C                  ..
         lda     TextCursorPosition              ; 9B96 AD CF 03                 ...
         clc                                     ; 9B99 18                       .
@@ -3713,14 +3993,16 @@ TextUiSystem_Entry_9B7D:
         sta     TextCursorPosition              ; 9B9C 8D CF 03                 ...
         and     #$0F                            ; 9B9F 29 0F                    ).
         cmp     #$0F                            ; 9BA1 C9 0F                    ..
-        bne     $9BAD                           ; 9BA3 D0 08                    ..
+        bne     TextUiSystem_Branch_9BAD        ; 9BA3 D0 08                    ..
         lda     TextCursorPosition              ; 9BA5 AD CF 03                 ...
         and     #$F0                            ; 9BA8 29 F0                    ).
         sta     TextCursorPosition              ; 9BAA 8D CF 03                 ...
+TextUiSystem_Branch_9BAD:
         jsr     TextUiSystem_Entry_9C0F         ; 9BAD 20 0F 9C                  ..
         sec                                     ; 9BB0 38                       8
         rts                                     ; 9BB1 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9BB2:
         clc                                     ; 9BB2 18                       .
         rts                                     ; 9BB3 60                       `
 ; ----------------------------------------------------------------------------
@@ -3735,7 +4017,7 @@ TextUiSystem_Entry_9BB4:
 TextUiSystem_Entry_9BBE:
         lda     $07B4                           ; 9BBE AD B4 07                 ...
         lsr     a                               ; 9BC1 4A                       J
-        bcs     $9C05                           ; 9BC2 B0 41                    .A
+        bcs     TextUiSystem_Branch_9C05        ; 9BC2 B0 41                    .A
         ldx     $03CE                           ; 9BC4 AE CE 03                 ...
         lda     Bank16_TextUiMetricTables,x     ; 9BC7 BD 7F 9C                 ...
         tay                                     ; 9BCA A8                       .
@@ -3745,18 +4027,20 @@ TextUiSystem_Entry_9BBE:
         adc     $03D1                           ; 9BD1 6D D1 03                 m..
         sta     $03DA                           ; 9BD4 8D DA 03                 ...
         cpx     #$0B                            ; 9BD7 E0 0B                    ..
-        bne     $9BE1                           ; 9BD9 D0 06                    ..
+        bne     TextUiSystem_Branch_9BE1        ; 9BD9 D0 06                    ..
         dec     $03DA                           ; 9BDB CE DA 03                 ...
         dec     $03DA                           ; 9BDE CE DA 03                 ...
+TextUiSystem_Branch_9BE1:
         cpy     #$01                            ; 9BE1 C0 01                    ..
-        beq     $9BF6                           ; 9BE3 F0 11                    ..
+        beq     TextUiSystem_Branch_9BF6        ; 9BE3 F0 11                    ..
         asl     $03DA                           ; 9BE5 0E DA 03                 ...
         cpy     #$02                            ; 9BE8 C0 02                    ..
-        beq     $9BF6                           ; 9BEA F0 0A                    ..
+        beq     TextUiSystem_Branch_9BF6        ; 9BEA F0 0A                    ..
         asl     $03DA                           ; 9BEC 0E DA 03                 ...
         cpy     #$04                            ; 9BEF C0 04                    ..
-        beq     $9BF6                           ; 9BF1 F0 03                    ..
+        beq     TextUiSystem_Branch_9BF6        ; 9BF1 F0 03                    ..
         asl     $03DA                           ; 9BF3 0E DA 03                 ...
+TextUiSystem_Branch_9BF6:
         lda     TextCursorPosition              ; 9BF6 AD CF 03                 ...
         lsr     a                               ; 9BF9 4A                       J
         lsr     a                               ; 9BFA 4A                       J
@@ -3766,6 +4050,7 @@ TextUiSystem_Entry_9BBE:
         adc     $03DA                           ; 9BFE 6D DA 03                 m..
         sta     $F8                             ; 9C01 85 F8                    ..
         dec     $F8                             ; 9C03 C6 F8                    ..
+TextUiSystem_Branch_9C05:
         rts                                     ; 9C05 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9C06:
@@ -3776,10 +4061,11 @@ TextUiSystem_Entry_9C06:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9C0F:
         lda     #$81                            ; 9C0F A9 81                    ..
-        jmp     $9C16                           ; 9C11 4C 16 9C                 L..
+        jmp     TextUiSystem_Branch_9C16        ; 9C11 4C 16 9C                 L..
 ; ----------------------------------------------------------------------------
         db   $A9,$FF                         ; 9C14 A9 FF                    ..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9C16:
         sta     $03CA                           ; 9C16 8D CA 03                 ...
 TextUiSystem_Entry_9C19:
         jsr     TextUiSystem_Entry_9C20         ; 9C19 20 20 9C                   .
@@ -3802,11 +4088,12 @@ TextUiSystem_Entry_9C20:
         lda     TextCursorPosition              ; 9C36 AD CF 03                 ...
         and     #$0F                            ; 9C39 29 0F                    ).
         cmp     #$0F                            ; 9C3B C9 0F                    ..
-        beq     $9C47                           ; 9C3D F0 08                    ..
+        beq     TextUiSystem_Branch_9C47        ; 9C3D F0 08                    ..
         lda     $01                             ; 9C3F A5 01                    ..
         sec                                     ; 9C41 38                       8
         sbc     $9CAF,x                         ; 9C42 FD AF 9C                 ...
         sta     $01                             ; 9C45 85 01                    ..
+TextUiSystem_Branch_9C47:
         lda     TextCursorPosition              ; 9C47 AD CF 03                 ...
         lsr     a                               ; 9C4A 4A                       J
         lsr     a                               ; 9C4B 4A                       J
@@ -3820,16 +4107,19 @@ TextUiSystem_Entry_9C20:
         lda     $9C8F,x                         ; 9C58 BD 8F 9C                 ...
         clc                                     ; 9C5B 18                       .
         adc     $00                           ; 9C5C 65 00                    e.
+TextUiSystem_Branch_9C5E:
         dey                                     ; 9C5E 88                       .
-        beq     $9C67                           ; 9C5F F0 06                    ..
+        beq     TextUiSystem_Branch_9C67        ; 9C5F F0 06                    ..
         adc     $9C9F,x                         ; 9C61 7D 9F 9C                 }..
-        jmp     $9C5E                           ; 9C64 4C 5E 9C                 L^.
+        jmp     TextUiSystem_Branch_9C5E        ; 9C64 4C 5E 9C                 L^.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_9C67:
         sta     $00                           ; 9C67 85 00                    ..
         lda     $03CA                           ; 9C69 AD CA 03                 ...
         cmp     #$FF                            ; 9C6C C9 FF                    ..
-        bne     $9C72                           ; 9C6E D0 02                    ..
+        bne     TextUiSystem_Branch_9C72        ; 9C6E D0 02                    ..
         lda     #$00                            ; 9C70 A9 00                    ..
+TextUiSystem_Branch_9C72:
         jsr     UpperFixedEngine_Entry_C65A     ; 9C72 20 5A C6                  Z.
         lda     $050C                           ; 9C75 AD 0C 05                 ...
         clc                                     ; 9C78 18                       .
@@ -4207,49 +4497,65 @@ TextUiSystem_Branch_9F37:
 TextUiSystem_Branch_9F57:
         rts                                     ; 9F57 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9F58:
         lda     $F5                             ; 9F58 A5 F5                    ..
-        bpl     $9F7F                           ; 9F5A 10 23                    .#
+        bpl     TextUiSystem_Branch_9F7F        ; 9F5A 10 23                    .#
         lda     $07B4                           ; 9F5C AD B4 07                 ...
         and     #$40                            ; 9F5F 29 40                    )@
-        bne     $9F7F                           ; 9F61 D0 1C                    ..
+        bne     TextUiSystem_Branch_9F7F        ; 9F61 D0 1C                    ..
         lda     $F7                             ; 9F63 A5 F7                    ..
         sta     $6E                             ; 9F65 85 6E                    .n
         lda     #$FF                            ; 9F67 A9 FF                    ..
         sta     $6F                             ; 9F69 85 6F                    .o
         jsr     TextUiSystem_Entry_BCEB         ; 9F6B 20 EB BC                  ..
         tay                                     ; 9F6E A8                       .
+TextUiSystem_Branch_9F6F:
         inc     $6F                             ; 9F6F E6 6F                    .o
         lda     $ABC3,y                         ; 9F71 B9 C3 AB                 ...
         brk                                     ; 9F74 00                       .
         db   $00,$03                         ; 9F75 00 03                    ..
 ; ----------------------------------------------------------------------------
-        bcc     $9F7B                           ; 9F77 90 02                    ..
-        bpl     $9F6F                           ; 9F79 10 F4                    ..
+        bcc     TextUiSystem_Branch_9F7B        ; 9F77 90 02                    ..
+        bpl     TextUiSystem_Branch_9F6F        ; 9F79 10 F4                    ..
+TextUiSystem_Branch_9F7B:
         lda     $6F                             ; 9F7B A5 6F                    .o
         sta     $F8                             ; 9F7D 85 F8                    ..
-        jmp     $99EB                           ; 9F7F 4C EB 99                 L..
+TextUiSystem_Branch_9F7F:
+        jmp     TextUiSystem_Branch_99EB        ; 9F7F 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
-        db   $A5,$F5,$30,$0B,$A6,$F7,$00,$2D ; 9F82 A5 F5 30 0B A6 F7 00 2D  ..0....-
-        db   $53,$8D,$D3,$03,$CE,$D3,$03,$4C ; 9F8A 53 8D D3 03 CE D3 03 4C  S......L
-        db   $EB,$99                         ; 9F92 EB 99                    ..
+TextUiSystem_Entry_9F82:
+        lda     $F5                             ; 9F82 A5 F5                    ..
+        bmi     TextUiSystem_Branch_9F91        ; 9F84 30 0B                    0.
+        ldx     $F7                             ; 9F86 A6 F7                    ..
+        brk                                     ; 9F88 00                       .
+        db   $2D,$53                         ; 9F89 2D 53                    -S
 ; ----------------------------------------------------------------------------
+        sta     $03D3                           ; 9F8B 8D D3 03                 ...
+        dec     $03D3                           ; 9F8E CE D3 03                 ...
+TextUiSystem_Branch_9F91:
+        jmp     TextUiSystem_Branch_99EB        ; 9F91 4C EB 99                 L..
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9F94:
         lda     $F5                             ; 9F94 A5 F5                    ..
-        bmi     $9FA3                           ; 9F96 30 0B                    0.
+        bmi     TextUiSystem_Branch_9FA3        ; 9F96 30 0B                    0.
         ldx     $F7                             ; 9F98 A6 F7                    ..
         brk                                     ; 9F9A 00                       .
         db   $3D,$53                         ; 9F9B 3D 53                    =S
 ; ----------------------------------------------------------------------------
         sta     $03D3                           ; 9F9D 8D D3 03                 ...
         dec     $03D3                           ; 9FA0 CE D3 03                 ...
-        jmp     $99EB                           ; 9FA3 4C EB 99                 L..
+TextUiSystem_Branch_9FA3:
+        jmp     TextUiSystem_Branch_99EB        ; 9FA3 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_9FA6:
         lda     $F5                             ; 9FA6 A5 F5                    ..
-        bpl     $9FB3                           ; 9FA8 10 09                    ..
+        bpl     TextUiSystem_Branch_9FB3        ; 9FA8 10 09                    ..
         ldy     #$02                            ; 9FAA A0 02                    ..
         ldx     $F7                             ; 9FAC A6 F7                    ..
         jsr     TextUiSystem_Entry_B747         ; 9FAE 20 47 B7                  G.
         sta     $F8                             ; 9FB1 85 F8                    ..
-        jmp     $99EB                           ; 9FB3 4C EB 99                 L..
+TextUiSystem_Branch_9FB3:
+        jmp     TextUiSystem_Branch_99EB        ; 9FB3 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9FB6:
         lda     #$60                            ; 9FB6 A9 60                    .`
@@ -4434,19 +4740,22 @@ TextUiSystem_Entry_A0E1:
 ; ----------------------------------------------------------------------------
         rts                                     ; A0E7 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A0E8:
         lda     $F5                             ; A0E8 A5 F5                    ..
-        bpl     $A0F7                           ; A0EA 10 0B                    ..
+        bpl     TextUiSystem_Branch_A0F7        ; A0EA 10 0B                    ..
         lda     #$81                            ; A0EC A9 81                    ..
         sta     $03CA                           ; A0EE 8D CA 03                 ...
         lda     #$10                            ; A0F1 A9 10                    ..
         sta     TextCursorPosition              ; A0F3 8D CF 03                 ...
         rts                                     ; A0F6 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A0F7:
         lda     #$00                            ; A0F7 A9 00                    ..
         sta     $02                             ; A0F9 85 02                    ..
         ldx     $03DD                           ; A0FB AE DD 03                 ...
-        bne     $A102                           ; A0FE D0 02                    ..
+        bne     TextUiSystem_Branch_A102        ; A0FE D0 02                    ..
         inc     $02                             ; A100 E6 02                    ..
+TextUiSystem_Branch_A102:
         lda     $A151,x                         ; A102 BD 51 A1                 .Q.
         sta     $03DC                           ; A105 8D DC 03                 ...
         lda     #$00                            ; A108 A9 00                    ..
@@ -4454,11 +4763,12 @@ TextUiSystem_Entry_A0E1:
         sta     $09                             ; A10C 85 09                    ..
         lda     #$00                            ; A10E A9 00                    ..
         ldx     #$07                            ; A110 A2 07                    ..
+TextUiSystem_Branch_A112:
         sta     $03E3,x                         ; A112 9D E3 03                 ...
         dex                                     ; A115 CA                       .
-        bpl     $A112                           ; A116 10 FA                    ..
+        bpl     TextUiSystem_Branch_A112        ; A116 10 FA                    ..
         lda     $03DD                           ; A118 AD DD 03                 ...
-        bne     $A130                           ; A11B D0 13                    ..
+        bne     TextUiSystem_Branch_A130        ; A11B D0 13                    ..
         inc     $02                             ; A11D E6 02                    ..
         lda     $07B5                           ; A11F AD B5 07                 ...
         sta     $00                           ; A122 85 00                    ..
@@ -4467,18 +4777,20 @@ TextUiSystem_Entry_A0E1:
         ldy     #$00                            ; A129 A0 00                    ..
         lda     ($00),y                       ; A12B B1 00                    ..
         sta     $03E3                           ; A12D 8D E3 03                 ...
+TextUiSystem_Branch_A130:
         jsr     TextUiSystem_Entry_9CC3         ; A130 20 C3 9C                  ..
         jsr     TextUiSystem_Entry_A15A         ; A133 20 5A A1                  Z.
-        bcs     $A14F                           ; A136 B0 17                    ..
+        bcs     TextUiSystem_Branch_A14F        ; A136 B0 17                    ..
         jsr     TextUiSystem_Entry_A215         ; A138 20 15 A2                  ..
-        bcs     $A14F                           ; A13B B0 12                    ..
+        bcs     TextUiSystem_Branch_A14F        ; A13B B0 12                    ..
         jsr     TextUiSystem_Entry_A231         ; A13D 20 31 A2                  1.
         jsr     TextUiSystem_Entry_A248         ; A140 20 48 A2                  H.
         jsr     TextUiSystem_Entry_A27B         ; A143 20 7B A2                  {.
         jsr     TextUiSystem_Entry_A2B1         ; A146 20 B1 A2                  ..
         jsr     TextUiSystem_Entry_A2DB         ; A149 20 DB A2                  ..
-        jmp     $A130                           ; A14C 4C 30 A1                 L0.
+        jmp     TextUiSystem_Branch_A130        ; A14C 4C 30 A1                 L0.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A14F:
         clc                                     ; A14F 18                       .
         rts                                     ; A150 60                       `
 ; ----------------------------------------------------------------------------
@@ -4488,34 +4800,38 @@ TextUiSystem_Entry_A0E1:
 TextUiSystem_Entry_A15A:
         lda     #$01                            ; A15A A9 01                    ..
         cmp     $03CC                           ; A15C CD CC 03                 ...
-        beq     $A163                           ; A15F F0 02                    ..
+        beq     TextUiSystem_Branch_A163        ; A15F F0 02                    ..
         clc                                     ; A161 18                       .
         rts                                     ; A162 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A163:
         jsr     TextUiSystem_Entry_A362         ; A163 20 62 A3                  b.
         iny                                     ; A166 C8                       .
         lda     ($00),y                       ; A167 B1 00                    ..
         cmp     #$28                            ; A169 C9 28                    .(
-        bne     $A1A1                           ; A16B D0 34                    .4
+        bne     TextUiSystem_Branch_A1A1        ; A16B D0 34                    .4
         iny                                     ; A16D C8                       .
         lda     ($00),y                       ; A16E B1 00                    ..
         dey                                     ; A170 88                       .
         cmp     #$00                            ; A171 C9 00                    ..
-        beq     $A1A1                           ; A173 F0 2C                    .,
+        beq     TextUiSystem_Branch_A1A1        ; A173 F0 2C                    .,
+TextUiSystem_Branch_A175:
         lda     $02                             ; A175 A5 02                    ..
-        bne     $A17B                           ; A177 D0 02                    ..
+        bne     TextUiSystem_Branch_A17B        ; A177 D0 02                    ..
         clc                                     ; A179 18                       .
         rts                                     ; A17A 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A17B:
         dec     $02                             ; A17B C6 02                    ..
         lda     $03DD                           ; A17D AD DD 03                 ...
         cmp     #$08                            ; A180 C9 08                    ..
-        bne     $A18E                           ; A182 D0 0A                    ..
+        bne     TextUiSystem_Branch_A18E        ; A182 D0 0A                    ..
         lda     #$00                            ; A184 A9 00                    ..
         ldx     $02                             ; A186 A6 02                    ..
         sta     $03E3,x                         ; A188 9D E3 03                 ...
         jmp     TextUiSystem_Branch_A1FA        ; A18B 4C FA A1                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A18E:
         ldx     #$03                            ; A18E A2 03                    ..
 TextUiSystem_Branch_A190:
         lda     $03E3,x                         ; A190 BD E3 03                 ...
@@ -4526,26 +4842,28 @@ TextUiSystem_Branch_A190:
         sta     $03E3                           ; A19B 8D E3 03                 ...
         jmp     TextUiSystem_Branch_A1FA        ; A19E 4C FA A1                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A1A1:
         lda     ($00),y                       ; A1A1 B1 00                    ..
         cmp     #$29                            ; A1A3 C9 29                    .)
-        bne     $A1C1                           ; A1A5 D0 1A                    ..
+        bne     TextUiSystem_Branch_A1C1        ; A1A5 D0 1A                    ..
         iny                                     ; A1A7 C8                       .
         lda     ($00),y                       ; A1A8 B1 00                    ..
         dey                                     ; A1AA 88                       .
         cmp     #$00                            ; A1AB C9 00                    ..
-        beq     $A1C1                           ; A1AD F0 12                    ..
+        beq     TextUiSystem_Branch_A1C1        ; A1AD F0 12                    ..
         lda     $02                             ; A1AF A5 02                    ..
-        beq     $A200                           ; A1B1 F0 4D                    .M
+        beq     TextUiSystem_Branch_A200        ; A1B1 F0 4D                    .M
         jsr     TextUiSystem_Entry_A391         ; A1B3 20 91 A3                  ..
-        bcs     $A200                           ; A1B6 B0 48                    .H
+        bcs     TextUiSystem_Branch_A200        ; A1B6 B0 48                    .H
         jsr     TextUiSystem_Entry_A314         ; A1B8 20 14 A3                  ..
         lda     #$00                            ; A1BB A9 00                    ..
         sta     $F8                             ; A1BD 85 F8                    ..
         sec                                     ; A1BF 38                       8
         rts                                     ; A1C0 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A1C1:
         lda     $03DD                           ; A1C1 AD DD 03                 ...
-        bne     $A202                           ; A1C4 D0 3C                    .<
+        bne     TextUiSystem_Branch_A202        ; A1C4 D0 3C                    .<
         lda     $08                             ; A1C6 A5 08                    ..
         lsr     a                               ; A1C8 4A                       J
         tax                                     ; A1C9 AA                       .
@@ -4562,6 +4880,7 @@ TextUiSystem_Branch_A190:
 TextUiSystem_Branch_A1E3:
         jmp     TextUiSystem_Branch_A1FA        ; A1E3 4C FA A1                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A1E6:
         ldx     #$00                            ; A1E6 A2 00                    ..
 TextUiSystem_Branch_A1E8:
         lda     $03E4,x                         ; A1E8 BD E4 03                 ...
@@ -4569,62 +4888,70 @@ TextUiSystem_Branch_A1E8:
         inx                                     ; A1EE E8                       .
         cpx     #$04                            ; A1EF E0 04                    ..
         bne     TextUiSystem_Branch_A1E8        ; A1F1 D0 F5                    ..
+TextUiSystem_Branch_A1F3:
         lda     ($00),y                       ; A1F3 B1 00                    ..
         sta     $03E3,x                         ; A1F5 9D E3 03                 ...
         inc     $02                             ; A1F8 E6 02                    ..
 TextUiSystem_Branch_A1FA:
         jsr     TextUiSystem_Entry_A397         ; A1FA 20 97 A3                  ..
         jsr     TextUiSystem_Entry_A314         ; A1FD 20 14 A3                  ..
+TextUiSystem_Branch_A200:
         clc                                     ; A200 18                       .
         rts                                     ; A201 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A202:
         lda     $02                             ; A202 A5 02                    ..
         cmp     $03DC                           ; A204 CD DC 03                 ...
-        beq     $A200                           ; A207 F0 F7                    ..
+        beq     TextUiSystem_Branch_A200        ; A207 F0 F7                    ..
         lda     $03DD                           ; A209 AD DD 03                 ...
         cmp     #$08                            ; A20C C9 08                    ..
-        bne     $A1E6                           ; A20E D0 D6                    ..
+        bne     TextUiSystem_Branch_A1E6        ; A20E D0 D6                    ..
         ldx     $02                             ; A210 A6 02                    ..
-        jmp     $A1F3                           ; A212 4C F3 A1                 L..
+        jmp     TextUiSystem_Branch_A1F3        ; A212 4C F3 A1                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A215:
         lda     #$02                            ; A215 A9 02                    ..
         cmp     $03CC                           ; A217 CD CC 03                 ...
-        bne     $A22F                           ; A21A D0 13                    ..
+        bne     TextUiSystem_Branch_A22F        ; A21A D0 13                    ..
         lda     $03DD                           ; A21C AD DD 03                 ...
         cmp     #$08                            ; A21F C9 08                    ..
-        beq     $A22C                           ; A221 F0 09                    ..
+        beq     TextUiSystem_Branch_A22C        ; A221 F0 09                    ..
         lda     #$FF                            ; A223 A9 FF                    ..
         sta     $F8                             ; A225 85 F8                    ..
         jsr     TextUiSystem_Entry_A314         ; A227 20 14 A3                  ..
         sec                                     ; A22A 38                       8
         rts                                     ; A22B 60                       `
 ; ----------------------------------------------------------------------------
-        jmp     $A175                           ; A22C 4C 75 A1                 Lu.
+TextUiSystem_Branch_A22C:
+        jmp     TextUiSystem_Branch_A175        ; A22C 4C 75 A1                 Lu.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A22F:
         clc                                     ; A22F 18                       .
         rts                                     ; A230 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A231:
         bit     $03CC                           ; A231 2C CC 03                 ,..
-        bpl     $A247                           ; A234 10 11                    ..
+        bpl     TextUiSystem_Branch_A247        ; A234 10 11                    ..
         ldx     #$81                            ; A236 A2 81                    ..
         lda     $03CA                           ; A238 AD CA 03                 ...
         cmp     #$00                            ; A23B C9 00                    ..
-        beq     $A241                           ; A23D F0 02                    ..
+        beq     TextUiSystem_Branch_A241        ; A23D F0 02                    ..
         ldx     #$00                            ; A23F A2 00                    ..
+TextUiSystem_Branch_A241:
         stx     $03CA                           ; A241 8E CA 03                 ...
-        jmp     $A319                           ; A244 4C 19 A3                 L..
+        jmp     TextUiSystem_Branch_A319        ; A244 4C 19 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A247:
         rts                                     ; A247 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A248:
         lda     #$05                            ; A248 A9 05                    ..
         cmp     $03CC                           ; A24A CD CC 03                 ...
-        bne     $A27A                           ; A24D D0 2B                    .+
+        bne     TextUiSystem_Branch_A27A        ; A24D D0 2B                    .+
         jsr     TextUiSystem_Entry_A37F         ; A24F 20 7F A3                  ..
+TextUiSystem_Branch_A252:
         lda     $09                             ; A252 A5 09                    ..
-        beq     $A277                           ; A254 F0 21                    .!
+        beq     TextUiSystem_Branch_A277        ; A254 F0 21                    .!
         dec     $09                             ; A256 C6 09                    ..
         jsr     TextUiSystem_Entry_A362         ; A258 20 62 A3                  b.
         lda     ($00),y                       ; A25B B1 00                    ..
@@ -4633,7 +4960,7 @@ TextUiSystem_Entry_A248:
         iny                                     ; A261 C8                       .
         lda     ($00),y                       ; A262 B1 00                    ..
         cmp     #$00                            ; A264 C9 00                    ..
-        beq     $A252                           ; A266 F0 EA                    ..
+        beq     TextUiSystem_Branch_A252        ; A266 F0 EA                    ..
         jmp     TextUiSystem_Branch_A311        ; A268 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_A26B:
@@ -4644,91 +4971,105 @@ TextUiSystem_Branch_A26B:
         bne     TextUiSystem_Branch_A26B        ; A272 D0 F7                    ..
         jmp     TextUiSystem_Branch_A311        ; A274 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A277:
         jmp     TextUiSystem_Branch_A388        ; A277 4C 88 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A27A:
         rts                                     ; A27A 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A27B:
         lda     #$06                            ; A27B A9 06                    ..
         cmp     $03CC                           ; A27D CD CC 03                 ...
-        bne     $A2B0                           ; A280 D0 2E                    ..
+        bne     TextUiSystem_Branch_A2B0        ; A280 D0 2E                    ..
         jsr     TextUiSystem_Entry_A37F         ; A282 20 7F A3                  ..
+TextUiSystem_Branch_A285:
         lda     $09                             ; A285 A5 09                    ..
         cmp     $03D3                           ; A287 CD D3 03                 ...
-        beq     $A2AD                           ; A28A F0 21                    .!
+        beq     TextUiSystem_Branch_A2AD        ; A28A F0 21                    .!
         inc     $09                             ; A28C E6 09                    ..
         jsr     TextUiSystem_Entry_A362         ; A28E 20 62 A3                  b.
         lda     ($00),y                       ; A291 B1 00                    ..
         cmp     #$00                            ; A293 C9 00                    ..
-        bne     $A2A1                           ; A295 D0 0A                    ..
+        bne     TextUiSystem_Branch_A2A1        ; A295 D0 0A                    ..
         iny                                     ; A297 C8                       .
         lda     ($00),y                       ; A298 B1 00                    ..
         cmp     #$00                            ; A29A C9 00                    ..
-        beq     $A285                           ; A29C F0 E7                    ..
+        beq     TextUiSystem_Branch_A285        ; A29C F0 E7                    ..
         jmp     TextUiSystem_Branch_A311        ; A29E 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A2A1:
         dec     $08                             ; A2A1 C6 08                    ..
         dey                                     ; A2A3 88                       .
         lda     ($00),y                       ; A2A4 B1 00                    ..
         cmp     #$00                            ; A2A6 C9 00                    ..
-        bne     $A2A1                           ; A2A8 D0 F7                    ..
+        bne     TextUiSystem_Branch_A2A1        ; A2A8 D0 F7                    ..
         jmp     TextUiSystem_Branch_A311        ; A2AA 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A2AD:
         jmp     TextUiSystem_Branch_A388        ; A2AD 4C 88 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A2B0:
         rts                                     ; A2B0 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A2B1:
         lda     #$07                            ; A2B1 A9 07                    ..
         cmp     $03CC                           ; A2B3 CD CC 03                 ...
-        bne     $A2DA                           ; A2B6 D0 22                    ."
+        bne     TextUiSystem_Branch_A2DA        ; A2B6 D0 22                    ."
         jsr     TextUiSystem_Entry_A37F         ; A2B8 20 7F A3                  ..
         jsr     TextUiSystem_Entry_A362         ; A2BB 20 62 A3                  b.
+TextUiSystem_Branch_A2BE:
         dec     $08                             ; A2BE C6 08                    ..
-        bmi     $A2D7                           ; A2C0 30 15                    0.
+        bmi     TextUiSystem_Branch_A2D7        ; A2C0 30 15                    0.
         dey                                     ; A2C2 88                       .
         lda     ($00),y                       ; A2C3 B1 00                    ..
         cmp     #$00                            ; A2C5 C9 00                    ..
-        beq     $A2BE                           ; A2C7 F0 F5                    ..
+        beq     TextUiSystem_Branch_A2BE        ; A2C7 F0 F5                    ..
+TextUiSystem_Branch_A2C9:
         dec     $08                             ; A2C9 C6 08                    ..
-        bmi     $A2D7                           ; A2CB 30 0A                    0.
+        bmi     TextUiSystem_Branch_A2D7        ; A2CB 30 0A                    0.
         dey                                     ; A2CD 88                       .
         lda     ($00),y                       ; A2CE B1 00                    ..
         cmp     #$00                            ; A2D0 C9 00                    ..
-        bne     $A2C9                           ; A2D2 D0 F5                    ..
+        bne     TextUiSystem_Branch_A2C9        ; A2D2 D0 F5                    ..
         jmp     TextUiSystem_Branch_A311        ; A2D4 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A2D7:
         jmp     TextUiSystem_Branch_A388        ; A2D7 4C 88 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A2DA:
         rts                                     ; A2DA 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A2DB:
         lda     #$08                            ; A2DB A9 08                    ..
         cmp     $03CC                           ; A2DD CD CC 03                 ...
-        bne     $A310                           ; A2E0 D0 2E                    ..
+        bne     TextUiSystem_Branch_A310        ; A2E0 D0 2E                    ..
         jsr     TextUiSystem_Entry_A37F         ; A2E2 20 7F A3                  ..
         jsr     TextUiSystem_Entry_A362         ; A2E5 20 62 A3                  b.
+TextUiSystem_Branch_A2E8:
         inc     $08                             ; A2E8 E6 08                    ..
         lda     $08                             ; A2EA A5 08                    ..
         cmp     $07B2                           ; A2EC CD B2 07                 ...
-        bcs     $A30D                           ; A2EF B0 1C                    ..
+        bcs     TextUiSystem_Branch_A30D        ; A2EF B0 1C                    ..
         iny                                     ; A2F1 C8                       .
         lda     ($00),y                       ; A2F2 B1 00                    ..
         cmp     #$00                            ; A2F4 C9 00                    ..
-        bne     $A2E8                           ; A2F6 D0 F0                    ..
+        bne     TextUiSystem_Branch_A2E8        ; A2F6 D0 F0                    ..
+TextUiSystem_Branch_A2F8:
         inc     $08                             ; A2F8 E6 08                    ..
         lda     $08                             ; A2FA A5 08                    ..
         cmp     $07B2                           ; A2FC CD B2 07                 ...
-        bcs     $A30D                           ; A2FF B0 0C                    ..
+        bcs     TextUiSystem_Branch_A30D        ; A2FF B0 0C                    ..
         iny                                     ; A301 C8                       .
         lda     ($00),y                       ; A302 B1 00                    ..
         cmp     #$00                            ; A304 C9 00                    ..
-        beq     $A2F8                           ; A306 F0 F0                    ..
+        beq     TextUiSystem_Branch_A2F8        ; A306 F0 F0                    ..
         dec     $08                             ; A308 C6 08                    ..
         jmp     TextUiSystem_Branch_A311        ; A30A 4C 11 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A30D:
         jmp     TextUiSystem_Branch_A388        ; A30D 4C 88 A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A310:
         rts                                     ; A310 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_A311:
@@ -4736,6 +5077,7 @@ TextUiSystem_Branch_A311:
 TextUiSystem_Entry_A314:
         lda     #$81                            ; A314 A9 81                    ..
         sta     $03CA                           ; A316 8D CA 03                 ...
+TextUiSystem_Branch_A319:
         lda     $08                             ; A319 A5 08                    ..
         sta     $00                           ; A31B 85 00                    ..
         lda     $09                             ; A31D A5 09                    ..
@@ -4783,12 +5125,14 @@ TextUiSystem_Entry_A362:
         sta     $01                             ; A36A 85 01                    ..
         ldx     $09                             ; A36C A6 09                    ..
         lda     #$00                            ; A36E A9 00                    ..
+TextUiSystem_Branch_A370:
         dex                                     ; A370 CA                       .
-        bmi     $A37A                           ; A371 30 07                    0.
+        bmi     TextUiSystem_Branch_A37A        ; A371 30 07                    0.
         clc                                     ; A373 18                       .
         adc     $07B2                           ; A374 6D B2 07                 m..
-        jmp     $A370                           ; A377 4C 70 A3                 Lp.
+        jmp     TextUiSystem_Branch_A370        ; A377 4C 70 A3                 Lp.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A37A:
         clc                                     ; A37A 18                       .
         adc     $08                             ; A37B 65 08                    e.
         tay                                     ; A37D A8                       .
@@ -4822,7 +5166,8 @@ TextUiSystem_Entry_A397:
 ; ----------------------------------------------------------------------------
         rts                                     ; A39A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $60                             ; A39B 60                       `
+TextUiSystem_Entry_A39B:
+        rts                                     ; A39B 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A39C:
         asl     a                               ; A39C 0A                       .
@@ -4836,22 +5181,26 @@ TextUiSystem_Entry_A39C:
         db   $AE                             ; A3A7 AE                       .
         db   $A3,$F9,$A3,$B4,$A3,$C7,$A3     ; A3A8 A3 F9 A3 B4 A3 C7 A3     .......
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A3AF:
         jsr     TextUiSystem_Entry_A446         ; A3AF 20 46 A4                  F.
-        jmp     $A483                           ; A3B2 4C 83 A4                 L..
+        jmp     TextUiSystem_Entry_A483         ; A3B2 4C 83 A4                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A3B5:
         lda     a:$F4                           ; A3B5 AD F4 00                 ...
         and     #$03                            ; A3B8 29 03                    ).
-        bne     $A3C5                           ; A3BA D0 09                    ..
+        bne     TextUiSystem_Branch_A3C5        ; A3BA D0 09                    ..
         lda     $F5                             ; A3BC A5 F5                    ..
         and     #$04                            ; A3BE 29 04                    ).
-        bne     $A3C5                           ; A3C0 D0 03                    ..
+        bne     TextUiSystem_Branch_A3C5        ; A3C0 D0 03                    ..
         jsr     TextUiSystem_Entry_8652         ; A3C2 20 52 86                  R.
-        jmp     $A3AF                           ; A3C5 4C AF A3                 L..
+TextUiSystem_Branch_A3C5:
+        jmp     TextUiSystem_Entry_A3AF         ; A3C5 4C AF A3                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A3C8:
         lda     a:$F4                           ; A3C8 AD F4 00                 ...
         and     #$03                            ; A3CB 29 03                    ).
         cmp     #$03                            ; A3CD C9 03                    ..
-        bne     $A3EF                           ; A3CF D0 1E                    ..
+        bne     TextUiSystem_Branch_A3EF        ; A3CF D0 1E                    ..
         ldy     #$01                            ; A3D1 A0 01                    ..
         jsr     TextUiSystem_Entry_A44C         ; A3D3 20 4C A4                  L.
         lda     $F2                             ; A3D6 A5 F2                    ..
@@ -4860,27 +5209,60 @@ TextUiSystem_Entry_A39C:
         adc     #$02                            ; A3DA 69 02                    i.
         sta     $F2                             ; A3DC 85 F2                    ..
         ldy     #$07                            ; A3DE A0 07                    ..
+TextUiSystem_Branch_A3E0:
         lda     $A3F2,y                         ; A3E0 B9 F2 A3                 ...
         jsr     TextUiSystem_Entry_A49A         ; A3E3 20 9A A4                  ..
         dey                                     ; A3E6 88                       .
-        bpl     $A3E0                           ; A3E7 10 F7                    ..
+        bpl     TextUiSystem_Branch_A3E0        ; A3E7 10 F7                    ..
         pla                                     ; A3E9 68                       h
         sta     $F2                             ; A3EA 85 F2                    ..
-        jmp     $A483                           ; A3EC 4C 83 A4                 L..
+        jmp     TextUiSystem_Entry_A483         ; A3EC 4C 83 A4                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $A3AF                           ; A3EF 4C AF A3                 L..
+TextUiSystem_Branch_A3EF:
+        jmp     TextUiSystem_Entry_A3AF         ; A3EF 4C AF A3                 L..
 ; ----------------------------------------------------------------------------
         db   $65,$65,$65,$65,$65,$65,$65,$85 ; A3F2 65 65 65 65 65 65 65 85  eeeeeee.
-        db   $AD,$F4,$00,$29,$03,$D0,$09,$A5 ; A3FA AD F4 00 29 03 D0 09 A5  ...)....
-        db   $F5,$29,$04,$D0,$03,$20,$52,$86 ; A402 F5 29 04 D0 03 20 52 86  .)... R.
-        db   $A5,$F2,$48,$AD,$F4,$00,$29,$03 ; A40A A5 F2 48 AD F4 00 29 03  ..H...).
-        db   $A8,$20,$98,$A4,$B9,$77,$A4,$20 ; A412 A8 20 98 A4 B9 77 A4 20  . ...w.
-        db   $9A,$A4,$AD,$C8,$03,$29,$F0,$4A ; A41A 9A A4 AD C8 03 29 F0 4A  .....).J
-        db   $4A,$4A,$38,$E9,$04,$48,$B9,$7B ; A422 4A 4A 38 E9 04 48 B9 7B  JJ8..H.{
-        db   $A4,$20,$9A,$A4,$68,$18,$69,$FF ; A42A A4 20 9A A4 68 18 69 FF  . ..h.i.
-        db   $D0,$F3,$B9,$7F,$A4,$20,$9A,$A4 ; A432 D0 F3 B9 7F A4 20 9A A4  ..... ..
-        db   $20,$98,$A4,$68,$85,$F2,$20,$83 ; A43A 20 98 A4 68 85 F2 20 83   ..h.. .
-        db   $A4,$E6,$F2,$60                 ; A442 A4 E6 F2 60              ...`
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A3FA:
+        lda     a:$F4                           ; A3FA AD F4 00                 ...
+        and     #$03                            ; A3FD 29 03                    ).
+        bne     TextUiSystem_Branch_A40A        ; A3FF D0 09                    ..
+        lda     $F5                             ; A401 A5 F5                    ..
+        and     #$04                            ; A403 29 04                    ).
+        bne     TextUiSystem_Branch_A40A        ; A405 D0 03                    ..
+        jsr     TextUiSystem_Entry_8652         ; A407 20 52 86                  R.
+TextUiSystem_Branch_A40A:
+        lda     $F2                             ; A40A A5 F2                    ..
+        pha                                     ; A40C 48                       H
+        lda     a:$F4                           ; A40D AD F4 00                 ...
+        and     #$03                            ; A410 29 03                    ).
+        tay                                     ; A412 A8                       .
+        jsr     TextUiSystem_Entry_A498         ; A413 20 98 A4                  ..
+        lda     $A477,y                         ; A416 B9 77 A4                 .w.
+        jsr     TextUiSystem_Entry_A49A         ; A419 20 9A A4                  ..
+        lda     $03C8                           ; A41C AD C8 03                 ...
+        and     #$F0                            ; A41F 29 F0                    ).
+        lsr     a                               ; A421 4A                       J
+        lsr     a                               ; A422 4A                       J
+        lsr     a                               ; A423 4A                       J
+        sec                                     ; A424 38                       8
+        sbc     #$04                            ; A425 E9 04                    ..
+TextUiSystem_Branch_A427:
+        pha                                     ; A427 48                       H
+        lda     $A47B,y                         ; A428 B9 7B A4                 .{.
+        jsr     TextUiSystem_Entry_A49A         ; A42B 20 9A A4                  ..
+        pla                                     ; A42E 68                       h
+        clc                                     ; A42F 18                       .
+        adc     #$FF                            ; A430 69 FF                    i.
+        bne     TextUiSystem_Branch_A427        ; A432 D0 F3                    ..
+        lda     $A47F,y                         ; A434 B9 7F A4                 ...
+        jsr     TextUiSystem_Entry_A49A         ; A437 20 9A A4                  ..
+        jsr     TextUiSystem_Entry_A498         ; A43A 20 98 A4                  ..
+        pla                                     ; A43D 68                       h
+        sta     $F2                             ; A43E 85 F2                    ..
+        jsr     TextUiSystem_Entry_A483         ; A440 20 83 A4                  ..
+        inc     $F2                             ; A443 E6 F2                    ..
+        rts                                     ; A445 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A446:
         lda     a:$F4                           ; A446 AD F4 00                 ...
@@ -4898,13 +5280,14 @@ TextUiSystem_Entry_A44C:
         lsr     a                               ; A45C 4A                       J
         sec                                     ; A45D 38                       8
         sbc     #$02                            ; A45E E9 02                    ..
+TextUiSystem_Branch_A460:
         pha                                     ; A460 48                       H
         lda     $A47B,y                         ; A461 B9 7B A4                 .{.
         jsr     TextUiSystem_Entry_A49A         ; A464 20 9A A4                  ..
         pla                                     ; A467 68                       h
         clc                                     ; A468 18                       .
         adc     #$FF                            ; A469 69 FF                    i.
-        bne     $A460                           ; A46B D0 F3                    ..
+        bne     TextUiSystem_Branch_A460        ; A46B D0 F3                    ..
         lda     $A47F,y                         ; A46D B9 7F A4                 ...
         jsr     TextUiSystem_Entry_A49A         ; A470 20 9A A4                  ..
         pla                                     ; A473 68                       h
@@ -4915,19 +5298,21 @@ TextUiSystem_Entry_A44C:
         db   $85,$00,$00,$8A                 ; A47B 85 00 00 8A              ....
         db   $89,$88,$88,$8B                 ; A47F 89 88 88 8B              ....
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A483:
         inc     $F2                             ; A483 E6 F2                    ..
         lda     a:$F4                           ; A485 AD F4 00                 ...
         and     #$03                            ; A488 29 03                    ).
         cmp     #$02                            ; A48A C9 02                    ..
-        bne     $A497                           ; A48C D0 09                    ..
+        bne     TextUiSystem_Branch_A497        ; A48C D0 09                    ..
         lda     $03CB                           ; A48E AD CB 03                 ...
         and     #$04                            ; A491 29 04                    ).
-        beq     $A497                           ; A493 F0 02                    ..
+        beq     TextUiSystem_Branch_A497        ; A493 F0 02                    ..
         inc     $F2                             ; A495 E6 F2                    ..
+TextUiSystem_Branch_A497:
         rts                                     ; A497 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$00                         ; A498 A9 00                    ..
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_A498:
+        lda     #$00                            ; A498 A9 00                    ..
 TextUiSystem_Entry_A49A:
         sta     $00                           ; A49A 85 00                    ..
         stx     $09                             ; A49C 86 09                    ..
@@ -4935,24 +5320,27 @@ TextUiSystem_Entry_A49A:
         inc     $F2                             ; A4A0 E6 F2                    ..
         lda     $F5                             ; A4A2 A5 F5                    ..
         and     #$04                            ; A4A4 29 04                    ).
-        bne     $A4B3                           ; A4A6 D0 0B                    ..
+        bne     TextUiSystem_Branch_A4B3        ; A4A6 D0 0B                    ..
         lda     $00                           ; A4A8 A5 00                    ..
         sta     $04C0,x                         ; A4AA 9D C0 04                 ...
         sta     $04A0,x                         ; A4AD 9D A0 04                 ...
         ldx     $09                             ; A4B0 A6 09                    ..
         rts                                     ; A4B2 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_A4B3:
         lda     $F4                             ; A4B3 A5 F4                    ..
         and     #$03                            ; A4B5 29 03                    ).
-        beq     $A4BE                           ; A4B7 F0 05                    ..
+        beq     TextUiSystem_Branch_A4BE        ; A4B7 F0 05                    ..
         lda     $00                           ; A4B9 A5 00                    ..
         sta     $04C0,x                         ; A4BB 9D C0 04                 ...
+TextUiSystem_Branch_A4BE:
         lda     $F4                             ; A4BE A5 F4                    ..
         and     #$03                            ; A4C0 29 03                    ).
         cmp     #$03                            ; A4C2 C9 03                    ..
-        beq     $A4CB                           ; A4C4 F0 05                    ..
+        beq     TextUiSystem_Branch_A4CB        ; A4C4 F0 05                    ..
         lda     $00                           ; A4C6 A5 00                    ..
         sta     $0480,x                         ; A4C8 9D 80 04                 ...
+TextUiSystem_Branch_A4CB:
         ldx     $09                             ; A4CB A6 09                    ..
         rts                                     ; A4CD 60                       `
 ; ----------------------------------------------------------------------------
@@ -5029,35 +5417,34 @@ Bank16_TextUiCommandPointers:
         db   $EF,$AA,$F7,$AA,$2F,$AB,$3A,$AB ; A5E9 EF AA F7 AA 2F AB 3A AB  ..../.:.
         db   $60,$AB,$68,$AB,$70,$AB,$82,$AB ; A5F1 60 AB 68 AB 70 AB 82 AB  `.h.p...
         db   $8B,$AB,$AD,$AB,$C7,$AB,$DB,$AB ; A5F9 8B AB AD AB C7 AB DB AB  ........
-        db   $E3,$AB                         ; A601 E3 AB                    ..
-        db   $EB,$AB,$F3,$AB,$FF,$AB,$07,$AC ; A603 EB AB F3 AB FF AB 07 AC  ........
-        db   $0F,$AC,$52,$AC,$5C,$AC,$7F,$AC ; A60B 0F AC 52 AC 5C AC 7F AC  ..R.\...
-        db   $C3,$AC,$D0,$AC,$DF,$AC,$FF,$AC ; A613 C3 AC D0 AC DF AC FF AC  ........
-        db   $0A,$AD,$10,$AD,$2E,$AD,$4A,$AD ; A61B 0A AD 10 AD 2E AD 4A AD  ......J.
-        db   $58,$AD,$5B,$AD,$5E,$AD,$61,$AD ; A623 58 AD 5B AD 5E AD 61 AD  X.[.^.a.
-        db   $87,$AD,$CC,$AD,$DA,$AD,$E8,$AD ; A62B 87 AD CC AD DA AD E8 AD  ........
-        db   $F0,$AD,$00,$AE,$06,$AE,$32,$AE ; A633 F0 AD 00 AE 06 AE 32 AE  ......2.
-        db   $54,$AE,$76,$AE,$95,$AE,$BF,$AE ; A63B 54 AE 76 AE 95 AE BF AE  T.v.....
-        db   $02,$AF,$57,$AF,$65,$AF,$70,$AF ; A643 02 AF 57 AF 65 AF 70 AF  ..W.e.p.
-        db   $78,$AF,$D8,$AF,$14,$B0,$21,$B0 ; A64B 78 AF D8 AF 14 B0 21 B0  x.....!.
-        db   $37,$B0,$3C,$B0,$43,$B0,$47,$B0 ; A653 37 B0 3C B0 43 B0 47 B0  7.<.C.G.
-        db   $4C,$B0,$52,$B0,$56,$B0,$5B,$B0 ; A65B 4C B0 52 B0 56 B0 5B B0  L.R.V.[.
-        db   $61,$B0,$65,$B0,$6C,$B0,$70,$B0 ; A663 61 B0 65 B0 6C B0 70 B0  a.e.l.p.
-        db   $79,$B0,$7B,$B0,$80,$B0,$88,$B0 ; A66B 79 B0 7B B0 80 B0 88 B0  y.{.....
-        db   $8C,$B0,$90,$B0,$9A,$B0,$A3,$B0 ; A673 8C B0 90 B0 9A B0 A3 B0  ........
-        db   $AD,$B0,$BB,$B0,$C1,$B0,$C9,$B0 ; A67B AD B0 BB B0 C1 B0 C9 B0  ........
-        db   $D1,$B0,$DA,$B0,$E3,$B0,$E8,$B0 ; A683 D1 B0 DA B0 E3 B0 E8 B0  ........
-        db   $F5,$B0,$FA,$B0,$01,$B1,$08,$B1 ; A68B F5 B0 FA B0 01 B1 08 B1  ........
-        db   $12,$B1,$14,$B1,$17,$B1,$1F,$B1 ; A693 12 B1 14 B1 17 B1 1F B1  ........
-        db   $27,$B1,$2E,$B1,$30,$B1,$35,$B1 ; A69B 27 B1 2E B1 30 B1 35 B1  '...0.5.
-        db   $3C,$B1,$3D,$B1,$40,$B1,$42,$B1 ; A6A3 3C B1 3D B1 40 B1 42 B1  <.=.@.B.
-        db   $45,$B1,$47,$B1,$4A,$B1,$4F,$B1 ; A6AB 45 B1 47 B1 4A B1 4F B1  E.G.J.O.
-        db   $52,$B1,$58,$B1,$5E,$B1,$63,$B1 ; A6B3 52 B1 58 B1 5E B1 63 B1  R.X.^.c.
-        db   $67,$B1,$6A,$B1,$6F,$B1,$76,$B1 ; A6BB 67 B1 6A B1 6F B1 76 B1  g.j.o.v.
-        db   $79,$B1,$7D,$B1,$82,$B1,$89,$B1 ; A6C3 79 B1 7D B1 82 B1 89 B1  y.}.....
-        db   $93,$B1,$9A,$B1,$A0,$B1,$A4,$B1 ; A6CB 93 B1 9A B1 A0 B1 A4 B1  ........
-        db   $A8,$B1,$AE,$B1,$B2,$B1,$B6,$B1 ; A6D3 A8 B1 AE B1 B2 B1 B6 B1  ........
-        db   $BB,$B1,$C1,$B1                 ; A6DB BB B1 C1 B1              ....
+        db   $E3,$AB,$EB,$AB,$F3,$AB,$FF,$AB ; A601 E3 AB EB AB F3 AB FF AB  ........
+        db   $07,$AC,$0F,$AC,$52,$AC,$5C,$AC ; A609 07 AC 0F AC 52 AC 5C AC  ....R.\.
+        db   $7F,$AC,$C3,$AC,$D0,$AC,$DF,$AC ; A611 7F AC C3 AC D0 AC DF AC  ........
+        db   $FF,$AC,$0A,$AD,$10,$AD,$2E,$AD ; A619 FF AC 0A AD 10 AD 2E AD  ........
+        db   $4A,$AD,$58,$AD,$5B,$AD,$5E,$AD ; A621 4A AD 58 AD 5B AD 5E AD  J.X.[.^.
+        db   $61,$AD,$87,$AD,$CC,$AD,$DA,$AD ; A629 61 AD 87 AD CC AD DA AD  a.......
+        db   $E8,$AD,$F0,$AD,$00,$AE,$06,$AE ; A631 E8 AD F0 AD 00 AE 06 AE  ........
+        db   $32,$AE,$54,$AE,$76,$AE,$95,$AE ; A639 32 AE 54 AE 76 AE 95 AE  2.T.v...
+        db   $BF,$AE,$02,$AF,$57,$AF,$65,$AF ; A641 BF AE 02 AF 57 AF 65 AF  ....W.e.
+        db   $70,$AF,$78,$AF,$D8,$AF,$14,$B0 ; A649 70 AF 78 AF D8 AF 14 B0  p.x.....
+        db   $21,$B0,$37,$B0,$3C,$B0,$43,$B0 ; A651 21 B0 37 B0 3C B0 43 B0  !.7.<.C.
+        db   $47,$B0,$4C,$B0,$52,$B0,$56,$B0 ; A659 47 B0 4C B0 52 B0 56 B0  G.L.R.V.
+        db   $5B,$B0,$61,$B0,$65,$B0,$6C,$B0 ; A661 5B B0 61 B0 65 B0 6C B0  [.a.e.l.
+        db   $70,$B0,$79,$B0,$7B,$B0,$80,$B0 ; A669 70 B0 79 B0 7B B0 80 B0  p.y.{...
+        db   $88,$B0,$8C,$B0,$90,$B0,$9A,$B0 ; A671 88 B0 8C B0 90 B0 9A B0  ........
+        db   $A3,$B0,$AD,$B0,$BB,$B0,$C1,$B0 ; A679 A3 B0 AD B0 BB B0 C1 B0  ........
+        db   $C9,$B0,$D1,$B0,$DA,$B0,$E3,$B0 ; A681 C9 B0 D1 B0 DA B0 E3 B0  ........
+        db   $E8,$B0,$F5,$B0,$FA,$B0,$01,$B1 ; A689 E8 B0 F5 B0 FA B0 01 B1  ........
+        db   $08,$B1,$12,$B1,$14,$B1,$17,$B1 ; A691 08 B1 12 B1 14 B1 17 B1  ........
+        db   $1F,$B1,$27,$B1,$2E,$B1,$30,$B1 ; A699 1F B1 27 B1 2E B1 30 B1  ..'...0.
+        db   $35,$B1,$3C,$B1,$3D,$B1,$40,$B1 ; A6A1 35 B1 3C B1 3D B1 40 B1  5.<.=.@.
+        db   $42,$B1,$45,$B1,$47,$B1,$4A,$B1 ; A6A9 42 B1 45 B1 47 B1 4A B1  B.E.G.J.
+        db   $4F,$B1,$52,$B1,$58,$B1,$5E,$B1 ; A6B1 4F B1 52 B1 58 B1 5E B1  O.R.X.^.
+        db   $63,$B1,$67,$B1,$6A,$B1,$6F,$B1 ; A6B9 63 B1 67 B1 6A B1 6F B1  c.g.j.o.
+        db   $76,$B1,$79,$B1,$7D,$B1,$82,$B1 ; A6C1 76 B1 79 B1 7D B1 82 B1  v.y.}...
+        db   $89,$B1,$93,$B1,$9A,$B1,$A0,$B1 ; A6C9 89 B1 93 B1 9A B1 A0 B1  ........
+        db   $A4,$B1,$A8,$B1,$AE,$B1,$B2,$B1 ; A6D1 A4 B1 A8 B1 AE B1 B2 B1  ........
+        db   $B6,$B1,$BB,$B1,$C1,$B1         ; A6D9 B6 B1 BB B1 C1 B1        ......
 Bank16_TextUiCommandPointersSecondary:
         db   $C1,$B1,$D8,$B1,$F9,$B1,$4A,$B2 ; A6DF C1 B1 D8 B1 F9 B1 4A B2  ......J.
         db   $4F,$B2,$78,$B2,$AB,$B2,$07,$B3 ; A6E7 4F B2 78 B2 AB B2 07 B3  O.x.....
@@ -5564,13 +5951,13 @@ TextUiSystem_Entry_AD4A:
         jmp     TextUiSystem_Branch_BCF6        ; AD55 4C F6 BC                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_AD58:
-        jmp     TextUiSystem_Branch_BBB9        ; AD58 4C B9 BB                 L..
+        jmp     TextUiSystem_Entry_BBB9         ; AD58 4C B9 BB                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_AD5B:
-        jmp     TextUiSystem_Branch_BBC1        ; AD5B 4C C1 BB                 L..
+        jmp     TextUiSystem_Entry_BBC1         ; AD5B 4C C1 BB                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_AD5E:
-        jmp     TextUiSystem_Branch_BBFD        ; AD5E 4C FD BB                 L..
+        jmp     TextUiSystem_Entry_BBFD         ; AD5E 4C FD BB                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_AD61:
         lda     $F3                             ; AD61 A5 F3                    ..
@@ -5795,11 +6182,12 @@ TextUiSystem_Branch_AECD:
         dec     $00                           ; AED7 C6 00                    ..
         dey                                     ; AED9 88                       .
         bne     TextUiSystem_Branch_AECD        ; AEDA D0 F1                    ..
+TextUiSystem_Branch_AEDC:
         rts                                     ; AEDC 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_AEDD:
         cmp     #$08                            ; AEDD C9 08                    ..
-        beq     $AEDC                           ; AEDF F0 FB                    ..
+        beq     TextUiSystem_Branch_AEDC        ; AEDF F0 FB                    ..
         dex                                     ; AEE1 CA                       .
         bmi     TextUiSystem_Branch_AEEC        ; AEE2 30 08                    0.
         lda     #$FF                            ; AEE4 A9 FF                    ..
@@ -5861,11 +6249,12 @@ TextUiSystem_Branch_AF43:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_AF4A:
         ldx     $07B2                           ; AF4A AE B2 07                 ...
+TextUiSystem_Branch_AF4D:
         lda     ($00),y                       ; AF4D B1 00                    ..
         jsr     TextUiSystem_Entry_98B3         ; AF4F 20 B3 98                  ..
         iny                                     ; AF52 C8                       .
         dex                                     ; AF53 CA                       .
-        bne     $AF4D                           ; AF54 D0 F7                    ..
+        bne     TextUiSystem_Branch_AF4D        ; AF54 D0 F7                    ..
         rts                                     ; AF56 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_AF57:
@@ -5898,38 +6287,42 @@ TextUiSystem_Branch_AF7E:
 ; ----------------------------------------------------------------------------
         tax                                     ; AF84 AA                       .
         lda     $07B1                           ; AF85 AD B1 07                 ...
-        bmi     $AF8F                           ; AF88 30 05                    0.
+        bmi     TextUiSystem_Branch_AF8F        ; AF88 30 05                    0.
         brk                                     ; AF8A 00                       .
         db   $0A,$0F                         ; AF8B 0A 0F                    ..
 ; ----------------------------------------------------------------------------
         bcc     TextUiSystem_Branch_AFD3        ; AF8D 90 44                    .D
+TextUiSystem_Branch_AF8F:
         ldx     $07B0                           ; AF8F AE B0 07                 ...
         brk                                     ; AF92 00                       .
         db   $10,$53                         ; AF93 10 53                    .S
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_AF95:
         lda     $07B1                           ; AF95 AD B1 07                 ...
-        bmi     $AFA6                           ; AF98 30 0C                    0.
+        bmi     TextUiSystem_Branch_AFA6        ; AF98 30 0C                    0.
         brk                                     ; AF9A 00                       .
         db   $13,$0F                         ; AF9B 13 0F                    ..
 ; ----------------------------------------------------------------------------
         clc                                     ; AF9D 18                       .
         adc     $72                             ; AF9E 65 72                    er
         sta     $72                             ; AFA0 85 72                    .r
-        bcc     $AFA6                           ; AFA2 90 02                    ..
+        bcc     TextUiSystem_Branch_AFA6        ; AFA2 90 02                    ..
         inc     $73                             ; AFA4 E6 73                    .s
+TextUiSystem_Branch_AFA6:
         lda     #$00                            ; AFA6 A9 00                    ..
         bit     $73                             ; AFA8 24 73                    $s
-        bpl     $AFB0                           ; AFAA 10 04                    ..
+        bpl     TextUiSystem_Branch_AFB0        ; AFAA 10 04                    ..
         sta     $72                             ; AFAC 85 72                    .r
         sta     $73                             ; AFAE 85 73                    .s
+TextUiSystem_Branch_AFB0:
         sta     $74                             ; AFB0 85 74                    .t
         jsr     TextUiSystem_Entry_BD41         ; AFB2 20 41 BD                  A.
         ldy     #$03                            ; AFB5 A0 03                    ..
+TextUiSystem_Branch_AFB7:
         lda     #$00                            ; AFB7 A9 00                    ..
         jsr     TextUiSystem_Entry_98B3         ; AFB9 20 B3 98                  ..
         dey                                     ; AFBC 88                       .
-        bpl     $AFB7                           ; AFBD 10 F8                    ..
+        bpl     TextUiSystem_Branch_AFB7        ; AFBD 10 F8                    ..
         lda     $00                           ; AFBF A5 00                    ..
         jsr     TextUiSystem_Entry_98B3         ; AFC1 20 B3 98                  ..
         lda     $01                             ; AFC4 A5 01                    ..
@@ -6036,10 +6429,7 @@ Bank16_PrimaryCommandData:
         db   $34,$33,$3B,$29,$36,$71,$8E,$29 ; B0DC 34 33 3B 29 36 71 8E 29  43;)6q.)
         db   $3C,$34,$71,$8E,$26,$25,$38,$38 ; B0E4 3C 34 71 8E 26 25 38 38  <4q.&%88
         db   $30,$29,$6F,$37,$34,$29,$30,$30 ; B0EC 30 29 6F 37 34 29 30 30  0)o74)00
-        db   $37,$2C,$34,$6F,$31,$34         ; B0F4 37 2C 34 6F 31 34        7,4o14
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B0FA:
-        inc     $00                           ; B0FA E6 00                    ..
+        db   $37,$2C,$34,$6F,$31,$34,$E6,$00 ; B0F4 37 2C 34 6F 31 34 E6 00  7,4o14..
         db   $34,$33,$3B,$29,$36,$DC,$00,$34 ; B0FC 34 33 3B 29 36 DC 00 34  43;)6..4
         db   $33,$3B,$29,$36,$25,$6F,$28,$00 ; B104 33 3B 29 36 25 6F 28 00  3;)6%o(.
         db   $34,$33,$3B,$29,$36,$37,$28,$33 ; B10C 34 33 3B 29 36 37 28 33  43;)67(3
@@ -6344,38 +6734,30 @@ Bank16_SecondaryCommandData:
         db   $32,$00,$25,$00,$32,$29,$3B,$00 ; B3E0 32 00 25 00 32 29 3B 00  2.%.2);.
         db   $35,$39,$29,$37,$38,$27,$33,$34 ; B3E8 35 39 29 37 38 27 33 34  59)78'34
         db   $3D,$8B,$29,$36,$25,$37,$29,$8B ; B3F0 3D 8B 29 36 25 37 29 8B  =.)6%7).
-        db   $32,$25,$31,$29                 ; B3F8 32 25 31 29              2%1)
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B3FC:
-        plp                                     ; B3FC 28                       (
-        ora     $2300,y                         ; B3FD 19 00 23                 ..#
-        ora     $1F,y                           ; B400 19 1F 00                 ...
-        and     ($0B,x)                         ; B403 21 0B                    !.
-        clc                                     ; B405 18                       .
-        asl     $1E00,x                         ; B406 1E 00 1E                 ...
-        ora     $1C0F,y                         ; B409 19 0F 1C                 ...
-        db   $0B,$1D,$0F,$00,$1E,$12,$13,$1D ; B40C 0B 1D 0F 00 1E 12 13 1D  ........
-        db   $1B,$1F,$0F,$1D,$1E,$6D,$37,$0F ; B414 1B 1F 0F 1D 1E 6D 37 0F  .....m7.
-        db   $16,$0F,$0D,$1E,$00,$1E,$12,$0F ; B41C 16 0F 0D 1E 00 1E 12 0F  ........
-        db   $00,$17,$0F,$1D,$1D,$0B,$11,$0F ; B424 00 17 0F 1D 1D 0B 11 0F  ........
-        db   $00,$02,$00,$03,$00,$04,$00,$05 ; B42C 00 02 00 03 00 04 00 05  ........
-        db   $00,$06,$00,$07,$00,$08,$00,$09 ; B434 00 06 00 07 00 08 00 09  ........
-        db   $2A,$0B,$1D,$1E,$00,$00,$00,$00 ; B43C 2A 0B 1D 1E 00 00 00 00  *.......
-        db   $00,$00,$00,$00,$37,$16,$19,$21 ; B444 00 00 00 00 37 16 19 21  ....7..!
-        db   $00,$27,$12,$0B,$1A,$1E,$0F,$1C ; B44C 00 27 12 0B 1A 1E 0F 1C  .'......
-        db   $00,$30,$29,$3A,$29,$30,$00,$00 ; B454 00 30 29 3A 29 30 00 00  .0):)0..
-        db   $89,$25,$28,$3A,$29,$32,$38,$39 ; B45C 89 25 28 3A 29 32 38 39  .%(:)289
-        db   $36,$29,$00,$30,$33,$2B,$2A,$2D ; B464 36 29 00 30 33 2B 2A 2D  6).03+*-
-        db   $2B,$2C,$38,$38,$25,$27,$38,$2D ; B46C 2B 2C 38 38 25 27 38 2D  +,88%'8-
-        db   $27,$37,$31,$29,$31,$26,$29,$36 ; B474 27 37 31 29 31 26 29 36  '71)1&)6
-        db   $36,$39,$32,$37,$34,$29,$30,$30 ; B47C 36 39 32 37 34 29 30 30  69274)00
-        db   $2D,$38,$29,$31,$25,$38,$38,$25 ; B484 2D 38 29 31 25 38 38 25  -8)1%88%
-        db   $27,$2F,$34,$25,$36,$36,$3D,$27 ; B48C 27 2F 34 25 36 36 3D 27  '/4%66='
-        db   $00,$01,$01,$01,$01,$01,$01,$37 ; B494 00 01 01 01 01 01 01 37  .......7
-        db   $29,$29,$00,$A0,$37,$37,$29,$29 ; B49C 29 29 00 A0 37 37 29 29  ))..77))
-        db   $00,$A1,$37,$37,$3B,$2D,$38,$27 ; B4A4 00 A1 37 37 3B 2D 38 27  ..77;-8'
-        db   $2C,$36,$29,$31,$33,$3A,$29,$25 ; B4AC 2C 36 29 31 33 3A 29 25  ,6)13:)%
-        db   $28                             ; B4B4 28                       (
+        db   $32,$25,$31,$29,$28,$19,$00,$23 ; B3F8 32 25 31 29 28 19 00 23  2%1)(..#
+        db   $19,$1F,$00,$21,$0B,$18,$1E,$00 ; B400 19 1F 00 21 0B 18 1E 00  ...!....
+        db   $1E,$19,$0F,$1C,$0B,$1D,$0F,$00 ; B408 1E 19 0F 1C 0B 1D 0F 00  ........
+        db   $1E,$12,$13,$1D,$1B,$1F,$0F,$1D ; B410 1E 12 13 1D 1B 1F 0F 1D  ........
+        db   $1E,$6D,$37,$0F,$16,$0F,$0D,$1E ; B418 1E 6D 37 0F 16 0F 0D 1E  .m7.....
+        db   $00,$1E,$12,$0F,$00,$17,$0F,$1D ; B420 00 1E 12 0F 00 17 0F 1D  ........
+        db   $1D,$0B,$11,$0F,$00,$02,$00,$03 ; B428 1D 0B 11 0F 00 02 00 03  ........
+        db   $00,$04,$00,$05,$00,$06,$00,$07 ; B430 00 04 00 05 00 06 00 07  ........
+        db   $00,$08,$00,$09,$2A,$0B,$1D,$1E ; B438 00 08 00 09 2A 0B 1D 1E  ....*...
+        db   $00,$00,$00,$00,$00,$00,$00,$00 ; B440 00 00 00 00 00 00 00 00  ........
+        db   $37,$16,$19,$21,$00,$27,$12,$0B ; B448 37 16 19 21 00 27 12 0B  7..!.'..
+        db   $1A,$1E,$0F,$1C,$00,$30,$29,$3A ; B450 1A 1E 0F 1C 00 30 29 3A  .....0):
+        db   $29,$30,$00,$00,$89,$25,$28,$3A ; B458 29 30 00 00 89 25 28 3A  )0...%(:
+        db   $29,$32,$38,$39,$36,$29,$00,$30 ; B460 29 32 38 39 36 29 00 30  )2896).0
+        db   $33,$2B,$2A,$2D,$2B,$2C,$38,$38 ; B468 33 2B 2A 2D 2B 2C 38 38  3+*-+,88
+        db   $25,$27,$38,$2D,$27,$37,$31,$29 ; B470 25 27 38 2D 27 37 31 29  %'8-'71)
+        db   $31,$26,$29,$36,$36,$39,$32,$37 ; B478 31 26 29 36 36 39 32 37  1&)66927
+        db   $34,$29,$30,$30,$2D,$38,$29,$31 ; B480 34 29 30 30 2D 38 29 31  4)00-8)1
+        db   $25,$38,$38,$25,$27,$2F,$34,$25 ; B488 25 38 38 25 27 2F 34 25  %88%'/4%
+        db   $36,$36,$3D,$27,$00,$01,$01,$01 ; B490 36 36 3D 27 00 01 01 01  66='....
+        db   $01,$01,$01,$37,$29,$29,$00,$A0 ; B498 01 01 01 37 29 29 00 A0  ...7))..
+        db   $37,$37,$29,$29,$00,$A1,$37,$37 ; B4A0 37 37 29 29 00 A1 37 37  77))..77
+        db   $3B,$2D,$38,$27,$2C,$36,$29,$31 ; B4A8 3B 2D 38 27 2C 36 29 31  ;-8',6)1
+        db   $33,$3A,$29,$25,$28             ; B4B0 33 3A 29 25 28           3:)%(
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B4B5:
         plp                                     ; B4B5 28                       (
@@ -6387,30 +6769,57 @@ TextUiSystem_Entry_B4B5:
 TextUiSystem_Entry_B4BE:
         rts                                     ; B4BE 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$08,$8D,$DD,$03,$00,$62,$23 ; B4BF A9 08 8D DD 03 00 62 23  ......b#
-        db   $08                             ; B4C7 08                       .
+TextUiSystem_Entry_B4BF:
+        lda     #$08                            ; B4BF A9 08                    ..
+        sta     $03DD                           ; B4C1 8D DD 03                 ...
+        brk                                     ; B4C4 00                       .
+        db   $62,$23,$08                     ; B4C5 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B4C8:
         rts                                     ; B4C8 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$80,$8D,$DD,$03,$00,$62,$23 ; B4C9 A9 80 8D DD 03 00 62 23  ......b#
-        db   $80                             ; B4D1 80                       .
+TextUiSystem_Entry_B4C9:
+        lda     #$80                            ; B4C9 A9 80                    ..
+        sta     $03DD                           ; B4CB 8D DD 03                 ...
+        brk                                     ; B4CE 00                       .
+        db   $62,$23,$80                     ; B4CF 62 23 80                 b#.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B4D2:
         rts                                     ; B4D2 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$40,$8D,$DD,$03,$00,$62,$23 ; B4D3 A9 40 8D DD 03 00 62 23  .@....b#
-        db   $40                             ; B4DB 40                       @
+TextUiSystem_Entry_B4D3:
+        lda     #$40                            ; B4D3 A9 40                    .@
+        sta     $03DD                           ; B4D5 8D DD 03                 ...
+        brk                                     ; B4D8 00                       .
+        db   $62,$23,$40                     ; B4D9 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B4DC:
         rts                                     ; B4DC 60                       `
 ; ----------------------------------------------------------------------------
-        db   $00,$62,$23,$40,$8D,$D2,$03,$C5 ; B4DD 00 62 23 40 8D D2 03 C5  .b#@....
-        db   $F7,$90,$05,$F0,$03,$CE,$D2,$03 ; B4E5 F7 90 05 F0 03 CE D2 03  ........
-        db   $A2,$00,$A0,$00,$E4,$F7,$D0,$01 ; B4ED A2 00 A0 00 E4 F7 D0 01  ........
-        db   $E8,$8A,$99,$B0,$07,$E8,$C8,$C0 ; B4F5 E8 8A 99 B0 07 E8 C8 C0  ........
-        db   $04,$D0,$F1,$AD,$D2,$03         ; B4FD 04 D0 F1 AD D2 03        ......
+TextUiSystem_Entry_B4DD:
+        brk                                     ; B4DD 00                       .
+        db   $62,$23,$40                     ; B4DE 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
+        sta     $03D2                           ; B4E1 8D D2 03                 ...
+        cmp     $F7                             ; B4E4 C5 F7                    ..
+        bcc     TextUiSystem_Branch_B4ED        ; B4E6 90 05                    ..
+        beq     TextUiSystem_Branch_B4ED        ; B4E8 F0 03                    ..
+        dec     $03D2                           ; B4EA CE D2 03                 ...
+TextUiSystem_Branch_B4ED:
+        ldx     #$00                            ; B4ED A2 00                    ..
+        ldy     #$00                            ; B4EF A0 00                    ..
+TextUiSystem_Branch_B4F1:
+        cpx     $F7                             ; B4F1 E4 F7                    ..
+        bne     TextUiSystem_Branch_B4F6        ; B4F3 D0 01                    ..
+        inx                                     ; B4F5 E8                       .
+TextUiSystem_Branch_B4F6:
+        txa                                     ; B4F6 8A                       .
+        sta     $07B0,y                         ; B4F7 99 B0 07                 ...
+        inx                                     ; B4FA E8                       .
+        iny                                     ; B4FB C8                       .
+        cpy     #$04                            ; B4FC C0 04                    ..
+        bne     TextUiSystem_Branch_B4F1        ; B4FE D0 F1                    ..
+        lda     $03D2                           ; B500 AD D2 03                 ...
 TextUiSystem_Entry_B503:
         rts                                     ; B503 60                       `
 ; ----------------------------------------------------------------------------
@@ -6429,11 +6838,27 @@ TextUiSystem_Entry_B513:
 TextUiSystem_Entry_B516:
         rts                                     ; B516 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A6,$F7,$A9,$02,$85,$6F,$A0,$00 ; B517 A6 F7 A9 02 85 6F A0 00  .....o..
-        db   $00,$3C,$53,$F0,$01,$C8,$C6,$6F ; B51F 00 3C 53 F0 01 C8 C6 6F  .<S....o
-        db   $10,$F6,$98,$8D,$DC,$03,$0A,$18 ; B527 10 F6 98 8D DC 03 0A 18  ........
-        db   $6D,$DC,$03,$A0,$01,$8C,$DC,$03 ; B52F 6D DC 03 A0 01 8C DC 03  m.......
+TextUiSystem_Entry_B517:
+        ldx     $F7                             ; B517 A6 F7                    ..
+        lda     #$02                            ; B519 A9 02                    ..
+        sta     $6F                             ; B51B 85 6F                    .o
+        ldy     #$00                            ; B51D A0 00                    ..
+TextUiSystem_Branch_B51F:
+        brk                                     ; B51F 00                       .
+        db   $3C,$53                         ; B520 3C 53                    <S
 ; ----------------------------------------------------------------------------
+        beq     TextUiSystem_Branch_B525        ; B522 F0 01                    ..
+        iny                                     ; B524 C8                       .
+TextUiSystem_Branch_B525:
+        dec     $6F                             ; B525 C6 6F                    .o
+        bpl     TextUiSystem_Branch_B51F        ; B527 10 F6                    ..
+        tya                                     ; B529 98                       .
+        sta     $03DC                           ; B52A 8D DC 03                 ...
+        asl     a                               ; B52D 0A                       .
+        clc                                     ; B52E 18                       .
+        adc     $03DC                           ; B52F 6D DC 03                 m..
+        ldy     #$01                            ; B532 A0 01                    ..
+        sty     $03DC                           ; B534 8C DC 03                 ...
 TextUiSystem_Entry_B537:
         rts                                     ; B537 60                       `
 ; ----------------------------------------------------------------------------
@@ -6446,9 +6871,13 @@ TextUiSystem_Entry_B53A:
 TextUiSystem_Entry_B53D:
         rts                                     ; B53D 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$00,$A6,$F7,$00,$47,$73,$A5 ; B53E A9 00 A6 F7 00 47 73 A5  .....Gs.
-        db   $75                             ; B546 75                       u
+TextUiSystem_Entry_B53E:
+        lda     #$00                            ; B53E A9 00                    ..
+        ldx     $F7                             ; B540 A6 F7                    ..
+        brk                                     ; B542 00                       .
+        db   $47,$73                         ; B543 47 73                    Gs
 ; ----------------------------------------------------------------------------
+        lda     $75                             ; B545 A5 75                    .u
 TextUiSystem_Entry_B547:
         rts                                     ; B547 60                       `
 ; ----------------------------------------------------------------------------
@@ -6465,23 +6894,51 @@ TextUiSystem_Entry_B547:
 TextUiSystem_Entry_B55A:
         rts                                     ; B55A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A0,$FF,$C8,$B9,$B0,$07,$C9,$FF ; B55B A0 FF C8 B9 B0 07 C9 FF  ........
-        db   $F0,$04,$C0,$03,$D0,$F4,$8C,$D2 ; B563 F0 04 C0 03 D0 F4 8C D2  ........
-        db   $03,$20,$8E,$BF,$38,$ED,$D2,$03 ; B56B 03 20 8E BF 38 ED D2 03  . ..8...
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B55B:
+        ldy     #$FF                            ; B55B A0 FF                    ..
+TextUiSystem_Branch_B55D:
+        iny                                     ; B55D C8                       .
+        lda     $07B0,y                         ; B55E B9 B0 07                 ...
+        cmp     #$FF                            ; B561 C9 FF                    ..
+        beq     TextUiSystem_Branch_B569        ; B563 F0 04                    ..
+        cpy     #$03                            ; B565 C0 03                    ..
+        bne     TextUiSystem_Branch_B55D        ; B567 D0 F4                    ..
+TextUiSystem_Branch_B569:
+        sty     $03D2                           ; B569 8C D2 03                 ...
+        jsr     TextUiSystem_Entry_BF8E         ; B56C 20 8E BF                  ..
+        sec                                     ; B56F 38                       8
+        sbc     $03D2                           ; B570 ED D2 03                 ...
 TextUiSystem_Entry_B573:
         rts                                     ; B573 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$EB,$BC,$A8,$C0,$04,$F0,$0A ; B574 20 EB BC A8 C0 04 F0 0A   .......
-        db   $A9,$FF,$99,$B0,$07,$C8,$C0,$04 ; B57C A9 FF 99 B0 07 C8 C0 04  ........
-        db   $D0,$F8,$20,$8E,$BF,$C9,$05,$90 ; B584 D0 F8 20 8E BF C9 05 90  .. .....
-        db   $02,$A9,$04                     ; B58C 02 A9 04                 ...
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B574:
+        jsr     TextUiSystem_Entry_BCEB         ; B574 20 EB BC                  ..
+        tay                                     ; B577 A8                       .
+        cpy     #$04                            ; B578 C0 04                    ..
+        beq     TextUiSystem_Branch_B586        ; B57A F0 0A                    ..
+        lda     #$FF                            ; B57C A9 FF                    ..
+TextUiSystem_Branch_B57E:
+        sta     $07B0,y                         ; B57E 99 B0 07                 ...
+        iny                                     ; B581 C8                       .
+        cpy     #$04                            ; B582 C0 04                    ..
+        bne     TextUiSystem_Branch_B57E        ; B584 D0 F8                    ..
+TextUiSystem_Branch_B586:
+        jsr     TextUiSystem_Entry_BF8E         ; B586 20 8E BF                  ..
+        cmp     #$05                            ; B589 C9 05                    ..
+        bcc     TextUiSystem_Entry_B58F         ; B58B 90 02                    ..
+        lda     #$04                            ; B58D A9 04                    ..
 TextUiSystem_Entry_B58F:
         rts                                     ; B58F 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A0,$01,$B1,$EE,$29,$03,$AA,$BD ; B590 A0 01 B1 EE 29 03 AA BD  ....)...
-        db   $9A,$B5,$60,$06,$03             ; B598 9A B5 60 06 03           ..`..
+TextUiSystem_Entry_B590:
+        ldy     #$01                            ; B590 A0 01                    ..
+        lda     ($EE),y                         ; B592 B1 EE                    ..
+        and     #$03                            ; B594 29 03                    ).
+        tax                                     ; B596 AA                       .
+        lda     $B59A,x                         ; B597 BD 9A B5                 ...
+        rts                                     ; B59A 60                       `
+; ----------------------------------------------------------------------------
+        db   $06,$03                         ; B59B 06 03                    ..
 ; ----------------------------------------------------------------------------
         lda     #$03                            ; B59D A9 03                    ..
         ldx     $6BDE                           ; B59F AE DE 6B                 ..k
@@ -6496,25 +6953,76 @@ TextUiSystem_Branch_B5AF:
 TextUiSystem_Entry_B5B1:
         rts                                     ; B5B1 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A2,$FF,$00,$29,$C3,$0E,$8D,$DA ; B5B2 A2 FF 00 29 C3 0E 8D DA  ...)....
-        db   $03,$A9,$00,$8D,$DB,$03,$8D,$DC ; B5BA 03 A9 00 8D DB 03 8D DC  ........
-        db   $03,$AD,$DC,$03,$85,$7C,$A2,$FF ; B5C2 03 AD DC 03 85 7C A2 FF  .....|..
-        db   $00,$2D,$B3,$2D,$DA,$03,$F0,$3B ; B5CA 00 2D B3 2D DA 03 F0 3B  .-.-...;
-        db   $A8,$AE,$DC,$03,$00,$29,$C3,$0C ; B5D2 A8 AE DC 03 00 29 C3 0C  .....)..
-        db   $90,$13,$85,$6F,$00,$67,$33,$0A ; B5DA 90 13 85 6F 00 67 33 0A  ...o.g3.
-        db   $0A,$0A,$09,$80,$AE,$DB,$03,$9D ; B5E2 0A 0A 09 80 AE DB 03 9D  ........
-        db   $B0,$07,$4C,$0A,$B6,$AE,$DB,$03 ; B5EA B0 07 4C 0A B6 AE DB 03  ..L.....
-        db   $AD,$DC,$03,$0A,$0A,$0A,$9D,$B0 ; B5F2 AD DC 03 0A 0A 0A 9D B0  ........
-        db   $07,$98,$A0,$08,$4A,$90,$03,$FE ; B5FA 07 98 A0 08 4A 90 03 FE  ....J...
-        db   $B0,$07,$88,$D0,$F7,$DE,$B0,$07 ; B602 B0 07 88 D0 F7 DE B0 07  ........
-        db   $EE,$DB,$03,$EE,$DC,$03,$AD,$DC ; B60A EE DB 03 EE DC 03 AD DC  ........
-        db   $03,$C9,$04,$D0,$AC,$AD,$DB,$03 ; B612 03 C9 04 D0 AC AD DB 03  ........
+TextUiSystem_Entry_B5B2:
+        ldx     #$FF                            ; B5B2 A2 FF                    ..
+        brk                                     ; B5B4 00                       .
+        db   $29,$C3,$0E                     ; B5B5 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
+        sta     $03DA                           ; B5B8 8D DA 03                 ...
+        lda     #$00                            ; B5BB A9 00                    ..
+        sta     $03DB                           ; B5BD 8D DB 03                 ...
+        sta     $03DC                           ; B5C0 8D DC 03                 ...
+TextUiSystem_Branch_B5C3:
+        lda     $03DC                           ; B5C3 AD DC 03                 ...
+        sta     $7C                             ; B5C6 85 7C                    .|
+        ldx     #$FF                            ; B5C8 A2 FF                    ..
+        brk                                     ; B5CA 00                       .
+        db   $2D,$B3                         ; B5CB 2D B3                    -.
+; ----------------------------------------------------------------------------
+        and     $03DA                           ; B5CD 2D DA 03                 -..
+        beq     TextUiSystem_Branch_B60D        ; B5D0 F0 3B                    .;
+        tay                                     ; B5D2 A8                       .
+        ldx     $03DC                           ; B5D3 AE DC 03                 ...
+        brk                                     ; B5D6 00                       .
+        db   $29,$C3,$0C                     ; B5D7 29 C3 0C                 )..
+; ----------------------------------------------------------------------------
+        bcc     TextUiSystem_Branch_B5EF        ; B5DA 90 13                    ..
+        sta     $6F                             ; B5DC 85 6F                    .o
+        brk                                     ; B5DE 00                       .
+        db   $67,$33                         ; B5DF 67 33                    g3
+; ----------------------------------------------------------------------------
+        asl     a                               ; B5E1 0A                       .
+        asl     a                               ; B5E2 0A                       .
+        asl     a                               ; B5E3 0A                       .
+        ora     #$80                            ; B5E4 09 80                    ..
+        ldx     $03DB                           ; B5E6 AE DB 03                 ...
+        sta     $07B0,x                         ; B5E9 9D B0 07                 ...
+        jmp     TextUiSystem_Branch_B60A        ; B5EC 4C 0A B6                 L..
+; ----------------------------------------------------------------------------
+TextUiSystem_Branch_B5EF:
+        ldx     $03DB                           ; B5EF AE DB 03                 ...
+        lda     $03DC                           ; B5F2 AD DC 03                 ...
+        asl     a                               ; B5F5 0A                       .
+        asl     a                               ; B5F6 0A                       .
+        asl     a                               ; B5F7 0A                       .
+        sta     $07B0,x                         ; B5F8 9D B0 07                 ...
+        tya                                     ; B5FB 98                       .
+        ldy     #$08                            ; B5FC A0 08                    ..
+TextUiSystem_Branch_B5FE:
+        lsr     a                               ; B5FE 4A                       J
+        bcc     TextUiSystem_Branch_B604        ; B5FF 90 03                    ..
+        inc     $07B0,x                         ; B601 FE B0 07                 ...
+TextUiSystem_Branch_B604:
+        dey                                     ; B604 88                       .
+        bne     TextUiSystem_Branch_B5FE        ; B605 D0 F7                    ..
+        dec     $07B0,x                         ; B607 DE B0 07                 ...
+TextUiSystem_Branch_B60A:
+        inc     $03DB                           ; B60A EE DB 03                 ...
+TextUiSystem_Branch_B60D:
+        inc     $03DC                           ; B60D EE DC 03                 ...
+        lda     $03DC                           ; B610 AD DC 03                 ...
+        cmp     #$04                            ; B613 C9 04                    ..
+        bne     TextUiSystem_Branch_B5C3        ; B615 D0 AC                    ..
+        lda     $03DB                           ; B617 AD DB 03                 ...
 TextUiSystem_Entry_B61A:
         rts                                     ; B61A 60                       `
 ; ----------------------------------------------------------------------------
-        db   $00,$13,$1F,$A9,$00,$2A         ; B61B 00 13 1F A9 00 2A        .....*
+TextUiSystem_Entry_B61B:
+        brk                                     ; B61B 00                       .
+        db   $13,$1F                         ; B61C 13 1F                    ..
 ; ----------------------------------------------------------------------------
+        lda     #$00                            ; B61E A9 00                    ..
+        rol     a                               ; B620 2A                       *
 TextUiSystem_Entry_B621:
         rts                                     ; B621 60                       `
 ; ----------------------------------------------------------------------------
@@ -6523,9 +7031,15 @@ TextUiSystem_Entry_B621:
 TextUiSystem_Entry_B624:
         rts                                     ; B624 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$F5,$29,$04,$D0,$03,$00,$00 ; B625 A5 F5 29 04 D0 03 00 00  ..).....
-        db   $5F,$AD,$C4,$07                 ; B62D 5F AD C4 07              _...
+TextUiSystem_Entry_B625:
+        lda     $F5                             ; B625 A5 F5                    ..
+        and     #$04                            ; B627 29 04                    ).
+        bne     TextUiSystem_Branch_B62E        ; B629 D0 03                    ..
+        brk                                     ; B62B 00                       .
+        db   $00,$5F                         ; B62C 00 5F                    ._
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_B62E:
+        lda     $07C4                           ; B62E AD C4 07                 ...
 TextUiSystem_Entry_B631:
         rts                                     ; B631 60                       `
 ; ----------------------------------------------------------------------------
@@ -6534,15 +7048,26 @@ TextUiSystem_Entry_B631:
 TextUiSystem_Entry_B635:
         rts                                     ; B635 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$02,$8D,$DC,$03,$A6,$F7,$00 ; B636 A9 02 8D DC 03 A6 F7 00  ........
+TextUiSystem_Entry_B636:
+        lda     #$02                            ; B636 A9 02                    ..
+        sta     $03DC                           ; B638 8D DC 03                 ...
+        ldx     $F7                             ; B63B A6 F7                    ..
+        brk                                     ; B63D 00                       .
         db   $3E,$53                         ; B63E 3E 53                    >S
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B640:
         rts                                     ; B640 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A6,$F7,$00,$2B,$53,$AA,$A9,$01 ; B641 A6 F7 00 2B 53 AA A9 01  ...+S...
-        db   $E0,$05,$F0,$02,$A9,$00         ; B649 E0 05 F0 02 A9 00        ......
+TextUiSystem_Entry_B641:
+        ldx     $F7                             ; B641 A6 F7                    ..
+        brk                                     ; B643 00                       .
+        db   $2B,$53                         ; B644 2B 53                    +S
 ; ----------------------------------------------------------------------------
+        tax                                     ; B646 AA                       .
+        lda     #$01                            ; B647 A9 01                    ..
+        cpx     #$05                            ; B649 E0 05                    ..
+        beq     TextUiSystem_Entry_B64F         ; B64B F0 02                    ..
+        lda     #$00                            ; B64D A9 00                    ..
 TextUiSystem_Entry_B64F:
         rts                                     ; B64F 60                       `
 ; ----------------------------------------------------------------------------
@@ -6607,13 +7132,19 @@ TextUiSystem_Entry_B71F:
 TextUiSystem_Entry_B725:
         rts                                     ; B725 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$F5,$09,$20,$85,$F5         ; B726 A5 F5 09 20 85 F5        ... ..
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B726:
+        lda     $F5                             ; B726 A5 F5                    ..
+        ora     #$20                            ; B728 09 20                    .
+        sta     $F5                             ; B72A 85 F5                    ..
 TextUiSystem_Entry_B72C:
         rts                                     ; B72C 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$F5,$29,$84,$D0,$03,$00,$86 ; B72D A5 F5 29 84 D0 03 00 86  ..).....
-        db   $FB                             ; B735 FB                       .
+TextUiSystem_Entry_B72D:
+        lda     $F5                             ; B72D A5 F5                    ..
+        and     #$84                            ; B72F 29 84                    ).
+        bne     TextUiSystem_Entry_B736         ; B731 D0 03                    ..
+        brk                                     ; B733 00                       .
+        db   $86,$FB                         ; B734 86 FB                    ..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_B736:
         rts                                     ; B736 60                       `
@@ -6660,8 +7191,9 @@ TextUiSystem_Entry_B772:
 ; ----------------------------------------------------------------------------
         jsr     TextUiSystem_Entry_B78C         ; B773 20 8C B7                  ..
         ldx     $03C6                           ; B776 AE C6 03                 ...
-        bne     $B77D                           ; B779 D0 02                    ..
+        bne     TextUiSystem_Branch_B77D        ; B779 D0 02                    ..
         eor     #$07                            ; B77B 49 07                    I.
+TextUiSystem_Branch_B77D:
         sta     $03DC                           ; B77D 8D DC 03                 ...
         tax                                     ; B780 AA                       .
         lda     $B784,x                         ; B781 BD 84 B7                 ...
@@ -6673,14 +7205,16 @@ TextUiSystem_Entry_B78C:
         lda     #$00                            ; B78C A9 00                    ..
         tax                                     ; B78E AA                       .
         ldy     #$02                            ; B78F A0 02                    ..
+TextUiSystem_Branch_B791:
         ldx     $6BEC,y                         ; B791 BE EC 6B                 ..k
         cpx     #$D6                            ; B794 E0 D6                    ..
         clc                                     ; B796 18                       .
-        bne     $B79A                           ; B797 D0 01                    ..
+        bne     TextUiSystem_Branch_B79A        ; B797 D0 01                    ..
         sec                                     ; B799 38                       8
+TextUiSystem_Branch_B79A:
         rol     a                               ; B79A 2A                       *
         dey                                     ; B79B 88                       .
-        bpl     $B791                           ; B79C 10 F3                    ..
+        bpl     TextUiSystem_Branch_B791        ; B79C 10 F3                    ..
         tax                                     ; B79E AA                       .
 TextUiSystem_Entry_B79F:
         rts                                     ; B79F 60                       `
@@ -6694,23 +7228,34 @@ TextUiSystem_Entry_B7A2:
 TextUiSystem_Entry_B7A5:
         rts                                     ; B7A5 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A2,$FF,$E8,$BD,$45,$6E,$C9,$FF ; B7A6 A2 FF E8 BD 45 6E C9 FF  ....En..
-        db   $F0,$05,$E0,$03,$D0,$F4,$E8,$8A ; B7AE F0 05 E0 03 D0 F4 E8 8A  ........
-; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B7A6:
+        ldx     #$FF                            ; B7A6 A2 FF                    ..
+TextUiSystem_Branch_B7A8:
+        inx                                     ; B7A8 E8                       .
+        lda     $6E45,x                         ; B7A9 BD 45 6E                 .En
+        cmp     #$FF                            ; B7AC C9 FF                    ..
+        beq     TextUiSystem_Branch_B7B5        ; B7AE F0 05                    ..
+        cpx     #$03                            ; B7B0 E0 03                    ..
+        bne     TextUiSystem_Branch_B7A8        ; B7B2 D0 F4                    ..
+        inx                                     ; B7B4 E8                       .
+TextUiSystem_Branch_B7B5:
+        txa                                     ; B7B5 8A                       .
 TextUiSystem_Entry_B7B6:
         rts                                     ; B7B6 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$F5,$09,$02,$85,$F5         ; B7B7 A5 F5 09 02 85 F5        ......
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B7BD:
+TextUiSystem_Entry_B7B7:
+        lda     $F5                             ; B7B7 A5 F5                    ..
+        ora     #$02                            ; B7B9 09 02                    ..
+        sta     $F5                             ; B7BB 85 F5                    ..
         rts                                     ; B7BD 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B7BE:
         lda     $07B1                           ; B7BE AD B1 07                 ...
         sta     $03DC                           ; B7C1 8D DC 03                 ...
         lda     $07B0                           ; B7C4 AD B0 07                 ...
         sta     $00                           ; B7C7 85 00                    ..
         jsr     TextUiSystem_Entry_BCEB         ; B7C9 20 EB BC                  ..
-        bne     $B81A                           ; B7CC D0 4C                    .L
+        bne     TextUiSystem_Branch_B81A        ; B7CC D0 4C                    .L
         brk                                     ; B7CE 00                       .
         db   $62,$23,$80                     ; B7CF 62 23 80                 b#.
 ; ----------------------------------------------------------------------------
@@ -6720,11 +7265,12 @@ TextUiSystem_Entry_B7BD:
 ; ----------------------------------------------------------------------------
         sta     $00                           ; B7D7 85 00                    ..
         cmp     #$06                            ; B7D9 C9 06                    ..
-        bcs     $B7E4                           ; B7DB B0 07                    ..
+        bcs     TextUiSystem_Branch_B7E4        ; B7DB B0 07                    ..
         lda     #$00                            ; B7DD A9 00                    ..
         sta     $01                             ; B7DF 85 01                    ..
         jmp     TextUiSystem_Branch_B7FB        ; B7E1 4C FB B7                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_B7E4:
         ldx     $01                             ; B7E4 A6 01                    ..
         cpx     #$06                            ; B7E6 E0 06                    ..
         bcs     TextUiSystem_Branch_B7F2        ; B7E8 B0 08                    ..
@@ -6744,7 +7290,7 @@ TextUiSystem_Branch_B7FB:
         sta     $03DC                           ; B7FD 8D DC 03                 ...
         lda     $01                             ; B800 A5 01                    ..
         sta     $07B0                           ; B802 8D B0 07                 ...
-        beq     $B81A                           ; B805 F0 13                    ..
+        beq     TextUiSystem_Branch_B81A        ; B805 F0 13                    ..
         lda     $00                           ; B807 A5 00                    ..
         asl     a                               ; B809 0A                       .
         asl     a                               ; B80A 0A                       .
@@ -6755,6 +7301,7 @@ TextUiSystem_Branch_B7FB:
         lda     $03D4                           ; B812 AD D4 03                 ...
         ora     #$10                            ; B815 09 10                    ..
         sta     $03D4                           ; B817 8D D4 03                 ...
+TextUiSystem_Branch_B81A:
         dec     $00                           ; B81A C6 00                    ..
         ldy     $00                           ; B81C A4 00                    ..
         lda     $B834,y                         ; B81E B9 34 B8                 .4.
@@ -6770,13 +7317,13 @@ TextUiSystem_Branch_B7FB:
         db   $46,$65,$94,$B3,$D2             ; B834 46 65 94 B3 D2           Fe...
         db   $20,$80                         ; B839 20 80                     .
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B83B:
         jsr     TextUiSystem_Entry_BCEB         ; B83B 20 EB BC                  ..
         tay                                     ; B83E A8                       .
         sta     $00                           ; B83F 85 00                    ..
         lda     $03C9                           ; B841 AD C9 03                 ...
         and     #$0F                            ; B844 29 0F                    ).
         ora     $B85E,y                         ; B846 19 5E B8                 .^.
-LB84A = $+ 1
         sta     $03C9                           ; B849 8D C9 03                 ...
         brk                                     ; B84C 00                       .
         db   $62,$23,$40                     ; B84D 62 23 40                 b#@
@@ -6790,81 +7337,156 @@ LB84A = $+ 1
         rts                                     ; B85D 60                       `
 ; ----------------------------------------------------------------------------
         db   $10,$A0,$41,$4A,$61,$68,$91,$95 ; B85E 10 A0 41 4A 61 68 91 95  ..AJah..
-        db   $B1,$B3,$20,$EB,$BC,$AA,$BD,$73 ; B866 B1 B3 20 EB BC AA BD 73  .. ....s
-        db   $B8,$8D                         ; B86E B8 8D                    ..
+        db   $B1,$B3                         ; B866 B1 B3                    ..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_B870:
-        iny                                     ; B870 C8                       .
-        db   $03,$60,$68,$62,$A9,$82,$2C,$DE ; B871 03 60 68 62 A9 82 2C DE  .`hb..,.
-        db   $6B,$10,$02,$A9,$87,$8D,$C8,$03 ; B879 6B 10 02 A9 87 8D C8 03  k.......
+TextUiSystem_Entry_B868:
+        jsr     TextUiSystem_Entry_BCEB         ; B868 20 EB BC                  ..
+        tax                                     ; B86B AA                       .
+        lda     $B873,x                         ; B86C BD 73 B8                 .s.
+        sta     $03C8                           ; B86F 8D C8 03                 ...
+        rts                                     ; B872 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B881:
+        db   $68,$62                         ; B873 68 62                    hb
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B875:
+        lda     #$82                            ; B875 A9 82                    ..
+        bit     $6BDE                           ; B877 2C DE 6B                 ,.k
+        bpl     TextUiSystem_Branch_B87E        ; B87A 10 02                    ..
+        lda     #$87                            ; B87C A9 87                    ..
+TextUiSystem_Branch_B87E:
+        sta     $03C8                           ; B87E 8D C8 03                 ...
         rts                                     ; B881 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$DE,$6B,$2A,$2A,$29,$01,$AA ; B882 AD DE 6B 2A 2A 29 01 AA  ..k**)..
-        db   $BD,$9C,$B8,$8D,$C8,$03,$AD,$C9 ; B88A BD 9C B8 8D C8 03 AD C9  ........
-        db   $03,$29,$0F,$1D,$9E,$B8,$8D,$C9 ; B892 03 29 0F 1D 9E B8 8D C9  .)......
-        db   $03,$60,$5A,$52,$30             ; B89A 03 60 5A 52 30           .`ZR0
+TextUiSystem_Entry_B882:
+        lda     $6BDE                           ; B882 AD DE 6B                 ..k
+        rol     a                               ; B885 2A                       *
+        rol     a                               ; B886 2A                       *
+        and     #$01                            ; B887 29 01                    ).
+        tax                                     ; B889 AA                       .
+        lda     $B89C,x                         ; B88A BD 9C B8                 ...
+        sta     $03C8                           ; B88D 8D C8 03                 ...
+        lda     $03C9                           ; B890 AD C9 03                 ...
+        and     #$0F                            ; B893 29 0F                    ).
+        ora     $B89E,x                         ; B895 1D 9E B8                 ...
+        sta     $03C9                           ; B898 8D C9 03                 ...
+        rts                                     ; B89B 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B89F:
-        bpl     $B84A                           ; B89F 10 A9                    ..
-        db   $3C,$8D,$C8,$03,$A0,$00,$AD,$45 ; B8A1 3C 8D C8 03 A0 00 AD 45  <......E
-        db   $6E,$C9,$AE,$F0,$04,$C9,$BC,$D0 ; B8A9 6E C9 AE F0 04 C9 BC D0  n.......
-        db   $02,$A0,$01,$AD,$C9,$03,$29,$0F ; B8B1 02 A0 01 AD C9 03 29 0F  ......).
-        db   $19,$C0,$B8,$8D,$C9,$03,$60,$20 ; B8B9 19 C0 B8 8D C9 03 60 20  ......`
+        db   $5A,$52                         ; B89C 5A 52                    ZR
+        db   $30,$10                         ; B89E 30 10                    0.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B8C1:
-        bpl     TextUiSystem_Branch_B870        ; B8C1 10 AD                    ..
-        cmp     $A603,x                         ; B8C3 DD 03 A6                 ...
-        sed                                     ; B8C6 F8                       .
+TextUiSystem_Entry_B8A0:
+        lda     #$3C                            ; B8A0 A9 3C                    .<
+        sta     $03C8                           ; B8A2 8D C8 03                 ...
+        ldy     #$00                            ; B8A5 A0 00                    ..
+        lda     $6E45                           ; B8A7 AD 45 6E                 .En
+        cmp     #$AE                            ; B8AA C9 AE                    ..
+        beq     TextUiSystem_Branch_B8B2        ; B8AC F0 04                    ..
+        cmp     #$BC                            ; B8AE C9 BC                    ..
+        bne     TextUiSystem_Branch_B8B4        ; B8B0 D0 02                    ..
+TextUiSystem_Branch_B8B2:
+        ldy     #$01                            ; B8B2 A0 01                    ..
+TextUiSystem_Branch_B8B4:
+        lda     $03C9                           ; B8B4 AD C9 03                 ...
+        and     #$0F                            ; B8B7 29 0F                    ).
+        ora     $B8C0,y                         ; B8B9 19 C0 B8                 ...
+        sta     $03C9                           ; B8BC 8D C9 03                 ...
+        rts                                     ; B8BF 60                       `
+; ----------------------------------------------------------------------------
+        db   $20,$10                         ; B8C0 20 10                     .
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B8C2:
+        lda     $03DD                           ; B8C2 AD DD 03                 ...
+TextUiSystem_Branch_B8C5:
+        ldx     $F8                             ; B8C5 A6 F8                    ..
         stx     $6E                             ; B8C7 86 6E                    .n
         brk                                     ; B8C9 00                       .
         db   $2D,$0F                         ; B8CA 2D 0F                    -.
 ; ----------------------------------------------------------------------------
         lda     $72                             ; B8CC A5 72                    .r
         sta     $F8                             ; B8CE 85 F8                    ..
-TextUiSystem_Entry_B8D0:
         rts                                     ; B8D0 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$80,$4C,$C5                 ; B8D1 A9 80 4C C5              ..L.
+TextUiSystem_Entry_B8D1:
+        lda     #$80                            ; B8D1 A9 80                    ..
+        jmp     TextUiSystem_Branch_B8C5        ; B8D3 4C C5 B8                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B8D5:
-        clv                                     ; B8D5 B8                       .
+TextUiSystem_Entry_B8D6:
         ldx     $F8                             ; B8D6 A6 F8                    ..
         lda     $07B0,x                         ; B8D8 BD B0 07                 ...
         sta     $F8                             ; B8DB 85 F8                    ..
-TextUiSystem_Entry_B8DD:
         rts                                     ; B8DD 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$B0,$07,$30,$08,$20,$A6,$BF ; B8DE AD B0 07 30 08 20 A6 BF  ...0. ..
-        db   $90,$03,$20,$2C,$B9,$A5,$F5,$29 ; B8E6 90 03 20 2C B9 A5 F5 29  .. ,...)
-        db   $08,$F0,$10,$A5,$F8,$C9,$F0,$B0 ; B8EE 08 F0 10 A5 F8 C9 F0 B0  ........
-        db   $34,$85,$F3,$20,$43,$BC,$85,$F8 ; B8F6 34 85 F3 20 43 BC 85 F8  4.. C...
-        db   $4C,$2B,$B9,$A5,$F8,$30,$1B,$A5 ; B8FE 4C 2B B9 A5 F8 30 1B A5  L+...0..
-        db   $F8,$85,$F3,$20,$43,$BC,$85,$F8 ; B906 F8 85 F3 20 43 BC 85 F8  ... C...
-        db   $20,$EB,$BC,$A2,$FF,$E8,$BD,$B0 ; B90E 20 EB BC A2 FF E8 BD B0   .......
-        db   $07,$C9,$FF,$D0,$F8,$A5,$F8,$9D ; B916 07 C9 FF D0 F8 A5 F8 9D  ........
-        db   $B0,$07,$A0,$03,$B9,$B0,$07,$99 ; B91E B0 07 A0 03 B9 B0 07 99  ........
-        db   $6E,$00,$88,$10,$F7             ; B926 6E 00 88 10 F7           n....
+TextUiSystem_Entry_B8DE:
+        lda     $07B0                           ; B8DE AD B0 07                 ...
+        bmi     TextUiSystem_Branch_B8EB        ; B8E1 30 08                    0.
+        jsr     TextUiSystem_Entry_BFA6         ; B8E3 20 A6 BF                  ..
+        bcc     TextUiSystem_Branch_B8EB        ; B8E6 90 03                    ..
+        jsr     TextUiSystem_Entry_B92C         ; B8E8 20 2C B9                  ,.
+TextUiSystem_Branch_B8EB:
+        lda     $F5                             ; B8EB A5 F5                    ..
+        and     #$08                            ; B8ED 29 08                    ).
+        beq     TextUiSystem_Branch_B901        ; B8EF F0 10                    ..
+        lda     $F8                             ; B8F1 A5 F8                    ..
+        cmp     #$F0                            ; B8F3 C9 F0                    ..
+        bcs     TextUiSystem_Branch_B92B        ; B8F5 B0 34                    .4
+        sta     $F3                             ; B8F7 85 F3                    ..
+        jsr     TextUiSystem_Entry_BC43         ; B8F9 20 43 BC                  C.
+        sta     $F8                             ; B8FC 85 F8                    ..
+        jmp     TextUiSystem_Branch_B92B        ; B8FE 4C 2B B9                 L+.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B92B:
+TextUiSystem_Branch_B901:
+        lda     $F8                             ; B901 A5 F8                    ..
+        bmi     TextUiSystem_Branch_B920        ; B903 30 1B                    0.
+        lda     $F8                             ; B905 A5 F8                    ..
+        sta     $F3                             ; B907 85 F3                    ..
+        jsr     TextUiSystem_Entry_BC43         ; B909 20 43 BC                  C.
+        sta     $F8                             ; B90C 85 F8                    ..
+        jsr     TextUiSystem_Entry_BCEB         ; B90E 20 EB BC                  ..
+        ldx     #$FF                            ; B911 A2 FF                    ..
+TextUiSystem_Branch_B913:
+        inx                                     ; B913 E8                       .
+        lda     $07B0,x                         ; B914 BD B0 07                 ...
+        cmp     #$FF                            ; B917 C9 FF                    ..
+        bne     TextUiSystem_Branch_B913        ; B919 D0 F8                    ..
+        lda     $F8                             ; B91B A5 F8                    ..
+        sta     $07B0,x                         ; B91D 9D B0 07                 ...
+TextUiSystem_Branch_B920:
+        ldy     #$03                            ; B920 A0 03                    ..
+TextUiSystem_Branch_B922:
+        lda     $07B0,y                         ; B922 B9 B0 07                 ...
+        sta     $6E,y                           ; B925 99 6E 00                 .n.
+        dey                                     ; B928 88                       .
+        bpl     TextUiSystem_Branch_B922        ; B929 10 F7                    ..
+TextUiSystem_Branch_B92B:
         rts                                     ; B92B 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A5,$F8,$C9,$F0,$B0,$11,$AD,$CF ; B92C A5 F8 C9 F0 B0 11 AD CF  ........
-        db   $03,$4D,$D3,$03,$29,$0F,$D0,$07 ; B934 03 4D D3 03 29 0F D0 07  .M..)...
-        db   $A5,$F8,$18,$69,$F0,$85,$F8     ; B93C A5 F8 18 69 F0 85 F8     ...i...
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B943:
+TextUiSystem_Entry_B92C:
+        lda     $F8                             ; B92C A5 F8                    ..
+        cmp     #$F0                            ; B92E C9 F0                    ..
+        bcs     TextUiSystem_Branch_B943        ; B930 B0 11                    ..
+        lda     TextCursorPosition              ; B932 AD CF 03                 ...
+        eor     $03D3                           ; B935 4D D3 03                 M..
+        and     #$0F                            ; B938 29 0F                    ).
+        bne     TextUiSystem_Branch_B943        ; B93A D0 07                    ..
+        lda     $F8                             ; B93C A5 F8                    ..
+        clc                                     ; B93E 18                       .
+        adc     #$F0                            ; B93F 69 F0                    i.
+        sta     $F8                             ; B941 85 F8                    ..
+TextUiSystem_Branch_B943:
         rts                                     ; B943 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A0,$03,$B9,$B0,$07,$99,$6E,$00 ; B944 A0 03 B9 B0 07 99 6E 00  ......n.
-        db   $88,$10,$F7                     ; B94C 88 10 F7                 ...
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B94F:
+TextUiSystem_Entry_B944:
+        ldy     #$03                            ; B944 A0 03                    ..
+TextUiSystem_Branch_B946:
+        lda     $07B0,y                         ; B946 B9 B0 07                 ...
+        sta     $6E,y                           ; B949 99 6E 00                 .n.
+        dey                                     ; B94C 88                       .
+        bpl     TextUiSystem_Branch_B946        ; B94D 10 F7                    ..
         rts                                     ; B94F 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B950:
         lda     $F8                             ; B950 A5 F8                    ..
-        bmi     $B963                           ; B952 30 0F                    0.
+        bmi     TextUiSystem_Branch_B963        ; B952 30 0F                    0.
         ldx     $03DC                           ; B954 AE DC 03                 ...
         lda     $B964,x                         ; B957 BD 64 B9                 .d.
         clc                                     ; B95A 18                       .
@@ -6872,14 +7494,16 @@ TextUiSystem_Entry_B94F:
         tax                                     ; B95D AA                       .
         lda     $B96C,x                         ; B95E BD 6C B9                 .l.
         sta     $F8                             ; B961 85 F8                    ..
+TextUiSystem_Branch_B963:
         rts                                     ; B963 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$04,$04,$04,$04,$04,$04,$01 ; B964 00 04 04 04 04 04 04 01  ........
         db   $02,$00,$01,$04,$00,$01,$02,$03 ; B96C 02 00 01 04 00 01 02 03  ........
         db   $04                             ; B974 04                       .
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B975:
         lda     $F8                             ; B975 A5 F8                    ..
-        bmi     TextUiSystem_Entry_B988         ; B977 30 0F                    0.
+        bmi     TextUiSystem_Branch_B988        ; B977 30 0F                    0.
         ldx     $F8                             ; B979 A6 F8                    ..
         lda     $B232,x                         ; B97B BD 32 B2                 .2.
         clc                                     ; B97E 18                       .
@@ -6887,9 +7511,10 @@ TextUiSystem_Entry_B94F:
         tax                                     ; B982 AA                       .
         lda     $B234,x                         ; B983 BD 34 B2                 .4.
         sta     $F8                             ; B986 85 F8                    ..
-TextUiSystem_Entry_B988:
+TextUiSystem_Branch_B988:
         rts                                     ; B988 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_B989:
         lda     #$FF                            ; B989 A9 FF                    ..
         sta     $07B1                           ; B98B 8D B1 07                 ...
         lda     $F8                             ; B98E A5 F8                    ..
@@ -6903,33 +7528,62 @@ TextUiSystem_Entry_B988:
         brk                                     ; B9A1 00                       .
         db   $00,$13                         ; B9A2 00 13                    ..
 ; ----------------------------------------------------------------------------
-        bcc     $B9AB                           ; B9A4 90 05                    ..
+        bcc     TextUiSystem_Branch_B9AB        ; B9A4 90 05                    ..
         and     #$7F                            ; B9A6 29 7F                    ).
         sta     $07B1                           ; B9A8 8D B1 07                 ...
+TextUiSystem_Branch_B9AB:
         rts                                     ; B9AB 60                       `
 ; ----------------------------------------------------------------------------
-        db   $37,$38,$39,$3A,$A9,$00,$8D,$B5 ; B9AC 37 38 39 3A A9 00 8D B5  789:....
-        db   $07,$8D,$B6,$07,$8D,$B7,$07,$8D ; B9B4 07 8D B6 07 8D B7 07 8D  ........
-        db   $B8,$07                         ; B9BC B8 07                    ..
+        db   $37,$38,$39,$3A                 ; B9AC 37 38 39 3A              789:
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B9BE:
+TextUiSystem_Entry_B9B0:
+        lda     #$00                            ; B9B0 A9 00                    ..
+        sta     $07B5                           ; B9B2 8D B5 07                 ...
+        sta     $07B6                           ; B9B5 8D B6 07                 ...
+        sta     $07B7                           ; B9B8 8D B7 07                 ...
+        sta     $07B8                           ; B9BB 8D B8 07                 ...
         rts                                     ; B9BE 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$D4,$03,$29,$1F,$D0,$1B,$A5 ; B9BF AD D4 03 29 1F D0 1B A5  ...)....
-        db   $F8,$20,$F0,$BE,$AD,$B4,$07,$09 ; B9C7 F8 20 F0 BE AD B4 07 09  . ......
-        db   $50,$8D,$B4,$07,$A5,$F5,$09,$08 ; B9CF 50 8D B4 07 A5 F5 09 08  P.......
-        db   $85,$F5,$AD,$D4,$03,$09,$08,$8D ; B9D7 85 F5 AD D4 03 09 08 8D  ........
-        db   $D4,$03                         ; B9DF D4 03                    ..
-; ----------------------------------------------------------------------------
-TextUiSystem_Entry_B9E1:
+TextUiSystem_Entry_B9BF:
+        lda     $03D4                           ; B9BF AD D4 03                 ...
+        and     #$1F                            ; B9C2 29 1F                    ).
+        bne     TextUiSystem_Branch_B9E1        ; B9C4 D0 1B                    ..
+        lda     $F8                             ; B9C6 A5 F8                    ..
+        jsr     TextUiSystem_Entry_BEF0         ; B9C8 20 F0 BE                  ..
+        lda     $07B4                           ; B9CB AD B4 07                 ...
+        ora     #$50                            ; B9CE 09 50                    .P
+        sta     $07B4                           ; B9D0 8D B4 07                 ...
+        lda     $F5                             ; B9D3 A5 F5                    ..
+        ora     #$08                            ; B9D5 09 08                    ..
+        sta     $F5                             ; B9D7 85 F5                    ..
+        lda     $03D4                           ; B9D9 AD D4 03                 ...
+        ora     #$08                            ; B9DC 09 08                    ..
+        sta     $03D4                           ; B9DE 8D D4 03                 ...
+TextUiSystem_Branch_B9E1:
         rts                                     ; B9E1 60                       `
 ; ----------------------------------------------------------------------------
-        db   $AD,$D4,$03,$29,$1F,$D0,$1F,$AD ; B9E2 AD D4 03 29 1F D0 1F AD  ...)....
-        db   $B5,$07,$49,$01,$8D,$B5,$07,$AD ; B9EA B5 07 49 01 8D B5 07 AD  ..I.....
-        db   $B4,$07,$09,$50,$8D,$B4,$07,$A5 ; B9F2 B4 07 09 50 8D B4 07 A5  ...P....
-        db   $F5,$09,$08,$85,$F5,$AD,$D4,$03 ; B9FA F5 09 08 85 F5 AD D4 03  ........
-        db   $09,$08,$8D,$D4,$03,$60,$A9,$00 ; BA02 09 08 8D D4 03 60 A9 00  .....`..
-        db   $8D,$B5,$07,$60                 ; BA0A 8D B5 07 60              ...`
+TextUiSystem_Entry_B9E2:
+        lda     $03D4                           ; B9E2 AD D4 03                 ...
+        and     #$1F                            ; B9E5 29 1F                    ).
+        bne     TextUiSystem_Branch_BA08        ; B9E7 D0 1F                    ..
+        lda     $07B5                           ; B9E9 AD B5 07                 ...
+        eor     #$01                            ; B9EC 49 01                    I.
+        sta     $07B5                           ; B9EE 8D B5 07                 ...
+        lda     $07B4                           ; B9F1 AD B4 07                 ...
+        ora     #$50                            ; B9F4 09 50                    .P
+        sta     $07B4                           ; B9F6 8D B4 07                 ...
+        lda     $F5                             ; B9F9 A5 F5                    ..
+        ora     #$08                            ; B9FB 09 08                    ..
+        sta     $F5                             ; B9FD 85 F5                    ..
+        lda     $03D4                           ; B9FF AD D4 03                 ...
+        ora     #$08                            ; BA02 09 08                    ..
+        sta     $03D4                           ; BA04 8D D4 03                 ...
+        rts                                     ; BA07 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BA08:
+        lda     #$00                            ; BA08 A9 00                    ..
+        sta     $07B5                           ; BA0A 8D B5 07                 ...
+        rts                                     ; BA0D 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BA0E:
         lda     $F3                             ; BA0E A5 F3                    ..
@@ -6951,7 +7605,7 @@ TextUiSystem_Branch_BA26:
 TextUiSystem_Entry_BA29:
         pha                                     ; BA29 48                       H
         and     #$80                            ; BA2A 29 80                    ).
-        beq     $BA40                           ; BA2C F0 12                    ..
+        beq     TextUiSystem_Branch_BA40        ; BA2C F0 12                    ..
         txa                                     ; BA2E 8A                       .
         pha                                     ; BA2F 48                       H
         lda     $F2                             ; BA30 A5 F2                    ..
@@ -6963,6 +7617,7 @@ TextUiSystem_Entry_BA29:
         sta     $F2                             ; BA3C 85 F2                    ..
         pla                                     ; BA3E 68                       h
         tax                                     ; BA3F AA                       .
+TextUiSystem_Branch_BA40:
         pla                                     ; BA40 68                       h
         and     #$7F                            ; BA41 29 7F                    ).
         rts                                     ; BA43 60                       `
@@ -7011,11 +7666,23 @@ TextUiSystem_Branch_BA7D:
         inx                                     ; BA82 E8                       .
         cpx     #$04                            ; BA83 E0 04                    ..
         bne     TextUiSystem_Branch_BA7D        ; BA85 D0 F6                    ..
+TextUiSystem_Branch_BA87:
         rts                                     ; BA87 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$64,$BA,$A2,$00,$A0,$09,$B5 ; BA88 20 64 BA A2 00 A0 09 B5   d......
-        db   $72,$C9,$00,$F0,$F2,$20,$B3,$98 ; BA90 72 C9 00 F0 F2 20 B3 98  r.... ..
-        db   $88,$E8,$E0,$04,$D0,$F1,$60     ; BA98 88 E8 E0 04 D0 F1 60     ......`
+TextUiSystem_Entry_BA88:
+        jsr     TextUiSystem_Entry_BA64         ; BA88 20 64 BA                  d.
+        ldx     #$00                            ; BA8B A2 00                    ..
+        ldy     #$09                            ; BA8D A0 09                    ..
+TextUiSystem_Branch_BA8F:
+        lda     $72,x                           ; BA8F B5 72                    .r
+        cmp     #$00                            ; BA91 C9 00                    ..
+        beq     TextUiSystem_Branch_BA87        ; BA93 F0 F2                    ..
+        jsr     TextUiSystem_Entry_98B3         ; BA95 20 B3 98                  ..
+        dey                                     ; BA98 88                       .
+        inx                                     ; BA99 E8                       .
+        cpx     #$04                            ; BA9A E0 04                    ..
+        bne     TextUiSystem_Branch_BA8F        ; BA9C D0 F1                    ..
+        rts                                     ; BA9E 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BA9F:
         ldx     #$00                            ; BA9F A2 00                    ..
@@ -7059,22 +7726,24 @@ TextUiSystem_Branch_BACC:
         brk                                     ; BACC 00                       .
         db   $04,$B7                         ; BACD 04 B7                    ..
 ; ----------------------------------------------------------------------------
-        jmp     $BB3A                           ; BACF 4C 3A BB                 L:.
+        jmp     TextUiSystem_Branch_BB3A        ; BACF 4C 3A BB                 L:.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_BAD2:
         tay                                     ; BAD2 A8                       .
         beq     TextUiSystem_Branch_BB26        ; BAD3 F0 51                    .Q
         cmp     $03FF                           ; BAD5 CD FF 03                 ...
-        bcs     $BB1E                           ; BAD8 B0 44                    .D
+        bcs     TextUiSystem_Branch_BB1E        ; BAD8 B0 44                    .D
         pha                                     ; BADA 48                       H
         lda     #$00                            ; BADB A9 00                    ..
+TextUiSystem_Branch_BADD:
         cmp     $03E3,y                         ; BADD D9 E3 03                 ...
-        beq     $BAE9                           ; BAE0 F0 07                    ..
+        beq     TextUiSystem_Branch_BAE9        ; BAE0 F0 07                    ..
         dey                                     ; BAE2 88                       .
-        bpl     $BADD                           ; BAE3 10 F8                    ..
+        bpl     TextUiSystem_Branch_BADD        ; BAE3 10 F8                    ..
         pla                                     ; BAE5 68                       h
         jmp     TextUiSystem_Branch_BB26        ; BAE6 4C 26 BB                 L&.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BAE9:
         ldx     $03FF                           ; BAE9 AE FF 03                 ...
         lda     #$00                            ; BAEC A9 00                    ..
         sta     $03E3,x                         ; BAEE 9D E3 03                 ...
@@ -7083,6 +7752,7 @@ TextUiSystem_Branch_BAD2:
         clc                                     ; BAF4 18                       .
         adc     #$0B                            ; BAF5 69 0B                    i.
         tay                                     ; BAF7 A8                       .
+TextUiSystem_Branch_BAF8:
         lda     $03E3,y                         ; BAF8 B9 E3 03                 ...
         pha                                     ; BAFB 48                       H
         lda     #$00                            ; BAFC A9 00                    ..
@@ -7091,47 +7761,55 @@ TextUiSystem_Branch_BAD2:
         sta     $03EF,x                         ; BB02 9D EF 03                 ...
         dey                                     ; BB05 88                       .
         dex                                     ; BB06 CA                       .
-        bpl     $BAF8                           ; BB07 10 EF                    ..
+        bpl     TextUiSystem_Branch_BAF8        ; BB07 10 EF                    ..
         pla                                     ; BB09 68                       h
         tay                                     ; BB0A A8                       .
         ldx     #$00                            ; BB0B A2 00                    ..
+TextUiSystem_Branch_BB0D:
         lda     $03E3,x                         ; BB0D BD E3 03                 ...
         jsr     TextUiSystem_Entry_98D2         ; BB10 20 D2 98                  ..
         lda     $03EF,x                         ; BB13 BD EF 03                 ...
         jsr     TextUiSystem_Entry_98B3         ; BB16 20 B3 98                  ..
         inx                                     ; BB19 E8                       .
         dey                                     ; BB1A 88                       .
-        bne     $BB0D                           ; BB1B D0 F0                    ..
+        bne     TextUiSystem_Branch_BB0D        ; BB1B D0 F0                    ..
         rts                                     ; BB1D 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BB1E:
         lda     #$00                            ; BB1E A9 00                    ..
         ldx     $03FF                           ; BB20 AE FF 03                 ...
         sta     $03E3,x                         ; BB23 9D E3 03                 ...
 TextUiSystem_Branch_BB26:
         ldx     #$00                            ; BB26 A2 00                    ..
+TextUiSystem_Branch_BB28:
         lda     $03E3,x                         ; BB28 BD E3 03                 ...
         cmp     #$40                            ; BB2B C9 40                    .@
-        beq     $BB39                           ; BB2D F0 0A                    ..
+        beq     TextUiSystem_Branch_BB39        ; BB2D F0 0A                    ..
         jsr     TextUiSystem_Entry_98D2         ; BB2F 20 D2 98                  ..
         jsr     TextUiSystem_Entry_98FE         ; BB32 20 FE 98                  ..
         inx                                     ; BB35 E8                       .
         dey                                     ; BB36 88                       .
-        bne     $BB28                           ; BB37 D0 EF                    ..
+        bne     TextUiSystem_Branch_BB28        ; BB37 D0 EF                    ..
+TextUiSystem_Branch_BB39:
         rts                                     ; BB39 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BB3A:
         tay                                     ; BB3A A8                       .
-        beq     $BB45                           ; BB3B F0 08                    ..
+        beq     TextUiSystem_Branch_BB45        ; BB3B F0 08                    ..
         lda     #$00                            ; BB3D A9 00                    ..
         ldx     $03FF                           ; BB3F AE FF 03                 ...
         sta     $03E3,x                         ; BB42 9D E3 03                 ...
+TextUiSystem_Branch_BB45:
         ldx     #$00                            ; BB45 A2 00                    ..
+TextUiSystem_Branch_BB47:
         lda     $03E3,x                         ; BB47 BD E3 03                 ...
         cmp     #$40                            ; BB4A C9 40                    .@
-        beq     $BB55                           ; BB4C F0 07                    ..
+        beq     TextUiSystem_Branch_BB55        ; BB4C F0 07                    ..
         jsr     TextUiSystem_Entry_98B3         ; BB4E 20 B3 98                  ..
         inx                                     ; BB51 E8                       .
         dey                                     ; BB52 88                       .
-        bne     $BB47                           ; BB53 D0 F2                    ..
+        bne     TextUiSystem_Branch_BB47        ; BB53 D0 F2                    ..
+TextUiSystem_Branch_BB55:
         rts                                     ; BB55 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BB56:
@@ -7169,6 +7847,7 @@ TextUiSystem_Branch_BB83:
         bne     TextUiSystem_Branch_BB83        ; BB8A D0 F7                    ..
         rts                                     ; BB8C 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_BB8D:
         lda     #$00                            ; BB8D A9 00                    ..
         sta     $03DD                           ; BB8F 8D DD 03                 ...
         jsr     TextUiSystem_Entry_BA44         ; BB92 20 44 BA                  D.
@@ -7178,8 +7857,9 @@ TextUiSystem_Branch_BB83:
         jsr     TextUiSystem_Entry_98B3         ; BB9B 20 B3 98                  ..
         lda     #$71                            ; BB9E A9 71                    .q
         cpy     #$00                            ; BBA0 C0 00                    ..
-        bne     $BBA6                           ; BBA2 D0 02                    ..
+        bne     TextUiSystem_Branch_BBA6        ; BBA2 D0 02                    ..
         lda     #$00                            ; BBA4 A9 00                    ..
+TextUiSystem_Branch_BBA6:
         jsr     TextUiSystem_Entry_98D2         ; BBA6 20 D2 98                  ..
         lda     $73                             ; BBA9 A5 73                    .s
         jsr     TextUiSystem_Entry_98B3         ; BBAB 20 B3 98                  ..
@@ -7189,22 +7869,25 @@ TextUiSystem_Branch_BB83:
         jsr     TextUiSystem_Entry_98B3         ; BBB5 20 B3 98                  ..
         rts                                     ; BBB8 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BBB9:
+TextUiSystem_Entry_BBB9:
         lda     #$0B                            ; BBB9 A9 0B                    ..
         pha                                     ; BBBB 48                       H
         lda     #$2C                            ; BBBC A9 2C                    .,
-        jmp     $BBC6                           ; BBBE 4C C6 BB                 L..
+        jmp     TextUiSystem_Branch_BBC6        ; BBBE 4C C6 BB                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BBC1:
+TextUiSystem_Entry_BBC1:
         lda     #$0C                            ; BBC1 A9 0C                    ..
         pha                                     ; BBC3 48                       H
         lda     #$31                            ; BBC4 A9 31                    .1
+TextUiSystem_Branch_BBC6:
         jsr     TextUiSystem_Entry_98B3         ; BBC6 20 B3 98                  ..
         pla                                     ; BBC9 68                       h
         jsr     TextUiSystem_Entry_BB56         ; BBCA 20 56 BB                  V.
         jmp     TextUiSystem_Entry_BB75         ; BBCD 4C 75 BB                 Lu.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_BBD0:
         lda     #$05                            ; BBD0 A9 05                    ..
+TextUiSystem_Branch_BBD2:
         jsr     TextUiSystem_Entry_BB56         ; BBD2 20 56 BB                  V.
         lda     #$FF                            ; BBD5 A9 FF                    ..
         jsr     TextUiSystem_Entry_98B3         ; BBD7 20 B3 98                  ..
@@ -7221,10 +7904,11 @@ TextUiSystem_Branch_BBC1:
         lda     $02                             ; BBF3 A5 02                    ..
         jmp     TextUiSystem_Entry_98B3         ; BBF5 4C B3 98                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Entry_BBF8:
         lda     #$06                            ; BBF8 A9 06                    ..
-        jmp     $BBD2                           ; BBFA 4C D2 BB                 L..
+        jmp     TextUiSystem_Branch_BBD2        ; BBFA 4C D2 BB                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BBFD:
+TextUiSystem_Entry_BBFD:
         ldx     $03DB                           ; BBFD AE DB 03                 ...
         brk                                     ; BC00 00                       .
         db   $2B,$53                         ; BC01 2B 53                    +S
@@ -7242,11 +7926,12 @@ TextUiSystem_Branch_BBFD:
         db   $0F,$53                         ; BC17 0F 53                    .S
 ; ----------------------------------------------------------------------------
         lda     $75                             ; BC19 A5 75                    .u
-        bne     $BC25                           ; BC1B D0 08                    ..
+        bne     TextUiSystem_Branch_BC25        ; BC1B D0 08                    ..
         lda     #$0A                            ; BC1D A9 0A                    ..
         jsr     TextUiSystem_Entry_BD41         ; BC1F 20 41 BD                  A.
         jmp     TextUiSystem_Entry_BB75         ; BC22 4C 75 BB                 Lu.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BC25:
         asl     a                               ; BC25 0A                       .
         tay                                     ; BC26 A8                       .
         dey                                     ; BC27 88                       .
@@ -7294,10 +7979,11 @@ TextUiSystem_Branch_BC6D:
         and     #$0F                            ; BC70 29 0F                    ).
         tay                                     ; BC72 A8                       .
         lda     $BCD2,y                         ; BC73 B9 D2 BC                 ...
-        beq     $BC81                           ; BC76 F0 09                    ..
+        beq     TextUiSystem_Branch_BC81        ; BC76 F0 09                    ..
         ldy     $03DD                           ; BC78 AC DD 03                 ...
         lda     $BCCA,y                         ; BC7B B9 CA BC                 ...
         jsr     TextUiSystem_Entry_98B3         ; BC7E 20 B3 98                  ..
+TextUiSystem_Branch_BC81:
         lda     $03DC                           ; BC81 AD DC 03                 ...
         pha                                     ; BC84 48                       H
         lda     $03DD                           ; BC85 AD DD 03                 ...
@@ -7322,7 +8008,7 @@ TextUiSystem_Branch_BCA1:
         tay                                     ; BCA7 A8                       .
         inc     $03DB                           ; BCA8 EE DB 03                 ...
         dec     $03DC                           ; BCAB CE DC 03                 ...
-        beq     $BCBC                           ; BCAE F0 0C                    ..
+        beq     TextUiSystem_Branch_BCBC        ; BCAE F0 0C                    ..
         tya                                     ; BCB0 98                       .
         lsr     a                               ; BCB1 4A                       J
         tax                                     ; BCB2 AA                       .
@@ -7330,6 +8016,7 @@ TextUiSystem_Branch_BCA1:
         jsr     TextUiSystem_Entry_98B3         ; BCB6 20 B3 98                  ..
         jmp     TextUiSystem_Branch_BCA1        ; BCB9 4C A1 BC                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BCBC:
         pla                                     ; BCBC 68                       h
         sta     $03DC                           ; BCBD 8D DC 03                 ...
         rts                                     ; BCC0 60                       `
@@ -7360,19 +8047,22 @@ TextUiSystem_Branch_BCF3:
         jsr     TextUiSystem_Entry_98FE         ; BCF3 20 FE 98                  ..
 TextUiSystem_Branch_BCF6:
         ldy     #$03                            ; BCF6 A0 03                    ..
+TextUiSystem_Branch_BCF8:
         jsr     TextUiSystem_Entry_BD05         ; BCF8 20 05 BD                  ..
         cmp     #$00                            ; BCFB C9 00                    ..
-        bne     $BD02                           ; BCFD D0 03                    ..
+        bne     TextUiSystem_Branch_BD02        ; BCFD D0 03                    ..
         dey                                     ; BCFF 88                       .
-        bpl     $BCF8                           ; BD00 10 F6                    ..
+        bpl     TextUiSystem_Branch_BCF8        ; BD00 10 F6                    ..
+TextUiSystem_Branch_BD02:
         jmp     TextUiSystem_Entry_98B3         ; BD02 4C B3 98                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BD05:
         ldx     $03DB                           ; BD05 AE DB 03                 ...
-        bpl     $BD0F                           ; BD08 10 05                    ..
+        bpl     TextUiSystem_Branch_BD0F        ; BD08 10 05                    ..
         ldx     #$00                            ; BD0A A2 00                    ..
         jmp     TextUiSystem_Branch_BD20        ; BD0C 4C 20 BD                 L .
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BD0F:
         lda     $BD24,y                         ; BD0F B9 24 BD                 .$.
         brk                                     ; BD12 00                       .
         db   $46,$73                         ; BD13 46 73                    Fs
@@ -7454,18 +8144,20 @@ TextUiSystem_Entry_BD91:
         sbc     $BDBE,y                         ; BD99 F9 BE BD                 ...
         lda     $74                             ; BD9C A5 74                    .t
         sbc     $BDBD,y                         ; BD9E F9 BD BD                 ...
-        bcc     $BDB2                           ; BDA1 90 0F                    ..
+        bcc     TextUiSystem_Branch_BDB2        ; BDA1 90 0F                    ..
         lda     $BDBF,y                         ; BDA3 B9 BF BD                 ...
         sta     $72                             ; BDA6 85 72                    .r
         lda     $BDBE,y                         ; BDA8 B9 BE BD                 ...
         sta     $73                             ; BDAB 85 73                    .s
         lda     $BDBD,y                         ; BDAD B9 BD BD                 ...
         sta     $74                             ; BDB0 85 74                    .t
+TextUiSystem_Branch_BDB2:
         ldx     #$07                            ; BDB2 A2 07                    ..
         lda     #$F6                            ; BDB4 A9 F6                    ..
+TextUiSystem_Branch_BDB6:
         sta     $00,x                         ; BDB6 95 00                    ..
         dex                                     ; BDB8 CA                       .
-        bpl     $BDB6                           ; BDB9 10 FB                    ..
+        bpl     TextUiSystem_Branch_BDB6        ; BDB9 10 FB                    ..
         clc                                     ; BDBB 18                       .
         rts                                     ; BDBC 60                       `
 ; ----------------------------------------------------------------------------
@@ -7477,8 +8169,9 @@ TextUiSystem_Entry_BD91:
 TextUiSystem_Entry_BDC9:
         ldy     #$00                            ; BDC9 A0 00                    ..
         ldx     #$01                            ; BDCB A2 01                    ..
+TextUiSystem_Branch_BDCD:
         bit     $74                             ; BDCD 24 74                    $t
-        bpl     $BDE9                           ; BDCF 10 18                    ..
+        bpl     TextUiSystem_Branch_BDE9        ; BDCF 10 18                    ..
         lda     $73                             ; BDD1 A5 73                    .s
         sec                                     ; BDD3 38                       8
         sbc     $BE0A,y                         ; BDD4 F9 0A BE                 ...
@@ -7488,12 +8181,14 @@ TextUiSystem_Entry_BDC9:
         sta     $74                             ; BDDE 85 74                    .t
         lda     $BE08,y                         ; BDE0 B9 08 BE                 ...
         jsr     TextUiSystem_Entry_BE47         ; BDE3 20 47 BE                  G.
-        jmp     $BDCD                           ; BDE6 4C CD BD                 L..
+        jmp     TextUiSystem_Branch_BDCD        ; BDE6 4C CD BD                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BDE9:
         lda     $BE08,y                         ; BDE9 B9 08 BE                 ...
         cmp     #$01                            ; BDEC C9 01                    ..
-        bne     $BDF1                           ; BDEE D0 01                    ..
+        bne     TextUiSystem_Branch_BDF1        ; BDEE D0 01                    ..
         inx                                     ; BDF0 E8                       .
+TextUiSystem_Branch_BDF1:
         asl     $72                             ; BDF1 06 72                    .r
         rol     $73                             ; BDF3 26 73                    &s
         rol     $74                             ; BDF5 26 74                    &t
@@ -7501,7 +8196,7 @@ TextUiSystem_Entry_BDC9:
         iny                                     ; BDF8 C8                       .
         iny                                     ; BDF9 C8                       .
         cpy     #$3F                            ; BDFA C0 3F                    .?
-        bne     $BDCD                           ; BDFC D0 CF                    ..
+        bne     TextUiSystem_Branch_BDCD        ; BDFC D0 CF                    ..
         lda     $74                             ; BDFE A5 74                    .t
         lsr     a                               ; BE00 4A                       J
         lsr     a                               ; BE01 4A                       J
@@ -7524,10 +8219,11 @@ TextUiSystem_Entry_BDC9:
 TextUiSystem_Entry_BE47:
         clc                                     ; BE47 18                       .
         adc     $00,x                         ; BE48 75 00                    u.
-        bcs     $BE4F                           ; BE4A B0 03                    ..
+        bcs     TextUiSystem_Branch_BE4F        ; BE4A B0 03                    ..
         sta     $00,x                         ; BE4C 95 00                    ..
         rts                                     ; BE4E 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BE4F:
         adc     #$F5                            ; BE4F 69 F5                    i.
         sta     $00,x                         ; BE51 95 00                    ..
         txa                                     ; BE53 8A                       .
@@ -7536,10 +8232,11 @@ TextUiSystem_Entry_BE47:
 TextUiSystem_Branch_BE57:
         dex                                     ; BE57 CA                       .
         inc     $00,x                         ; BE58 F6 00                    ..
-        bne     $BE61                           ; BE5A D0 05                    ..
+        bne     TextUiSystem_Branch_BE61        ; BE5A D0 05                    ..
         sta     $00,x                         ; BE5C 95 00                    ..
         jmp     TextUiSystem_Branch_BE57        ; BE5E 4C 57 BE                 LW.
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BE61:
         pla                                     ; BE61 68                       h
         tax                                     ; BE62 AA                       .
         rts                                     ; BE63 60                       `
@@ -7547,41 +8244,49 @@ TextUiSystem_Branch_BE57:
 TextUiSystem_Entry_BE64:
         lda     #$00                            ; BE64 A9 00                    ..
         ldx     #$00                            ; BE66 A2 00                    ..
+TextUiSystem_Branch_BE68:
         ldy     $00,x                         ; BE68 B4 00                    ..
         cpy     #$F6                            ; BE6A C0 F6                    ..
-        bne     $BE75                           ; BE6C D0 07                    ..
+        bne     TextUiSystem_Branch_BE75        ; BE6C D0 07                    ..
         sta     $00,x                         ; BE6E 95 00                    ..
         inx                                     ; BE70 E8                       .
         cpx     #$07                            ; BE71 E0 07                    ..
-        bne     $BE68                           ; BE73 D0 F3                    ..
+        bne     TextUiSystem_Branch_BE68        ; BE73 D0 F3                    ..
+TextUiSystem_Branch_BE75:
         lda     $00,x                         ; BE75 B5 00                    ..
         clc                                     ; BE77 18                       .
         adc     #$0B                            ; BE78 69 0B                    i.
         sta     $00,x                         ; BE7A 95 00                    ..
         inx                                     ; BE7C E8                       .
         cpx     #$08                            ; BE7D E0 08                    ..
-        bne     $BE75                           ; BE7F D0 F4                    ..
+        bne     TextUiSystem_Branch_BE75        ; BE7F D0 F4                    ..
         rts                                     ; BE81 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BE82:
         ldx     #$00                            ; BE82 A2 00                    ..
+TextUiSystem_Branch_BE84:
         lda     $0000,y                         ; BE84 B9 00 00                 ...
         sta     $00,x                         ; BE87 95 00                    ..
         inx                                     ; BE89 E8                       .
         iny                                     ; BE8A C8                       .
         cpy     #$08                            ; BE8B C0 08                    ..
-        bne     $BE84                           ; BE8D D0 F5                    ..
+        bne     TextUiSystem_Branch_BE84        ; BE8D D0 F5                    ..
         rts                                     ; BE8F 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A2,$01,$86,$06,$4C,$9C,$BE     ; BE90 A2 01 86 06 4C 9C BE     ....L..
+TextUiSystem_Entry_BE90:
+        ldx     #$01                            ; BE90 A2 01                    ..
+        stx     $06                             ; BE92 86 06                    ..
+        jmp     TextUiSystem_Branch_BE9C        ; BE94 4C 9C BE                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BE97:
         ldx     $03D6                           ; BE97 AE D6 03                 ...
         stx     $06                             ; BE9A 86 06                    ..
+TextUiSystem_Branch_BE9C:
         sta     $03                             ; BE9C 85 03                    ..
 TextUiSystem_Entry_BE9E:
         ldy     #$FF                            ; BE9E A0 FF                    ..
         sty     $04                             ; BEA0 84 04                    ..
+TextUiSystem_Branch_BEA2:
         asl     a                               ; BEA2 0A                       .
         tay                                     ; BEA3 A8                       .
         lda     $06                             ; BEA4 A5 06                    ..
@@ -7603,16 +8308,19 @@ TextUiSystem_Entry_BE9E:
         sta     $02                             ; BEC0 85 02                    ..
         stx     $01                             ; BEC2 86 01                    ..
         ldy     $04                             ; BEC4 A4 04                    ..
+TextUiSystem_Branch_BEC6:
         iny                                     ; BEC6 C8                       .
         cpy     $02                             ; BEC7 C4 02                    ..
-        beq     $BED5                           ; BEC9 F0 0A                    ..
+        beq     TextUiSystem_Branch_BED5        ; BEC9 F0 0A                    ..
         lda     ($00),y                       ; BECB B1 00                    ..
-        bmi     $BED6                           ; BECD 30 07                    0.
+        bmi     TextUiSystem_Branch_BED6        ; BECD 30 07                    0.
         jsr     TextUiSystem_Entry_98B3         ; BECF 20 B3 98                  ..
-        jmp     $BEC6                           ; BED2 4C C6 BE                 L..
+        jmp     TextUiSystem_Branch_BEC6        ; BED2 4C C6 BE                 L..
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BED5:
         rts                                     ; BED5 60                       `
 ; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BED6:
         sty     $05                             ; BED6 84 05                    ..
         lda     ($00),y                       ; BED8 B1 00                    ..
         and     #$7F                            ; BEDA 29 7F                    ).
@@ -7620,7 +8328,7 @@ TextUiSystem_Entry_BE9E:
         lda     $05                             ; BEDF A5 05                    ..
         sta     $04                             ; BEE1 85 04                    ..
         lda     $03                             ; BEE3 A5 03                    ..
-        jmp     $BEA2                           ; BEE5 4C A2 BE                 L..
+        jmp     TextUiSystem_Branch_BEA2        ; BEE5 4C A2 BE                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BEE8:
         pha                                     ; BEE8 48                       H
@@ -7631,8 +8339,13 @@ TextUiSystem_Entry_BEE8:
         pla                                     ; BEEE 68                       h
         rts                                     ; BEEF 60                       `
 ; ----------------------------------------------------------------------------
-        db   $20,$02,$BF,$4A,$4A,$4A,$4A,$4C ; BEF0 20 02 BF 4A 4A 4A 4A 4C   ..JJJJL
-        db   $64,$BF                         ; BEF8 64 BF                    d.
+TextUiSystem_Entry_BEF0:
+        jsr     TextUiSystem_Entry_BF02         ; BEF0 20 02 BF                  ..
+        lsr     a                               ; BEF3 4A                       J
+        lsr     a                               ; BEF4 4A                       J
+        lsr     a                               ; BEF5 4A                       J
+        lsr     a                               ; BEF6 4A                       J
+        jmp     TextUiSystem_Entry_BF64         ; BEF7 4C 64 BF                 Ld.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BEFA:
         jsr     TextUiSystem_Entry_BF02         ; BEFA 20 02 BF                  ..
@@ -7701,15 +8414,49 @@ TextUiSystem_Branch_BF61:
         and     #$03                            ; BF61 29 03                    ).
         rts                                     ; BF63 60                       `
 ; ----------------------------------------------------------------------------
-        db   $85,$00,$A5,$03,$29,$03,$A8,$0A ; BF64 85 00 A5 03 29 03 A8 0A  ....)...
-        db   $AA,$B9,$8A,$BF,$85,$01,$CA,$30 ; BF6C AA B9 8A BF 85 01 CA 30  .......0
-        db   $05,$06,$00,$4C,$72,$BF,$A5,$03 ; BF74 05 06 00 4C 72 BF A5 03  ...Lr...
-        db   $20,$4C,$BF,$B9,$B5,$07,$25,$01 ; BF7C 20 4C BF B9 B5 07 25 01   L....%.
-        db   $05,$00,$99,$B5,$07,$60,$FC,$F3 ; BF84 05 00 99 B5 07 60 FC F3  .....`..
-        db   $CF,$3F,$20,$A6,$BF,$90,$09,$A9 ; BF8C CF 3F 20 A6 BF 90 09 A9  .? .....
-        db   $00,$8D,$DD,$03,$00,$62,$33,$60 ; BF94 00 8D DD 03 00 62 33 60  .....b3`
-        db   $A9,$40,$8D,$DD,$03,$00,$62,$23 ; BF9C A9 40 8D DD 03 00 62 23  .@....b#
-        db   $40,$60                         ; BFA4 40 60                    @`
+TextUiSystem_Entry_BF64:
+        sta     $00                           ; BF64 85 00                    ..
+        lda     $03                             ; BF66 A5 03                    ..
+        and     #$03                            ; BF68 29 03                    ).
+        tay                                     ; BF6A A8                       .
+        asl     a                               ; BF6B 0A                       .
+        tax                                     ; BF6C AA                       .
+        lda     $BF8A,y                         ; BF6D B9 8A BF                 ...
+        sta     $01                             ; BF70 85 01                    ..
+TextUiSystem_Branch_BF72:
+        dex                                     ; BF72 CA                       .
+        bmi     TextUiSystem_Branch_BF7A        ; BF73 30 05                    0.
+        asl     $00                           ; BF75 06 00                    ..
+        jmp     TextUiSystem_Branch_BF72        ; BF77 4C 72 BF                 Lr.
+; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BF7A:
+        lda     $03                             ; BF7A A5 03                    ..
+        jsr     TextUiSystem_Entry_BF4C         ; BF7C 20 4C BF                  L.
+        lda     $07B5,y                         ; BF7F B9 B5 07                 ...
+        and     $01                             ; BF82 25 01                    %.
+        ora     $00                           ; BF84 05 00                    ..
+        sta     $07B5,y                         ; BF86 99 B5 07                 ...
+        rts                                     ; BF89 60                       `
+; ----------------------------------------------------------------------------
+        db   $FC,$F3,$CF,$3F                 ; BF8A FC F3 CF 3F              ...?
+; ----------------------------------------------------------------------------
+TextUiSystem_Entry_BF8E:
+        jsr     TextUiSystem_Entry_BFA6         ; BF8E 20 A6 BF                  ..
+        bcc     TextUiSystem_Branch_BF9C        ; BF91 90 09                    ..
+        lda     #$00                            ; BF93 A9 00                    ..
+        sta     $03DD                           ; BF95 8D DD 03                 ...
+        brk                                     ; BF98 00                       .
+        db   $62,$33                         ; BF99 62 33                    b3
+; ----------------------------------------------------------------------------
+        rts                                     ; BF9B 60                       `
+; ----------------------------------------------------------------------------
+TextUiSystem_Branch_BF9C:
+        lda     #$40                            ; BF9C A9 40                    .@
+        sta     $03DD                           ; BF9E 8D DD 03                 ...
+        brk                                     ; BFA1 00                       .
+        db   $62,$23,$40                     ; BFA2 62 23 40                 b#@
+; ----------------------------------------------------------------------------
+        rts                                     ; BFA5 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_BFA6:
         brk                                     ; BFA6 00                       .

@@ -1,0 +1,21 @@
+# Bank<TAB>Start<TAB>EndExclusive<TAB>Reason
+13	8C59	8C5B	Final battle-action table value $2060 shares the RTS at $8C59 and JSR opcode at $8C5A; the entry report retains it as a reviewed non-code value.
+13	91EF	91F1	Final special-action pointer $D3AD shares the LDA opcode and low operand at $91EF-$91F0; the entry report retains it as a reviewed unsupported target.
+16	B4B5	B4B6	Final secondary command-data byte intentionally shares the PLP opcode at $B4B5.
+17	A14A	A14B	First map-timing byte intentionally shares the preceding RTS opcode at $A14A.
+18	BE7D	BE81	Directory-selected record bytes intentionally double as the entry $BE7D routine selected by directory entry $1B.
+1B	8020	8074	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8076	8080	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8082	8087	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8089	808A	Compressed text group $55 intentionally overlaps a BRK opcode.
+1B	808C	808D	Compressed text group $55 intentionally overlaps a BRK opcode.
+1B	808F	8091	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8097	80F4	Compressed text group $55 intentionally overlaps map-event service code.
+1B	80F7	8102	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8105	81FF	Compressed text group $55 intentionally overlaps map-event service code.
+1B	8202	822D	Compressed text group $55 intentionally overlaps map-event service code.
+1B	9E8F	9E90	Final graphics byte intentionally shares the BRK opcode at $9E8F.
+1B	AE32	AE33	Final PPU frame byte intentionally shares the BRK opcode at $AE32.
+1B	AFF7	AFF8	Final RAM-initialization byte intentionally shares the JSR opcode at $AFF7.
+1F	F1BF	F1C5	UI template bytes intentionally overlap code beginning at $F1BF.
+1F	F1C7	F1CB	UI template bytes intentionally overlap code beginning at $F1C7.

@@ -19,15 +19,17 @@ Bank08_MapTileServiceDirectory:
 Bank08_MapTileServices:
         lda     #$00                            ; 803C A9 00                    ..
         ldx     #$1F                            ; 803E A2 1F                    ..
+MapTileSystem_Branch_8040:
         sta     $6F20,x                         ; 8040 9D 20 6F                 . o
         sta     $6F40,x                         ; 8043 9D 40 6F                 .@o
         sta     $7600,x                         ; 8046 9D 00 76                 ..v
         dex                                     ; 8049 CA                       .
-        bpl     $8040                           ; 804A 10 F4                    ..
+        bpl     MapTileSystem_Branch_8040       ; 804A 10 F4                    ..
         ldx     #$9F                            ; 804C A2 9F                    ..
+MapTileSystem_Branch_804E:
         sta     $761F,x                         ; 804E 9D 1F 76                 ..v
         dex                                     ; 8051 CA                       .
-        bne     $804E                           ; 8052 D0 FA                    ..
+        bne     MapTileSystem_Branch_804E       ; 8052 D0 FA                    ..
         rts                                     ; 8054 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_8055:
@@ -39,16 +41,18 @@ MapTileSystem_Entry_8055:
         lda     $28                             ; 8061 A5 28                    .(
         asl     a                               ; 8063 0A                       .
         ldx     $09                             ; 8064 A6 09                    ..
-        beq     $806A                           ; 8066 F0 02                    ..
+        beq     MapTileSystem_Branch_806A       ; 8066 F0 02                    ..
         adc     $07                             ; 8068 65 07                    e.
+MapTileSystem_Branch_806A:
         sta     $00                             ; 806A 85 00                    ..
         lda     #$00                            ; 806C A9 00                    ..
         sta     $01                             ; 806E 85 01                    ..
         ldx     #$05                            ; 8070 A2 05                    ..
+MapTileSystem_Branch_8072:
         asl     $00                             ; 8072 06 00                    ..
         rol     $01                             ; 8074 26 01                    &.
         dex                                     ; 8076 CA                       .
-        bne     $8072                           ; 8077 D0 F9                    ..
+        bne     MapTileSystem_Branch_8072       ; 8077 D0 F9                    ..
         ldx     #$0E                            ; 8079 A2 0E                    ..
         ldy     $01                             ; 807B A4 01                    ..
         lda     $00                             ; 807D A5 00                    ..
@@ -56,11 +60,12 @@ MapTileSystem_Entry_8055:
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_8082:
         ldy     #$00                            ; 8082 A0 00                    ..
+MapTileSystem_Branch_8084:
         lda     ($0E),y                         ; 8084 B1 0E                    ..
         sta     $0A,y                           ; 8086 99 0A 00                 ...
         iny                                     ; 8089 C8                       .
         cpy     #$02                            ; 808A C0 02                    ..
-        bne     $8084                           ; 808C D0 F6                    ..
+        bne     MapTileSystem_Branch_8084       ; 808C D0 F6                    ..
         lda     SaveCurrentChapterMinus1        ; 808E AD 5A 61                 .Za
         cmp     #$01                            ; 8091 C9 01                    ..
         beq     MapTileSystem_Branch_80B2       ; 8093 F0 1D                    ..
@@ -118,7 +123,7 @@ MapTileSystem_Entry_80D5:
         lda     $0B                             ; 80DF A5 0B                    ..
         sta     $00                             ; 80E1 85 00                    ..
         ldx     $09                             ; 80E3 A6 09                    ..
-        bne     $8132                           ; 80E5 D0 4B                    .K
+        bne     MapTileSystem_Branch_8132       ; 80E5 D0 4B                    .K
         ldx     #$00                            ; 80E7 A2 00                    ..
         ldy     $01                             ; 80E9 A4 01                    ..
         lda     $00                             ; 80EB A5 00                    ..
@@ -153,13 +158,15 @@ MapTileSystem_Entry_80D5:
         stx     $01                             ; 8120 86 01                    ..
         lda     $08                             ; 8122 A5 08                    ..
         cmp     #$0F                            ; 8124 C9 0F                    ..
-        beq     $812F                           ; 8126 F0 07                    ..
+        beq     MapTileSystem_Branch_812F       ; 8126 F0 07                    ..
         cmp     #$0E                            ; 8128 C9 0E                    ..
-        bne     $814A                           ; 812A D0 1E                    ..
+        bne     MapTileSystem_Branch_814A       ; 812A D0 1E                    ..
         jmp     MapTileSystem_Branch_81E8       ; 812C 4C E8 81                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $81C6                           ; 812F 4C C6 81                 L..
+MapTileSystem_Branch_812F:
+        jmp     MapTileSystem_Branch_81C6       ; 812F 4C C6 81                 L..
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8132:
         lda     $0A                             ; 8132 A5 0A                    ..
         and     #$03                            ; 8134 29 03                    ).
         sta     $01                             ; 8136 85 01                    ..
@@ -167,18 +174,20 @@ MapTileSystem_Entry_80D5:
         lsr     a                               ; 813A 4A                       J
         lsr     a                               ; 813B 4A                       J
         cmp     #$3F                            ; 813C C9 3F                    .?
-        beq     $812F                           ; 813E F0 EF                    ..
+        beq     MapTileSystem_Branch_812F       ; 813E F0 EF                    ..
         sta     $08                             ; 8140 85 08                    ..
         lda     $0A                             ; 8142 A5 0A                    ..
         and     #$04                            ; 8144 29 04                    ).
         lsr     a                               ; 8146 4A                       J
         lsr     a                               ; 8147 4A                       J
         sta     $76                             ; 8148 85 76                    .v
+MapTileSystem_Branch_814A:
         ldx     #$04                            ; 814A A2 04                    ..
+MapTileSystem_Branch_814C:
         asl     $00                             ; 814C 06 00                    ..
         rol     $01                             ; 814E 26 01                    &.
         dex                                     ; 8150 CA                       .
-        bne     $814C                           ; 8151 D0 F9                    ..
+        bne     MapTileSystem_Branch_814C       ; 8151 D0 F9                    ..
         lda     $09                             ; 8153 A5 09                    ..
         asl     a                               ; 8155 0A                       .
         ora     $76                             ; 8156 05 76                    .v
@@ -203,14 +212,16 @@ MapTileSystem_Entry_80D5:
         lda     $01                             ; 8180 A5 01                    ..
         sta     $0101                           ; 8182 8D 01 01                 ...
         ldy     #$00                            ; 8185 A0 00                    ..
+MapTileSystem_Branch_8187:
         tya                                     ; 8187 98                       .
         pha                                     ; 8188 48                       H
         lda     ($02),y                         ; 8189 B1 02                    ..
         php                                     ; 818B 08                       .
         ldy     #$00                            ; 818C A0 00                    ..
         plp                                     ; 818E 28                       (
-        bpl     $8193                           ; 818F 10 02                    ..
+        bpl     MapTileSystem_Branch_8193       ; 818F 10 02                    ..
         ldy     #$FF                            ; 8191 A0 FF                    ..
+MapTileSystem_Branch_8193:
         sta     $72                             ; 8193 85 72                    .r
         sty     $73                             ; 8195 84 73                    .s
         asl     $72                             ; 8197 06 72                    .r
@@ -235,9 +246,10 @@ MapTileSystem_Entry_80D5:
         sta     $0103,x                         ; 81BB 9D 03 01                 ...
         iny                                     ; 81BE C8                       .
         cpy     #$03                            ; 81BF C0 03                    ..
-        bne     $8187                           ; 81C1 D0 C4                    ..
-        jmp     $8981                           ; 81C3 4C 81 89                 L..
+        bne     MapTileSystem_Branch_8187       ; 81C1 D0 C4                    ..
+        jmp     MapTileSystem_Branch_8981       ; 81C3 4C 81 89                 L..
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_81C6:
         lda     $8225                           ; 81C6 AD 25 82                 .%.
         ldy     $8226                           ; 81C9 AC 26 82                 .&.
         asl     $00                             ; 81CC 06 00                    ..
@@ -249,10 +261,11 @@ MapTileSystem_Entry_80D5:
         ldx     #$00                            ; 81D8 A2 00                    ..
         jsr     LowerFixedEngine_Entry_C81D     ; 81DA 20 1D C8                  ..
         ldy     #$07                            ; 81DD A0 07                    ..
+MapTileSystem_Branch_81DF:
         lda     ($00),y                         ; 81DF B1 00                    ..
         sta     $0100,y                         ; 81E1 99 00 01                 ...
         dey                                     ; 81E4 88                       .
-        bpl     $81DF                           ; 81E5 10 F8                    ..
+        bpl     MapTileSystem_Branch_81DF       ; 81E5 10 F8                    ..
         rts                                     ; 81E7 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_81E8:
@@ -314,7 +327,9 @@ MapTileSystem_Entry_823D:
         asl     a                               ; 824E 0A                       .
         ldx     #$00                            ; 824F A2 00                    ..
         jsr     LowerFixedEngine_Entry_C813     ; 8251 20 13 C8                  ..
+MapTileSystem_Branch_8254:
         ldx     #$00                            ; 8254 A2 00                    ..
+MapTileSystem_Branch_8256:
         lda     $0100,x                         ; 8256 BD 00 01                 ...
         sta     $02                             ; 8259 85 02                    ..
         lda     $0101,x                         ; 825B BD 01 01                 ...
@@ -322,16 +337,17 @@ MapTileSystem_Entry_823D:
         txa                                     ; 8260 8A                       .
         pha                                     ; 8261 48                       H
         ldx     $79                             ; 8262 A6 79                    .y
+MapTileSystem_Branch_8264:
         dex                                     ; 8264 CA                       .
         dex                                     ; 8265 CA                       .
         cpx     #$FE                            ; 8266 E0 FE                    ..
-        beq     $828D                           ; 8268 F0 23                    .#
+        beq     MapTileSystem_Branch_828D       ; 8268 F0 23                    .#
         lda     $7700,x                         ; 826A BD 00 77                 ..w
         cmp     $02                             ; 826D C5 02                    ..
-        bne     $8264                           ; 826F D0 F3                    ..
+        bne     MapTileSystem_Branch_8264       ; 826F D0 F3                    ..
         lda     $7701,x                         ; 8271 BD 01 77                 ..w
         cmp     $03                             ; 8274 C5 03                    ..
-        bne     $8264                           ; 8276 D0 EC                    ..
+        bne     MapTileSystem_Branch_8264       ; 8276 D0 EC                    ..
         txa                                     ; 8278 8A                       .
         lsr     a                               ; 8279 4A                       J
         clc                                     ; 827A 18                       .
@@ -344,30 +360,35 @@ MapTileSystem_Entry_823D:
         sta     $0100,x                         ; 8283 9D 00 01                 ...
         sta     $0101,x                         ; 8286 9D 01 01                 ...
         tya                                     ; 8289 98                       .
-        jmp     $8291                           ; 828A 4C 91 82                 L..
+        jmp     MapTileSystem_Branch_8291       ; 828A 4C 91 82                 L..
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_828D:
         lda     $18                             ; 828D A5 18                    ..
         inc     $18                             ; 828F E6 18                    ..
+MapTileSystem_Branch_8291:
         tax                                     ; 8291 AA                       .
         pla                                     ; 8292 68                       h
         pha                                     ; 8293 48                       H
         ldy     $09                             ; 8294 A4 09                    ..
-        bne     $82B0                           ; 8296 D0 18                    ..
+        bne     MapTileSystem_Branch_82B0       ; 8296 D0 18                    ..
         lsr     a                               ; 8298 4A                       J
         tay                                     ; 8299 A8                       .
         txa                                     ; 829A 8A                       .
         sta     ($00),y                         ; 829B 91 00                    ..
+MapTileSystem_Branch_829D:
         pla                                     ; 829D 68                       h
         pha                                     ; 829E 48                       H
         tax                                     ; 829F AA                       .
         lda     $0100,x                         ; 82A0 BD 00 01                 ...
         ora     $0101,x                         ; 82A3 1D 01 01                 ...
-        beq     $82AD                           ; 82A6 F0 05                    ..
+        beq     MapTileSystem_Branch_82AD       ; 82A6 F0 05                    ..
         ldy     $79                             ; 82A8 A4 79                    .y
-        jmp     $831F                           ; 82AA 4C 1F 83                 L..
+        jmp     MapTileSystem_Branch_831F       ; 82AA 4C 1F 83                 L..
 ; ----------------------------------------------------------------------------
-        jmp     $832F                           ; 82AD 4C 2F 83                 L/.
+MapTileSystem_Branch_82AD:
+        jmp     MapTileSystem_Branch_832F       ; 82AD 4C 2F 83                 L/.
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_82B0:
         tay                                     ; 82B0 A8                       .
         txa                                     ; 82B1 8A                       .
         sta     ($00),y                         ; 82B2 91 00                    ..
@@ -380,7 +401,8 @@ MapTileSystem_Entry_823D:
         lda     #$55                            ; 82BA A9 55                    .U
         sta     $02                             ; 82BC 85 02                    ..
         lda     $7A                             ; 82BE A5 7A                    .z
-        beq     $82C2                           ; 82C0 F0 00                    ..
+        beq     MapTileSystem_Branch_82C2       ; 82C0 F0 00                    ..
+MapTileSystem_Branch_82C2:
         lda     $0A                             ; 82C2 A5 0A                    ..
         and     #$F0                            ; 82C4 29 F0                    ).
         pha                                     ; 82C6 48                       H
@@ -433,9 +455,10 @@ MapTileSystem_Branch_8305:
         lsr     a                               ; 8306 4A                       J
 MapTileSystem_Branch_8307:
         lsr     a                               ; 8307 4A                       J
+MapTileSystem_Branch_8308:
         asl     a                               ; 8308 0A                       .
         dex                                     ; 8309 CA                       .
-        bne     $8308                           ; 830A D0 FC                    ..
+        bne     MapTileSystem_Branch_8308       ; 830A D0 FC                    ..
         and     $02                             ; 830C 25 02                    %.
         and     #$C0                            ; 830E 29 C0                    ).
         pha                                     ; 8310 48                       H
@@ -445,21 +468,23 @@ MapTileSystem_Branch_8307:
         ora     $0101,x                         ; 8316 1D 01 01                 ...
         sta     ($00),y                         ; 8319 91 00                    ..
         pla                                     ; 831B 68                       h
-        jmp     $829D                           ; 831C 4C 9D 82                 L..
+        jmp     MapTileSystem_Branch_829D       ; 831C 4C 9D 82                 L..
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_831F:
         inc     $79                             ; 831F E6 79                    .y
         inc     $79                             ; 8321 E6 79                    .y
         lda     $0100,x                         ; 8323 BD 00 01                 ...
         sta     $7700,y                         ; 8326 99 00 77                 ..w
         lda     $0101,x                         ; 8329 BD 01 01                 ...
         sta     $7701,y                         ; 832C 99 01 77                 ..w
+MapTileSystem_Branch_832F:
         pla                                     ; 832F 68                       h
         tax                                     ; 8330 AA                       .
         inx                                     ; 8331 E8                       .
         inx                                     ; 8332 E8                       .
         cpx     #$08                            ; 8333 E0 08                    ..
-        beq     $839E                           ; 8335 F0 67                    .g
-        jmp     $8256                           ; 8337 4C 56 82                 LV.
+        beq     MapTileSystem_Branch_839E       ; 8335 F0 67                    .g
+        jmp     MapTileSystem_Branch_8256       ; 8337 4C 56 82                 LV.
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_833A:
         plp                                     ; 833A 28                       (
@@ -483,7 +508,7 @@ MapTileSystem_Entry_8340:
         ldy     $833F                           ; 8357 AC 3F 83                 .?.
         ldx     #$00                            ; 835A A2 00                    ..
         jsr     LowerFixedEngine_Entry_C81D     ; 835C 20 1D C8                  ..
-        jmp     $8254                           ; 835F 4C 54 82                 LT.
+        jmp     MapTileSystem_Branch_8254       ; 835F 4C 54 82                 LT.
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_8362:
         ldx     $09                             ; 8362 A6 09                    ..
@@ -496,11 +521,12 @@ MapTileSystem_Entry_8362:
         lda     #$00                            ; 8372 A9 00                    ..
         sta     $01                             ; 8374 85 01                    ..
         ldx     #$04                            ; 8376 A2 04                    ..
+MapTileSystem_Branch_8378:
         clc                                     ; 8378 18                       .
         asl     $00                             ; 8379 06 00                    ..
         rol     $01                             ; 837B 26 01                    &.
         dex                                     ; 837D CA                       .
-        bne     $8378                           ; 837E D0 F8                    ..
+        bne     MapTileSystem_Branch_8378       ; 837E D0 F8                    ..
         lda     $00                             ; 8380 A5 00                    ..
         ldy     $01                             ; 8382 A4 01                    ..
         ldx     #$19                            ; 8384 A2 19                    ..
@@ -511,12 +537,13 @@ MapTileSystem_Entry_8362:
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_838D:
         lda     $0D                             ; 838D A5 0D                    ..
-        bne     $839E                           ; 838F D0 0D                    ..
+        bne     MapTileSystem_Branch_839E       ; 838F D0 0D                    ..
         lda     PPUSTATUS                       ; 8391 AD 02 20                 ..
         lda     $1A                             ; 8394 A5 1A                    ..
         sta     PPUADDR                         ; 8396 8D 06 20                 ..
         lda     $19                             ; 8399 A5 19                    ..
         sta     PPUADDR                         ; 839B 8D 06 20                 ..
+MapTileSystem_Branch_839E:
         rts                                     ; 839E 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_839F:
@@ -537,6 +564,7 @@ MapTileSystem_Entry_839F:
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_83BD:
         ldx     #$00                            ; 83BD A2 00                    ..
+MapTileSystem_Branch_83BF:
         lda     $0100,x                         ; 83BF BD 00 01                 ...
         sta     $00                             ; 83C2 85 00                    ..
         lda     $0101,x                         ; 83C4 BD 01 01                 ...
@@ -545,37 +573,42 @@ MapTileSystem_Entry_83BD:
         pha                                     ; 83CA 48                       H
         lda     $00                             ; 83CB A5 00                    ..
         ora     $01                             ; 83CD 05 01                    ..
-        beq     $83E5                           ; 83CF F0 14                    ..
+        beq     MapTileSystem_Branch_83E5       ; 83CF F0 14                    ..
         lda     #$0C                            ; 83D1 A9 0C                    ..
         ldx     $09                             ; 83D3 A6 09                    ..
-        beq     $83D9                           ; 83D5 F0 02                    ..
+        beq     MapTileSystem_Branch_83D9       ; 83D5 F0 02                    ..
         lda     #$0D                            ; 83D7 A9 0D                    ..
+MapTileSystem_Branch_83D9:
         clc                                     ; 83D9 18                       .
         adc     $76                             ; 83DA 65 76                    ev
         jsr     LowerFixedEngine_Entry_C7E1     ; 83DC 20 E1 C7                  ..
         jsr     MapTileSystem_Entry_89C9        ; 83DF 20 C9 89                  ..
         jsr     MapTileSystem_Entry_83F4        ; 83E2 20 F4 83                  ..
+MapTileSystem_Branch_83E5:
         pla                                     ; 83E5 68                       h
         tax                                     ; 83E6 AA                       .
         inx                                     ; 83E7 E8                       .
         inx                                     ; 83E8 E8                       .
         cpx     #$08                            ; 83E9 E0 08                    ..
-        bne     $83BF                           ; 83EB D0 D2                    ..
+        bne     MapTileSystem_Branch_83BF       ; 83EB D0 D2                    ..
         lda     $0D                             ; 83ED A5 0D                    ..
-        beq     $8405                           ; 83EF F0 14                    ..
+        beq     MapTileSystem_Branch_8405       ; 83EF F0 14                    ..
         jmp     LowerFixedEngine_Entry_C62D     ; 83F1 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_83F4:
         lda     $0D                             ; 83F4 A5 0D                    ..
-        bne     $8406                           ; 83F6 D0 0E                    ..
+        bne     MapTileSystem_Branch_8406       ; 83F6 D0 0E                    ..
         ldy     #$00                            ; 83F8 A0 00                    ..
+MapTileSystem_Branch_83FA:
         lda     $0108,y                         ; 83FA B9 08 01                 ...
         sta     PPUDATA                         ; 83FD 8D 07 20                 ..
         iny                                     ; 8400 C8                       .
         cpy     #$10                            ; 8401 C0 10                    ..
-        bne     $83FA                           ; 8403 D0 F5                    ..
+        bne     MapTileSystem_Branch_83FA       ; 8403 D0 F5                    ..
+MapTileSystem_Branch_8405:
         rts                                     ; 8405 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8406:
         jsr     MapTileSystem_Entry_839F        ; 8406 20 9F 83                  ..
         ldy     #$00                            ; 8409 A0 00                    ..
         lda     $050A                           ; 840B AD 0A 05                 ...
@@ -624,7 +657,7 @@ MapTileSystem_Entry_8433:
 MapTileSystem_Entry_8452:
         ldx     $16                             ; 8452 A6 16                    ..
         cpx     #$20                            ; 8454 E0 20                    .
-        bcs     $8467                           ; 8456 B0 0F                    ..
+        bcs     MapTileSystem_Branch_8467       ; 8456 B0 0F                    ..
         lda     $0A                             ; 8458 A5 0A                    ..
         lsr     a                               ; 845A 4A                       J
         lsr     a                               ; 845B 4A                       J
@@ -634,56 +667,63 @@ MapTileSystem_Entry_8452:
         sta     $6F20,x                         ; 845F 9D 20 6F                 . o
         lda     $0C                             ; 8462 A5 0C                    ..
         sta     $6F40,x                         ; 8464 9D 40 6F                 .@o
+MapTileSystem_Branch_8467:
         rts                                     ; 8467 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_8468:
         ldx     #$00                            ; 8468 A2 00                    ..
+MapTileSystem_Branch_846A:
         pla                                     ; 846A 68                       h
         sta     $00,x                           ; 846B 95 00                    ..
         inx                                     ; 846D E8                       .
         cpx     #$10                            ; 846E E0 10                    ..
-        bne     $846A                           ; 8470 D0 F8                    ..
+        bne     MapTileSystem_Branch_846A       ; 8470 D0 F8                    ..
         rts                                     ; 8472 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8473:
         jsr     MapTileSystem_Entry_8082        ; 8473 20 82 80                  ..
 MapTileSystem_Entry_8476:
         lda     $0A                             ; 8476 A5 0A                    ..
         and     #$07                            ; 8478 29 07                    ).
         cmp     #$07                            ; 847A C9 07                    ..
-        beq     $84B1                           ; 847C F0 33                    .3
+        beq     MapTileSystem_Branch_84B1       ; 847C F0 33                    .3
         jsr     MapTileSystem_Entry_8433        ; 847E 20 33 84                  3.
         jsr     MapTileSystem_Entry_80D5        ; 8481 20 D5 80                  ..
         jsr     MapTileSystem_Entry_8452        ; 8484 20 52 84                  R.
         lda     $28                             ; 8487 A5 28                    .(
-        beq     $84AB                           ; 8489 F0 20                    .
+        beq     MapTileSystem_Branch_84AB       ; 8489 F0 20                    .
         lda     $16                             ; 848B A5 16                    ..
         cmp     #$20                            ; 848D C9 20                    .
-        bcs     $84AB                           ; 848F B0 1A                    ..
+        bcs     MapTileSystem_Branch_84AB       ; 848F B0 1A                    ..
         lda     $0A                             ; 8491 A5 0A                    ..
         and     #$E0                            ; 8493 29 E0                    ).
-        bne     $84A6                           ; 8495 D0 0F                    ..
+        bne     MapTileSystem_Branch_84A6       ; 8495 D0 0F                    ..
         lda     $0C                             ; 8497 A5 0C                    ..
         and     #$7F                            ; 8499 29 7F                    ).
-        bne     $84AB                           ; 849B D0 0E                    ..
+        bne     MapTileSystem_Branch_84AB       ; 849B D0 0E                    ..
         ldx     $16                             ; 849D A6 16                    ..
         lda     $6E5E,x                         ; 849F BD 5E 6E                 .^n
-        beq     $84B1                           ; 84A2 F0 0D                    ..
-        bne     $84AB                           ; 84A4 D0 05                    ..
+        beq     MapTileSystem_Branch_84B1       ; 84A2 F0 0D                    ..
+        bne     MapTileSystem_Branch_84AB       ; 84A4 D0 05                    ..
+MapTileSystem_Branch_84A6:
         ldx     $16                             ; 84A6 A6 16                    ..
         dec     $6E5E,x                         ; 84A8 DE 5E 6E                 .^n
+MapTileSystem_Branch_84AB:
         jsr     MapTileSystem_Entry_823D        ; 84AB 20 3D 82                  =.
         jsr     MapTileSystem_Entry_83BD        ; 84AE 20 BD 83                  ..
+MapTileSystem_Branch_84B1:
         lda     #$02                            ; 84B1 A9 02                    ..
         clc                                     ; 84B3 18                       .
         adc     $0E                             ; 84B4 65 0E                    e.
         sta     $0E                             ; 84B6 85 0E                    ..
-        bcc     $84BC                           ; 84B8 90 02                    ..
+        bcc     MapTileSystem_Branch_84BC       ; 84B8 90 02                    ..
         inc     $0F                             ; 84BA E6 0F                    ..
+MapTileSystem_Branch_84BC:
         rts                                     ; 84BC 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_84BD:
         sta     $16                             ; 84BD 85 16                    ..
-        jmp     $8473                           ; 84BF 4C 73 84                 Ls.
+        jmp     MapTileSystem_Branch_8473       ; 84BF 4C 73 84                 Ls.
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_84C2:
         tay                                     ; 84C2 A8                       .
@@ -765,7 +805,7 @@ MapTileSystem_Entry_853E:
         lda     #$20                            ; 853E A9 20                    .
         sta     $16                             ; 8540 85 16                    ..
         lda     $07                             ; 8542 A5 07                    ..
-        beq     $859A                           ; 8544 F0 54                    .T
+        beq     MapTileSystem_Branch_859A       ; 8544 F0 54                    .T
         ldx     #$00                            ; 8546 A2 00                    ..
         stx     $7684                           ; 8548 8E 84 76                 ..v
         stx     $7685                           ; 854B 8E 85 76                 ..v
@@ -781,49 +821,55 @@ MapTileSystem_Entry_853E:
         eor     #$03                            ; 855E 49 03                    I.
         tay                                     ; 8560 A8                       .
         txa                                     ; 8561 8A                       .
+MapTileSystem_Branch_8562:
         cpy     #$00                            ; 8562 C0 00                    ..
-        beq     $856C                           ; 8564 F0 06                    ..
+        beq     MapTileSystem_Branch_856C       ; 8564 F0 06                    ..
         lsr     a                               ; 8566 4A                       J
         lsr     a                               ; 8567 4A                       J
         dey                                     ; 8568 88                       .
-        jmp     $8562                           ; 8569 4C 62 85                 Lb.
+        jmp     MapTileSystem_Branch_8562       ; 8569 4C 62 85                 Lb.
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_856C:
         and     #$03                            ; 856C 29 03                    ).
         asl     a                               ; 856E 0A                       .
         asl     a                               ; 856F 0A                       .
         tax                                     ; 8570 AA                       .
         ldy     #$00                            ; 8571 A0 00                    ..
+MapTileSystem_Branch_8573:
         lda     $8AAF,x                         ; 8573 BD AF 8A                 ...
         sta     $0A,y                           ; 8576 99 0A 00                 ...
         iny                                     ; 8579 C8                       .
         inx                                     ; 857A E8                       .
         cpy     #$02                            ; 857B C0 02                    ..
-        bne     $8573                           ; 857D D0 F4                    ..
+        bne     MapTileSystem_Branch_8573       ; 857D D0 F4                    ..
         txa                                     ; 857F 8A                       .
         pha                                     ; 8580 48                       H
         jsr     MapTileSystem_Entry_8476        ; 8581 20 76 84                  v.
         pla                                     ; 8584 68                       h
         tax                                     ; 8585 AA                       .
         ldy     #$00                            ; 8586 A0 00                    ..
+MapTileSystem_Branch_8588:
         lda     $8AAF,x                         ; 8588 BD AF 8A                 ...
         sta     $0A,y                           ; 858B 99 0A 00                 ...
         iny                                     ; 858E C8                       .
         inx                                     ; 858F E8                       .
         cpy     #$02                            ; 8590 C0 02                    ..
-        bne     $8588                           ; 8592 D0 F4                    ..
+        bne     MapTileSystem_Branch_8588       ; 8592 D0 F4                    ..
         inc     $16                             ; 8594 E6 16                    ..
         jsr     MapTileSystem_Entry_8476        ; 8596 20 76 84                  v.
         rts                                     ; 8599 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_859A:
         rts                                     ; 859A 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_859B:
         pha                                     ; 859B 48                       H
         and     #$7F                            ; 859C 29 7F                    ).
         cmp     #$53                            ; 859E C9 53                    .S
-        bcc     $85A6                           ; 85A0 90 04                    ..
+        bcc     MapTileSystem_Branch_85A6       ; 85A0 90 04                    ..
         sbc     #$0B                            ; 85A2 E9 0B                    ..
         bne     MapTileSystem_Branch_85BA       ; 85A4 D0 14                    ..
+MapTileSystem_Branch_85A6:
         cmp     #$50                            ; 85A6 C9 50                    .P
         bcs     MapTileSystem_Branch_85BA       ; 85A8 B0 10                    ..
         cmp     #$48                            ; 85AA C9 48                    .H
@@ -1428,6 +1474,7 @@ MapTileSystem_Branch_897E:
         iny                                     ; 897F C8                       .
         rts                                     ; 8980 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8981:
         lda     $09                             ; 8981 A5 09                    ..
         beq     MapTileSystem_Branch_89C8       ; 8983 F0 43                    .C
         lda     $7A                             ; 8985 A5 7A                    .z
@@ -1532,31 +1579,36 @@ MapTileSystem_Branch_8A24:
 MapTileSystem_Entry_8A2A:
         lda     CurrentTilesetCandidate         ; 8A2A A5 65                    .e
         cmp     #$03                            ; 8A2C C9 03                    ..
-        bne     $8A3F                           ; 8A2E D0 0F                    ..
+        bne     MapTileSystem_Branch_8A3F       ; 8A2E D0 0F                    ..
         lda     $41                             ; 8A30 A5 41                    .A
         bmi     MapTileSystem_Branch_8A43       ; 8A32 30 0F                    0.
         lda     #$80                            ; 8A34 A9 80                    ..
         sta     $6F41                           ; 8A36 8D 41 6F                 .Ao
         lda     #$00                            ; 8A39 A9 00                    ..
         sta     $6F54                           ; 8A3B 8D 54 6F                 .To
+MapTileSystem_Branch_8A3E:
         rts                                     ; 8A3E 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8A3F:
         lda     $41                             ; 8A3F A5 41                    .A
-        bpl     $8A3E                           ; 8A41 10 FB                    ..
+        bpl     MapTileSystem_Branch_8A3E       ; 8A41 10 FB                    ..
 MapTileSystem_Branch_8A43:
         ldx     #$00                            ; 8A43 A2 00                    ..
+MapTileSystem_Branch_8A45:
         lda     $8A6C,x                         ; 8A45 BD 6C 8A                 .l.
-        bmi     $8A57                           ; 8A48 30 0D                    0.
+        bmi     MapTileSystem_Branch_8A57       ; 8A48 30 0D                    0.
         cmp     CurrentMapNumber                ; 8A4A C5 63                    .c
-        beq     $8A58                           ; 8A4C F0 0A                    ..
+        beq     MapTileSystem_Branch_8A58       ; 8A4C F0 0A                    ..
         ora     #$80                            ; 8A4E 09 80                    ..
         cmp     CurrentMapNumber                ; 8A50 C5 63                    .c
-        beq     $8A58                           ; 8A52 F0 04                    ..
+        beq     MapTileSystem_Branch_8A58       ; 8A52 F0 04                    ..
 MapTileSystem_Branch_8A54:
         inx                                     ; 8A54 E8                       .
-        bne     $8A45                           ; 8A55 D0 EE                    ..
+        bne     MapTileSystem_Branch_8A45       ; 8A55 D0 EE                    ..
+MapTileSystem_Branch_8A57:
         rts                                     ; 8A57 60                       `
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_8A58:
         lda     $8A73,x                         ; 8A58 BD 73 8A                 .s.
         cmp     CurrentSubmapNumber             ; 8A5B C5 64                    .d
         bne     MapTileSystem_Branch_8A54       ; 8A5D D0 F5                    ..
@@ -1574,9 +1626,10 @@ MapTileSystem_Branch_8A54:
 MapTileSystem_Entry_8A85:
         ldx     $28                             ; 8A85 A6 28                    .(
         cpx     #$0F                            ; 8A87 E0 0F                    ..
-        bcs     $8A91                           ; 8A89 B0 06                    ..
+        bcs     MapTileSystem_Branch_8A91       ; 8A89 B0 06                    ..
         lda     $8A92,x                         ; 8A8B BD 92 8A                 ...
         sta     $058C                           ; 8A8E 8D 8C 05                 ...
+MapTileSystem_Branch_8A91:
         rts                                     ; 8A91 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$04,$04,$00,$04,$04,$04,$04 ; 8A92 00 04 04 00 04 04 04 04  ........
@@ -2821,9 +2874,13 @@ MapTileSystem_Branch_AF51:
         cmp     #$18                            ; AF54 C9 18                    ..
         bne     MapTileSystem_Branch_AF67       ; AF56 D0 0F                    ..
         brk                                     ; AF58 00                       .
-        db   $05,$EB,$02,$F0,$09,$A9,$01,$A2 ; AF59 05 EB 02 F0 09 A9 01 A2  ........
-        db   $00,$A0,$0F,$20,$82,$AF         ; AF61 00 A0 0F 20 82 AF        ... ..
+        db   $05,$EB,$02                     ; AF59 05 EB 02                 ...
 ; ----------------------------------------------------------------------------
+        beq     MapTileSystem_Branch_AF67       ; AF5C F0 09                    ..
+        lda     #$01                            ; AF5E A9 01                    ..
+        ldx     #$00                            ; AF60 A2 00                    ..
+        ldy     #$0F                            ; AF62 A0 0F                    ..
+        jsr     MapTileSystem_Entry_AF82        ; AF64 20 82 AF                  ..
 MapTileSystem_Branch_AF67:
         lda     CurrentMapNumber                ; AF67 A5 63                    .c
         cmp     #$0E                            ; AF69 C9 0E                    ..
@@ -2962,19 +3019,21 @@ MapTileSystem_Entry_B037:
         lda     $B7F8                           ; B03C AD F8 B7                 ...
         sta     $DB                             ; B03F 85 DB                    ..
         ldy     #$00                            ; B041 A0 00                    ..
+MapTileSystem_Branch_B043:
         lda     ($DA),y                         ; B043 B1 DA                    ..
         cmp     #$FF                            ; B045 C9 FF                    ..
-        beq     $B05B                           ; B047 F0 12                    ..
+        beq     MapTileSystem_Branch_B05B       ; B047 F0 12                    ..
         cmp     CurrentMapNumber                ; B049 C5 63                    .c
-        beq     $B05B                           ; B04B F0 0E                    ..
+        beq     MapTileSystem_Branch_B05B       ; B04B F0 0E                    ..
         lda     $DA                             ; B04D A5 DA                    ..
         clc                                     ; B04F 18                       .
         adc     #$05                            ; B050 69 05                    i.
         sta     $DA                             ; B052 85 DA                    ..
-        bcc     $B043                           ; B054 90 ED                    ..
+        bcc     MapTileSystem_Branch_B043       ; B054 90 ED                    ..
         inc     $DB                             ; B056 E6 DB                    ..
-        jmp     $B043                           ; B058 4C 43 B0                 LC.
+        jmp     MapTileSystem_Branch_B043       ; B058 4C 43 B0                 LC.
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_B05B:
         rts                                     ; B05B 60                       `
 ; ----------------------------------------------------------------------------
 MapTileSystem_Entry_B05C:
@@ -3000,7 +3059,7 @@ MapTileSystem_Branch_B071:
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_B07B:
         cmp     CurrentMapNumber                ; B07B C5 63                    .c
-        beq     $B08D                           ; B07D F0 0E                    ..
+        beq     MapTileSystem_Branch_B08D       ; B07D F0 0E                    ..
         lda     $DC                             ; B07F A5 DC                    ..
         clc                                     ; B081 18                       .
         adc     #$03                            ; B082 69 03                    i.
@@ -3009,6 +3068,7 @@ MapTileSystem_Branch_B07B:
         inc     $DD                             ; B088 E6 DD                    ..
         jmp     MapTileSystem_Branch_B071       ; B08A 4C 71 B0                 Lq.
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_B08D:
         jsr     MapTileSystem_Entry_AF89        ; B08D 20 89 AF                  ..
         jsr     MapTileSystem_Entry_B05C        ; B090 20 5C B0                  \.
         sta     PlayerWorldX                    ; B093 85 42                    .B
@@ -3018,7 +3078,7 @@ MapTileSystem_Branch_B07B:
 MapTileSystem_Branch_B09B:
         lda     CurrentMapNumber                ; B09B A5 63                    .c
         cmp     #$0E                            ; B09D C9 0E                    ..
-        bne     $B0D0                           ; B09F D0 2F                    ./
+        bne     MapTileSystem_Branch_B0D0       ; B09F D0 2F                    ./
         lda     $3D                             ; B0A1 A5 3D                    .=
         bne     MapTileSystem_Branch_B0AE       ; B0A3 D0 09                    ..
         dec     PlayerWorldY                    ; B0A5 C6 43                    .C
@@ -3046,6 +3106,7 @@ MapTileSystem_Branch_B0C8:
         jsr     MapTileSystem_Entry_B135        ; B0CA 20 35 B1                  5.
         jmp     MapTileSystem_Branch_B0EF       ; B0CD 4C EF B0                 L..
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_B0D0:
         cmp     #$0B                            ; B0D0 C9 0B                    ..
         bne     MapTileSystem_Branch_B0EF       ; B0D2 D0 1B                    ..
         lda     $3D                             ; B0D4 A5 3D                    .=
@@ -3071,7 +3132,7 @@ MapTileSystem_Branch_B0EF:
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_B0FE:
         cmp     #$2C                            ; B0FE C9 2C                    .,
-        bne     $B11A                           ; B100 D0 18                    ..
+        bne     MapTileSystem_Branch_B11A       ; B100 D0 18                    ..
         lda     $3D                             ; B102 A5 3D                    .=
         beq     MapTileSystem_Branch_B110       ; B104 F0 0A                    ..
         lda     #$D9                            ; B106 A9 D9                    ..
@@ -3085,6 +3146,7 @@ MapTileSystem_Branch_B110:
         jsr     MapTileSystem_Entry_B135        ; B114 20 35 B1                  5.
         jmp     MapTileSystem_Branch_B131       ; B117 4C 31 B1                 L1.
 ; ----------------------------------------------------------------------------
+MapTileSystem_Branch_B11A:
         cmp     #$21                            ; B11A C9 21                    .!
         bne     MapTileSystem_Branch_B131       ; B11C D0 13                    ..
         lda     $3D                             ; B11E A5 3D                    .=
@@ -3945,16 +4007,11 @@ MapTileSystem_Branch_B65D:
 ; ----------------------------------------------------------------------------
         bne     MapTileSystem_Branch_B65B       ; B66D D0 EC                    ..
         beq     MapTileSystem_Branch_B63C       ; B66F F0 CB                    ..
-        brk                                     ; B671 00                       .
+        db   $00                             ; B671 00                       .
         db   $78                             ; B672 78                       x
         db   $75                             ; B673 75                       u
-; ----------------------------------------------------------------------------
-LB675 = $+ 1
-        ldx     $08,y                           ; B674 B6 08                    ..
-        ora     #$26                            ; B676 09 26                    .&
-        and     $0F                             ; B678 25 0F                    %.
-        asl     a                               ; B67A 0A                       .
-        asl     $00                             ; B67B 06 00                    ..
+        db   $B6                             ; B674 B6                       .
+        db   $08,$09,$26,$25,$0F,$0A,$06,$00 ; B675 08 09 26 25 0F 0A 06 00  ..&%....
         db   $7F                             ; B67D 7F                       .
         db   $B6,$04,$00                     ; B67E B6 04 00                 ...
         db   $00                             ; B681 00                       .
@@ -4094,16 +4151,33 @@ MapTileSystem_Entry_B75D:
         bcc     MapTileSystem_Branch_B79B       ; B76F 90 2A                    .*
         lda     #$37                            ; B771 A9 37                    .7
         brk                                     ; B773 00                       .
-        db   $66,$63                         ; B774 66 63                    fc
+        db   $66,$63,$40                     ; B774 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-        rti                                     ; B776 40                       @
+MapTileSystem_Entry_B777:
+        bcc     MapTileSystem_Branch_B79B       ; B777 90 22                    ."
+        lda     #$44                            ; B779 A9 44                    .D
+        brk                                     ; B77B 00                       .
+        db   $66,$63,$40                     ; B77C 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-        db   $90,$22,$A9,$44,$00,$66,$63,$40 ; B777 90 22 A9 44 00 66 63 40  .".D.fc@
-        db   $90,$1A,$A9,$4B,$00,$66,$63,$40 ; B77F 90 1A A9 4B 00 66 63 40  ...K.fc@
-        db   $90,$12,$A9,$21,$00,$66,$63,$40 ; B787 90 12 A9 21 00 66 63 40  ...!.fc@
-        db   $B0,$08,$A9,$14,$00,$66,$63,$40 ; B78F B0 08 A9 14 00 66 63 40  .....fc@
-        db   $90,$02                         ; B797 90 02                    ..
+MapTileSystem_Entry_B77F:
+        bcc     MapTileSystem_Branch_B79B       ; B77F 90 1A                    ..
+        lda     #$4B                            ; B781 A9 4B                    .K
+        brk                                     ; B783 00                       .
+        db   $66,$63,$40                     ; B784 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
+MapTileSystem_Entry_B787:
+        bcc     MapTileSystem_Branch_B79B       ; B787 90 12                    ..
+        lda     #$21                            ; B789 A9 21                    .!
+        brk                                     ; B78B 00                       .
+        db   $66,$63,$40                     ; B78C 66 63 40                 fc@
+; ----------------------------------------------------------------------------
+MapTileSystem_Entry_B78F:
+        bcs     MapTileSystem_Branch_B799       ; B78F B0 08                    ..
+        lda     #$14                            ; B791 A9 14                    ..
+        brk                                     ; B793 00                       .
+        db   $66,$63,$40                     ; B794 66 63 40                 fc@
+; ----------------------------------------------------------------------------
+        bcc     MapTileSystem_Branch_B79B       ; B797 90 02                    ..
 MapTileSystem_Branch_B799:
         sec                                     ; B799 38                       8
         rts                                     ; B79A 60                       `
@@ -4124,17 +4198,16 @@ MapTileSystem_Branch_B79B:
         clc                                     ; B7AC 18                       .
         rts                                     ; B7AD 60                       `
 ; ----------------------------------------------------------------------------
-MapTileSystem_Entry_B7AE:
-        ora     $03                             ; B7AE 05 03                    ..
-        db   $04,$04,$0F,$02,$04,$02,$05,$08 ; B7B0 04 04 0F 02 04 02 05 08  ........
-        db   $01,$02,$01,$03,$01,$02,$04,$06 ; B7B8 01 02 01 03 01 02 04 06  ........
-        db   $03,$05,$03,$04,$03,$02,$02,$03 ; B7C0 03 05 03 04 03 02 02 03  ........
-        db   $02,$05,$02,$01,$01,$01,$01,$01 ; B7C8 02 05 02 01 01 01 01 01  ........
-        db   $02,$01,$01,$02,$01,$03,$03,$02 ; B7D0 02 01 01 02 01 03 03 02  ........
-        db   $01,$01,$01,$0A,$02,$03,$03,$05 ; B7D8 01 01 01 0A 02 03 03 05  ........
-        db   $02,$07,$05,$0A,$07,$03,$06,$01 ; B7E0 02 07 05 0A 07 03 06 01  ........
-        db   $02,$03,$01,$11,$01,$06,$06,$06 ; B7E8 02 03 01 11 01 06 06 06  ........
-        db   $05,$0B,$04,$08,$04,$02,$0A     ; B7F0 05 0B 04 08 04 02 0A     .......
+        db   $05,$03,$04,$04,$0F,$02,$04,$02 ; B7AE 05 03 04 04 0F 02 04 02  ........
+        db   $05,$08,$01,$02,$01,$03,$01,$02 ; B7B6 05 08 01 02 01 03 01 02  ........
+        db   $04,$06,$03,$05,$03,$04,$03,$02 ; B7BE 04 06 03 05 03 04 03 02  ........
+        db   $02,$03,$02,$05,$02,$01,$01,$01 ; B7C6 02 03 02 05 02 01 01 01  ........
+        db   $01,$01,$02,$01,$01,$02,$01,$03 ; B7CE 01 01 02 01 01 02 01 03  ........
+        db   $03,$02,$01,$01,$01,$0A,$02,$03 ; B7D6 03 02 01 01 01 0A 02 03  ........
+        db   $03,$05,$02,$07,$05,$0A,$07,$03 ; B7DE 03 05 02 07 05 0A 07 03  ........
+        db   $06,$01,$02,$03,$01,$11,$01,$06 ; B7E6 06 01 02 03 01 11 01 06  ........
+        db   $06,$06,$05,$0B,$04,$08,$04,$02 ; B7EE 06 06 05 0B 04 08 04 02  ........
+        db   $0A                             ; B7F6 0A                       .
 Bank08_MapRoutingPointer:
         db   $F9                             ; B7F7 F9                       .
         db   $B7                             ; B7F8 B7                       .

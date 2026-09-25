@@ -14,9 +14,6 @@ try {
     & cmd.exe /d /c .\extract.cmd $Rom
     if ($LASTEXITCODE -ne 0) { throw "exact-source extraction failed" }
 
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\triage-conflicts.ps1
-    if ($LASTEXITCODE -ne 0) { throw "unsupported-opcode classification failed" }
-
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\verify-runtime-paths.ps1
     if ($LASTEXITCODE -ne 0) { throw "runtime path verification failed" }
 
@@ -59,47 +56,16 @@ try {
     if ($missingIndirectAudits.Count -ne 0) { throw "$($missingIndirectAudits.Count) decoded indirect jumps lack audit dispositions" }
     if ($staleIndirectAudits.Count -ne 0) { throw "$($staleIndirectAudits.Count) indirect-jump audits no longer match decoded instructions" }
 
-    $conflictRows = @((Get-Content config\control-flow-conflicts.tsv) |
-        Where-Object { $_ -and -not $_.StartsWith('#') } |
-        ConvertFrom-Csv -Delimiter "`t" -Header Bank,Address,Disposition,Source,Reason)
-    $conflictKeys = @($conflictRows | ForEach-Object { "$($_.Bank):$($_.Address)" })
-    $duplicateConflictKeys = @($conflictKeys | Group-Object | Where-Object Count -gt 1)
-    if ($duplicateConflictKeys.Count -ne 0) { throw "$($duplicateConflictKeys.Count) duplicate control-flow conflict audit keys" }
-    $invalidConflictDispositions = @($conflictRows | Where-Object { $_.Disposition -ne 'intentional-overlap' })
-    if ($invalidConflictDispositions.Count -ne 0) { throw "$($invalidConflictDispositions.Count) invalid control-flow conflict dispositions" }
-
-    $reportedConflictKeys = @()
-    $conflictBank = $null
-    $readingConflicts = $false
-    foreach ($line in Get-Content analysis\code-report.txt) {
-        if ($line -match '^Control-flow conflicts: (?<count>\d+)$') {
-            $readingConflicts = $true
-            continue
-        }
-        if (-not $readingConflicts) { continue }
-        if ($line -match '^Unsupported opcodes / probable data walks:') { break }
-        if ($line -match '^  bank \$(?<bank>[0-9A-F]{2}):') {
-            $conflictBank = $matches['bank']
-            continue
-        }
-        if ($null -ne $conflictBank -and $line -match '^    \$(?<address>[0-9A-F]{4}): control flow enters an existing instruction operand$') {
-            $reportedConflictKeys += "$($conflictBank):$($matches['address'])"
-        }
-    }
-    $reportedConflictKeys = @($reportedConflictKeys | Sort-Object -Unique)
-    $missingConflictAudits = @($reportedConflictKeys | Where-Object { $_ -notin $conflictKeys })
-    $staleConflictAudits = @($conflictKeys | Where-Object { $_ -notin $reportedConflictKeys })
-    if ($missingConflictAudits.Count -ne 0) { throw "$($missingConflictAudits.Count) control-flow conflicts lack audit dispositions" }
-    if ($staleConflictAudits.Count -ne 0) { throw "$($staleConflictAudits.Count) control-flow conflict audits no longer match analyzer output" }
-
-    $currentWarningCount = @((Import-Csv analysis\unsupported-opcode-triage.tsv -Delimiter "`t")).Count
-    $resolvedWarningCount = @((Get-Content config\resolved-unsupported-opcodes.tsv) | Where-Object { $_ -and -not $_.StartsWith('#') }).Count
-    $originalWarningCount = 143
-    $originalCurrentCount = $originalWarningCount - $resolvedWarningCount
-    if ($currentWarningCount -lt $originalCurrentCount) {
-        throw "current warning inventory has fewer than the $originalCurrentCount unresolved cases from the original baseline"
-    }
-    $additionalWarningCount = $currentWarningCount - $originalCurrentCount
+    # Extraction validates every analyzer warning, including control-flow conflicts, by identity against
+    # config\analyzer-warning-ledger.tsv and fails on any new, vanished, or stale entry.
+    $warningReport = Get-Content analysis\analyzer-warning-report.md
+    $currentWarnings = $warningReport | Select-String -Pattern '^Current analyzer warnings: (?<count>\d+)$'
+    $originalWarnings = $warningReport | Select-String -Pattern '^Original inventory: (?<total>\d+) warnings; (?<current>\d+) current, (?<resolved>\d+) resolved$'
+    $ledgerIdentities = $warningReport | Select-String -Pattern '^Ledger identities: (?<count>\d+)$'
+    if ($null -eq $currentWarnings -or $null -eq $originalWarnings -or $null -eq $ledgerIdentities) { throw "analyzer warning report summary is missing" }
+    $currentWarningCount = [int]$currentWarnings.Matches[0].Groups['count'].Value
+    $originalWarningCount = [int]$originalWarnings.Matches[0].Groups['total'].Value
+    $ledgerCount = [int]$ledgerIdentities.Matches[0].Groups['count'].Value
 
     $contracts = @(Select-String -Path analysis\routine-contracts.md -Pattern '^## ')
     if ($contracts.Count -eq 0) { throw "no validated routine contracts were generated" }
@@ -119,7 +85,7 @@ try {
     & cmd.exe /d /c .\build.cmd
     if ($LASTEXITCODE -ne 0) { throw "exact ROM rebuild failed" }
 
-    Write-Output "Completion gate passed: $originalWarningCount/$originalWarningCount original warnings and $additionalWarningCount additional recovered-path warnings classified; $pointerCount pointers typed; $decodedCount/$executableCount executable targets decoded; $($decodedIndirectKeys.Count)/$($decodedIndirectKeys.Count) indirect jumps audited; $($reportedConflictKeys.Count)/$($reportedConflictKeys.Count) control-flow conflicts audited; $($interfaces.Count) routine interfaces; $($contracts.Count) semantic contracts; $assetSliceCount asset slices; $saveFieldCount save fields; $runtimePathCount runtime paths; exact ROM match."
+    Write-Output "Completion gate passed: $currentWarningCount current analyzer warnings; $ledgerCount warning identities ledgered, including all $originalWarningCount original warnings; $pointerCount pointers typed; $decodedCount/$executableCount executable targets decoded; $($decodedIndirectKeys.Count)/$($decodedIndirectKeys.Count) indirect jumps audited; $($interfaces.Count) routine interfaces; $($contracts.Count) semantic contracts; $assetSliceCount asset slices; $saveFieldCount save fields; $runtimePathCount runtime paths; exact ROM match."
 }
 finally {
     Pop-Location

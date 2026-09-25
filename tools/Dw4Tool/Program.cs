@@ -112,23 +112,70 @@ internal static class Program
             Path.Combine(projectRoot, "config", "code-exclusions.tsv"));
         List<ContentRange> contentRanges = LoadContentRanges(
             Path.Combine(projectRoot, "config", "content-ranges.tsv"));
+        List<CodeDataOverlap> codeDataOverlaps = LoadCodeDataOverlaps(
+            Path.Combine(projectRoot, "config", "code-data-overlaps.tsv"));
         List<BankClassification> bankClassifications = LoadBankClassifications(
             Path.Combine(projectRoot, "config", "bank-classifications.tsv"));
-        Dictionary<ushort, int> brkOperandCounts = BuildBrkOperandCounts(rom, contentRanges);
+        InlineOperandAbi inlineOperandAbi = InlineOperandAbi.Load(
+            Path.Combine(projectRoot, "config", "inline-operand-abi.tsv"));
+        ValidateInlineServiceRanges(rom, contentRanges, inlineOperandAbi);
+        inlineOperandAbi.ServiceBanks = contentRanges
+            .Where(range => range.Category.Equals("ServiceDirectory", StringComparison.Ordinal) && range.Start == 0x8000)
+            .Select(range => range.Bank)
+            .ToHashSet();
         List<CodeSeed> codeSeeds = LoadCodeSeeds(Path.Combine(projectRoot, "config", "code-seeds.tsv"));
+        List<CodeSeed> guardedSeeds = codeSeeds
+            .Where(seed => seed.Source.Equals("Guarded flow recovery", StringComparison.Ordinal))
+            .ToList();
+        List<CodeSeed> baselineSeeds = codeSeeds.Except(guardedSeeds).ToList();
         EntryTableLoadResult entryTables = LoadEntryTableSeeds(
             Path.Combine(projectRoot, "config", "code-entry-tables.tsv"),
             Path.Combine(projectRoot, "config", "code-entry-pointers.tsv"),
             rom,
             codeExclusions,
             contentRanges);
-        codeSeeds.AddRange(entryTables.Seeds);
-        codeSeeds.AddRange(LoadFceuxCodeSeeds(
+        List<CodeSeed> importedSeeds = [];
+        importedSeeds.AddRange(entryTables.Seeds);
+        importedSeeds.AddRange(LoadFceuxCodeSeeds(
             Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"), rom, codeExclusions));
-        codeSeeds.AddRange(LoadGhidraCodeSeeds(
-            Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions));
+        importedSeeds.AddRange(LoadGhidraCodeSeeds(
+            Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions, inlineOperandAbi));
+        baselineSeeds.AddRange(importedSeeds);
+        codeSeeds.AddRange(importedSeeds);
+        List<CodeExclusion> declaredData = contentRanges
+            .Select(range => new CodeExclusion(range.Bank, range.Start, range.EndExclusive, range.Category))
+            .ToList();
+        Dictionary<int, BankAnalysis> baselineAnalyses = CodeAnalyzer.Analyze(
+            rom.AsMemory(HeaderSize), baselineSeeds, codeExclusions, inlineOperandAbi, declaredData);
         Dictionary<int, BankAnalysis> analyses = CodeAnalyzer.Analyze(
-            rom.AsMemory(HeaderSize), codeSeeds, codeExclusions, brkOperandCounts);
+            rom.AsMemory(HeaderSize), codeSeeds, codeExclusions, inlineOperandAbi, declaredData);
+        CodeAnalyzer.ValidateGuardedFlowRecovery(
+            rom.AsMemory(HeaderSize), guardedSeeds, baselineAnalyses, analyses);
+        Console.WriteLine($"validated {guardedSeeds.Count} guarded flow-recovery seeds");
+        ValidateCodeDataOverlaps(contentRanges, codeDataOverlaps, analyses);
+        WriteInlineOperandReport(
+            Path.Combine(projectRoot, "analysis", "inline-operand-report.tsv"),
+            Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"),
+            Path.Combine(projectRoot, "analysis", "fceux-inline-resumes.tsv"),
+            rom,
+            inlineOperandAbi,
+            analyses);
+        CitationValidator.Validate(
+            contentRanges.Select(range => (range.Bank, $"content range ${range.Bank:X2}:${range.Start:X4}", range.Reason))
+                .Concat(File.ReadLines(Path.Combine(projectRoot, "config", "code-entry-tables.tsv"))
+                    .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
+                    .Select(line => line.Split('\t'))
+                    .Select(columns => (int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                        $"entry table ${columns[0]}:${columns[1]}", columns[4]))),
+            analyses);
+        WarningLedger.Validate(
+            Path.Combine(projectRoot, "config", "analyzer-warning-ledger.tsv"),
+            Path.Combine(projectRoot, "config", "original-analyzer-warnings.tsv"),
+            Path.Combine(projectRoot, "config", "analyzer-warning-manifest.tsv"),
+            Path.Combine(projectRoot, "analysis", "analyzer-warning-report.md"),
+            analyses,
+            (bank, address) => contentRanges.Any(range =>
+                range.Bank == bank && address >= range.Start && address < range.EndExclusive));
         WriteEntryPointReport(
             Path.Combine(projectRoot, "analysis", "entry-point-report.txt"),
             entryTables.Entries,
@@ -497,11 +544,83 @@ internal static class Program
         return ranges;
     }
 
-    private static Dictionary<ushort, int> BuildBrkOperandCounts(
-        ReadOnlySpan<byte> rom,
-        IReadOnlyList<ContentRange> contentRanges)
+    private static List<CodeDataOverlap> LoadCodeDataOverlaps(string path)
     {
-        Dictionary<ushort, int> counts = [];
+        List<CodeDataOverlap> overlaps = [];
+        foreach (string line in File.ReadLines(path))
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+            {
+                continue;
+            }
+
+            string[] columns = line.Split('\t');
+            if (columns.Length != 4 || string.IsNullOrWhiteSpace(columns[3]))
+            {
+                throw new InvalidDataException($"invalid code/data overlap row: {line}");
+            }
+
+            int bank = int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int start = int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int endExclusive = int.Parse(columns[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            if (bank is < 0 or >= PrgBankCount || start < cpuBase ||
+                endExclusive > cpuBase + PrgBankSize || start >= endExclusive)
+            {
+                throw new InvalidDataException($"invalid code/data overlap bounds: {line}");
+            }
+
+            overlaps.Add(new CodeDataOverlap(bank, start, endExclusive, columns[3]));
+        }
+
+        return overlaps;
+    }
+
+    private static void ValidateCodeDataOverlaps(
+        IReadOnlyList<ContentRange> contentRanges,
+        IReadOnlyList<CodeDataOverlap> allowedOverlaps,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        HashSet<(int Bank, int Address)> dataBytes = contentRanges
+            .SelectMany(range => Enumerable.Range(range.Start, range.EndExclusive - range.Start)
+                .Select(address => (range.Bank, address)))
+            .ToHashSet();
+        HashSet<(int Bank, int Address)> codeBytes = analyses
+            .SelectMany(pair => pair.Value.Instructions.Values
+                .SelectMany(instruction => Enumerable.Range(instruction.Address, instruction.Opcode.Size)
+                    .Select(address => (pair.Key, address))))
+            .ToHashSet();
+        HashSet<(int Bank, int Address)> actual = dataBytes.Intersect(codeBytes).ToHashSet();
+        HashSet<(int Bank, int Address)> allowed = [];
+        foreach (CodeDataOverlap range in allowedOverlaps)
+        {
+            for (int address = range.Start; address < range.EndExclusive; address++)
+            {
+                if (!allowed.Add((range.Bank, address)))
+                {
+                    throw new InvalidDataException(
+                        $"duplicate code/data overlap byte bank ${range.Bank:X2}:${address:X4}");
+                }
+            }
+        }
+
+        List<(int Bank, int Address)> unexpected = actual.Except(allowed).Order().ToList();
+        List<(int Bank, int Address)> stale = allowed.Except(actual).Order().ToList();
+        if (unexpected.Count != 0 || stale.Count != 0)
+        {
+            static string Format(IEnumerable<(int Bank, int Address)> items) =>
+                string.Join(", ", items.Take(20).Select(item => $"${item.Bank:X2}:${item.Address:X4}"));
+            throw new InvalidDataException(
+                $"code/data overlap ledger mismatch: {unexpected.Count} unexpected [{Format(unexpected)}]; " +
+                $"{stale.Count} stale [{Format(stale)}]");
+        }
+    }
+
+    private static void ValidateInlineServiceRanges(
+        ReadOnlySpan<byte> rom,
+        IReadOnlyList<ContentRange> contentRanges,
+        InlineOperandAbi abi)
+    {
         foreach (ContentRange range in contentRanges.Where(range =>
             range.Category.Equals("InlineServiceOperands", StringComparison.Ordinal)))
         {
@@ -509,23 +628,159 @@ internal static class Program
             int cpuBase = CodeAnalyzer.CpuBase(range.Bank);
             int brkAddress = range.Start - 1;
             int romOffset = HeaderSize + (range.Bank * PrgBankSize) + brkAddress - cpuBase;
-            if (operandCount is < 2 or > 3 || romOffset < HeaderSize || rom[romOffset] != 0x00)
+            if (romOffset < HeaderSize || rom[romOffset] != 0x00)
             {
                 throw new InvalidDataException(
                     $"invalid inline BRK operand range at bank ${range.Bank:X2}:${range.Start:X4}-${range.EndExclusive - 1:X4}");
             }
 
-            ushort service = (ushort)((rom[romOffset + 1] << 8) | rom[romOffset + 2]);
-            if (counts.TryGetValue(service, out int existing) && existing != operandCount)
+            int expected = abi.BrkOperandCount(rom[romOffset + 1], rom[romOffset + 2]);
+            if (operandCount != expected)
             {
                 throw new InvalidDataException(
-                    $"conflicting operand counts for BRK service ${service:X4}: {existing} and {operandCount}");
+                    $"inline BRK operand range at bank ${range.Bank:X2}:${range.Start:X4} declares {operandCount} operands " +
+                    $"but the ABI for service ${rom[romOffset + 1]:X2},${rom[romOffset + 2]:X2} requires {expected}");
+            }
+        }
+    }
+
+    private static void WriteInlineOperandReport(
+        string path,
+        string runtimeExecutionPath,
+        string runtimeResumePath,
+        byte[] rom,
+        InlineOperandAbi abi,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        List<string> errors = [];
+        HashSet<(int Bank, int Address)> executed = [];
+        foreach (string line in File.ReadLines(runtimeExecutionPath))
+        {
+            string[] columns = line.Split('\t');
+            if (columns.Length == 2 && !line.StartsWith('#'))
+            {
+                executed.Add((int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                    int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture)));
+            }
+        }
+        Dictionary<(int Bank, int Address, string Kind), HashSet<int>> observedResumes = [];
+        foreach (string line in File.ReadLines(runtimeResumePath))
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+            {
+                continue;
             }
 
-            counts[service] = operandCount;
+            string[] columns = line.Split('\t');
+            if (columns.Length != 4 || columns[2] is not ("brk" or "jsr"))
+            {
+                throw new InvalidDataException($"invalid FCEUX call-resume record: {line}");
+            }
+
+            (int Bank, int Address, string Kind) key = (
+                int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                columns[2]);
+            if (!observedResumes.TryGetValue(key, out HashSet<int>? continuations))
+            {
+                continuations = [];
+                observedResumes.Add(key, continuations);
+            }
+            continuations.Add(int.Parse(columns[3], NumberStyles.HexNumber, CultureInfo.InvariantCulture));
         }
 
-        return counts;
+        // Runtime execution is the strongest ABI evidence: an executed opcode fetch can never
+        // be an inline operand, and an executed call must resume at its declared continuation.
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            foreach (int offset in analysis.InlineDataOffsets)
+            {
+                if (executed.Contains((bank, CodeAnalyzer.CpuBase(bank) + offset)))
+                {
+                    errors.Add($"inline operand bank ${bank:X2}:${CodeAnalyzer.CpuBase(bank) + offset:X4} was executed at runtime");
+                }
+            }
+        }
+        foreach (InlineOperandRule rule in abi.Rules)
+        {
+            if (!analyses[rule.HandlerBank].Instructions.ContainsKey(
+                rule.HandlerAddress - CodeAnalyzer.CpuBase(rule.HandlerBank)))
+            {
+                errors.Add($"{rule.Kind} {rule.Key} cites undecoded handler ${rule.HandlerBank:X2}:${rule.HandlerAddress:X4}");
+            }
+        }
+
+        StringBuilder report = new();
+        report.AppendLine("Bank\tAddress\tKind\tOperands\tOperandCount\tRule\tContinuation\tContinuationDecoded\tRuntime");
+        foreach ((int bank, BankAnalysis analysis) in analyses.OrderBy(pair => pair.Key))
+        {
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            foreach (DecodedInstruction instruction in analysis.Instructions.Values)
+            {
+                int count = 0;
+                while (analysis.InlineDataOffsets.Contains(instruction.Offset + instruction.Opcode.Size + count))
+                {
+                    count++;
+                }
+
+                bool isBrk = instruction.Opcode.Mnemonic == "brk";
+                if (!isBrk && count == 0)
+                {
+                    continue;
+                }
+
+                int romOffset = HeaderSize + (bank * PrgBankSize) + instruction.Offset;
+                string rule;
+                if (isBrk)
+                {
+                    InlineOperandRule? brkRule = instruction.Offset + 2 < PrgBankSize
+                        ? abi.BrkRule(rom[romOffset + 1], rom[romOffset + 2])
+                        : null;
+                    rule = brkRule is null ? "BrkDefault" : $"{brkRule.Kind} {brkRule.Key}";
+                }
+                else
+                {
+                    rule = $"JsrInline {instruction.Target:X4}";
+                }
+
+                int operandStart = instruction.Offset + instruction.Opcode.Size;
+                string operands = string.Join(",", Enumerable.Range(0, count)
+                    .Select(index => $"${rom[HeaderSize + (bank * PrgBankSize) + operandStart + index]:X2}"));
+                int continuation = cpuBase + operandStart + count;
+                bool decoded = analysis.Instructions.ContainsKey(operandStart + count);
+                bool callExecuted = executed.Contains((bank, instruction.Address));
+                string kind = isBrk ? "brk" : "jsr";
+                HashSet<int> actualContinuations = observedResumes.GetValueOrDefault(
+                    (bank, instruction.Address, kind)) ?? [];
+                bool continuationObserved = actualContinuations.Contains(continuation);
+                int[] conflictingContinuations = actualContinuations
+                    .Where(actual => actual != continuation)
+                    .Order()
+                    .ToArray();
+                if (conflictingContinuations.Length != 0)
+                {
+                    errors.Add(
+                        $"executed {instruction.Opcode.Mnemonic} at bank ${bank:X2}:${instruction.Address:X4} " +
+                        $"resumed at {string.Join(", ", conflictingContinuations.Select(actual => $"${actual:X4}"))} " +
+                        $"instead of ABI continuation ${continuation:X4}");
+                }
+                report.Append(bank.ToString("X2", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(instruction.Address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(isBrk ? "brk" : "jsr").Append('\t')
+                    .Append(operands).Append('\t')
+                    .Append(count.ToString(CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(rule).Append('\t')
+                    .Append(continuation.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                    .Append(decoded ? "yes" : "no").Append('\t')
+                    .AppendLine(!callExecuted ? "-" : continuationObserved ? "causal-resume" : "legacy-address-only");
+            }
+        }
+
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+        if (errors.Count != 0)
+        {
+            throw new InvalidDataException($"inline-operand ABI validation failed: {string.Join("; ", errors)}");
+        }
     }
 
     private static List<BankClassification> LoadBankClassifications(string path)
@@ -580,7 +835,7 @@ internal static class Program
             }
 
             string[] columns = line.Split('\t');
-            if (columns.Length != 5)
+            if (columns.Length is not (5 or 6) || columns.Length == 6 && columns[5] != "rts")
             {
                 throw new InvalidDataException($"invalid code entry table: {line}");
             }
@@ -588,6 +843,8 @@ internal static class Program
             int bank = int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
             int start = int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
             int endExclusive = int.Parse(columns[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            // An RTS dispatcher pushes the table value and returns, so execution resumes one byte later.
+            int targetBias = columns.Length == 6 ? 1 : 0;
             int cpuBase = CodeAnalyzer.CpuBase(bank);
             if (start < cpuBase || endExclusive > cpuBase + PrgBankSize || ((endExclusive - start) & 1) != 0)
             {
@@ -601,7 +858,7 @@ internal static class Program
 
             for (int address = start; address < endExclusive; address += 2)
             {
-                AddPointer(bank, start, endExclusive, address, columns[4], false);
+                AddPointer(bank, start, endExclusive, address, columns[4], false, targetBias);
             }
         }
 
@@ -637,7 +894,8 @@ internal static class Program
             int tableEndExclusive,
             int address,
             string reason,
-            bool isExplicit)
+            bool isExplicit,
+            int targetBias = 0)
         {
             if (!pointerLocations.Add((bank, address)))
             {
@@ -647,7 +905,7 @@ internal static class Program
 
             int cpuBase = CodeAnalyzer.CpuBase(bank);
             int romOffset = HeaderSize + (bank * PrgBankSize) + address - cpuBase;
-            int target = rom[romOffset] | (rom[romOffset + 1] << 8);
+            int target = ((rom[romOffset] | (rom[romOffset + 1] << 8)) + targetBias) & 0xFFFF;
             int? targetBank = target switch
             {
                 >= 0xC000 and <= 0xFFFF => bank < 0x10 ? 0x0F : 0x1F,
@@ -680,7 +938,8 @@ internal static class Program
                 targetBank,
                 classification,
                 reason,
-                isExplicit));
+                isExplicit,
+                targetBias));
             if (classification is not ("fixed-bank-code" or "local-bank-code"))
             {
                 return;
@@ -700,7 +959,8 @@ internal static class Program
     private static List<CodeSeed> LoadGhidraCodeSeeds(
         string path,
         ReadOnlySpan<byte> rom,
-        IReadOnlyList<CodeExclusion> exclusions)
+        IReadOnlyList<CodeExclusion> exclusions,
+        InlineOperandAbi abi)
     {
         List<CodeSeed> seeds = [];
         if (!File.Exists(path))
@@ -735,6 +995,7 @@ internal static class Program
 
             int cpuBase = CodeAnalyzer.CpuBase(bank);
             int address = rangeStart;
+            bool skippedInlineOperands = false;
             List<DecodedInstruction> instructions = [];
             while (address < endExclusive)
             {
@@ -742,14 +1003,29 @@ internal static class Program
                 Opcode? opcode = OpcodeTable.Get(rom[romOffset]);
                 if (opcode is null || address + opcode.Size > endExclusive)
                 {
+                    // Ghidra does not model the inline-operand ABI, so bytes after a skipped
+                    // operand may not realign with its block end; stop at the last whole instruction.
+                    if (skippedInlineOperands)
+                    {
+                        break;
+                    }
+
                     throw new InvalidDataException(
                         $"Ghidra range bank ${bank:X2}:${address:X4}-${endExclusive - 1:X4} is not valid official 6502 code");
                 }
 
                 byte operand1 = opcode.Size >= 2 ? rom[romOffset + 1] : (byte)0;
                 byte operand2 = opcode.Size == 3 ? rom[romOffset + 2] : (byte)0;
-                instructions.Add(new DecodedInstruction(bank, address, opcode, operand1, operand2));
+                DecodedInstruction instruction = new(bank, address, opcode, operand1, operand2);
+                instructions.Add(instruction);
                 address += opcode.Size;
+                int inlineOperands = opcode.Mnemonic == "brk" && address - cpuBase + 1 < PrgBankSize
+                    ? abi.BrkOperandCount(rom[romOffset + 1], rom[romOffset + 2])
+                    : opcode.IsCall && instruction.Target is int callTarget && TargetBank(bank, callTarget) is int callBank
+                        ? abi.JsrInlineOperandCount(callBank, callTarget)
+                        : 0;
+                address += inlineOperands;
+                skippedInlineOperands |= inlineOperands > 0;
             }
 
             HashSet<int> instructionStarts = instructions.Select(instruction => instruction.Address).ToHashSet();
@@ -773,7 +1049,8 @@ internal static class Program
                     endExclusive,
                     "Ghidra headless",
                     columns[4],
-                    IsEntryPoint: false));
+                    IsEntryPoint: false,
+                    Supplementary: true));
             }
         }
 
@@ -811,10 +1088,15 @@ internal static class Program
             {
                 throw new InvalidDataException($"FCEUX execution address is outside bank ${bank:X2}: ${address:X4}");
             }
-            if (exclusions.Any(item =>
-                item.Bank == bank && address >= item.Start && address < item.EndExclusive))
+            // An exclusion asserts that its bytes are never fetched as opcodes, so an executed
+            // instruction start inside one refutes the exclusion rather than being skipped.
+            CodeExclusion? refuted = exclusions.FirstOrDefault(item =>
+                item.Bank == bank && address >= item.Start && address < item.EndExclusive);
+            if (refuted is not null)
             {
-                continue;
+                throw new InvalidDataException(
+                    $"FCEUX executed bank ${bank:X2}:${address:X4} inside code exclusion " +
+                    $"${refuted.Start:X4}-${refuted.EndExclusive - 1:X4}: {refuted.Reason}");
             }
 
             int romOffset = HeaderSize + (bank * PrgBankSize) + address - cpuBase;
@@ -1218,6 +1500,20 @@ internal static class Program
         }
 
         report.AppendLine();
+        report.AppendLine("Supplementary Ghidra evidence not accepted:");
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            foreach (int address in analysis.ContradictedSupplementarySeeds)
+            {
+                report.AppendLine($"  bank ${bank:X2}:${address:X4} contradicted: starts inside an established instruction or inline operand");
+            }
+            foreach (int address in analysis.RejectedSupplementaryBlocks)
+            {
+                report.AppendLine($"  bank ${bank:X2}:${address:X4} block rejected: its decode raised an analyzer warning or overlapped a verified content range");
+            }
+        }
+
+        report.AppendLine();
         report.AppendLine("Coverage:");
         foreach ((int bank, BankAnalysis analysis) in analyses.Where(item => item.Value.Instructions.Count > 0))
         {
@@ -1479,8 +1775,11 @@ internal static class Program
                 string decoded = entry.Classification is "fixed-bank-code" or "local-bank-code"
                     ? EntryTargetDecoded(entry, analyses) ? ", decoded" : ", NOT DECODED"
                     : string.Empty;
+                string bias = entry.TargetBias != 0
+                    ? $" (RTS dispatch of stored ${(entry.Target - entry.TargetBias) & 0xFFFF:X4})"
+                    : string.Empty;
                 report.AppendLine(
-                    $"  ${entry.PointerAddress:X4} -> {mappedTarget} [{entry.Classification}{decoded}]");
+                    $"  ${entry.PointerAddress:X4} -> {mappedTarget}{bias} [{entry.Classification}{decoded}]");
             }
         }
 
@@ -1747,6 +2046,7 @@ internal static class Program
         string Category,
         string Confidence,
         string Reason);
+    private sealed record CodeDataOverlap(int Bank, int Start, int EndExclusive, string Reason);
     private sealed record BankClassification(int Bank, string Category, string Confidence, string Reason);
     private sealed record EntryTableLoadResult(List<CodeSeed> Seeds, List<EntryPointer> Entries);
     private sealed record EntryPointer(
@@ -1758,7 +2058,8 @@ internal static class Program
         int? TargetBank,
         string Classification,
         string Reason,
-        bool IsExplicit);
+        bool IsExplicit,
+        int TargetBias = 0);
     private sealed record RoutineContract(
         int Bank,
         int Address,

@@ -905,24 +905,26 @@ ItemEffectInventory_Branch_9972:
         cmp     #$61                            ; 9977 C9 61                    .a
         lda     $01                             ; 9979 A5 01                    ..
         sbc     #$01                            ; 997B E9 01                    ..
-        bcs     $9984                           ; 997D B0 05                    ..
+        bcs     ItemEffectInventory_Branch_9984 ; 997D B0 05                    ..
         pla                                     ; 997F 68                       h
         pla                                     ; 9980 68                       h
         jmp     ItemEffectInventory_Branch_999E ; 9981 4C 9E 99                 L..
 ; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_9984:
         lda     $00                             ; 9984 A5 00                    ..
         cmp     #$61                            ; 9986 C9 61                    .a
         lda     $01                             ; 9988 A5 01                    ..
         sbc     #$01                            ; 998A E9 01                    ..
-        bcc     $999D                           ; 998C 90 0F                    ..
+        bcc     ItemEffectInventory_Branch_999D ; 998C 90 0F                    ..
         lda     $00                             ; 998E A5 00                    ..
         cmp     #$79                            ; 9990 C9 79                    .y
         lda     $01                             ; 9992 A5 01                    ..
         sbc     #$01                            ; 9994 E9 01                    ..
-        bpl     $999D                           ; 9996 10 05                    ..
+        bpl     ItemEffectInventory_Branch_999D ; 9996 10 05                    ..
         jsr     ItemEffectInventory_Entry_9C92  ; 9998 20 92 9C                  ..
         pla                                     ; 999B 68                       h
         pla                                     ; 999C 68                       h
+ItemEffectInventory_Branch_999D:
         rts                                     ; 999D 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_999E:
@@ -1170,12 +1172,12 @@ ItemEffectInventory_Entry_9AF8:
         bcc     ItemEffectInventory_Branch_9AEF ; 9AFC 90 F1                    ..
         tax                                     ; 9AFE AA                       .
         brk                                     ; 9AFF 00                       .
-        db   $42,$63                         ; 9B00 42 63                    Bc
+        db   $42,$63,$40                     ; 9B00 42 63 40                 Bc@
 ; ----------------------------------------------------------------------------
-        rti                                     ; 9B02 40                       @
-; ----------------------------------------------------------------------------
-        db   $C9,$01,$F0,$E8,$D0,$E9         ; 9B03 C9 01 F0 E8 D0 E9        ......
-; ----------------------------------------------------------------------------
+ItemEffectInventory_Entry_9B03:
+        cmp     #$01                            ; 9B03 C9 01                    ..
+        beq     ItemEffectInventory_Branch_9AEF ; 9B05 F0 E8                    ..
+        bne     ItemEffectInventory_Branch_9AF2 ; 9B07 D0 E9                    ..
 ItemEffectInventory_Entry_9B09:
         jsr     ItemEffectInventory_Entry_9CE5  ; 9B09 20 E5 9C                  ..
         bcc     ItemEffectInventory_Branch_9AF2 ; 9B0C 90 E4                    ..
@@ -1428,8 +1430,18 @@ ItemEffectInventory_Branch_9C75:
         sta     $DA                             ; 9C7F 85 DA                    ..
         rts                                     ; 9C81 60                       `
 ; ----------------------------------------------------------------------------
-        db   $B1,$DA,$C8,$C9,$06,$D0,$04,$A9 ; 9C82 B1 DA C8 C9 06 D0 04 A9  ........
-        db   $01,$D0,$02,$A9,$00,$A5,$DC,$60 ; 9C8A 01 D0 02 A9 00 A5 DC 60  .......`
+ItemEffectInventory_Entry_9C82:
+        lda     ($DA),y                         ; 9C82 B1 DA                    ..
+        iny                                     ; 9C84 C8                       .
+        cmp     #$06                            ; 9C85 C9 06                    ..
+        bne     ItemEffectInventory_Branch_9C8D ; 9C87 D0 04                    ..
+        lda     #$01                            ; 9C89 A9 01                    ..
+        bne     ItemEffectInventory_Branch_9C8F ; 9C8B D0 02                    ..
+ItemEffectInventory_Branch_9C8D:
+        lda     #$00                            ; 9C8D A9 00                    ..
+ItemEffectInventory_Branch_9C8F:
+        lda     $DC                             ; 9C8F A5 DC                    ..
+        rts                                     ; 9C91 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_9C92:
         lda     $00                             ; 9C92 A5 00                    ..
@@ -1503,15 +1515,31 @@ ItemEffectInventory_Entry_9CEB:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9CF9:
         brk                                     ; 9CF9 00                       .
-        db   $06,$EB,$04,$F0,$14,$AD,$81,$62 ; 9CFA 06 EB 04 F0 14 AD 81 62  .......b
-        db   $29,$03,$18,$69,$01,$85,$00,$AD ; 9D02 29 03 18 69 01 85 00 AD  )..i....
-        db   $81,$62,$29,$F8,$05,$00,$8D,$81 ; 9D0A 81 62 29 F8 05 00 8D 81  .b).....
-        db   $62,$60                         ; 9D12 62 60                    b`
+        db   $06,$EB,$04                     ; 9CFA 06 EB 04                 ...
+; ----------------------------------------------------------------------------
+        beq     ItemEffectInventory_Branch_9D13 ; 9CFD F0 14                    ..
+        lda     $6281                           ; 9CFF AD 81 62                 ..b
+        and     #$03                            ; 9D02 29 03                    ).
+        clc                                     ; 9D04 18                       .
+        adc     #$01                            ; 9D05 69 01                    i.
+        sta     $00                             ; 9D07 85 00                    ..
+        lda     $6281                           ; 9D09 AD 81 62                 ..b
+        and     #$F8                            ; 9D0C 29 F8                    ).
+        ora     $00                             ; 9D0E 05 00                    ..
+        sta     $6281                           ; 9D10 8D 81 62                 ..b
+ItemEffectInventory_Branch_9D13:
+        rts                                     ; 9D13 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9D14:
         brk                                     ; 9D14 00                       .
-        db   $0D,$EB,$02,$F0,$04,$00,$0D,$CB ; 9D15 0D EB 02 F0 04 00 0D CB  ........
-        db   $08,$60                         ; 9D1D 08 60                    .`
+        db   $0D,$EB,$02                     ; 9D15 0D EB 02                 ...
+; ----------------------------------------------------------------------------
+        beq     ItemEffectInventory_Branch_9D1E ; 9D18 F0 04                    ..
+        brk                                     ; 9D1A 00                       .
+        db   $0D,$CB,$08                     ; 9D1B 0D CB 08                 ...
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_9D1E:
+        rts                                     ; 9D1E 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9D1F:
         brk                                     ; 9D1F 00                       .
@@ -1692,8 +1720,15 @@ ItemEffectInventory_Branch_9DF0:
         jsr     ItemEffectInventory_Entry_B089  ; 9E33 20 89 B0                  ..
 ItemEffectInventory_Branch_9E36:
         brk                                     ; 9E36 00                       .
-        db   $09,$DB,$FA,$00,$0A,$CB,$02,$00 ; 9E37 09 DB FA 00 0A CB 02 00  ........
-        db   $10,$DB,$7F,$4C,$55,$9E         ; 9E3F 10 DB 7F 4C 55 9E        ...LU.
+        db   $09,$DB,$FA                     ; 9E37 09 DB FA                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; 9E3A 00                       .
+        db   $0A,$CB,$02                     ; 9E3B 0A CB 02                 ...
+; ----------------------------------------------------------------------------
+        brk                                     ; 9E3E 00                       .
+        db   $10,$DB,$7F                     ; 9E3F 10 DB 7F                 ...
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Branch_9E55 ; 9E42 4C 55 9E                 LU.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9E45:
         lda     $628B                           ; 9E45 AD 8B 62                 ..b
@@ -1894,17 +1929,52 @@ ItemEffectInventory_Entry_9F79:
         inc     $628C                           ; 9F79 EE 8C 62                 ..b
         inc     $628D                           ; 9F7C EE 8D 62                 ..b
         brk                                     ; 9F7F 00                       .
-        db   $20,$DB,$BF,$AD,$5A,$61,$C9,$02 ; 9F80 20 DB BF AD 5A 61 C9 02   ...Za..
-        db   $D0,$4B,$00,$05,$DB,$CF,$A2,$00 ; 9F88 D0 4B 00 05 DB CF A2 00  .K......
-        db   $BD,$DB,$61,$C9,$FF,$F0,$3E,$85 ; 9F90 BD DB 61 C9 FF F0 3E 85  ..a...>.
-        db   $DA,$86,$DB,$20,$91,$C8,$C9,$C0 ; 9F98 DA 86 DB 20 91 C8 C9 C0  ... ....
-        db   $B0,$2D,$A5,$DA,$A2,$FD,$00,$11 ; 9FA0 B0 2D A5 DA A2 FD 00 11  .-......
-        db   $0F,$20,$FA,$A5,$AD,$54,$62,$18 ; 9FA8 0F 20 FA A5 AD 54 62 18  . ...Tb.
-        db   $65,$FD,$8D,$54,$62,$AD,$55,$62 ; 9FB0 65 FD 8D 54 62 AD 55 62  e..Tb.Ub
-        db   $65,$FE,$8D,$55,$62,$AD,$56,$62 ; 9FB8 65 FE 8D 55 62 AD 56 62  e..Ub.Vb
-        db   $65,$FF,$8D,$56,$62,$A5,$DB,$20 ; 9FC0 65 FF 8D 56 62 A5 DB 20  e..Vb..
-        db   $CA,$B3,$A6,$DB,$4C,$90,$9F,$A6 ; 9FC8 CA B3 A6 DB 4C 90 9F A6  ....L...
-        db   $DB,$E8,$4C,$90,$9F,$60         ; 9FD0 DB E8 4C 90 9F 60        ..L..`
+        db   $20,$DB,$BF                     ; 9F80 20 DB BF                  ..
+; ----------------------------------------------------------------------------
+        lda     SaveCurrentChapterMinus1        ; 9F83 AD 5A 61                 .Za
+        cmp     #$02                            ; 9F86 C9 02                    ..
+        bne     ItemEffectInventory_Branch_9FD5 ; 9F88 D0 4B                    .K
+        brk                                     ; 9F8A 00                       .
+        db   $05,$DB,$CF                     ; 9F8B 05 DB CF                 ...
+; ----------------------------------------------------------------------------
+        ldx     #$00                            ; 9F8E A2 00                    ..
+ItemEffectInventory_Branch_9F90:
+        lda     $61DB,x                         ; 9F90 BD DB 61                 ..a
+        cmp     #$FF                            ; 9F93 C9 FF                    ..
+        beq     ItemEffectInventory_Branch_9FD5 ; 9F95 F0 3E                    .>
+        sta     $DA                             ; 9F97 85 DA                    ..
+        stx     $DB                             ; 9F99 86 DB                    ..
+        jsr     UpperFixedEngine_Entry_C891     ; 9F9B 20 91 C8                  ..
+        cmp     #$C0                            ; 9F9E C9 C0                    ..
+        bcs     ItemEffectInventory_Branch_9FCF ; 9FA0 B0 2D                    .-
+        lda     $DA                             ; 9FA2 A5 DA                    ..
+        ldx     #$FD                            ; 9FA4 A2 FD                    ..
+        brk                                     ; 9FA6 00                       .
+        db   $11,$0F                         ; 9FA7 11 0F                    ..
+; ----------------------------------------------------------------------------
+        jsr     ItemEffectInventory_Entry_A5FA  ; 9FA9 20 FA A5                  ..
+        lda     $6254                           ; 9FAC AD 54 62                 .Tb
+        clc                                     ; 9FAF 18                       .
+        adc     $FD                             ; 9FB0 65 FD                    e.
+        sta     $6254                           ; 9FB2 8D 54 62                 .Tb
+        lda     $6255                           ; 9FB5 AD 55 62                 .Ub
+        adc     $FE                             ; 9FB8 65 FE                    e.
+        sta     $6255                           ; 9FBA 8D 55 62                 .Ub
+        lda     $6256                           ; 9FBD AD 56 62                 .Vb
+        adc     $FF                             ; 9FC0 65 FF                    e.
+        sta     $6256                           ; 9FC2 8D 56 62                 .Vb
+        lda     $DB                             ; 9FC5 A5 DB                    ..
+        jsr     ItemEffectInventory_Entry_B3CA  ; 9FC7 20 CA B3                  ..
+        ldx     $DB                             ; 9FCA A6 DB                    ..
+        jmp     ItemEffectInventory_Branch_9F90 ; 9FCC 4C 90 9F                 L..
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_9FCF:
+        ldx     $DB                             ; 9FCF A6 DB                    ..
+        inx                                     ; 9FD1 E8                       .
+        jmp     ItemEffectInventory_Branch_9F90 ; 9FD2 4C 90 9F                 L..
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_9FD5:
+        rts                                     ; 9FD5 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_9FD6:
         brk                                     ; 9FD6 00                       .
@@ -1928,16 +1998,19 @@ ItemEffectInventory_Branch_9FE4:
         bne     ItemEffectInventory_Branch_9FFF ; 9FF3 D0 0A                    ..
         sta     $628C                           ; 9FF5 8D 8C 62                 ..b
         brk                                     ; 9FF8 00                       .
-        db   $13,$CB,$80,$4C,$06,$A0         ; 9FF9 13 CB 80 4C 06 A0        ...L..
+        db   $13,$CB,$80                     ; 9FF9 13 CB 80                 ...
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Entry_A006  ; 9FFC 4C 06 A0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9FFF:
         sta     $628D                           ; 9FFF 8D 8D 62                 ..b
         brk                                     ; A002 00                       .
-        db   $13,$CB                         ; A003 13 CB                    ..
+        db   $13,$CB,$40                     ; A003 13 CB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A005 40                       @
-; ----------------------------------------------------------------------------
-        db   $98,$20,$6A,$A6,$4C,$B6,$A4     ; A006 98 20 6A A6 4C B6 A4     . j.L..
+ItemEffectInventory_Entry_A006:
+        tya                                     ; A006 98                       .
+        jsr     ItemEffectInventory_Entry_A66A  ; A007 20 6A A6                  j.
+        jmp     ItemEffectInventory_Entry_A4B6  ; A00A 4C B6 A4                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A00D:
         lda     #$01                            ; A00D A9 01                    ..
@@ -2258,21 +2331,55 @@ ItemEffectInventory_Branch_A209:
 ItemEffectInventory_Entry_A20C:
         jsr     UpperFixedEngine_Entry_D218     ; A20C 20 18 D2                  ..
         brk                                     ; A20F 00                       .
-        db   $05,$CB                         ; A210 05 CB                    ..
+        db   $05,$CB,$01                     ; A210 05 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        ora     ($A2,x)                         ; A212 01 A2                    ..
-        db   $02,$A9,$11,$9D,$46,$70,$60,$20 ; A214 02 A9 11 9D 46 70 60 20  ....Fp`
-        db   $93,$9A,$D0,$15,$00,$23,$3B,$20 ; A21C 93 9A D0 15 00 23 3B 20  .....#;
-        db   $C9,$9A,$F0,$03,$4C,$31,$A2,$00 ; A224 C9 9A F0 03 4C 31 A2 00  ....L1..
-        db   $24,$3B,$4C,$30,$B8,$00,$25,$3B ; A22C 24 3B 4C 30 B8 00 25 3B  $;L0..%;
-        db   $60,$00,$26,$3B,$20,$C9,$9A,$F0 ; A234 60 00 26 3B 20 C9 9A F0  `.&; ...
-        db   $04,$00,$28,$3B,$60,$4C,$8C,$A4 ; A23C 04 00 28 3B 60 4C 8C A4  ..(;`L..
+        ldx     #$02                            ; A213 A2 02                    ..
+        lda     #$11                            ; A215 A9 11                    ..
+        sta     $7046,x                         ; A217 9D 46 70                 .Fp
+        rts                                     ; A21A 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Entry_A21B:
+        jsr     ItemEffectInventory_Entry_9A93  ; A21B 20 93 9A                  ..
+        bne     ItemEffectInventory_Branch_A235 ; A21E D0 15                    ..
+        brk                                     ; A220 00                       .
+        db   $23,$3B                         ; A221 23 3B                    #;
+; ----------------------------------------------------------------------------
+        jsr     ItemEffectInventory_Entry_9AC9  ; A223 20 C9 9A                  ..
+        beq     ItemEffectInventory_Branch_A22B ; A226 F0 03                    ..
+        jmp     ItemEffectInventory_Branch_A231 ; A228 4C 31 A2                 L1.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_A22B:
+        brk                                     ; A22B 00                       .
+        db   $24,$3B                         ; A22C 24 3B                    $;
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Branch_B830 ; A22E 4C 30 B8                 L0.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_A231:
+        brk                                     ; A231 00                       .
+        db   $25,$3B                         ; A232 25 3B                    %;
+; ----------------------------------------------------------------------------
+        rts                                     ; A234 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_A235:
+        brk                                     ; A235 00                       .
+        db   $26,$3B                         ; A236 26 3B                    &;
+; ----------------------------------------------------------------------------
+        jsr     ItemEffectInventory_Entry_9AC9  ; A238 20 C9 9A                  ..
+        beq     ItemEffectInventory_Branch_A241 ; A23B F0 04                    ..
+        brk                                     ; A23D 00                       .
+        db   $28,$3B                         ; A23E 28 3B                    (;
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_A240:
+        rts                                     ; A240 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_A241:
+        jmp     ItemEffectInventory_Entry_A48C  ; A241 4C 8C A4                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_A244:
         brk                                     ; A244 00                       .
-        db   $0D,$EB                         ; A245 0D EB                    ..
+        db   $0D,$EB,$20                     ; A245 0D EB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_F6D0     ; A247 20 D0 F6                  ..
+        bne     ItemEffectInventory_Branch_A240 ; A248 D0 F6                    ..
         beq     ItemEffectInventory_Branch_A252 ; A24A F0 06                    ..
 ItemEffectInventory_Entry_A24C:
         jsr     ItemEffectInventory_Entry_B0AE  ; A24C 20 AE B0                  ..
@@ -2708,9 +2815,8 @@ ItemEffectInventory_Entry_A4C9:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_A4DE:
         brk                                     ; A4DE 00                       .
-        db   $05,$CB                         ; A4DF 05 CB                    ..
+        db   $05,$CB,$08                     ; A4DF 05 CB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; A4E1 08                       .
         brk                                     ; A4E2 00                       .
         db   $0E,$CB,$40                     ; A4E3 0E CB 40                 ..@
 ; ----------------------------------------------------------------------------
@@ -2745,8 +2851,13 @@ ItemEffectInventory_Branch_A50F:
         lda     #$56                            ; A512 A9 56                    .V
         jsr     ItemEffectInventory_Entry_B09A  ; A514 20 9A B0                  ..
         brk                                     ; A517 00                       .
-        db   $05,$CB,$04,$A9,$06,$00,$07,$CF ; A518 05 CB 04 A9 06 00 07 CF  ........
-        db   $60                             ; A520 60                       `
+        db   $05,$CB,$04                     ; A518 05 CB 04                 ...
+; ----------------------------------------------------------------------------
+        lda     #$06                            ; A51B A9 06                    ..
+        brk                                     ; A51D 00                       .
+        db   $07,$CF                         ; A51E 07 CF                    ..
+; ----------------------------------------------------------------------------
+        rts                                     ; A520 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_A521:
         jsr     ItemEffectInventory_Entry_A664  ; A521 20 64 A6                  d.
@@ -2927,12 +3038,14 @@ ItemEffectInventory_Entry_A62C:
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_A649 ; A639 90 0E                    ..
         brk                                     ; A63B 00                       .
-        db   $0C,$CB                         ; A63C 0C CB                    ..
+        db   $0C,$CB,$40                     ; A63C 0C CB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; A63E 40                       @
+ItemEffectInventory_Entry_A63F:
+        brk                                     ; A63F 00                       .
+        db   $0A,$CB,$10                     ; A640 0A CB 10                 ...
 ; ----------------------------------------------------------------------------
-        db   $00,$0A,$CB,$10,$20,$68,$A6,$4C ; A63F 00 0A CB 10 20 68 A6 4C  .... h.L
-        db   $60,$A6                         ; A647 60 A6                    `.
+        jsr     ItemEffectInventory_Entry_A668  ; A643 20 68 A6                  h.
+        jmp     ItemEffectInventory_Entry_A660  ; A646 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A649:
         jmp     ItemEffectInventory_Entry_A664  ; A649 4C 64 A6                 Ld.
@@ -3156,10 +3269,28 @@ ItemEffectInventory_Entry_A774:
         cmp     #$08                            ; A77B C9 08                    ..
         rts                                     ; A77D 60                       `
 ; ----------------------------------------------------------------------------
-        db   $85,$0F,$8A,$48,$00,$62,$33,$AA ; A77E 85 0F 8A 48 00 62 33 AA  ...H.b3.
-        db   $CA,$30,$09,$00,$2B,$73,$C5,$0F ; A786 CA 30 09 00 2B 73 C5 0F  .0..+s..
-        db   $D0,$F6,$86,$0F,$68,$AA,$A5,$0F ; A78E D0 F6 86 0F 68 AA A5 0F  ....h...
-        db   $60                             ; A796 60                       `
+ItemEffectInventory_Entry_A77E:
+        sta     $0F                             ; A77E 85 0F                    ..
+        txa                                     ; A780 8A                       .
+        pha                                     ; A781 48                       H
+        brk                                     ; A782 00                       .
+        db   $62,$33                         ; A783 62 33                    b3
+; ----------------------------------------------------------------------------
+        tax                                     ; A785 AA                       .
+ItemEffectInventory_Branch_A786:
+        dex                                     ; A786 CA                       .
+        bmi     ItemEffectInventory_Branch_A792 ; A787 30 09                    0.
+        brk                                     ; A789 00                       .
+        db   $2B,$73                         ; A78A 2B 73                    +s
+; ----------------------------------------------------------------------------
+        cmp     $0F                             ; A78C C5 0F                    ..
+        bne     ItemEffectInventory_Branch_A786 ; A78E D0 F6                    ..
+        stx     $0F                             ; A790 86 0F                    ..
+ItemEffectInventory_Branch_A792:
+        pla                                     ; A792 68                       h
+        tax                                     ; A793 AA                       .
+        lda     $0F                             ; A794 A5 0F                    ..
+        rts                                     ; A796 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_A797:
         brk                                     ; A797 00                       .
@@ -3523,8 +3654,13 @@ ItemEffectInventory_Entry_A99A:
         sta     $DB                             ; A9A0 85 DB                    ..
         bne     ItemEffectInventory_Branch_A9AE ; A9A2 D0 0A                    ..
         brk                                     ; A9A4 00                       .
-        db   $27,$EB,$FF,$D0,$04,$00,$B3,$4B ; A9A5 27 EB FF D0 04 00 B3 4B  '......K
-        db   $60                             ; A9AD 60                       `
+        db   $27,$EB,$FF                     ; A9A5 27 EB FF                 '..
+; ----------------------------------------------------------------------------
+        bne     ItemEffectInventory_Branch_A9AE ; A9A8 D0 04                    ..
+        brk                                     ; A9AA 00                       .
+        db   $B3,$4B                         ; A9AB B3 4B                    .K
+; ----------------------------------------------------------------------------
+        rts                                     ; A9AD 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A9AE:
         sta     $FD                             ; A9AE 85 FD                    ..
@@ -3733,7 +3869,7 @@ ItemEffectInventory_Entry_AAC8:
 ItemEffectInventory_Entry_AACC:
         lda     #$11                            ; AACC A9 11                    ..
 ItemEffectInventory_Branch_AACE:
-        jmp     ItemEffectInventory_Branch_B0CE ; AACE 4C CE B0                 L..
+        jmp     ItemEffectInventory_Entry_B0CE  ; AACE 4C CE B0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_AAD1:
         lda     #$13                            ; AAD1 A9 13                    ..
@@ -3873,9 +4009,8 @@ ItemEffectInventory_Entry_AB89:
 ItemEffectInventory_Entry_AB8B:
         sta     $DA                             ; AB8B 85 DA                    ..
         brk                                     ; AB8D 00                       .
-        db   $16,$EB                         ; AB8E 16 EB                    ..
+        db   $16,$EB,$08                     ; AB8E 16 EB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; AB90 08                       .
         bne     ItemEffectInventory_Branch_AB97 ; AB91 D0 04                    ..
         brk                                     ; AB93 00                       .
         db   $EE,$3B                         ; AB94 EE 3B                    .;
@@ -3977,15 +4112,17 @@ ItemEffectInventory_Branch_AC16:
         bne     ItemEffectInventory_Branch_AC13 ; AC18 D0 F9                    ..
         jsr     ItemEffectInventory_Entry_A660  ; AC1A 20 60 A6                  `.
         brk                                     ; AC1D 00                       .
-        db   $1A,$CB                         ; AC1E 1A CB                    ..
+        db   $1A,$CB,$08                     ; AC1E 1A CB 08                 ...
 ; ----------------------------------------------------------------------------
-        php                                     ; AC20 08                       .
 ItemEffectInventory_Branch_AC21:
         lda     #$4B                            ; AC21 A9 4B                    .K
         jsr     ItemEffectInventory_Entry_B089  ; AC23 20 89 B0                  ..
         bcs     ItemEffectInventory_Branch_AC31 ; AC26 B0 09                    ..
         brk                                     ; AC28 00                       .
-        db   $1A,$CB,$04,$86,$F9,$4C,$5C,$A6 ; AC29 1A CB 04 86 F9 4C 5C A6  .....L\.
+        db   $1A,$CB,$04                     ; AC29 1A CB 04                 ...
+; ----------------------------------------------------------------------------
+        stx     $F9                             ; AC2C 86 F9                    ..
+        jmp     ItemEffectInventory_Entry_A65C  ; AC2E 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC31:
         jmp     ItemEffectInventory_Entry_A658  ; AC31 4C 58 A6                 LX.
@@ -4001,13 +4138,21 @@ ItemEffectInventory_Entry_AC37:
         bcs     ItemEffectInventory_Branch_AC5A ; AC3D B0 1B                    ..
         lda     #$00                            ; AC3F A9 00                    ..
         brk                                     ; AC41 00                       .
-        db   $29,$63                         ; AC42 29 63                    )c
+        db   $29,$63,$40                     ; AC42 29 63 40                 )c@
 ; ----------------------------------------------------------------------------
-        rti                                     ; AC44 40                       @
+ItemEffectInventory_Entry_AC45:
+        cmp     #$01                            ; AC45 C9 01                    ..
+        bne     ItemEffectInventory_Branch_AC4C ; AC47 D0 03                    ..
+        jmp     ItemEffectInventory_Entry_A668  ; AC49 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
-        db   $C9,$01,$D0,$03,$4C,$68,$A6,$20 ; AC45 C9 01 D0 03 4C 68 A6 20  ....Lh.
-        db   $60,$A6,$20,$C9,$9A,$F0,$03,$4C ; AC4D 60 A6 20 C9 9A F0 03 4C  `. ....L
-        db   $5C,$A6,$4C,$58,$A6             ; AC55 5C A6 4C 58 A6           \.LX.
+ItemEffectInventory_Branch_AC4C:
+        jsr     ItemEffectInventory_Entry_A660  ; AC4C 20 60 A6                  `.
+        jsr     ItemEffectInventory_Entry_9AC9  ; AC4F 20 C9 9A                  ..
+        beq     ItemEffectInventory_Branch_AC57 ; AC52 F0 03                    ..
+        jmp     ItemEffectInventory_Entry_A65C  ; AC54 4C 5C A6                 L\.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_AC57:
+        jmp     ItemEffectInventory_Entry_A658  ; AC57 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC5A:
         jmp     ItemEffectInventory_Entry_A664  ; AC5A 4C 64 A6                 Ld.
@@ -4043,28 +4188,55 @@ ItemEffectInventory_Entry_AC82:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_AC88:
         brk                                     ; AC88 00                       .
-        db   $1D,$EB                         ; AC89 1D EB                    ..
+        db   $1D,$EB,$10                     ; AC89 1D EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bpl     ItemEffectInventory_Entry_AC5D  ; AC8B 10 D0                    ..
-        db   $03,$20,$64,$A6,$20,$68,$A6,$A9 ; AC8D 03 20 64 A6 20 68 A6 A9  . d. h..
-        db   $73,$20,$89,$B0,$B0,$0C,$86,$F9 ; AC95 73 20 89 B0 B0 0C 86 F9  s ......
-        db   $00,$1D,$CB,$20,$20,$60,$A6,$4C ; AC9D 00 1D CB 20 20 60 A6 4C  ...  `.L
-        db   $5C,$A6,$00,$1D,$CB,$10,$4C,$58 ; ACA5 5C A6 00 1D CB 10 4C 58  \.....LX
-        db   $A6                             ; ACAD A6                       .
+        bne     ItemEffectInventory_Branch_AC91 ; AC8C D0 03                    ..
+        jsr     ItemEffectInventory_Entry_A664  ; AC8E 20 64 A6                  d.
+ItemEffectInventory_Branch_AC91:
+        jsr     ItemEffectInventory_Entry_A668  ; AC91 20 68 A6                  h.
+        lda     #$73                            ; AC94 A9 73                    .s
+        jsr     ItemEffectInventory_Entry_B089  ; AC96 20 89 B0                  ..
+        bcs     ItemEffectInventory_Branch_ACA7 ; AC99 B0 0C                    ..
+        stx     $F9                             ; AC9B 86 F9                    ..
+        brk                                     ; AC9D 00                       .
+        db   $1D,$CB,$20                     ; AC9E 1D CB 20                 ..
+; ----------------------------------------------------------------------------
+        jsr     ItemEffectInventory_Entry_A660  ; ACA1 20 60 A6                  `.
+        jmp     ItemEffectInventory_Entry_A65C  ; ACA4 4C 5C A6                 L\.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_ACA7:
+        brk                                     ; ACA7 00                       .
+        db   $1D,$CB,$10                     ; ACA8 1D CB 10                 ...
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Entry_A658  ; ACAB 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_ACAE:
         brk                                     ; ACAE 00                       .
         db   $0B,$DF                         ; ACAF 0B DF                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; ACB1 00                       .
-        db   $1E,$EB                         ; ACB2 1E EB                    ..
+        db   $1E,$EB,$40                     ; ACB2 1E EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; ACB4 40                       @
+ItemEffectInventory_Entry_ACB5:
+        bne     ItemEffectInventory_Branch_ACCE ; ACB5 D0 17                    ..
+        lda     $6299                           ; ACB7 AD 99 62                 ..b
+        and     #$3F                            ; ACBA 29 3F                    )?
+        cmp     #$07                            ; ACBC C9 07                    ..
+        beq     ItemEffectInventory_Branch_ACCB ; ACBE F0 0B                    ..
+        cmp     #$02                            ; ACC0 C9 02                    ..
+        beq     ItemEffectInventory_Branch_ACCB ; ACC2 F0 07                    ..
+        cmp     #$03                            ; ACC4 C9 03                    ..
+        beq     ItemEffectInventory_Branch_ACCB ; ACC6 F0 03                    ..
+        jmp     ItemEffectInventory_Entry_A664  ; ACC8 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-        db   $D0,$17,$AD,$99,$62,$29,$3F,$C9 ; ACB5 D0 17 AD 99 62 29 3F C9  ....b)?.
-        db   $07,$F0,$0B,$C9,$02,$F0,$07,$C9 ; ACBD 07 F0 0B C9 02 F0 07 C9  ........
-        db   $03,$F0,$03,$4C,$64,$A6,$4C,$68 ; ACC5 03 F0 03 4C 64 A6 4C 68  ...Ld.Lh
-        db   $A6,$00,$C9,$4B,$60             ; ACCD A6 00 C9 4B 60           ...K`
+ItemEffectInventory_Branch_ACCB:
+        jmp     ItemEffectInventory_Entry_A668  ; ACCB 4C 68 A6                 Lh.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_ACCE:
+        brk                                     ; ACCE 00                       .
+        db   $C9,$4B                         ; ACCF C9 4B                    .K
+; ----------------------------------------------------------------------------
+        rts                                     ; ACD1 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_ACD2:
         brk                                     ; ACD2 00                       .
@@ -4072,18 +4244,50 @@ ItemEffectInventory_Entry_ACD2:
 ; ----------------------------------------------------------------------------
         ldy     $E9                             ; ACD5 A4 E9                    ..
         brk                                     ; ACD7 00                       .
-        db   $1E,$EB                         ; ACD8 1E EB                    ..
+        db   $1E,$EB,$40                     ; ACD8 1E EB 40                 ..@
 ; ----------------------------------------------------------------------------
-        rti                                     ; ACDA 40                       @
+ItemEffectInventory_Entry_ACDB:
+        bne     ItemEffectInventory_Branch_AD04 ; ACDB D0 27                    .'
+        lda     $6299                           ; ACDD AD 99 62                 ..b
+        and     #$3F                            ; ACE0 29 3F                    )?
+        cmp     #$07                            ; ACE2 C9 07                    ..
+        beq     ItemEffectInventory_Branch_ACF9 ; ACE4 F0 13                    ..
+        cmp     #$02                            ; ACE6 C9 02                    ..
+        beq     ItemEffectInventory_Branch_ACF9 ; ACE8 F0 0F                    ..
+        cmp     #$03                            ; ACEA C9 03                    ..
+        beq     ItemEffectInventory_Branch_ACF9 ; ACEC F0 0B                    ..
+        cpy     #$01                            ; ACEE C0 01                    ..
+        bne     ItemEffectInventory_Branch_ACF5 ; ACF0 D0 03                    ..
+        jmp     ItemEffectInventory_Entry_A664  ; ACF2 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-        db   $D0,$27,$AD,$99,$62,$29,$3F,$C9 ; ACDB D0 27 AD 99 62 29 3F C9  .'..b)?.
-        db   $07,$F0,$13,$C9,$02,$F0,$0F,$C9 ; ACE3 07 F0 13 C9 02 F0 0F C9  ........
-        db   $03,$F0,$0B,$C0,$01,$D0,$03,$4C ; ACEB 03 F0 0B C0 01 D0 03 4C  .......L
-        db   $64,$A6,$A9,$02,$D0,$15,$C0,$01 ; ACF3 64 A6 A9 02 D0 15 C0 01  d.......
-        db   $D0,$03,$4C,$68,$A6,$A9,$03,$D0 ; ACFB D0 03 4C 68 A6 A9 03 D0  ..Lh....
-        db   $0A,$00,$C9,$4B,$A4,$E9,$C0,$01 ; AD03 0A 00 C9 4B A4 E9 C0 01  ...K....
-        db   $D0,$04,$60,$20,$6A,$A6,$A9,$1F ; AD0B D0 04 60 20 6A A6 A9 1F  ..` j...
-        db   $00,$07,$CF,$4C,$AE,$B0         ; AD13 00 07 CF 4C AE B0        ...L..
+ItemEffectInventory_Branch_ACF5:
+        lda     #$02                            ; ACF5 A9 02                    ..
+        bne     ItemEffectInventory_Branch_AD0E ; ACF7 D0 15                    ..
+ItemEffectInventory_Branch_ACF9:
+        cpy     #$01                            ; ACF9 C0 01                    ..
+        bne     ItemEffectInventory_Branch_AD00 ; ACFB D0 03                    ..
+        jmp     ItemEffectInventory_Entry_A668  ; ACFD 4C 68 A6                 Lh.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_AD00:
+        lda     #$03                            ; AD00 A9 03                    ..
+        bne     ItemEffectInventory_Branch_AD0E ; AD02 D0 0A                    ..
+ItemEffectInventory_Branch_AD04:
+        brk                                     ; AD04 00                       .
+        db   $C9,$4B                         ; AD05 C9 4B                    .K
+; ----------------------------------------------------------------------------
+        ldy     $E9                             ; AD07 A4 E9                    ..
+        cpy     #$01                            ; AD09 C0 01                    ..
+        bne     ItemEffectInventory_Branch_AD11 ; AD0B D0 04                    ..
+        rts                                     ; AD0D 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_AD0E:
+        jsr     ItemEffectInventory_Entry_A66A  ; AD0E 20 6A A6                  j.
+ItemEffectInventory_Branch_AD11:
+        lda     #$1F                            ; AD11 A9 1F                    ..
+        brk                                     ; AD13 00                       .
+        db   $07,$CF                         ; AD14 07 CF                    ..
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Entry_B0AE  ; AD16 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_AD19:
         brk                                     ; AD19 00                       .
@@ -4212,10 +4416,12 @@ ItemEffectInventory_Branch_ADBE:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADC9:
         brk                                     ; ADC9 00                       .
-        db   $11,$DB                         ; ADCA 11 DB                    ..
+        db   $11,$DB,$00                     ; ADCA 11 DB 00                 ...
 ; ----------------------------------------------------------------------------
-        brk                                     ; ADCC 00                       .
-        db   $00,$1D,$CB,$02,$4C,$58,$A6     ; ADCD 00 1D CB 02 4C 58 A6     ....LX.
+        brk                                     ; ADCD 00                       .
+        db   $1D,$CB,$02                     ; ADCE 1D CB 02                 ...
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Entry_A658  ; ADD1 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_ADD4:
         lda     #$1E                            ; ADD4 A9 1E                    ..
@@ -4224,13 +4430,26 @@ ItemEffectInventory_Entry_ADD4:
 ; ----------------------------------------------------------------------------
         rts                                     ; ADD9 60                       `
 ; ----------------------------------------------------------------------------
-        db   $A9,$00,$00,$63,$73,$85,$F9,$85 ; ADDA A9 00 00 63 73 85 F9 85  ...cs...
-        db   $FA,$A9,$00,$00,$63,$63,$41,$90 ; ADE2 FA A9 00 00 63 63 41 90  ....ccA.
-        db   $03,$4C,$68,$A6,$4C,$64,$A6     ; ADEA 03 4C 68 A6 4C 64 A6     .Lh.Ld.
+ItemEffectInventory_Entry_ADDA:
+        lda     #$00                            ; ADDA A9 00                    ..
+        brk                                     ; ADDC 00                       .
+        db   $63,$73                         ; ADDD 63 73                    cs
+; ----------------------------------------------------------------------------
+        sta     $F9                             ; ADDF 85 F9                    ..
+        sta     $FA                             ; ADE1 85 FA                    ..
+        lda     #$00                            ; ADE3 A9 00                    ..
+        brk                                     ; ADE5 00                       .
+        db   $63,$63,$41                     ; ADE6 63 63 41                 ccA
+; ----------------------------------------------------------------------------
+        bcc     ItemEffectInventory_Branch_ADEE ; ADE9 90 03                    ..
+        jmp     ItemEffectInventory_Entry_A668  ; ADEB 4C 68 A6                 Lh.
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_ADEE:
+        jmp     ItemEffectInventory_Entry_A664  ; ADEE 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_ADF1:
         lda     #$22                            ; ADF1 A9 22                    ."
-        jmp     ItemEffectInventory_Branch_B0CE ; ADF3 4C CE B0                 L..
+        jmp     ItemEffectInventory_Entry_B0CE  ; ADF3 4C CE B0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_ADF6:
         jsr     ItemEffectInventory_Entry_A66A  ; ADF6 20 6A A6                  j.
@@ -4361,10 +4580,11 @@ ItemEffectInventory_Entry_AEA6:
         ldx     #$00                            ; AEAC A2 00                    ..
 ItemEffectInventory_Branch_AEAE:
         brk                                     ; AEAE 00                       .
-        db   $05,$43                         ; AEAF 05 43                    .C
+        db   $05,$43,$01                     ; AEAF 05 43 01                 .C.
 ; ----------------------------------------------------------------------------
-        ora     ($00,x)                         ; AEB1 01 00                    ..
-        asl     $0143                           ; AEB3 0E 43 01                 .C.
+        brk                                     ; AEB2 00                       .
+        db   $0E,$43,$01                     ; AEB3 0E 43 01                 .C.
+; ----------------------------------------------------------------------------
         inx                                     ; AEB6 E8                       .
         cpx     $DD                             ; AEB7 E4 DD                    ..
         bcc     ItemEffectInventory_Branch_AEAE ; AEB9 90 F3                    ..
@@ -4587,7 +4807,7 @@ ItemEffectInventory_Branch_AFF0:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_B012:
         lda     #$31                            ; B012 A9 31                    .1
-        jmp     ItemEffectInventory_Branch_B0CE ; B014 4C CE B0                 L..
+        jmp     ItemEffectInventory_Entry_B0CE  ; B014 4C CE B0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Entry_B017:
         brk                                     ; B017 00                       .
@@ -4734,17 +4954,18 @@ ItemEffectInventory_Entry_B0BB:
         db   $62,$23,$41                     ; B0BD 62 23 41                 b#A
 ; ----------------------------------------------------------------------------
         cmp     #$00                            ; B0C0 C9 00                    ..
-        bne     $B0CC                           ; B0C2 D0 08                    ..
+        bne     ItemEffectInventory_Branch_B0CC ; B0C2 D0 08                    ..
         jsr     ItemEffectInventory_Entry_B7FB  ; B0C4 20 FB B7                  ..
         brk                                     ; B0C7 00                       .
         db   $54,$4B                         ; B0C8 54 4B                    TK
 ; ----------------------------------------------------------------------------
         pla                                     ; B0CA 68                       h
         pla                                     ; B0CB 68                       h
+ItemEffectInventory_Branch_B0CC:
         pla                                     ; B0CC 68                       h
         rts                                     ; B0CD 60                       `
 ; ----------------------------------------------------------------------------
-ItemEffectInventory_Branch_B0CE:
+ItemEffectInventory_Entry_B0CE:
         pha                                     ; B0CE 48                       H
         tya                                     ; B0CF 98                       .
         pha                                     ; B0D0 48                       H
@@ -4769,12 +4990,13 @@ ItemEffectInventory_Entry_B0E6:
         sta     $DA                             ; B0E6 85 DA                    ..
         lda     CurrentTilesetCandidate         ; B0E8 A5 65                    .e
         cmp     #$03                            ; B0EA C9 03                    ..
-        bne     $B0EF                           ; B0EC D0 01                    ..
+        bne     ItemEffectInventory_Branch_B0EF ; B0EC D0 01                    ..
         rts                                     ; B0EE 60                       `
 ; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_B0EF:
         lda     CurrentMapNumber                ; B0EF A5 63                    .c
         cmp     #$03                            ; B0F1 C9 03                    ..
-        bne     $B139                           ; B0F3 D0 44                    .D
+        bne     ItemEffectInventory_Branch_B139 ; B0F3 D0 44                    .D
         lda     $DA                             ; B0F5 A5 DA                    ..
         and     #$7F                            ; B0F7 29 7F                    ).
         sta     $DA                             ; B0F9 85 DA                    ..
@@ -4789,31 +5011,57 @@ ItemEffectInventory_Branch_B102:
         cmp     #$0C                            ; B106 C9 0C                    ..
         beq     ItemEffectInventory_Branch_B0FF ; B108 F0 F5                    ..
         brk                                     ; B10A 00                       .
-        db   $1B,$EB,$FF,$F0,$06,$00,$1C,$EB ; B10B 1B EB FF F0 06 00 1C EB  ........
-        db   $80,$D0,$2F,$A5,$DA,$C9,$08,$F0 ; B113 80 D0 2F A5 DA C9 08 F0  ../.....
-        db   $29,$A5,$64,$C9,$00,$D0,$09,$A5 ; B11B 29 A5 64 C9 00 D0 09 A5  ).d.....
-        db   $E8,$C9,$06,$D0,$03,$20,$BD,$AF ; B123 E8 C9 06 D0 03 20 BD AF  ..... ..
-        db   $20,$FB,$B7,$00,$1C,$87,$A9,$20 ; B12B 20 FB B7 00 1C 87 A9 20   ......
-        db   $20,$CE,$B0,$68,$68,$60         ; B133 20 CE B0 68 68 60         ..hh`
+        db   $1B,$EB,$FF                     ; B10B 1B EB FF                 ...
 ; ----------------------------------------------------------------------------
+        beq     ItemEffectInventory_Branch_B116 ; B10E F0 06                    ..
+        brk                                     ; B110 00                       .
+        db   $1C,$EB,$80                     ; B111 1C EB 80                 ...
+; ----------------------------------------------------------------------------
+        bne     ItemEffectInventory_Branch_B145 ; B114 D0 2F                    ./
+ItemEffectInventory_Branch_B116:
+        lda     $DA                             ; B116 A5 DA                    ..
+        cmp     #$08                            ; B118 C9 08                    ..
+        beq     ItemEffectInventory_Branch_B145 ; B11A F0 29                    .)
+        lda     CurrentSubmapNumber             ; B11C A5 64                    .d
+        cmp     #$00                            ; B11E C9 00                    ..
+        bne     ItemEffectInventory_Branch_B12B ; B120 D0 09                    ..
+        lda     $E8                             ; B122 A5 E8                    ..
+        cmp     #$06                            ; B124 C9 06                    ..
+        bne     ItemEffectInventory_Branch_B12B ; B126 D0 03                    ..
+        jsr     ItemEffectInventory_Entry_AFBD  ; B128 20 BD AF                  ..
+ItemEffectInventory_Branch_B12B:
+        jsr     ItemEffectInventory_Entry_B7FB  ; B12B 20 FB B7                  ..
+        brk                                     ; B12E 00                       .
+        db   $1C,$87                         ; B12F 1C 87                    ..
+; ----------------------------------------------------------------------------
+        lda     #$20                            ; B131 A9 20                    .
+        jsr     ItemEffectInventory_Entry_B0CE  ; B133 20 CE B0                  ..
+        pla                                     ; B136 68                       h
+        pla                                     ; B137 68                       h
+        rts                                     ; B138 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_B139:
         brk                                     ; B139 00                       .
         db   $1B,$EB,$FF                     ; B13A 1B EB FF                 ...
 ; ----------------------------------------------------------------------------
-        beq     $B146                           ; B13D F0 07                    ..
+        beq     ItemEffectInventory_Branch_B146 ; B13D F0 07                    ..
         brk                                     ; B13F 00                       .
-        db   $1C,$EB,$80,$D0,$29             ; B140 1C EB 80 D0 29           ....)
+        db   $1C,$EB,$80                     ; B140 1C EB 80                 ...
 ; ----------------------------------------------------------------------------
+        bne     ItemEffectInventory_Branch_B16E ; B143 D0 29                    .)
 ItemEffectInventory_Branch_B145:
         rts                                     ; B145 60                       `
 ; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_B146:
         lda     #$08                            ; B146 A9 08                    ..
         brk                                     ; B148 00                       .
         db   $63,$73                         ; B149 63 73                    cs
 ; ----------------------------------------------------------------------------
-        bcc     $B152                           ; B14B 90 05                    ..
+        bcc     ItemEffectInventory_Branch_B152 ; B14B 90 05                    ..
         tax                                     ; B14D AA                       .
         beq     ItemEffectInventory_Branch_B162 ; B14E F0 12                    ..
         bne     ItemEffectInventory_Branch_B145 ; B150 D0 F3                    ..
+ItemEffectInventory_Branch_B152:
         lda     CurrentMapNumber                ; B152 A5 63                    .c
         cmp     #$46                            ; B154 C9 46                    .F
         beq     ItemEffectInventory_Branch_B145 ; B156 F0 ED                    ..
@@ -4832,6 +5080,7 @@ ItemEffectInventory_Branch_B162:
         lda     CurrentMapNumber                ; B168 A5 63                    .c
         cmp     #$41                            ; B16A C9 41                    .A
         beq     ItemEffectInventory_Branch_B145 ; B16C F0 D7                    ..
+ItemEffectInventory_Branch_B16E:
         jsr     ItemEffectInventory_Entry_B7FB  ; B16E 20 FB B7                  ..
         ldx     #$04                            ; B171 A2 04                    ..
         ldy     #$FF                            ; B173 A0 FF                    ..
@@ -4849,12 +5098,41 @@ ItemEffectInventory_Branch_B175:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B189:
         brk                                     ; B189 00                       .
-        db   $1B,$EB,$FF,$F0,$06,$00,$1C,$EB ; B18A 1B EB FF F0 06 00 1C EB  ........
-        db   $80,$D0,$01,$60,$20,$FB,$B7,$A5 ; B192 80 D0 01 60 20 FB B7 A5  ...` ...
-        db   $DA,$C9,$19,$D0,$05,$00,$4F,$4B ; B19A DA C9 19 D0 05 00 4F 4B  ......OK
-        db   $B0,$0C,$C9,$05,$D0,$05,$00,$50 ; B1A2 B0 0C C9 05 D0 05 00 50  .......P
-        db   $4B,$B0,$03,$00,$51,$4B,$68,$68 ; B1AA 4B B0 03 00 51 4B 68 68  K...QKhh
-        db   $60                             ; B1B2 60                       `
+        db   $1B,$EB,$FF                     ; B18A 1B EB FF                 ...
+; ----------------------------------------------------------------------------
+        beq     ItemEffectInventory_Branch_B195 ; B18D F0 06                    ..
+        brk                                     ; B18F 00                       .
+        db   $1C,$EB,$80                     ; B190 1C EB 80                 ...
+; ----------------------------------------------------------------------------
+        bne     ItemEffectInventory_Branch_B196 ; B193 D0 01                    ..
+ItemEffectInventory_Branch_B195:
+        rts                                     ; B195 60                       `
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_B196:
+        jsr     ItemEffectInventory_Entry_B7FB  ; B196 20 FB B7                  ..
+        lda     $DA                             ; B199 A5 DA                    ..
+        cmp     #$19                            ; B19B C9 19                    ..
+        bne     ItemEffectInventory_Branch_B1A4 ; B19D D0 05                    ..
+        brk                                     ; B19F 00                       .
+        db   $4F,$4B                         ; B1A0 4F 4B                    OK
+; ----------------------------------------------------------------------------
+        bcs     ItemEffectInventory_Branch_B1B0 ; B1A2 B0 0C                    ..
+ItemEffectInventory_Branch_B1A4:
+        cmp     #$05                            ; B1A4 C9 05                    ..
+        bne     ItemEffectInventory_Branch_B1AD ; B1A6 D0 05                    ..
+        brk                                     ; B1A8 00                       .
+        db   $50,$4B                         ; B1A9 50 4B                    PK
+; ----------------------------------------------------------------------------
+        bcs     ItemEffectInventory_Branch_B1B0 ; B1AB B0 03                    ..
+ItemEffectInventory_Branch_B1AD:
+        brk                                     ; B1AD 00                       .
+        db   $51,$4B                         ; B1AE 51 4B                    QK
+; ----------------------------------------------------------------------------
+ItemEffectInventory_Branch_B1B0:
+        pla                                     ; B1B0 68                       h
+        pla                                     ; B1B1 68                       h
+        rts                                     ; B1B2 60                       `
+; ----------------------------------------------------------------------------
         db   $00,$01,$02,$03,$04,$05,$11,$06 ; B1B3 00 01 02 03 04 05 11 06  ........
         db   $07,$08,$09,$3F,$0A,$0B,$0C,$0E ; B1BB 07 08 09 3F 0A 0B 0C 0E  ...?....
         db   $2B,$10,$12,$13,$15,$16,$17,$19 ; B1C3 2B 10 12 13 15 16 17 19  +.......
@@ -5515,10 +5793,10 @@ ItemEffectInventory_Branch_B5C7:
         jsr     ItemEffectInventory_Entry_B7A6  ; B5D7 20 A6 B7                  ..
         ldx     $DB                             ; B5DA A6 DB                    ..
         brk                                     ; B5DC 00                       .
-        db   $45,$93                         ; B5DD 45 93                    E.
+        db   $45,$93,$05                     ; B5DD 45 93 05                 E..
 ; ----------------------------------------------------------------------------
-        ora     $4C                             ; B5DF 05 4C                    .L
-        sta     $B5,x                           ; B5E1 95 B5                    ..
+        jmp     ItemEffectInventory_Branch_B595 ; B5E0 4C 95 B5                 L..
+; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B5E3:
         lda     $DA                             ; B5E3 A5 DA                    ..
         cmp     #$01                            ; B5E5 C9 01                    ..
@@ -5570,7 +5848,9 @@ ItemEffectInventory_Branch_B610:
         jsr     ItemEffectInventory_Entry_B7A6  ; B62A 20 A6 B7                  ..
         ldx     $DB                             ; B62D A6 DB                    ..
         brk                                     ; B62F 00                       .
-        db   $45,$93,$04,$4C,$95,$B5         ; B630 45 93 04 4C 95 B5        E..L..
+        db   $45,$93,$04                     ; B630 45 93 04                 E..
+; ----------------------------------------------------------------------------
+        jmp     ItemEffectInventory_Branch_B595 ; B633 4C 95 B5                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B636:
         lda     $DA                             ; B636 A5 DA                    ..
@@ -5853,17 +6133,19 @@ ItemEffectInventory_Entry_B7B5:
         txa                                     ; B7BB 8A                       .
         pha                                     ; B7BC 48                       H
         ldx     #$00                            ; B7BD A2 00                    ..
+ItemEffectInventory_Branch_B7BF:
         lda     $DA,x                           ; B7BF B5 DA                    ..
         pha                                     ; B7C1 48                       H
         inx                                     ; B7C2 E8                       .
         cpx     #$10                            ; B7C3 E0 10                    ..
-        bcc     $B7BF                           ; B7C5 90 F8                    ..
+        bcc     ItemEffectInventory_Branch_B7BF ; B7C5 90 F8                    ..
         lda     CurrentSubmapNumber             ; B7C7 A5 64                    .d
         cmp     #$FE                            ; B7C9 C9 FE                    ..
-        bne     $B7D5                           ; B7CB D0 08                    ..
+        bne     ItemEffectInventory_Branch_B7D5 ; B7CB D0 08                    ..
         lda     $6BDE                           ; B7CD AD DE 6B                 ..k
         ora     #$80                            ; B7D0 09 80                    ..
         sta     $6BDE                           ; B7D2 8D DE 6B                 ..k
+ItemEffectInventory_Branch_B7D5:
         lda     $0F                             ; B7D5 A5 0F                    ..
         ldx     $0E                             ; B7D7 A6 0E                    ..
         brk                                     ; B7D9 00                       .
@@ -5872,15 +6154,17 @@ ItemEffectInventory_Entry_B7B5:
         sta     $0F                             ; B7DC 85 0F                    ..
         lda     CurrentSubmapNumber             ; B7DE A5 64                    .d
         cmp     #$FE                            ; B7E0 C9 FE                    ..
-        bne     $B7EC                           ; B7E2 D0 08                    ..
+        bne     ItemEffectInventory_Branch_B7EC ; B7E2 D0 08                    ..
         lda     $6BDE                           ; B7E4 AD DE 6B                 ..k
         and     #$7F                            ; B7E7 29 7F                    ).
         sta     $6BDE                           ; B7E9 8D DE 6B                 ..k
+ItemEffectInventory_Branch_B7EC:
         ldx     #$0F                            ; B7EC A2 0F                    ..
+ItemEffectInventory_Branch_B7EE:
         pla                                     ; B7EE 68                       h
         sta     $DA,x                           ; B7EF 95 DA                    ..
         dex                                     ; B7F1 CA                       .
-        bpl     $B7EE                           ; B7F2 10 FA                    ..
+        bpl     ItemEffectInventory_Branch_B7EE ; B7F2 10 FA                    ..
         pla                                     ; B7F4 68                       h
         tax                                     ; B7F5 AA                       .
         pla                                     ; B7F6 68                       h
@@ -6446,7 +6730,6 @@ ItemEffectInventory_Branch_BBCE:
         brk                                     ; BBD1 00                       .
         db   $62,$33                         ; BBD2 62 33                    b3
 ; ----------------------------------------------------------------------------
-ItemEffectInventory_Entry_BBD4:
         sta     $DA                             ; BBD4 85 DA                    ..
         brk                                     ; BBD6 00                       .
         db   $38,$2B                         ; BBD7 38 2B                    8+

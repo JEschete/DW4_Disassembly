@@ -8,7 +8,21 @@
 06	8000	C000	CompressedMonsterGraphics	Verified	Compressed monster graphics consumed by bank $14's bitplane decoder
 07	8000	C000	CompressedMonsterGraphics	Verified	Compressed monster graphics consumed by bank $14's bitplane decoder
 08	8000	803C	ServiceDirectory	Verified	Thirty map-tile and tileset service pointers
+08	80B3	80B5	PointerBytes	Verified	Little-endian pointer read by LDA $80B3,X / LDA $80B4,X at $8057-$805C; both callers store zero to $09 immediately before calling $8055 at $84F2-$8509 and $8799-$879D, so X is zero
+08	80C2	80C4	ConstantData	Verified	2 bytes read directly by LDA $80C2 at $80B7, LDA $80C3 at $80BC
+08	8225	8229	ConstantData	Verified	4 bytes read directly by LDA $8225 at $81C6, LDA $8227 at $81EC, LDY $8226 at $81C9, LDY $8228 at $81EF
 08	8229	822F	GraphicsPointers	Verified	Three graphics-page base pointers
+08	8235	8237	PointerBytes	Verified	Little-endian pointer loaded directly by LDA $8235 / LDY $8236 at $80F4-$80F7
+08	823B	823D	PointerBytes	Verified	Little-endian pointer loaded directly by LDA $823B / LDA $823C at $8241-$8246 and $8739-$873E
+08	833E	8340	ConstantData	Verified	2 bytes read directly by LDA $833E at $8354, LDA $833E at $86B1, LDY $833F at $8357, LDY $833F at $86B4
+08	8389	838D	LookupTable	Verified	4 bytes read by LDA $8389,X at $8364, LDA $838A,X at $8369; FCEUX read every byte and executed none
+08	8450	8452	ConstantData	Verified	2 bytes read directly by LDA $8450 at $8433, LDA $8451 at $8438
+08	8649	864B	ConstantData	Verified	2 bytes read directly by LDA $8649 at $8609, LDY $864A at $860C
+08	8703	8710	LookupTable	Verified	13 bytes read by LDA $8703,X at $86F4; FCEUX read every byte and executed none
+08	882A	883C	SearchRecords	Verified	Eight 2-byte records and terminal $FF scanned by $880E-$8824: LDA $882B,X/CMP #$FF at $8810-$8815 ends the scan at $883B and LDA $882A,X at $881B reads the other field while X steps by 2
+08	8A6C	8A85	MapOverrideTables	Verified	Six map IDs followed by terminal $FF at $8A72 are scanned by LDA $8A6C,X/BMI at $8A45-$8A48; matching X indexes three parallel six-byte submap, destination, and value tables at $8A73/$8A79/$8A7F
+08	8A92	8AA1	LookupTable	Verified	Fifteen entries read by LDA $8A92,X at $8A8B after CPX #$0F / BCS at $8A87-$8A89
+08	8AAF	8ABF	TilePatternPairs	Verified	Four four-byte patterns read by LDA $8AAF,X at $8573/$8588: X = ((packed value >> (2 * selector)) AND 3) * 4 at $8561-$8570, and each loop reads two bytes twice
 08	8ADB	979B	Tilesets	Verified	Fifty-one 64-byte tilesets
 08	979B	A1BB	MapTileAuxiliaryData	Verified	Runtime-read auxiliary map and tile records reached through the bank $08 service directory
 08	A1BB	A1E5	TilePatterns	Verified	Fourteen three-byte signed increment patterns
@@ -16,6 +30,15 @@
 08	A28D	A80D	ExplicitTilePointers	Verified	One hundred seventy-six records of four 16-bit graphics pointers
 08	A80D	AEB7	TileDefinitions	Verified	Three-byte logical tile definitions with graphics page, increment pattern, and behavior fields
 08	AEB7	AEE3	AnimatedTilePointers	Verified	Twenty-two 16-bit pointers used by animated tile increment pattern $0E
+08	AF59	AF5C	InlineServiceOperands	Verified	Three operands consumed by BRK service $05,$EB before code resumes at $AF5C; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+08	B66A	B66D	InlineServiceOperands	Verified	Three operands consumed by BRK service $07,$EB at $B669; all decoded call sites use a one-byte parameter before a branch
+08	B671	B675	ConstantData	Verified	Two little-endian pointers read directly by LDA $B671/$B672 at $B4F7-$B4FC and $B556-$B55B and by LDY $B673 / LDA $B674 at $B4ED-$B4F0
+08	B675	B67D	SearchList	Verified	Seven values and terminal $00 scanned by LDA $B675,X / BEQ at $B574-$B577 from LDX #$00 at $B572; the pointer at $B673 also addresses this list
+08	B67D	B67F	ConstantData	Verified	Pointer $B67F read directly by LDY $B67D / LDA $B67E at $B4E5-$B4E8
+08	B67F	B681	PointerTargetData	Verified	Two bytes addressed by the pointer at $B67D; the separately indexed records at $B681 follow
+08	B681	B6B8	MapWarpRecords	Verified	Six 9-byte (map, submap, X, Y, destination map, submap, X, Y, argument) records and terminal $FF scanned by LDA $B681,Y/CMP #$FF at $B325-$B32A with TYA/ADC #$09/TAY stepping; the $FF is at $B6B7
+08	B756	B75D	SearchList	Verified	Six values and terminal $FF scanned by LDA $B756,Y/CMP #$FF at $B73F-$B744 from LDY #$00 at $B73D, stepping Y by 1; the $FF is at $B75C
+08	B774	B777	InlineServiceOperands	Verified	Three operands consumed by BRK service $66,$63 before code resumes at $B777; full service $66,$63 is registered as three-operand and all 5 decoded call site(s) resume coherently after three
 08	B7F7	B7F9	MapRoutingPointer	Verified	Little-endian pointer to the per-map routing records at $B7F9
 08	B7F9	B967	MapRoutingRecords	Verified	Seventy-three five-byte per-map records and terminal $FF consumed by bank $08:$B037
 08	B967	B974	MapTransitionRecords	Verified	Two six-byte map transition records and terminal $FF consumed by bank $08:$B145
@@ -25,21 +48,59 @@
 08	BE94	BF64	MapDisplayRecords	Verified	Twenty-six fixed eight-byte map records selected by mixed directory entry $8036 and bounded by contiguous padding at $BF64
 08	BF64	BFD8	Padding	Verified	Contiguous $FF padding after map data
 08	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
-08	B66A	B66D	InlineServiceOperands	Verified	Three operands consumed by BRK service $07,$EB at $B669; all decoded call sites use a one-byte parameter before a branch
 09	8000	C000	CompressedMap	Verified	Compressed location map data
 0A	8000	C000	CompressedMap	Verified	Compressed location map data
-0B	8000	C000	CompressedMap	Verified	Compressed location and overworld maps with row-pointer tables
+0B	8000	8010	ServiceDirectory	Verified	Eight-entry mixed service directory read by the IRQ/BRK dispatcher for selector $B7: FCEUX read entries $04 and $06 while executing BRK $04,$B7 and $06,$B7; entries $02 and $04-$07 point to code and entries $00, $01, and $03 point to data
+0B	8012	8075	CompressedMap	Verified	Continuation of the location map that begins at bank $0A:$BFA1: map reader $0F:$E642-$E66A switches banks at $BFD8 and resumes bank $0B at $8012; the next map begins at $8075 in map-information record $45
+0B	8075	8CEE	CompressedMap	Verified	Nineteen location maps whose starts $8075-$8C49 are listed in bank $17 map-information records $45-$48 after the pointer sequence wraps from bank $0A; the last map ends where overworld row data begins at $8CEE
+0B	8CEE	A590	MapRowData	Verified	Two hundred fifty-six main overworld rows; each row starts at the pointer in its $A590 record and its length is the record fourth byte, so the rows tile exactly from $8CEE to $A58F
+0B	A590	A990	MapRowRecords	Verified	Two hundred fifty-six 4-byte main overworld row records (pointer, auxiliary byte, length byte) addressed by directory entry $00
+0B	A990	AB65	MapRowData	Verified	Sixty-four Gottside rows that tile exactly from $A990 to $AB64 using the pointers and lengths in the $AB65 records
+0B	AB65	AC65	MapRowRecords	Verified	Sixty-four 4-byte Gottside row records addressed by directory entry $01
+0B	AC65	AE89	MapRowData	Verified	Fifty-four underworld rows that tile exactly from $AC65 to $AE88 using the pointers and lengths in the $AE89 records
+0B	AE89	AF61	MapRowRecords	Verified	Fifty-four 4-byte underworld row records addressed by directory entry $03; code begins at $AF61
+0B	B034	B04C	CompositionAttributes	Verified	Three 8-entry rows read by LDA $B034,Y at $B00D with Y = (stored value AND $18) + adjustment; simulating every record reaches entries 0-17, and the rows end at the separately indexed table $B04C
+0B	B04C	B057	CompositionGroupBytes	Verified	Eleven per-group bytes read by LDA $B04C,Y at $AF8B with Y = group $03DA, parallel to the eleven list pointers at $B057
+0B	B057	B06D	CompositionListPointers	Verified	Eleven list pointers read by LDA $B057,Y/$B058,Y at $AF7E-$AF83; the first target is $B06D, the byte after the table
+0B	B06D	BC40	CompositionRecordLists	Verified	Eight lists of 434 length-prefixed records skipped by $AF96-$AFA2 and consumed by $AFB1; the records tile each list exactly to the next list start and the last ends at $BC3F
+0B	BC40	BC41	CompositionThreshold	Verified	Threshold byte $22 compared at $AFBD and subtracted at $AFC3
+0B	BC41	BC63	CompositionAttributes	Verified	Thirty-four attributes read by LDA $BC41,Y at $AFF0 for every value below the $22 threshold; all expansion-pair values are also below $22
+0B	BC63	BD63	CompositionExpansionPairs	Verified	One hundred twenty-eight 2-byte expansions read by LDA $BC63,X/$BC64,X at $AFCA-$AFD0 for values $22-$A1
+0B	BD63	BE1F	CompositionExpansionPairs	Verified	Ninety-four 2-byte expansions read by LDA $BD63,X/$BD64,X at $AFD8-$AFDE for values $A2-$FF, whose largest index $5D ends the table before code at $BE1F
+0B	BEF4	BF06	SpriteMotionParameters	Verified	Three 6-byte parameter blocks copied to $0A-$0F by $BEE8-$BEF1 for the constant offsets 5, $0B, and $11 loaded at $BE1F, $BE27, and $BE9C
+0B	BF06	BF1C	SpriteMotionDeltas	Verified	Twenty-two deltas read by LDA $BF06,X at $BEA3 while $00 counts down from $15
+0B	BF1C	BF26	SpriteMotionVectors	Verified	Ten-entry direction table read by LDA $BF1C,X at $BE3C and $BE43 with X = (value AND 7) and X + 2
+0B	BF26	BF36	SpriteMotionScript	Verified	Sixteen entries read by LDA $BF26,Y at $BE35 while $02 counts down from $0F
+0B	BFBD	BFD5	LookupTable	Verified	Twenty-four values scanned by CMP $BFBD,X at $BFAA from X = $17 down to 0
+0B	BFD5	BFD8	Padding	Verified	Unreferenced $FF fill between the 24-entry table at $BFBD and the compatibility footer
+0B	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors byte-identical to the verified bank $08 footer at $BFD8-$BFFF
 0C	8000	C000	Graphics	Verified	Raw NES 2bpp map tile graphics
 0D	8000	C000	Graphics	Verified	Raw map and character graphics plus documented padding
 0E	8000	8008	ServiceDirectory	Verified	Four graphics and palette service pointers
 0E	8091	8097	GraphicsPointers	Verified	Three little-endian pointers loaded by bank $0E:$8034-$8075 for palette source and destination
 0E	8097	BAD7	Graphics	Verified	Character sprite graphics
-0E	BB53	BE13	PaletteData	Verified	Map palette override, lookup, color-set, and color tables
+0E	BB53	BE0B	PaletteData	Verified	Map palette override, lookup, color-set, and color tables ending before the coordinate-link records that directory entry $02 addresses at $BE0B
+0E	BE0B	BEEA	MapCoordinateLinks	Verified	Seventy-four 3-byte (map, X, Y) records and terminal $FF addressed by directory entry $02 and fetched with BRK $82,$E7 at bank $08:$AEE5 and $B06C; $08:$B06A-$B08A scans them until the $FF at $BEE9, and code begins at $BEEA
 0E	BF48	BFD8	Padding	Verified	Contiguous $FF padding after graphics and palette services
 0E	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
+0F	C000	C001	ConfigurationFlags	Verified	Flag byte $FF read by LDA $C000 at $CEA9, $CFBE, and $D09B, which test individual bits (AND #$40, BMI)
+0F	C019	C02E	UnfilledTrampolineSlots	Verified	Seven zero-filled 3-byte slots (08-0E) in the lower fixed bank JMP trampoline table $C001-$C03C; upper fixed bank $1F fills them with JMPs. Duplicated NMI code keeps JSR $C019 at $C1AD, which FCEUX never executed in the lower region
+0F	C0D2	C0D4	NmiTrampolinePointer	Verified	Pointer $C15A read by LDA $C0D2/$C0D3 at $C06C/$C072 and stored after JMP opcode $4C at $0502-$0504 to install the NMI handler
+0F	C221	C222	MapperResetOperand	Verified	Byte $80 incremented by INC $C221 at $C1A0; the read-modify-write stores a value with bit 7 set, resetting the MMC1 shift register
+0F	C7DC	C7E1	LookupTable	Verified	5 bytes read by CMP $C7DC,Y at $C799; FCEUX read every byte and executed none
+0F	C94B	C94E	LookupTable	Verified	3 bytes read by LDA $C94B,X at $C92B, LDA $C94C,X at $C92F; FCEUX read every byte and executed none
+0F	C98F	C9ED	RelocatedRoutineImage	Verified	Ninety-four-byte routine image copied to SRAM $6CAD-$6D0A by LDX #$5D / LDA $C98F,X / STA $6CAD,X / DEX / BPL at $C983-$C98C; FCEUX read every byte
+0F	CB1A	CB1E	LookupTable	Verified	4 entries read by LDA $CB1A,X at $CA8F with index from AND #$03 + TAX at $CA8C-$CA8E
+0F	CD70	CD78	LookupTable	Verified	8 entries read by CMP $CD70,X at $CD5B in the loop LDX #$07 at $CD59, DEX/BPL at $CD60-$CD61
+0F	CEF8	CF03	LookupTable	Verified	11 bytes read by CMP $CEF8,X at $CEC5; FCEUX read every byte and executed none
+0F	D239	D241	LookupTable	Verified	8 bytes read by ADC $D239,Y at $D17F, ADC $D23A,Y at $D187, LDA $D239,Y at $D75B, LDA $D23A,Y at $D764, and 4 more; FCEUX read every byte and executed none
+0F	D476	D486	BitMaskTables	Verified	Two parallel eight-byte rows read by LDA $D476,X / AND $D47E,Y at $D466-$D469 after TXA/AND #$07/TAX and TYA/AND #$07/TAY at $D45E-$D465
 0F	DEA5	DEA9	MapObjectOperationPointers	Verified	Two handler pointers selected by the map-object operation parameter
 0F	DF02	DF64	MapObjectCommandPointers	Verified	Forty-nine low command handler pointers
 0F	DF64	DF7A	MapObjectHighCommandPointers	Verified	Eleven high-bit command handler pointers
+0F	E3E0	E3E2	ConstantData	Verified	2 bytes read directly by LDA $E3E0 at $E36C, LDA $E3E1 at $E371
+0F	EB93	EB9B	WorldCoordinateOffsets	Verified	Two parallel four-byte rows read by LDA $EB93,Y / LDA $EB97,Y at $EB85-$EB89 after TYA/AND #$03/TAY at $EB81-$EB84
+0F	ED1F	ED23	LookupTable	Verified	4 entries read by LDA $ED1F,X at $ED05 with index from AND #$03 + TAX at $ED02-$ED04
 0F	F573	F58A	NumericLookupTable	Verified	Twenty-three two-bit field pairs indexed by A and shifted into $053E,X and $0546,X by the routine at $F566
 0F	F5AC	F5B0	PointerTable	Verified	Destination $7800 and source $F5B0 pointers block-copied into $00-$03 by LDA $F5AC,X at $F58D
 0F	F5B0	FABE	CreditsText	Verified	Ending-credits tile-index stream copied to $7800 by the $F597 loop until the $FF terminator at $FABD
@@ -48,13 +109,26 @@
 0F	FC57	FC69	PpuAttributeData	Verified	Eighteen bytes copied to PPUDATA by the bounded Y=$00-$11 loop at $FB53
 0F	FC69	FC8D	PpuUploadMasks	Verified	Thirty-six source-consumption masks indexed while Y is below $24 at $FB1B-$FB24
 0F	FC8D	FF74	PpuPatternStream	Verified	Conditional pattern stream consumed through pointer $FC8D before code resumes at $FF74
+0F	FFDF	10000	FixedBankFooter	Verified	MMC1 reset byte $80 incremented by INC $FFDF at $FFD9 and $C104, the "DRAGON QUEST IV" signature, header metadata, and CPU vectors NMI $0502, RESET $FFD8, and IRQ/BRK $C408
 10	8000	8080	ServiceDirectory	Verified	Sixty-four battle and party service pointers
+10	8AD5	8AD7	ConstantData	Verified	2 bytes read directly by LDA $8AD5 at $8AC3, LDY $8AD6 at $8AC6
+10	8B00	8B04	LookupTable	Verified	4 entries read by CMP $8B00,X at $8AF0 in the loop LDX #$00 at $8AEE, INX/CPX #$04/BNE at $8AF5-$8AF8
 10	8C65	8DE2	BattleAttributeArrays	Verified	Three parallel 127-entry arrays indexed by X and read at $8B3E ($8C65), $8BBE ($8CE4), and $8B80 ($8D63)
+10	9119	915B	BattlePartySearchWindows	Verified	Byte-identical to bank $13:$B328-$B369, whose five starts are selected by LDA $892B,X at bank $13:$88F2 after AND #$0F / CMP #$05 at bank $13:$8897-$889B and whose 18/12-byte windows tile all 66 bytes
+10	915B	9183	BattlePartySearchRows	Verified	Five eight-byte rows reached by LDA $914B,X at $9020 with result A bounded below five at $8FF8-$9000 and X bounded $10-$17 at $9007-$9012, giving effective offsets $10-$37; byte-identical to bank $13:$B36A-$B391
 10	9E30	9F12	BattleActionPointers	Verified	113 handler pointers selected by the battle action ID in $6E0B
 10	9F12	A035	BattlePartyTables	Verified	Parallel lookup tables whose bases $9F12, $9F83, $9FAD, $9FC1, $9FC5 and $9FD6 are each read by traced indexed consumers at $82F3-$83A3 and $A080
+10	A199	A19E	SearchList	Verified	Two values and terminal $FF scanned by LDA $A199,X/CMP #$FF at $A168-$A16D from LDX #$00 at $A164, plus the two parallel bytes read by LDA $A19C,X at $A182 for the same X
+10	A2B1	A2DB	LookupTable	Verified	Forty-two entries read by LDA $A2B1,X at $A2A5 after CPX #$2A / BCS at $A2A1-$A2A3
 10	AAA6	AB06	BattleRecordOperationPointers	Verified	Forty-eight handler pointers selected by the battle-record index in $6E59
+10	B028	B03D	LookupTable	Verified	21 entries read by CMP $B028,X at $AF89 in the loop LDX #$14 at $AF87, DEX/BPL at $AF8E-$AF8F
 10	B499	B49B	PointerTableAddress	Verified	Little-endian address $B49B loaded by the battle-effect dispatcher
 10	B49B	B58B	BattleEffectPointers	Verified	120 handler pointers selected by the battle effect ID in $0B
+10	B647	B64A	InlineServiceOperands	Verified	Three operands consumed by BRK service $1C,$63 before code resumes at $B64A; full service $1C,$63 is registered as three-operand and all 4 decoded call site(s) resume coherently after three
+10	B71D	B720	InlineServiceOperands	Verified	Three operands consumed by BRK service $14,$63 before code resumes at $B720; full service $14,$63 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+10	BA0D	BA10	InlineServiceOperands	Verified	Three operands consumed by BRK service $6B,$93 before code resumes at $BA10; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+10	BA9A	BA9D	InlineServiceOperands	Verified	Three operands consumed by BRK service $04,$C3 before code resumes at $BA9D; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+10	BBE8	BBEB	InlineServiceOperands	Verified	Three operands consumed by BRK service $64,$23 before code resumes at $BBEB; full service $64,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
 10	BD2A	BF54	CompressedMonsterGraphics	Verified	Monster ID $B1 descriptor at bank $14:$B726 selects bank $10 and points to $BD2A; the verified bitplane decoder consumes the stream before $FF padding
 10	BF54	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 10	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
@@ -73,19 +147,43 @@
 11	884B	8852	BattleActionFlags	Verified	Seven action flags indexed by bank $11:$81B6
 11	8852	8856	BattleShiftMasks	Verified	Four shift masks indexed by bank $11:$8679
 11	8856	885B	BattleThresholds	Verified	Five thresholds indexed by bank $11:$86A2
+11	8A2A	8A2D	InlineServiceOperands	Verified	Three operands consumed by BRK service $E1,$D3 before code resumes at $8A2D; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	8AF4	8AF7	InlineServiceOperands	Verified	Three operands consumed by BRK service $45,$93 before code resumes at $8AF7; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	8B3E	8B41	InlineServiceOperands	Verified	Three operands consumed by BRK service $2B,$C3 before code resumes at $8B41; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	8B5E	8B61	InlineServiceOperands	Verified	Three operands consumed by BRK service $2C,$C3 before code resumes at $8B61; full service $2C,$C3 is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+11	8BB5	8BB8	InlineServiceOperands	Verified	Three operands consumed by BRK service $69,$93 before code resumes at $8BB8; full service $69,$93 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	8C47	8C49	LookupTable	Verified	2 entries read by CMP $8C47,X at $8BF7 in the loop LDX #$01 at $8BF5, DEX/BPL at $8BFC-$8BFD
+11	8CAD	8CAF	ConstantData	Verified	2 bytes read directly by LDA $8CAD at $8C88, LDA $8CAE at $8C8D
+11	8D82	8D85	InlineServiceOperands	Verified	Three operands consumed by BRK service $E8,$D3 before code resumes at $8D85; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	8E7C	8E7F	InlineServiceOperands	Verified	Three operands consumed by BRK service $62,$D3 before code resumes at $8E7F; full service $62,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	8EF3	8EF6	InlineServiceOperands	Verified	Three operands consumed by BRK service $F1,$D3 before code resumes at $8EF6; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	8F07	8F0A	InlineServiceOperands	Verified	Three operands consumed by BRK service $E5,$D3 before code resumes at $8F0A; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 11	8F27	8F2A	InlineServiceOperands	Verified	Three operands consumed by BRK service $F2,$D3 before the direct jump to $BDBC
 11	8F47	8F4A	InlineServiceOperands	Verified	Three operands consumed by BRK service $E0,$D3 before the next service resumes at $8F4A
 11	8FA5	8FDC	BattleActionIds	Verified	Fifty-five sorted battle action IDs searched by bank $11:$8DF5
 11	8FDC	904A	BattleHandlerPointers	Verified	Fifty-five little-endian handler pointers selected by bank $11:$8E00-$8E0B
 11	908B	90B3	BattleActionIds	Verified	Forty action IDs searched by bank $11:$907B
 11	90B3	90DB	BattleActionResults	Verified	Forty parallel result values selected by bank $11:$9087
+11	911F	9122	InlineServiceOperands	Verified	Three operands consumed by BRK service $64,$D3 before code resumes at $9122; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	9AF3	9AF6	InlineServiceOperands	Verified	Three operands consumed by BRK service $F0,$D3 before code resumes at $9AF6; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	9C07	9C0A	InlineServiceOperands	Verified	Three operands consumed by BRK service $66,$D3 before code resumes at $9C0A; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 11	9DEF	9DF2	InlineServiceOperands	Verified	Three operands consumed by BRK service $2A,$C3 before the direct call to $9E5C
 11	9E2A	9E2D	InlineServiceOperands	Verified	Three operands consumed by BRK service $44,$93 before the next service resumes at $9E2D
 11	9E48	9E4B	InlineServiceOperands	Verified	Three operands consumed by BRK service $E6,$D3 before the return at $9E4B
 11	A40A	A61E	BattleActionPointers	Verified	Two hundred sixty-six little-endian bank-local routine pointers consumed by bank $11:$8CFC-$8D0C
 11	A61E	A63E	BattleActionMasks	Verified	Thirty-two indexed battle-action mask bytes consumed by bank $11:$8CC1/$8CDF
+11	A6C6	A6C9	InlineServiceOperands	Verified	Three operands consumed by BRK service $70,$D3 before code resumes at $A6C9; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	A6D3	A6D6	InlineServiceOperands	Verified	Three operands consumed by BRK service $6D,$D3 before code resumes at $A6D6; full service $6D,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	A864	A867	InlineServiceOperands	Verified	Three operands consumed by BRK service $C5,$D3 before code resumes at $A867; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	A869	A86C	InlineServiceOperands	Verified	Three operands consumed by BRK service $E9,$D3 before code resumes at $A86C; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+11	AD15	AD25	LookupTable	Verified	16 entries read by CMP $AD15,X at $AD0B in the loop LDX #$0F at $AD09, DEX/BPL at $AD10-$AD11
 11	ADC8	ADDE	BattleActionIds	Verified	Twenty-two action IDs searched by bank $11:$ADA6
 11	ADDE	AE0A	BattleActionParameters	Verified	Twenty-two two-byte parameter records indexed by bank $11:$ADBA/$ADC1
+11	AE71	AE74	InlineServiceOperands	Verified	Three operands consumed by BRK service $22,$D3 before code resumes at $AE74; full service $22,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	AE97	AE9A	InlineServiceOperands	Verified	Three operands consumed by BRK service $B2,$D3 before code resumes at $AE9A; full service $B2,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	B063	B066	InlineServiceOperands	Verified	Three operands consumed by BRK service $2C,$D3 before code resumes at $B066; full service $2C,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+11	B194	B197	InlineServiceOperands	Verified	Three operands consumed by BRK service $25,$D3 before code resumes at $B197; full service $25,$D3 is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+11	B3EB	B3EE	InlineServiceOperands	Verified	Three operands consumed by BRK service $69,$D3 before code resumes at $B3EE; full service $69,$D3 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
 11	B533	B536	InlineServiceOperands	Verified	Three operands consumed by BRK service $3B,$93 before battle selection resumes at $B536
 11	B625	B629	BattleSelectionTable	Verified	Four selector values indexed by bank $11:$B56F
 11	B629	B651	BattleIdRemap	Verified	Forty battle IDs indexed by bank $11:$B5A3
@@ -98,6 +196,7 @@
 11	BB76	BB7B	BattleBufferOffsets	Verified	Five source offsets indexed by bank $11:$BA8B
 11	BB7B	BB80	BattleBufferLengths	Verified	Five copy lengths indexed by bank $11:$BA90
 11	BB80	BB86	BattleBufferPointers	Verified	Three little-endian source pointers consumed by bank $11:$BA09/$BA51/$BA64
+11	BCD5	BCD8	InlineServiceOperands	Verified	Three operands consumed by BRK service $CC,$D3 before code resumes at $BCD8; full service $CC,$D3 is registered as three-operand and all 2 decoded call site(s) resume coherently after three
 11	BE22	BEA9	BattleDisplayRecords	Verified	Nine fixed-size fifteen-byte display records copied by bank $11:$BD76
 11	BEA9	BEB2	BattleDisplaySelectors	Verified	Nine selector bytes indexed by bank $11:$BD2E
 11	BFB1	BFD8	Padding	Verified	Contiguous $FF padding after battle services
@@ -108,25 +207,51 @@
 12	8A36	8AC1	BattleSetupSelectorMapA	Verified	Indexed from base $8A36 through the first pointer selected by $8A bit zero and offset by $8B at $8370-$8389
 12	8AC1	8BBC	BattleSetupSelectorMapB	Verified	Indexed from base $8AC1 through the second pointer selected by $8A bit zero and offset by $8B at $8370-$8389
 12	8BBC	8EAD	BattleSetupRecords	Verified	Variable records parsed from pointer $8BBC by $82FC-$8367 before verified code resumes at $8EAD
+12	9135	913D	ChapterFilterBytes	Verified	Eight bytes compared by LDA $9135,X at $8F07 while the outer loop at $8EFC-$9018 runs X from 0 to 7; FCEUX read all eight
+12	913D	9142	ChapterValues	Verified	Five bytes read by LDA $913D,X at $8EEB with X = SaveCurrentChapterMinus1 (0-4); the separately indexed table at $9142 follows
+12	9142	914C	SpecialChapterValues	Verified	Ten bytes copied by LDA $9142,X at $8ECA and $8ED8 while X runs from 0 to 9 across the CPY #$04 and CPY #$0E loops at $8EC6-$8EE2
+12	9150	915C	StatRecordPointers	Verified	Six little-endian pointers read by LDA $9150,X/$9151,X at $8F3F-$8F44 with X = 2 * $03 while $03 counts 0-5 in the loop ending CMP #$06 at $8F67
+12	915C	9162	StatRecordOffsets	Verified	Six offsets read by LDY $915C,X at $8F5C with X = $03 in the same 0-5 loop
+12	9162	9164	ConstantData	Verified	Two bytes read directly by LDA $9162 at $8F2C and $909C and by LDY $9163 at $8F2F and $909F
+12	9164	9178	StatSourcePointers	Verified	Two parallel tables of five little-endian pointers read by LDA $9164,X-$916F,X at $8FAD-$8FBC with X = 2 * $06 after CMP #$05/BCS at $8FA7-$8FA9
+12	9178	9191	ChapterInitialValues	Verified	Five 5-byte records copied by LDA $9178,X at $9037 with X = 5 * SaveCurrentChapterMinus1 and a CPY #$05 loop; the 8-byte records at $9191 follow
+12	9191	91D1	CharacterInitialRecords	Verified	Eight 8-byte records copied by LDA $9191,X at $9006 with X = 8 * $06 and Y from $13 to $1A, while the outer loop runs $06 from 0 to 7
+12	91D8	91DD	ChapterValues	Verified	Five bytes read by LDA $91D8,X at $9026 with X = SaveCurrentChapterMinus1 (0-4); code begins at $91DD
+12	928D	92AD	BattleSetupCycleTables	Verified	Two parallel sixteen-byte rows read by LDA $928D,X at $91EC and LDA $929D,X at $9204 while X increments and wraps at CPX #$10 from $920B-$9210
 12	98D2	98F6	BattleSetupLookupTables	Verified	Three parallel twelve-byte arrays indexed by Y below $0C at $98B1, $98B6, and $98C4
 12	9911	991A	BattleSetupParameters	Verified	Three three-byte parameter records selected by offsets $00, $03, and $06 in the setup loop at $98F8
 12	9926	993E	BattleSetupTemplate	Verified	Twenty-four bytes copied in reverse by the Y=$18 loop at $991C-$9923
 12	99A0	9AF7	BattleSetupPatternTables	Verified	Thresholds, nine pointers, overlapping counts, and nine pointer/count-delimited pattern lists consumed by $993E-$999F
 12	9B80	9B88	BattlePositionMasks	Verified	Eight position masks indexed by the bounded map-coordinate selector at $9B41-$9B69
 12	9BDD	9BFD	OamMotionTables	Verified	Twenty-four-byte terminated motion sequence and eight signed coordinate deltas consumed by $9AFD and $9BB3
+12	9C5E	9C61	InlineServiceOperands	Verified	Three operands consumed by BRK service $0F,$23 before code resumes at $9C61; full service $0F,$23 is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+12	9D0C	9D0F	InlineServiceOperands	Verified	Three operands consumed by BRK service $2B,$23 before code resumes at $9D0F; two operands leave an incoherent JMP ($0923) path at $9D12, while three resume at STA $09
+12	9D12	9D15	InlineServiceOperands	Verified	Three operands consumed by BRK service $6C,$23 before code resumes at $9D15; full service $6C,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+12	9EA5	9EA8	InlineServiceOperands	Verified	Three operands consumed by BRK service $6D,$23 before code resumes at $9EA8; full service $6D,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+12	9F00	9F03	InlineServiceOperands	Verified	Three operands consumed by BRK service $6E,$23 before code resumes at $9F03; full service $6E,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+12	9F59	9F5C	InlineServiceOperands	Verified	Three operands consumed by BRK service $21,$23 before code resumes at $9F5C; full service $21,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
 12	A0FB	A123	PointerTable	Verified	Twenty record pointers loaded into $0C/$0D at $9F9E-$9FA6 and into $00-$03 at $9F37-$9F49
 12	A123	A2B3	BattleSetupRecords	Verified	Records addressed through the $A0FB pointer table and read via ($0C),Y; $A259 and $A289 are also indexed directly
 12	A541	A553	BattleSetupOperationPointers	Verified	Nine little-endian operation handlers selected by a doubled setup selector and dispatched at bank $12:$A4A5-$A4B1; code resumes at $A553
+12	A6E1	A6E8	LookupTable	Verified	7 entries read by LDA $A6E1,X at $A6D0 in the loop LDX #$00 at $A6CE, INX/CPX #$07/BNE at $A6D6-$A6D9
 12	A9ED	AA0D	BattleSetupEventPointers	Verified	Sixteen little-endian event handlers selected in parallel with the IDs at $AA0D-$AA1C and dispatched at bank $12:$A61E-$A643
 12	AA0D	AA1D	BattleSetupEventIds	Verified	Sixteen event IDs searched linearly by bank $12:$A62D-$A635 and used to select the parallel pointer table at $A9ED
 12	AACA	AAD4	BattleSetupHandlerPointers	Verified	Five handler pointers selected by values below five at bank $12:$AAB7
+12	AD71	AD8C	LookupTable	Verified	27 bytes: LDA $AD71,X at $AC75 in the loop LDX #$0C at $AC73, DEX/BPL at $AC82-$AC83; LDA $AD71,X at $AC8E in the loop LDX #$0C at $AC8C, DEX/BPL at $AC97-$AC98; read directly by 18 absolute loads including LDA $AD7E at $AD34, LDA $AD7F at $AD39, LDA $AD80 at $AD1C, LDA $AD80 at $AD3F
+12	AFEA	AFF9	LookupTable	Verified	15 entries read by LDA $AFEA,X at $AFD9 in the loop LDX #$00 at $AFD7, INX/CPX #$0F/BNE at $AFDF-$AFE2
+12	B18C	B18F	InlineServiceOperands	Verified	Three operands consumed by BRK service $05,$23 before code resumes at $B18F; full service $05,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
 12	B67A	B6BC	MapTransitionHandlerPointers	Verified	Thirty-three handler pointers selected by the parallel ID list at $B6BC
 12	B6BC	B6DE	MapTransitionIds	Verified	Thirty-three map-transition IDs followed by the $FF search terminator
+12	B970	B971	ConstantData	Verified	Byte read directly by LDA $B970 at $B71E
+12	BC2E	BC32	BattleSetupPointerConstants	Verified	Two little-endian constants loaded directly by LDA/LDY $BC2E/$BC2F at $BC20-$BC23 and LDA $BC30/$BC31 at $BBE0-$BBE8
+12	BC3A	BC3C	BattleSetupPointerConstant	Verified	Little-endian constant loaded directly by LDA $BC3A / LDA $BC3B at $BBF6-$BBFE
+12	BDBD	BDC9	LookupTable	Verified	Twelve entries read by LDA $BDBD,X at $BD94 with X = byte AND $0F from $BD91-$BD93; mask values 12-15 would read the directory-addressed data at $BDC9
 12	BF68	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 12	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 13	8000	8038	ServiceDirectory	Verified	Twenty-eight battle presentation and state pointers
 13	8078	8088	BattleStateHandlerPointers	Verified	Eight little-endian handler pointers selected by doubled state $75E8 after the explicit range check against eight at bank $13:$80E4
 13	8599	859B	BattleActionHandlerBasePointer	Verified	Little-endian $8B8B base loaded by bank $13:$84E9 before adding twice the battle action ID
+13	85E9	85EE	LookupTable	Verified	Five entries read by LDA $85E9,X at $85DA with X = value AND $07 from $85D7-$85D9; mask values 5-7 would read the code at $85EE
 13	89B4	89B6	BattleCharacterRecordBase	Verified	Little-endian $7274 base used by bank $13:$899C-$89B3 to select 30-byte battle-character records
 13	89CB	89F5	BattleCharacterRecordPointers	Verified	Twenty-one little-endian SRAM record pointers indexed by a doubled selector at bank $13:$89B6-$89CA
 13	8A1E	8A32	BattleSlotRecordPointers	Verified	Ten little-endian pointers selected after the bounded ten-slot scan at bank $13:$89F5-$8A1D
@@ -138,10 +263,18 @@
 13	9100	9110	BattleArithmeticPointers	Verified	Eight little-endian arithmetic handler pointers consumed by bank $13:$8F93-$8F9F
 13	91A9	91BB	BattleActionIds	Verified	Eighteen action IDs searched by the descending $11 index at bank $13:$9155-$9163
 13	91CD	91F1	BattleActionHandlerPointers	Verified	Eighteen little-endian handler pointers selected in parallel with the IDs at $91A9-$91BA
+13	94CC	94EC	BattlePresentationIndices	Verified	Thirty-two values read by LDA $94CC,X at $927F/$931C after LDA $B80B,X / AND #$1F / TAX at $9279-$927E and $9314-$931B
+13	A624	A626	ConstantData	Verified	2 bytes read directly by LDA $A624 at $A5BB, LDA $A625 at $A5C0
 13	A626	A636	BattlePresentationCallbackTablePointers	Verified	Eight pointers selecting four callback tables by battle state $75E8
 13	A636	A696	BattlePresentationCallbackPointers	Verified	Four 12-entry callback tables indexed by doubled selector $0D
 13	A747	A74F	BattleEffectRecordPointers	Verified	Four little-endian record pointers selected by offsets $00,$02,$04,$06 stored at $75F1 by bank $13:$A6C6-$A6D4
 13	A74F	A797	BattleEffectRecords	Verified	Four pointer-selected lists of four-byte effect records terminated by $FF and decoded by bank $13:$A703-$A73B
+13	ADBF	ADC0	SearchTable	Verified	First of ten bytes compared by CMP $ADBF,X for X = $09 down to 0 at $ADAF-$ADB7; the other nine are the opcode and operand bytes of the subroutine at $ADC0
+13	B328	B36A	BattlePresentationSearchWindows	Verified	Five windows tile 66 bytes: character ID is masked and checked below five at $8897-$889D, LDA $892B,X at $88F2 selects starts $00/$12/$1E/$2A/$36, and the loop at $88F6-$8926 consumes 18 bytes for ID zero or 12 for IDs one through four
+13	B36A	B392	BattlePresentationSearchRows	Verified	Exact 40-byte copy of the independently bounded five-row table at bank $10:$915B-$9182; followed by verified code at $B392
+13	B62F	B64D	SearchTable	Verified	Thirty keys compared by CMP $B62F,X at $B622 while X counts down from $1D
+13	B64D	B66B	LookupTable	Verified	Thirty values read by LDA $B64D,X at $B62B with the matching key index from $B62F
+13	B736	B756	BattlePresentationMapping	Verified	Thirty-two values read by LDA $B736,X at $B699 after LDA $B80B,X / AND #$1F / TAX at $B693-$B698 bounds X to zero through $1F
 13	B80B	B90B	BattlePresentationLookup	Verified	Full 256-byte table directly indexed at $9279/$9316/$A46A/$B683/$B693 and bounded by verified code at $B90B
 13	B967	BA4E	BattlePresentationLookup	Verified	Directly indexed lookup base used at $8902/$9204/$A599/$A79E/$AD6B/$ADE1/$AEDC/$B302 and bounded by the next consumed table at $BA4E
 13	BA4E	BBCB	BattlePresentationTables	Verified	Parallel lookup tables whose bases $BA4E, $BA6C, $BA70, $BA74, $BAA5, $BAD5, $BB06, $BB22, $BB3F, $BB49 and the seven-byte records $BB53-$BB99 are each read by traced indexed consumers
@@ -149,14 +282,27 @@
 13	BFA7	BFD8	Padding	Verified	Contiguous $FF padding after the final battle-presentation command stream and before the compatibility footer
 13	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 14	8000	8034	ServiceDirectory	Verified	Twenty-six battle-turn service pointers
+14	8D29	8D31	BattleTurnThresholds	Verified	Eight thresholds read by LDA $8D29,X at $8AE4 while battle slot $06 runs from zero through seven in the X=$07 loop at $8A19-$8A45
+14	8D42	8D52	BattleTurnCoordinates	Verified	Two parallel eight-byte rows read by LDA $8D42,X at $8B38 and LDA $8D4A,X at $8B96 with battle slot $06 bounded zero through seven at $8A19-$8A45
+14	8D52	8D6E	BattleTurnPpuPointers	Verified	Fourteen two-byte records read by LDA $8D52,X/$8D53,X at $8C71-$8C76; Y runs $05-$0B and contributes record indices zero through six or seven through thirteen at $8C62-$8C70
+14	8D6E	8D76	BattleTurnStepCounts	Verified	Eight step counts selected by LDX $8D6E,Y at $8BDA with battle slot Y bounded zero through seven by the loop at $8A19-$8A45
+14	8D76	8D7A	BattleTurnRoutinePointers	Verified	Two little-endian routine pointers loaded directly by LDA $8D76/$8D77 at $8A69-$8A6E and LDA $8D78/$8D79 at $8A76-$8A7B
+14	8ECD	8ED9	LookupTable	Verified	12 entries read by LDA $8ECD,X at $8E9F in the loop LDX #$03 at $8E9D, DEX/BPL at $8EA5-$8EA6; LDA $8ED1,X at $8EB9 in the loop LDX #$07 at $8EB7, DEX/BPL at $8EC2-$8EC3
+14	8FFA	9030	BattleTurnPpuBytes	Verified	Fifty-four bytes copied by LDA $8FFA,X at $8FB6/$8FC2 while X starts at zero and increments until CPX #$36 / BCC at $8FD5-$8FD7
+14	A019	A01B	ConstantData	Verified	2 bytes read directly by ADC $A019 at $9FBF, LDA $A01A at $9FC4
 14	A111	A3F1	Graphics	Verified	Forty-six aligned 16-byte NES 2bpp battle tiles with coherent mirrored forms, blank tiles, and multi-tile artwork
 14	A40D	A41B	ServiceDirectory	Verified	Seven-entry nested battle presentation dispatch table
+14	A621	A628	StepTable	Verified	Seven entries read by LDX $A621,Y at $A4DB with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)
+14	A629	A630	StepTable	Verified	Seven entries read by LDX $A629,Y at $A4F3 with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)
+14	A631	A638	StepTable	Verified	Seven entries read by LDX $A631,Y at $A4E6 with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)
+14	A639	A67F	StepAndPaletteTables	Verified	Eight entries read by LDX $A639,Y at $A603 with Y = $0F (0-7) while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512); seven read by LDX $A641,Y at $A506; four pointer pairs read by LDA $A648,X/$A649,X at $A60D-$A613 with X = 2 * $00 for $00 = 0-3; fifteen copied by LDA $A650,X at $A548 from X = $0E; three read by LDX $A65F,Y at $A59B for Y = 0-2; five read by LDX $A662,Y at $A5C1 for Y = 0-4; and twenty-four copied by LDA $A667,X at $A5DC from X = $17
 14	AA66	AB23	BattleAttributeArrays	Verified	Three parallel 63-entry arrays indexed by X and read at $AA43 ($AA66), $AA48 ($AAA5), and $AA4D ($AAE4)
 14	AB23	ABA1	PointerTable	Verified	Sixty-three record pointers read through the doubled index at $AA56-$AA5E into $06/$07 before $AFEA
 14	ABA1	AC1A	BattleTurnRecords	Verified	Records addressed by the $AB23 pointer table, whose sixty-three entries span $ABA1-$AC19
 14	AC66	AD65	BattleAttributeArrays	Verified	Five parallel 51-entry arrays indexed by X and read at $AC21 ($AC66), $AC26 ($AC99), $AC2B ($ACCC), $AC4E ($ACFF), and $AC1C ($AD32)
 14	AD65	ADCB	PointerTable	Verified	Fifty-one record pointers read through the doubled index at $AC56-$AC5E into $06/$07 before $AFA8
 14	ADCB	AE7C	BattleTurnRecords	Verified	Records addressed by the $AD65 pointer table, whose fifty-one entries span $ADCB-$AE7A
+14	AF1D	AF53	ParallelLookupTables	Verified	Three parallel 18-byte tables read by CMP $AF1D,X at $AF03, LDA $AF41,X at $AF08, and CMP $AF2F,X at $AF15 with the same index $04; consecutive bases are 18 bytes apart
 14	B169	B1BA	BattleAttributeArrays	Verified	Eighty-one-entry attribute array indexed by X and read at $B106 and $B118
 14	B1BA	B25C	PointerTable	Verified	Eighty-one record pointers read through the doubled index at $B156-$B15E into $C0/$C1 before $B2AD
 14	B25C	B2AD	BattleAttributeArrays	Verified	Eighty-one-entry attribute array indexed by X and read at $B12D
@@ -172,33 +318,73 @@
 15	8034	9640	EffectScripts	Verified	Table-driven item and field-effect command streams
 15	963F	9641	EffectScriptCallbackPointer	Verified	Final command $00 callback operand overlaps the script-pointer table boundary
 15	9640	98F8	ScriptPointers	Verified	Pointers into item and field-effect command streams
-15	AE27	AE2A	InlineServiceOperands	Verified	Three operands consumed by BRK service $20,$EB at $AE26; repeated sites use a one-byte mask before a branch
-15	AB5D	AB60	InlineServiceOperands	Verified	Three operands consumed by BRK service $17,$CB at $AB5C; all decoded call sites use a one-byte parameter before code resumes
+15	9B00	9B03	InlineServiceOperands	Verified	Three operands consumed by BRK service $42,$63 before code resumes at $9B03; full service $42,$63 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+15	9CFA	9CFD	InlineServiceOperands	Verified	Three operands consumed by BRK service $06,$EB before code resumes at $9CFD; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	9D15	9D18	InlineServiceOperands	Verified	Three operands consumed by BRK service $0D,$EB before code resumes at $9D18; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	9D26	9D29	InlineServiceOperands	Verified	Three operands consumed by BRK service $13,$CB before code resumes at $9D29; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	9D50	9D53	InlineServiceOperands	Verified	Three operands consumed by BRK service $06,$CB before code resumes at $9D53; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	9E37	9E3A	InlineServiceOperands	Verified	Three operands consumed by BRK service $09,$DB before code resumes at $9E3A; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	9E3F	9E42	InlineServiceOperands	Verified	Three operands consumed by BRK service $10,$DB before code resumes at $9E42; full service $10,$DB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+15	9F80	9F83	InlineServiceOperands	Verified	Three operands consumed by BRK service $20,$DB before code resumes at $9F83; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 15	A064	A067	InlineServiceOperands	Verified	Three operands consumed by BRK service $0B,$CB at $A063; decoded call sites use a one-byte parameter before code resumes
+15	A518	A51B	InlineServiceOperands	Verified	Three operands consumed by BRK service $05,$CB before code resumes at $A51B; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	A63C	A63F	InlineServiceOperands	Verified	Three operands consumed by BRK service $0C,$CB before code resumes at $A63F; full service $0C,$CB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+15	A9A5	A9A8	InlineServiceOperands	Verified	Three operands consumed by BRK service $27,$EB before code resumes at $A9A8; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	AB5D	AB60	InlineServiceOperands	Verified	Three operands consumed by BRK service $17,$CB at $AB5C; all decoded call sites use a one-byte parameter before code resumes
+15	AC29	AC2C	InlineServiceOperands	Verified	Three operands consumed by BRK service $1A,$CB before code resumes at $AC2C; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	AC42	AC45	InlineServiceOperands	Verified	Three operands consumed by BRK service $29,$63 before code resumes at $AC45; full service $29,$63 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+15	ACB2	ACB5	InlineServiceOperands	Verified	Three operands consumed by BRK service $1E,$EB before code resumes at $ACB5; full service $1E,$EB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+15	ADCA	ADCD	InlineServiceOperands	Verified	Three operands consumed by BRK service $11,$DB before code resumes at $ADCD; full service $11,$DB is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+15	AE27	AE2A	InlineServiceOperands	Verified	Three operands consumed by BRK service $20,$EB at $AE26; repeated sites use a one-byte mask before a branch
+15	B10B	B10E	InlineServiceOperands	Verified	Three operands consumed by BRK service $1B,$EB before code resumes at $B10E; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	B140	B143	InlineServiceOperands	Verified	Three operands consumed by BRK service $1C,$EB before code resumes at $B143; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+15	B1B3	B1D1	SearchList	Verified	Twenty-nine keys and terminal $FF scanned by LDA $B1B3,Y / CMP #$FF at $B176-$B179 from LDY #$FF / INY at $B173-$B175; the $FF is at $B1D0
+15	B1D1	B1EE	LookupTable	Verified	Twenty-nine values read by LDA $B1D1,Y at $B183 with the matching key index from $B1B3
 15	BB1A	BB56	ItemEffectLookupA	Verified	Thirty two-byte item/effect values selected by doubled command index when inventory mode is one
 15	BB56	BB92	ItemEffectLookupDefault	Verified	Thirty two-byte item/effect values selected by doubled command index in the default inventory mode
 15	BB92	BBCE	ItemEffectLookupB	Verified	Thirty two-byte item/effect values selected by doubled command index when inventory mode is three
-15	BBD4	BBD5	OverlappingCode	Verified	Third operand of BRK service $62,$33 is also the STA $DA opcode for the continuation at $BBD4
+15	BFB2	BFD8	Padding	Verified	Unreferenced $FF fill from the final RTS at $BFB1 to the compatibility footer at $BFD8
 15	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 16	8000	8028	ServiceDirectory	Verified	Twenty text and user-interface service pointers
 16	80C4	80EA	TextCommandHandlerPointers	Verified	Nineteen little-endian text/UI handlers selected from command $40-$52 after clamping, masking, and doubling at bank $16:$8094-$80B2
+16	82D1	82DB	LookupTable	Verified	10 entries read by LDA $82D1,Y at $82C3 in the loop LDY #$09 at $82C1, DEY/BPL at $82CA-$82CB
 16	87D8	8892	HuffmanTree	Verified	Two 93-byte dialogue Huffman branch tables
 16	8951	8A08	TextPointers	Verified	Eighty-eight group pointers and seven bank thresholds
+16	8EB8	8EC0	LookupTable	Verified	8 entries read by LDA $8EB8,X at $8E9C with index from AND #$07 + TAX at $8E99-$8E9B
+16	93F0	9410	RtsDispatchTable	Verified	Sixteen little-endian handler-1 values selected by AND #$0F / ASL / TAY at $93DE-$93E1 and pushed by LDA $93F1,Y / LDA $93F0,Y at $93E2-$93E6 for the RTS at $93EF; every value+1 is a decoded handler
+16	9752	975A	LookupTable	Verified	8 entries read by LDA $9752,X at $9706 with index from AND #$07 + TAX at $9703-$9705
+16	99A3	99B7	RtsDispatchTable	Verified	Ten little-endian handler-1 values for the RTS dispatch at $99A2; every value+1 is decoded code and the table is bounded by RTS $99A2 and executed code at $99B7
 16	9C7F	9CBF	TextUiMetricTables	Verified	Four sixteen-byte width, stride, and cursor-adjustment tables indexed by UI mode at $9BB4-$9C64
 16	9D49	9D4F	TextUiCursorPositions	Verified	Six cursor positions indexed after bounded shifts at $9D2F-$9D46
 16	9DED	9DF1	TextUiModeValues	Verified	Four mode values indexed by the bounded menu state at $9DCF-$9DE1
 16	9E7F	9EBF	TextUiSelectionMapA	Verified	Sixty-four selection values indexed by text/UI state at $9DFF
 16	9EBF	9EE7	TextUiSelectionMapB	Verified	Forty selection values indexed by text/UI state at $9F37
+16	A3A7	A3AF	RtsDispatchTable	Verified	Four little-endian handler-1 values for the RTS dispatch at $A3A6; every value+1 is decoded code and the table is bounded by RTS $A3A6 and executed code at $A3AF
+16	A3F2	A3FA	LookupTable	Verified	8 entries read by LDA $A3F2,Y at $A3E0 in the loop LDY #$07 at $A3DE, DEY/BPL at $A3E6-$A3E7
+16	A477	A483	LookupTable	Verified	12 bytes read by LDA $A477,Y at $A416, LDA $A47B,Y at $A428, LDA $A47F,Y at $A434, LDA $A477,Y at $A44F, and 2 more; FCEUX read every byte and executed none
+16	A4CE	A4D6	TextUiBitMasks	Verified	Eight masks read through $A4CE,Y at $8E75/$8E88 with Y = $03DF masked by AND #$07 at $8E53, and through $A4CE,X after AND #$07/TAX at $9E04-$9E08
 16	A4FF	A501	TextUiPointerBase	Verified	Little-endian $A501 base pointer indexed by bank $16:$955F-$957F
 16	A501	A5E3	TextUiRecordPointers	Verified	One hundred thirteen nondecreasing little-endian pointers into $A7AB-$AAEF
 16	A5E3	A5E9	TextUiCommandDirectory	Verified	Two command-set pointers and two doubled-index thresholds consumed by bank $16:$9882/$BE97
 16	A5E9	A735	TextUiCommandPointers	Verified	Two nondecreasing command pointer arrays selected through the directory at $A5E3
 16	A735	A7AB	TextUiDispatchTables	Verified	Pointer, limit, and handler dispatch tables consumed by bank $16:$9790-$97AF/$A4DE-$A4FD
 16	A7AB	AAF7	TextUiRecordData	Verified	Variable text and UI interpreter records selected by the 113-entry pointer table; final record starts at $AAEF
+16	ABC3	ABC7	LookupTable	Verified	4 bytes read by LDA $ABC3,Y at $9F71, LDA $ABC3,Y at $ABB5, LDA $ABC3,Y at $B550; FCEUX read every byte and executed none
+16	ACB9	ACC3	LookupTable	Verified	10 entries read by LDA $ACB9,Y at $ACA8 in the loop LDY #$09 at $ACA5, DEY/BPL at $ACAE-$ACAF
 16	B03C	B1C1	TextUiCommandDataPrimary	Verified	Pointer-delimited primary command records selected for doubled indices at or above $6C by $9882-$98B0 and interpreted at $9844-$9879; $B0FA is intentional dual-use code
 16	B37B	B37F	TextUiCommandLookup	Verified	Four values indexed after the secondary command handler at $B342 bounds its selector below four
 16	B3A3	B3A8	TextUiCommandLookup	Verified	Five values indexed by the bounded selector returned through $B747 in the secondary command handler at $B37F
 16	B3A8	B4B6	TextUiCommandDataSecondary	Verified	Pointer-delimited secondary command records selected for doubled indices at or above $14 by $9882-$98B0 and interpreted at $9844-$9879; $B3FC is intentional dual-use code
+16	B687	B699	ListPointerTable	Verified	Nine little-endian list pointers read by LDA $B687,X/$B688,X at $B65B-$B660 with X = 2 * $03C6; entries 5-8 point to $B699, the byte after the table, and entries 0-4 point to $B720
+16	B699	B71F	RuntimeReadList	Verified	Three-byte header read by LDA ($00),Y at $B667-$B673 and item list consumed through $07B0/$07B1; FCEUX read every byte, and the handler at $B71F follows
+16	B9AC	B9B0	LookupTable	Verified	4 bytes read by LDA $B9AC,X at $B999; FCEUX read every byte and executed none
+16	BB67	BB75	LookupTable	Verified	14 bytes read by LDA $BB67,X at $BB5C; FCEUX read every byte and executed none
+16	BCCA	BCD3	HandlerParameterBytes	Verified	Nine bytes read by LDA $BCCA,X at $BCB3 with X = Y/2, parallel to the nine-entry RTS dispatch table at $BCD9 selected by the same Y
+16	BCD9	BCEB	RtsDispatchTable	Verified	Nine little-endian handler-1 values for the RTS dispatch at $BCC9; every value+1 executed at runtime and executed code begins at $BCEB
+16	BD77	BD91	LookupTable	Verified	26 bytes read by LDX $BD77,Y at $BD42, LDA $BD85,X at $BD5A, LDY $BD89,X at $BD6B, LDY $BD8D,X at $BD73; FCEUX read every byte and executed none
+16	BDBD	BDC9	LookupTable	Verified	12 bytes read by SBC $BDBF,Y at $BD94, SBC $BDBE,Y at $BD99, SBC $BDBD,Y at $BD9E, LDA $BDBF,Y at $BDA3, and 2 more; FCEUX read every byte and executed none
+16	BE08	BE47	DecimalPlaceRecords	Verified	Twenty-one 3-byte (count, high, low) records read by LDA $BE08,Y and SBC $BE09,Y/$BE0A,Y at $BDCD-$BDE9 during decimal digit extraction; FCEUX read the first byte of every record, and the subroutine these loops call begins at $BE47
+16	BFB6	BFD8	Padding	Verified	Unreferenced $FF fill from the final RTS at $BFB5 to the compatibility footer at $BFD8
 16	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 17	8000	804C	ServiceDirectory	Verified	Thirty-eight-entry mixed map-system directory
 17	8069	806C	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank BRK service at $8068
@@ -299,7 +485,6 @@
 17	9D30	9D32	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D2F
 17	9D3A	9D3C	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D39
 17	9D3E	9D40	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9D3D
-17	9DC6	9DD0	NumericLookupTable	Verified	Ten descending values used by the map UI timing routines
 17	9E14	9E16	InlineServiceOperands	Verified	Two operands consumed by the fixed-bank BRK service at $9E13
 17	9E58	9E68	NumericLookupTable	Verified	Eight little-endian values indexed by bank $17:$9E37/$9E40
 17	9ED7	9EE6	MapComparisonTables	Verified	Three five-byte index tables consumed by bank $17:$9EB8-$9EC7
@@ -338,6 +523,8 @@
 18	8000	8046	ServiceDirectory	Verified	Thirty-five-entry mixed battle-data directory
 18	8046	92AA	MonsterRecords	Verified	Two hundred fourteen 22-byte monster records
 18	92AA	995A	EncounterRecords	Verified	One hundred seven 16-byte records; two control bytes and two seven-entry lists containing monster IDs $00-$D5 or $FF
+18	9BB1	9BB3	ConstantData	Verified	2 bytes read directly by LDA $9BB1 at $9BA2, LDA $9BB2 at $9BA9
+18	9BE4	9BE6	ConstantData	Verified	2 bytes read directly by ADC $9BE4 at $9BD7, LDA $9BE5 at $9BDC
 18	A27B	A28B	EncounterRateTables	Verified	Two eight-byte time-period encounter-rate tables selected by bank $18:$9CBC-$9CC9
 18	A28B	A28D	Padding	Verified	Two zero alignment bytes before encounter weight data
 18	A28D	A31D	EncounterWeights	Verified	One hundred forty-four encounter-selection weights consumed by bank $18:$9DBB-$9EFF
@@ -348,11 +535,14 @@
 18	A4BD	A7BD	WorldEncounterGrids	Verified	Three 256-byte world encounter-zone grids selected through pointers at $A241/$A243/$A245
 18	A73D	A811	MapEncounterRecords	Verified	Two overlapping map-keyed streams; nine records end at $A778 and twenty-three records end at $A810
 18	A811	A813	BattleDataPointer	Verified	Little-endian $ADAF pointer consumed by bank $18:$A876-$A87C
+18	A900	A906	LookupTable	Verified	6 bytes: CMP $A901,X at $A911 in the loop LDX #$04 at $A90F, DEX/BNE at $A916-$A917; read directly by LDA $A900 at $A8DA, LDA $A901 at $A8E0
+18	AD9F	ADA3	ChapterValues	Verified	Four bytes read by LDA $AD9F,X at $A859 with X = SaveCurrentChapterMinus1 after CPX #$04/BCC at $A843-$A845
 18	B23F	B245	BattleAnimationPointers	Verified	Three little-endian pointers to parallel X, Y, and command arrays loaded at $AEAB-$AEC7
 18	B245	B2DD	BattleAnimationX	Verified	152 signed X-coordinate values indexed in parallel by the 29-group animation loop
 18	B2DD	B375	BattleAnimationY	Verified	152 signed Y-coordinate values indexed in parallel by the 29-group animation loop
 18	B375	B40D	BattleAnimationCommands	Verified	Twenty-nine variable command groups terminated by $FF and indexed in parallel with X/Y arrays
 18	B40D	B798	MixedDirectoryRecords	Verified	Record data selected by directory entries $802C ($B40D), $8030 ($B48F), $802E ($B525), $800E ($B5C2) and $8042 ($B655), bounded by the runtime-observed font uploader at $B798
+18	B835	B83D	FontGraphics	Verified	Blank first glyph of the 1bpp font: eight zero bytes read by LDA $B835,Y at $B81C, whose copy loop stops when X reaches a multiple of 8; FCEUX read all eight, and the remaining glyphs begin at $B83D
 18	B83D	BDBD	FontGraphics	Verified	One-bitplane lowercase, symbol, uppercase, and digit glyphs
 18	BDBD	BFD8	MixedDirectoryRecords	Verified	Post-font record data selected by directory entries $8034 ($BDBD) and $8038 ($BEEE), bounded by the one-bitplane glyphs ending at $BDBC and the compatibility footer at $BFD8
 18	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
@@ -407,6 +597,7 @@
 1B	AC1D	AC20	InlineServiceOperands	Verified	Three operands consumed by BRK service $0A,$DB at $AC1C; the third byte is a mask before the next BRK
 1B	AC21	AC24	InlineServiceOperands	Verified	Three operands consumed by BRK service $06,$DB at $AC20; repeated site $AB2D uses the same $BF mask
 1B	AC5B	AC65	ChapterEventHandlerPointers	Verified	Five chapter handlers indexed by doubled SaveCurrentChapterMinus1 at bank $1B:$AAFA-$AB0A
+1B	AD22	AD25	InlineServiceOperands	Verified	Three operands consumed by BRK service $2A,$EB before code resumes at $AD25; full service $2A,$EB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
 1B	AD45	AD48	InlineServiceOperands	Verified	Three operands consumed by BRK service $2A,$CB at $AD44; repeated site $AE5C uses callback operand $80 and code resumes at RTS $AD48
 1B	AE00	AE06	AnimationDelays	Verified	Six delay values indexed by countdown $02 at $ADBB-$ADC5
 1B	AE06	AE08	AnimationFramePointer	Verified	Pointer $AE08 loaded into $00/$01 at $AD84-$AD8C
@@ -427,13 +618,27 @@
 1C	8000	802C	ServiceDirectory	Verified	Twenty-two-entry mixed map and entity service directory
 1C	802C	96C7	MapEntityData	Verified	Structured map, entity, and event data before runtime-observed decoder code
 1C	9C60	9C63	InlineServiceOperands	Verified	Three operands consumed by BRK service $26,$EB at $9C5F; repeated sites use a one-byte mask before a branch
+1C	9C7B	9C7E	InlineServiceOperands	Verified	Three operands consumed by BRK service $0C,$EB before code resumes at $9C7E; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 1C	9D0E	9D10	MapEntityRecordPointer	Verified	Little-endian pointer $9D10 loaded into $DC/$DD by bank $1C:$9CC1-$9CC9
 1C	9D10	9E61	MapEntityRecords	Verified	Fifty-six six-byte map/submap/flag/entity/handler records followed by $FF, parsed by bank $1C:$9CCB-$9D0D
 1C	9E61	9EA6	MapEntityConditionRecords	Verified	Seventeen four-byte map/submap/flag/entity records followed by $FF, scanned in four-byte steps by bank $1C:$9C28-$9C6B
-1C	A175	A176	OverlappingCode	Verified	Runtime executes BEQ $A187 beginning in the operand byte of BPL $A166 at $A174
-1C	A1D0	A1D4	OverlappingCode	Verified	Runtime executes the alternate BNE/BRK stream at $A1D0/$A1D2 overlapping the table-handler path from $A1CC
+1C	9F8A	A010	MapRecordLists	Verified	Two alternative $FF-terminated lists of 4-byte records scanned by $9EB5-$9EE2: LDA $9F8A,X/CMP #$FF at $9ECC-$9ECF scans the first list, or $9EBE-$9EC9 skips past its terminator at $9FD2 when $62ED >= $78 and scans the second, which ends with $FF at $A00F before the routine at $A010; FCEUX read the first byte of every first-list record
+1C	A0E7	A0EA	InlineServiceOperands	Verified	Three operands consumed by BRK service $03,$EB before code resumes at $A0EA; full service $03,$EB is registered as three-operand and all 5 decoded call site(s) resume coherently after three
+1C	A12A	A12D	InlineServiceOperands	Verified	Three operands consumed by BRK service $19,$EB before code resumes at $A12D; full service $19,$EB is registered as three-operand and all 7 decoded call site(s) resume coherently after three
+1C	A1BD	A1C0	InlineServiceOperands	Verified	Three operands consumed by full BRK service $03,$DB at $A1BC; the third operand is $DF and code resumes at the next BRK at $A1C0
+1C	A98C	A98F	InlineServiceOperands	Verified	Three operands consumed by BRK service $1D,$EB before code resumes at $A98F; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 1C	ABF5	AC8A	MapSubmapKeys	Verified	Seventy-four two-byte map/submap keys plus terminal $FF scanned by bank $1C:$A010-$A027
 1C	AC8A	AD1E	MapEventPointers	Verified	Seventy-four little-endian handler pointers selected by bank $1C:$A028-$A032
+1C	AD5A	AD5F	MapTriggerRecords	Verified	One 4-byte (map, submap, chapter, argument) record and terminator: LDA $AD5A,Y/BMI at $AD34-$AD37 ends the scan at the negative byte at $AD5E, and Y steps by 4 at $AD52-$AD55
+1C	AD7B	AD7E	InlineServiceOperands	Verified	Three operands consumed by BRK service $08,$CB before code resumes at $AD7E; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1C	AE44	AE47	InlineServiceOperands	Verified	Three operands consumed by BRK service $05,$DB before code resumes at $AE47; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1C	AFEF	AFF4	LookupTable	Verified	Five entries read by LDA $AFEF,X at $AF0A with X = value AND $07 from $AF07-$AF09; mask values 5-7 would read the code at $AFF4
+1C	B4B0	B4BC	MapEntityPpuRecords	Verified	Four parallel records read from $B4B0/$B4B4/$B4B8 at $B49D-$B4A4; callers set X=$00 then $02 and the helper increments X once, selecting records zero through three
+1C	B5C8	B5CB	InlineServiceOperands	Verified	Three operands consumed by BRK service $19,$CB before code resumes at $B5CB; full service $19,$CB is registered as three-operand and all 3 decoded call site(s) resume coherently after three
+1C	B74B	B74E	InlineServiceOperands	Verified	Three operands consumed by BRK service $1E,$CB before code resumes at $B74E; full service $1E,$CB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+1C	B91D	B920	InlineServiceOperands	Verified	Three operands consumed by BRK service $1E,$DB before code resumes at $B920; full service $1E,$DB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
+1C	B99B	B99E	InlineServiceOperands	Verified	Three operands consumed by BRK service $1D,$CB before code resumes at $B99E; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1C	BA00	BA03	InlineServiceOperands	Verified	Three operands consumed by BRK service $29,$CB before code resumes at $BA03; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 1C	BB4E	BB51	InlineServiceOperands	Verified	Three operands consumed by BRK service $26,$CB at $BB4D; the following BRK service resumes code at $BB54
 1C	BCA8	BCAB	InlineServiceOperands	Verified	Three operands consumed by BRK service $0D,$CB at $BCA7; repeated call sites use a one-byte $10/$20/$40/$80 parameter
 1C	BDD3	BDD6	InlineServiceOperands	Verified	Three operands consumed by BRK service $62,$33 at the map-event table target $BDD2
@@ -444,6 +649,7 @@
 1D	8096	80DE	MapGraphicsConfiguration	Verified	Map selectors, modes, source indices, and destination pairs consumed by bank $1D:$8033-$8095
 1D	80DE	811E	GraphicsPointers	Verified	Thirty-two little-endian source pointers, including null slots, copied into runtime graphics state
 1D	811E	8B1E	Graphics	Verified	Twenty contiguous 128-byte graphics blocks selected by nonzero pointers from the table at $80DE
+1D	8B38	8B40	LookupTable	Verified	8 entries read by CMP $8B38,X at $8B2F in the loop LDX #$07 at $8B2D, DEX/BPL at $8B34-$8B35
 1D	8D1D	8D25	MapMotionOffsets	Verified	Eight signed offsets indexed by two independently bounded doubled two-bit selectors at bank $1D:$8CF3-$8D1A
 1D	8D69	8D6D	PpuPayloadPointers	Verified	Two little-endian source pointers selected by bit one of $3C at bank $1D:$8D2C-$8D39
 1D	8D6D	8DED	PpuPayloadData	Verified	Two contiguous 64-byte payloads copied as four 16-byte chunks through ($02),Y by bank $1D:$8D54-$8D5F and $8CAC-$8CE5
@@ -456,12 +662,18 @@
 1D	944E	9450	NmiCallbackPointer	Verified	Little-endian $9467 callback installed at $0503-$0504 by bank $1D:$9441
 1D	96B5	96C4	MapSubmapDispatchKeys	Verified	Seven map/submap key pairs followed by $FF searched in two-byte steps at bank $1D:$9697-$96C4
 1D	96D1	96DF	MapSubmapHandlerPointers	Verified	Seven little-endian handlers selected in parallel with map/submap keys $96B5-$96C2 and dispatched at $96CE
+1D	96EF	96F2	InlineServiceOperands	Verified	Three operands consumed by BRK service $04,$EB before code resumes at $96F2; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1D	9714	9717	InlineServiceOperands	Verified	Three operands consumed by BRK service $16,$EB before code resumes at $9717; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 1D	978C	97A4	MapAnimationTiles	Verified	Twenty-four bytes copied backward to $7664-$767B by the bounded X=$17-$00 loop at bank $1D:$9771-$978B
 1D	97BF	989F	PpuInitializationData	Verified	Two hundred twenty-four bytes copied to PPUDATA by the bounded X=$00-$DF loop at bank $1D:$97A4-$97BE
 1D	9946	995E	MapMotionOffsets	Verified	Three groups of four signed coordinate pairs selected by doubled two-bit entity state plus offsets zero, eight, and sixteen at bank $1D:$98BD-$9935
+1D	99BD	99C0	InlineServiceOperands	Verified	Three operands consumed by BRK service $01,$EB before code resumes at $99C0; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1D	99C5	99C8	InlineServiceOperands	Verified	Three operands consumed by BRK service $01,$CB before code resumes at $99C8; full service $01,$CB is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+1D	99CB	99CE	InlineServiceOperands	Verified	Three operands consumed by BRK service $01,$DB before code resumes at $99CE; full service $01,$DB is registered as three-operand and all 1 decoded call site(s) resume coherently after three
 1D	9A41	9A5F	MapEventConditionTables	Verified	Three parallel ten-byte X, Y, and state arrays scanned with X below $0A by bank $1D:$99F1-$9A1A
 1D	9A7D	9AC5	MapEventConditionTables	Verified	Three parallel 24-byte X, Y, and state arrays scanned in bounded eight-entry groups by bank $1D:$9A5F-$9A7B
 1D	9B08	9B0B	InlineServiceOperands	Verified	Three operands consumed by BRK service $16,$CB at $9B07; repeated sites use a one-byte parameter before code resumes
+1D	9CC7	9CCA	InlineServiceOperands	Verified	Three operands consumed by BRK service $02,$CB before code resumes at $9CCA; full service $02,$CB is registered as three-operand and all 2 decoded call site(s) resume coherently after three
 1D	9CF7	9CFA	InlineServiceOperands	Verified	Three operands consumed by BRK service $1F,$DB at $9CF6; repeated sites use a one-byte mode before code resumes
 1D	9D16	9D19	InlineServiceOperands	Verified	Three operands consumed by BRK service $1F,$CB at $9D15; repeated sites use a one-byte mode before code resumes
 1D	9D9A	9D9D	InlineServiceOperands	Verified	Three operands consumed by BRK service $1F,$DB at $9D99
@@ -474,8 +686,13 @@
 1D	A112	A124	MapEventCoordinates	Verified	Nine interleaved X/Y coordinate pairs selected by twice the bounded index zero through eight at bank $1D:$A0CC-$A0E7
 1D	A124	A164	PpuUploadData	Verified	Sixty-four bytes copied to the PPU staging buffer by the bounded X=$3F-$00 loop at bank $1D:$A0FA-$A101
 1D	A2EF	A2F3	MapEventCoordinates	Verified	Two interleaved X/Y coordinate pairs selected at offsets zero and two by bank $1D:$A27A-$A2A2
+1D	A3FC	A404	LookupTable	Verified	8 entries read by LDA $A3FC,X at $A3E6 with index from AND #$07 + TAX at $A3E3-$A3E5
 1D	A477	A47A	InlineServiceOperands	Verified	Three operands consumed by BRK service $0F,$CB at $A476; decoded sites use a one-byte parameter before code resumes
+1D	A57E	A581	InlineServiceOperands	Verified	Three operands consumed by BRK service $08,$DB before code resumes at $A581; no official opcode follows two operands at this site, while every call site decodes cleanly after three
+1D	A8AC	A8AF	InlineServiceOperands	Verified	Three operands consumed by BRK service $0C,$DB before code resumes at $A8AF; full service $0C,$DB is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+1D	A9BC	A9C1	LookupTable	Verified	Five entries: LDA $A9BC at $A95E reads entry 0 and LDA $A9BC,X at $A9A9 reads X = value AND $07 from $A9A6-$A9A8; mask values 5-7 would read the code at $A9C1
 1D	A9FF	AA02	InlineServiceOperands	Verified	Three operands consumed by BRK service $09,$CB at $A9FE; decoded sites use a one-byte parameter before code resumes
+1D	AD4A	AD4C	ConstantData	Verified	2 bytes read directly by LDA $AD4A at $AD3C, LDA $AD4B at $AD42
 1D	AD8E	AD9E	OamInitializationTemplate	Verified	Sixteen bytes copied to $0200-$020F by the bounded X=$0F-$00 loop at bank $1D:$AD74-$AD80
 1D	ADB0	ADB3	InlineServiceOperands	Verified	Three operands consumed by BRK service $00,$EB at $ADAF; repeated sites use a one-byte mask before a branch
 1D	AE00	AE03	InlineServiceOperands	Verified	Three operands consumed by BRK service $00,$CB at $ADFF; decoded sites use a one-byte parameter before code resumes
@@ -492,6 +709,7 @@
 1D	B72A	B73E	MapEventHandlerPointersHigh	Verified	Ten little-endian handlers for high event IDs selected on the carry-set path at bank $1D:$98B0-$98BA; code resumes at $B73E
 1D	B7FA	B7FD	InlineServiceOperands	Verified	Three operands consumed by BRK service $13,$EB at $B7F9; repeated sites use a one-byte mask before a branch
 1D	B8BB	B904	MapEventRoutingRecords	Verified	Twelve six-byte map/submap/chapter/action records followed by $FF, parsed in six-byte steps by bank $1D:$B73E-$B782
+1D	B952	B95B	MapEventSwapRecords	Verified	Two four-byte records scanned from Y=$00 in four-byte steps at $B904-$B91D, followed by the $FF terminator at $B95A
 1D	B9B7	B9D5	MapEventDelayTable	Verified	Thirty delay values indexed only when Y is below $1E by bank $1D:$B9A6-$B9AF
 1D	BA9B	BACB	MapDisplayPayload	Verified	Forty-eight bytes copied to the display command buffer by the bounded X=$00-$2F loop at bank $1D:$B9DE-$B9FC
 1D	BACB	BAEB	OamInitializationTemplate	Verified	Thirty-two bytes copied to $02E0-$02FF by the bounded X=$00-$1F loop at bank $1D:$BA04-$BA0F
@@ -501,6 +719,8 @@
 1D	BFC8	BFD8	Padding	Verified	Sixteen contiguous $FF bytes after the terminal jump at $BFC5 and before the compatibility footer
 1D	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 1E	8000	8090	ServiceDirectory	Verified	Seventy-two map and entity interaction service pointers
+1E	80AA	80BA	RtsDispatchTable	Verified	Eight little-endian handler-1 values for the RTS dispatch at $80A6; every value+1 is decoded code and the table is bounded by JMP $D1F3 at $80A7 and executed code at $80BA
+1E	819E	81AE	MapInteractionSwapRecords	Verified	Three five-byte records scanned from X=$00 in five-byte steps at $814A-$8194, followed by the $FF terminator at $81AD
 1E	848F	8492	InlineServiceOperands	Verified	Three operands consumed by BRK service $0E,$DB at $848E; repeated sites use an $EF/$F7/$FB parameter before code resumes
 1E	89C5	89C8	MapTransitionDirections	Verified	Three direction values selected at indices zero or two after a bidirectional transition match at bank $1E:$8986-$89C2
 1E	89C8	89D2	MapTransitionPointers	Verified	Three records containing map ID and little-endian transition-stream pointer followed by terminal $FF, scanned in three-byte steps at bank $1E:$894A-$8968
@@ -510,10 +730,20 @@
 1E	8BD1	8BD8	MapAnimationRowOffsets	Verified	Seven sixteen-byte curve offsets selected from sprite Y high nibbles by bank $1E:$8BB4-$8BCD
 1E	8BD8	8C48	MapAnimationMotionCurves	Verified	Seven contiguous sixteen-step motion curves selected through $8BD1-$8BD7 and consumed once per frame by bank $1E:$8B81-$8BAE
 1E	9060	9066	MapEventTriggerRecord	Verified	Six-byte chapter, map, submap, X, entity, and target record compared field-by-field by bank $1E:$8FEB-$905F
+1E	9236	927F	MapRegionRecords	Verified	Twelve 6-byte (map, submap, X low, X high, Y low, Y high) records and terminal $FF scanned by $91E1-$9216: LDA $9236,X/CMP #$FF at $91E3-$91E8 ends the scan and TXA/ADC #$06/TAX at $9211-$9215 steps records; the $FF is at $927E and FCEUX read every record first byte
+1E	A016	A02B	LookupTable	Verified	21 bytes read by LDA $A016,X at $9FC3, LDA $A01C,X at $9FD2; FCEUX read every byte and executed none
+1E	A2DB	A2E4	TimeOfDayThresholds	Verified	Nine thresholds compared by CMP $A2DB,X at $A26B/$A2B9 with X bounded to zero through eight at $A266-$A273 and $A2AC-$A2C2; threshold zero at index zero terminates the descending search before underflow
+1E	A2E3	A34F	TimeOfDayMapRecords	Verified	Nine contiguous 12-byte records copied by the loop at $A29B-$A2A5; $A2C2-$A2CD computes Y = 12 * X for X zero through eight, so the final record ends at $A34E before code at $A34F
+1E	A454	A457	InlineServiceOperands	Verified	Three operands consumed by BRK service $0F,$DB before code resumes at $A457; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 1E	A499	A4A3	ChapterMapHandlerPointers	Verified	Five little-endian chapter handlers indexed by doubled SaveCurrentChapterMinus1 at bank $1E:$A480-$A496; code resumes at $A4A3
+1E	A4AD	A4B0	InlineServiceOperands	Verified	Three operands consumed by BRK service $07,$DB before code resumes at $A4B0; full service $07,$DB is registered as three-operand and all 1 decoded call site(s) resume coherently after three
+1E	A599	A5AD	ChapterStartRecords	Verified	Five 4-byte records (map, submap, X, Y) read by LDA $A599,X-$A59C,X at $A57E-$A590 with X = SaveCurrentChapterMinus1 * 4; executed code begins at $A5AD
 1E	A75E	A763	ChapterMapValues	Verified	Five chapter-indexed values read in parallel with the five-handler table by bank $1E:$A480-$A48B
+1E	A763	A7E5	MapDestinationRecords	Verified	Twenty-six 5-byte (map, submap, X, Y, facing) records read by LDA $A763,X-$A767,X at $A690-$A6A7 and $A720-$A72F; LDX #$7D at $A71E reads the last record, and code begins at $A7E5
 1E	AEFE	AF00	CharacterStateRecordPointer	Verified	Little-endian base pointer $AF00 added to seven times a normalized character ID by bank $1E:$AE2E-$AE49 and $A6AE-$A6C9
 1E	AF00	AFE0	CharacterStateRecords	Verified	Thirty-two seven-byte character state records selected by IDs zero through $1F and read indirectly by bank $1E:$AE52-$AEA9
+1E	B1A3	B1CD	SramRecordPointers	Verified	Twenty-one little-endian SRAM record pointers ($6001-$6151) read by LDA $B1A3,X/$B1A4,X at $B182-$B187 with X = (value AND $7F) * 2; the table ends at code $B1CD
+1E	B3C8	B3DB	MapInteractionSelectorTables	Verified	Sixteen selector values scanned from Y=$0F down to zero by CMP $B3C8,Y at $B372-$B378, followed by three values read with X=$02 down to zero at $B352-$B358 and $B3B7-$B3C2
 1E	B5B3	B5B6	InlineServiceOperands	Verified	Three operands consumed by BRK service $65,$23 at $B5B2; code resumes at $B5B6
 1E	B83D	B840	InlineServiceOperands	Verified	Three operands consumed by BRK service $02,$DB at $B83C; code resumes at LDA #$03 at $B840
 1E	B881	B884	InlineServiceOperands	Verified	Three operands consumed by BRK service $02,$EB at $B880; repeated sites use a one-byte mask before a branch
@@ -540,15 +770,51 @@
 1E	BF59	BFD7	MapInteractionRecords	Verified	Twenty-five five-byte map/submap/X/Y/action records followed by $FF, scanned in five-byte steps by bank $1E:$B4DB-$B516
 1E	BFD7	BFD8	Padding	Verified	Single $FF byte between the map interaction record terminator and compatibility footer
 1E	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
-1F	EC85	ED45	AudioPeriodTable	Verified	Ninety-six little-endian period values indexed after note normalization at $ED4B-$ED67 and read at $EBC5/$EC63
+1F	C000	C001	ConfigurationFlags	Verified	Flag byte $FF tested bit-wise by LDA/LDY/BIT $C000 at seventeen sites, including $1F:$CEA9 (AND #$40), $1F:$D09B (BMI), bank $11:$BF64 (BIT), and bank $18:$A1F8 (AND #$20)
+1F	C0D2	C0D4	NmiTrampolinePointer	Verified	Pointer $C15A read by LDA $C0D2/$C0D3 at $C06C/$C072 and stored after JMP opcode $4C at $0502-$0504 to install the NMI handler
+1F	C221	C222	MapperResetOperand	Verified	Byte $80 incremented by INC $C221 at $C1A0; the read-modify-write stores a value with bit 7 set, resetting the MMC1 shift register
+1F	C7DC	C7E1	LookupTable	Verified	5 bytes read by CMP $C7DC,Y at $C799; FCEUX read every byte and executed none
+1F	C94B	C94E	LookupTable	Verified	3 bytes read by LDA $C94B,X at $C92B, LDA $C94C,X at $C92F; FCEUX read every byte and executed none
+1F	C98F	C9ED	RelocatedRoutineImage	Verified	Ninety-four-byte routine image copied to SRAM $6CAD-$6D0A by LDX #$5D / LDA $C98F,X / STA $6CAD,X / DEX / BPL at $C983-$C98C; it is executed from SRAM, never at this ROM address
+1F	CB1A	CB1E	LookupTable	Verified	4 entries read by LDA $CB1A,X at $CA8F with index from AND #$03 + TAX at $CA8C-$CA8E
+1F	CD70	CD78	LookupTable	Verified	8 entries read by CMP $CD70,X at $CD5B in the loop LDX #$07 at $CD59, DEX/BPL at $CD60-$CD61
 1F	CEF8	CF03	EventSelectorIds	Verified	Eleven selector values compared by the X=$00-$0A loop at $CEBE-$CED0
+1F	D239	D241	LookupTable	Verified	8 bytes read by ADC $D239,Y at bank $1B:$81AC, ADC $D23A,Y at bank $1B:$81B6, ADC $D239,X at bank $1E:$81BF, ADC $D23A,X at bank $1E:$81C7, and 14 more; FCEUX read every byte and executed none
+1F	D476	D486	BitMaskTables	Verified	Two parallel eight-byte rows read by LDA $D476,X / AND $D47E,Y at $D466-$D469 after TXA/AND #$07/TAX and TYA/AND #$07/TAY at $D45E-$D465
 1F	DEA5	DEA9	MapObjectOperationPointers	Verified	Two handler pointers selected by the map-object operation parameter
 1F	DF02	DF64	MapObjectCommandPointers	Verified	Forty-nine low command handler pointers
 1F	DF64	DF7A	MapObjectHighCommandPointers	Verified	Eleven high-bit command handler pointers
+1F	E3E0	E3E2	ConstantData	Verified	2 bytes read directly by LDA $E3E0 at $E36C, LDA $E3E1 at $E371
+1F	E55F	E561	ConstantData	Verified	2 bytes read directly by LDA $E55F at $E54F, LDA $E560 at $E555
+1F	E575	E577	ConstantData	Verified	2 bytes read directly by LDA $E575 at $E565, LDA $E576 at $E56B
+1F	E58B	E58D	ConstantData	Verified	2 bytes read directly by LDA $E58B at $E57B, LDA $E58C at $E581
+1F	E5A1	E5A3	ConstantData	Verified	2 bytes read directly by LDA $E5A1 at $E591, LDA $E5A2 at $E597
+1F	E5B7	E5B9	ConstantData	Verified	2 bytes read directly by LDA $E5B7 at $E5A7, LDA $E5B8 at $E5AD
+1F	E5CD	E5CF	ConstantData	Verified	2 bytes read directly by LDA $E5CD at $E5BD, LDA $E5CE at $E5C3
+1F	E5E3	E5E5	ConstantData	Verified	2 bytes read directly by LDA $E5E3 at $E5D3, LDA $E5E4 at $E5D9
+1F	E5F9	E5FB	ConstantData	Verified	2 bytes read directly by LDA $E5F9 at $E5E9, LDA $E5FA at $E5EF
+1F	E615	E617	ConstantData	Verified	2 bytes read directly by LDA $E615 at $E5FF, LDA $E616 at $E605
+1F	E62B	E62D	ConstantData	Verified	2 bytes read directly by LDA $E62B at $E61B, LDA $E62C at $E621
+1F	E641	E643	ConstantData	Verified	2 bytes read directly by LDA $E641 at $E631, LDA $E642 at $E637
+1F	E657	E659	ConstantData	Verified	2 bytes read directly by LDA $E657 at $E647, LDA $E658 at $E64D
+1F	E66D	E66F	ConstantData	Verified	2 bytes read directly by LDA $E66D at $E65D, LDA $E66E at $E663
+1F	E7EF	E7F4	LookupTable	Verified	5 bytes read by LDA $E7EF,Y at $E7CF; FCEUX read every byte and executed none
+1F	E812	E842	AudioCommandPointers	Verified	Twenty-four little-endian handlers selected at $E7F4-$E809: command bytes $E8-$FF are complemented and doubled to offsets $2E-$00, so the final pointer ends at $E841
+1F	EAF0	EAFB	AudioChannelMasks	Verified	Overlapping channel-mask rows read from $EAF0/$EAF1 and the five-byte complement row at $EAF6; channel Y is assigned only zero through four by the callers at $E6B2-$E6EC and stored at $E77C/$EAFC
+1F	EC7F	EC84	AudioRegisterOffsets	Verified	Five register offsets read at $E76D/$E8B1/$EC29/$EC3C/$EC6F/$EE7A with channel index $A4, which callers set only to zero through four at $E6B2-$E6EC
+1F	EC85	ED45	AudioPeriodTable	Verified	Ninety-six little-endian period values indexed after note normalization at $ED4B-$ED67 and read at $EBC5/$EC63
+1F	ED93	ED99	LookupTable	Verified	6 bytes read by LDA $ED93,Y at $ED88; FCEUX read every byte and executed none
+1F	EE87	EE8C	AudioChannelConstants	Verified	Five channel constants read by LDA $EE87,Y at $EDA9; channel Y is zero through four, with channel two redirected to $ED88 before this read
+1F	EFBE	EFC0	ConstantData	Verified	2 bytes read directly by LDA $EFBE at $EF79, LDA $EFBF at $EF7E
 1F	F11A	F11C	InlineServiceOperands	Verified	Two operands consumed by BRK service $12,$DF before fixed-bank code resumes at $F11C
 1F	F19B	F1CB	UiTemplate	Verified	Forty-eight bytes copied in reverse from $F19B-$F1CA to $0480-$04AF by the bounded X=$2F loop at $F10E; final twelve bytes intentionally overlap code at $F1BF
 1F	F29C	F29E	PointerTable	Verified	Source pointer $F2BB loaded into $49/$4A at $F274-$F27C
 1F	F2BB	F3FB	PpuNametableStream	Verified	Stream addressed through the $F29C pointer and consumed via ($49),Y by the decoder at $D319-$D394
+1F	F43F	F453	LookupTable	Verified	20 bytes read by LDA $F43F,X at $F421, LDY $F43F,X at $F429; FCEUX read every byte and executed none
+1F	F471	F47B	LookupTable	Verified	10 bytes read by LDY $F471,X at $F455, LDA $F473,Y at $F45A; FCEUX read every byte and executed none
 1F	F47B	FDFB	Graphics	Verified	152 contiguous 16-byte NES 2bpp tiles ending before code at $FDFB; callback $F9F0 is intentional dual use
 1F	F7F5	F7F8	Data	Verified	Repeated table bytes previously misdecoded as code
 1F	F7FB	F803	Data	Verified	Repeated table bytes previously misdecoded as code
+1F	FE42	FE52	SpriteSetupPairs	Verified	Eight two-byte pairs copied by LDA $FE42,X at $FE2C/$FE34 while Y advances from $10 to $30 in four-byte steps and X advances from zero through $0F
+1F	FE8D	FECD	LookupTable	Verified	64 entries read by LDA $FE8D,X at $FE7C in the loop LDX #$00 at $FE7A, INX/CPX #$40/BCC at $FE82-$FE85
+1F	FFDF	10000	FixedBankFooter	Verified	MMC1 reset byte $80 incremented by INC $FFDF at $FFD9 and $C104, the "DRAGON QUEST IV" signature, header metadata, and CPU vectors NMI $0502, RESET $FFD8, and IRQ/BRK $C408

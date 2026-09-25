@@ -105,11 +105,13 @@ MapAssetAudio_Branch_808A:
 MapAssetAudio_Branch_808B:
         lda     $6285                           ; 808B AD 85 62                 ..b
         and     #$08                            ; 808E 29 08                    ).
-        beq     $8095                           ; 8090 F0 03                    ..
+        beq     MapAssetAudio_Branch_8095       ; 8090 F0 03                    ..
         lda     #$0E                            ; 8092 A9 0E                    ..
         rts                                     ; 8094 60                       `
 ; ----------------------------------------------------------------------------
+MapAssetAudio_Branch_8095:
         ldx     #$00                            ; 8095 A2 00                    ..
+MapAssetAudio_Branch_8097:
         lda     $8124,x                         ; 8097 BD 24 81                 .$.
         cmp     CurrentMapNumber                ; 809A C5 63                    .c
         bne     MapAssetAudio_Branch_80FA       ; 809C D0 5C                    .\
@@ -178,7 +180,7 @@ MapAssetAudio_Branch_80FA:
         inx                                     ; 80FB E8                       .
         inx                                     ; 80FC E8                       .
         cpx     #$2A                            ; 80FD E0 2A                    .*
-        bcc     $8097                           ; 80FF 90 96                    ..
+        bcc     MapAssetAudio_Branch_8097       ; 80FF 90 96                    ..
 MapAssetAudio_Branch_8101:
         lda     $07BA                           ; 8101 AD BA 07                 ...
         and     #$7F                            ; 8104 29 7F                    ).

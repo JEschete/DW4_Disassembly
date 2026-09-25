@@ -12,6 +12,8 @@ local shift = 0x10
 local executed = {}
 local reads = {}
 local writes = {}
+local pending_calls = {}
+local resumes = {}
 local callback_probe = nil
 local target_bank = nil
 local navigation_direction = 0
@@ -51,6 +53,33 @@ local function record_execution(address, size)
     if type(address) == "number" then
         local bank = mapped_bank(address)
         executed[string.format("%02X\t%04X", bank, address)] = true
+        local stack_pointer = memory.getregister("s")
+        for index = #pending_calls, 1, -1 do
+            local pending = pending_calls[index]
+            if pending.bank == bank and pending.stack_pointer == stack_pointer and
+                address >= pending.address + 2 and address <= pending.address + 7 then
+                resumes[string.format(
+                    "%02X\t%04X\t%s\t%04X",
+                    pending.bank,
+                    pending.address,
+                    pending.kind,
+                    address)] = true
+                while #pending_calls >= index do
+                    table.remove(pending_calls)
+                end
+                break
+            end
+        end
+
+        local opcode = memory.readbyte(address)
+        if opcode == 0x00 or opcode == 0x20 then
+            table.insert(pending_calls, {
+                bank = bank,
+                address = address,
+                kind = opcode == 0x00 and "brk" or "jsr",
+                stack_pointer = stack_pointer
+            })
+        end
     end
 end
 
@@ -85,6 +114,7 @@ local api_log = assert(io.open(config.api_log, "w"))
 api_log:write("memory.registerexec=", type(memory.registerexec), "\n")
 api_log:write("memory.registerwrite=", type(memory.registerwrite), "\n")
 api_log:write("memory.registerread=", type(memory.registerread), "\n")
+api_log:write("memory.getregister=", type(memory.getregister), "\n")
 api_log:close()
 
 memory.registerexec(0x8000, 0x8000, record_execution)
@@ -216,6 +246,18 @@ for _, key in ipairs(keys) do
 end
 output:close()
 
+local resume_keys = {}
+for key in pairs(resumes) do
+    table.insert(resume_keys, key)
+end
+table.sort(resume_keys)
+local resume_output = assert(io.open(config.resume_output, "w"))
+resume_output:write("# Bank\tCallAddress\tKind\tContinuation\n")
+for _, key in ipairs(resume_keys) do
+    resume_output:write(key, "\n")
+end
+resume_output:close()
+
 local read_keys = {}
 for key in pairs(reads) do
     table.insert(read_keys, key)
@@ -250,9 +292,10 @@ api_append:close()
 
 local done = assert(io.open(config.done, "w"))
 done:write(string.format(
-    "frames=%d\naddresses=%d\nreads=%d\nwrites=%d\nmap=%02X\nsubmap=%02X\nworld_x=%02X\nworld_y=%02X\nlocal_x=%02X\nlocal_y=%02X\nstate_41=%02X\n",
+    "frames=%d\naddresses=%d\nresumes=%d\nreads=%d\nwrites=%d\nmap=%02X\nsubmap=%02X\nworld_x=%02X\nworld_y=%02X\nlocal_x=%02X\nlocal_y=%02X\nstate_41=%02X\n",
     completed_frames,
     #keys,
+    #resume_keys,
     #read_keys,
     #write_keys,
     memory.readbyte(0x0063),
