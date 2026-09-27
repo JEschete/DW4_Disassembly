@@ -4,12 +4,12 @@ Every declared table is read as contiguous, non-overlapping two-byte little-endi
 Declared tables: 80
 Explicit pointer fields: 126
 Pointer entries: 2143
-Executable targets decoded: 2032 / 2032
-excluded-data: 80
+Executable targets decoded: 2036 / 2036
+excluded-data: 78
 fixed-bank-code: 2
-local-bank-code: 2030
+local-bank-code: 2034
 non-code-value: 17
-unsupported-target-value: 13
+unsupported-target-value: 11
 vector-data-value: 1
 
 Bank $08:$8000-$803B (30 entries)
@@ -735,7 +735,7 @@ Bank $11:$A40A-$A61D (266 entries)
   $A556 -> bank $11:$B0EB [local-bank-code, decoded]
   $A558 -> bank $11:$B0A4 [local-bank-code, decoded]
   $A55A -> bank $11:$9CCA [local-bank-code, decoded]
-  $A55C -> bank $11:$B1F5 [excluded-data]
+  $A55C -> bank $11:$B1F5 [local-bank-code, decoded]
   $A55E -> bank $11:$9CD1 [local-bank-code, decoded]
   $A560 -> bank $11:$B1D7 [local-bank-code, decoded]
   $A562 -> bank $11:$AE23 [local-bank-code, decoded]
@@ -1765,7 +1765,7 @@ Bank $16:$A3A7-$A3AE (4 entries)
   $A3AD -> bank $16:$A3C8 (RTS dispatch of stored $A3C7) [local-bank-code, decoded]
 
 Bank $16:$A5E9-$A654 (54 entries)
-  $A5E9 -> bank $16:$AAEF [excluded-data]
+  $A5E9 -> bank $16:$AAEF [local-bank-code, decoded]
   $A5EB -> bank $16:$AAF7 [local-bank-code, decoded]
   $A5ED -> bank $16:$AB2F [local-bank-code, decoded]
   $A5EF -> bank $16:$AB3A [local-bank-code, decoded]
@@ -1833,46 +1833,46 @@ Bank $16:$A6DF-$A6F2 (10 entries)
   $A6F1 -> bank $16:$B37F [local-bank-code, decoded]
 
 Bank $16:$A73B-$A776 (30 entries)
-  $A73B -> bank $16:$B4B5 [local-bank-code, decoded]
-  $A73D -> bank $16:$B4BE [local-bank-code, decoded]
-  $A73F -> bank $16:$B4C8 [local-bank-code, decoded]
-  $A741 -> bank $16:$B4D2 [local-bank-code, decoded]
-  $A743 -> bank $16:$B4DC [local-bank-code, decoded]
-  $A745 -> bank $16:$B503 [local-bank-code, decoded]
-  $A747 -> bank $16:$B513 [local-bank-code, decoded]
-  $A749 -> bank $16:$B516 [local-bank-code, decoded]
-  $A74B -> bank $16:$B537 [local-bank-code, decoded]
-  $A74D -> bank $16:$B53A [local-bank-code, decoded]
-  $A74F -> bank $16:$B53D [local-bank-code, decoded]
-  $A751 -> bank $16:$B547 [local-bank-code, decoded]
-  $A753 -> bank $16:$B55A [local-bank-code, decoded]
-  $A755 -> bank $16:$B573 [local-bank-code, decoded]
-  $A757 -> bank $16:$B58F [local-bank-code, decoded]
-  $A759 -> bank $16:$B59C [unsupported-target-value]
-  $A75B -> bank $16:$B5B1 [local-bank-code, decoded]
-  $A75D -> bank $16:$B61A [local-bank-code, decoded]
-  $A75F -> bank $16:$B621 [local-bank-code, decoded]
-  $A761 -> bank $16:$B624 [local-bank-code, decoded]
-  $A763 -> bank $16:$B631 [local-bank-code, decoded]
-  $A765 -> bank $16:$B635 [local-bank-code, decoded]
-  $A767 -> bank $16:$B640 [local-bank-code, decoded]
-  $A769 -> bank $16:$B64F [local-bank-code, decoded]
-  $A76B -> bank $16:$B652 [local-bank-code, decoded]
-  $A76D -> bank $16:$B71F [local-bank-code, decoded]
-  $A76F -> bank $16:$B725 [local-bank-code, decoded]
-  $A771 -> bank $16:$B72C [local-bank-code, decoded]
-  $A773 -> bank $16:$B736 [local-bank-code, decoded]
-  $A775 -> bank $16:$B73D [local-bank-code, decoded]
+  $A73B -> bank $16:$B4B6 (RTS dispatch of stored $B4B5) [local-bank-code, decoded]
+  $A73D -> bank $16:$B4BF (RTS dispatch of stored $B4BE) [local-bank-code, decoded]
+  $A73F -> bank $16:$B4C9 (RTS dispatch of stored $B4C8) [local-bank-code, decoded]
+  $A741 -> bank $16:$B4D3 (RTS dispatch of stored $B4D2) [local-bank-code, decoded]
+  $A743 -> bank $16:$B4DD (RTS dispatch of stored $B4DC) [local-bank-code, decoded]
+  $A745 -> bank $16:$B504 (RTS dispatch of stored $B503) [local-bank-code, decoded]
+  $A747 -> bank $16:$B514 (RTS dispatch of stored $B513) [local-bank-code, decoded]
+  $A749 -> bank $16:$B517 (RTS dispatch of stored $B516) [local-bank-code, decoded]
+  $A74B -> bank $16:$B538 (RTS dispatch of stored $B537) [local-bank-code, decoded]
+  $A74D -> bank $16:$B53B (RTS dispatch of stored $B53A) [local-bank-code, decoded]
+  $A74F -> bank $16:$B53E (RTS dispatch of stored $B53D) [local-bank-code, decoded]
+  $A751 -> bank $16:$B548 (RTS dispatch of stored $B547) [local-bank-code, decoded]
+  $A753 -> bank $16:$B55B (RTS dispatch of stored $B55A) [local-bank-code, decoded]
+  $A755 -> bank $16:$B574 (RTS dispatch of stored $B573) [local-bank-code, decoded]
+  $A757 -> bank $16:$B590 (RTS dispatch of stored $B58F) [local-bank-code, decoded]
+  $A759 -> bank $16:$B59D (RTS dispatch of stored $B59C) [local-bank-code, decoded]
+  $A75B -> bank $16:$B5B2 (RTS dispatch of stored $B5B1) [local-bank-code, decoded]
+  $A75D -> bank $16:$B61B (RTS dispatch of stored $B61A) [local-bank-code, decoded]
+  $A75F -> bank $16:$B622 (RTS dispatch of stored $B621) [local-bank-code, decoded]
+  $A761 -> bank $16:$B625 (RTS dispatch of stored $B624) [local-bank-code, decoded]
+  $A763 -> bank $16:$B632 (RTS dispatch of stored $B631) [local-bank-code, decoded]
+  $A765 -> bank $16:$B636 (RTS dispatch of stored $B635) [local-bank-code, decoded]
+  $A767 -> bank $16:$B641 (RTS dispatch of stored $B640) [local-bank-code, decoded]
+  $A769 -> bank $16:$B650 (RTS dispatch of stored $B64F) [local-bank-code, decoded]
+  $A76B -> bank $16:$B653 (RTS dispatch of stored $B652) [local-bank-code, decoded]
+  $A76D -> bank $16:$B720 (RTS dispatch of stored $B71F) [local-bank-code, decoded]
+  $A76F -> bank $16:$B726 (RTS dispatch of stored $B725) [local-bank-code, decoded]
+  $A771 -> bank $16:$B72D (RTS dispatch of stored $B72C) [local-bank-code, decoded]
+  $A773 -> bank $16:$B737 (RTS dispatch of stored $B736) [local-bank-code, decoded]
+  $A775 -> bank $16:$B73E (RTS dispatch of stored $B73D) [local-bank-code, decoded]
 
 Bank $16:$A777-$A786 (8 entries)
-  $A777 -> bank $16:$B74A [local-bank-code, decoded]
-  $A779 -> bank $16:$B75C [unsupported-target-value]
-  $A77B -> bank $16:$B762 [local-bank-code, decoded]
-  $A77D -> bank $16:$B772 [local-bank-code, decoded]
-  $A77F -> bank $16:$B79F [local-bank-code, decoded]
-  $A781 -> bank $16:$B7A2 [local-bank-code, decoded]
-  $A783 -> bank $16:$B7A5 [local-bank-code, decoded]
-  $A785 -> bank $16:$B7B6 [local-bank-code, decoded]
+  $A777 -> bank $16:$B74B (RTS dispatch of stored $B74A) [local-bank-code, decoded]
+  $A779 -> bank $16:$B75D (RTS dispatch of stored $B75C) [local-bank-code, decoded]
+  $A77B -> bank $16:$B763 (RTS dispatch of stored $B762) [local-bank-code, decoded]
+  $A77D -> bank $16:$B773 (RTS dispatch of stored $B772) [local-bank-code, decoded]
+  $A77F -> bank $16:$B7A0 (RTS dispatch of stored $B79F) [local-bank-code, decoded]
+  $A781 -> bank $16:$B7A3 (RTS dispatch of stored $B7A2) [local-bank-code, decoded]
+  $A783 -> bank $16:$B7A6 (RTS dispatch of stored $B7A5) [local-bank-code, decoded]
+  $A785 -> bank $16:$B7B7 (RTS dispatch of stored $B7B6) [local-bank-code, decoded]
 
 Bank $16:$A787-$A792 (6 entries)
   $A787 -> bank $16:$B7BE (RTS dispatch of stored $B7BD) [local-bank-code, decoded]

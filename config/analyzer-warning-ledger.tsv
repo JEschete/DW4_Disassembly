@@ -4,17 +4,17 @@
 08	AF5B	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $05,$EB,$02 at $AF58 under BrkSelector EB
 08	B67D	unsupported-opcode	resolved	typed-data	Inside ConstantData range $B67D-$B67E, the pointer read by LDY $B67D / LDA $B67E at $B4E5-$B4E8; the complementary BNE/BEQ pair at $B66D-$B66F keeps flow out of these bytes
 08	B6C0	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $1F,$DB,$7F at $B6BD under BrkSelector DB
-08	B7B0	unsupported-opcode	resolved	unreached	Reached only from directory entry $14 target $B7AE, now typed as data; no decoded path reaches this byte
+08	B7B0	unsupported-opcode	resolved	typed-data	Directory entry $14 targets the exact copy of the independently consumed 73-byte map encounter stride table at bank $18:$A474-$A4BC
 08	BE94	unsupported-opcode	resolved	typed-data	Inside MapDisplayRecords range $BE94-$BF63
 10	8B6B	unsupported-opcode	resolved	inline-operand	Inline byte consumed by JSR at $8B68 under JsrInline 8C18
 10	8B70	unsupported-opcode	resolved	inline-operand	Inline byte consumed by JSR at $8B6D under JsrInline 8C18
-10	8DE6	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8DF7	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8DF9	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8E03	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8E04	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8E05	unsupported-opcode	resolved	unreached	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
-10	8E75	unsupported-opcode	resolved	unreached	Reached only from directory entry $21 target $8E61, now typed as data; no decoded path reaches this byte
+10	8DE6	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8DF7	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8DF9	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E03	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E04	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E05	unsupported-opcode	resolved	typed-data	Reached only from directory entry $20 target $8DE2 and its imported Ghidra neighbors, now typed as data or rejected; no decoded path reaches this byte
+10	8E75	unsupported-opcode	resolved	typed-data	Reached only from directory entry $21 target $8E61, now typed as data; no decoded path reaches this byte
 10	B6AC	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$E7 at $B6AB
 10	B6E6	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of CMP #$E7 at $B6E5
 10	B75F	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BPL $B757 at $B75E
@@ -23,14 +23,14 @@
 10	BAAD	unsupported-opcode	resolved	inline-operand	Operand 3 of 4 consumed by BRK $6B,$83,$02,$01 at $BAAA under BrkSelector 83
 10	BAC6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $04,$C3,$02 at $BAC3 under BrkSelector C3
 10	BBEB	operand-conflict	resolved	decoded-instruction	Phantom overlap from a two-operand reading of the three-operand BRK at $BBE7; JMP $BBEB at $BBE4 lands on LDA $75
-10	BC7E	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BCC9	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BCEC	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BCEF	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BCF1	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BD03	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BD13	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
-10	BD1F	unsupported-opcode	resolved	unreached	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BC7E	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCC9	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCEC	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCEF	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BCF1	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD03	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD13	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
+10	BD1F	unsupported-opcode	resolved	typed-data	Reached only from directory entries $3B/$3D/$3F targets $BCC7/$BD0E/$BD28 or rejected Ghidra blocks $BCC0/$BCE8, all typed as data or rejected; no decoded path reaches this byte
 10	BD43	unsupported-opcode	resolved	typed-data	Inside CompressedMonsterGraphics range $BD2A-$BF53
 11	8A2C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E1,$D3,$89 at $8A29 under BrkSelector D3
 11	8AF6	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$23 at $8AF3 under BrkSelector 93
@@ -74,7 +74,7 @@
 11	B127	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$C3,$0C at $B124 under BrkSelector C3
 11	B153	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $45,$93,$1C at $B150 under BrkSelector 93
 11	B1A2	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of STA $735E at $B1A0
-11	B1FA	unsupported-opcode	resolved	unreached	No decoded path reaches this byte after the handler-derived BRK counts corrected the surrounding bank $11 flow
+11	B1FA	unsupported-opcode	resolved	decoded-instruction	Operand byte of the recovered LDA #$03 at $B1F9 in the bounded dormant routine $B1F5-$B21E
 11	B262	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $E1,$D3,$47 at $B25F under BrkSelector D3
 11	B31A	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $C5,$D3,$63 at $B317 under BrkSelector D3
 11	B32C	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $2B,$43,$43 at $B329 under BrkSelector 43
@@ -98,11 +98,11 @@
 12	9EA9	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of BCS $9EAD at $9EA8
 12	ADC9	unsupported-opcode	resolved	inline-operand	Operand 3 of 3 consumed by BRK $66,$93,$6B at $ADC6 under BrkSelector 93
 12	ADF5	unsupported-opcode	resolved	decoded-instruction	Now the operand byte of LDY #$FF at $ADF4
-12	BE57	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
-12	BEAF	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
-12	BECF	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
-12	BED2	unsupported-opcode	resolved	unreached	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
-13	B7E8	unsupported-opcode	resolved	unreached	Reached only from directory entry $0F target $B7E3, a pointer-mode data target; no decoded path reaches this byte
+12	BE57	unsupported-opcode	resolved	typed-data	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BEAF	unsupported-opcode	resolved	typed-data	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BECF	unsupported-opcode	resolved	typed-data	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+12	BED2	unsupported-opcode	resolved	typed-data	Reached only from directory entries $30/$31 targets $BE4E/$BECD, now typed as data; no decoded path reaches this byte
+13	B7E8	unsupported-opcode	resolved	typed-data	Reached only from directory entry $0F target $B7E3, a pointer-mode data target now included in the verified battle-presentation table chain; no decoded path reaches this byte
 13	BCEF	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
 13	BDE3	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6
 13	BED4	unsupported-opcode	resolved	typed-data	Inside BattlePresentationCommands range $BBCB-$BFA6

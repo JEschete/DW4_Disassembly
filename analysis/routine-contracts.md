@@ -1,5 +1,23 @@
 # Verified Routine Contracts
 
+## SelectRandomSetBitLowNibble (`$10:$A240`)
+
+- Calling convention: Bank $10 BRK service $2A,$0F; returns through RTS
+- Inputs: A is a bit mask; only bits zero through three are considered
+- Outputs: A is a selected set-bit index 0-3 and carry is set, or A=0 and carry is clear when the masked input is zero
+- Clobbers: A,flags,$0C-$0F
+- Side effects: Advances RNG state when the masked input is nonzero
+- Evidence: AND #$0F at $A240; four-iteration count at $A248-$A273; selected index returned through $0F at $A287-$A29F
+
+## SelectRandomSetBit (`$10:$A256`)
+
+- Calling convention: Bank $10 BRK service $2B,$0F; returns through RTS
+- Inputs: A is an eight-bit mask
+- Outputs: A is a selected set-bit index 0-7 and carry is set, or A=0 and carry is clear when the input is zero
+- Clobbers: A,flags,$0C-$0F
+- Side effects: Advances RNG state when the input is nonzero
+- Evidence: Eight-iteration count at $A25E-$A273; selected index returned through $0F at $A287-$A29F; FCEUX observed input $01 returning index $00
+
 ## InitializeChapterSaveState (`$12:$8EAD`)
 
 - Calling convention: Bank $12 service entry; RTS to caller

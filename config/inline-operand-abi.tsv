@@ -35,6 +35,8 @@ BrkSelector	CB	3	1F:C4A1	$C4A1 increments the stacked return ($0103,x/$0104,x) f
 BrkSelector	DB	3	1F:C4A1	$C4A1 increments the stacked return for $CB <= selector < $FB; $C4E1 ANDs flag byte $627B+first byte with BRK+3; RTS resumes at BRK+4
 BrkSelector	EB	3	1F:C4A1	$C4A1 increments the stacked return for $CB <= selector < $FB; $C4B6 tests flag byte $627B+first byte against BRK+3; RTS resumes at BRK+4
 BrkSelector	FB	2	1F:C46C	Selector $FB takes $C46C to bank $19 entry $03 through $C38B without touching the stacked return; RTS resumes at BRK+3
+BrkService	10:2A	2	10:A240	Selector $0F maps to bank $10; service $2A masks A to its low nibble and selects one set-bit index through $A268 without advancing the stacked return
+BrkService	10:2B	2	10:A256	Selector $0F maps to bank $10; service $2B selects one set-bit index from all eight bits through $A268 without advancing the stacked return
 BrkService	16:01	3	16:8A18	TSX and INC $0105,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
 BrkService	16:07	3	16:8A45	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
 BrkService	16:09	3	16:8A72	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4

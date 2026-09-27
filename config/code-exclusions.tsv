@@ -33,6 +33,7 @@
 0F	FB6C	FF74	Content classification	Consumer-bounded PPU upload pointers, tile streams, attribute bytes, and masks
 10	8000	8080	Content classification	Battle and party service pointer directory
 10	8DE2	8DE3	Content classification	Target of service directory entry $20 at $8040: no decoded BRK selects the entry, linear decode reaches unsupported opcode $37 at $8DE6, and FCEUX never executed it
+10	8DF3	8DF7	Ghidra headless	Isolated supplementary decode inside the 127-byte block selected by directory entry $20; no code predecessor, target, or runtime execution reaches STY $3C,X / LDA ($80,X)
 10	8E61	8E62	Content classification	Target of service directory entry $21 at $8042: no decoded BRK selects the entry, linear decode reaches unsupported opcode $93 at $8E75, and FCEUX never executed it
 10	9E30	9F12	Content classification	Battle action handler pointer table
 10	AAA6	AB06	Content classification	Battle-record operation handler pointer table
@@ -84,12 +85,13 @@
 12	A997	A998	Ghidra headless	Ghidra starts at the relative operand of the verified BEQ $A9C5 at $A996; fallthrough resumes at CPX #$44 at $A998
 12	B0A5	B0A6	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $FE at $B0A4; fallthrough resumes at STA $FF at $B0A6
 12	B1C8	B1C9	Ghidra headless	Ghidra starts at the high operand byte of the verified LDA $B1E7,X at $B1C6, creating overlapping decodes at $B1C8 and $B1CA
+12	B971	B977	Ghidra headless	Ghidra starts on the high byte of the verified little-endian pointer $B972 at $B970-$B971 and decodes the first five bytes of the variable-length record stream as code
 12	BDC9	BDCA	Content classification	Target of service directory entry $2F at $805E: no decoded BRK selects the entry, and decoding it yields JMP ($F0EE), which jumps through fixed-bank operand bytes into data
 12	BE4E	BE4F	Content classification	Target of service directory entry $30 at $8060: no decoded BRK selects the entry, linear decode reaches unsupported opcode $12 at $BE57, and FCEUX never executed it
 12	BECD	BECE	Content classification	Target of service directory entry $31 at $8062: no decoded BRK selects the entry, linear decode reaches unsupported opcode $63 at $BECF, and FCEUX never executed it
+12	BED0	BED2	Ghidra headless	Isolated STX $04 decode inside the pointer-delimited stream selected by directory entry $31; no code predecessor, target, or runtime execution reaches it
 12	BF68	BFD8	Content classification	Contiguous $FF padding before the compatibility footer
 11	9933	9934	Content classification	Low byte of jsr operand at $9932
-11	B1F5	B1F6	Content classification	Operand byte of branch instruction at $B1F4
 13	8000	8038	Content classification	Battle presentation and state pointer directory
 13	8AEF	8B8B	Content classification	Two explicitly bounded battle-presentation lookup arrays before the action-handler pointer table
 13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
@@ -116,7 +118,7 @@
 16	9D49	9D4F	Content classification	Six cursor-position values
 16	9DED	9DF1	Content classification	Four menu-mode values
 16	9E7F	9EE7	Content classification	Two indexed text/UI selection maps
-16	A4FF	AAF7	Content classification	Text/UI interpreter pointer directories, dispatch tables, and variable records before code at $AAF7
+16	A4FF	AAEF	Content classification	Text/UI interpreter pointer directories, dispatch tables, and variable records before the handler at $AAEF
 17	8000	804C	Content classification	Mixed map-system service and data directory
 17	8069	806C	Content classification	Inline operands for fixed-bank BRK service at $8068
 17	80BA	80BC	Content classification	Inline operands for fixed-bank BRK service at $80B9

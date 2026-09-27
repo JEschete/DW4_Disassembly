@@ -83,6 +83,9 @@
 10	8000	Bank10_BattleServiceDirectory	Table	64 little-endian battle and party service pointers
 10	8080	Bank10_BattlePartyServices	Code	Battle-side party record, status, statistic, and reward services
 10	9E30	Bank10_BattleActionHandlerPointers	Table	113 routine pointers selected by $6E0B and dispatched through $0000
+10	A240	SelectRandomSetBitLowNibble	Function	BRK service $2A,$0F selects one set-bit index from A AND $0F
+10	A256	SelectRandomSetBit	Function	BRK service $2B,$0F selects one set-bit index from all eight bits of A
+10	A268	SelectRandomSetBitCore	Function	Counts set bits, chooses one uniformly through the RNG, and returns its bit index
 10	AAA6	Bank10_BattleRecordOperationPointers	Table	48 routine pointers selected by $6E59 and dispatched through $0000
 10	B499	Bank10_BattleEffectPointerTableAddress	Pointer	Address of the battle-effect handler table
 10	B49B	Bank10_BattleEffectHandlerPointers	Table	120 routine pointers selected by $0B and dispatched through $0004

@@ -7487,7 +7487,10 @@ MapInteractionSystem_Branch_B31D:
         sta     $6279                           ; B31F 8D 79 62                 .yb
         jmp     MapInteractionSystem_Branch_B2D6; B322 4C D6 B2                 L..
 ; ----------------------------------------------------------------------------
-        db   $20,$E1,$C8,$38,$60             ; B325 20 E1 C8 38 60            ..8`
+MapInteractionSystem_Entry_B325:
+        jsr     UpperFixedEngine_Entry_C8E1     ; B325 20 E1 C8                  ..
+        sec                                     ; B328 38                       8
+        rts                                     ; B329 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B32A:
         lda     $00                           ; B32A A5 00                    ..
@@ -8045,7 +8048,9 @@ MapInteractionSystem_Branch_B632:
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Branch_B632; B64D 4C 32 B6                 L2.
 ; ----------------------------------------------------------------------------
-        db   $00,$D2,$2B                     ; B650 00 D2 2B                 ..+
+MapInteractionSystem_Entry_B650:
+        brk                                     ; B650 00                       .
+        db   $D2,$2B                         ; B651 D2 2B                    .+
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B653:
         lda     #$00                            ; B653 A9 00                    ..

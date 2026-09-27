@@ -3040,7 +3040,9 @@ MonsterBattleFont_Entry_AB8D:
         sta     $6E44                           ; AB9B 8D 44 6E                 .Dn
         lda     $C000                           ; AB9E AD 00 C0                 ...
         bne     MonsterBattleFont_Branch_ABA6   ; ABA1 D0 03                    ..
-        db   $00,$14,$1F                     ; ABA3 00 14 1F                 ...
+MonsterBattleFont_Entry_ABA3:
+        brk                                     ; ABA3 00                       .
+        db   $14,$1F                         ; ABA4 14 1F                    ..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_ABA6:
         lda     #$80                            ; ABA6 A9 80                    ..

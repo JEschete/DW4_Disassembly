@@ -10,10 +10,9 @@ Ledger identities: 215
 
 | Status | Disposition | Count |
 |---|---|---:|
-| resolved | decoded-instruction | 36 |
+| resolved | decoded-instruction | 37 |
 | resolved | inline-operand | 130 |
-| resolved | typed-data | 27 |
-| resolved | unreached | 22 |
+| resolved | typed-data | 48 |
 
 ## Current Warnings
 

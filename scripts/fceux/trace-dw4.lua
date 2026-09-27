@@ -11,9 +11,11 @@ local prg = 0
 local shift = 0x10
 local executed = {}
 local reads = {}
+local read_sources = {}
 local writes = {}
 local pending_calls = {}
 local resumes = {}
+local observations = {}
 local callback_probe = nil
 local target_bank = nil
 local navigation_direction = 0
@@ -22,6 +24,94 @@ local navigation_y = 0
 local navigation_map = 0
 local navigation_submap = 0
 local navigation_stalled_frames = 0
+local observation_sites = {
+    [0x088558] = true,
+    [0x10A240] = true,
+    [0x10A256] = true,
+    [0x10A267] = true,
+    [0x1380E8] = true,
+    [0x13A93E] = true,
+    [0x13A94F] = true,
+    [0x13A973] = true,
+    [0x108C0C] = true,
+    [0x10A625] = true,
+    [0x10A648] = true,
+    [0x10A653] = true,
+    [0x14860A] = true,
+    [0x148642] = true,
+    [0x1487A4] = true,
+    [0x148B66] = true,
+    [0x148B70] = true,
+    [0x148F47] = true,
+    [0x148F69] = true,
+    [0x148FA9] = true,
+    [0x14959A] = true,
+    [0x14959F] = true,
+    [0x1495A5] = true,
+    [0x14AEA4] = true,
+    [0x14AE97] = true,
+    [0x16A102] = true,
+    [0x1681EF] = true,
+    [0x16AAFF] = true,
+    [0x16AB41] = true,
+    [0x16AD3E] = true,
+    [0x16AE3A] = true,
+    [0x16AE5C] = true,
+    [0x16AE99] = true,
+    [0x16AE9C] = true,
+    [0x16AEEF] = true,
+    [0x16AEF2] = true,
+    [0x16B1DB] = true,
+    [0x16B1E2] = true,
+    [0x16B205] = true,
+    [0x16B20D] = true,
+    [0x16B25D] = true,
+    [0x16B283] = true,
+    [0x16B597] = true,
+    [0x16B81E] = true,
+    [0x16B82D] = true,
+    [0x16B846] = true,
+    [0x16B857] = true,
+    [0x16B86C] = true,
+    [0x16B957] = true,
+    [0x16B95E] = true,
+    [0x16B97B] = true,
+    [0x16B983] = true,
+    [0x16BC29] = true,
+    [0x16BC2F] = true,
+    [0x16BC73] = true
+}
+
+local function sync_loaded_mapper()
+    local rom_file = assert(io.open(config.rom, "rb"))
+    local rom = rom_file:read("*all")
+    rom_file:close()
+    local best_bank = nil
+    local best_matches = -1
+    for bank = 0, 30 do
+        local matches = 0
+        local bank_offset = 16 + bank * 0x4000
+        for offset = 0, 63 do
+            if memory.readbyte(0x8000 + offset) == string.byte(rom, bank_offset + offset + 1) then
+                matches = matches + 1
+            end
+        end
+        if matches > best_matches then
+            best_matches = matches
+            best_bank = bank
+        end
+    end
+    assert(best_bank ~= nil and best_matches == 64, "could not identify loaded lower PRG bank")
+    control = 0x0C
+    chr0 = math.floor(best_bank / 16) * 16
+    prg = best_bank % 16
+    return best_bank
+end
+
+local loaded_bank = nil
+if config.load_state then
+    loaded_bank = sync_loaded_mapper()
+end
 
 local function mapped_bank(pc)
     local outer = math.floor(chr0 / 16) % 2
@@ -40,6 +130,10 @@ local function record_read(address, size)
     if type(address) == "number" then
         local bank = mapped_bank(address)
         reads[string.format("%02X\t%04X", bank, address)] = true
+        local pc = memory.getregister("pc")
+        if type(pc) == "number" then
+            read_sources[string.format("%02X\t%04X\t%02X\t%04X", bank, address, mapped_bank(pc), pc)] = true
+        end
         if bank == 0x06 or bank == 0x07 then
             target_bank = bank
         end
@@ -53,6 +147,27 @@ local function record_execution(address, size)
     if type(address) == "number" then
         local bank = mapped_bank(address)
         executed[string.format("%02X\t%04X", bank, address)] = true
+        if observation_sites[bank * 0x10000 + address] then
+            observations[string.format(
+                "%02X\t%04X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X\t%02X",
+                bank,
+                address,
+                memory.getregister("a") % 0x100,
+                memory.getregister("x") % 0x100,
+                memory.getregister("y") % 0x100,
+                memory.getregister("p") % 0x100,
+                memory.readbyte(0x75E8),
+                memory.readbyte(0x75F3),
+                memory.readbyte(0x75F4),
+                memory.readbyte(0x75F5),
+                memory.readbyte(0x6E0F),
+                memory.readbyte(0x6E59),
+                memory.readbyte(0x62D5),
+                memory.readbyte(0x00C4),
+                memory.readbyte(0x00F3),
+                memory.readbyte(0x00F8),
+                memory.readbyte(0x03DC))] = true
+        end
         local stack_pointer = memory.getregister("s")
         for index = #pending_calls, 1, -1 do
             local pending = pending_calls[index]
@@ -115,6 +230,8 @@ api_log:write("memory.registerexec=", type(memory.registerexec), "\n")
 api_log:write("memory.registerwrite=", type(memory.registerwrite), "\n")
 api_log:write("memory.registerread=", type(memory.registerread), "\n")
 api_log:write("memory.getregister=", type(memory.getregister), "\n")
+api_log:write("state=", tostring(config.state_description), "\n")
+api_log:write("loaded_bank=", tostring(loaded_bank), "\n")
 api_log:close()
 
 memory.registerexec(0x8000, 0x8000, record_execution)
@@ -124,6 +241,7 @@ memory.registerwrite(0x8000, 0x8000, mapper_write)
 
 local completed_frames = 0
 local random_state = 0x4D57
+local fuzz_button = "A"
 for frame = 1, config.frames do
     local input = {}
     if config.profile == "startup" or config.profile == "banking" or config.profile == "audio" then
@@ -154,6 +272,27 @@ for frame = 1, config.frames do
                 input.left = 1
             end
         end
+    elseif config.profile == "combat-walk" then
+        if frame % 15 == 0 or frame % 15 == 1 then input.A = 1 end
+        if frame % 211 == 0 then input.B = 1 end
+        local phase = frame % 480
+        if phase < 120 then
+            input.up = 1
+        elseif phase < 240 then
+            input.right = 1
+        elseif phase < 360 then
+            input.down = 1
+        else
+            input.left = 1
+        end
+    elseif config.profile == "ui-fuzz" then
+        local phase = frame % 12
+        if phase == 0 then
+            random_state = (random_state * 109 + 89) % 65536
+            local buttons = { "A", "B", "up", "down", "left", "right", "start", "select" }
+            fuzz_button = buttons[(random_state % #buttons) + 1]
+        end
+        if phase == 0 or phase == 1 then input[fuzz_button] = 1 end
     elseif config.profile == "hunt-assets" or config.profile == "battle" or config.profile == "graphics" then
         if frame >= 120 and frame <= 124 then
             input.start = 1
@@ -228,7 +367,7 @@ for frame = 1, config.frames do
     joypad.set(1, input)
     FCEU.frameadvance()
     completed_frames = frame
-    if target_bank ~= nil then
+    if target_bank ~= nil and config.profile == "hunt-assets" then
         break
     end
 end
@@ -270,6 +409,18 @@ for _, key in ipairs(read_keys) do
 end
 read_output:close()
 
+local read_source_keys = {}
+for key in pairs(read_sources) do
+    table.insert(read_source_keys, key)
+end
+table.sort(read_source_keys)
+local read_source_output = assert(io.open(config.read_source_output, "w"))
+read_source_output:write("# ReadBank\tReadAddress\tPCBank\tPCAddress\n")
+for _, key in ipairs(read_source_keys) do
+    read_source_output:write(key, "\n")
+end
+read_source_output:close()
+
 local write_keys = {}
 for key in pairs(writes) do
     table.insert(write_keys, key)
@@ -281,6 +432,18 @@ for _, key in ipairs(write_keys) do
     write_output:write(key, "\n")
 end
 write_output:close()
+
+local observation_keys = {}
+for key in pairs(observations) do
+    table.insert(observation_keys, key)
+end
+table.sort(observation_keys)
+local observation_output = assert(io.open(config.observation_output, "w"))
+observation_output:write("# Bank\tCPUAddress\tA\tX\tY\tP\t75E8\t75F3\t75F4\t75F5\t6E0F\t6E59\t62D5\tC4\tF3\tF8\t03DC\n")
+for _, key in ipairs(observation_keys) do
+    observation_output:write(key, "\n")
+end
+observation_output:close()
 
 local screenshot_output = assert(io.open(config.screenshot, "wb"))
 screenshot_output:write(gui.gdscreenshot())

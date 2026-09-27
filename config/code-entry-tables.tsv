@@ -51,8 +51,8 @@
 16	A3A7	A3AF	Direct ROM analysis	Four text/UI handlers dispatched by LDA $A3A8,Y/$A3A7,Y and RTS at $A3A6; the first entry resumes at $A3AF, the executed code that ends the table	rts
 16	A5E9	A655	Direct ROM analysis	Fifty-four primary text/UI handlers selected when the doubled command index is below $6C at $9882-$98B0 and dispatched through $9841/$987F
 16	A6DF	A6F3	Direct ROM analysis	Ten secondary text/UI handlers selected when the doubled command index is below $14 at $9882-$98B0 and dispatched through $9841/$987F
-16	A73B	A777	Direct ROM analysis	Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF
-16	A777	A787	Direct ROM analysis	Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF
+16	A73B	A777	Direct ROM analysis	Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1	rts
+16	A777	A787	Direct ROM analysis	Eight text/UI handlers selected through pointer base $A777 at $9798-$97AF, which pushes each value and returns to value+1	rts
 16	A787	A793	Direct ROM analysis	Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1	rts
 16	A793	A7AB	Direct ROM analysis	Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1	rts
 16	BCD9	BCEB	Direct ROM analysis	Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB	rts

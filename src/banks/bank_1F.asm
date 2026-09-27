@@ -138,9 +138,21 @@ UpperFixedEngine_Branch_C0B0:
         jmp     UpperFixedEngine_Branch_C968    ; C0CF 4C 68 C9                 Lh.
 ; ----------------------------------------------------------------------------
         db   $5A                             ; C0D2 5A                       Z
-        db   $C1,$AD,$02,$20,$10,$FB,$AD,$02 ; C0D3 C1 AD 02 20 10 FB AD 02  ... ....
-        db   $20,$30,$FB,$AD,$02,$20,$10,$FB ; C0DB 20 30 FB AD 02 20 10 FB   0... ..
-        db   $AD,$02,$20,$30,$FB,$60         ; C0E3 AD 02 20 30 FB 60        .. 0.`
+        db   $C1                             ; C0D3 C1                       .
+; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_C0D4:
+        lda     PPUSTATUS                       ; C0D4 AD 02 20                 ..
+        bpl     UpperFixedEngine_Entry_C0D4     ; C0D7 10 FB                    ..
+UpperFixedEngine_Branch_C0D9:
+        lda     PPUSTATUS                       ; C0D9 AD 02 20                 ..
+        bmi     UpperFixedEngine_Branch_C0D9    ; C0DC 30 FB                    0.
+UpperFixedEngine_Branch_C0DE:
+        lda     PPUSTATUS                       ; C0DE AD 02 20                 ..
+        bpl     UpperFixedEngine_Branch_C0DE    ; C0E1 10 FB                    ..
+UpperFixedEngine_Branch_C0E3:
+        lda     PPUSTATUS                       ; C0E3 AD 02 20                 ..
+        bmi     UpperFixedEngine_Branch_C0E3    ; C0E6 30 FB                    0.
+        rts                                     ; C0E8 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_C0E9:
         lda     #$40                            ; C0E9 A9 40                    .@
@@ -1197,8 +1209,8 @@ UpperFixedEngine_Branch_C7EC:
         pla                                     ; C7F6 68                       h
         jmp     SelectPrgBank                   ; C7F7 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-        db   $EA                             ; C7FA EA                       .
-; ----------------------------------------------------------------------------
+UpperFixedEngine_Entry_C7FA:
+        nop                                     ; C7FA EA                       .
 UpperFixedEngine_Entry_C7FB:
         eor     #$FF                            ; C7FB 49 FF                    I.
         sec                                     ; C7FD 38                       8
@@ -3341,7 +3353,9 @@ UpperFixedEngine_Branch_D5B2:
         jsr     UpperFixedEngine_Entry_D5EE     ; D5B5 20 EE D5                  ..
         jmp     UpperFixedEngine_Branch_D5B2    ; D5B8 4C B2 D5                 L..
 ; ----------------------------------------------------------------------------
-        db   $A5,$58,$4C,$91,$FF             ; D5BB A5 58 4C 91 FF           .XL..
+UpperFixedEngine_Entry_D5BB:
+        lda     $58                             ; D5BB A5 58                    .X
+        jmp     SelectPrgBank                   ; D5BD 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Entry_D5C0:
         ldx     $51                             ; D5C0 A6 51                    .Q

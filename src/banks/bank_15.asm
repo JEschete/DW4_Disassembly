@@ -7190,8 +7190,11 @@ ItemEffectInventory_Branch_BE71:
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; BE76 A9 00                    ..
         beq     ItemEffectInventory_Branch_BE7F ; BE78 F0 05                    ..
-        db   $00,$53,$2B,$B0,$1C             ; BE7A 00 53 2B B0 1C           .S+..
+ItemEffectInventory_Entry_BE7A:
+        brk                                     ; BE7A 00                       .
+        db   $53,$2B                         ; BE7B 53 2B                    S+
 ; ----------------------------------------------------------------------------
+        bcs     ItemEffectInventory_Branch_BE9B ; BE7D B0 1C                    ..
 ItemEffectInventory_Branch_BE7F:
         lda     $DB                             ; BE7F A5 DB                    ..
         sta     $6E                             ; BE81 85 6E                    .n

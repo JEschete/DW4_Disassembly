@@ -112,6 +112,10 @@ internal static class Program
             Path.Combine(projectRoot, "config", "code-exclusions.tsv"));
         List<ContentRange> contentRanges = LoadContentRanges(
             Path.Combine(projectRoot, "config", "content-ranges.tsv"));
+        List<ContentRange> reviewedUnusedRanges = contentRanges
+            .Where(range => range.Category.Equals("ReviewedUnusedData", StringComparison.Ordinal))
+            .ToList();
+        List<ContentRange> evidencedContentRanges = contentRanges.Except(reviewedUnusedRanges).ToList();
         List<CodeDataOverlap> codeDataOverlaps = LoadCodeDataOverlaps(
             Path.Combine(projectRoot, "config", "code-data-overlaps.tsv"));
         List<BankClassification> bankClassifications = LoadBankClassifications(
@@ -142,7 +146,7 @@ internal static class Program
             Path.Combine(projectRoot, "analysis", "ghidra-code-ranges.tsv"), rom, codeExclusions, inlineOperandAbi));
         baselineSeeds.AddRange(importedSeeds);
         codeSeeds.AddRange(importedSeeds);
-        List<CodeExclusion> declaredData = contentRanges
+        List<CodeExclusion> declaredData = evidencedContentRanges
             .Select(range => new CodeExclusion(range.Bank, range.Start, range.EndExclusive, range.Category))
             .ToList();
         Dictionary<int, BankAnalysis> baselineAnalyses = CodeAnalyzer.Analyze(
@@ -152,6 +156,14 @@ internal static class Program
         CodeAnalyzer.ValidateGuardedFlowRecovery(
             rom.AsMemory(HeaderSize), guardedSeeds, baselineAnalyses, analyses);
         Console.WriteLine($"validated {guardedSeeds.Count} guarded flow-recovery seeds");
+        ValidateReviewedUnusedRanges(
+            Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"),
+            Path.Combine(projectRoot, "analysis", "fceux-read-sources.tsv"),
+            reviewedUnusedRanges,
+            entryTables.Entries,
+            codeExclusions,
+            evidencedContentRanges,
+            analyses);
         ValidateCodeDataOverlaps(contentRanges, codeDataOverlaps, analyses);
         WriteInlineOperandReport(
             Path.Combine(projectRoot, "analysis", "inline-operand-report.tsv"),
@@ -614,6 +626,102 @@ internal static class Program
                 $"code/data overlap ledger mismatch: {unexpected.Count} unexpected [{Format(unexpected)}]; " +
                 $"{stale.Count} stale [{Format(stale)}]");
         }
+    }
+
+    private static void ValidateReviewedUnusedRanges(
+        string runtimeExecutionPath,
+        string runtimeReadSourcePath,
+        IReadOnlyList<ContentRange> ranges,
+        IReadOnlyList<EntryPointer> entries,
+        IReadOnlyList<CodeExclusion> exclusions,
+        IReadOnlyList<ContentRange> boundedContentRanges,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        if (ranges.Count == 0)
+        {
+            return;
+        }
+
+        HashSet<(int Bank, int Address)> executed = LoadRuntimeAddresses(runtimeExecutionPath, 2);
+        HashSet<(int Bank, int Address)> read = LoadRuntimeAddresses(runtimeReadSourcePath, 4);
+        List<string> errors = [];
+        foreach (ContentRange range in ranges)
+        {
+            if (!range.Confidence.Equals("Verified", StringComparison.Ordinal) ||
+                !range.Reason.StartsWith("Reviewed unused:", StringComparison.Ordinal))
+            {
+                errors.Add($"${range.Bank:X2}:${range.Start:X4}-${range.EndExclusive - 1:X4} lacks reviewed-unused provenance");
+                continue;
+            }
+
+            BankAnalysis analysis = analyses[range.Bank];
+            int cpuBase = CodeAnalyzer.CpuBase(range.Bank);
+            bool overlapsCode = analysis.Instructions.Values.Any(instruction =>
+                instruction.Address < range.EndExclusive &&
+                instruction.Address + instruction.Opcode.Size > range.Start);
+            bool overlapsInlineData = Enumerable.Range(range.Start, range.EndExclusive - range.Start)
+                .Any(address => analysis.InlineDataOffsets.Contains(address - cpuBase));
+            bool pointerTarget = entries.Any(entry =>
+                entry.TargetBank == range.Bank && entry.Target >= range.Start && entry.Target < range.EndExclusive);
+            bool exclusionOverlap = exclusions.Any(exclusion =>
+                exclusion.Bank == range.Bank && exclusion.Start < range.EndExclusive && exclusion.EndExclusive > range.Start);
+            bool staticReference = analyses.Any(pair => pair.Value.Instructions.Values.Any(instruction =>
+            {
+                int referencedAddress = instruction.Operand1 | (instruction.Operand2 << 8);
+                if (TargetBank(pair.Key, referencedAddress) != range.Bank)
+                {
+                    return false;
+                }
+                bool independentlyBounded = boundedContentRanges.Any(content =>
+                    content.Bank == range.Bank && referencedAddress >= content.Start &&
+                    referencedAddress < content.EndExclusive && content.EndExclusive <= range.Start);
+                return instruction.Opcode.Mode switch
+                {
+                    AddressingMode.Absolute => referencedAddress >= range.Start && referencedAddress < range.EndExclusive,
+                    AddressingMode.AbsoluteX or AddressingMode.AbsoluteY =>
+                        !independentlyBounded && referencedAddress < range.EndExclusive &&
+                        referencedAddress + 0xFF >= range.Start,
+                    _ => false
+                };
+            }));
+            bool runtimeExecution = Enumerable.Range(range.Start, range.EndExclusive - range.Start)
+                .Any(address => executed.Contains((range.Bank, address)));
+            bool runtimeRead = Enumerable.Range(range.Start, range.EndExclusive - range.Start)
+                .Any(address => read.Contains((range.Bank, address)));
+
+            if (overlapsCode || overlapsInlineData || pointerTarget || exclusionOverlap || staticReference ||
+                runtimeExecution || runtimeRead)
+            {
+                errors.Add(
+                    $"${range.Bank:X2}:${range.Start:X4}-${range.EndExclusive - 1:X4} is not unused " +
+                    $"(code={overlapsCode}, inline={overlapsInlineData}, pointer={pointerTarget}, exclusion={exclusionOverlap}, " +
+                    $"reference={staticReference}, executed={runtimeExecution}, read={runtimeRead})");
+            }
+        }
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidDataException(
+                $"reviewed unused-data validation failed ({errors.Count}): {string.Join("; ", errors)}");
+        }
+        Console.WriteLine($"validated {ranges.Count} reviewed unused-data ranges");
+    }
+
+    private static HashSet<(int Bank, int Address)> LoadRuntimeAddresses(string path, int columnCount)
+    {
+        HashSet<(int Bank, int Address)> addresses = [];
+        foreach (string line in File.ReadLines(path))
+        {
+            string[] columns = line.Split('\t');
+            if (line.StartsWith('#') || columns.Length != columnCount)
+            {
+                continue;
+            }
+            addresses.Add((
+                int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
+                int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture)));
+        }
+        return addresses;
     }
 
     private static void ValidateInlineServiceRanges(

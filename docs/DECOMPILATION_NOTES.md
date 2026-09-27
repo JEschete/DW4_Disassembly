@@ -893,7 +893,7 @@ The current totals, per-bank backlog, and semantic completion definition now liv
 Bank `$14:$A111-$A3F0` is exactly 46 aligned 16-byte NES 2bpp tiles. A standard planar render produces coherent mirrored forms, expected blank tiles, and multi-tile artwork rather than the high-entropy noise seen when compressed streams are rendered directly. This satisfies the graphics-evidence rule even though no static pointer or captured runtime read currently identifies the consumer.
 
 The range is now typed as raw battle graphics. Detailed classification increased by 736 bytes to 503,805 / 524,288 (96.09%), leaving 20,483 bytes in 703 ranges. The exact-ROM completion gate continues to pass.
-
+e
 The descending pass then established four additional data domains:
 
 - Bank `$10:$BD2A-$BF53` is the compressed monster stream selected for monster ID `$B1` by descriptor `$14:$B726`; `$BF54-$BFD7` is contiguous `$FF` padding.

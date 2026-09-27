@@ -967,8 +967,9 @@ BattleActionServices_Entry_85EA:
         lda     #$80                            ; 85EA A9 80                    ..
         sta     $7354                           ; 85EC 8D 54 73                 .Ts
         bne     BattleActionServices_Entry_85F6 ; 85EF D0 05                    ..
-        db   $A9,$00,$8D,$54,$73             ; 85F1 A9 00 8D 54 73           ...Ts
-; ----------------------------------------------------------------------------
+BattleActionServices_Entry_85F1:
+        lda     #$00                            ; 85F1 A9 00                    ..
+        sta     $7354                           ; 85F3 8D 54 73                 .Ts
 BattleActionServices_Entry_85F6:
         lda     #$33                            ; 85F6 A9 33                    .3
         ldx     $7354                           ; 85F8 AE 54 73                 .Ts
@@ -8791,12 +8792,31 @@ BattleActionServices_Entry_B1DE:
         jsr     BattleActionServices_Entry_9916 ; B1EF 20 16 99                  ..
         jmp     BattleActionServices_Entry_90DB ; B1F2 4C DB 90                 L..
 ; ----------------------------------------------------------------------------
-        db   $00,$E5,$D3,$55,$A9,$03,$8D,$5E ; B1F5 00 E5 D3 55 A9 03 8D 5E  ...U...^
-        db   $73,$20,$2E,$BF,$89,$00,$E1,$D3 ; B1FD 73 20 2E BF 89 00 E1 D3  s ......
-        db   $56,$20,$C4,$AC,$90,$03,$20,$DB ; B205 56 20 C4 AC 90 03 20 DB  V .... .
-        db   $96,$AD,$E7,$72,$29,$60,$D0,$05 ; B20D 96 AD E7 72 29 60 D0 05  ...r)`..
-        db   $CE,$5E,$73,$D0,$E4,$00,$E1,$D3 ; B215 CE 5E 73 D0 E4 00 E1 D3  .^s.....
-        db   $57                             ; B21D 57                       W
+BattleActionServices_Entry_B1F5:
+        brk                                     ; B1F5 00                       .
+        db   $E5,$D3,$55                     ; B1F6 E5 D3 55                 ..U
+; ----------------------------------------------------------------------------
+        lda     #$03                            ; B1F9 A9 03                    ..
+        sta     $735E                           ; B1FB 8D 5E 73                 .^s
+BattleActionServices_Branch_B1FE:
+        jsr     BattleActionServices_Entry_BF2E ; B1FE 20 2E BF                  ..
+        db   $89                             ; B201 89                       .
+; ----------------------------------------------------------------------------
+        brk                                     ; B202 00                       .
+        db   $E1,$D3,$56                     ; B203 E1 D3 56                 ..V
+; ----------------------------------------------------------------------------
+        jsr     BattleActionServices_Entry_ACC4 ; B206 20 C4 AC                  ..
+        bcc     BattleActionServices_Branch_B20E; B209 90 03                    ..
+        jsr     BattleActionServices_Entry_96DB ; B20B 20 DB 96                  ..
+BattleActionServices_Branch_B20E:
+        lda     $72E7                           ; B20E AD E7 72                 ..r
+        and     #$60                            ; B211 29 60                    )`
+        bne     BattleActionServices_Branch_B21A; B213 D0 05                    ..
+        dec     $735E                           ; B215 CE 5E 73                 .^s
+        bne     BattleActionServices_Branch_B1FE; B218 D0 E4                    ..
+BattleActionServices_Branch_B21A:
+        brk                                     ; B21A 00                       .
+        db   $E1,$D3,$57                     ; B21B E1 D3 57                 ..W
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_B21E:
         rts                                     ; B21E 60                       `
