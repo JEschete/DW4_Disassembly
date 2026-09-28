@@ -781,7 +781,7 @@ These ranges are also excluded from code seeding. An isolated Ghidra shard seede
 
 ### Banks $19 And $1B-$1E
 
-- `$19` is now fully detailed. Map/tileset selection occupies `$8000-$814D`; 54 four-channel audio pointer records occupy `$814E-$82FD`; 54 external sequence-bank selectors occupy `$82FE-$8333`; audio sequence, instrument, envelope, and effect data runs through `$BF7D`; padding and the compatibility footer complete the bank.
+- `$19` is now fully detailed. Audio dispatch and map-music selection occupy `$8000-$814D`; 54 four-channel audio pointer records occupy `$814E-$82FD`; 54 external sequence-bank selectors occupy `$82FE-$8333`; audio sequence, instrument, envelope, and effect data runs through `$BF7D`; padding and the compatibility footer complete the bank.
 - `$1B` combines map-local event/entity code with the dual-use text overlays described above.
 - `$1C:$9B12` is the proven consumer of bank `$05` map-entity records. The bank also contains a mixed directory, structured event data, and map/entity service code.
 - `$1D` manipulates map coordinates, entity arrays `$6F60-$71FF`, event state, and scripted transitions.

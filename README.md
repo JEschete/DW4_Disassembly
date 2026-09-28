@@ -19,8 +19,9 @@ The fixed `$C000-$FFFF` banks are physical banks `$0F` and `$1F` for the two SUR
 - Verified instruction bytes: 163,493 (31.18%)
 - Explicitly ranged data bytes: 361,317 (68.92%)
 - Dual-use code/data overlap: 522 bytes (0.10%)
-- Meaningfully named routines: 4,315/4,315 (100%)
-- Semantic contracts: 37/4,315 (0.86%)
+- Curated code/function labels: 4,572
+- Meaningfully named routines: 4,562/4,562 (100%)
+- Semantic contracts: 37/4,562 (0.81%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
 - Structured asset encoders: 0/5 complete
@@ -31,9 +32,16 @@ The fixed `$C000-$FFFF` banks are physical banks `$0F` and `$1F` for the two SUR
 `analysis/routine-interfaces.tsv`. `Remaining %` uses each bank's routine count as its denominator. Pure-data banks
 have no routine interfaces and report `n/a`.
 
-The 2026-09-28 audit checked all 2,229 routine interfaces in banks `$00-$15` against generated ASM and interface
-evidence, with direct review of 102 high-risk generic or numeric names. Its final result had zero review flags,
-duplicate addresses, or duplicate global names.
+The 2026-09-28 audit checked all 2,354 routine interfaces in banks `$00-$15` against generated ASM and interface
+evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call targets, increasing the
+all-bank inventory from 4,315 to 4,562 routines. The strengthened semantic-name review reports zero generated,
+numeric-operand, stacked-jargon, broad-prefix, audio-only display-name, Dormant-with-callers, duplicate-address,
+or duplicate-global-name findings.
+
+The corrective audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
+flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. Battle,
+casino, poker, item-effect, and map-event callers now use sound, jingle, narration, or map-music names instead of
+presentation, marker, glyph, palette, setup-hook, or raw-BRK terminology.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
@@ -48,30 +56,30 @@ both generated assembly and the routine-interface inventory.
 | `$05` | 0 | 0 | 0 | n/a |
 | `$06` | 0 | 0 | 0 | n/a |
 | `$07` | 0 | 0 | 0 | n/a |
-| `$08` | 77 | 77 | 0 | 0.00% |
+| `$08` | 84 | 84 | 0 | 0.00% |
 | `$09` | 0 | 0 | 0 | n/a |
 | `$0A` | 0 | 0 | 0 | n/a |
 | `$0B` | 10 | 10 | 0 | 0.00% |
 | `$0C` | 0 | 0 | 0 | n/a |
 | `$0D` | 0 | 0 | 0 | n/a |
 | `$0E` | 6 | 6 | 0 | 0.00% |
-| `$0F` | 323 | 323 | 0 | 0.00% |
-| `$10` | 374 | 374 | 0 | 0.00% |
-| `$11` | 367 | 367 | 0 | 0.00% |
-| `$12` | 271 | 271 | 0 | 0.00% |
-| `$13` | 371 | 371 | 0 | 0.00% |
-| `$14` | 185 | 185 | 0 | 0.00% |
-| `$15` | 245 | 245 | 0 | 0.00% |
-| `$16` | 386 | 386 | 0 | 0.00% |
-| `$17` | 245 | 245 | 0 | 0.00% |
-| `$18` | 90 | 90 | 0 | 0.00% |
+| `$0F` | 360 | 360 | 0 | 0.00% |
+| `$10` | 392 | 392 | 0 | 0.00% |
+| `$11` | 374 | 374 | 0 | 0.00% |
+| `$12` | 283 | 283 | 0 | 0.00% |
+| `$13` | 393 | 393 | 0 | 0.00% |
+| `$14` | 196 | 196 | 0 | 0.00% |
+| `$15` | 256 | 256 | 0 | 0.00% |
+| `$16` | 418 | 418 | 0 | 0.00% |
+| `$17` | 258 | 258 | 0 | 0.00% |
+| `$18` | 92 | 92 | 0 | 0.00% |
 | `$19` | 12 | 12 | 0 | 0.00% |
 | `$1A` | 0 | 0 | 0 | n/a |
-| `$1B` | 172 | 172 | 0 | 0.00% |
-| `$1C` | 219 | 219 | 0 | 0.00% |
-| `$1D` | 309 | 309 | 0 | 0.00% |
-| `$1E` | 326 | 326 | 0 | 0.00% |
-| `$1F` | 327 | 327 | 0 | 0.00% |
+| `$1B` | 184 | 184 | 0 | 0.00% |
+| `$1C` | 221 | 221 | 0 | 0.00% |
+| `$1D` | 318 | 318 | 0 | 0.00% |
+| `$1E` | 340 | 340 | 0 | 0.00% |
+| `$1F` | 365 | 365 | 0 | 0.00% |
 
 ## Quick Start
 

@@ -9,7 +9,7 @@ SaveGameStateFlags	618E	618F	Cleared then conditionally set by chapter initializ
 SavePlayerWorldPosition	6197	6199	Updated by map position logic	Direct battery SRAM	Compared with PlayerWorldX/PlayerWorldY by fixed-bank map logic
 SaveStoryFlags	625D	625E	Game-event updates	Direct battery SRAM	Bit-field operations in bank $1E
 SaveVehicleFlags	628E	628F	Game-event updates	Direct battery SRAM	BIT-tested by bank $1E movement logic
-SaveJoinedCharacterFlags	6292	6293	Party-event updates	Direct battery SRAM	Read by bank $19 map-asset selection
+SaveJoinedCharacterFlags	6292	6293	Party-event updates	Direct battery SRAM	Read by bank $19 map-music selection
 SaveTransformState	6296	6298	Map-event updates	Direct battery SRAM	Read/write use of step and shape bytes in banks $1D/$1E
 SaveSmallMedals	62A2	62A3	Item-event updates	Direct battery SRAM	Named field used by item and event services
 SaveCasinoCoins	62AD	62B0	Casino updates	Direct battery SRAM	Three-byte carry-propagating arithmetic in bank $17

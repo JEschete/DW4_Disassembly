@@ -16,7 +16,7 @@ No checksum field or full-save checksum pass appears in the recovered executable
 | SavePlayerWorldPosition | `$6197-$6198` | 2/2 | Updated by map position logic | Compared with PlayerWorldX/PlayerWorldY by fixed-bank map logic |
 | SaveStoryFlags | `$625D-$625D` | 1/1 | Game-event updates | Bit-field operations in bank $1E |
 | SaveVehicleFlags | `$628E-$628E` | 1/1 | Game-event updates | BIT-tested by bank $1E movement logic |
-| SaveJoinedCharacterFlags | `$6292-$6292` | 1/1 | Party-event updates | Read by bank $19 map-asset selection |
+| SaveJoinedCharacterFlags | `$6292-$6292` | 1/1 | Party-event updates | Read by bank $19 map-music selection |
 | SaveTransformState | `$6296-$6297` | 2/2 | Map-event updates | Read/write use of step and shape bytes in banks $1D/$1E |
 | SaveSmallMedals | `$62A2-$62A2` | 1/1 | Item-event updates | Named field used by item and event services |
 | SaveCasinoCoins | `$62AD-$62AF` | 3/3 | Casino updates | Three-byte carry-propagating arithmetic in bank $17 |

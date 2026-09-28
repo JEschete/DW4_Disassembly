@@ -6,36 +6,36 @@ base $8000
 Bank19_Start:
 ; ----------------------------------------------------------------------------
 ; ----------------------------------------------------------------------------
-Bank19_MapAssetDirectory:
+Bank19_AudioServiceDirectory:
         db   $00,$00,$00,$00,$14,$80,$17,$80 ; 8000 00 00 00 00 14 80 17 80  ........
         db   $1A,$80,$1D,$80,$20,$80,$23,$80 ; 8008 1A 80 1D 80 20 80 23 80  .... .#.
         db   $3B,$80,$26,$80                 ; 8010 3B 80 26 80              ;.&.
 ; ----------------------------------------------------------------------------
-Bank19_FixedServiceTrampolines:
+ResetApuChannelsService:
         jmp     FixedTrampoline09               ; 8014 4C 1C C0                 L..
 ; ----------------------------------------------------------------------------
-ForwardToFixedTrampoline0A:
+StartAudioTrackService:
         jmp     FixedTrampoline0A               ; 8017 4C 1F C0                 L..
 ; ----------------------------------------------------------------------------
-ForwardToFixedTrampoline0B:
+SetAudioCompletionFlagsService:
         jmp     FixedTrampoline0B               ; 801A 4C 22 C0                 L".
 ; ----------------------------------------------------------------------------
-ForwardToFixedTrampoline0C:
+StartAudioTrackWithCompletionFlagsService:
         jmp     FixedTrampoline0C               ; 801D 4C 25 C0                 L%.
 ; ----------------------------------------------------------------------------
-ForwardToFixedTrampoline0D:
+SetAudioGlobalSettingService:
         jmp     FixedTrampoline0D               ; 8020 4C 28 C0                 L(.
 ; ----------------------------------------------------------------------------
-ForwardToFixedTrampoline0E:
+WaitForAudioCompletionService:
         jmp     FixedTrampoline0E               ; 8023 4C 2B C0                 L+.
 ; ----------------------------------------------------------------------------
-Bank19_MapAssetServices:
+PlayCurrentMapMusic:
         lda     $6E                             ; 8026 A5 6E                    .n
         pha                                     ; 8028 48                       H
         lda     $6E0A                           ; 8029 AD 0A 6E                 ..n
         pha                                     ; 802C 48                       H
         jsr     SelectMapMusicTrack             ; 802D 20 3B 80                  ;.
-        jsr     ForwardToFixedTrampoline0A      ; 8030 20 17 80                  ..
+        jsr     StartAudioTrackService          ; 8030 20 17 80                  ..
         pla                                     ; 8033 68                       h
         sta     $6E0A                           ; 8034 8D 0A 6E                 ..n
         pla                                     ; 8037 68                       h
@@ -44,32 +44,32 @@ Bank19_MapAssetServices:
 ; ----------------------------------------------------------------------------
 SelectMapMusicTrack:
         ldx     $41                             ; 803B A6 41                    .A
-        bmi     MapAssetAudio_Branch_808B       ; 803D 30 4C                    0L
+        bmi     MapAudio_Branch_808B            ; 803D 30 4C                    0L
         ldx     $0515                           ; 803F AE 15 05                 ...
-        bne     MapAssetAudio_Branch_8083       ; 8042 D0 3F                    .?
+        bne     MapAudio_Branch_8083            ; 8042 D0 3F                    .?
         ldx     CurrentTilesetCandidate         ; 8044 A6 65                    .e
-        beq     MapAssetAudio_Branch_8058       ; 8046 F0 10                    ..
+        beq     MapAudio_Branch_8058            ; 8046 F0 10                    ..
         lda     $8112,x                         ; 8048 BD 12 81                 ...
         rts                                     ; 804B 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_804C:
+MapAudio_Branch_804C:
         brk                                     ; 804C 00                       .
         db   $62,$63,$41                     ; 804D 62 63 41                 bcA
 ; ----------------------------------------------------------------------------
 ResolveMapMusicAfterFieldCheck:
         cmp     #$01                            ; 8050 C9 01                    ..
-        bne     MapAssetAudio_Branch_807D       ; 8052 D0 29                    .)
+        bne     MapAudio_Branch_807D            ; 8052 D0 29                    .)
         pla                                     ; 8054 68                       h
         lda     #$1C                            ; 8055 A9 1C                    ..
         rts                                     ; 8057 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_8058:
+MapAudio_Branch_8058:
         ldx     SaveCurrentChapterMinus1        ; 8058 AE 5A 61                 .Za
         cpx     #$04                            ; 805B E0 04                    ..
-        bcc     MapAssetAudio_Branch_807F       ; 805D 90 20                    .
+        bcc     MapAudio_Branch_807F            ; 805D 90 20                    .
         lda     SaveJoinedCharacterFlags        ; 805F AD 92 62                 ..b
         cmp     #$FF                            ; 8062 C9 FF                    ..
-        bne     MapAssetAudio_Branch_807F       ; 8064 D0 19                    ..
+        bne     MapAudio_Branch_807F            ; 8064 D0 19                    ..
         inx                                     ; 8066 E8                       .
         txa                                     ; 8067 8A                       .
         pha                                     ; 8068 48                       H
@@ -79,116 +79,116 @@ MapAssetAudio_Branch_8058:
 ; ----------------------------------------------------------------------------
 ResolveFinalChapterMapMusic:
         cmp     #$00                            ; 806F C9 00                    ..
-        beq     MapAssetAudio_Branch_804C       ; 8071 F0 D9                    ..
+        beq     MapAudio_Branch_804C            ; 8071 F0 D9                    ..
         cmp     #$08                            ; 8073 C9 08                    ..
-        bcs     MapAssetAudio_Branch_807D       ; 8075 B0 06                    ..
+        bcs     MapAudio_Branch_807D            ; 8075 B0 06                    ..
         tax                                     ; 8077 AA                       .
         pla                                     ; 8078 68                       h
-        lda     Bank19_MapAssetLookups,x        ; 8079 BD 0B 81                 ...
+        lda     Bank19_MapMusicLookups,x        ; 8079 BD 0B 81                 ...
         rts                                     ; 807C 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_807D:
+MapAudio_Branch_807D:
         pla                                     ; 807D 68                       h
         tax                                     ; 807E AA                       .
-MapAssetAudio_Branch_807F:
+MapAudio_Branch_807F:
         lda     $8116,x                         ; 807F BD 16 81                 ...
         rts                                     ; 8082 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_8083:
+MapAudio_Branch_8083:
         lda     #$09                            ; 8083 A9 09                    ..
         dex                                     ; 8085 CA                       .
-        beq     MapAssetAudio_Branch_808A       ; 8086 F0 02                    ..
+        beq     MapAudio_Branch_808A            ; 8086 F0 02                    ..
         lda     #$13                            ; 8088 A9 13                    ..
-MapAssetAudio_Branch_808A:
+MapAudio_Branch_808A:
         rts                                     ; 808A 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_808B:
+MapAudio_Branch_808B:
         lda     $6285                           ; 808B AD 85 62                 ..b
         and     #$08                            ; 808E 29 08                    ).
-        beq     MapAssetAudio_Branch_8095       ; 8090 F0 03                    ..
+        beq     MapAudio_Branch_8095            ; 8090 F0 03                    ..
         lda     #$0E                            ; 8092 A9 0E                    ..
         rts                                     ; 8094 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_8095:
+MapAudio_Branch_8095:
         ldx     #$00                            ; 8095 A2 00                    ..
-MapAssetAudio_Branch_8097:
+MapAudio_Branch_8097:
         lda     $8124,x                         ; 8097 BD 24 81                 .$.
         cmp     CurrentMapNumber                ; 809A C5 63                    .c
-        bne     MapAssetAudio_Branch_80FA       ; 809C D0 5C                    .\
+        bne     MapAudio_Branch_80FA            ; 809C D0 5C                    .\
         lda     $8125,x                         ; 809E BD 25 81                 .%.
         cmp     #$FF                            ; 80A1 C9 FF                    ..
-        beq     MapAssetAudio_Branch_80BD       ; 80A3 F0 18                    ..
+        beq     MapAudio_Branch_80BD            ; 80A3 F0 18                    ..
         cmp     CurrentSubmapNumber             ; 80A5 C5 64                    .d
-        bne     MapAssetAudio_Branch_80FA       ; 80A7 D0 51                    .Q
+        bne     MapAudio_Branch_80FA            ; 80A7 D0 51                    .Q
         cpx     #$00                            ; 80A9 E0 00                    ..
-        beq     MapAssetAudio_Branch_80DA       ; 80AB F0 2D                    .-
+        beq     MapAudio_Branch_80DA            ; 80AB F0 2D                    .-
         cpx     #$0F                            ; 80AD E0 0F                    ..
-        beq     MapAssetAudio_Branch_80E8       ; 80AF F0 37                    .7
+        beq     MapAudio_Branch_80E8            ; 80AF F0 37                    .7
         cpx     #$1B                            ; 80B1 E0 1B                    ..
-        beq     MapAssetAudio_Branch_80D1       ; 80B3 F0 1C                    ..
+        beq     MapAudio_Branch_80D1            ; 80B3 F0 1C                    ..
         cpx     #$21                            ; 80B5 E0 21                    .!
-        bcc     MapAssetAudio_Branch_80BD       ; 80B7 90 04                    ..
+        bcc     MapAudio_Branch_80BD            ; 80B7 90 04                    ..
         cpx     #$2A                            ; 80B9 E0 2A                    .*
-        bcc     MapAssetAudio_Branch_80C1       ; 80BB 90 04                    ..
-MapAssetAudio_Branch_80BD:
+        bcc     MapAudio_Branch_80C1            ; 80BB 90 04                    ..
+MapAudio_Branch_80BD:
         lda     $8126,x                         ; 80BD BD 26 81                 .&.
         rts                                     ; 80C0 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_80C1:
+MapAudio_Branch_80C1:
         lda     SaveCurrentChapterMinus1        ; 80C1 AD 5A 61                 .Za
         cmp     #$04                            ; 80C4 C9 04                    ..
-        beq     MapAssetAudio_Branch_80CE       ; 80C6 F0 06                    ..
+        beq     MapAudio_Branch_80CE            ; 80C6 F0 06                    ..
         brk                                     ; 80C8 00                       .
         db   $09,$EB,$40                     ; 80C9 09 EB 40                 ..@
 ; ----------------------------------------------------------------------------
 ResolveChapterConditionMapMusic:
-        bne     MapAssetAudio_Branch_80BD       ; 80CC D0 EF                    ..
-MapAssetAudio_Branch_80CE:
+        bne     MapAudio_Branch_80BD            ; 80CC D0 EF                    ..
+MapAudio_Branch_80CE:
         lda     #$03                            ; 80CE A9 03                    ..
         rts                                     ; 80D0 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_80D1:
+MapAudio_Branch_80D1:
         lda     $62AA                           ; 80D1 AD AA 62                 ..b
         lsr     a                               ; 80D4 4A                       J
-        bcs     MapAssetAudio_Branch_80BD       ; 80D5 B0 E6                    ..
+        bcs     MapAudio_Branch_80BD            ; 80D5 B0 E6                    ..
         lda     #$0C                            ; 80D7 A9 0C                    ..
         rts                                     ; 80D9 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_80DA:
+MapAudio_Branch_80DA:
         lda     SaveCurrentChapterMinus1        ; 80DA AD 5A 61                 .Za
         cmp     #$02                            ; 80DD C9 02                    ..
-        bne     MapAssetAudio_Branch_80BD       ; 80DF D0 DC                    ..
+        bne     MapAudio_Branch_80BD            ; 80DF D0 DC                    ..
         lda     $6287                           ; 80E1 AD 87 62                 ..b
-        bmi     MapAssetAudio_Branch_80BD       ; 80E4 30 D7                    0.
-        bpl     MapAssetAudio_Branch_8101       ; 80E6 10 19                    ..
-MapAssetAudio_Branch_80E8:
+        bmi     MapAudio_Branch_80BD            ; 80E4 30 D7                    0.
+        bpl     MapAudio_Branch_8101            ; 80E6 10 19                    ..
+MapAudio_Branch_80E8:
         lda     #$20                            ; 80E8 A9 20                    .
         ldx     SaveCurrentChapterMinus1        ; 80EA AE 5A 61                 .Za
         cpx     #$04                            ; 80ED E0 04                    ..
-        bcc     MapAssetAudio_Branch_80F9       ; 80EF 90 08                    ..
+        bcc     MapAudio_Branch_80F9            ; 80EF 90 08                    ..
         brk                                     ; 80F1 00                       .
         db   $1A,$EB,$02                     ; 80F2 1A EB 02                 ...
 ; ----------------------------------------------------------------------------
 ResolveStoryFlagMapMusic:
-        bne     MapAssetAudio_Branch_80F9       ; 80F5 D0 02                    ..
+        bne     MapAudio_Branch_80F9            ; 80F5 D0 02                    ..
         lda     #$04                            ; 80F7 A9 04                    ..
-MapAssetAudio_Branch_80F9:
+MapAudio_Branch_80F9:
         rts                                     ; 80F9 60                       `
 ; ----------------------------------------------------------------------------
-MapAssetAudio_Branch_80FA:
+MapAudio_Branch_80FA:
         inx                                     ; 80FA E8                       .
         inx                                     ; 80FB E8                       .
         inx                                     ; 80FC E8                       .
         cpx     #$2A                            ; 80FD E0 2A                    .*
-        bcc     MapAssetAudio_Branch_8097       ; 80FF 90 96                    ..
-MapAssetAudio_Branch_8101:
+        bcc     MapAudio_Branch_8097            ; 80FF 90 96                    ..
+MapAudio_Branch_8101:
         lda     $07BA                           ; 8101 AD BA 07                 ...
         and     #$7F                            ; 8104 29 7F                    ).
         tax                                     ; 8106 AA                       .
         lda     $811C,x                         ; 8107 BD 1C 81                 ...
         rts                                     ; 810A 60                       `
 ; ----------------------------------------------------------------------------
-Bank19_MapAssetLookups:
+Bank19_MapMusicLookups:
         db   $1D,$16,$0B,$0B,$16,$17,$05     ; 810B 1D 16 0B 0B 16 17 05     .......
         db   $16,$1D,$14,$1D                 ; 8112 16 1D 14 1D              ....
         db   $05,$16,$17,$0B,$1C,$1D         ; 8116 05 16 17 0B 1C 1D        ......

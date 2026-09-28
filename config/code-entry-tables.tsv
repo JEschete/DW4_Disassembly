@@ -58,7 +58,7 @@
 16	BCD9	BCEB	Direct ROM analysis	Nine text/UI handlers dispatched by LDA $BCDA,Y/$BCD9,Y and RTS at $BCC9 from $BCA3; all nine targets executed at runtime and the table ends at executed code $BCEB	rts
 17	8000	804C	Direct ROM analysis	38-entry mixed map-system directory followed by code at $804C
 18	8000	8046	Direct ROM analysis	35-entry mixed bank directory; known data targets are excluded
-19	8000	8014	Direct ROM analysis	Ten-entry mixed map and tileset service directory
+19	8000	8014	Direct ROM analysis	Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
 1B	8000	8020	Direct ROM analysis	Sixteen-entry mixed event-service directory and text overlay
 1B	B342	B346	Direct ROM analysis	Two-entry NMI callback table selected with X=$00/$02 at $B32A-$B341
 1B	AC5B	AC65	Direct ROM analysis	Five-entry chapter event handler table selected by doubled SaveCurrentChapterMinus1 and dispatched at $AAFA-$AB0A

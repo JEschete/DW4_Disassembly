@@ -247,7 +247,7 @@ MapTileSystem_Branch_8193:
         iny                                     ; 81BE C8                       .
         cpy     #$03                            ; 81BF C0 03                    ..
         bne     MapTileSystem_Branch_8187       ; 81C1 D0 C4                    ..
-        jmp     MapTileSystem_Branch_8981       ; 81C3 4C 81 89                 L..
+        jmp     RotateSpriteTileQuadrants       ; 81C3 4C 81 89                 L..
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_81C6:
         lda     $8225                           ; 81C6 AD 25 82                 .%.
@@ -327,7 +327,7 @@ DeduplicateTileGraphicsSources:
         asl     a                               ; 824E 0A                       .
         ldx     #$00                            ; 824F A2 00                    ..
         jsr     LowerFixed_AddByteToPointer     ; 8251 20 13 C8                  ..
-MapTileSystem_Branch_8254:
+DeduplicateTileGraphicsSourcePointer:
         ldx     #$00                            ; 8254 A2 00                    ..
 MapTileSystem_Branch_8256:
         lda     $0100,x                         ; 8256 BD 00 01                 ...
@@ -375,7 +375,7 @@ MapTileSystem_Branch_8291:
         tay                                     ; 8299 A8                       .
         txa                                     ; 829A 8A                       .
         sta     ($00),y                         ; 829B 91 00                    ..
-MapTileSystem_Branch_829D:
+FinalizeTileGraphicsSourceMapping:
         pla                                     ; 829D 68                       h
         pha                                     ; 829E 48                       H
         tax                                     ; 829F AA                       .
@@ -468,7 +468,7 @@ MapTileSystem_Branch_8308:
         ora     $0101,x                         ; 8316 1D 01 01                 ...
         sta     ($00),y                         ; 8319 91 00                    ..
         pla                                     ; 831B 68                       h
-        jmp     MapTileSystem_Branch_829D       ; 831C 4C 9D 82                 L..
+        jmp     FinalizeTileGraphicsSourceMapping; 831C 4C 9D 82                L..
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_831F:
         inc     $79                             ; 831F E6 79                    .y
@@ -508,7 +508,7 @@ LoadCachedTileGraphicsSources:
         ldy     $833F                           ; 8357 AC 3F 83                 .?.
         ldx     #$00                            ; 835A A2 00                    ..
         jsr     LowerFixed_AddWordToPointer     ; 835C 20 1D C8                  ..
-        jmp     MapTileSystem_Branch_8254       ; 835F 4C 54 82                 LT.
+        jmp     DeduplicateTileGraphicsSourcePointer; 835F 4C 54 82             LT.
 ; ----------------------------------------------------------------------------
 ComputeTilePpuAddress:
         ldx     $09                             ; 8362 A6 09                    ..
@@ -582,7 +582,7 @@ MapTileSystem_Branch_83D9:
         clc                                     ; 83D9 18                       .
         adc     $76                             ; 83DA 65 76                    ev
         jsr     LowerFixed_LoadBankedTilePattern; 83DC 20 E1 C7                  ..
-        jsr     ApplyTileSmoothing              ; 83DF 20 C9 89                  ..
+        jsr     RotateTileClockwise             ; 83DF 20 C9 89                  ..
         jsr     UploadTilePatternBytes          ; 83E2 20 F4 83                  ..
 MapTileSystem_Branch_83E5:
         pla                                     ; 83E5 68                       h
@@ -680,7 +680,7 @@ MapTileSystem_Branch_846A:
         bne     MapTileSystem_Branch_846A       ; 8470 D0 F8                    ..
         rts                                     ; 8472 60                       `
 ; ----------------------------------------------------------------------------
-MapTileSystem_Branch_8473:
+ReadAndProcessLogicalTileDefinition:
         jsr     ReadTilesetEntry                ; 8473 20 82 80                  ..
 ProcessLogicalTileDefinition:
         lda     $0A                             ; 8476 A5 0A                    ..
@@ -723,7 +723,7 @@ MapTileSystem_Branch_84BC:
 ; ----------------------------------------------------------------------------
 LoadTilesetTile:
         sta     $16                             ; 84BD 85 16                    ..
-        jmp     MapTileSystem_Branch_8473       ; 84BF 4C 73 84                 Ls.
+        jmp     ReadAndProcessLogicalTileDefinition; 84BF 4C 73 84              Ls.
 ; ----------------------------------------------------------------------------
 LoadTilesetGraphicsBuffered:
         tay                                     ; 84C2 A8                       .
@@ -906,7 +906,7 @@ LoadCharacterSpriteGraphics:
         sta     $79                             ; 85DC 85 79                    .y
         lda     $18                             ; 85DE A5 18                    ..
         sta     $04                             ; 85E0 85 04                    ..
-MapTileSystem_Branch_85E2:
+LoadPreparedCharacterSpriteGraphics:
         ldx     #$0F                            ; 85E2 A2 0F                    ..
 MapTileSystem_Branch_85E4:
         lda     $00,x                           ; 85E4 B5 00                    ..
@@ -1040,7 +1040,7 @@ MapTileSystem_Branch_867A:
         sta     $18                             ; 86C4 85 18                    ..
         sta     $04                             ; 86C6 85 04                    ..
         lda     $0E                             ; 86C8 A5 0E                    ..
-        jmp     MapTileSystem_Branch_85E2       ; 86CA 4C E2 85                 L..
+        jmp     LoadPreparedCharacterSpriteGraphics; 86CA 4C E2 85              L..
 ; ----------------------------------------------------------------------------
 MapTileSystem_Branch_86CD:
         asl     a                               ; 86CD 0A                       .
@@ -1055,7 +1055,7 @@ MapTileSystem_Branch_86CD:
         sta     $18                             ; 86DC 85 18                    ..
         sta     $04                             ; 86DE 85 04                    ..
         lda     $0E                             ; 86E0 A5 0E                    ..
-        jmp     MapTileSystem_Branch_85E2       ; 86E2 4C E2 85                 L..
+        jmp     LoadPreparedCharacterSpriteGraphics; 86E2 4C E2 85              L..
 ; ----------------------------------------------------------------------------
 InitializeDefaultPaletteBuffer:
         lda     #$20                            ; 86E5 A9 20                    .
@@ -1474,7 +1474,7 @@ MapTileSystem_Branch_897E:
         iny                                     ; 897F C8                       .
         rts                                     ; 8980 60                       `
 ; ----------------------------------------------------------------------------
-MapTileSystem_Branch_8981:
+RotateSpriteTileQuadrants:
         lda     $09                             ; 8981 A5 09                    ..
         beq     MapTileSystem_Branch_89C8       ; 8983 F0 43                    .C
         lda     $7A                             ; 8985 A5 7A                    .z
@@ -1509,7 +1509,7 @@ MapTileSystem_Branch_8990:
 MapTileSystem_Branch_89C8:
         rts                                     ; 89C8 60                       `
 ; ----------------------------------------------------------------------------
-ApplyTileSmoothing:
+RotateTileClockwise:
         lda     $09                             ; 89C9 A5 09                    ..
         beq     MapTileSystem_Branch_89C8       ; 89CB F0 FB                    ..
         lda     $7A                             ; 89CD A5 7A                    .z
@@ -2868,7 +2868,7 @@ MapTileSystem_Branch_AF40:
         lda     ($DA),y                         ; AF4C B1 DA                    ..
 MapTileSystem_Branch_AF4E:
         jsr     UpdateMapRoutingState           ; AF4E 20 F1 B5                  ..
-MapTileSystem_Branch_AF51:
+ApplyMapArrivalOverrides:
         pha                                     ; AF51 48                       H
         lda     CurrentMapNumber                ; AF52 A5 63                    .c
         cmp     #$18                            ; AF54 C9 18                    ..
@@ -3334,7 +3334,7 @@ InitializeCurrentMapState:
         jsr     RestorePlayerPositionByBehaviorOrdinal; B23A 20 54 B5            T.
         jsr     ComputeMapChangeFlags           ; B23D 20 8E B4                  ..
         jsr     DecodeMapExitBehavior           ; B240 20 9F B5                  ..
-        jmp     MapTileSystem_Branch_AF51       ; B243 4C 51 AF                 LQ.
+        jmp     ApplyMapArrivalOverrides        ; B243 4C 51 AF                 LQ.
 ; ----------------------------------------------------------------------------
 ResolveMapSubmapData:
         lda     CurrentMapNumber                ; B246 A5 63                    .c
@@ -3520,7 +3520,7 @@ MapTileSystem_Branch_B338:
         lda     $B689,y                         ; B36F B9 89 B6                 ...
         sec                                     ; B372 38                       8
 MapTileSystem_Branch_B373:
-        jmp     MapTileSystem_Branch_AF51       ; B373 4C 51 AF                 LQ.
+        jmp     ApplyMapArrivalOverrides        ; B373 4C 51 AF                 LQ.
 ; ----------------------------------------------------------------------------
 ApplyMapTransitionSideEffects:
         cpy     #$00                            ; B376 C0 00                    ..
@@ -3954,7 +3954,7 @@ CheckWorldMapCoordinateTriggers:
         cmp     #$02                            ; B615 C9 02                    ..
         beq     MapTileSystem_Branch_B65B       ; B617 F0 42                    .B
         ldx     #$00                            ; B619 A2 00                    ..
-MapTileSystem_Branch_B61B:
+ScanWorldMapCoordinateTriggers:
         lda     Bank08_MapCoordinateRecords,x   ; B61B BD 72 BE                 .r.
         cmp     #$FF                            ; B61E C9 FF                    ..
         beq     MapTileSystem_Branch_B65B       ; B620 F0 39                    .9
@@ -3977,7 +3977,7 @@ MapTileSystem_Branch_B63E:
         inx                                     ; B63E E8                       .
         inx                                     ; B63F E8                       .
         inx                                     ; B640 E8                       .
-        jmp     MapTileSystem_Branch_B61B       ; B641 4C 1B B6                 L..
+        jmp     ScanWorldMapCoordinateTriggers  ; B641 4C 1B B6                 L..
 ; ----------------------------------------------------------------------------
 AllowWorldMapCoordinateTrigger:
         lda     CurrentTilesetCandidate         ; B644 A5 65                    .e

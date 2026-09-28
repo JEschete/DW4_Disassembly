@@ -183,7 +183,7 @@ MapEventText_Branch_8120:
         ldy     #$05                            ; 8120 A0 05                    ..
         jsr     MatchMapSubmapOverlayRecord     ; 8122 20 07 82                  ..
         bcs     MapEventText_Branch_8142        ; 8125 B0 1B                    ..
-MapEventText_Branch_8127:
+AdvanceMapOverlayRecordPointer:
         lda     $51                             ; 8127 A5 51                    .Q
         clc                                     ; 8129 18                       .
         adc     #$0A                            ; 812A 69 0A                    i.
@@ -204,7 +204,7 @@ MapEventText_Branch_8142:
         jsr     CopyMapOverlayCoordinatePair    ; 8144 20 4F 81                  O.
         ldy     #$00                            ; 8147 A0 00                    ..
         jsr     CopyMapOverlayPayload           ; 8149 20 5D 81                  ].
-        jmp     MapEventText_Branch_8127        ; 814C 4C 27 81                 L'.
+        jmp     AdvanceMapOverlayRecordPointer  ; 814C 4C 27 81                 L'.
 ; ----------------------------------------------------------------------------
 CopyMapOverlayCoordinatePair:
         lda     ($51),y                         ; 814F B1 51                    .Q
@@ -277,11 +277,11 @@ MapEventText_Branch_81BC:
         sta     $05A0,x                         ; 81BF 9D A0 05                 ...
         inx                                     ; 81C2 E8                       .
         cpx     #$5C                            ; 81C3 E0 5C                    .\
-        bcs     MapEventText_Branch_81C8        ; 81C5 B0 01                    ..
+        bcs     HaltOnMapOverlayBufferOverflow  ; 81C5 B0 01                    ..
         rts                                     ; 81C7 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Branch_81C8:
-        jmp     MapEventText_Branch_81C8        ; 81C8 4C C8 81                 L..
+HaltOnMapOverlayBufferOverflow:
+        jmp     HaltOnMapOverlayBufferOverflow  ; 81C8 4C C8 81                 L..
 ; ----------------------------------------------------------------------------
 ResolveOverlayMapVariant:
         cmp     #$05                            ; 81CB C9 05                    ..
@@ -530,11 +530,11 @@ RunMapGraphicsAnimationAndFinalize:
 ; ----------------------------------------------------------------------------
 RunMapGraphicsAnimationLoop:
         jsr     InitializeMapGraphicsAnimationWorkspace; 8719 20 E9 87           ..
-MapEventText_Branch_871C:
+RunMapGraphicsAnimationPhaseLoop:
         jsr     QueueFourMapGraphicsBlocks      ; 871C 20 C0 87                  ..
         jsr     RenderMapGraphicsAnimationFrame ; 871F 20 28 87                  (.
         jsr     AdvanceMapGraphicsAnimationPhase; 8722 20 AE 87                  ..
-        jmp     MapEventText_Branch_871C        ; 8725 4C 1C 87                 L..
+        jmp     RunMapGraphicsAnimationPhaseLoop; 8725 4C 1C 87                 L..
 ; ----------------------------------------------------------------------------
 RenderMapGraphicsAnimationFrame:
         jsr     CopyAnimatedMapGraphicsSlices   ; 8728 20 7E 87                  ~.
@@ -627,12 +627,12 @@ MapEventText_Branch_87BF:
 QueueFourMapGraphicsBlocks:
         lda     #$00                            ; 87C0 A9 00                    ..
         sta     $55                             ; 87C2 85 55                    .U
-MapEventText_Branch_87C4:
+QueueMapGraphicsBlockLoop:
         jsr     SelectMapGraphicsPpuAddress     ; 87C4 20 53 88                  S.
         jsr     AppendMapGraphicsPpuBlock       ; 87C7 20 7D 88                  }.
         jsr     RequestPpuUpdateAndWait         ; 87CA 20 2D C6                  -.
         jsr     AdvanceMapGraphicsSourcePage    ; 87CD 20 D3 87                  ..
-        jmp     MapEventText_Branch_87C4        ; 87D0 4C C4 87                 L..
+        jmp     QueueMapGraphicsBlockLoop       ; 87D0 4C C4 87                 L..
 ; ----------------------------------------------------------------------------
 AdvanceMapGraphicsSourcePage:
         lda     $53                             ; 87D3 A5 53                    .S
@@ -1475,7 +1475,7 @@ MapEventText_Branch_93F8:
         sta     $5A                             ; 93FC 85 5A                    .Z
         lda     $52                             ; 93FE A5 52                    .R
         cmp     #$68                            ; 9400 C9 68                    .h
-        bcc     MapEventText_Branch_9430        ; 9402 90 2C                    .,
+        bcc     SelectMapAnimationLayoutFromPhase; 9402 90 2C                   .,
         cmp     #$78                            ; 9404 C9 78                    .x
         bcc     MapEventText_Branch_9420        ; 9406 90 18                    ..
         cmp     #$85                            ; 9408 C9 85                    ..
@@ -1491,23 +1491,23 @@ MapEventText_Branch_940C:
 MapEventText_Branch_9418:
         lda     $52                             ; 9418 A5 52                    .R
         and     #$03                            ; 941A 29 03                    ).
-        beq     MapEventText_Branch_9432        ; 941C F0 14                    ..
+        beq     BuildOffsetMapAnimationFrame    ; 941C F0 14                    ..
         bne     MapEventText_Branch_940C        ; 941E D0 EC                    ..
 MapEventText_Branch_9420:
         lda     $52                             ; 9420 A5 52                    .R
         lsr     a                               ; 9422 4A                       J
         bcc     MapEventText_Branch_942A        ; 9423 90 05                    ..
         dec     $59                             ; 9425 C6 59                    .Y
-        jmp     MapEventText_Branch_9430        ; 9427 4C 30 94                 L0.
+        jmp     SelectMapAnimationLayoutFromPhase; 9427 4C 30 94                L0.
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_942A:
         lda     $52                             ; 942A A5 52                    .R
         lsr     a                               ; 942C 4A                       J
-        jmp     MapEventText_Branch_9432        ; 942D 4C 32 94                 L2.
+        jmp     BuildOffsetMapAnimationFrame    ; 942D 4C 32 94                 L2.
 ; ----------------------------------------------------------------------------
-MapEventText_Branch_9430:
+SelectMapAnimationLayoutFromPhase:
         lda     $52                             ; 9430 A5 52                    .R
-MapEventText_Branch_9432:
+BuildOffsetMapAnimationFrame:
         and     #$03                            ; 9432 29 03                    ).
         ora     #$04                            ; 9434 09 04                    ..
         pha                                     ; 9436 48                       H
@@ -2221,7 +2221,7 @@ SetGraphicsRevealOrigin:
         db   $01,$00,$00,$00,$00,$00,$00,$00 ; A0F5 01 00 00 00 00 00 00 00  ........
         db   $00                             ; A0FD 00                       .
 ; ----------------------------------------------------------------------------
-Bank1B_MapEventService_A0FE:
+RunRasterWaveMapTransition:
         brk                                     ; A0FE 00                       .
         db   $94,$FB                         ; A0FF 94 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -2299,7 +2299,7 @@ AnimateContractingRasterWave:
         clc                                     ; A183 18                       .
         adc     #$06                            ; A184 69 06                    i.
         sta     $53                             ; A186 85 53                    .S
-MapEventText_Branch_A188:
+AdvanceContractingRasterWaveCycle:
         sta     $52                             ; A188 85 52                    .R
         dec     $51                             ; A18A C6 51                    .Q
         bne     AnimateContractingRasterWave    ; A18C D0 DA                    ..
@@ -2307,7 +2307,7 @@ MapEventText_Branch_A188:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_A18F:
         lda     $53                             ; A18F A5 53                    .S
-        jmp     MapEventText_Branch_A188        ; A191 4C 88 A1                 L..
+        jmp     AdvanceContractingRasterWaveCycle; A191 4C 88 A1                L..
 ; ----------------------------------------------------------------------------
 RenderRasterScrollTable:
         lda     #$04                            ; A194 A9 04                    ..
@@ -2544,7 +2544,7 @@ SelectContractingWaveAmplitude:
         sec                                     ; A326 38                       8
         sbc     #$29                            ; A327 E9 29                    .)
         lsr     a                               ; A329 4A                       J
-        jmp     MapEventText_Branch_A33B        ; A32A 4C 3B A3                 L;.
+        jmp     BuildRasterWavePpuCommand       ; A32A 4C 3B A3                 L;.
 ; ----------------------------------------------------------------------------
 QueueRasterWavePpuCommand:
         ldx     $51                             ; A32D A6 51                    .Q
@@ -2556,7 +2556,7 @@ QueueRasterWavePpuCommand:
         eor     #$03                            ; A336 49 03                    I.
         clc                                     ; A338 18                       .
         adc     #$01                            ; A339 69 01                    i.
-MapEventText_Branch_A33B:
+BuildRasterWavePpuCommand:
         asl     a                               ; A33B 0A                       .
         asl     a                               ; A33C 0A                       .
         asl     a                               ; A33D 0A                       .
@@ -2829,12 +2829,12 @@ WriteChapterTitlePpuStreamOffset:
         pha                                     ; A580 48                       H
         jsr     WriteChapterTitlePpuStream      ; A581 20 88 A5                  ..
         pla                                     ; A584 68                       h
-        jmp     MapEventText_Branch_A58C        ; A585 4C 8C A5                 L..
+        jmp     WriteChapterTitlePpuStreamWithOffset; A585 4C 8C A5             L..
 ; ----------------------------------------------------------------------------
 WriteChapterTitlePpuStream:
         ldx     #$00                            ; A588 A2 00                    ..
         beq     MapEventText_Branch_A58E        ; A58A F0 02                    ..
-MapEventText_Branch_A58C:
+WriteChapterTitlePpuStreamWithOffset:
         ldx     #$01                            ; A58C A2 01                    ..
 MapEventText_Branch_A58E:
         stx     $04                             ; A58E 86 04                    ..
@@ -4185,14 +4185,14 @@ AdvanceDayNightTransitionForward:
         jsr     GenerateDayNightTileMaskTable   ; B0DC 20 6F B3                  o.
         inc     $53                             ; B0DF E6 53                    .S
         jsr     BuildSecondGeneratedPpuReadProgram; B0E1 20 12 B1                ..
-        jmp     MapEventText_Branch_B511        ; B0E4 4C 11 B5                 L..
+        jmp     RestoreDayNightAnimationWorkspace; B0E4 4C 11 B5                L..
 ; ----------------------------------------------------------------------------
 AdvanceDayNightTransitionReverse:
         jsr     GenerateDayNightTileMaskTable   ; B0E7 20 6F B3                  o.
         dec     $53                             ; B0EA C6 53                    .S
 RefreshDayNightTransitionBuffers:
         jsr     BuildSecondGeneratedPpuReadProgram; B0EC 20 12 B1                ..
-        jmp     MapEventText_Branch_B511        ; B0EF 4C 11 B5                 L..
+        jmp     RestoreDayNightAnimationWorkspace; B0EF 4C 11 B5                L..
 ; ----------------------------------------------------------------------------
 BuildFirstGeneratedPpuReadProgram:
         jsr     TerminateFirstGeneratedPpuProgram; B0F2 20 3D B1                 =.
@@ -4236,11 +4236,11 @@ MapEventText_Branch_B123:
 ; ----------------------------------------------------------------------------
 TerminateFirstGeneratedPpuProgram:
         jsr     EmitFirstGeneratedPpuReadLoop   ; B13D 20 82 B1                  ..
-        jmp     MapEventText_Branch_B2C3        ; B140 4C C3 B2                 L..
+        jmp     AppendRtsToGeneratedPpuProgram  ; B140 4C C3 B2                 L..
 ; ----------------------------------------------------------------------------
 TerminateSecondGeneratedPpuProgram:
         jsr     EmitSecondGeneratedPpuReadLoop  ; B143 20 98 B1                  ..
-        jmp     MapEventText_Branch_B2C3        ; B146 4C C3 B2                 L..
+        jmp     AppendRtsToGeneratedPpuProgram  ; B146 4C C3 B2                 L..
 ; ----------------------------------------------------------------------------
 AdvanceGeneratedPpuSourceByB0:
         lda     $75C0                           ; B149 AD C0 75                 ..u
@@ -4480,7 +4480,7 @@ Bank1B_PpuWriteCodeTemplate:
         db   $07                             ; B2C1 07                       .
         db   $20                             ; B2C2 20
 ; ----------------------------------------------------------------------------
-MapEventText_Branch_B2C3:
+AppendRtsToGeneratedPpuProgram:
         lda     #$60                            ; B2C3 A9 60                    .`
         sta     ($49),y                         ; B2C5 91 49                    .I
         rts                                     ; B2C7 60                       `
@@ -4518,7 +4518,7 @@ MapEventText_Branch_B2E4:
         sta     PPUSCROLL                       ; B2FD 8D 05 20                 ..
         lda     $0509                           ; B300 AD 09 05                 ...
         sta     PPUSCROLL                       ; B303 8D 05 20                 ..
-        jmp     UpperFixedEngine_Branch_C1A0    ; B306 4C A0 C1                 L..
+        jmp     FinishNmiHandler                ; B306 4C A0 C1                 L..
 ; ----------------------------------------------------------------------------
 InitializeGeneratedPpuCodePointers:
         lda     #$00                            ; B309 A9 00                    ..
@@ -4909,7 +4909,7 @@ MapEventText_Branch_B507:
         bpl     MapEventText_Branch_B507        ; B50E 10 F7                    ..
         rts                                     ; B510 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Branch_B511:
+RestoreDayNightAnimationWorkspace:
         ldx     #$00                            ; B511 A2 00                    ..
 MapEventText_Branch_B513:
         lda     $7BCF,x                         ; B513 BD CF 7B                 ..{
@@ -4956,7 +4956,7 @@ RunScrollingMapEventFinale:
         lda     $1F                             ; B575 A5 1F                    ..
         ora     #$40                            ; B577 09 40                    .@
         sta     $1F                             ; B579 85 1F                    ..
-MapEventText_Branch_B57B:
+RunScrollingFinaleFrameLoop:
         jsr     AdvanceFinaleVerticalScroll     ; B57B 20 97 B5                  ..
         lda     $52                             ; B57E A5 52                    .R
         and     #$0F                            ; B580 29 0F                    ).
@@ -4968,7 +4968,7 @@ MapEventText_Branch_B58A:
         inc     $52                             ; B58D E6 52                    .R
         ldx     #$03                            ; B58F A2 03                    ..
         jsr     WaitFrames                      ; B591 20 0C C9                  ..
-        jmp     MapEventText_Branch_B57B        ; B594 4C 7B B5                 L{.
+        jmp     RunScrollingFinaleFrameLoop     ; B594 4C 7B B5                 L{.
 ; ----------------------------------------------------------------------------
 AdvanceFinaleVerticalScroll:
         lda     $0509                           ; B597 AD 09 05                 ...

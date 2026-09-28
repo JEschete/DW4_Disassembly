@@ -415,7 +415,7 @@
 14	A631	A638	StepTable	Verified	Seven entries read by LDX $A631,Y at $A4E6 with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)
 14	A638	A639	ReviewedUnusedData	Verified	Reviewed unused: no decoded code, inline operand, pointer target, code exclusion, static absolute reference, source-attributed runtime read, or runtime execution across the 31-state progression corpus
 14	A639	A67F	StepAndPaletteTables	Verified	Eight entries read by LDX $A639,Y at $A603 with Y = $0F (0-7) while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512); seven read by LDX $A641,Y at $A506; four pointer pairs read by LDA $A648,X/$A649,X at $A60D-$A613 with X = 2 * $00 for $00 = 0-3; fifteen copied by LDA $A650,X at $A548 from X = $0E; three read by LDX $A65F,Y at $A59B for Y = 0-2; five read by LDX $A662,Y at $A5C1 for Y = 0-4; and twenty-four copied by LDA $A667,X at $A5DC from X = $17
-14	AA36	AA43	BattleTurnLayoutTables	Verified	Five thresholds compared by CMP $AA36,Y at $A898 while Y advances from zero and exits at CPY #$05 at $A89E; four two-byte coordinate records at $AA3B are selected by BattleTurnEngine_Entry_A9FD with callers loading A = zero through three at $A960/$A97C/$A98B/$A99E
+14	AA36	AA43	BattleTurnLayoutTables	Verified	Five thresholds compared by CMP $AA36,Y at $A898 while Y advances from zero and exits at CPY #$05 at $A89E; four two-byte coordinate records at $AA3B are selected by BattleTurnEngine_DrawIndexedOffsetSpritePair with callers loading A = zero through three at $A960/$A97C/$A98B/$A99E
 14	AA66	AB23	BattleAttributeArrays	Verified	Three parallel 63-entry arrays indexed by X and read at $AA43 ($AA66), $AA48 ($AAA5), and $AA4D ($AAE4)
 14	AB23	ABA1	PointerTable	Verified	Sixty-three record pointers read through the doubled index at $AA56-$AA5E into $06/$07 before $AFEA
 14	ABA1	AC1A	BattleTurnRecords	Verified	Records addressed by the $AB23 pointer table, whose sixty-three entries span $ABA1-$AC19
@@ -715,7 +715,7 @@
 18	B83D	BDBD	FontGraphics	Verified	One-bitplane lowercase, symbol, uppercase, and digit glyphs
 18	BDBD	BFD8	MixedDirectoryRecords	Verified	Post-font record data selected by directory entries $8034 ($BDBD) and $8038 ($BEEE), bounded by the one-bitplane glyphs ending at $BDBC and the compatibility footer at $BFD8
 18	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
-19	8000	8014	ServiceDirectory	Verified	Ten-entry mixed map and tileset service directory
+19	8000	8014	ServiceDirectory	Verified	Ten-entry audio service directory: two null entries, six fixed-engine audio trampolines, map-track selection, and current-map music playback
 19	804D	8050	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $x3 BRK service at $804C
 19	806C	806F	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $x3 BRK service at $806B
 19	80C9	80CC	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $xB BRK service at $80C8

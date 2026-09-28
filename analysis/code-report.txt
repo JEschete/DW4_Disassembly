@@ -1809,14 +1809,14 @@ Seeds:
   bank $18:$A813 | Entry pointer table | Bank $18 pointer at $8028: 35-entry mixed bank directory; known data targets are excluded
   bank $18:$AAE0 | Entry pointer table | Bank $18 pointer at $8032: 35-entry mixed bank directory; known data targets are excluded
   bank $18:$BE7D | Entry pointer table | Bank $18 pointer at $8036: 35-entry mixed bank directory; known data targets are excluded
-  bank $19:$8014 | Entry pointer table | Bank $19 pointer at $8004: Ten-entry mixed map and tileset service directory
-  bank $19:$8017 | Entry pointer table | Bank $19 pointer at $8006: Ten-entry mixed map and tileset service directory
-  bank $19:$801A | Entry pointer table | Bank $19 pointer at $8008: Ten-entry mixed map and tileset service directory
-  bank $19:$801D | Entry pointer table | Bank $19 pointer at $800A: Ten-entry mixed map and tileset service directory
-  bank $19:$8020 | Entry pointer table | Bank $19 pointer at $800C: Ten-entry mixed map and tileset service directory
-  bank $19:$8023 | Entry pointer table | Bank $19 pointer at $800E: Ten-entry mixed map and tileset service directory
-  bank $19:$803B | Entry pointer table | Bank $19 pointer at $8010: Ten-entry mixed map and tileset service directory
-  bank $19:$8026 | Entry pointer table | Bank $19 pointer at $8012: Ten-entry mixed map and tileset service directory
+  bank $19:$8014 | Entry pointer table | Bank $19 pointer at $8004: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$8017 | Entry pointer table | Bank $19 pointer at $8006: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$801A | Entry pointer table | Bank $19 pointer at $8008: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$801D | Entry pointer table | Bank $19 pointer at $800A: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$8020 | Entry pointer table | Bank $19 pointer at $800C: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$8023 | Entry pointer table | Bank $19 pointer at $800E: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$803B | Entry pointer table | Bank $19 pointer at $8010: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
+  bank $19:$8026 | Entry pointer table | Bank $19 pointer at $8012: Ten-entry audio service directory with entries for APU reset, track control, completion, audio settings, waiting, and map music
   bank $1B:$8020 | Entry pointer table | Bank $1B pointer at $8000: Sixteen-entry mixed event-service directory and text overlay
   bank $1B:$80E0 | Entry pointer table | Bank $1B pointer at $8002: Sixteen-entry mixed event-service directory and text overlay
   bank $1B:$80BA | Entry pointer table | Bank $1B pointer at $8004: Sixteen-entry mixed event-service directory and text overlay

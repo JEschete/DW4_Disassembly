@@ -11,8 +11,9 @@ This document is the authoritative human-readable status snapshot. Generated tot
 - Verified instruction bytes: 163,493 (31.18%)
 - Explicitly ranged data bytes: 361,317 (68.92%)
 - Dual-use code/data overlap: 522 bytes (0.10%)
-- Meaningfully named routines: 4,315/4,315 (100%)
-- Semantic contracts: 37/4,315 (0.86%)
+- Curated code/function labels: 4,572
+- Meaningfully named routines: 4,562/4,562 (100%)
+- Semantic contracts: 37/4,562 (0.81%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
 - Structured asset encoders: 0/5 complete
@@ -25,13 +26,20 @@ handler at `$16:$AAEF` from a stale variable-record boundary.
 
 The completion gate (`verify-completion.cmd`) passes end to end: 0 current analyzer warnings; 215 warning
 identities ledgered, including all 143 original warnings; 2,143 pointers typed; 2,036/2,036 executable targets
-decoded; 38/38 indirect jumps audited; 4,315 routine interfaces; 37 semantic contracts; 26 asset slices; 15 save
+decoded; 38/38 indirect jumps audited; 4,562 routine interfaces; 37 semantic contracts; 26 asset slices; 15 save
 fields; 9 runtime paths; exact ROM match.
 
-The 2026-09-28 routine-name audit checked all 2,229 interfaces in banks `$00-$15` against their generated ASM
-bodies and interface evidence, then directly reviewed 102 high-risk generic or numeric names. Confirmed semantic
-errors and generic lettered families were corrected; the final audit reported zero review flags, duplicate
-addresses, or duplicate global names.
+The 2026-09-28 routine-name audit checked all 2,354 interfaces in banks `$00-$15` against their generated ASM
+bodies and interface evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call
+targets, increasing the all-bank inventory from 4,315 to 4,562 routines. Confirmed semantic errors, operand-derived
+names, and generic subsystem prefixes were corrected. The strengthened naming audit reports zero review flags;
+duplicate-address and duplicate-global-name checks are also clean.
+
+The follow-up audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
+flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. It also
+corrected physical damage, victory rewards, monster stats, agility-based turn order, casino payouts, cursed-item
+feedback, and map-event jingles. The naming report now warns on audio-only display/print/message labels and on
+`Dormant` labels with direct or tail callers; both queues are empty.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
@@ -52,30 +60,30 @@ have no routine interfaces and report `n/a`.
 | `$05` | 0 | 0 | 0 | n/a |
 | `$06` | 0 | 0 | 0 | n/a |
 | `$07` | 0 | 0 | 0 | n/a |
-| `$08` | 77 | 77 | 0 | 0.00% |
+| `$08` | 84 | 84 | 0 | 0.00% |
 | `$09` | 0 | 0 | 0 | n/a |
 | `$0A` | 0 | 0 | 0 | n/a |
 | `$0B` | 10 | 10 | 0 | 0.00% |
 | `$0C` | 0 | 0 | 0 | n/a |
 | `$0D` | 0 | 0 | 0 | n/a |
 | `$0E` | 6 | 6 | 0 | 0.00% |
-| `$0F` | 323 | 323 | 0 | 0.00% |
-| `$10` | 374 | 374 | 0 | 0.00% |
-| `$11` | 367 | 367 | 0 | 0.00% |
-| `$12` | 271 | 271 | 0 | 0.00% |
-| `$13` | 371 | 371 | 0 | 0.00% |
-| `$14` | 185 | 185 | 0 | 0.00% |
-| `$15` | 245 | 245 | 0 | 0.00% |
-| `$16` | 386 | 386 | 0 | 0.00% |
-| `$17` | 245 | 245 | 0 | 0.00% |
-| `$18` | 90 | 90 | 0 | 0.00% |
+| `$0F` | 360 | 360 | 0 | 0.00% |
+| `$10` | 392 | 392 | 0 | 0.00% |
+| `$11` | 374 | 374 | 0 | 0.00% |
+| `$12` | 283 | 283 | 0 | 0.00% |
+| `$13` | 393 | 393 | 0 | 0.00% |
+| `$14` | 196 | 196 | 0 | 0.00% |
+| `$15` | 256 | 256 | 0 | 0.00% |
+| `$16` | 418 | 418 | 0 | 0.00% |
+| `$17` | 258 | 258 | 0 | 0.00% |
+| `$18` | 92 | 92 | 0 | 0.00% |
 | `$19` | 12 | 12 | 0 | 0.00% |
 | `$1A` | 0 | 0 | 0 | n/a |
-| `$1B` | 172 | 172 | 0 | 0.00% |
-| `$1C` | 219 | 219 | 0 | 0.00% |
-| `$1D` | 309 | 309 | 0 | 0.00% |
-| `$1E` | 326 | 326 | 0 | 0.00% |
-| `$1F` | 327 | 327 | 0 | 0.00% |
+| `$1B` | 184 | 184 | 0 | 0.00% |
+| `$1C` | 221 | 221 | 0 | 0.00% |
+| `$1D` | 318 | 318 | 0 | 0.00% |
+| `$1E` | 340 | 340 | 0 | 0.00% |
+| `$1F` | 365 | 365 | 0 | 0.00% |
 
 ## Enforced Evidence Checks
 

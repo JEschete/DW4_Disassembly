@@ -1765,7 +1765,7 @@ ApplyTrackedEntityMapOverrides:
         lda     SaveTimeOfDay                   ; 9EB7 AD ED 62                 ..b
         cmp     #$78                            ; 9EBA C9 78                    .x
         bcc     MapEntitySystem_Branch_9ECC     ; 9EBC 90 0E                    ..
-MapEntitySystem_Branch_9EBE:
+SkipDaytimeEntityOverrideRecords:
         lda     $9F8A,x                         ; 9EBE BD 8A 9F                 ...
         inx                                     ; 9EC1 E8                       .
         cmp     #$FF                            ; 9EC2 C9 FF                    ..
@@ -1773,7 +1773,7 @@ MapEntitySystem_Branch_9EBE:
         inx                                     ; 9EC6 E8                       .
         inx                                     ; 9EC7 E8                       .
         inx                                     ; 9EC8 E8                       .
-        jmp     MapEntitySystem_Branch_9EBE     ; 9EC9 4C BE 9E                 L..
+        jmp     SkipDaytimeEntityOverrideRecords; 9EC9 4C BE 9E                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_9ECC:
         lda     $9F8A,x                         ; 9ECC BD 8A 9F                 ...
@@ -2010,7 +2010,7 @@ HideMapEntitiesFourteenThroughSixteen:
         jsr     HideMapEntityCoordinates        ; A0D2 20 35 A0                  5.
         rts                                     ; A0D5 60                       `
 ; ----------------------------------------------------------------------------
-HideFirstTwoEntitiesUnlessState6287:
+HidePrimaryEntitiesUnlessIntroState:
         bit     $6287                           ; A0D6 2C 87 62                 ,.b
         bvs     MapEntitySystem_Branch_A0E5     ; A0D9 70 0A                    p.
         ldx     #$00                            ; A0DB A2 00                    ..
@@ -2020,7 +2020,7 @@ HideFirstTwoEntitiesUnlessState6287:
 MapEntitySystem_Branch_A0E5:
         rts                                     ; A0E5 60                       `
 ; ----------------------------------------------------------------------------
-HideFirstTwoEntitiesForFlag03_01:
+HidePrimaryScenePairAfterProgress:
         brk                                     ; A0E6 00                       .
         db   $03,$EB,$01                     ; A0E7 03 EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -2032,7 +2032,7 @@ HideFirstTwoEntitiesForFlag03_01:
 MapEntitySystem_Branch_A0F6:
         rts                                     ; A0F6 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityOneForDaytimeState627E:
+HideDaytimeSceneActorForWorldState:
         jsr     CompareMapEntityTimeToNightThreshold; A0F7 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A10A     ; A0FA B0 0E                    ..
         lda     $627E                           ; A0FC AD 7E 62                 .~b
@@ -2198,7 +2198,7 @@ HideEntityByTimeOfDay:
         ldx     #$07                            ; A1E8 A2 07                    ..
         jmp     HideMapEntityCoordinates        ; A1EA 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyMapEntityVisibilityFlags07_04_0B:
+ConfigureTownSceneEntityVisibility:
         brk                                     ; A1ED 00                       .
         db   $07,$EB,$10                     ; A1EE 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2414,7 +2414,7 @@ HideEntityZeroForDaytimeFlagState:
 MapEntitySystem_Branch_A33C:
         rts                                     ; A33C 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterAndState6283Visibility:
+ConfigureChapterSceneVisibility:
         lda     SaveCurrentChapterMinus1        ; A33D AD 5A 61                 .Za
         cmp     #$04                            ; A340 C9 04                    ..
         beq     MapEntitySystem_Branch_A36D     ; A342 F0 29                    .)
@@ -2474,7 +2474,7 @@ MapEntitySystem_Branch_A398:
 MapEntitySystem_Branch_A3A7:
         rts                                     ; A3A7 60                       `
 ; ----------------------------------------------------------------------------
-HideEntitiesZeroAndOneForFlag0B_02:
+HideSecondaryScenePairAfterProgress:
         brk                                     ; A3A8 00                       .
         db   $0B,$EB,$02                     ; A3A9 0B EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -2576,7 +2576,7 @@ MapEntitySystem_Branch_A43C:
         jsr     CacheTileUnderMapEntity         ; A44E 20 1E AD                  ..
         jmp     MapEntitySystem_Branch_A41E     ; A451 4C 1E A4                 L..
 ; ----------------------------------------------------------------------------
-ApplyFlags07_19_1A_0FEntityVisibility:
+ConfigureMultiStageTownSceneVisibility:
         brk                                     ; A454 00                       .
         db   $07,$EB,$10                     ; A455 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2630,7 +2630,7 @@ MapEntitySystem_Branch_A494:
 MapEntitySystem_Branch_A49F:
         rts                                     ; A49F 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForFlag09_20:
+HideCompletedTownEventActor:
         brk                                     ; A4A0 00                       .
         db   $09,$EB,$20                     ; A4A1 09 EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -2756,7 +2756,7 @@ MapEntitySystem_Branch_A555:
 MapEntitySystem_Branch_A55A:
         rts                                     ; A55A 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForState62AA_20:
+HideUnavailableSceneActor:
         lda     $62AA                           ; A55B AD AA 62                 ..b
         and     #$20                            ; A55E 29 20                    )
         beq     MapEntitySystem_Branch_A567     ; A560 F0 05                    ..
@@ -2765,7 +2765,7 @@ HideEntityZeroForState62AA_20:
 MapEntitySystem_Branch_A567:
         rts                                     ; A567 60                       `
 ; ----------------------------------------------------------------------------
-PositionEntityOneAt0E_09:
+AlignSceneCompanionWithPlayer:
         lda     PlayerLocalX                    ; A568 A5 44                    .D
         cmp     #$0E                            ; A56A C9 0E                    ..
         bne     MapEntitySystem_Branch_A57E     ; A56C D0 10                    ..
@@ -2930,7 +2930,7 @@ MapEntitySystem_Branch_A662:
         ldx     #$00                            ; A67E A2 00                    ..
         jmp     MapEntitySystem_Branch_A63F     ; A680 4C 3F A6                 L?.
 ; ----------------------------------------------------------------------------
-ApplyState62AAEntityVisibility:
+ConfigureWorldStateEntityVisibility:
         lda     $62AA                           ; A683 AD AA 62                 ..b
         lsr     a                               ; A686 4A                       J
         bcc     MapEntitySystem_Branch_A698     ; A687 90 0F                    ..
@@ -2951,7 +2951,7 @@ MapEntitySystem_Branch_A698:
 MapEntitySystem_Branch_A6A6:
         jmp     HideMapEntityCoordinates        ; A6A6 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-HideEntityTwoForFlag18_20:
+HideCompletedSceneSupportActor:
         brk                                     ; A6A9 00                       .
         db   $18,$EB,$20                     ; A6AA 18 EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -3127,7 +3127,7 @@ MapEntitySystem_Branch_A7BB:
 MapEntitySystem_Branch_A7C4:
         rts                                     ; A7C4 60                       `
 ; ----------------------------------------------------------------------------
-HideFirstFourEntitiesForFlag18_01:
+HideCompletedSceneActorGroup:
         brk                                     ; A7C5 00                       .
         db   $18,$EB,$01                     ; A7C6 18 EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3218,7 +3218,7 @@ MapEntitySystem_Branch_A84B:
         ldx     #$02                            ; A84B A2 02                    ..
         jmp     HideMapEntityCoordinates        ; A84D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-HideFirstFourEntitiesForFlag18_04:
+HideDepartedSceneActorGroup:
         brk                                     ; A850 00                       .
         db   $18,$EB,$04                     ; A851 18 EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3427,11 +3427,11 @@ MapEntitySystem_Branch_A99B:
         ldx     #$01                            ; A99B A2 01                    ..
         jmp     HideMapEntityCoordinates        ; A99D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyMapEntityStateAfterFlag1D_40:
+ConfigureWorldMapSceneEntities:
         brk                                     ; A9A0 00                       .
         db   $1D,$EB,$40                     ; A9A1 1D EB 40                 ..@
 ; ----------------------------------------------------------------------------
-ApplyPlayerAndState6299EntityVisibility:
+ConfigurePlayerDependentWorldMapEntities:
         bne     MapEntitySystem_Branch_A9AB     ; A9A4 D0 05                    ..
         ldx     #$03                            ; A9A6 A2 03                    ..
         jsr     HideMapEntityCoordinates        ; A9A8 20 35 A0                  5.
@@ -3529,7 +3529,7 @@ MapEntitySystem_Branch_AA2B:
 MapEntitySystem_Branch_AA40:
         rts                                     ; AA40 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForFlag1D_01:
+HideDepartedPrimarySceneActor:
         brk                                     ; AA41 00                       .
         db   $1D,$EB,$01                     ; AA42 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3539,7 +3539,7 @@ HideEntityZeroForFlag1D_01:
 MapEntitySystem_Branch_AA4C:
         rts                                     ; AA4C 60                       `
 ; ----------------------------------------------------------------------------
-ApplyState6298EntityPositions:
+ConfigureWorldMapEventPositions:
         ldx     #$00                            ; AA4D A2 00                    ..
         lda     $6298                           ; AA4F AD 98 62                 ..b
         bpl     MapEntitySystem_Branch_AA74     ; AA52 10 20                    .
@@ -3603,7 +3603,7 @@ MapEntitySystem_Branch_AAAE:
 MapEntitySystem_Branch_AABD:
         rts                                     ; AABD 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForFlag20_20:
+HideCompletedPrimarySceneActor:
         brk                                     ; AABE 00                       .
         db   $20,$EB,$20                     ; AABF 20 EB 20                  .
 ; ----------------------------------------------------------------------------
@@ -3678,7 +3678,7 @@ PositionEntityZeroAt05_0DOnRow09:
 MapEntitySystem_Branch_AB36:
         rts                                     ; AB36 60                       `
 ; ----------------------------------------------------------------------------
-ApplyState6289EntityPositions:
+ConfigureAlternateWorldStateEntityPositions:
         lda     $6289                           ; AB37 AD 89 62                 ..b
         bpl     MapEntitySystem_Branch_AB36     ; AB3A 10 FA                    ..
         ldx     #$01                            ; AB3C A2 01                    ..
@@ -3915,7 +3915,7 @@ MapEntitySystem_Branch_AD9D:
         brk                                     ; ADA5 00                       .
         db   $15,$EF                         ; ADA6 15 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEntityService07_6F_43     ; ADA8 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; ADA8 20 46 BF                  F.
         brk                                     ; ADAB 00                       .
         db   $20,$3B                         ; ADAC 20 3B                     ;
 ; ----------------------------------------------------------------------------
@@ -3963,14 +3963,14 @@ RunScriptedFourEntityScene:
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; ADFF A2 03                    ..
         lda     #$40                            ; AE01 A9 40                    .@
-        jsr     RunMapEntityService0D_87        ; AE03 20 D3 BE                  ..
+        jsr     AdvanceMapEntityMotion          ; AE03 20 D3 BE                  ..
         ldy     #$03                            ; AE06 A0 03                    ..
         ldx     $6FE6,y                         ; AE08 BE E6 6F                 ..o
         ldy     #$02                            ; AE0B A0 02                    ..
         txa                                     ; AE0D 8A                       .
         sta     $6FE6,y                         ; AE0E 99 E6 6F                 ..o
         lda     #$24                            ; AE11 A9 24                    .$
-        jsr     RunMapEntityService0D_87        ; AE13 20 D3 BE                  ..
+        jsr     AdvanceMapEntityMotion          ; AE13 20 D3 BE                  ..
         ldx     #$03                            ; AE16 A2 03                    ..
         ldy     PlayerLocalX                    ; AE18 A4 44                    .D
         dey                                     ; AE1A 88                       .
@@ -4056,7 +4056,7 @@ RunScriptedFourEntityScene:
         lda     $627F                           ; AEB6 AD 7F 62                 ..b
         ora     #$80                            ; AEB9 09 80                    ..
         sta     $627F                           ; AEBB 8D 7F 62                 ..b
-        jsr     RunMapEntityService07_6F_43     ; AEBE 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; AEBE 20 46 BF                  F.
         ldx     #$03                            ; AEC1 A2 03                    ..
         lda     #$4D                            ; AEC3 A9 4D                    .M
         brk                                     ; AEC5 00                       .
@@ -4154,7 +4154,7 @@ MapEntitySystem_Branch_AF5C:
         cmp     #$04                            ; AF67 C9 04                    ..
         bcs     MapEntitySystem_Branch_AFBA     ; AF69 B0 4F                    .O
         pha                                     ; AF6B 48                       H
-        jsr     RunMapEntityService07_6F_43     ; AF6C 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; AF6C 20 46 BF                  F.
         pla                                     ; AF6F 68                       h
         pha                                     ; AF70 48                       H
         jsr     LoadMapEventScriptRecord        ; AF71 20 DA AF                  ..
@@ -4213,7 +4213,7 @@ MapEntitySystem_Branch_AFA5:
         rts                                     ; AFB9 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AFBA:
-        jsr     RunMapEntityService07_6F_43     ; AFBA 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; AFBA 20 46 BF                  F.
         brk                                     ; AFBD 00                       .
         db   $83,$3B                         ; AFBE 83 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -4393,12 +4393,12 @@ MapEntitySystem_Branch_B0DD:
 ; ----------------------------------------------------------------------------
         rts                                     ; B0FB 60                       `
 ; ----------------------------------------------------------------------------
-TransitionToSubmapZeroAt05_1C:
+EnterScriptedSceneDestination:
         jsr     FadePaletteFromBlack            ; B0FC 20 C5 C5                  ..
         lda     #$80                            ; B0FF A9 80                    ..
         sta     $6BDE                           ; B101 8D DE 6B                 ..k
         jsr     ResetDisplayState               ; B104 20 4E C5                  N.
-        jsr     RunMapEntityService07_6F_43     ; B107 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; B107 20 46 BF                  F.
         lda     #$30                            ; B10A A9 30                    .0
         sta     $05FD                           ; B10C 8D FD 05                 ...
         jsr     FadePaletteToBlack              ; B10F 20 BF C5                  ..
@@ -4432,7 +4432,7 @@ TransitionToSubmapZeroAt05_1C:
         ora     #$03                            ; B141 09 03                    ..
         sta     $7006,x                         ; B143 9D 06 70                 ..p
         jsr     FadePaletteToBlack              ; B146 20 BF C5                  ..
-        jsr     RunMapEntityService07_6F_43     ; B149 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; B149 20 46 BF                  F.
         brk                                     ; B14C 00                       .
         db   $5C,$3B                         ; B14D 5C 3B                    \;
 ; ----------------------------------------------------------------------------
@@ -4498,7 +4498,7 @@ RunEntitySwapAndVerticalOamScene:
         lda     $70E6,x                         ; B1B7 BD E6 70                 ..p
         and     #$7F                            ; B1BA 29 7F                    ).
         sta     $70E6,x                         ; B1BC 9D E6 70                 ..p
-        jsr     RunMapEntityService07_6F_43     ; B1BF 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; B1BF 20 46 BF                  F.
         brk                                     ; B1C2 00                       .
         db   $3A,$3B                         ; B1C3 3A 3B                    :;
 ; ----------------------------------------------------------------------------
@@ -4506,11 +4506,11 @@ RunEntitySwapAndVerticalOamScene:
 ; ----------------------------------------------------------------------------
 MoveEntityZeroSpritesDown:
         lda     #$FF                            ; B1C6 A9 FF                    ..
-        jmp     MapEntitySystem_Branch_B1CD     ; B1C8 4C CD B1                 L..
+        jmp     AnimateEntityZeroSpritesVertically; B1C8 4C CD B1               L..
 ; ----------------------------------------------------------------------------
 MoveEntityZeroSpritesVertically:
         lda     #$00                            ; B1CB A9 00                    ..
-MapEntitySystem_Branch_B1CD:
+AnimateEntityZeroSpritesVertically:
         sta     $52                             ; B1CD 85 52                    .R
         ldx     #$00                            ; B1CF A2 00                    ..
         lda     $7006,x                         ; B1D1 BD 06 70                 ..p
@@ -5288,7 +5288,7 @@ PositionPlayer05_08AndRunScene:
         lda     #$11                            ; B71B A9 11                    ..
         sta     $7046,x                         ; B71D 9D 46 70                 .Fp
         jsr     RunMapSceneServices1FAnd08      ; B720 20 1D B3                  ..
-        jsr     RunMapEntityService07_6F_43     ; B723 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; B723 20 46 BF                  F.
         brk                                     ; B726 00                       .
         db   $44,$4B                         ; B727 44 4B                    DK
 ; ----------------------------------------------------------------------------
@@ -5395,7 +5395,7 @@ RunMap1BTransitionSequence:
         brk                                     ; B7C2 00                       .
         db   $1D,$EB,$01                     ; B7C3 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        bne     LoadMap1BSubmapFourScene        ; B7C6 D0 72                    .r
+        bne     LoadRosavilleSubmapFourScene    ; B7C6 D0 72                    .r
         jsr     SuspendRenderingUpdates         ; B7C8 20 AF C5                  ..
         jsr     ResumeRenderingAfterPpuWork     ; B7CB 20 8F C5                  ..
         brk                                     ; B7CE 00                       .
@@ -5451,7 +5451,7 @@ RunMap1BTransitionSequence:
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneEightyFrames; B819 20 18 D2                 ..
         jsr     FadePaletteFromBlack            ; B81C 20 C5 C5                  ..
-        jsr     SetPlayerLocalPosition11_14     ; B81F 20 EC B8                  ..
+        jsr     PositionPlayerForTravelArrival  ; B81F 20 EC B8                  ..
         brk                                     ; B822 00                       .
         db   $16,$DB,$EF                     ; B823 16 DB EF                 ...
 ; ----------------------------------------------------------------------------
@@ -5469,7 +5469,7 @@ MapEntitySystem_Branch_B830:
         bne     MapEntitySystem_Branch_B830     ; B837 D0 F7                    ..
         rts                                     ; B839 60                       `
 ; ----------------------------------------------------------------------------
-LoadMap1BSubmapFourScene:
+LoadRosavilleSubmapFourScene:
         lda     #$1B                            ; B83A A9 1B                    ..
         sta     CurrentMapNumber                ; B83C 85 63                    .c
         lda     #$04                            ; B83E A9 04                    ..
@@ -5549,7 +5549,7 @@ MapEntitySystem_Branch_B8A0:
         brk                                     ; B8B9 00                       .
         db   $0D,$87                         ; B8BA 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jmp     SetPlayerLocalPosition11_14     ; B8BC 4C EC B8                 L..
+        jmp     PositionPlayerForTravelArrival  ; B8BC 4C EC B8                 L..
 ; ----------------------------------------------------------------------------
 HideEntityAndPauseFortyFiveFrames:
         jsr     SetEntityCoordinateSentinel81   ; B8BF 20 37 BF                  7.
@@ -5583,14 +5583,14 @@ MapEntitySystem_Branch_B8E0:
         bpl     MapEntitySystem_Branch_B8E0     ; B8E9 10 F5                    ..
         rts                                     ; B8EB 60                       `
 ; ----------------------------------------------------------------------------
-SetPlayerLocalPosition11_14:
+PositionPlayerForTravelArrival:
         lda     #$11                            ; B8EC A9 11                    ..
         sta     PlayerLocalX                    ; B8EE 85 44                    .D
         lda     #$14                            ; B8F0 A9 14                    ..
         sta     PlayerLocalY                    ; B8F2 85 45                    .E
         rts                                     ; B8F4 60                       `
 ; ----------------------------------------------------------------------------
-RunPresentation11AndSetFlag1D_08:
+CompleteFirstTravelScene:
         lda     #$11                            ; B8F5 A9 11                    ..
         brk                                     ; B8F7 00                       .
         db   $01,$8F                         ; B8F8 01 8F                    ..
@@ -5600,7 +5600,7 @@ RunPresentation11AndSetFlag1D_08:
 ; ----------------------------------------------------------------------------
         jmp     RunMapSceneServices1FAnd08      ; B8FE 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
-SetSavedWorldPosition8F_D0:
+SaveTravelArrivalWorldPosition:
         brk                                     ; B901 00                       .
         db   $13,$CB,$02                     ; B902 13 CB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -5697,7 +5697,7 @@ MapEntitySystem_Branch_B976:
         bcc     MapEntitySystem_Branch_B976     ; B992 90 E2                    ..
         rts                                     ; B994 60                       `
 ; ----------------------------------------------------------------------------
-RunPresentation13AndSetFlag1D_04:
+CompleteSecondTravelScene:
         lda     #$13                            ; B995 A9 13                    ..
         brk                                     ; B997 00                       .
         db   $01,$8F                         ; B998 01 8F                    ..
@@ -5730,7 +5730,7 @@ RunPresentation14EntityFourScene:
 ; ----------------------------------------------------------------------------
         jmp     RunMapSceneServices1FAnd08      ; B9C5 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
-RunWorldTransitionSequence01_07_04:
+RunWorldTravelProgression:
         lda     #$01                            ; B9C8 A9 01                    ..
         jsr     RunWorldMapTransitionService    ; B9CA 20 9E B2                  ..
         lda     #$07                            ; B9CD A9 07                    ..
@@ -5784,7 +5784,7 @@ RunPresentation15EntitySixScene:
         db   $0B,$87                         ; BA19 0B 87                    ..
 ; ----------------------------------------------------------------------------
         jsr     RefreshMapSceneAndResumeRendering; BA1B 20 23 B3                 #.
-        jsr     RunMapEntityService07_6F_43     ; BA1E 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BA1E 20 46 BF                  F.
         lda     #$06                            ; BA21 A9 06                    ..
         sta     $059C                           ; BA23 8D 9C 05                 ...
         brk                                     ; BA26 00                       .
@@ -5818,7 +5818,7 @@ RunPresentation16EntitySixContinuation:
         db   $0B,$87                         ; BA4E 0B 87                    ..
 ; ----------------------------------------------------------------------------
         jsr     RefreshMapSceneAndResumeRendering; BA50 20 23 B3                 #.
-        jsr     RunMapEntityService07_6F_43     ; BA53 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BA53 20 46 BF                  F.
         lda     #$06                            ; BA56 A9 06                    ..
         sta     $059C                           ; BA58 8D 9C 05                 ...
         brk                                     ; BA5B 00                       .
@@ -5851,7 +5851,7 @@ RunPresentation17EntitySixScene:
         db   $0B,$87                         ; BA83 0B 87                    ..
 ; ----------------------------------------------------------------------------
         jsr     RefreshMapSceneAndResumeRendering; BA85 20 23 B3                 #.
-        jsr     RunMapEntityService07_6F_43     ; BA88 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BA88 20 46 BF                  F.
         lda     #$06                            ; BA8B A9 06                    ..
         sta     $059C                           ; BA8D 8D 9C 05                 ...
         brk                                     ; BA90 00                       .
@@ -5884,7 +5884,7 @@ RunPresentation18EntitySixScene:
         db   $0B,$87                         ; BAB8 0B 87                    ..
 ; ----------------------------------------------------------------------------
         jsr     RefreshMapSceneAndResumeRendering; BABA 20 23 B3                 #.
-        jsr     RunMapEntityService07_6F_43     ; BABD 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BABD 20 46 BF                  F.
         lda     #$06                            ; BAC0 A9 06                    ..
         sta     $059C                           ; BAC2 8D 9C 05                 ...
         brk                                     ; BAC5 00                       .
@@ -5940,7 +5940,7 @@ RunFlag20EntityTwoTransition:
         ora     $3D                             ; BB0F 05 3D                    .=
         eor     #$02                            ; BB11 49 02                    I.
         sta     $7006,x                         ; BB13 9D 06 70                 ..p
-        jsr     RunMapEntityService07_6F_43     ; BB16 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BB16 20 46 BF                  F.
         brk                                     ; BB19 00                       .
         db   $6E,$4B                         ; BB1A 6E 4B                    nK
 ; ----------------------------------------------------------------------------
@@ -5970,7 +5970,7 @@ MapEntitySystem_Branch_BB3E:
         rts                                     ; BB3E 60                       `
 ; ----------------------------------------------------------------------------
 TransitionToPosition15_05AtTimeZero:
-        jsr     RunMapEntityService07_6F_43     ; BB3F 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BB3F 20 46 BF                  F.
         brk                                     ; BB42 00                       .
         db   $6A,$4B                         ; BB43 6A 4B                    jK
 ; ----------------------------------------------------------------------------
@@ -6052,7 +6052,7 @@ MapEntitySystem_Branch_BB79:
         db   $0A,$6F                         ; BBCF 0A 6F                    .o
 ; ----------------------------------------------------------------------------
         jsr     FadePaletteToBlack              ; BBD1 20 BF C5                  ..
-        jsr     RunMapEntityService07_6F_43     ; BBD4 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BBD4 20 46 BF                  F.
         brk                                     ; BBD7 00                       .
         db   $6B,$4B                         ; BBD8 6B 4B                    kK
 ; ----------------------------------------------------------------------------
@@ -6186,7 +6186,7 @@ MapEntitySystem_Branch_BC8A:
         brk                                     ; BCA7 00                       .
         db   $0D,$CB,$80                     ; BCA8 0D CB 80                 ...
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEntityService07_6F_43     ; BCAB 20 46 BF                  F.
+        jsr     RefreshMapEntityEventState      ; BCAB 20 46 BF                  F.
         brk                                     ; BCAE 00                       .
         db   $B0,$4B                         ; BCAF B0 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -6334,7 +6334,7 @@ MapEntitySystem_Branch_BD85:
         bcc     MapEntitySystem_Branch_BD85     ; BD93 90 F0                    ..
         rts                                     ; BD95 60                       `
 ; ----------------------------------------------------------------------------
-LoadSubmapZeroDestination10_09:
+EnterScriptedArrivalScene:
         lda     #$00                            ; BD96 A9 00                    ..
         sta     CurrentSubmapNumber             ; BD98 85 64                    .d
         lda     #$10                            ; BD9A A9 10                    ..
@@ -6498,7 +6498,7 @@ RunMapPulseAndScrollSixteenSteps:
         ldx     #$10                            ; BE93 A2 10                    ..
         jmp     RunRepeatedVerticalScrollPulses ; BE95 4C F2 BE                 L..
 ; ----------------------------------------------------------------------------
-TransitionToMap48SubmapFour:
+TransitionToShrineOfColossusSubmap:
         jsr     FadePaletteFromBlack            ; BE98 20 C5 C5                  ..
         lda     #$48                            ; BE9B A9 48                    .H
         sta     CurrentMapNumber                ; BE9D 85 63                    .c
@@ -6536,7 +6536,7 @@ RunPresentation1AAndDispatchEvent10:
         lda     #$10                            ; BECE A9 10                    ..
         jmp     DispatchMapEntityEventById      ; BED0 4C 5F AD                 L_.
 ; ----------------------------------------------------------------------------
-RunMapEntityService0D_87:
+AdvanceMapEntityMotion:
         brk                                     ; BED3 00                       .
         db   $0D,$87                         ; BED4 0D 87                    ..
 ; ----------------------------------------------------------------------------
@@ -6613,7 +6613,7 @@ MapEntitySystem_Branch_BF39:
         sta     $6FC6,x                         ; BF42 9D C6 6F                 ..o
         rts                                     ; BF45 60                       `
 ; ----------------------------------------------------------------------------
-RunMapEntityService07_6F_43:
+RefreshMapEntityEventState:
         brk                                     ; BF46 00                       .
         db   $07,$6F,$43                     ; BF47 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------

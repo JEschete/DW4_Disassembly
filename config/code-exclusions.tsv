@@ -241,7 +241,7 @@
 18	BF55	BF56	Content classification	Target of service directory entry $1D at $803A: no decoded BRK selects the entry, linear decode reaches unsupported opcode $1C at $BF5D, and FCEUX never executed it
 18	BF8C	BF8D	Content classification	Target of service directory entry $1F at $803E: no decoded BRK selects the entry, linear decode reaches unsupported opcode $22 at $BF97, and FCEUX never executed it
 18	BF90	BF91	Content classification	Target of service directory entry $1E at $803C: no decoded BRK selects the entry, and linear decode reaches BRK $6B,$06, whose selector names bank $00 without a service directory
-19	8000	8014	Content classification	Mixed map and tileset service directory
+19	8000	8014	Content classification	Audio service directory
 19	804D	8050	Content classification	Inline operands for fixed-bank BRK service at $804C
 19	806C	806F	Content classification	Inline operands for fixed-bank BRK service at $806B
 19	80C9	80CC	Content classification	Inline operands for fixed-bank BRK service at $80C8

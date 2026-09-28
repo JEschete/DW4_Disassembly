@@ -184,9 +184,9 @@ BattleTurnEngine_Branch_8141:
         bcc     BattleTurnEngine_Branch_81AE    ; 8165 90 47                    .G
         jsr     BattleTurnEngine_CountCombatantWidthWithoutAdvancing; 8167 20 4A 9C J.
         bcc     BattleTurnEngine_Branch_81AE    ; 816A 90 42                    .B
-        jsr     BattleTurnEngine_TryPlacementGroupOffset04; 816C 20 39 94        9.
+        jsr     BattleTurnEngine_TrySecondaryCombatantPlacementGroup; 816C 20 39 94 9.
         bcc     BattleTurnEngine_Branch_81AE    ; 816F 90 3D                    .=
-        jsr     BattleTurnEngine_TryPlacementGroupOffset00; 8171 20 F2 93        ..
+        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 8171 20 F2 93 ..
         bcc     BattleTurnEngine_Branch_81AE    ; 8174 90 38                    .8
         lda     $C4                             ; 8176 A5 C4                    ..
         beq     BattleTurnEngine_Branch_8184    ; 8178 F0 0A                    ..
@@ -276,7 +276,7 @@ BattleTurnEngine_ClearResolvedTurnSlot:
         jsr     BattleTurnEngine_RemoveCurrentTurnSlotAndCollapseDisplay; 8217 20 CC 82 ..
         pla                                     ; 821A 68                       h
         sta     $C7                             ; 821B 85 C7                    ..
-        jmp     BattleTurnEngine_Branch_9EF4    ; 821D 4C F4 9E                 L..
+        jmp     ClearReservedQueuedTurnSlot     ; 821D 4C F4 9E                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RemoveResolvedTurnSlot:
         lda     $C7                             ; 8220 A5 C7                    ..
@@ -285,7 +285,7 @@ BattleTurnEngine_RemoveResolvedTurnSlot:
         jsr     BattleTurnEngine_RunResolvedTurnSlotRemoval; 8226 20 2F 82       /.
         pla                                     ; 8229 68                       h
         sta     $C7                             ; 822A 85 C7                    ..
-        jmp     BattleTurnEngine_Branch_9EF4    ; 822C 4C F4 9E                 L..
+        jmp     ClearReservedQueuedTurnSlot     ; 822C 4C F4 9E                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RunResolvedTurnSlotRemoval:
         jsr     BattleTurnEngine_CheckSpecialBlinkGate; 822F 20 67 83            g.
@@ -325,7 +325,7 @@ BattleTurnEngine_Branch_8263:
         jsr     WaitForNmi                      ; 8274 20 74 FF                  t.
         lda     $6E45                           ; 8277 AD 45 6E                 .En
         cmp     #$BC                            ; 827A C9 BC                    ..
-        beq     BattleTurnEngine_Branch_82CF    ; 827C F0 51                    .Q
+        beq     RemoveQueuedCombatantSlot       ; 827C F0 51                    .Q
         lda     $1F                             ; 827E A5 1F                    ..
         ora     #$40                            ; 8280 09 40                    .@
         sta     $1F                             ; 8282 85 1F                    ..
@@ -358,11 +358,11 @@ BattleTurnEngine_Branch_8297:
         lda     $1F                             ; 82C3 A5 1F                    ..
         and     #$BF                            ; 82C5 29 BF                    ).
         sta     $1F                             ; 82C7 85 1F                    ..
-        jmp     BattleTurnEngine_Branch_82CF    ; 82C9 4C CF 82                 L..
+        jmp     RemoveQueuedCombatantSlot       ; 82C9 4C CF 82                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RemoveCurrentTurnSlotAndCollapseDisplay:
         jsr     BattleTurnEngine_EraseQueuedCombatantGraphic; 82CC 20 40 9A      @.
-BattleTurnEngine_Branch_82CF:
+RemoveQueuedCombatantSlot:
         jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 82CF 20 7F 9E ..
         stx     $C6                             ; 82D2 86 C6                    ..
         jsr     BattleTurnEngine_RepackQueuedOamPositions; 82D4 20 8C 9B         ..
@@ -372,7 +372,7 @@ BattleTurnEngine_Branch_82CF:
         sta     $0698,x                         ; 82DE 9D 98 06                 ...
         lda     #$FF                            ; 82E1 A9 FF                    ..
         sta     $06A0,x                         ; 82E3 9D A0 06                 ...
-        jmp     BattleTurnEngine_Branch_9A92    ; 82E6 4C 92 9A                 L..
+        jmp     RemoveCombatantPlacementRecord  ; 82E6 4C 92 9A                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_BlinkResolvedTurnSlot:
         jsr     BattleTurnEngine_CheckSpecialBlinkGate; 82E9 20 67 83            g.
@@ -690,9 +690,9 @@ BattleTurnEngine_Branch_8501:
 BattleTurnEngine_Branch_8506:
         jsr     BattleTurnEngine_FindEmptyActiveCombatantSlot; 8506 20 34 9E     4.
         bcc     BattleTurnEngine_Branch_8527    ; 8509 90 1C                    ..
-        jsr     BattleTurnEngine_TryPlacementGroupOffset00; 850B 20 F2 93        ..
+        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 850B 20 F2 93 ..
         bcc     BattleTurnEngine_Branch_8527    ; 850E 90 17                    ..
-        jsr     BattleTurnEngine_TryPlacementGroupOffset04; 8510 20 39 94        9.
+        jsr     BattleTurnEngine_TrySecondaryCombatantPlacementGroup; 8510 20 39 94 9.
         bcc     BattleTurnEngine_Branch_8527    ; 8513 90 12                    ..
 BattleTurnEngine_Branch_8515:
         jsr     BattleTurnEngine_MeasureCombatantGraphicLayout; 8515 20 20 93     .
@@ -865,7 +865,7 @@ BattleTurnEngine_StreamSpecialBattleNametableBlock:
         sta     $18                             ; 8639 85 18                    ..
         lda     #$A0                            ; 863B A9 A0                    ..
         sta     $19                             ; 863D 85 19                    ..
-        jmp     BattleTurnEngine_Branch_8CD5    ; 863F 4C D5 8C                 L..
+        jmp     UploadBattleGraphicsBlocks      ; 863F 4C D5 8C                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_LoadDependentBattleGraphicId:
         lda     $8646,y                         ; 8642 B9 46 86                 .F.
@@ -883,7 +883,7 @@ BattleTurnEngine_CheckTransitionSpritePlacement:
         lda     #$4D                            ; 8659 A9 4D                    .M
         sta     $C4                             ; 865B 85 C4                    ..
         jsr     BattleTurnEngine_LoadPlacementCoordinates; 865D 20 93 95         ..
-        jsr     BattleTurnEngine_TryPlacementGroupOffset00; 8660 20 F2 93        ..
+        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 8660 20 F2 93 ..
         bcs     BattleTurnEngine_Branch_8666    ; 8663 B0 01                    ..
         rts                                     ; 8665 60                       `
 ; ----------------------------------------------------------------------------
@@ -1460,16 +1460,16 @@ BattleTurnEngine_LoadPrimaryBattleGraphicsPointer:
         sta     $C0                             ; 8A6C 85 C0                    ..
         lda     $8D77                           ; 8A6E AD 77 8D                 .w.
         sta     $C1                             ; 8A71 85 C1                    ..
-        jmp     BattleTurnEngine_Branch_8A83    ; 8A73 4C 83 8A                 L..
+        jmp     LoadQueuedCombatantGraphics     ; 8A73 4C 83 8A                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_LoadSecondaryBattleGraphicsPointer:
         lda     $8D78                           ; 8A76 AD 78 8D                 .x.
         sta     $C0                             ; 8A79 85 C0                    ..
         lda     $8D79                           ; 8A7B AD 79 8D                 .y.
         sta     $C1                             ; 8A7E 85 C1                    ..
-        jmp     BattleTurnEngine_Branch_8A83    ; 8A80 4C 83 8A                 L..
+        jmp     LoadQueuedCombatantGraphics     ; 8A80 4C 83 8A                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8A83:
+LoadQueuedCombatantGraphics:
         jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 8A83 20 0C 9E    ..
         ldx     $C8                             ; 8A86 A6 C8                    ..
         lda     $045A,x                         ; 8A88 BD 5A 04                 .Z.
@@ -1488,7 +1488,7 @@ BattleTurnEngine_Branch_8A91:
         lda     $16                             ; 8A9E A5 16                    ..
         adc     #$00                            ; 8AA0 69 00                    i.
         sta     $18                             ; 8AA2 85 18                    ..
-        jmp     BattleTurnEngine_Branch_8CD5    ; 8AA4 4C D5 8C                 L..
+        jmp     UploadBattleGraphicsBlocks      ; 8AA4 4C D5 8C                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_SelectClosestQueuedTurnSlotToCenter:
         ldy     #$FF                            ; 8AA7 A0 FF                    ..
@@ -1534,7 +1534,7 @@ BattleTurnEngine_AnimateQueuedTurnSlotHorizontalStep:
         sta     $08                             ; 8AE7 85 08                    ..
         lda     #$01                            ; 8AE9 A9 01                    ..
         sta     $09                             ; 8AEB 85 09                    ..
-BattleTurnEngine_Branch_8AED:
+AnimateQueuedCombatantHorizontalMotion:
         lda     $09                             ; 8AED A5 09                    ..
         sta     $0A                             ; 8AEF 85 0A                    ..
         lda     $06                             ; 8AF1 A5 06                    ..
@@ -1554,7 +1554,7 @@ BattleTurnEngine_Branch_8AED:
 BattleTurnEngine_Branch_8B0B:
         jsr     BattleTurnEngine_AdvanceQueuedTurnSlotHorizontalStep; 8B0B 20 13 8B ..
         inc     $09                             ; 8B0E E6 09                    ..
-        jmp     BattleTurnEngine_Branch_8AED    ; 8B10 4C ED 8A                 L..
+        jmp     AnimateQueuedCombatantHorizontalMotion; 8B10 4C ED 8A           L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_AdvanceQueuedTurnSlotHorizontalStep:
         lda     $06                             ; 8B13 A5 06                    ..
@@ -1835,7 +1835,7 @@ BattleTurnEngine_Branch_8C94:
         tax                                     ; 8CD3 AA                       .
         rts                                     ; 8CD4 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8CD5:
+UploadBattleGraphicsBlocks:
         lda     $1F                             ; 8CD5 A5 1F                    ..
         ora     #$40                            ; 8CD7 09 40                    .@
         sta     $1F                             ; 8CD9 85 1F                    ..
@@ -2800,7 +2800,7 @@ BattleTurnEngine_EncodeTurnSlotReservation:
         tax                                     ; 93F0 AA                       .
         rts                                     ; 93F1 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_TryPlacementGroupOffset00:
+BattleTurnEngine_TryPrimaryCombatantPlacementGroup:
         jsr     BattleTurnEngine_InitializePrimaryPlacementScan; 93F2 20 B1 94   ..
 BattleTurnEngine_Branch_93F5:
         jsr     BattleTurnEngine_LoadPlacementCoordinates; 93F5 20 93 95         ..
@@ -2842,7 +2842,7 @@ BattleTurnEngine_Branch_9437:
         clc                                     ; 9437 18                       .
         rts                                     ; 9438 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_TryPlacementGroupOffset04:
+BattleTurnEngine_TrySecondaryCombatantPlacementGroup:
         jsr     BattleTurnEngine_InitializeSecondaryPlacementScan; 9439 20 B5 94 ..
         beq     BattleTurnEngine_Branch_942F    ; 943C F0 F1                    ..
 BattleTurnEngine_Branch_943E:
@@ -3546,7 +3546,7 @@ BattleTurnEngine_Branch_9875:
         bne     BattleTurnEngine_Branch_9875    ; 987D D0 F6                    ..
 BattleTurnEngine_Branch_987F:
         clc                                     ; 987F 18                       .
-        jmp     BattleTurnEngine_Branch_9A38    ; 9880 4C 38 9A                 L8.
+        jmp     RestoreBattleGraphicsOamCursor  ; 9880 4C 38 9A                 L8.
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_Branch_9883:
         lda     $045A,y                         ; 9883 B9 5A 04                 .Z.
@@ -3560,7 +3560,7 @@ BattleTurnEngine_Branch_9891:
         jsr     BattleTurnEngine_ClearDecodedBattleGraphicBuffers; 9894 20 4F 92 O.
         lda     $C4                             ; 9897 A5 C4                    ..
         cmp     #$F0                            ; 9899 C9 F0                    ..
-        bcc     BattleTurnEngine_Branch_98F5    ; 989B 90 58                    .X
+        bcc     DecodeMonsterGraphicsStream     ; 989B 90 58                    .X
         inc     $CC                             ; 989D E6 CC                    ..
         ldy     #$00                            ; 989F A0 00                    ..
         sty     $00                           ; 98A1 84 00                    ..
@@ -3609,9 +3609,9 @@ BattleTurnEngine_Branch_98E9:
         dex                                     ; 98EC CA                       .
         bpl     BattleTurnEngine_Branch_98E9    ; 98ED 10 FA                    ..
         jsr     BattleTurnEngine_LoadCombatantTileDataIntoBuffers; 98EF 20 4B 9D K.
-        jmp     BattleTurnEngine_Branch_9A38    ; 98F2 4C 38 9A                 L8.
+        jmp     RestoreBattleGraphicsOamCursor  ; 98F2 4C 38 9A                 L8.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_98F5:
+DecodeMonsterGraphicsStream:
         lda     #$00                            ; 98F5 A9 00                    ..
         sta     $06A8                           ; 98F7 8D A8 06                 ...
 BattleTurnEngine_Branch_98FA:
@@ -3801,12 +3801,12 @@ BattleTurnEngine_Branch_9A2A:
         jsr     Bank14_AdvanceMonsterGraphicsStreamBlock; 9A2A 20 EB 9F          ..
         dec     $D1                             ; 9A2D C6 D1                    ..
         beq     BattleTurnEngine_Branch_9A34    ; 9A2F F0 03                    ..
-        jmp     BattleTurnEngine_Branch_98F5    ; 9A31 4C F5 98                 L..
+        jmp     DecodeMonsterGraphicsStream     ; 9A31 4C F5 98                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_Branch_9A34:
         jsr     BattleTurnEngine_LoadCombatantTileDataIntoBuffers; 9A34 20 4B 9D K.
         sec                                     ; 9A37 38                       8
-BattleTurnEngine_Branch_9A38:
+RestoreBattleGraphicsOamCursor:
         pla                                     ; 9A38 68                       h
         sta     $C9                             ; 9A39 85 C9                    ..
         rts                                     ; 9A3B 60                       `
@@ -3859,7 +3859,7 @@ BattleTurnEngine_Branch_9A90:
         clc                                     ; 9A90 18                       .
         rts                                     ; 9A91 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9A92:
+RemoveCombatantPlacementRecord:
         ldx     #$07                            ; 9A92 A2 07                    ..
 BattleTurnEngine_Branch_9A94:
         lda     $0690,x                         ; 9A94 BD 90 06                 ...
@@ -4234,7 +4234,7 @@ BattleTurnEngine_FindCenteredQueuedOamX:
         sta     $D6                             ; 9CC5 85 D6                    ..
         lda     #$01                            ; 9CC7 A9 01                    ..
         sta     $D7                             ; 9CC9 85 D7                    ..
-BattleTurnEngine_Branch_9CCB:
+FindCollisionFreeQueuedOamX:
         jsr     BattleTurnEngine_CheckQueuedOamXCollision; 9CCB 20 EB 9C         ..
         bcc     BattleTurnEngine_Branch_9CD1    ; 9CCE 90 01                    ..
         rts                                     ; 9CD0 60                       `
@@ -4253,7 +4253,7 @@ BattleTurnEngine_Branch_9CDC:
         bcs     BattleTurnEngine_Branch_9D1F    ; 9CE2 B0 3B                    .;
         sta     $D6                             ; 9CE4 85 D6                    ..
         inc     $D7                             ; 9CE6 E6 D7                    ..
-        jmp     BattleTurnEngine_Branch_9CCB    ; 9CE8 4C CB 9C                 L..
+        jmp     FindCollisionFreeQueuedOamX     ; 9CE8 4C CB 9C                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_CheckQueuedOamXCollision:
         ldx     #$00                            ; 9CEB A2 00                    ..
@@ -4483,7 +4483,7 @@ BattleTurnEngine_Branch_9E23:
         beq     BattleTurnEngine_Branch_9E53    ; 9E2D F0 24                    .$
 BattleTurnEngine_Branch_9E2F:
         sty     $C8                             ; 9E2F 84 C8                    ..
-        jmp     BattleTurnEngine_Branch_9E5A    ; 9E31 4C 5A 9E                 LZ.
+        jmp     ReturnActiveCombatantSlotSearch ; 9E31 4C 5A 9E                 LZ.
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_FindEmptyActiveCombatantSlot:
         lda     $C4                             ; 9E34 A5 C4                    ..
@@ -4516,7 +4516,7 @@ BattleTurnEngine_Branch_9E53:
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_Branch_9E58:
         sty     $C6                             ; 9E58 84 C6                    ..
-BattleTurnEngine_Branch_9E5A:
+ReturnActiveCombatantSlotSearch:
         pla                                     ; 9E5A 68                       h
         tay                                     ; 9E5B A8                       .
         pla                                     ; 9E5C 68                       h
@@ -4653,7 +4653,7 @@ BattleTurnEngine_Branch_9EEB:
         sec                                     ; 9EF2 38                       8
         rts                                     ; 9EF3 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9EF4:
+ClearReservedQueuedTurnSlot:
         txa                                     ; 9EF4 8A                       .
         pha                                     ; 9EF5 48                       H
         lda     a:$C7                           ; 9EF6 AD C7 00                 ...
@@ -4874,7 +4874,7 @@ BattleTurnEngine_RunQueuedTurnSlotRandomFillBurst:
 BattleTurnEngine_RandomlyFillOverlayPatternTile:
         lda     #$FF                            ; A02E A9 FF                    ..
         sta     $00                           ; A030 85 00                    ..
-BattleTurnEngine_Branch_A032:
+RandomlyFillOverlayPatternUntilComplete:
         lda     #$03                            ; A032 A9 03                    ..
         sta     $02                             ; A034 85 02                    ..
         jsr     BattleTurnEngine_FlipRandomOverlayBitTowardTarget; A036 20 42 A0 B.
@@ -4883,7 +4883,7 @@ BattleTurnEngine_Branch_A032:
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_Branch_A03C:
         jsr     BattleTurnEngine_UploadOverlayPatternTile; A03C 20 92 A0         ..
-        jmp     BattleTurnEngine_Branch_A032    ; A03F 4C 32 A0                 L2.
+        jmp     RandomlyFillOverlayPatternUntilComplete; A03F 4C 32 A0          L2.
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_FlipRandomOverlayBitTowardTarget:
         lda     #$00                            ; A042 A9 00                    ..

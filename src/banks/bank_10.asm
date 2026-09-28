@@ -30,7 +30,7 @@ Bank10_BattlePartyServices:
         pha                                     ; 8084 48                       H
         tya                                     ; 8085 98                       .
         pha                                     ; 8086 48                       H
-        jmp     BattlePartyServices_Branch_815F ; 8087 4C 5F 81                 L_.
+        jmp     ExecuteBattlePartyRecordOperation; 8087 4C 5F 81                L_.
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceWithInlineOperands:
         sta     $6E0B                           ; 808A 8D 0B 6E                 ..n
@@ -38,12 +38,12 @@ DispatchBattleServiceWithInlineOperands:
         pha                                     ; 808E 48                       H
         tya                                     ; 808F 98                       .
         pha                                     ; 8090 48                       H
-BattlePartyServices_Branch_8091:
+InitializeInlineBattleServiceDispatch:
         jsr     InitializeInlineBattleOperandPointer; 8091 20 9D 80              ..
         lda     $76                             ; 8094 A5 76                    .v
         sta     $6E0A                           ; 8096 8D 0A 6E                 ..n
         iny                                     ; 8099 C8                       .
-        jmp     BattlePartyServices_Branch_80B3 ; 809A 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 809A 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 InitializeInlineBattleOperandPointer:
         tsx                                     ; 809D BA                       .
@@ -58,7 +58,7 @@ InitializeInlineBattleOperandPointer:
         sty     $6E0A                           ; 80AF 8C 0A 6E                 ..n
         rts                                     ; 80B2 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_80B3:
+AdvanceInlineBattleReturnAddress:
         tya                                     ; 80B3 98                       .
         tsx                                     ; 80B4 BA                       .
         clc                                     ; 80B5 18                       .
@@ -67,7 +67,7 @@ BattlePartyServices_Branch_80B3:
         lda     $7A                             ; 80BB A5 7A                    .z
         adc     #$00                            ; 80BD 69 00                    i.
         sta     $0107,x                         ; 80BF 9D 07 01                 ...
-        jmp     BattlePartyServices_Branch_815F ; 80C2 4C 5F 81                 L_.
+        jmp     ExecuteBattlePartyRecordOperation; 80C2 4C 5F 81                L_.
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceForPartyIndex:
         sta     $6E0B                           ; 80C5 8D 0B 6E                 ..n
@@ -76,7 +76,7 @@ DispatchBattleServiceForPartyIndex:
         pha                                     ; 80CB 48                       H
         tya                                     ; 80CC 98                       .
         pha                                     ; 80CD 48                       H
-        jmp     BattlePartyServices_Branch_8091 ; 80CE 4C 91 80                 L..
+        jmp     InitializeInlineBattleServiceDispatch; 80CE 4C 91 80            L..
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceFrom33Operand:
         txa                                     ; 80D1 8A                       .
@@ -94,7 +94,7 @@ DispatchBattleServiceFrom33Operand:
         lda     $78                             ; 80E5 A5 78                    .x
         sta     $6E0A                           ; 80E7 8D 0A 6E                 ..n
 BattlePartyServices_Branch_80EA:
-        jmp     BattlePartyServices_Branch_80B3 ; 80EA 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 80EA 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceFrom53Operand:
         stx     $6E                             ; 80ED 86 6E                    .n
@@ -113,7 +113,7 @@ DispatchBattleServiceFrom53Operand:
         lda     $78                             ; 8103 A5 78                    .x
         sta     $6E0A                           ; 8105 8D 0A 6E                 ..n
 BattlePartyServices_Branch_8108:
-        jmp     BattlePartyServices_Branch_80B3 ; 8108 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 8108 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceFrom73Operand:
         stx     $6E                             ; 810B 86 6E                    .n
@@ -133,7 +133,7 @@ DispatchBattleServiceFrom73Operand:
         lda     $78                             ; 8123 A5 78                    .x
         sta     $6E0A                           ; 8125 8D 0A 6E                 ..n
 BattlePartyServices_Branch_8128:
-        jmp     BattlePartyServices_Branch_80B3 ; 8128 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 8128 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 DispatchBattleServiceFrom93Operand:
         stx     $6E                             ; 812B 86 6E                    .n
@@ -154,20 +154,20 @@ DispatchBattleServiceFrom93Operand:
         iny                                     ; 8145 C8                       .
         jsr     ReadInlineBattleOperandFromBank ; 8146 20 57 81                  W.
         sta     $6E0A                           ; 8149 8D 0A 6E                 ..n
-        jmp     BattlePartyServices_Branch_80B3 ; 814C 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 814C 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_814F:
         iny                                     ; 814F C8                       .
         lda     $78                             ; 8150 A5 78                    .x
         sta     $6F                             ; 8152 85 6F                    .o
-        jmp     BattlePartyServices_Branch_80B3 ; 8154 4C B3 80                 L..
+        jmp     AdvanceInlineBattleReturnAddress; 8154 4C B3 80                 L..
 ; ----------------------------------------------------------------------------
 ReadInlineBattleOperandFromBank:
         lda     $0517                           ; 8157 AD 17 05                 ...
         ldx     #$79                            ; 815A A2 79                    .y
         jmp     ReadBankedByteThroughPointer    ; 815C 4C EA C3                 L..
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_815F:
+ExecuteBattlePartyRecordOperation:
         ldx     #$0F                            ; 815F A2 0F                    ..
 BattlePartyServices_Branch_8161:
         lda     $00,x                         ; 8161 B5 00                    ..
@@ -560,7 +560,7 @@ BattlePartyServices_Branch_83BE:
         ldx     #$00                            ; 83C3 A2 00                    ..
         rts                                     ; 83C5 60                       `
 ; ----------------------------------------------------------------------------
-SetBattleScratchPointerTo03E7:
+PointBattleOperandToComparisonBuffer:
         lda     #$E7                            ; 83C6 A9 E7                    ..
         sta     $03                             ; 83C8 85 03                    ..
         lda     #$03                            ; 83CA A9 03                    ..
@@ -618,9 +618,9 @@ BattlePartyServices_Branch_8410:
         sta     $74                             ; 841B 85 74                    .t
         rts                                     ; 841D 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_841E:
+LoadAndSubtractPrimaryBattleRecordValue:
         jsr     LoadPrimaryBattleSpanFromInlineOrSpecialSource; 841E 20 CF 83    ..
-BattlePartyServices_Branch_8421:
+SubtractBattleRecordValue:
         jsr     PrimeBattleWorkSpanForSubtraction; 8421 20 BD 83                 ..
 BattlePartyServices_Branch_8424:
         lda     $03,x                           ; 8424 B5 03                    ..
@@ -797,11 +797,11 @@ AdjustBattleValue50ForEligibleTarget:
         sta     $72                             ; 8526 85 72                    .r
 BattlePartyServices_Branch_8528:
         lda     #$3C                            ; 8528 A9 3C                    .<
-        jmp     BattlePartyServices_Branch_8632 ; 852A 4C 32 86                 L2.
+        jmp     LoadBattleRosterValueOrZero     ; 852A 4C 32 86                 L2.
 ; ----------------------------------------------------------------------------
-MapRecordByteAtOffset05ThroughLookup:
+MapBattleRecordClassByte:
         jsr     CheckPartyMemberClassAtLeastNine; 852D 20 D7 87                  ..
-        bcc     ReturnAfterRecordByteLookupGate ; 8530 90 0D                    ..
+        bcc     ReturnFromRecordByteMapping     ; 8530 90 0D                    ..
         ldy     #$05                            ; 8532 A0 05                    ..
         lda     ($79),y                         ; 8534 B1 79                    .y
         sec                                     ; 8536 38                       8
@@ -809,7 +809,7 @@ MapRecordByteAtOffset05ThroughLookup:
         tax                                     ; 8539 AA                       .
         lda     $8540,x                         ; 853A BD 40 85                 .@.
         sta     $72                             ; 853D 85 72                    .r
-ReturnAfterRecordByteLookupGate:
+ReturnFromRecordByteMapping:
         rts                                     ; 853F 60                       `
 ; ----------------------------------------------------------------------------
         db   $12,$36,$04,$1E,$1E,$1C,$28,$C3 ; 8540 12 36 04 1E 1E 1C 28 C3  .6....(.
@@ -901,7 +901,7 @@ AccumulateBattleValueWithFallbackScan:
         jsr     FindBattleRosterEntryByBucket   ; 85CA 20 25 8A                  %.
         bcc     BattlePartyServices_Branch_85DE ; 85CD 90 0F                    ..
         lda     $72                             ; 85CF A5 72                    .r
-        jsr     LoadBattleClassTableByteFrom9DE0; 85D1 20 04 8C                  ..
+        jsr     LoadBattleClassAdjustmentByte   ; 85D1 20 04 8C                  ..
         clc                                     ; 85D4 18                       .
         adc     $00                           ; 85D5 65 00                    e.
         sta     $72                             ; 85D7 85 72                    .r
@@ -943,7 +943,7 @@ AccumulateFourBattleValuesWithFallbackScan:
 BattlePartyServices_Branch_860F:
         jsr     FindBattleRosterEntryByBucket   ; 860F 20 25 8A                  %.
         bcc     BattlePartyServices_Branch_8620 ; 8612 90 0C                    ..
-        jsr     LoadBattleClassTableByteFrom9DE0; 8614 20 04 8C                  ..
+        jsr     LoadBattleClassAdjustmentByte   ; 8614 20 04 8C                  ..
         clc                                     ; 8617 18                       .
         adc     $00                           ; 8618 65 00                    e.
         sta     $00                           ; 861A 85 00                    ..
@@ -959,7 +959,7 @@ BattlePartyServices_Branch_8620:
         lda     $01                             ; 862C A5 01                    ..
         sta     $73                             ; 862E 85 73                    .s
         lda     #$1F                            ; 8630 A9 1F                    ..
-BattlePartyServices_Branch_8632:
+LoadBattleRosterValueOrZero:
         jsr     FindBattleRecordValueForSelector; 8632 20 F7 84                  ..
         bcc     BattlePartyServices_Branch_863F ; 8635 90 08                    ..
         bpl     BattlePartyServices_Branch_863F ; 8637 10 06                    ..
@@ -984,27 +984,27 @@ BattlePartyServices_Branch_8640:
         sta     $75                             ; 8658 85 75                    .u
         rts                                     ; 865A 60                       `
 ; ----------------------------------------------------------------------------
-SubtractBattleSpanFromRecordAtOffset0C:
+SubtractBattleRecordCurrentValue:
         ldy     #$0C                            ; 865B A0 0C                    ..
-        jmp     BattlePartyServices_Branch_841E ; 865D 4C 1E 84                 L..
+        jmp     LoadAndSubtractPrimaryBattleRecordValue; 865D 4C 1E 84          L..
 ; ----------------------------------------------------------------------------
-SubtractBattleSpanFromRecordAtOffset0E:
+SubtractBattleRecordMaximumValue:
         lda     #$00                            ; 8660 A9 00                    ..
         sta     $77                             ; 8662 85 77                    .w
         ldy     #$0E                            ; 8664 A0 0E                    ..
-        jmp     BattlePartyServices_Branch_841E ; 8666 4C 1E 84                 L..
+        jmp     LoadAndSubtractPrimaryBattleRecordValue; 8666 4C 1E 84          L..
 ; ----------------------------------------------------------------------------
 CompareBattleSpanAgainstFFThreshold:
         lda     #$FF                            ; 8669 A9 FF                    ..
         bne     BattlePartyServices_Branch_8673 ; 866B D0 06                    ..
-CompareBattleSpanAgainst63ThresholdMode1:
+CompareBattleValueAgainst99:
         lda     #$01                            ; 866D A9 01                    ..
         sta     $76                             ; 866F 85 76                    .v
         lda     #$63                            ; 8671 A9 63                    .c
 BattlePartyServices_Branch_8673:
         sta     $03                             ; 8673 85 03                    ..
         ldy     $6E0E                           ; 8675 AC 0E 6E                 ..n
-        jmp     BattlePartyServices_Branch_8421 ; 8678 4C 21 84                 L!.
+        jmp     SubtractBattleRecordValue       ; 8678 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 CompareBattleSpanAgainstTenMillion:
         lda     #$80                            ; 867B A9 80                    ..
@@ -1014,7 +1014,7 @@ CompareBattleSpanAgainstTenMillion:
         lda     #$98                            ; 8683 A9 98                    ..
         sta     $05                             ; 8685 85 05                    ..
         ldy     $6E0E                           ; 8687 AC 0E 6E                 ..n
-        jmp     BattlePartyServices_Branch_8421 ; 868A 4C 21 84                 L!.
+        jmp     SubtractBattleRecordValue       ; 868A 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 CompareTotalGoldAgainst99999:
         lda     #$9F                            ; 868D A9 9F                    ..
@@ -1030,9 +1030,9 @@ CompareTotalGoldAgainst99999:
         lda     $6159                           ; 86A3 AD 59 61                 .Ya
         sta     $74                             ; 86A6 85 74                    .t
         ldy     #$00                            ; 86A8 A0 00                    ..
-        jmp     BattlePartyServices_Branch_8421 ; 86AA 4C 21 84                 L!.
+        jmp     SubtractBattleRecordValue       ; 86AA 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-SubtractBattleSpanFromRecordClearingMode:
+SubtractBattleValueWithoutBorrowMode:
         lda     #$00                            ; 86AD A9 00                    ..
         sta     $77                             ; 86AF 85 77                    .w
 SubtractBattleSpanFromRecord:
@@ -1103,18 +1103,18 @@ DispatchBattleRecordByteThroughSelector:
         jsr     LoadBattleRecordSpanFromBankedTable; 8713 20 A2 A6               ..
         rts                                     ; 8716 60                       `
 ; ----------------------------------------------------------------------------
-CompareZeroModeBattleSpanAgainstScratch:
+CompareBattleValueAgainstScratchRecord:
         lda     #$00                            ; 8717 A9 00                    ..
         sta     $77                             ; 8719 85 77                    .w
-        jsr     SetBattleScratchPointerTo03E7   ; 871B 20 C6 83                  ..
-        jmp     BattlePartyServices_Branch_8421 ; 871E 4C 21 84                 L!.
+        jsr     PointBattleOperandToComparisonBuffer; 871B 20 C6 83              ..
+        jmp     SubtractBattleRecordValue       ; 871E 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-GateLowClassPartyMemberIntoSpanCompare:
+CompareHeroBattleValueAgainstScratch:
         ldy     $6E0C                           ; 8721 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; 8724 B9 6A 61                 .ja
         and     #$7F                            ; 8727 29 7F                    ).
         cmp     #$05                            ; 8729 C9 05                    ..
-        bcc     CompareZeroModeBattleSpanAgainstScratch; 872B 90 EA             ..
+        bcc     CompareBattleValueAgainstScratchRecord; 872B 90 EA              ..
         rts                                     ; 872D 60                       `
 ; ----------------------------------------------------------------------------
 LoadOrDeriveBattleRecordPair:
@@ -1331,7 +1331,7 @@ BattlePartyServices_Branch_885B:
         jsr     CheckPartyMemberClassAtLeastNine; 885B 20 D7 87                  ..
         bcs     BattlePartyServices_Branch_886D ; 885E B0 0D                    ..
         lda     ($79),y                         ; 8860 B1 79                    .y
-BattlePartyServices_Branch_8862:
+StoreResolvedBattleRosterValue:
         sta     $73                             ; 8862 85 73                    .s
         and     #$7F                            ; 8864 29 7F                    ).
         sta     $72                             ; 8866 85 72                    .r
@@ -1343,7 +1343,7 @@ BattlePartyServices_Branch_886A:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_886D:
         jsr     LookupBattleRecordByteFromClassOffset; 886D 20 A6 8A             ..
-        jmp     BattlePartyServices_Branch_8862 ; 8870 4C 62 88                 Lb.
+        jmp     StoreResolvedBattleRosterValue  ; 8870 4C 62 88                 Lb.
 ; ----------------------------------------------------------------------------
 CountOccupiedBattleRosterSlots:
         jsr     CountNonEmptyBattleRosterSlots  ; 8873 20 D7 8A                  ..
@@ -1979,7 +1979,7 @@ LoadBattleClassCodeMaskedToSixBits:
         lda     $6E0F                           ; 8C00 AD 0F 6E                 ..n
         rts                                     ; 8C03 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattleClassTableByteFrom9DE0:
+LoadBattleClassAdjustmentByte:
         sta     $6E0F                           ; 8C04 8D 0F 6E                 ..n
         txa                                     ; 8C07 8A                       .
         pha                                     ; 8C08 48                       H
@@ -2836,7 +2836,7 @@ BattlePartyServices_Branch_9385:
         sta     SavePartyCharacter1,y           ; 9393 99 6A 61                 .ja
         sty     $6E0C                           ; 9396 8C 0C 6E                 ..n
         jsr     LoadPartyMemberBattleRecordPointer; 9399 20 01 83                ..
-BattlePartyServices_Branch_939C:
+InitializeJoinedPartyMemberBattleState:
         lda     $6E0C                           ; 939C AD 0C 6E                 ..n
         pha                                     ; 939F 48                       H
         jsr     CheckCurrentMapBattleRestrictionGate; 93A0 20 98 84              ..
@@ -2894,7 +2894,7 @@ BattlePartyServices_Branch_93E2:
         lda     #$07                            ; 93FF A9 07                    ..
         sta     $76                             ; 9401 85 76                    .v
         jsr     WriteBattleRecordPackedBits     ; 9403 20 60 96                  `.
-        jmp     BattlePartyServices_Branch_939C ; 9406 4C 9C 93                 L..
+        jmp     InitializeJoinedPartyMemberBattleState; 9406 4C 9C 93           L..
 ; ----------------------------------------------------------------------------
 StashRemovedPartyMemberAndMarkSaveState:
         lda     SaveGameStateFlags              ; 9409 AD 8E 61                 ..a
@@ -3017,7 +3017,7 @@ SelectSaveRosterParityBit:
 ; ----------------------------------------------------------------------------
         db   $65,$61                         ; 94DA 65 61                    ea
 ; ----------------------------------------------------------------------------
-ResolveChapterRosterSpanSelection:
+ResolveChapterRosterMemberByOrdinal:
         lda     $C000                           ; 94DC AD 00 C0                 ...
         and     #$10                            ; 94DF 29 10                    ).
         bne     BattlePartyServices_Branch_94EC ; 94E1 D0 09                    ..
@@ -3176,9 +3176,9 @@ BattlePartyServices_Branch_95B3:
 ReturnNoBattleAction:
         rts                                     ; 9601 60                       `
 ; ----------------------------------------------------------------------------
-CompareBattleSpanAgainstScratchRecord:
-        jsr     SetBattleScratchPointerTo03E7   ; 9602 20 C6 83                  ..
-        jmp     BattlePartyServices_Branch_8421 ; 9605 4C 21 84                 L!.
+CompareBattleValueAgainstScratch:
+        jsr     PointBattleOperandToComparisonBuffer; 9602 20 C6 83              ..
+        jmp     SubtractBattleRecordValue       ; 9605 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 SubtractBattleWorkSpanIntoInlineRecordEntry:
         jsr     SubtractBattleWorkSpanIntoInlineRecord; 9608 20 60 84            `.
@@ -3187,7 +3187,7 @@ SubtractBattleWorkSpanIntoInlineRecordEntry:
 CompareBattleSpanAgainstFFThresholdEntry:
         lda     #$FF                            ; 960C A9 FF                    ..
         sta     $03                             ; 960E 85 03                    ..
-        jmp     BattlePartyServices_Branch_8421 ; 9610 4C 21 84                 L!.
+        jmp     SubtractBattleRecordValue       ; 9610 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 CountMatchingBattleValuesAcrossSixSlots:
         lda     #$07                            ; 9613 A9 07                    ..
@@ -4599,7 +4599,7 @@ DispatchBattleActionThroughResolvedTarget:
         lda     $9F12,y                         ; A080 B9 12 9F                 ...
         sta     $0F                             ; A083 85 0F                    ..
         and     #$20                            ; A085 29 20                    )
-        beq     BattlePartyServices_Branch_A107 ; A087 F0 7E                    .~
+        beq     RestoreBattleOperationRegisters ; A087 F0 7E                    .~
         ldy     $6E0C                           ; A089 AC 0C 6E                 ..n
         jsr     LoadPartyMemberBattleRecordPointer; A08C 20 01 83                ..
         lda     $6E0C                           ; A08F AD 0C 6E                 ..n
@@ -4608,14 +4608,14 @@ DispatchBattleActionThroughResolvedTarget:
         lda     $0F                             ; A096 A5 0F                    ..
         and     #$1F                            ; A098 29 1F                    ).
         cmp     #$18                            ; A09A C9 18                    ..
-        jmp     BattlePartyServices_Branch_A0C4 ; A09C 4C C4 A0                 L..
+        jmp     RefreshBattlePartyStateAndReturn; A09C 4C C4 A0                 L..
 ; ----------------------------------------------------------------------------
 ApplyBattleActionTypeFallbacks:
         cmp     #$02                            ; A09F C9 02                    ..
-        beq     BattlePartyServices_Branch_A0C4 ; A0A1 F0 21                    .!
+        beq     RefreshBattlePartyStateAndReturn; A0A1 F0 21                    .!
         ldy     $0E                             ; A0A3 A4 0E                    ..
         cpy     #$04                            ; A0A5 C0 04                    ..
-        bcs     BattlePartyServices_Branch_A107 ; A0A7 B0 5E                    .^
+        bcs     RestoreBattleOperationRegisters ; A0A7 B0 5E                    .^
         cmp     #$0D                            ; A0A9 C9 0D                    ..
         beq     BattlePartyServices_Branch_A10E ; A0AB F0 61                    .a
         cmp     #$06                            ; A0AD C9 06                    ..
@@ -4625,15 +4625,15 @@ ApplyBattleActionTypeFallbacks:
         lda     $6BDD                           ; A0B5 AD DD 6B                 ..k
         ora     #$80                            ; A0B8 09 80                    ..
         sta     $6BDD                           ; A0BA 8D DD 6B                 ..k
-        jmp     BattlePartyServices_Branch_A107 ; A0BD 4C 07 A1                 L..
+        jmp     RestoreBattleOperationRegisters ; A0BD 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 RefreshBattlePartyMemberStateAndReturn:
         jsr     RefreshBattlePartyMemberStateCache; A0C0 20 CA A0                ..
         rts                                     ; A0C3 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_A0C4:
+RefreshBattlePartyStateAndReturn:
         jsr     RefreshBattlePartyMemberStateCache; A0C4 20 CA A0                ..
-        jmp     BattlePartyServices_Branch_A107 ; A0C7 4C 07 A1                 L..
+        jmp     RestoreBattleOperationRegisters ; A0C7 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 RefreshBattlePartyMemberStateCache:
         lda     $6E0A                           ; A0CA AD 0A 6E                 ..n
@@ -4671,7 +4671,7 @@ BattlePartyServices_Branch_A0FB:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_A104:
         jsr     MergeRosterByteIntoBattleMemberFlags; A104 20 29 A1              ).
-BattlePartyServices_Branch_A107:
+RestoreBattleOperationRegisters:
         pla                                     ; A107 68                       h
         tay                                     ; A108 A8                       .
         pla                                     ; A109 68                       h
@@ -4682,7 +4682,7 @@ BattlePartyServices_Branch_A107:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_A10E:
         jsr     AccumulateRosterMatchFlagsIntoMemberState; A10E 20 64 A1         d.
-        jmp     BattlePartyServices_Branch_A107 ; A111 4C 07 A1                 L..
+        jmp     RestoreBattleOperationRegisters ; A111 4C 07 A1                 L..
 ; ----------------------------------------------------------------------------
 MarkBattleMemberPromotedFlag:
         ldy     $6E0C                           ; A114 AC 0C 6E                 ..n
@@ -5670,7 +5670,7 @@ LoadBattleRecordByteByPackedIndex:
         jsr     LookupBattleRecordByteByPackedIndex; A721 20 97 A6               ..
         rts                                     ; A724 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattleRecordByteAndTailBits:
+LoadBattleRecordTenBitStat:
         jsr     LookupBattleRecordByteByPackedIndex; A725 20 97 A6               ..
         lda     $6E5A                           ; A728 AD 5A 6E                 .Zn
         clc                                     ; A72B 18                       .
@@ -6072,15 +6072,15 @@ BattlePartyServices_Branch_A957:
         sec                                     ; A95C 38                       8
         rts                                     ; A95D 60                       `
 ; ----------------------------------------------------------------------------
-Seed03FFAndDispatchBattleSpanUpdate:
+RestoreBattleSlotHpToMaximum:
         lda     #$FF                            ; A95E A9 FF                    ..
         sta     $82                             ; A960 85 82                    ..
         lda     #$03                            ; A962 A9 03                    ..
         sta     $83                             ; A964 85 83                    ..
 LoadTailBitsAndDispatchBattleSpanUpdate:
-        jsr     LoadBattleRecordByteAndTailBits ; A966 20 25 A7                  %.
+        jsr     LoadBattleRecordTenBitStat      ; A966 20 25 A7                  %.
         lda     #$05                            ; A969 A9 05                    ..
-        jmp     BattlePartyServices_Branch_A9DC ; A96B 4C DC A9                 L..
+        jmp     AddAndClampBattleRecordValue    ; A96B 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
 SeedFF00AndDispatchBattleSpanUpdate:
         lda     #$FF                            ; A96E A9 FF                    ..
@@ -6090,39 +6090,39 @@ LoadPackedByteAndDispatchBattleSpanUpdate:
         sta     $83                             ; A974 85 83                    ..
         jsr     LoadBattleRecordByteByPackedIndex; A976 20 21 A7                 !.
         lda     #$06                            ; A979 A9 06                    ..
-        jmp     BattlePartyServices_Branch_A9DC ; A97B 4C DC A9                 L..
+        jmp     AddAndClampBattleRecordValue    ; A97B 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-ClearScratchAndDispatchBattleSpanUpdate:
+ClampBattleRecordValueTo255:
         ldy     #$FF                            ; A97E A0 FF                    ..
         sty     $7E                             ; A980 84 7E                    .~
         iny                                     ; A982 C8                       .
         sty     $7F                             ; A983 84 7F                    ..
         sty     $83                             ; A985 84 83                    ..
         lda     #$00                            ; A987 A9 00                    ..
-        jmp     BattlePartyServices_Branch_A9DC ; A989 4C DC A9                 L..
+        jmp     AddAndClampBattleRecordValue    ; A989 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-Seed03E7AndDispatchSpanUpdateSelector1:
+ClampPrimaryBattleStatTo999:
         ldy     #$01                            ; A98C A0 01                    ..
-        jmp     BattlePartyServices_Branch_A993 ; A98E 4C 93 A9                 L..
+        jmp     ClampBattleRecordValueTo999     ; A98E 4C 93 A9                 L..
 ; ----------------------------------------------------------------------------
-Seed03E7AndDispatchSpanUpdateSelector2:
+ClampSecondaryBattleStatTo999:
         ldy     #$02                            ; A991 A0 02                    ..
-BattlePartyServices_Branch_A993:
+ClampBattleRecordValueTo999:
         lda     #$E7                            ; A993 A9 E7                    ..
         sta     $7E                             ; A995 85 7E                    .~
         lda     #$03                            ; A997 A9 03                    ..
         sta     $7F                             ; A999 85 7F                    ..
         tya                                     ; A99B 98                       .
-        jmp     BattlePartyServices_Branch_A9DC ; A99C 4C DC A9                 L..
+        jmp     AddAndClampBattleRecordValue    ; A99C 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
 SubtractBattleSpanWithZeroHighByte:
         lda     #$00                            ; A99F A9 00                    ..
         sta     $83                             ; A9A1 85 83                    ..
 SubtractAndClampBattleSpan:
-        jmp     BattlePartyServices_Branch_AA34 ; A9A3 4C 34 AA                 L4.
+        jmp     SubtractAndFloorBattleRecordValue; A9A3 4C 34 AA                L4.
 ; ----------------------------------------------------------------------------
-CompareLoadedBattleSpanDifference:
-        jsr     LoadBattleRecordByteAndTailBits ; A9A6 20 25 A7                  %.
+CompareCurrentHpWithMaximumHp:
+        jsr     LoadBattleRecordTenBitStat      ; A9A6 20 25 A7                  %.
         ldx     #$7E                            ; A9A9 A2 7E                    .~
         lda     $82                             ; A9AB A5 82                    ..
         jsr     DividePointerWord               ; A9AD 20 51 C8                  Q.
@@ -6140,8 +6140,8 @@ CompareBattleSpanLowByteEquality:
         cmp     $82                             ; A9BF C5 82                    ..
         rts                                     ; A9C1 60                       `
 ; ----------------------------------------------------------------------------
-StoreHalfShiftedBattleSpanValue:
-        jsr     Seed03FFAndDispatchBattleSpanUpdate; A9C2 20 5E A9               ^.
+SetBattleSlotHpToHalfMaximum:
+        jsr     RestoreBattleSlotHpToMaximum    ; A9C2 20 5E A9                  ^.
         lsr     $83                             ; A9C5 46 83                    F.
         ror     $82                             ; A9C7 66 82                    f.
         ldy     #$0A                            ; A9C9 A0 0A                    ..
@@ -6158,7 +6158,7 @@ ClearBattleRecordControlByte0C:
         sta     ($84),y                         ; A9D9 91 84                    ..
         rts                                     ; A9DB 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_A9DC:
+AddAndClampBattleRecordValue:
         jsr     LoadBattleRecordSpanDescriptorTables; A9DC 20 5A A6              Z.
         ldx     #$00                            ; A9DF A2 00                    ..
         stx     $05                             ; A9E1 86 05                    ..
@@ -6210,7 +6210,7 @@ BattlePartyServices_Branch_AA1B:
         sta     $7F                             ; AA31 85 7F                    ..
         rts                                     ; AA33 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_AA34:
+SubtractAndFloorBattleRecordValue:
         lda     $6E59                           ; AA34 AD 59 6E                 .Yn
         cmp     #$0A                            ; AA37 C9 0A                    ..
         bne     BattlePartyServices_Branch_AA41 ; AA39 D0 06                    ..
@@ -6294,7 +6294,7 @@ RecoverInlineBattlePointerFromCaller:
         ldy     #$00                            ; AB5F A0 00                    ..
         rts                                     ; AB61 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_AB62:
+AdvanceInlineBattleOperandAndReturn:
         tya                                     ; AB62 98                       .
         tsx                                     ; AB63 BA                       .
         clc                                     ; AB64 18                       .
@@ -6316,7 +6316,7 @@ AdvanceInlineBattlePointerWithSlotState:
         sta     $6E59                           ; AB7F 8D 59 6E                 .Yn
         iny                                     ; AB82 C8                       .
         lda     $77                             ; AB83 A5 77                    .w
-        jmp     BattlePartyServices_Branch_AB62 ; AB85 4C 62 AB                 Lb.
+        jmp     AdvanceInlineBattleOperandAndReturn; AB85 4C 62 AB              Lb.
 ; ----------------------------------------------------------------------------
 AdvanceInlineBattlePointerWithAccumulator:
         stx     $7B                             ; AB88 86 7B                    .{
@@ -6329,7 +6329,7 @@ AdvanceInlineBattlePointerWithAccumulator:
         lda     $76                             ; AB93 A5 76                    .v
         sta     $6E59                           ; AB95 8D 59 6E                 .Yn
         iny                                     ; AB98 C8                       .
-        jmp     BattlePartyServices_Branch_AB62 ; AB99 4C 62 AB                 Lb.
+        jmp     AdvanceInlineBattleOperandAndReturn; AB99 4C 62 AB              Lb.
 ; ----------------------------------------------------------------------------
 AdvanceInlineBattlePointerWithBankedRead:
         stx     $7B                             ; AB9C 86 7B                    .{
@@ -6346,7 +6346,7 @@ AdvanceInlineBattlePointerWithBankedRead:
         ldx     #$84                            ; ABAF A2 84                    ..
         jsr     ReadBankedByteThroughPointer    ; ABB1 20 EA C3                  ..
         sta     $7C                             ; ABB4 85 7C                    .|
-        jmp     BattlePartyServices_Branch_AB62 ; ABB6 4C 62 AB                 Lb.
+        jmp     AdvanceInlineBattleOperandAndReturn; ABB6 4C 62 AB              Lb.
 ; ----------------------------------------------------------------------------
 ResolveBattleTransitionModeFromWorldState:
         lda     $41                             ; ABB9 A5 41                    .A
@@ -6473,7 +6473,7 @@ BattlePartyServices_Branch_AC6A:
         bpl     BattlePartyServices_Branch_AC36 ; AC6D 10 C7                    ..
         rts                                     ; AC6F 60                       `
 ; ----------------------------------------------------------------------------
-DispatchBattleService03:
+DispatchPrimaryBattlePlanningOperation:
         brk                                     ; AC70 00                       .
         db   $03,$8F                         ; AC71 03 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -6515,13 +6515,13 @@ BattlePartyServices_Branch_ACA7:
         bpl     BattlePartyServices_Branch_ACA7 ; ACAC 10 F9                    ..
         rts                                     ; ACAE 60                       `
 ; ----------------------------------------------------------------------------
-DispatchBattleService04ToPlanner:
+DispatchAlternateBattlePlanningOperation:
         brk                                     ; ACAF 00                       .
         db   $04,$8F                         ; ACB0 04 8F                    ..
 ; ----------------------------------------------------------------------------
         jmp     RunBattlePlannerDispatch        ; ACB2 4C B8 AC                 L..
 ; ----------------------------------------------------------------------------
-DispatchBattleService03ToPlanner:
+DispatchDefaultBattlePlanningOperation:
         brk                                     ; ACB5 00                       .
         db   $03,$8F                         ; ACB6 03 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -7016,7 +7016,7 @@ BattlePartyServices_Branch_AFA0:
         ldx     $7374                           ; AFA4 AE 74 73                 .ts
         beq     BattlePartyServices_Branch_AFAF ; AFA7 F0 06                    ..
         lda     $B028,x                         ; AFA9 BD 28 B0                 .(.
-        jmp     BattlePartyServices_Branch_AFF2 ; AFAC 4C F2 AF                 L..
+        jmp     StoreSelectedBattleActionOffset ; AFAC 4C F2 AF                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_AFAF:
         lda     $7375                           ; AFAF AD 75 73                 .us
@@ -7047,7 +7047,7 @@ BattlePartyServices_Branch_AFD5:
         bcc     BattlePartyServices_Branch_AFE7 ; AFDD 90 08                    ..
         lda     $0B                             ; AFDF A5 0B                    ..
         cpy     $7374                           ; AFE1 CC 74 73                 .ts
-        beq     BattlePartyServices_Branch_AFF2 ; AFE4 F0 0C                    ..
+        beq     StoreSelectedBattleActionOffset ; AFE4 F0 0C                    ..
         iny                                     ; AFE6 C8                       .
 BattlePartyServices_Branch_AFE7:
         inc     $6F                             ; AFE7 E6 6F                    .o
@@ -7056,7 +7056,7 @@ BattlePartyServices_Branch_AFE7:
         bcc     BattlePartyServices_Branch_AFD5 ; AFEE 90 E5                    ..
 BattlePartyServices_Branch_AFF0:
         lda     #$43                            ; AFF0 A9 43                    .C
-BattlePartyServices_Branch_AFF2:
+StoreSelectedBattleActionOffset:
         sta     $0B                             ; AFF2 85 0B                    ..
         jsr     ComputeBattleActionRecordOffset ; AFF4 20 F0 AC                  ..
         sta     $7324,x                         ; AFF7 9D 24 73                 .$s
@@ -7722,7 +7722,7 @@ BattlePartyServices_Branch_B3D1:
         db   $68,$73                         ; B3D4 68 73                    hs
 ; ----------------------------------------------------------------------------
         sta     $07                             ; B3D6 85 07                    ..
-        jsr     StoreBattleActionSelectionMarker; B3D8 20 FF B3                  ..
+        jsr     StoreBattleActionWeightForSlot  ; B3D8 20 FF B3                  ..
         lda     $07                             ; B3DB A5 07                    ..
         jmp     BattlePartyServices_Branch_B3F4 ; B3DD 4C F4 B3                 L..
 ; ----------------------------------------------------------------------------
@@ -7749,7 +7749,7 @@ BattlePartyServices_Branch_B3F4:
         sec                                     ; B3FD 38                       8
         rts                                     ; B3FE 60                       `
 ; ----------------------------------------------------------------------------
-StoreBattleActionSelectionMarker:
+StoreBattleActionWeightForSlot:
         lda     $0B                             ; B3FF A5 0B                    ..
         brk                                     ; B401 00                       .
         db   $0C,$3F                         ; B402 0C 3F                    .?
@@ -7951,7 +7951,7 @@ BattlePartyServices_Branch_B5DF:
         stx     $0D                             ; B5E2 86 0D                    ..
         ldx     #$03                            ; B5E4 A2 03                    ..
         stx     $0E                             ; B5E6 86 0E                    ..
-        jmp     BattlePartyServices_Branch_B8B8 ; B5E8 4C B8 B8                 L..
+        jmp     ApplyBattleTargetGroupMask      ; B5E8 4C B8 B8                 L..
 ; ----------------------------------------------------------------------------
 RequireHighBattleSlotIndex:
         lda     $96                             ; B5EB A5 96                    ..
@@ -8257,7 +8257,7 @@ BattlePartyServices_Branch_B765:
 TestBattleSlotDescriptorBitGate:
         cpy     #$01                            ; B76F C0 01                    ..
         beq     BattlePartyServices_Branch_B779 ; B771 F0 06                    ..
-        jsr     RequireAdditionalBattleSelectionCandidate; B773 20 21 B9         !.
+        jsr     ValidateAdditionalBattleTarget  ; B773 20 21 B9                  !.
         bcs     BattlePartyServices_Branch_B779 ; B776 B0 01                    ..
         rts                                     ; B778 60                       `
 ; ----------------------------------------------------------------------------
@@ -8329,7 +8329,7 @@ FilterBattleEffectByDescriptorMask:
         cpy     #$01                            ; B7CC C0 01                    ..
         beq     BattlePartyServices_Branch_B7D5 ; B7CE F0 05                    ..
         pha                                     ; B7D0 48                       H
-        jsr     RequireAdditionalBattleSelectionCandidate; B7D1 20 21 B9         !.
+        jsr     ValidateAdditionalBattleTarget  ; B7D1 20 21 B9                  !.
         pla                                     ; B7D4 68                       h
 BattlePartyServices_Branch_B7D5:
         bcs     IntersectBattleSelectionMaskByDualSourcePairs; B7D5 B0 77       .w
@@ -8363,7 +8363,7 @@ TestGroup14Index4ThroughMaskBuilder:
         ldx     #$04                            ; B7F7 A2 04                    ..
 BattlePartyServices_Branch_B7F9:
         stx     $0E                             ; B7F9 86 0E                    ..
-        jmp     BattlePartyServices_Branch_B831 ; B7FB 4C 31 B8                 L1.
+        jmp     ApplyGroupedBattleTargetFilter  ; B7FB 4C 31 B8                 L1.
 ; ----------------------------------------------------------------------------
 IntersectBattleSelectionMaskByGroup10Index0:
         ldx     #$10                            ; B7FE A2 10                    ..
@@ -8401,7 +8401,7 @@ BattlePartyServices_Branch_B823:
         eor     #$FF                            ; B82C 49 FF                    I.
         jmp     SucceedAndIntersectBattleSelectionMask; B82E 4C 1B B9           L..
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_B831:
+ApplyGroupedBattleTargetFilter:
         cpy     #$03                            ; B831 C0 03                    ..
         bne     BattlePartyServices_Branch_B84B ; B833 D0 16                    ..
         pha                                     ; B835 48                       H
@@ -8421,7 +8421,7 @@ BattlePartyServices_Branch_B831:
         rts                                     ; B84A 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B84B:
-        jmp     BattlePartyServices_Branch_B8B8 ; B84B 4C B8 B8                 L..
+        jmp     ApplyBattleTargetGroupMask      ; B84B 4C B8 B8                 L..
 ; ----------------------------------------------------------------------------
 IntersectBattleSelectionMaskByDualSourcePairs:
         tax                                     ; B84E AA                       .
@@ -8501,7 +8501,7 @@ BattlePartyServices_Branch_B8B6:
         sec                                     ; B8B6 38                       8
         rts                                     ; B8B7 60                       `
 ; ----------------------------------------------------------------------------
-BattlePartyServices_Branch_B8B8:
+ApplyBattleTargetGroupMask:
         tay                                     ; B8B8 A8                       .
         bmi     BattlePartyServices_Branch_B8C5 ; B8B9 30 0A                    0.
         lda     $0D                             ; B8BB A5 0D                    ..
@@ -8579,7 +8579,7 @@ IntersectBattleSelectionMaskWithAccumulator:
         sta     $09                             ; B91E 85 09                    ..
         rts                                     ; B920 60                       `
 ; ----------------------------------------------------------------------------
-RequireAdditionalBattleSelectionCandidate:
+ValidateAdditionalBattleTarget:
         jsr     ReadShiftedBattleSlotDescriptorBit; B921 20 57 AD                W.
         bcc     RequireScannedBattleSelectionMaskNonzero; B924 90 26            .&
         jsr     ReadBattleSlotHighBitFlag       ; B926 20 26 AD                  &.
@@ -8656,7 +8656,7 @@ BattlePartyServices_Branch_B976:
         db   $14,$3F                         ; B97E 14 3F                    .?
 ; ----------------------------------------------------------------------------
         eor     #$0F                            ; B980 49 0F                    I.
-        jmp     BattlePartyServices_Branch_B993 ; B982 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; B982 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B985:
         ldx     #$FF                            ; B985 A2 FF                    ..
@@ -8668,13 +8668,13 @@ BattlePartyServices_Branch_B985:
         db   $29,$C3,$0E                     ; B98E 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
         eor     #$FF                            ; B991 49 FF                    I.
-BattlePartyServices_Branch_B993:
+IntersectBattleTargetMask:
         sec                                     ; B993 38                       8
         and     $09                             ; B994 25 09                    %.
         sta     $09                             ; B996 85 09                    ..
         rts                                     ; B998 60                       `
 ; ----------------------------------------------------------------------------
-RequireTwoCandidatesInFilteredSelectionWindow:
+RequireMultipleFilteredBattleTargets:
         jsr     BuildFilteredBattleSelectionWindowMask; B999 20 6C B9            l.
         ldx     #$02                            ; B99C A2 02                    ..
         lda     $09                             ; B99E A5 09                    ..
@@ -8749,7 +8749,7 @@ BuildBattleSelectionSuffixMask:
         brk                                     ; B9FC 00                       .
         db   $14,$3F                         ; B9FD 14 3F                    .?
 ; ----------------------------------------------------------------------------
-        jmp     BattlePartyServices_Branch_B993 ; B9FF 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; B9FF 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 FilterBattleSelectionMaskByRule02Scan:
         clc                                     ; BA02 18                       .
@@ -8784,7 +8784,7 @@ BattlePartyServices_Branch_BA1F:
         bne     BattlePartyServices_Branch_BA2E ; BA26 D0 06                    ..
 KeepOnlyCurrentBattleSlotInSelectionMask:
         jsr     BuildOneHotBattleSlotSetMask    ; BA28 20 43 AD                  C.
-        jmp     BattlePartyServices_Branch_B993 ; BA2B 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; BA2B 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_BA2E:
         jsr     ExcludeRule02MatchedSlotsFromSelection; BA2E 20 97 BA            ..
@@ -8844,13 +8844,13 @@ BattlePartyServices_Branch_BA75:
 KeepSelectionBitsOutsidePairedSlotMask:
         jsr     SeedPairedBattleSlotMaskState   ; BA76 20 89 BA                  ..
         eor     #$FF                            ; BA79 49 FF                    I.
-        jmp     BattlePartyServices_Branch_B993 ; BA7B 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; BA7B 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 KeepPairedSelectionBitsExcludingCurrentSlot:
         jsr     SeedPairedBattleSlotMaskState   ; BA7E 20 89 BA                  ..
         jsr     BuildOneHotBattleSlotClearMask  ; BA81 20 32 AD                  2.
         and     $7E                             ; BA84 25 7E                    %~
-        jmp     BattlePartyServices_Branch_B993 ; BA86 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; BA86 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 SeedPairedBattleSlotMaskState:
         jsr     ReadBattleSlotDescriptorLowNibble; BA89 20 4E AD                 N.
@@ -8944,7 +8944,7 @@ FilterSelectionMaskBySource05Complement:
         db   $2C,$0F                         ; BAF8 2C 0F                    ,.
 ; ----------------------------------------------------------------------------
         eor     #$0F                            ; BAFA 49 0F                    I.
-        jmp     BattlePartyServices_Branch_B993 ; BAFC 4C 93 B9                 L..
+        jmp     IntersectBattleTargetMask       ; BAFC 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 LoadInvertedBattleStateBitsShiftedLeft:
         lda     $72E4                           ; BAFF AD E4 72                 ..r
@@ -9127,7 +9127,7 @@ BattlePartyServices_Branch_BBEB:
 BattlePartyServices_Branch_BBF5:
         rts                                     ; BBF5 60                       `
 ; ----------------------------------------------------------------------------
-ResolveSelectionBitFromCurrentSlotLookup:
+SelectCurrentBattleSlotFromLookup:
         jsr     ReadShiftedBattleSlotDescriptorBit; BBF6 20 57 AD                W.
         bcc     BattlePartyServices_Branch_BC33 ; BBF9 90 38                    .8
         brk                                     ; BBFB 00                       .
@@ -9173,7 +9173,7 @@ BattlePartyServices_Branch_BC2C:
 BattlePartyServices_Branch_BC33:
         rts                                     ; BC33 60                       `
 ; ----------------------------------------------------------------------------
-ResolveSelectionBitFromActionLookup:
+SelectBattleSlotFromActionLookup:
         jsr     ReadShiftedBattleSlotDescriptorBit; BC34 20 57 AD                W.
         bcc     BattlePartyServices_Branch_BC33 ; BC37 90 FA                    ..
         brk                                     ; BC39 00                       .

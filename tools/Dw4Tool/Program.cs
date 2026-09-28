@@ -220,6 +220,12 @@ internal static class Program
             routineTargets,
             effectiveLabels,
             analyses);
+        WriteRoutineNameReviewReport(
+            Path.Combine(projectRoot, "analysis", "routine-name-review.tsv"),
+            routineTargets,
+            effectiveLabels,
+            analyses,
+            rom);
         Dictionary<int, string> constants = LoadConstants(Path.Combine(projectRoot, "src", "constants"));
         string bankDirectory = Path.Combine(projectRoot, "src", "banks");
         string workDirectory = Path.Combine(projectRoot, "work", "da65");
@@ -2035,6 +2041,104 @@ internal static class Program
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
     }
 
+    private static void WriteRoutineNameReviewReport(
+        string path,
+        IReadOnlyDictionary<(int Bank, int Address), SortedSet<string>> routineTargets,
+        IReadOnlyDictionary<int, List<BankLabel>> labels,
+        IReadOnlyDictionary<int, BankAnalysis> analyses,
+        byte[] rom)
+    {
+        string[] mechanicalTerms =
+        [
+            "Marker", "Selection", "Span", "Scratch", "Candidate", "Triplet", "Gate", "Lookup", "Mode", "Service"
+        ];
+        StringBuilder report = new();
+        report.AppendLine("Bank\tAddress\tName\tReviewReasons");
+        foreach ((int Bank, int Address) location in routineTargets.Keys
+            .OrderBy(location => location.Bank)
+            .ThenBy(location => location.Address))
+        {
+            string name = labels[location.Bank]
+                .First(label => label.Address == location.Address)
+                .Name;
+            List<string> reasons = [];
+            if (Regex.IsMatch(name, @"_Entry_[0-9A-F]{4}$", RegexOptions.IgnoreCase))
+            {
+                reasons.Add("generated-entry");
+            }
+            if (Regex.IsMatch(name, @"(?:^|_)[0-9A-F]{2,4}(?:_|$)", RegexOptions.IgnoreCase))
+            {
+                reasons.Add("embedded-hex-token");
+            }
+            if (Regex.IsMatch(
+                name,
+                @"(?:Service|Lookup|Offset)[0-9A-F]{2,6}(?:[A-Z_]|$)|(?:State|Via|From|To)[0-9A-F]{4}(?:[A-Z_]|$)"))
+            {
+                reasons.Add("compact-hex-token");
+            }
+            int mechanicalTermCount = mechanicalTerms.Count(term =>
+                name.Contains(term, StringComparison.OrdinalIgnoreCase));
+            if (mechanicalTermCount >= 2)
+            {
+                reasons.Add("stacked-mechanical-jargon");
+            }
+            if (location.Bank == 0x13 && name.StartsWith("BattlePresentation_", StringComparison.Ordinal))
+            {
+                reasons.Add("broad-bank13-prefix");
+            }
+            if (Regex.IsMatch(name, "Display|Print|Message", RegexOptions.IgnoreCase) &&
+                RoutineUsesOnlyAudioBrks(location.Bank, location.Address))
+            {
+                reasons.Add("display-name-only-invokes-audio");
+            }
+            if (name.Contains("Dormant", StringComparison.OrdinalIgnoreCase) &&
+                routineTargets[location].Any(item =>
+                    item.StartsWith("Direct call from", StringComparison.Ordinal) ||
+                    item.StartsWith("Tail jump from", StringComparison.Ordinal)))
+            {
+                reasons.Add("dormant-name-has-callers");
+            }
+            if (reasons.Count == 0)
+            {
+                continue;
+            }
+            report.Append(location.Bank.ToString("X2", CultureInfo.InvariantCulture)).Append('\t')
+                .Append(location.Address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                .Append(name).Append('\t')
+                .AppendLine(string.Join(',', reasons));
+        }
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+
+        bool RoutineUsesOnlyAudioBrks(int bank, int entryAddress)
+        {
+            int endAddress = routineTargets.Keys
+                .Where(location => location.Bank == bank && location.Address > entryAddress)
+                .Select(location => location.Address)
+                .DefaultIfEmpty(CodeAnalyzer.CpuBase(bank) + PrgBankSize)
+                .Min();
+            List<DecodedInstruction> brks = analyses[bank].Instructions.Values
+                .Where(instruction =>
+                    instruction.Address >= entryAddress &&
+                    instruction.Address < endAddress &&
+                    instruction.Opcode.Mnemonic == "brk")
+                .OrderBy(instruction => instruction.Address)
+                .ToList();
+            if (brks.Count == 0)
+            {
+                return false;
+            }
+
+            return brks.All(instruction =>
+            {
+                int romOffset = HeaderSize + (bank * PrgBankSize) +
+                    instruction.Address - CodeAnalyzer.CpuBase(bank);
+                byte service = rom[romOffset + 1];
+                byte selector = rom[romOffset + 2];
+                return selector == 0xFB || (selector == 0x9F && service is >= 0x02 and <= 0x09);
+            });
+        }
+    }
+
     private static Dictionary<(int Bank, int Address), SortedSet<string>> BuildRoutineTargets(
         IReadOnlyList<CodeSeed> seeds,
         IReadOnlyList<EntryPointer> entries,
@@ -2061,6 +2165,62 @@ internal static class Program
                     analyses[targetBank].Instructions.ContainsKey(target - CodeAnalyzer.CpuBase(targetBank)))
                 {
                     Add(targetBank, target, $"Direct call from ${bank:X2}:${instruction.Address:X4}");
+                }
+            }
+        }
+
+        HashSet<(int Bank, int Address)> establishedTargets = targets.Keys.ToHashSet();
+        HashSet<(int Bank, int Address)> jumpTargets = analyses
+            .SelectMany(item => item.Value.Instructions.Values
+                .Where(instruction => instruction.Opcode.IsJump && instruction.Target is not null)
+                .Select(instruction => (Bank: item.Key, Address: instruction.Target!.Value)))
+            .ToHashSet();
+        foreach ((int bank, BankAnalysis analysis) in analyses)
+        {
+            int[] bankTargets = establishedTargets
+                .Where(target => target.Bank == bank)
+                .Select(target => target.Address)
+                .Order()
+                .ToArray();
+            for (int index = 0; index < bankTargets.Length; index++)
+            {
+                int entryAddress = bankTargets[index];
+                int endAddress = index + 1 < bankTargets.Length
+                    ? bankTargets[index + 1]
+                    : CodeAnalyzer.CpuBase(bank) + PrgBankSize;
+                HashSet<int> visited = [];
+                Queue<int> pending = new();
+                pending.Enqueue(entryAddress);
+                while (pending.TryDequeue(out int pathAddress))
+                {
+                    int address = pathAddress;
+                    while (address >= entryAddress && address < endAddress &&
+                        analysis.Instructions.TryGetValue(
+                            address - CodeAnalyzer.CpuBase(bank),
+                            out DecodedInstruction? instruction) &&
+                        visited.Add(address))
+                    {
+                        if (instruction.Opcode.IsBranch && instruction.Target is int branchTarget)
+                        {
+                            pending.Enqueue(branchTarget);
+                        }
+                        if (instruction.Opcode.IsJump && instruction.Target is int jumpTarget &&
+                            TargetBank(bank, jumpTarget) is int jumpBank &&
+                            analyses[jumpBank].Instructions.ContainsKey(jumpTarget - CodeAnalyzer.CpuBase(jumpBank)) &&
+                            (instruction.Address == entryAddress ||
+                                instruction.Address + instruction.Opcode.Size == endAddress ||
+                                jumpTargets.Contains((bank,
+                                    instruction.Address + instruction.Opcode.Size))))
+                        {
+                            Add(jumpBank, jumpTarget,
+                                $"Tail jump from ${bank:X2}:${instruction.Address:X4}");
+                        }
+                        if (instruction.Opcode.StopsFlow)
+                        {
+                            break;
+                        }
+                        address += instruction.Opcode.Size;
+                    }
                 }
             }
         }

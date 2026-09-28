@@ -76,9 +76,9 @@ TextUiSystem_Branch_8091:
 ; ----------------------------------------------------------------------------
 DispatchTextCommandOrAppendCharacter:
         cmp     #$40                            ; 8094 C9 40                    .@
-        bcc     TextUiSystem_Branch_80B5        ; 8096 90 1D                    ..
+        bcc     AppendDecodedDialogueCharacter  ; 8096 90 1D                    ..
         cmp     #$59                            ; 8098 C9 59                    .Y
-        bcs     TextUiSystem_Branch_80B5        ; 809A B0 19                    ..
+        bcs     AppendDecodedDialogueCharacter  ; 809A B0 19                    ..
         sta     $5D                             ; 809C 85 5D                    .]
         cmp     #$52                            ; 809E C9 52                    .R
         bcc     TextUiSystem_Branch_80A4        ; 80A0 90 02                    ..
@@ -93,7 +93,7 @@ TextUiSystem_Branch_80A4:
         sta     $01                             ; 80B0 85 01                    ..
         jmp     ($0000)                         ; 80B2 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_80B5:
+AppendDecodedDialogueCharacter:
         pha                                     ; 80B5 48                       H
         jsr     WrapDialogueLineAtWordBoundary  ; 80B6 20 8F 86                  ..
         jsr     ResolvePendingTextLineState     ; 80B9 20 EA 80                  ..
@@ -141,7 +141,7 @@ HandleTextCommand4FStartPrompt:
         jsr     ComputeDialogueTextBufferOffset ; 811A 20 E7 85                  ..
         lda     #$69                            ; 811D A9 69                    .i
         sta     $57                             ; 811F 85 57                    .W
-        jmp     TextUiSystem_Branch_80B5        ; 8121 4C B5 80                 L..
+        jmp     AppendDecodedDialogueCharacter  ; 8121 4C B5 80                 L..
 ; ----------------------------------------------------------------------------
 HandleTextCommand40Stop:
         jsr     WaitForPendingTextPpuUpdate     ; 8124 20 2A 81                  *.
@@ -212,10 +212,10 @@ TextUiSystem_Branch_817E:
         sta     $00                           ; 818A 85 00                    ..
         lda     #$F8                            ; 818C A9 F8                    ..
         sta     $59                             ; 818E 85 59                    .Y
-TextUiSystem_Branch_8190:
+RunDialogueAdvancePromptLoop:
         jsr     BlinkDialogueAdvancePrompt      ; 8190 20 99 81                  ..
         jsr     PollDialogueAdvanceInput        ; 8193 20 B0 81                  ..
-        jmp     TextUiSystem_Branch_8190        ; 8196 4C 90 81                 L..
+        jmp     RunDialogueAdvancePromptLoop    ; 8196 4C 90 81                 L..
 ; ----------------------------------------------------------------------------
 BlinkDialogueAdvancePrompt:
         ldx     #$80                            ; 8199 A2 80                    ..
@@ -345,7 +345,7 @@ TextUiSystem_Branch_8244:
         bcc     TextUiSystem_Branch_8244        ; 824D 90 F5                    ..
         lda     #$40                            ; 824F A9 40                    .@
         sta     $0554,y                         ; 8251 99 54 05                 .T.
-        jmp     TextUiSystem_Branch_8336        ; 8254 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 8254 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 HandleTextCommand48AppendLookupText:
         ldx     $5C                             ; 8257 A6 5C                    .\
@@ -357,7 +357,7 @@ HandleTextCommand48AppendLookupText:
         db   $04,$B7                         ; 8263 04 B7                    ..
 ; ----------------------------------------------------------------------------
         jsr     CopyTextScratchToDialogueLine   ; 8265 20 5D 83                  ].
-        jmp     TextUiSystem_Branch_8336        ; 8268 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 8268 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 HandleTextCommand49AppendPartyValueText:
         ldx     $5C                             ; 826B A6 5C                    .\
@@ -386,7 +386,7 @@ TextUiSystem_Branch_8289:
 TextUiSystem_Branch_8292:
         lda     #$40                            ; 8292 A9 40                    .@
         sta     $0554,x                         ; 8294 9D 54 05                 .T.
-        jmp     TextUiSystem_Branch_8336        ; 8297 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 8297 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_829A:
         pha                                     ; 829A 48                       H
@@ -425,7 +425,7 @@ TextUiSystem_Branch_82C3:
         dey                                     ; 82CA 88                       .
         bpl     TextUiSystem_Branch_82C3        ; 82CB 10 F6                    ..
         pla                                     ; 82CD 68                       h
-        jmp     TextUiSystem_Branch_8336        ; 82CE 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 82CE 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
         db   $40,$0F,$16,$0C,$1F,$19,$28,$00 ; 82D1 40 0F 16 0C 1F 19 28 00  @.....(.
         db   $1D,$6B                         ; 82D9 1D 6B                    .k
@@ -458,7 +458,7 @@ TextUiSystem_Branch_82DB:
         lda     #$40                            ; 8301 A9 40                    .@
         sta     $0555,y                         ; 8303 99 55 05                 .U.
 TextUiSystem_Branch_8306:
-        jmp     TextUiSystem_Branch_8336        ; 8306 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 8306 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 HandleTextCommand4AAppendLookupText:
         ldx     $5C                             ; 8309 A6 5C                    .\
@@ -469,7 +469,7 @@ HandleTextCommand4AAppendLookupText:
         db   $04,$B7                         ; 8313 04 B7                    ..
 ; ----------------------------------------------------------------------------
         jsr     CopyTextScratchToDialogueLine   ; 8315 20 5D 83                  ].
-        jmp     TextUiSystem_Branch_8336        ; 8318 4C 36 83                 L6.
+        jmp     AppendStoredDialogueCharacter   ; 8318 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 HandleTextCommand4CAppendCode1DIfNeeded:
         lda     $0554                           ; 831B AD 54 05                 .T.
@@ -481,7 +481,7 @@ HandleTextCommand4CAppendCode1DIfNeeded:
 TextUiSystem_Branch_8329:
         lda     #$1D                            ; 8329 A9 1D                    ..
         sta     $57                             ; 832B 85 57                    .W
-        jmp     TextUiSystem_Branch_80B5        ; 832D 4C B5 80                 L..
+        jmp     AppendDecodedDialogueCharacter  ; 832D 4C B5 80                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8330:
         rts                                     ; 8330 60                       `
@@ -492,7 +492,7 @@ HandleTextCommand4DNoOp:
 HandleTextCommand50ReplayDialogueLine:
         ldx     $5C                             ; 8332 A6 5C                    .\
         bne     TextUiSystem_Branch_8338        ; 8334 D0 02                    ..
-TextUiSystem_Branch_8336:
+AppendStoredDialogueCharacter:
         ldx     #$00                            ; 8336 A2 00                    ..
 TextUiSystem_Branch_8338:
         lda     $0554,x                         ; 8338 BD 54 05                 .T.
@@ -500,7 +500,7 @@ TextUiSystem_Branch_8338:
         cmp     #$40                            ; 833D C9 40                    .@
         beq     TextUiSystem_Branch_8346        ; 833F F0 05                    ..
         inc     $5C                             ; 8341 E6 5C                    .\
-        jmp     TextUiSystem_Branch_80B5        ; 8343 4C B5 80                 L..
+        jmp     AppendDecodedDialogueCharacter  ; 8343 4C B5 80                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8346:
         lda     #$00                            ; 8346 A9 00                    ..
@@ -542,13 +542,13 @@ RenderDialogueCharacterAndAdvanceCursor:
         jsr     QueueCurrentDialogueCharacterTile; 837A 20 86 83                 ..
         jsr     AdvanceTextCursor               ; 837D 20 C0 83                  ..
         jsr     TriggerDialogueCharacterFeedbackIfEligible; 8380 20 A4 83        ..
-        jmp     TextUiSystem_Branch_838B        ; 8383 4C 8B 83                 L..
+        jmp     FlushDialogueCharacterIfVisible ; 8383 4C 8B 83                 L..
 ; ----------------------------------------------------------------------------
 QueueCurrentDialogueCharacterTile:
         lda     $57                             ; 8386 A5 57                    .W
         jmp     QueueNametableTileUpdate        ; 8388 4C 5A C6                 LZ.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_838B:
+FlushDialogueCharacterIfVisible:
         lda     $0553                           ; 838B AD 53 05                 .S.
         bmi     TextUiSystem_Branch_83A3        ; 838E 30 13                    0.
         jmp     RequestPpuUpdateAndWait         ; 8390 4C 2D C6                 L-.
@@ -1164,7 +1164,7 @@ CountTextSegmentsUntilTerminalCommand:
         jsr     InitializeTextStreamAndSkipSubmessage; 8786 20 2B 87             +.
         lda     #$00                            ; 8789 A9 00                    ..
         sta     $00                           ; 878B 85 00                    ..
-TextUiSystem_Branch_878D:
+ScanTextSegmentCommands:
         jsr     Bank16_DecodeHuffmanSymbol      ; 878D 20 A8 87                  ..
         cmp     #$41                            ; 8790 C9 41                    .A
         beq     TextUiSystem_Branch_87A3        ; 8792 F0 0F                    ..
@@ -1173,14 +1173,14 @@ TextUiSystem_Branch_878D:
         cmp     #$45                            ; 8798 C9 45                    .E
         beq     TextUiSystem_Branch_87A0        ; 879A F0 04                    ..
         cmp     #$46                            ; 879C C9 46                    .F
-        bne     TextUiSystem_Branch_878D        ; 879E D0 ED                    ..
+        bne     ScanTextSegmentCommands         ; 879E D0 ED                    ..
 TextUiSystem_Branch_87A0:
         inc     $00                           ; 87A0 E6 00                    ..
         rts                                     ; 87A2 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_87A3:
         inc     $00                           ; 87A3 E6 00                    ..
-        jmp     TextUiSystem_Branch_878D        ; 87A5 4C 8D 87                 L..
+        jmp     ScanTextSegmentCommands         ; 87A5 4C 8D 87                 L..
 ; ----------------------------------------------------------------------------
 Bank16_DecodeHuffmanSymbol:
         lda     #$5C                            ; 87A8 A9 5C                    .\
@@ -1988,11 +1988,11 @@ TextUiSystem_Branch_8E48:
 ; ----------------------------------------------------------------------------
 MergeTextUiMaskInto0C0D:
         ldx     #$00                            ; 8E49 A2 00                    ..
-        jmp     TextUiSystem_Branch_8E50        ; 8E4B 4C 50 8E                 LP.
+        jmp     MergeTextUiMaskForMatchingPhase ; 8E4B 4C 50 8E                 LP.
 ; ----------------------------------------------------------------------------
 MergeTextUiMaskInto0E0F:
         ldx     #$02                            ; 8E4E A2 02                    ..
-TextUiSystem_Branch_8E50:
+MergeTextUiMaskForMatchingPhase:
         lda     $03DF                           ; 8E50 AD DF 03                 ...
         and     #$07                            ; 8E53 29 07                    ).
         sta     $02                             ; 8E55 85 02                    ..
@@ -2221,8 +2221,8 @@ TextUiSystem_Branch_8FD4:
         lda     ($EE),y                         ; 8FD7 B1 EE                    ..
         and     #$0F                            ; 8FD9 29 0F                    ).
         jsr     DispatchTextUiControlCode       ; 8FDB 20 8C 99                  ..
-        bcc     TextUiSystem_Branch_8FFA        ; 8FDE 90 1A                    ..
-TextUiSystem_Branch_8FE0:
+        bcc     ClearTextUiRecordNavigationFlags; 8FDE 90 1A                    ..
+MarkTextUiRecordDeferred:
         lda     $F5                             ; 8FE0 A5 F5                    ..
         ora     #$08                            ; 8FE2 09 08                    ..
         sta     $F5                             ; 8FE4 85 F5                    ..
@@ -2235,9 +2235,9 @@ TextUiSystem_Branch_8FEF:
         lda     $07B4                           ; 8FEF AD B4 07                 ...
         ora     #$40                            ; 8FF2 09 40                    .@
         sta     $07B4                           ; 8FF4 8D B4 07                 ...
-        jmp     TextUiSystem_Branch_8FE0        ; 8FF7 4C E0 8F                 L..
+        jmp     MarkTextUiRecordDeferred        ; 8FF7 4C E0 8F                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_8FFA:
+ClearTextUiRecordNavigationFlags:
         lda     $07B4                           ; 8FFA AD B4 07                 ...
         and     #$AF                            ; 8FFD 29 AF                    ).
         sta     $07B4                           ; 8FFF 8D B4 07                 ...
@@ -2258,7 +2258,7 @@ TextUiSystem_Branch_9015:
         lda     ($EE),y                         ; 9018 B1 EE                    ..
         and     #$0F                            ; 901A 29 0F                    ).
         jsr     DispatchTextUiControlCode       ; 901C 20 8C 99                  ..
-        jmp     TextUiSystem_Branch_8FFA        ; 901F 4C FA 8F                 L..
+        jmp     ClearTextUiRecordNavigationFlags; 901F 4C FA 8F                 L..
 ; ----------------------------------------------------------------------------
 CommitTextUiRecordSlot:
         jsr     LoadTextUiPlacementIndex        ; 9022 20 CB 9C                  ..
@@ -2354,7 +2354,7 @@ InitializeTextUiRecordInputState:
         lda     ButtonsPressed                  ; 90DA A5 14                    ..
         and     #$F3                            ; 90DC 29 F3                    ).
         beq     TextUiSystem_Branch_90E3        ; 90DE F0 03                    ..
-        jsr     RunTextUiService282F            ; 90E0 20 C7 9C                  ..
+        jsr     PollTextUiRepeatInput           ; 90E0 20 C7 9C                  ..
 TextUiSystem_Branch_90E3:
         lda     $050C                           ; 90E3 AD 0C 05                 ...
         clc                                     ; 90E6 18                       .
@@ -2716,7 +2716,7 @@ InterpretNextTextUiCommand:
         and     #$F0                            ; 934C 29 F0                    ).
         cmp     #$10                            ; 934E C9 10                    ..
         beq     TextUiSystem_Branch_939A        ; 9350 F0 48                    .H
-TextUiSystem_Branch_9352:
+ScanNextTextUiCommand:
         jsr     AdvanceTextUiCommandPointer     ; 9352 20 AE 93                  ..
         lda     a:$F4                           ; 9355 AD F4 00                 ...
         and     #$F0                            ; 9358 29 F0                    ).
@@ -2725,10 +2725,10 @@ TextUiSystem_Branch_9352:
         lda     a:$F4                           ; 935E AD F4 00                 ...
         and     #$0C                            ; 9361 29 0C                    ).
         cmp     #$0C                            ; 9363 C9 0C                    ..
-        beq     TextUiSystem_Branch_9394        ; 9365 F0 2D                    .-
+        beq     ReturnTextUiCommandType         ; 9365 F0 2D                    .-
         txa                                     ; 9367 8A                       .
-        bne     TextUiSystem_Branch_9394        ; 9368 D0 2A                    .*
-        jmp     TextUiSystem_Branch_9352        ; 936A 4C 52 93                 LR.
+        bne     ReturnTextUiCommandType         ; 9368 D0 2A                    .*
+        jmp     ScanNextTextUiCommand           ; 936A 4C 52 93                 LR.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_936D:
         asl     $F5                             ; 936D 06 F5                    ..
@@ -2743,12 +2743,12 @@ TextUiSystem_Branch_936D:
         lsr     $F5                             ; 9381 46 F5                    F.
         lda     a:$F3                           ; 9383 AD F3 00                 ...
         cmp     $03D2                           ; 9386 CD D2 03                 ...
-        bne     TextUiSystem_Branch_9394        ; 9389 D0 09                    ..
+        bne     ReturnTextUiCommandType         ; 9389 D0 09                    ..
         jsr     RewindTextUiTileRow             ; 938B 20 F4 94                  ..
         dec     $03D3                           ; 938E CE D3 03                 ...
-        jmp     TextUiSystem_Branch_9352        ; 9391 4C 52 93                 LR.
+        jmp     ScanNextTextUiCommand           ; 9391 4C 52 93                 LR.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_9394:
+ReturnTextUiCommandType:
         lda     a:$F4                           ; 9394 AD F4 00                 ...
         and     #$0F                            ; 9397 29 0F                    ).
         rts                                     ; 9399 60                       `
@@ -2757,10 +2757,10 @@ TextUiSystem_Branch_939A:
         inc     a:$F3                           ; 939A EE F3 00                 ...
         lda     a:$F3                           ; 939D AD F3 00                 ...
         cmp     $03D2                           ; 93A0 CD D2 03                 ...
-        beq     TextUiSystem_Branch_9352        ; 93A3 F0 AD                    ..
+        beq     ScanNextTextUiCommand           ; 93A3 F0 AD                    ..
         jsr     AdvanceTextUiTileRow            ; 93A5 20 EA 94                  ..
         inc     $03D3                           ; 93A8 EE D3 03                 ...
-        jmp     TextUiSystem_Branch_9394        ; 93AB 4C 94 93                 L..
+        jmp     ReturnTextUiCommandType         ; 93AB 4C 94 93                 L..
 ; ----------------------------------------------------------------------------
 AdvanceTextUiCommandPointer:
         inc     $F0                             ; 93AE E6 F0                    ..
@@ -3328,7 +3328,7 @@ ScanBackwardTextUiDirectives:
 TextUiSystem_Branch_9763:
         sty     $03DA                           ; 9763 8C DA 03                 ...
         ldy     $F0                             ; 9766 A4 F0                    ..
-TextUiSystem_Branch_9768:
+ScanPreviousTextUiDirective:
         dey                                     ; 9768 88                       .
         cpy     $03DA                           ; 9769 CC DA 03                 ...
         beq     TextUiSystem_Branch_97BA        ; 976C F0 4C                    .L
@@ -3350,7 +3350,7 @@ TextUiSystem_Branch_9784:
 TextUiSystem_Branch_9787:
         pla                                     ; 9787 68                       h
         tay                                     ; 9788 A8                       .
-        jmp     TextUiSystem_Branch_9768        ; 9789 4C 68 97                 Lh.
+        jmp     ScanPreviousTextUiDirective     ; 9789 4C 68 97                 Lh.
 ; ----------------------------------------------------------------------------
 DispatchTextUiDirectiveByThreshold:
         lda     ($EE),y                         ; 978C B1 EE                    ..
@@ -3471,14 +3471,14 @@ EmitTextUiCommandRecord:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_9844:
         ldy     #$00                            ; 9844 A0 00                    ..
-TextUiSystem_Branch_9846:
+ExpandTextUiCommandRecord:
         cpy     $0C                             ; 9846 C4 0C                    ..
         beq     TextUiSystem_Branch_9855        ; 9848 F0 0B                    ..
         lda     ($0A),y                       ; 984A B1 0A                    ..
         bmi     TextUiSystem_Branch_9856        ; 984C 30 08                    0.
         iny                                     ; 984E C8                       .
         jsr     AppendByteToPrimaryTextUiBuffer ; 984F 20 B3 98                  ..
-        jmp     TextUiSystem_Branch_9846        ; 9852 4C 46 98                 LF.
+        jmp     ExpandTextUiCommandRecord       ; 9852 4C 46 98                 LF.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_9855:
         rts                                     ; 9855 60                       `
@@ -3495,20 +3495,20 @@ TextUiSystem_Branch_9856:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_9868:
         ldy     #$00                            ; 9868 A0 00                    ..
-TextUiSystem_Branch_986A:
+AppendNestedTextUiRecordBytes:
         cpy     $0F                             ; 986A C4 0F                    ..
         beq     TextUiSystem_Branch_9879        ; 986C F0 0B                    ..
         lda     ($0D),y                       ; 986E B1 0D                    ..
         iny                                     ; 9870 C8                       .
-        bmi     TextUiSystem_Branch_986A        ; 9871 30 F7                    0.
+        bmi     AppendNestedTextUiRecordBytes   ; 9871 30 F7                    0.
         jsr     AppendByteToPrimaryTextUiBuffer ; 9873 20 B3 98                  ..
-        jmp     TextUiSystem_Branch_986A        ; 9876 4C 6A 98                 Lj.
+        jmp     AppendNestedTextUiRecordBytes   ; 9876 4C 6A 98                 Lj.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_9879:
         pla                                     ; 9879 68                       h
         tay                                     ; 987A A8                       .
         iny                                     ; 987B C8                       .
-        jmp     TextUiSystem_Branch_9846        ; 987C 4C 46 98                 LF.
+        jmp     ExpandTextUiCommandRecord       ; 987C 4C 46 98                 LF.
 ; ----------------------------------------------------------------------------
 JumpToResolvedTextUiCommandHandler:
         jmp     ($000D)                         ; 987F 6C 0D 00                 l..
@@ -3692,7 +3692,7 @@ DispatchTextUiControlCode:
         beq     TextUiSystem_Branch_99B7        ; 9991 F0 24                    .$
         clc                                     ; 9993 18                       .
         adc     #$FA                            ; 9994 69 FA                    i.
-        bcc     TextUiSystem_Branch_99EB        ; 9996 90 53                    .S
+        bcc     RunTextUiSelectionLoop          ; 9996 90 53                    .S
         asl     a                               ; 9998 0A                       .
         tay                                     ; 9999 A8                       .
         lda     $99A4,y                         ; 999A B9 A4 99                 ...
@@ -3712,11 +3712,11 @@ TextUiSystem_Branch_99B7:
         and     #$40                            ; 99BB 29 40                    )@
         beq     TextUiSystem_Branch_99CF        ; 99BD F0 10                    ..
 TextUiSystem_Branch_99BF:
-        jsr     RunTextUiService272F            ; 99BF 20 C3 9C                  ..
+        jsr     PollTextUiInput                 ; 99BF 20 C3 9C                  ..
         jsr     HandleTextUiControlMode1        ; 99C2 20 32 9A                  2.
         bcs     TextUiSystem_Branch_99CF        ; 99C5 B0 08                    ..
-        jsr     UpdateTextUiCursorMarkerForSignedMode; 99C7 20 C0 9A             ..
-        jsr     GateTextUiControlMode2          ; 99CA 20 DF 99                  ..
+        jsr     RefreshSignedTextUiCursor       ; 99C7 20 C0 9A                  ..
+        jsr     CancelTextUiSelectionWhenRequested; 99CA 20 DF 99                ..
         bcc     TextUiSystem_Branch_99BF        ; 99CD 90 F0                    ..
 TextUiSystem_Branch_99CF:
         clc                                     ; 99CF 18                       .
@@ -3730,7 +3730,7 @@ TextUiSystem_Branch_99D1:
         sta     $03CA                           ; 99DB 8D CA 03                 ...
         rts                                     ; 99DE 60                       `
 ; ----------------------------------------------------------------------------
-GateTextUiControlMode2:
+CancelTextUiSelectionWhenRequested:
         lda     #$02                            ; 99DF A9 02                    ..
         cmp     $03CC                           ; 99E1 CD CC 03                 ...
         bne     TextUiSystem_Branch_99E9        ; 99E4 D0 03                    ..
@@ -3740,17 +3740,17 @@ TextUiSystem_Branch_99E9:
         clc                                     ; 99E9 18                       .
         rts                                     ; 99EA 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_99EB:
+RunTextUiSelectionLoop:
         lda     $F5                             ; 99EB A5 F5                    ..
         bmi     TextUiSystem_Branch_9A29        ; 99ED 30 3A                    0:
 TextUiSystem_Branch_99EF:
-        jsr     RunTextUiService272F            ; 99EF 20 C3 9C                  ..
+        jsr     PollTextUiInput                 ; 99EF 20 C3 9C                  ..
         bcs     TextUiSystem_Branch_9A20        ; 99F2 B0 2C                    .,
         jsr     HandleTextUiControlMode1        ; 99F4 20 32 9A                  2.
         bcs     TextUiSystem_Branch_9A27        ; 99F7 B0 2E                    ..
         jsr     HandleTextUiControlMode2        ; 99F9 20 80 9A                  ..
         bcs     TextUiSystem_Branch_9A27        ; 99FC B0 29                    .)
-        jsr     UpdateTextUiCursorMarkerForSignedMode; 99FE 20 C0 9A             ..
+        jsr     RefreshSignedTextUiCursor       ; 99FE 20 C0 9A                  ..
         jsr     HandleTextUiControlMode5        ; 9A01 20 D7 9A                  ..
         bcs     TextUiSystem_Branch_9A15        ; 9A04 B0 0F                    ..
         jsr     HandleTextUiControlMode6        ; 9A06 20 25 9B                  %.
@@ -3867,7 +3867,7 @@ TextUiSystem_Branch_9ABE:
         clc                                     ; 9ABE 18                       .
         rts                                     ; 9ABF 60                       `
 ; ----------------------------------------------------------------------------
-UpdateTextUiCursorMarkerForSignedMode:
+RefreshSignedTextUiCursor:
         bit     $03CC                           ; 9AC0 2C CC 03                 ,..
         bpl     TextUiSystem_Branch_9AD6        ; 9AC3 10 11                    ..
         lda     #$FF                            ; 9AC5 A9 FF                    ..
@@ -3911,7 +3911,7 @@ TextUiSystem_Branch_9B08:
 TextUiSystem_Branch_9B0A:
         jsr     ClearTextUiCursorMarkerAndRefresh; 9B0A 20 06 9C                 ..
         dec     TextCursorPosition              ; 9B0D CE CF 03                 ...
-TextUiSystem_Branch_9B10:
+CommitTextUiCursorMove:
         jsr     SetTextUiCursorMarker81AndRefresh; 9B10 20 0F 9C                 ..
         sec                                     ; 9B13 38                       8
         rts                                     ; 9B14 60                       `
@@ -3922,7 +3922,7 @@ TextUiSystem_Branch_9B15:
         lda     $07B4                           ; 9B1A AD B4 07                 ...
         ora     #$01                            ; 9B1D 09 01                    ..
         sta     $07B4                           ; 9B1F 8D B4 07                 ...
-        jmp     TextUiSystem_Branch_9B10        ; 9B22 4C 10 9B                 L..
+        jmp     CommitTextUiCursorMove          ; 9B22 4C 10 9B                 L..
 ; ----------------------------------------------------------------------------
 HandleTextUiControlMode6:
         lda     #$06                            ; 9B25 A9 06                    ..
@@ -4141,13 +4141,13 @@ CompareTextUiControlMode:
         cmp     $03CC                           ; 9CBF CD CC 03                 ...
         rts                                     ; 9CC2 60                       `
 ; ----------------------------------------------------------------------------
-RunTextUiService272F:
+PollTextUiInput:
         brk                                     ; 9CC3 00                       .
         db   $27,$2F                         ; 9CC4 27 2F                    '/
 ; ----------------------------------------------------------------------------
         rts                                     ; 9CC6 60                       `
 ; ----------------------------------------------------------------------------
-RunTextUiService282F:
+PollTextUiRepeatInput:
         brk                                     ; 9CC7 00                       .
         db   $28,$2F                         ; 9CC8 28 2F                    (/
 ; ----------------------------------------------------------------------------
@@ -4164,7 +4164,7 @@ LoadTextUiPlacementIndex:
         tax                                     ; 9CD5 AA                       .
         rts                                     ; 9CD6 60                       `
 ; ----------------------------------------------------------------------------
-ProcessTextUiSelectionMode:
+RunSixChoiceTextUiSelection:
         lda     $F5                             ; 9CD7 A5 F5                    ..
         bmi     TextUiSystem_Branch_9D17        ; 9CD9 30 3C                    0<
         ldy     #$03                            ; 9CDB A0 03                    ..
@@ -4189,12 +4189,12 @@ TextUiSystem_Branch_9CF1:
         sta     $03DC                           ; 9CF9 8D DC 03                 ...
         jsr     BuildTextUiSelectionMaskFromSixProbes; 9CFC 20 4F 9D             O.
 TextUiSystem_Branch_9CFF:
-        jsr     RunTextUiService272F            ; 9CFF 20 C3 9C                  ..
-        jsr     HandleTextUiSelectionMode1      ; 9D02 20 71 9D                  q.
+        jsr     PollTextUiInput                 ; 9CFF 20 C3 9C                  ..
+        jsr     ConfirmSixChoiceTextUiSelection ; 9D02 20 71 9D                  q.
         bcs     TextUiSystem_Branch_9D15        ; 9D05 B0 0E                    ..
-        jsr     HandleTextUiSelectionMode2      ; 9D07 20 BA 9D                  ..
+        jsr     CancelSixChoiceTextUiSelection  ; 9D07 20 BA 9D                  ..
         bcs     TextUiSystem_Branch_9D15        ; 9D0A B0 09                    ..
-        jsr     UpdateTextUiCursorMarkerForSignedMode; 9D0C 20 C0 9A             ..
+        jsr     RefreshSignedTextUiCursor       ; 9D0C 20 C0 9A                  ..
         jsr     AdvanceTextUiMappedSelectionA   ; 9D0F 20 F1 9D                  ..
         jmp     TextUiSystem_Branch_9CFF        ; 9D12 4C FF 9C                 L..
 ; ----------------------------------------------------------------------------
@@ -4255,7 +4255,7 @@ TextUiSystem_Branch_9D65:
         bne     TextUiSystem_Branch_9D65        ; 9D6E D0 F5                    ..
         rts                                     ; 9D70 60                       `
 ; ----------------------------------------------------------------------------
-HandleTextUiSelectionMode1:
+ConfirmSixChoiceTextUiSelection:
         lda     #$01                            ; 9D71 A9 01                    ..
         cmp     $03CC                           ; 9D73 CD CC 03                 ...
         bne     TextUiSystem_Branch_9DAE        ; 9D76 D0 36                    .6
@@ -4296,7 +4296,7 @@ TextUiSystem_Branch_9DB0:
         sec                                     ; 9DB8 38                       8
         rts                                     ; 9DB9 60                       `
 ; ----------------------------------------------------------------------------
-HandleTextUiSelectionMode2:
+CancelSixChoiceTextUiSelection:
         lda     #$02                            ; 9DBA A9 02                    ..
         cmp     $03CC                           ; 9DBC CD CC 03                 ...
         bne     TextUiSystem_Branch_9DEB        ; 9DBF D0 2A                    .*
@@ -4434,12 +4434,12 @@ ProcessTextUiSelectionMapB:
         bmi     TextUiSystem_Branch_9F06        ; 9EE9 30 1B                    0.
         jsr     BuildTextUiSelectionMaskFromEightProbes; 9EEB 20 0F 9F           ..
 TextUiSystem_Branch_9EEE:
-        jsr     RunTextUiService272F            ; 9EEE 20 C3 9C                  ..
+        jsr     PollTextUiInput                 ; 9EEE 20 C3 9C                  ..
         jsr     HandleTextUiControlMode1        ; 9EF1 20 32 9A                  2.
         bcs     TextUiSystem_Branch_9F04        ; 9EF4 B0 0E                    ..
         jsr     HandleTextUiControlMode2        ; 9EF6 20 80 9A                  ..
         bcs     TextUiSystem_Branch_9F04        ; 9EF9 B0 09                    ..
-        jsr     UpdateTextUiCursorMarkerForSignedMode; 9EFB 20 C0 9A             ..
+        jsr     RefreshSignedTextUiCursor       ; 9EFB 20 C0 9A                  ..
         jsr     AdvanceTextUiMappedSelectionB   ; 9EFE 20 27 9F                  '.
         jmp     TextUiSystem_Branch_9EEE        ; 9F01 4C EE 9E                 L..
 ; ----------------------------------------------------------------------------
@@ -4521,9 +4521,9 @@ TextUiSystem_Branch_9F7B:
         lda     $6F                             ; 9F7B A5 6F                    .o
         sta     $F8                             ; 9F7D 85 F8                    ..
 TextUiSystem_Branch_9F7F:
-        jmp     TextUiSystem_Branch_99EB        ; 9F7F 4C EB 99                 L..
+        jmp     RunTextUiSelectionLoop          ; 9F7F 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
-SeedTextUiRowFromService2D53:
+SeedTextUiRowFromPrimaryEntry:
         lda     $F5                             ; 9F82 A5 F5                    ..
         bmi     TextUiSystem_Branch_9F91        ; 9F84 30 0B                    0.
         ldx     $F7                             ; 9F86 A6 F7                    ..
@@ -4533,9 +4533,9 @@ SeedTextUiRowFromService2D53:
         sta     $03D3                           ; 9F8B 8D D3 03                 ...
         dec     $03D3                           ; 9F8E CE D3 03                 ...
 TextUiSystem_Branch_9F91:
-        jmp     TextUiSystem_Branch_99EB        ; 9F91 4C EB 99                 L..
+        jmp     RunTextUiSelectionLoop          ; 9F91 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
-SeedTextUiRowFromService3D53:
+SeedTextUiRowFromAlternateEntry:
         lda     $F5                             ; 9F94 A5 F5                    ..
         bmi     TextUiSystem_Branch_9FA3        ; 9F96 30 0B                    0.
         ldx     $F7                             ; 9F98 A6 F7                    ..
@@ -4545,25 +4545,25 @@ SeedTextUiRowFromService3D53:
         sta     $03D3                           ; 9F9D 8D D3 03                 ...
         dec     $03D3                           ; 9FA0 CE D3 03                 ...
 TextUiSystem_Branch_9FA3:
-        jmp     TextUiSystem_Branch_99EB        ; 9FA3 4C EB 99                 L..
+        jmp     RunTextUiSelectionLoop          ; 9FA3 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
-ResolveTextUiSelectionViaB747:
+ResolveTextUiSelectionThroughListHandler:
         lda     $F5                             ; 9FA6 A5 F5                    ..
         bpl     TextUiSystem_Branch_9FB3        ; 9FA8 10 09                    ..
         ldy     #$02                            ; 9FAA A0 02                    ..
         ldx     $F7                             ; 9FAC A6 F7                    ..
-        jsr     RunTextUiService252F            ; 9FAE 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; 9FAE 20 47 B7                  G.
         sta     $F8                             ; 9FB1 85 F8                    ..
 TextUiSystem_Branch_9FB3:
-        jmp     TextUiSystem_Branch_99EB        ; 9FB3 4C EB 99                 L..
+        jmp     RunTextUiSelectionLoop          ; 9FB3 4C EB 99                 L..
 ; ----------------------------------------------------------------------------
 InitializeTextUiSelectionCursor60:
         lda     #$60                            ; 9FB6 A9 60                    .`
-        jmp     TextUiSystem_Branch_9FBD        ; 9FB8 4C BD 9F                 L..
+        jmp     RunTextUiGridSelection          ; 9FB8 4C BD 9F                 L..
 ; ----------------------------------------------------------------------------
 InitializeTextUiSelectionCursor20:
         lda     #$20                            ; 9FBB A9 20                    .
-TextUiSystem_Branch_9FBD:
+RunTextUiGridSelection:
         sta     $03DD                           ; 9FBD 8D DD 03                 ...
         sta     TextCursorPosition              ; 9FC0 8D CF 03                 ...
         lda     #$05                            ; 9FC3 A9 05                    ..
@@ -4578,7 +4578,7 @@ TextUiSystem_Branch_9FD0:
         bpl     TextUiSystem_Branch_9FD0        ; 9FD3 10 FB                    ..
         sta     $03DB                           ; 9FD5 8D DB 03                 ...
 TextUiSystem_Branch_9FD8:
-        jsr     RunTextUiService272F            ; 9FD8 20 C3 9C                  ..
+        jsr     PollTextUiInput                 ; 9FD8 20 C3 9C                  ..
         jsr     HandleGridControlMode1SelectIndex; 9FDB 20 04 A0                 ..
         bcs     TextUiSystem_Branch_9FF7        ; 9FDE B0 17                    ..
         jsr     HandleGridControlMode2Cancel    ; 9FE0 20 20 A0                   .
@@ -4733,7 +4733,7 @@ CommitGridCursorColumn:
         sta     $03CA                           ; A0DB 8D CA 03                 ...
         jmp     RefreshTextUiCursorAndWait      ; A0DE 4C 19 9C                 L..
 ; ----------------------------------------------------------------------------
-InitializeGridCursorAndRunService03E7:
+InitializeGridCursorAndRender:
         jsr     InitializeTextUiSelectionCursor60; A0E1 20 B6 9F                 ..
         brk                                     ; A0E4 00                       .
         db   $03,$E7                         ; A0E5 03 E7                    ..
@@ -4778,7 +4778,7 @@ TextUiSystem_Branch_A112:
         lda     ($00),y                       ; A12B B1 00                    ..
         sta     $03E3                           ; A12D 8D E3 03                 ...
 TextUiSystem_Branch_A130:
-        jsr     RunTextUiService272F            ; A130 20 C3 9C                  ..
+        jsr     PollTextUiInput                 ; A130 20 C3 9C                  ..
         jsr     HandleListControlMode1          ; A133 20 5A A1                  Z.
         bcs     TextUiSystem_Branch_A14F        ; A136 B0 17                    ..
         jsr     HandleListControlMode2          ; A138 20 15 A2                  ..
@@ -4853,7 +4853,7 @@ TextUiSystem_Branch_A1A1:
         beq     TextUiSystem_Branch_A1C1        ; A1AD F0 12                    ..
         lda     $02                             ; A1AF A5 02                    ..
         beq     TextUiSystem_Branch_A200        ; A1B1 F0 4D                    .M
-        jsr     RunTextUiService1D2F            ; A1B3 20 91 A3                  ..
+        jsr     AdvanceTextUiListSelection      ; A1B3 20 91 A3                  ..
         bcs     TextUiSystem_Branch_A200        ; A1B6 B0 48                    .H
         jsr     CommitListCursorAndWait         ; A1B8 20 14 A3                  ..
         lda     #$00                            ; A1BB A9 00                    ..
@@ -4888,12 +4888,12 @@ TextUiSystem_Branch_A1E8:
         inx                                     ; A1EE E8                       .
         cpx     #$04                            ; A1EF E0 04                    ..
         bne     TextUiSystem_Branch_A1E8        ; A1F1 D0 F5                    ..
-TextUiSystem_Branch_A1F3:
+AppendListSelectionByte:
         lda     ($00),y                       ; A1F3 B1 00                    ..
         sta     $03E3,x                         ; A1F5 9D E3 03                 ...
         inc     $02                             ; A1F8 E6 02                    ..
 TextUiSystem_Branch_A1FA:
-        jsr     RunTextUiService202F            ; A1FA 20 97 A3                  ..
+        jsr     RefreshTextUiListSelection      ; A1FA 20 97 A3                  ..
         jsr     CommitListCursorAndWait         ; A1FD 20 14 A3                  ..
 TextUiSystem_Branch_A200:
         clc                                     ; A200 18                       .
@@ -4907,7 +4907,7 @@ TextUiSystem_Branch_A202:
         cmp     #$08                            ; A20C C9 08                    ..
         bne     TextUiSystem_Branch_A1E6        ; A20E D0 D6                    ..
         ldx     $02                             ; A210 A6 02                    ..
-        jmp     TextUiSystem_Branch_A1F3        ; A212 4C F3 A1                 L..
+        jmp     AppendListSelectionByte         ; A212 4C F3 A1                 L..
 ; ----------------------------------------------------------------------------
 HandleListControlMode2:
         lda     #$02                            ; A215 A9 02                    ..
@@ -5152,7 +5152,7 @@ TextUiSystem_Branch_A388:
         sta     $09                             ; A38E 85 09                    ..
         rts                                     ; A390 60                       `
 ; ----------------------------------------------------------------------------
-RunTextUiService1D2F:
+AdvanceTextUiListSelection:
         brk                                     ; A391 00                       .
         db   $1D,$2F                         ; A392 1D 2F                    ./
 ; ----------------------------------------------------------------------------
@@ -5160,7 +5160,7 @@ RunTextUiService1D2F:
 ; ----------------------------------------------------------------------------
         db   $60,$60                         ; A395 60 60                    ``
 ; ----------------------------------------------------------------------------
-RunTextUiService202F:
+RefreshTextUiListSelection:
         brk                                     ; A397 00                       .
         db   $20,$2F                         ; A398 20 2F                     /
 ; ----------------------------------------------------------------------------
@@ -5596,7 +5596,7 @@ ResolveTextUiSelectorAndAppendCode6D:
         lda     $AB2C,y                         ; AAFF B9 2C AB                 .,.
         cpy     #$01                            ; AB02 C0 01                    ..
         beq     TextUiSystem_Branch_AB0B        ; AB04 F0 05                    ..
-        jsr     TestService2B53Below8           ; AB06 20 E8 BE                  ..
+        jsr     IsTextUiEntryBelowEight         ; AB06 20 E8 BE                  ..
         bcs     TextUiSystem_Branch_AB14        ; AB09 B0 09                    ..
 TextUiSystem_Branch_AB0B:
         cpy     #$00                            ; AB0B C0 00                    ..
@@ -5650,17 +5650,17 @@ TextUiSystem_Branch_AB4C:
         db   $04,$02,$00,$03,$03,$02,$03,$02 ; AB50 04 02 00 03 03 02 03 02  ........
         db   $01,$02,$02,$02,$02,$03,$02,$01 ; AB58 01 02 02 02 02 03 02 01  ........
 ; ----------------------------------------------------------------------------
-RouteF7ThroughService2953:
+FormatTextUiSelectorValue:
         ldx     $F7                             ; AB60 A6 F7                    ..
         brk                                     ; AB62 00                       .
         db   $29,$53                         ; AB63 29 53                    )S
 ; ----------------------------------------------------------------------------
-        jmp     TextUiSystem_Branch_BAA9        ; AB65 4C A9 BA                 L..
+        jmp     AppendIndexedTextField          ; AB65 4C A9 BA                 L..
 ; ----------------------------------------------------------------------------
 SetTextUiFieldIndex10AndFormat:
         lda     #$0A                            ; AB68 A9 0A                    ..
         sta     $03DC                           ; AB6A 8D DC 03                 ...
-        jmp     TextUiSystem_Branch_ABF9        ; AB6D 4C F9 AB                 L..
+        jmp     FormatAndAppendWorkingValue     ; AB6D 4C F9 AB                 L..
 ; ----------------------------------------------------------------------------
 FormatZeroInitializedValueWithSelector10:
         lda     #$00                            ; AB70 A9 00                    ..
@@ -5676,12 +5676,12 @@ MapTextUiCountPlus15:
         jsr     LoadTextUiRecordFlagHighNibble  ; AB82 20 EB BC                  ..
         clc                                     ; AB85 18                       .
         adc     #$0F                            ; AB86 69 0F                    i.
-        jmp     TextUiSystem_Branch_BACA        ; AB88 4C CA BA                 L..
+        jmp     AppendFinalIndexedTextField     ; AB88 4C CA BA                 L..
 ; ----------------------------------------------------------------------------
 ResolveTextUiValueByF3F7:
         lda     $F3                             ; AB8B A5 F3                    ..
         ldx     $F7                             ; AB8D A6 F7                    ..
-        jsr     TestService2B53Below8           ; AB8F 20 E8 BE                  ..
+        jsr     IsTextUiEntryBelowEight         ; AB8F 20 E8 BE                  ..
         bcs     TextUiSystem_Branch_ABA3        ; AB92 B0 0F                    ..
         brk                                     ; AB94 00                       .
         db   $2C,$73                         ; AB95 2C 73                    ,s
@@ -5713,7 +5713,7 @@ ResolveOrdinalServiceValue:
 ; ----------------------------------------------------------------------------
         db   $37,$38,$39,$3A                 ; ABC3 37 38 39 3A              789:
 ; ----------------------------------------------------------------------------
-ResolveTextUiValueViaService3B73:
+FormatResolvedTextUiValue:
         ldx     $F7                             ; ABC7 A6 F7                    ..
         lda     $F3                             ; ABC9 A5 F3                    ..
         brk                                     ; ABCB 00                       .
@@ -5740,24 +5740,24 @@ FormatIndexedSave61DBValue:
 ClearTextUiFieldIndexAndFormat:
         lda     #$00                            ; ABEB A9 00                    ..
         sta     $03DC                           ; ABED 8D DC 03                 ...
-        jmp     TextUiSystem_Branch_ABF9        ; ABF0 4C F9 AB                 L..
+        jmp     FormatAndAppendWorkingValue     ; ABF0 4C F9 AB                 L..
 ; ----------------------------------------------------------------------------
 IncrementTextUiFieldIndexAndFormat:
         inc     $03DC                           ; ABF3 EE DC 03                 ...
         lda     $03DC                           ; ABF6 AD DC 03                 ...
-TextUiSystem_Branch_ABF9:
+FormatAndAppendWorkingValue:
         jsr     FormatWorkingValueBySelectorTable; ABF9 20 56 BB                 V.
         jmp     AppendWorkingBytesToPrimaryBuffer; ABFC 4C 75 BB                Lu.
 ; ----------------------------------------------------------------------------
 SetTextUiModeFromF3AndFormat:
         lda     $F3                             ; ABFF A5 F3                    ..
         sta     $03DD                           ; AC01 8D DD 03                 ...
-        jmp     TextUiSystem_Branch_BC6D        ; AC04 4C 6D BC                 Lm.
+        jmp     FormatCompositeTextUiValue      ; AC04 4C 6D BC                 Lm.
 ; ----------------------------------------------------------------------------
 SetTextUiFieldIndex7AndFormat:
         lda     #$07                            ; AC07 A9 07                    ..
         sta     $03DC                           ; AC09 8D DC 03                 ...
-        jmp     TextUiSystem_Branch_ABF9        ; AC0C 4C F9 AB                 L..
+        jmp     FormatAndAppendWorkingValue     ; AC0C 4C F9 AB                 L..
 ; ----------------------------------------------------------------------------
 AppendContextualCursorGlyphPair:
         dec     $F2                             ; AC0F C6 F2                    ..
@@ -5794,7 +5794,7 @@ TextUiSystem_Branch_AC40:
         db   $FF                             ; AC4C FF                       .
         db   $FF,$00,$82,$81,$82             ; AC4D FF 00 82 81 82           .....
 ; ----------------------------------------------------------------------------
-RouteService4773ValueToFormatter:
+FormatTextUiAttributeValue:
         ldx     $F7                             ; AC52 A6 F7                    ..
         lda     $F3                             ; AC54 A5 F3                    ..
         brk                                     ; AC56 00                       .
@@ -5878,7 +5878,7 @@ FormatTextUiValueFromAvailableOrdinal:
         sta     $03DB                           ; ACD3 8D DB 03                 ...
         jsr     ResolveWorkingTextUiValue       ; ACD6 20 44 BA                  D.
         jsr     AppendWorkingValueWithZeroPrefix; ACD9 20 6D BA                  m.
-        jmp     TextUiSystem_Branch_BCF3        ; ACDC 4C F3 BC                 L..
+        jmp     AdvanceAndEmitFirstFormattedDigit; ACDC 4C F3 BC                L..
 ; ----------------------------------------------------------------------------
 FormatFourByteListValue:
         lda     #$FF                            ; ACDF A9 FF                    ..
@@ -5898,20 +5898,20 @@ TextUiSystem_Branch_ACF6:
         iny                                     ; ACF7 C8                       .
         tya                                     ; ACF8 98                       .
         jsr     AppendWorkingValueWithZeroPrefix; ACF9 20 6D BA                  m.
-        jmp     TextUiSystem_Branch_BCF3        ; ACFC 4C F3 BC                 L..
+        jmp     AdvanceAndEmitFirstFormattedDigit; ACFC 4C F3 BC                L..
 ; ----------------------------------------------------------------------------
 SetTextUiModeFromF3Plus5:
         lda     $F3                             ; ACFF A5 F3                    ..
         clc                                     ; AD01 18                       .
         adc     #$05                            ; AD02 69 05                    i.
         sta     $03DD                           ; AD04 8D DD 03                 ...
-        jmp     TextUiSystem_Branch_BC6D        ; AD07 4C 6D BC                 Lm.
+        jmp     FormatCompositeTextUiValue      ; AD07 4C 6D BC                 Lm.
 ; ----------------------------------------------------------------------------
-RouteService4D33ToFormatter:
+FormatTextUiRecordValue:
         brk                                     ; AD0A 00                       .
         db   $4D,$33                         ; AD0B 4D 33                    M3
 ; ----------------------------------------------------------------------------
-        jmp     TextUiSystem_Branch_BABD        ; AD0D 4C BD BA                 L..
+        jmp     AppendAlternateIndexedTextField ; AD0D 4C BD BA                 L..
 ; ----------------------------------------------------------------------------
 MapTextUiIndexByHeaderMode:
         ldy     #$01                            ; AD10 A0 01                    ..
@@ -5928,11 +5928,11 @@ MapTextUiIndexByHeaderMode:
         inx                                     ; AD24 E8                       .
 TextUiSystem_Branch_AD25:
         txa                                     ; AD25 8A                       .
-        jmp     TextUiSystem_Branch_BABD        ; AD26 4C BD BA                 L..
+        jmp     AppendAlternateIndexedTextField ; AD26 4C BD BA                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_AD29:
         lda     $F3                             ; AD29 A5 F3                    ..
-        jmp     TextUiSystem_Branch_BABD        ; AD2B 4C BD BA                 L..
+        jmp     AppendAlternateIndexedTextField ; AD2B 4C BD BA                 L..
 ; ----------------------------------------------------------------------------
 AppendTextUiValueWithSuffixByF7:
         jsr     AdvanceTextUiOutputCursor       ; AD2E 20 FE 98                  ..
@@ -5952,7 +5952,7 @@ FormatTextUiValueThroughBA7B:
         sta     $03DB                           ; AD4C 8D DB 03                 ...
         jsr     ResolveWorkingTextUiValue       ; AD4F 20 44 BA                  D.
         jsr     AppendFourWorkingBytes          ; AD52 20 7B BA                  {.
-        jmp     TextUiSystem_Branch_BCF6        ; AD55 4C F6 BC                 L..
+        jmp     EmitFirstSignificantFormattedDigit; AD55 4C F6 BC               L..
 ; ----------------------------------------------------------------------------
 EmitTextUiFormat0B2C:
         jmp     EmitFormatSelector0BWithCode2C  ; AD58 4C B9 BB                 L..
@@ -6030,19 +6030,19 @@ FormatIndexedListValueFromF3:
         ldx     $07B0,y                         ; ADCE BE B0 07                 ...
         stx     $03DB                           ; ADD1 8E DB 03                 ...
         jsr     LoadScratchAndAppendFourWorkingBytes; ADD4 20 78 BA              x.
-        jmp     TextUiSystem_Branch_BCF6        ; ADD7 4C F6 BC                 L..
+        jmp     EmitFirstSignificantFormattedDigit; ADD7 4C F6 BC               L..
 ; ----------------------------------------------------------------------------
 FormatTextUiValueFromF3:
         lda     $F3                             ; ADDA A5 F3                    ..
         sta     $03DB                           ; ADDC 8D DB 03                 ...
         jsr     ResolveWorkingTextUiValue       ; ADDF 20 44 BA                  D.
         jsr     AppendWorkingValueWithZeroPrefix; ADE2 20 6D BA                  m.
-        jmp     TextUiSystem_Branch_BCF6        ; ADE5 4C F6 BC                 L..
+        jmp     EmitFirstSignificantFormattedDigit; ADE5 4C F6 BC               L..
 ; ----------------------------------------------------------------------------
 SetTextUiMode8AndFormat:
         lda     #$08                            ; ADE8 A9 08                    ..
         sta     $03DD                           ; ADEA 8D DD 03                 ...
-        jmp     TextUiSystem_Branch_BC6D        ; ADED 4C 6D BC                 Lm.
+        jmp     FormatCompositeTextUiValue      ; ADED 4C 6D BC                 Lm.
 ; ----------------------------------------------------------------------------
 FormatF7AsThreeByteValue:
         lda     $F7                             ; ADF0 A5 F7                    ..
@@ -6073,7 +6073,7 @@ ResolveIndexedTextUiValueOrFF:
         iny                                     ; AE19 C8                       .
 TextUiSystem_Branch_AE1A:
         tya                                     ; AE1A 98                       .
-        jsr     TestService2B53Below8           ; AE1B 20 E8 BE                  ..
+        jsr     IsTextUiEntryBelowEight         ; AE1B 20 E8 BE                  ..
         bcs     TextUiSystem_Branch_AE28        ; AE1E B0 08                    ..
         brk                                     ; AE20 00                       .
         db   $2C,$73                         ; AE21 2C 73                    ,s
@@ -6261,14 +6261,14 @@ TextUiSystem_Branch_AF4D:
         bne     TextUiSystem_Branch_AF4D        ; AF54 D0 F7                    ..
         rts                                     ; AF56 60                       `
 ; ----------------------------------------------------------------------------
-FormatTextUiValueFromF3ToBCF3:
+FormatSelectedTextUiDigit:
         lda     $F3                             ; AF57 A5 F3                    ..
         sta     $03DB                           ; AF59 8D DB 03                 ...
         jsr     ResolveWorkingTextUiValue       ; AF5C 20 44 BA                  D.
         jsr     AppendWorkingValueWithZeroPrefix; AF5F 20 6D BA                  m.
-        jmp     TextUiSystem_Branch_BCF3        ; AF62 4C F3 BC                 L..
+        jmp     AdvanceAndEmitFirstFormattedDigit; AF62 4C F3 BC                L..
 ; ----------------------------------------------------------------------------
-FormatTextUiValueFromF3ToBA78:
+AppendSelectedTextUiValue:
         lda     $F3                             ; AF65 A5 F3                    ..
         sta     $03DB                           ; AF67 8D DB 03                 ...
         jsr     ResolveWorkingTextUiValue       ; AF6A 20 44 BA                  D.
@@ -6277,7 +6277,7 @@ FormatTextUiValueFromF3ToBA78:
 SetTextUiFieldIndex5AndFormat:
         lda     #$05                            ; AF70 A9 05                    ..
         sta     $03DC                           ; AF72 8D DC 03                 ...
-        jmp     TextUiSystem_Branch_ABF9        ; AF75 4C F9 AB                 L..
+        jmp     FormatAndAppendWorkingValue     ; AF75 4C F9 AB                 L..
 ; ----------------------------------------------------------------------------
 FormatEmptyTextUiListValue:
         lda     $07B2                           ; AF78 AD B2 07                 ...
@@ -6338,7 +6338,7 @@ TextUiSystem_Branch_AFB7:
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_AFD3:
         lda     #$1A                            ; AFD3 A9 1A                    ..
-        jmp     TextUiSystem_Branch_BACA        ; AFD5 4C CA BA                 L..
+        jmp     AppendFinalIndexedTextField     ; AFD5 4C CA BA                 L..
 ; ----------------------------------------------------------------------------
 FormatNonemptyTextUiListValue:
         lda     $07B2                           ; AFD8 AD B2 07                 ...
@@ -6405,7 +6405,7 @@ TextUiSystem_Branch_B02B:
         bne     TextUiSystem_Branch_B02B        ; B034 D0 F5                    ..
         rts                                     ; B036 60                       `
 ; ----------------------------------------------------------------------------
-AppendPrimaryTextUiLookup23:
+AppendPrimaryTextUiField:
         lda     #$23                            ; B037 A9 23                    .#
         jmp     TextUiSystem_Branch_BAC2        ; B039 4C C2 BA                 L..
 ; ----------------------------------------------------------------------------
@@ -6460,7 +6460,7 @@ Bank16_PrimaryCommandData:
         db   $2D,$38,$25,$32,$28,$00,$E9,$EB ; B1B4 2D 38 25 32 28 00 E9 EB  -8%2(...
         db   $33,$36,$28,$29,$36             ; B1BC 33 36 28 29 36           36()6
 ; ----------------------------------------------------------------------------
-InitializeTextUiLookupWindowFromF7F3:
+InitializeTextUiLookupWindow:
         lda     $F7                             ; B1C1 A5 F7                    ..
         asl     a                               ; B1C3 0A                       .
         asl     a                               ; B1C4 0A                       .
@@ -6472,7 +6472,7 @@ InitializeTextUiLookupWindowFromF7F3:
         clc                                     ; B1CF 18                       .
         adc     #$05                            ; B1D0 69 05                    i.
         sta     $03DD                           ; B1D2 8D DD 03                 ...
-        jmp     TextUiSystem_Branch_BC6D        ; B1D5 4C 6D BC                 Lm.
+        jmp     FormatCompositeTextUiValue      ; B1D5 4C 6D BC                 Lm.
 ; ----------------------------------------------------------------------------
 EmitTextUiCodeFromB1Lookup:
         ldx     $03DC                           ; B1D8 AE DC 03                 ...
@@ -6507,7 +6507,7 @@ EmitTextUiCode1BAndRecordSummary:
         lda     #$71                            ; B21C A9 71                    .q
         jsr     AppendByteToPrimaryTextUiBuffer ; B21E 20 B3 98                  ..
         ldy     #$00                            ; B221 A0 00                    ..
-        jsr     RunTextUiService252F            ; B223 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; B223 20 47 B7                  G.
         ldx     #$04                            ; B226 A2 04                    ..
 TextUiSystem_Branch_B228:
         lda     ($00),y                       ; B228 B1 00                    ..
@@ -6525,7 +6525,7 @@ TextUiSystem_Branch_B231:
 ; ----------------------------------------------------------------------------
 RouteF3ToPrimaryCommandLookup:
         lda     $F3                             ; B24A A5 F3                    ..
-        jmp     TextUiSystem_Branch_BAA9        ; B24C 4C A9 BA                 L..
+        jmp     AppendIndexedTextField          ; B24C 4C A9 BA                 L..
 ; ----------------------------------------------------------------------------
 EmitValidatedTextUiSelectionOffset:
         jsr     ComputeTextUiFormatterIndex     ; B24F 20 0E BA                  ..
@@ -6551,7 +6551,7 @@ TextUiSystem_Branch_B270:
 ; ----------------------------------------------------------------------------
         db   $00,$06,$0C                     ; B275 00 06 0C                 ...
 ; ----------------------------------------------------------------------------
-EmitTextUiSelectionMarkers:
+RenderTextUiChoiceIndicators:
         lda     $F7                             ; B278 A5 F7                    ..
         jsr     MapLowNibbleThroughTextUiTable  ; B27A 20 FA BE                  ..
         bcs     TextUiSystem_Branch_B29D        ; B27D B0 1E                    ..
@@ -6677,7 +6677,7 @@ EmitSecondaryCommandRecord:
         jsr     EmitTextUiCommandRecordByActiveSet; B344 20 97 BE                ..
         ldy     #$03                            ; B347 A0 03                    ..
         ldx     $F7                             ; B349 A6 F7                    ..
-        jsr     RunTextUiService252F            ; B34B 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; B34B 20 47 B7                  G.
         pha                                     ; B34E 48                       H
         clc                                     ; B34F 18                       .
         adc     #$02                            ; B350 69 02                    i.
@@ -6689,12 +6689,12 @@ EmitSecondaryCommandRecord:
         beq     TextUiSystem_Branch_B367        ; B35E F0 07                    ..
         tax                                     ; B360 AA                       .
         lda     Bank16_SecondaryCommandLookupA,x; B361 BD 7B B3                 .{.
-        jmp     TextUiSystem_Branch_BACA        ; B364 4C CA BA                 L..
+        jmp     AppendFinalIndexedTextField     ; B364 4C CA BA                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_B367:
         ldy     #$00                            ; B367 A0 00                    ..
         ldx     $F7                             ; B369 A6 F7                    ..
-        jsr     RunTextUiService252F            ; B36B 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; B36B 20 47 B7                  G.
         ldy     #$00                            ; B36E A0 00                    ..
 TextUiSystem_Branch_B370:
         lda     ($00),y                       ; B370 B1 00                    ..
@@ -6710,13 +6710,13 @@ Bank16_SecondaryCommandLookupA:
 FormatSecondaryCommandSelection:
         ldy     #$03                            ; B37F A0 03                    ..
         ldx     $F7                             ; B381 A6 F7                    ..
-        jsr     RunTextUiService252F            ; B383 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; B383 20 47 B7                  G.
         tax                                     ; B386 AA                       .
         lda     Bank16_SecondaryCommandLookupB,x; B387 BD A3 B3                 ...
         sta     $04                             ; B38A 85 04                    ..
         ldy     #$01                            ; B38C A0 01                    ..
         ldx     $F7                             ; B38E A6 F7                    ..
-        jsr     RunTextUiService252F            ; B390 20 47 B7                  G.
+        jsr     ResolveTextUiListSelection      ; B390 20 47 B7                  G.
         sta     $72                             ; B393 85 72                    .r
         lda     #$00                            ; B395 A9 00                    ..
         sta     $73                             ; B397 85 73                    .s
@@ -6763,7 +6763,7 @@ Bank16_SecondaryCommandData:
         db   $3B,$2D,$38,$27,$2C,$36,$29,$31 ; B4A8 3B 2D 38 27 2C 36 29 31  ;-8',6)1
         db   $33,$3A,$29,$25,$28,$28         ; B4B0 33 3A 29 25 28 28        3:)%((
 ; ----------------------------------------------------------------------------
-QueryTextUiService6233WithIndex00:
+QueryTextUiEntryCount:
         lda     #$00                            ; B4B6 A9 00                    ..
         sta     $03DD                           ; B4B8 8D DD 03                 ...
         brk                                     ; B4BB 00                       .
@@ -6771,7 +6771,7 @@ QueryTextUiService6233WithIndex00:
 ; ----------------------------------------------------------------------------
         rts                                     ; B4BE 60                       `
 ; ----------------------------------------------------------------------------
-QueryTextUiService6223WithIndex08:
+QueryTextUiLowOption:
         lda     #$08                            ; B4BF A9 08                    ..
         sta     $03DD                           ; B4C1 8D DD 03                 ...
         brk                                     ; B4C4 00                       .
@@ -6779,7 +6779,7 @@ QueryTextUiService6223WithIndex08:
 ; ----------------------------------------------------------------------------
         rts                                     ; B4C8 60                       `
 ; ----------------------------------------------------------------------------
-QueryTextUiService6223WithIndex80:
+QueryTextUiHighOption:
         lda     #$80                            ; B4C9 A9 80                    ..
         sta     $03DD                           ; B4CB 8D DD 03                 ...
         brk                                     ; B4CE 00                       .
@@ -6787,7 +6787,7 @@ QueryTextUiService6223WithIndex80:
 ; ----------------------------------------------------------------------------
         rts                                     ; B4D2 60                       `
 ; ----------------------------------------------------------------------------
-QueryTextUiService6223WithIndex40:
+QueryTextUiMiddleOption:
         lda     #$40                            ; B4D3 A9 40                    .@
         sta     $03DD                           ; B4D5 8D DD 03                 ...
         brk                                     ; B4D8 00                       .
@@ -6821,7 +6821,7 @@ TextUiSystem_Branch_B4F6:
         lda     $03D2                           ; B500 AD D2 03                 ...
         rts                                     ; B503 60                       `
 ; ----------------------------------------------------------------------------
-LoadService3E53ResultAndReturn7:
+LoadTextUiEntryCount:
         lda     #$00                            ; B504 A9 00                    ..
         sta     $03DC                           ; B506 8D DC 03                 ...
         ldx     $F7                             ; B509 A6 F7                    ..
@@ -6836,7 +6836,7 @@ ReturnTextUiSelectionWidth4:
         lda     #$04                            ; B514 A9 04                    ..
         rts                                     ; B516 60                       `
 ; ----------------------------------------------------------------------------
-CountThreeService3C53MatchesAndReturnTriple:
+CountMatchingTextUiEntries:
         ldx     $F7                             ; B517 A6 F7                    ..
         lda     #$02                            ; B519 A9 02                    ..
         sta     $6F                             ; B51B 85 6F                    .o
@@ -6867,7 +6867,7 @@ ReturnTextUiSelectionWidth8:
         lda     #$08                            ; B53B A9 08                    ..
         rts                                     ; B53D 60                       `
 ; ----------------------------------------------------------------------------
-LoadService4773Value75:
+LoadTextUiAttributeValue:
         lda     #$00                            ; B53E A9 00                    ..
         ldx     $F7                             ; B540 A6 F7                    ..
         brk                                     ; B542 00                       .
@@ -6876,7 +6876,7 @@ LoadService4773Value75:
         lda     $75                             ; B545 A5 75                    .u
         rts                                     ; B547 60                       `
 ; ----------------------------------------------------------------------------
-LoadIndexedService0013Value75:
+LoadIndexedTextUiEntryValue:
         lda     #$00                            ; B548 A9 00                    ..
         sta     $6F                             ; B54A 85 6F                    .o
         jsr     LoadTextUiRecordFlagHighNibble  ; B54C 20 EB BC                  ..
@@ -7011,7 +7011,7 @@ TextUiSystem_Branch_B60D:
         lda     $03DB                           ; B617 AD DB 03                 ...
         rts                                     ; B61A 60                       `
 ; ----------------------------------------------------------------------------
-ReturnService131FCarryAsByte:
+ReturnTextUiConditionAsByte:
         brk                                     ; B61B 00                       .
         db   $13,$1F                         ; B61C 13 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -7023,7 +7023,7 @@ ReturnTextUiEntryCount4:
         lda     #$04                            ; B622 A9 04                    ..
         rts                                     ; B624 60                       `
 ; ----------------------------------------------------------------------------
-LoadTextUiValueFromService005FOr07C4:
+LoadCurrentTextUiListCount:
         lda     $F5                             ; B625 A5 F5                    ..
         and     #$04                            ; B627 29 04                    ).
         bne     TextUiSystem_Branch_B62E        ; B629 D0 03                    ..
@@ -7034,13 +7034,13 @@ TextUiSystem_Branch_B62E:
         lda     $07C4                           ; B62E AD C4 07                 ...
         rts                                     ; B631 60                       `
 ; ----------------------------------------------------------------------------
-RunTextUiService065F:
+RefreshTextUiList:
         brk                                     ; B632 00                       .
         db   $06,$5F                         ; B633 06 5F                    ._
 ; ----------------------------------------------------------------------------
         rts                                     ; B635 60                       `
 ; ----------------------------------------------------------------------------
-QueryTextUiService3E53WithMode2:
+QuerySecondaryTextUiEntry:
         lda     #$02                            ; B636 A9 02                    ..
         sta     $03DC                           ; B638 8D DC 03                 ...
         ldx     $F7                             ; B63B A6 F7                    ..
@@ -7049,7 +7049,7 @@ QueryTextUiService3E53WithMode2:
 ; ----------------------------------------------------------------------------
         rts                                     ; B640 60                       `
 ; ----------------------------------------------------------------------------
-TestTextUiService2B53Equals5:
+TestTextUiEntryTypeFive:
         ldx     $F7                             ; B641 A6 F7                    ..
         brk                                     ; B643 00                       .
         db   $2B,$53                         ; B644 2B 53                    +S
@@ -7068,7 +7068,7 @@ ReturnTextUiListCount4:
 ; ----------------------------------------------------------------------------
 LoadTextUiListDescriptor:
         lda     $03C6                           ; B653 AD C6 03                 ...
-TextUiSystem_Branch_B656:
+LoadTextUiListDescriptorByIndex:
         sta     $03DD                           ; B656 8D DD 03                 ...
         asl     a                               ; B659 0A                       .
         tax                                     ; B65A AA                       .
@@ -7116,7 +7116,7 @@ TextUiSystem_Branch_B656:
         db   $00,$24,$00,$77,$00,$78,$00,$00 ; B710 00 24 00 77 00 78 00 00  .$.w.x..
         db   $00,$28,$29,$30,$00,$29,$32,$28 ; B718 00 28 29 30 00 29 32 28  .()0.)2(
 ; ----------------------------------------------------------------------------
-RunTextUiService2D53ForF7:
+LoadCurrentTextUiRow:
         ldx     $F7                             ; B720 A6 F7                    ..
         brk                                     ; B722 00                       .
         db   $2D,$53                         ; B723 2D 53                    -S
@@ -7129,7 +7129,7 @@ SetTextUiFlag20:
         sta     $F5                             ; B72A 85 F5                    ..
         rts                                     ; B72C 60                       `
 ; ----------------------------------------------------------------------------
-RunService86FBUnlessFlags84Set:
+RefreshTextUiWhenVisible:
         lda     $F5                             ; B72D A5 F5                    ..
         and     #$84                            ; B72F 29 84                    ).
         bne     TextUiSystem_Branch_B736        ; B731 D0 03                    ..
@@ -7139,7 +7139,7 @@ RunService86FBUnlessFlags84Set:
 TextUiSystem_Branch_B736:
         rts                                     ; B736 60                       `
 ; ----------------------------------------------------------------------------
-CopyFirstListEntryTo03DB:
+CopyFirstListEntryToWorkingState:
         lda     $07B0                           ; B737 AD B0 07                 ...
         sta     $03DB                           ; B73A 8D DB 03                 ...
         rts                                     ; B73D 60                       `
@@ -7150,7 +7150,7 @@ ClearTextUiFlag04:
         sta     $07B4                           ; B743 8D B4 07                 ...
         rts                                     ; B746 60                       `
 ; ----------------------------------------------------------------------------
-RunTextUiService252F:
+ResolveTextUiListSelection:
         brk                                     ; B747 00                       .
         db   $25,$2F                         ; B748 25 2F                    %/
 ; ----------------------------------------------------------------------------
@@ -7164,9 +7164,9 @@ MapD6ComparisonMaskToPartyCount:
 ; ----------------------------------------------------------------------------
         db   $01,$05,$05,$05,$05,$05,$05,$03 ; B755 01 05 05 05 05 05 05 03  ........
 ; ----------------------------------------------------------------------------
-LoadTextUiDescriptorFrom07B7:
+LoadActiveTextUiListDescriptor:
         lda     $07B7                           ; B75D AD B7 07                 ...
-        jmp     TextUiSystem_Branch_B656        ; B760 4C 56 B6                 LV.
+        jmp     LoadTextUiListDescriptorByIndex ; B760 4C 56 B6                 LV.
 ; ----------------------------------------------------------------------------
 TestFirstListEntryWithBFA6:
         ldx     $07B0                           ; B763 AE B0 07                 ...
@@ -7383,9 +7383,9 @@ TextUiSystem_Branch_B8B4:
 ; ----------------------------------------------------------------------------
         db   $20,$10                         ; B8C0 20 10                     .
 ; ----------------------------------------------------------------------------
-TransformF8ThroughService2D0F:
+TransformTextUiResultThroughPartyContext:
         lda     $03DD                           ; B8C2 AD DD 03                 ...
-TextUiSystem_Branch_B8C5:
+TransformTextUiResultThroughPartyLookup:
         ldx     $F8                             ; B8C5 A6 F8                    ..
         stx     $6E                             ; B8C7 86 6E                    .n
         brk                                     ; B8C9 00                       .
@@ -7395,9 +7395,9 @@ TextUiSystem_Branch_B8C5:
         sta     $F8                             ; B8CE 85 F8                    ..
         rts                                     ; B8D0 60                       `
 ; ----------------------------------------------------------------------------
-TransformF8ThroughService2D0FMode80:
+TransformTextUiResultUsingFixedPartyContext:
         lda     #$80                            ; B8D1 A9 80                    ..
-        jmp     TextUiSystem_Branch_B8C5        ; B8D3 4C C5 B8                 L..
+        jmp     TransformTextUiResultThroughPartyLookup; B8D3 4C C5 B8          L..
 ; ----------------------------------------------------------------------------
 LoadF8IndexedListEntry:
         ldx     $F8                             ; B8D6 A6 F8                    ..
@@ -7675,43 +7675,43 @@ TextUiSystem_Branch_BA8F:
 ; ----------------------------------------------------------------------------
 AppendScratchTextSelector0:
         ldx     #$00                            ; BA9F A2 00                    ..
-        jmp     TextUiSystem_Branch_BACC        ; BAA1 4C CC BA                 L..
+        jmp     AppendIndexedTextFieldValue     ; BAA1 4C CC BA                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_BAA4:
         ldx     #$01                            ; BAA4 A2 01                    ..
-        jmp     TextUiSystem_Branch_BACC        ; BAA6 4C CC BA                 L..
+        jmp     AppendIndexedTextFieldValue     ; BAA6 4C CC BA                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BAA9:
+AppendIndexedTextField:
         ldx     #$02                            ; BAA9 A2 02                    ..
-        jmp     TextUiSystem_Branch_BACC        ; BAAB 4C CC BA                 L..
+        jmp     AppendIndexedTextFieldValue     ; BAAB 4C CC BA                 L..
 ; ----------------------------------------------------------------------------
 AppendInterleavedScratchTextSelector3:
         ldx     #$03                            ; BAAE A2 03                    ..
-        jmp     TextUiSystem_Branch_BAC4        ; BAB0 4C C4 BA                 L..
+        jmp     AppendInterleavedIndexedTextField; BAB0 4C C4 BA                L..
 ; ----------------------------------------------------------------------------
 AppendInterleavedScratchTextSelector4:
         ldx     #$04                            ; BAB3 A2 04                    ..
-        jmp     TextUiSystem_Branch_BAC4        ; BAB5 4C C4 BA                 L..
+        jmp     AppendInterleavedIndexedTextField; BAB5 4C C4 BA                L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_BAB8:
         ldx     #$05                            ; BAB8 A2 05                    ..
-        jmp     TextUiSystem_Branch_BACC        ; BABA 4C CC BA                 L..
+        jmp     AppendIndexedTextFieldValue     ; BABA 4C CC BA                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BABD:
+AppendAlternateIndexedTextField:
         ldx     #$06                            ; BABD A2 06                    ..
-        jmp     TextUiSystem_Branch_BACC        ; BABF 4C CC BA                 L..
+        jmp     AppendIndexedTextFieldValue     ; BABF 4C CC BA                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_BAC2:
         ldx     #$07                            ; BAC2 A2 07                    ..
-TextUiSystem_Branch_BAC4:
+AppendInterleavedIndexedTextField:
         brk                                     ; BAC4 00                       .
         db   $04,$B7                         ; BAC5 04 B7                    ..
 ; ----------------------------------------------------------------------------
         jmp     TextUiSystem_Branch_BAD2        ; BAC7 4C D2 BA                 L..
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BACA:
+AppendFinalIndexedTextField:
         ldx     #$07                            ; BACA A2 07                    ..
-TextUiSystem_Branch_BACC:
+AppendIndexedTextFieldValue:
         brk                                     ; BACC 00                       .
         db   $04,$B7                         ; BACD 04 B7                    ..
 ; ----------------------------------------------------------------------------
@@ -7862,13 +7862,13 @@ EmitFormatSelector0BWithCode2C:
         lda     #$0B                            ; BBB9 A9 0B                    ..
         pha                                     ; BBBB 48                       H
         lda     #$2C                            ; BBBC A9 2C                    .,
-        jmp     TextUiSystem_Branch_BBC6        ; BBBE 4C C6 BB                 L..
+        jmp     AppendLabeledFormattedValue     ; BBBE 4C C6 BB                 L..
 ; ----------------------------------------------------------------------------
 EmitFormatSelector0CWithCode31:
         lda     #$0C                            ; BBC1 A9 0C                    ..
         pha                                     ; BBC3 48                       H
         lda     #$31                            ; BBC4 A9 31                    .1
-TextUiSystem_Branch_BBC6:
+AppendLabeledFormattedValue:
         jsr     AppendByteToPrimaryTextUiBuffer ; BBC6 20 B3 98                  ..
         pla                                     ; BBC9 68                       h
         jsr     FormatWorkingValueBySelectorTable; BBCA 20 56 BB                 V.
@@ -7876,7 +7876,7 @@ TextUiSystem_Branch_BBC6:
 ; ----------------------------------------------------------------------------
 EmitSeparatedThreeByteValueSelector5:
         lda     #$05                            ; BBD0 A9 05                    ..
-TextUiSystem_Branch_BBD2:
+AppendSeparatedThreeByteValue:
         jsr     FormatWorkingValueBySelectorTable; BBD2 20 56 BB                 V.
         lda     #$FF                            ; BBD5 A9 FF                    ..
         jsr     AppendByteToPrimaryTextUiBuffer ; BBD7 20 B3 98                  ..
@@ -7895,7 +7895,7 @@ TextUiSystem_Branch_BBD2:
 ; ----------------------------------------------------------------------------
 EmitSeparatedThreeByteValueSelector6:
         lda     #$06                            ; BBF8 A9 06                    ..
-        jmp     TextUiSystem_Branch_BBD2        ; BBFA 4C D2 BB                 L..
+        jmp     AppendSeparatedThreeByteValue   ; BBFA 4C D2 BB                 L..
 ; ----------------------------------------------------------------------------
 EmitSlotLookupValueAndSuffix:
         ldx     $03DB                           ; BBFD AE DB 03                 ...
@@ -7963,7 +7963,7 @@ TextUiSystem_Branch_BC63:
         txa                                     ; BC6B 8A                       .
         rts                                     ; BC6C 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BC6D:
+FormatCompositeTextUiValue:
         lda     $03DC                           ; BC6D AD DC 03                 ...
         and     #$0F                            ; BC70 29 0F                    ).
         tay                                     ; BC72 A8                       .
@@ -8032,9 +8032,9 @@ LoadTextUiRecordFlagHighNibble:
         lsr     a                               ; BCF1 4A                       J
         rts                                     ; BCF2 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Branch_BCF3:
+AdvanceAndEmitFirstFormattedDigit:
         jsr     AdvanceTextUiOutputCursor       ; BCF3 20 FE 98                  ..
-TextUiSystem_Branch_BCF6:
+EmitFirstSignificantFormattedDigit:
         ldy     #$03                            ; BCF6 A0 03                    ..
 TextUiSystem_Branch_BCF8:
         jsr     MapFormattedDigitBySignAndPosition; BCF8 20 05 BD                ..
@@ -8265,17 +8265,17 @@ TextUiSystem_Branch_BE84:
 EmitTextUiCommandRecordSet1:
         ldx     #$01                            ; BE90 A2 01                    ..
         stx     $06                             ; BE92 86 06                    ..
-        jmp     TextUiSystem_Branch_BE9C        ; BE94 4C 9C BE                 L..
+        jmp     InitializeTextUiCommandRecordExpansion; BE94 4C 9C BE           L..
 ; ----------------------------------------------------------------------------
 EmitTextUiCommandRecordByActiveSet:
         ldx     $03D6                           ; BE97 AE D6 03                 ...
         stx     $06                             ; BE9A 86 06                    ..
-TextUiSystem_Branch_BE9C:
+InitializeTextUiCommandRecordExpansion:
         sta     $03                             ; BE9C 85 03                    ..
 EmitNestedTextUiCommandRecord:
         ldy     #$FF                            ; BE9E A0 FF                    ..
         sty     $04                             ; BEA0 84 04                    ..
-TextUiSystem_Branch_BEA2:
+ExpandNestedTextUiCommandRecord:
         asl     a                               ; BEA2 0A                       .
         tay                                     ; BEA3 A8                       .
         lda     $06                             ; BEA4 A5 06                    ..
@@ -8317,9 +8317,9 @@ TextUiSystem_Branch_BED6:
         lda     $05                             ; BEDF A5 05                    ..
         sta     $04                             ; BEE1 85 04                    ..
         lda     $03                             ; BEE3 A5 03                    ..
-        jmp     TextUiSystem_Branch_BEA2        ; BEE5 4C A2 BE                 L..
+        jmp     ExpandNestedTextUiCommandRecord ; BEE5 4C A2 BE                 L..
 ; ----------------------------------------------------------------------------
-TestService2B53Below8:
+IsTextUiEntryBelowEight:
         pha                                     ; BEE8 48                       H
         brk                                     ; BEE9 00                       .
         db   $2B,$53                         ; BEEA 2B 53                    +S

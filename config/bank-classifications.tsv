@@ -24,7 +24,7 @@
 16	TextUiSystem	Verified	Dialogue decoder and text/window user-interface services
 17	MapSystem	Verified	Map services and map-information records
 18	MonsterBattleFont	Verified	Monster records, battle/arena code, and font graphics
-19	MapAssetAudio	Verified	Map and tileset selection services plus audio track pointers, bank selectors, and sequence data
+19	MapAudio	Verified	Audio service dispatch, map-music selection, track pointers, bank selectors, and sequence data
 1A	HuffmanDialogue	Verified	Dialogue groups $4B-$55 and cross-bank continuation
 1B	MapEventText	Verified	Map/event services with dual-use Huffman text streams
 1C	MapEntitySystem	Verified	Map entity/event data, decoder, and services
