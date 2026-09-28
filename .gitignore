@@ -7,6 +7,7 @@
 
 # Copyright boundary: extracted assets and supplied reference captures.
 /Resources/
+/assets/
 /assets/extracted/
 /work/
 /tools/fceux/
@@ -49,3 +50,7 @@
 *.log
 
 # asm6f.c remains trackable with its bundled permissive LICENSE.txt.
+
+# Python bytecode caches.
+__pycache__/
+*.py[cod]
