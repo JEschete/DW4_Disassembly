@@ -3481,7 +3481,6 @@ MapSystem_Entry_9DC0:
         lda     $83                             ; 9DC0 A5 83                    ..
         cmp     #$08                            ; 9DC2 C9 08                    ..
         bcc     MapSystem_Branch_9D8C           ; 9DC4 90 C6                    ..
-Bank17_MapTimingValues:
         bcs     MapSystem_Entry_9D70            ; 9DC6 B0 A8                    ..
         db   $3F,$36,$2D,$24,$1B,$12,$09,$00 ; 9DC8 3F 36 2D 24 1B 12 09 00  ?6-$....
 ; ----------------------------------------------------------------------------

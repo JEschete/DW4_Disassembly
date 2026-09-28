@@ -5877,9 +5877,7 @@ BattleSetupServices_Branch_A9C8:
         cpx     PlayerLocalY                    ; A9E2 E4 45                    .E
         bcs     BattleSetupServices_Branch_A9C5 ; A9E4 B0 DF                    ..
         bcc     BattleSetupServices_Branch_A9C2 ; A9E6 90 DA                    ..
-        php                                     ; A9E8 08                       .
-        ora     $06                             ; A9E9 05 06                    ..
-        db   $07,$09                         ; A9EB 07 09                    ..
+        db   $08,$05,$06,$07,$09             ; A9E8 08 05 06 07 09           .....
 Bank12_BattleSetupEventPointers:
         db   $46                             ; A9ED 46                       F
         db   $A6,$90,$A6,$E8,$A6,$F2,$A6,$14 ; A9EE A6 90 A6 E8 A6 F2 A6 14  ........

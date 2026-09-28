@@ -226,7 +226,6 @@
 17	9452	Bank17_UiGraphics	Graphics	Graphics uploaded to CHR RAM through $9BF9
 17	9C07	Bank17_MapUiEntry	Code	Continuation after the three-byte inline service at $9C03
 17	9CFB	Bank17_MapUiPointers	Table	Three pointer bytes used by the map UI blitter
-17	9DC6	Bank17_MapTimingValues	Table	Ten descending timing values
 17	9E58	Bank17_MapValues	Table	Eight little-endian numeric values
 17	9ED7	Bank17_MapComparisonTables	Table	Three five-byte index tables
 17	9FF7	Bank17_MapOamYPositions	Table	Five OAM Y positions

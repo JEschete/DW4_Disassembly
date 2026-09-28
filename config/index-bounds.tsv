@@ -1,0 +1,170 @@
+# Bank<TAB>Consumer<TAB>MinIndex<TAB>MaxIndex<TAB>Evidence
+08	8057	00	00	LDX $09 at $8055; both callers clear $09 first, with LDA #$00 at $84F2 before STA $09 at $84F7 and LDA #$00 / STA $09 at $8799-$879B
+08	805C	00	00	LDX $09 at $8055; both callers clear $09 first, with LDA #$00 at $84F2 before STA $09 at $84F7 and LDA #$00 / STA $09 at $8799-$879B
+08	8558	00	0C	LSR / LSR / TAY at $8555-$8557 on $07, which LDA $07 / BEQ $859A at $8542-$8544 makes nonzero; $07 is the A given to service two ($84C7), stored by STA $07 at bank $0E:$8008 through the BRK $01,$E7 at $84E3, and every BRK $02,$87 caller passes $28 or zero; $28 is written only by STA $28 at bank $0F:$E950 from BRK $05,$87 (service $B6B8, whose AND #$3F at $B70B masks the current submap record byte read through the bank $17:$B08D map pointers) and by LDA #$00 / STA $28 at bank $1E:$944F-$9451; the seventy-three maps' three-byte submap records, each list ending at an $FF, hold masked values one through $32, so $07 is at most $32
+08	8A45	00	06	LDX #$00 at $8A43; INX / BNE $8A45 at $8A54-$8A55 repeats only after LDA $8A6C,X / BMI $8A57 at $8A45-$8A48 found a non-negative map ID, and index six ($8A72) is $FF
+08	8A58	00	05	Reached only through BEQ $8A58 at $8A4C and $8A52 after a non-negative map ID, so X is at most five
+08	8A5F	00	05	Reached only after LDA $8A73,X at $8A58 with X at most five
+08	8A63	00	05	Reached only after LDA $8A73,X at $8A58 with X at most five
+08	8A8B	00	0E	LDX $28 at $8A85 with CPX #$0F / BCS $8A91 at $8A87-$8A89
+0F	C92B	00	01	LDA $0513 / AND #$01 / TAX at $C925-$C92A
+0F	C92F	00	01	LDA $0513 / AND #$01 / TAX at $C925-$C92A
+0F	C985	00	5D	LDX #$5D at $C983 with DEX / BPL at $C98B-$C98C
+0F	CA24	00	03	LDX $058E at $CA21 feeds LDA $CA3C,X at $CA24. Fixed-bank writers store LDA #$02 at $CA94 and LDA #$01 at $CAF1; bank $1D writers store LDA #$03 at bank $1D:$A97B, LDA #$01 at bank $1D:$A99D, LDA #$03 at bank $1D:$AC0E and LDA #$01 at bank $1D:$AC3A; the guarded-recovery entry at $CADF has no decoded caller or pointer
+0F	D466	00	07	TXA / AND #$07 / TAX at $D45E-$D461
+0F	D469	00	07	TYA / AND #$07 / TAY at $D462-$D465
+0F	EB85	00	03	TYA / AND #$03 / TAY at $EB81-$EB84
+0F	EB89	00	03	TYA / AND #$03 / TAY at $EB81-$EB84
+0F	ED05	00	03	TYA / AND #$03 / TAX at $ED01-$ED04
+10	9B49	00	07	AND #$7F at $9B40 after the first $9B15 pass clears bit-7 entries at or above $89 (CMP #$89 / BCC $9B30 at $9B1D-$9B1F), and CMP #$08 / BNE $9B48 at $9B42-$9B44 with LDA #$00 at $9B46 maps eight to zero
+10	A625	00	2F	LDY $6E59 at $A622; every caller stores a record operation at most $2F before reaching it, as recorded for BattleRecordValueLookup
+10	A648	00	2F	LDY $6E59 at $A645; every caller stores a record operation at most $2F before reaching it, as recorded for BattleRecordValueLookup
+10	A653	00	2F	LDY $6E59 at $A650; every caller stores a record operation at most $2F before reaching it, as recorded for BattleRecordValueLookup
+11	8CC1	00	1F	LSR / LSR / LSR / TAX at $8CBD-$8CC0 on an eight-bit BRK $03,$1F result
+11	8CDF	00	1F	LDX #$FF / STX $00 / INX / STX $02 at $8CD1-$8CD6 clear $02, and INC $02 at $8CF7 runs once per eight DEC $01 steps of the LDY #$07 / DEY / BPL loop at $8CE4-$8CF5, so $02 is at most the eight-bit count in $01 divided by eight
+11	A735	00	07	LDX #$07 at $A733 with DEX / BPL at $A73A-$A73B
+11	AB13	00	06	Y = 2 * the BRK $21,$B3 result from ASL / TAY at $AB11-$AB12; the bank $10 handler returns $7E after AND #$03 at bank $10:$A76A
+11	AB1A	00	06	Y is unchanged from ASL / TAY at $AB11-$AB12 across BRK $17,$0F at $AB16, whose bank $10 service preserves Y; the BRK $21,$B3 result is at most three after AND #$03 at bank $10:$A76A
+11	B2AD	00	0C	TAX at $B2AC takes the BRK $17,$0F result for LDA #$0D at $B2A7, the high byte of a random byte times $000D
+12	8376	00	02	LDA $8A / AND #$01 / ASL / TAX at $8370-$8375
+12	837B	00	02	LDA $8A / AND #$01 / ASL / TAX at $8370-$8375
+12	83D5	02	0E	ASL / TAX at $83D3-$83D4; both callers pass a nonzero three-bit field, AND #$07 / BEQ at $838C-$838E and AND #$07 / BEQ at $839A-$839C
+12	83DA	02	0E	ASL / TAX at $83D3-$83D4; both callers pass a nonzero three-bit field, AND #$07 / BEQ at $838C-$838E and AND #$07 / BEQ at $839A-$839C
+12	8682	00	03	LDX $6E7E at $8677 with CPX #$07 / BEQ $8689 at $867A-$867C and CPX #$04 / BCS $8688 at $867E-$8680
+12	8ECA	00	09	LDX #$00 at $8EC6 and INX at $8ED0 through the CPY #$04 loop, then INX at $8EDE through the CPY #$0E loop at $8EE0, for ten reads in total
+12	8ED8	00	09	LDX #$00 at $8EC6 and INX at $8ED0 through the CPY #$04 loop, then INX at $8EDE through the CPY #$0E loop at $8EE0, for ten reads in total
+12	8EEB	00	04	LDX $615A at $8EE8; the direct writers of SaveCurrentChapterMinus1 are INC $615A at bank $1B:$AC02, reached only by the four JMP $ABB6 exits of the chapter handlers for values zero through three that LDA $615A / ASL / TAX at bank $1B:$AAFA-$AAFE selects, LDA #$04 / STA $615A at $9065-$9067, and the chapter-select writers at bank $1F:$F164/$F173 and bank $1E:$A36B, whose only entry JSR $F104 at bank $1E:$A368 follows LDA $C000 / AND #$08 / BNE $A372 at bank $1E:$A35B-$A360, always taken because $C000 holds $FF; no indexed store reaches $615A, so the value is at most four
+12	8F07	00	07	LDX #$00 at $8EFC with INX / CPX #$08 at $9013-$9014
+12	8F3F	00	0A	ASL / TAX at $8F39-$8F3A on $03, which LDA #$00 / STA $03 at $8F35-$8F37 clears and INC $03 / CMP #$06 at $8F63-$8F67 keeps below six
+12	8F44	00	0A	ASL / TAX at $8F39-$8F3A on $03, which LDA #$00 / STA $03 at $8F35-$8F37 clears and INC $03 / CMP #$06 at $8F63-$8F67 keeps below six
+12	8F5C	00	05	LDX $03 at $8F5A with $03 kept below six by INC $03 / CMP #$06 at $8F63-$8F67
+12	8FAD	00	08	LDA $06 / CMP #$05 / BCS $8FFE / ASL / TAX at $8FA5-$8FAC
+12	8FB2	00	08	LDA $06 / CMP #$05 / BCS $8FFE / ASL / TAX at $8FA5-$8FAC
+12	8FB7	00	08	LDA $06 / CMP #$05 / BCS $8FFE / ASL / TAX at $8FA5-$8FAC
+12	8FBC	00	08	LDA $06 / CMP #$05 / BCS $8FFE / ASL / TAX at $8FA5-$8FAC
+12	9006	00	3F	X = 8 * $06 from LDA $06 / ASL / ASL / ASL / TAX at $8FFE-$9003, then INX at $900C for each of the eight bytes copied until CPY #$1B at $900D; $06 is the loop index stored by STX $06 at $8F12 from LDX #$00 at $8EFC through INX / CPX #$08 at $9013-$9014, so X is at most 63
+12	9037	00	18	X = 5 * SaveCurrentChapterMinus1 from LDA $615A / ASL / ASL / ADC $615A / TAX at $902C-$9034, then INX at $903D for each byte copied until CPY #$05 at $903F; SaveCurrentChapterMinus1 is at most four (bound at $8EEB), so X is at most $18
+12	A661	00	04	LDY #$04 at $A65F with DEY / BPL $A661 at $A668-$A669
+12	BB7E	00	08	LDY $03DA at $BB62 after STA $03DA at $BB06 stores the metric value that bank $16 loads by LDA $9C7F,X at bank $16:$9BB7; its sixteen mode entries are zero, one, two, six or eight
+13	88F2	00	04	LDX $00 at $88F0; the only caller stores a character ID below five after AND #$0F / CMP #$05 / BCS $88B9 at $8897-$889B
+13	8CDB	1F	29	LDX $7599 at $8CD8 in the handler for BattleActionHandlerPointers entries $1F-$29, dispatched after STA $7599 / TAY at $84D2-$84D5
+13	8D04	5F	65	LDX $7599 at $8D01 in the handler for BattleActionHandlerPointers entries $5F, $60 and $65, dispatched after STA $7599 / TAY at $84D2-$84D5
+13	8DBB	00	13	X = 4 * $92 + $77D0 from LDA $92 / ASL / ASL / ADC $77D0 at $8DB3-$8DB7, with $92 at most four and $77D0 at most three
+13	92C1	00	3E	Y = 16 * t + 2 * s from ASL / ASL / ASL / ASL at $92BA-$92BD and ADC $00 at $92BE, with t from JSR $B0B4 at $92B1 at most three and s at most seven after AND #$03 at $9301 and the optional four at $9290/$9298
+13	92D2	00	3E	Y is unchanged from TAY at $92C0 across JSR $C891 at $92CA and JSR $C827 at $92CF, neither of which alters Y; Y = 16 * t + 2 * s is at most 62
+13	A99B	0C	0D	TAX at $A99A is reached only by BCS $A99A at $A960 after CLC / ADC #$08 / CMP #$0C at $A95B-$A95E on a set-bit index of at most five
+13	B094	00	03	TAX at $B090 takes the two-bit field returned by $B0B4
+13	B2AE	38	3A	LDX $7599 at $B2AB in the handler for BattleActionHandlerPointers entries $38-$3A, dispatched after STA $7599 / TAY at $84D2-$84D5
+14	8AE4	00	07	LDX $06 at $8AE2; battle slot $06 runs zero through seven in the LDX #$07 loop at $8A19-$8A45
+14	8B66	00	0F	PLA / TAY at $8B61-$8B62 restores the step count pushed by TYA / PHA at $8B3F-$8B40, which counts from LDY #$00 at $8B3D by INY / BNE at $8B82-$8B83 until $03 reaches $08 at $8B4B-$8B4F; the eight threshold/coordinate pairs at $8D29/$8D42 differ by at most 32 and each step moves two, so at most sixteen steps are read
+14	8B70	00	0F	Y is unchanged from $8B66; at most sixteen steps are read
+14	9190	00	0F	LDX $06 at $918E; INC $06 / CMP #$10 / BNE at $91A8-$91AE keeps $06 below sixteen
+14	98AB	00	03	Both loop counters are bounded below four at $98D4 and $98DC, as recorded for BattleTurnTileSelectors
+14	98B1	00	03	Both loop counters are bounded below four at $98D4 and $98DC, as recorded for BattleTurnTileSelectors
+14	A4DB	00	06	LDY #$01 / STY $0F / DEY at $A4D6-$A4DA with $0F running one through seven, as recorded for the StepTable ranges
+14	A4E6	00	06	LDY $0F / DEY at $A4E3-$A4E5 with $0F running one through seven
+14	A4F3	00	06	LDY $0F at $A4F1 after DEC $0F at $A4EC, with $0F running one through seven
+15	B176	00	1D	LDY #$FF / INY at $B173-$B175 scans until CMP #$FF / BEQ at $B179-$B17B meets the $FF at index $1D ($B1D0)
+15	B183	00	1C	Reached only after CMP $DA / BNE at $B17D-$B17F matched a key before the terminator, so Y is at most $1C
+16	8E75	00	07	Y is set by LDA $03DF / AND #$07 / TAY at $8CEF-$8CF4 and counted down by DEY / BPL $8CF5 at $8CF8-$8CF9 around JSR $8E18 at $8CF5, whose path through $8E8F and $8E49/$8E4E changes only A, X and zero-page temporaries, so Y is zero through seven
+16	8E88	00	07	Same Y as ORA $A4CE,Y at $8E75: LDA $03DF / AND #$07 / TAY at $8CEF-$8CF4 and the DEY / BPL $8CF5 loop at $8CF8-$8CF9
+16	9E08	00	07	AND #$07 / TAX at $9E05-$9E07
+16	9F40	00	07	AND #$07 / TAX at $9F3D-$9F3F
+16	A1CD	00	07	Never executes, so any cap holds: $A1C6-$A1E3 is reached only after LDA $03DD / BNE $A202 at $A1C1-$A1C4 finds $03DD zero inside $A15A, which only JSR $A15A at $A133 in the window-mode $0D keyboard loop calls; mode $0D belongs only to record $57, whose open pass runs prefix byte $98 and STA $03DD at $B656 with list eight, and no direct $03DD writer is statically reachable from the window open, draw, row-command or keyboard code; FCEUX observed X = 8 at $A102 in that loop
+16	A1DA	00	07	Never executes, for the same reason as EOR $A4CE,X at $A1CD: $03DD is eight whenever LDA $03DD / BNE $A202 at $A1C1-$A1C4 runs
+16	A3E0	00	07	LDY #$07 at $A3DE and DEY / BPL $A3E0 at $A3E6-$A3E7 around JSR $A49A at $A3E3, which preserves Y
+16	A416	00	03	AND #$03 / TAY at $A410-$A412; JSR $A498 at $A413 preserves Y
+16	A428	00	03	Same Y as LDA $A477,Y at $A416 (AND #$03 / TAY at $A410-$A412); JSR $A49A at $A419 and $A42B preserve Y
+16	A434	00	03	Same Y as LDA $A477,Y at $A416 (AND #$03 / TAY at $A410-$A412); JSR $A49A calls preserve Y
+16	A44F	00	03	$A44C is reached from $A446 with AND #$03 / TAY at $A449-$A44B and from LDY #$01 / JSR $A44C at $A3D1-$A3D3
+16	A461	00	03	Same Y as LDA $A477,Y at $A44F; JSR $A49A at $A452 and $A464 preserve Y
+16	A46D	00	03	Same Y as LDA $A477,Y at $A44F; JSR $A49A calls preserve Y
+16	AEEF	01	FF	LDA $03DD / BNE $AEDD at $AEC2-$AEC5 admits only a nonzero $03DD, and LDX $03DD at $AEEC reloads it after the $AEDD-$AEE9 loop, whose JSR $98B3 reaches no $03DD writer
+16	B1DB	00	07	LDX $03DC at $B1D8; $03DC holds the slot mask stored by STA $03DC at $B74E from the three ROL passes at $B79A for record $53, the only record that runs set-1 command one
+16	B1E2	00	08	CLC / ADC $F3 / TAX at $B1DE-$B1E1 add row $F3 to a $B1E8 base of zero, four or one; the matching record $53 row counts from LDA $B755,X at $B751 are one, five and three
+16	B205	00	02	LDX $F3 at $B203 is a row of records $54/$55, whose row count from LDA $B784,X at $B781 is the population count of a three-bit mask, at most three
+16	B20D	00	15	CLC / ADC $03DC / TAX at $B208-$B20C add the three-bit mask stored by STA $03DC at $B77D to a row base of at most fourteen
+16	B65B	00	3E	LDA $03C6 / ASL / TAX at $B653-$B65A; the only writer, STA $03C6 at $93CB, stores an AND #$1F result at $93C9
+16	B660	00	3E	LDA $03C6 / ASL / TAX at $B653-$B65A; the only writer, STA $03C6 at $93CB, stores an AND #$1F result at $93C9
+16	B957	00	07	LDX $03DC at $B954; handler six runs only for record $53, whose prefix stores the three-bit slot mask by STA $03DC at $B74E
+16	B95E	00	08	CLC / ADC $F8 / TAX at $B95A-$B95D add the selected row, below the one, five or three rows from LDA $B755,X at $B751, to a $B964 base of zero, four or one
+16	B97B	00	02	LDX $F8 at $B979 is a selected row of records $54/$55, below the at most three rows from LDA $B784,X at $B781
+16	B983	00	15	CLC / ADC $03DC / TAX at $B97E-$B982 add the three-bit mask stored by STA $03DC at $B77D to a row base of at most fourteen
+16	BC29	00	0C	ASL / TAY / DEY / DEY at $BC25-$BC28 on $75, which is nonzero here (BNE $BC25 at $BC1B) and at most seven: BRK $0F,$53 runs bank $10 field $0F handler $8551, where LDA $72 / STA $75 at bank $10:$8557-$8559 copy the $9613 result; LDA #$07 / STA $76 / JSR $9731 / LDX #$00 / BCC $9640 at bank $10:$9613-$961C give one, the loop over the six fields at $9644 exits through BCS $9640 at bank $10:$9638 after INX at bank $10:$9637 to give two through seven, and LDX #$FF at bank $10:$963E gives zero, each finished by INX / STX $72 at bank $10:$9640-$9641
+16	BC2F	00	0C	Y is unchanged from $BC29 across JSR $98B3 at $BC2C, which returns with Y restored; at most twelve
+17	9CE2	00	01	LDY $5A at $9CE0; the only caller JSR $9CD8 at $9CAF follows STA $5A at $9CAD with A zero (LDA #$00 at $9CAB) or one (LDA #$01 at $9CCD), and no code between them writes $5A
+17	9CF0	00	01	LDY $5A at $9CEE; $5A is zero or one from STA $5A at $9CAD and JSR $C636 at $9CE7 does not write it
+1B	8731	00	03	LDX $058E at $872E; every writer constrains $058E to zero through three, as recorded for AnimationTimingValues
+1C	B79F	08	3F	LDA $6299 / AND #$7F / CMP #$40 / BCC at $B78E-$B795 admits only indices below $40, and CMP #$08 / BCC at $B79A-$B79C excludes indices zero through seven before LDA $B797,Y
+1D	90C5	00	3F	LDX #$00 at $90BF with INX / CPX #$40 / BCC at $90D9-$90DC
+1D	90CE	00	3F	LDX #$00 at $90BF with INX / CPX #$40 / BCC at $90D9-$90DC
+1D	93A0	00	3F	LDX #$00 at $939A with INX / CPX #$40 / BCC at $93B4-$93B7
+1D	93A9	00	3F	LDX #$00 at $939A with INX / CPX #$40 / BCC at $93B4-$93B7
+1D	A0D0	00	10	LDA $54 / ASL / TAX at $A0CC-$A0CF; LDA #$00 / STA $54 at $A0C8-$A0CA starts $54 at zero and LDA $54 / CMP #$09 / BCC at $A0E3-$A0E7 keeps it below nine
+1D	A0D3	00	10	LDA $54 / ASL / TAX at $A0CC-$A0CF with $54 below nine
+1D	A0FA	00	3F	LDX #$3F at $A0F8 with DEX / BPL at $A100-$A101
+1D	A592	00	07	LDY #$07 at $A58E with DEY / BPL at $A598-$A599
+1D	AEE3	01	08	LDX $51 / LDA $7180,X / PHA / TAX at $AEDC-$AEE2; $AEDC is map event $64 (pointer at $B6F2), and the only $88-$8A command bytes followed by $64 anywhere in the entity script banks are at bank $05:$A44A and bank $05:$A466, each the first command of a loop that 82 08 opens (STA $7180,X at bank $1F:$DE2D stores eight) and 81 closes (DEC $7180,X at bank $1F:$DE0D, exiting at zero), so the counter is eight on the first pass and seven down to one afterwards; neither the loop body (commands 01) nor the events $61-$67 of that map write $7180
+1D	AF63	00	03	LDX $3D at $AF61; every direct writer of $3D stores zero through three
+1D	B209	00	04	LDX #$00 at $B207 with INX / INX / CPX #$06 / BCC at $B217-$B21B
+1D	B210	00	04	Reached from LDA $B27F,X at $B209 with X zero, two, or four
+1D	B257	01	03	TAX at $B24A restores the value pushed by TXA / PHA at $B231-$B232, which is the matched pair index plus one after LSR / TAX / INX at $B22E-$B230 on X zero, two, or four
+1D	B33D	00	02	Event $79 at $B308-$B334 admits PlayerLocalY only at $09 or $0B, activates entity $0E and starts negative cutscene state $8F; the sole event-$7A script belongs to that entity in map $08, and fixed-bank input handling preserves player position while $0530 is negative, so SBC #$09 / TAX at $B337-$B33C yields zero or two
+1D	B34A	00	02	X is unchanged from SBC #$09 / TAX at $B337-$B33C; the paired event-$79 guard and cutscene input lock constrain PlayerLocalY to $09 or $0B, so X is zero or two
+1D	B740	00	48	LDY #$00 at $B73E; TYA / CLC / ADC #$06 / TAY at $B776-$B77A steps by six until LDA $B8BB,Y / CMP #$FF at $B740-$B743 meets the $FF at offset $48 ($B903); LDY #$06 at $B760 enters a record boundary
+1D	B74B	00	42	Reached only after CMP #$FF / BEQ at $B743-$B745 rejected the terminator, so Y is a record offset at most $42
+1D	B76F	00	42	Y is a record offset at most $42 below the terminator at $B903
+1D	B782	00	42	Y is a record offset at most $42 below the terminator at $B903
+1D	B841	00	42	PLA / TAY at $B837-$B838 restores the record offset pushed by TYA / PHA at $B830-$B831
+1D	B85F	00	42	PLA / TAY at $B85D-$B85E restores the record offset pushed at $B83D
+1D	B895	00	42	Y is a record offset at most $42 pushed at $B893-$B894
+1D	B89C	00	42	Y is a record offset at most $42
+1D	B8A5	00	42	PLA / PHA / TAY at $B8A2-$B8A4 restores the record offset
+1D	B8A8	00	42	Y is unchanged from $B8A5
+1D	B906	00	08	LDY #$00 at $B904; TYA / CLC / ADC #$04 / TAY at $B918-$B91C steps by four until LDA $B952,Y / CMP #$FF at $B906-$B909 meets the $FF at offset eight
+1D	B911	00	04	Reached only after CMP #$FF / BEQ at $B909-$B90B rejected the terminator
+1D	B923	00	04	TYA / PHA at $B921-$B922 after a matching record at offset zero or four
+1D	B929	00	04	Y is the matching record offset zero or four
+1D	B92F	00	04	Y is the matching record offset zero or four
+1D	B938	00	04	Y is the matching record offset zero or four
+1D	BB76	00	37	LDA $5F / AND #$0F / TAX at $BB3C-$BB40, then each of the four $BB69 calls adds eight at $BBA6-$BBAA and TXA / ADC #$10 / TAX at $BB4E-$BB52 skips sixteen, so X is at most 15 + 40
+1D	BB7C	00	37	X is at most 55 as for $BB76
+1D	BB82	00	37	X is at most 55 as for $BB76
+1D	BB88	00	37	X is at most 55 as for $BB76
+1D	BB8E	00	37	X is at most 55 as for $BB76
+1D	BB94	00	37	X is at most 55 as for $BB76
+1D	BB9A	00	37	X is at most 55 as for $BB76
+1D	BBA0	00	37	X is at most 55 as for $BB76
+1E	814C	00	0F	LDX #$00 at $814A with INX x5 at $818F-$8193 until LDA $819E,X / CMP #$FF at $814C-$814F meets the $FF at offset 15 ($81AD)
+1E	8157	00	0A	Reached only after CMP #$FF / BEQ at $814F-$8151 rejected the terminator, so X is a record offset at most ten
+1E	8160	00	0A	X is a record offset at most ten
+1E	816F	00	0A	X is a record offset at most ten
+1E	8178	00	0A	TXA / TAY at $8174-$8175 copies the record offset, at most ten
+1E	87DF	00	0F	SBC #$59 / LSR at $87DB-$87DD after CMP #$59 / BCC $87FB at $87D7-$87D9 on a loop count of one through $78
+1E	87EF	00	0F	X is unchanged from TAX at $87DE; SBC #$59 / LSR at $87DB-$87DD after CMP #$59 / BCC $87FB at $87D7-$87D9 on a loop count of one through $78
+1E	B2C2	00	03	LDX #$03 at $B2C0 with DEX / BPL at $B2C7-$B2C8
+1E	B345	00	03	LDX #$03 at $B343 with DEX / BPL at $B34A-$B34B
+1E	B352	00	02	LDX #$02 at $B34D with DEX / BPL at $B357-$B358
+1E	B372	00	0F	LDY #$0F at $B370 with DEY / BPL at $B377-$B378
+1E	B3B9	00	02	LDX #$02 at $B3B7 with DEX / BPL at $B3C1-$B3C2; BRK $66,$73 at $B3BC restores X
+1F	C92B	00	01	LDA $0513 / AND #$01 / TAX at $C925-$C92A
+1F	C92F	00	01	LDA $0513 / AND #$01 / TAX at $C925-$C92A
+1F	C985	00	5D	LDX #$5D at $C983 with DEX / BPL at $C98B-$C98C
+1F	CA24	00	03	LDX $058E at $CA21 feeds LDA $CA3C,X at $CA24. Fixed-bank writers store LDA #$02 at $CA94 and LDA #$01 at $CAF1; bank $1D writers store LDA #$03 at bank $1D:$A97B, LDA #$01 at bank $1D:$A99D, LDA #$03 at bank $1D:$AC0E and LDA #$01 at bank $1D:$AC3A; the guarded-recovery entry at $CADF has no decoded caller or pointer
+1F	D466	00	07	TXA / AND #$07 / TAX at $D45E-$D461
+1F	D469	00	07	TYA / AND #$07 / TAY at $D462-$D465
+1F	E761	00	04	LDY $A4 at $E75D; every write of the channel index $A4 stores zero through four (STY $A4 at $E77C for LDY #$00-#$04 at $E6B2-$E6E8, LDY #$01 / STY $A4 at $EA2B-$EA2D, LDY #$04 / STY $A4 at $EA36-$EA38, STY $A4 at $EAFC from the same channel loop, LDX #$00 / STX $A4 at $EF89-$EF8B)
+1F	E76D	00	04	LDX $A4 at $E76B; $A4 is zero through four
+1F	E8B1	00	04	The command dispatcher leaves Y = $A4 (LDY $A4 at $E80F); ReadAudioSequenceByte at $E8AE does not change Y
+1F	E954	00	04	The command dispatcher leaves Y = $A4 (LDY $A4 at $E80F) before RTS enters this handler; $A4 is zero through four
+1F	E95E	00	04	The command dispatcher leaves Y = $A4 (LDY $A4 at $E80F) before RTS enters this handler; $A4 is zero through four
+1F	E9CC	00	02	CPY #$03 / BCS at $E9C8-$E9CA admits only Y below three
+1F	EAE8	00	04	Y is the channel index used by STA $0646,Y at $EAB5 and set from the zero-through-four channel loop
+1F	EB2B	00	02	STY $A4 at $EAFC followed by CPY #$03 / BCC at $EB04-$EB06 admits only Y below three
+1F	EBAD	00	04	LDY $A4 at $EBA6; $A4 is zero through four
+1F	EBB6	00	04	Y is LDY $A4 at $EBA6 or the channel index carried from $EB9C; $A4 is zero through four
+1F	EC29	00	04	LDX $A4 at $EC27; $A4 is zero through four
+1F	EC3C	00	04	LDX $A4 at $EC3A; $A4 is zero through four
+1F	EC54	00	04	LDY $A4 at $EC50; $A4 is zero through four
+1F	EC6F	00	04	LDX $A4 at $EC6D; $A4 is zero through four
+1F	EE7A	00	04	LDX $A4 at $EE6C or LDX #$03 at $EE78; $A4 is zero through four

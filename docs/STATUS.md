@@ -7,10 +7,10 @@ This document is the authoritative human-readable status snapshot. Generated tot
 ## Current Metrics
 
 - Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
-- Detailed semantic classification: 99.93% (523,911 / 524,288)
-- Remaining unclassified: 377 bytes in 42 ranges
-- Verified instruction bytes: 163,496 (31.18%)
-- Explicitly ranged data bytes: 360,937 (68.84%)
+- Detailed semantic classification: 100% (524,288 / 524,288) - Done
+- Remaining unclassified: 0 bytes - Done
+- Verified instruction bytes: 163,493 (31.18%)
+- Explicitly ranged data bytes: 361,317 (68.92%)
 - Dual-use code/data overlap: 522 bytes (0.10%)
 - Meaningfully named routines: 81/4,315 (1.88%)
 - Semantic contracts: 37/4,315 (0.86%)
@@ -55,22 +55,45 @@ fields; 9 runtime paths; exact ROM match.
   inventory, including reason text and post-original identities, against unreviewed edits or deletion.
 - Evidence citations: every `MNEMONIC operand at $ADDR` cited by a content-range or entry-table reason must be
   decoded code at that address.
+- Index bounds (`config/index-bounds.tsv`): 169 rows each cap one decoded absolute-indexed consumer to a cited
+  index range. Extraction rejects a bound that any source-attributed runtime read or recorded index-register
+  observation contradicts, and every byte a bound can reach must be typed.
 - `ReviewedUnusedData` ranges are analyzed without data suppression and fail extraction if they contain decoded
-  code or inline operands, overlap a code exclusion, receive a declared pointer or uncapped static absolute/indexed
-  reference, execute, or receive a source-attributed runtime read. Fifty-six ranges currently satisfy this policy.
+  code or inline operands, overlap a code exclusion, receive a declared pointer or a static absolute/indexed
+  reference, execute, or receive a source-attributed runtime read. An indexed reference counts across base through
+  base+255 unless an index bound caps it. Fifty-three ranges currently satisfy this policy.
 - The 127 guarded flow-recovery seeds are revalidated against a baseline decode.
 
 The orphan audit discovered the indirect parser for `$12:$A2B6-$A303` through chapter pointers at `$916E` and
 runtime reads from `$8FC9/$8FD5`. Banks `$0E:$BAD7-$BAF6`, `$13:$94EC-$951A`, and `$1D:$916F-$918D` now use the
-reviewed-unused policy. Bank `$08:$8ABF-$8ADA` remains open because `$8AA2,Y` can still reach it without a proven
-upper bound; this is intentionally not overridden by negative runtime evidence.
+reviewed-unused policy. Bank `$08:$8ABB-$8ADA` is now typed through its `$80C2/$80C3` pointer consumer, while
+`$08:$8AA2-$8AAE` stays open because `$8AA2,Y` has no proven ceiling; this is intentionally not overridden by
+negative runtime evidence.
 
 Bank `$14` is now fully classified. The final proofs include four action-presentation records selected only by
 bank `$11` action IDs `$69-$6C`, sixteen motion offsets bounded by the preceding sprite movement, phase tables
 bounded through both callers of `$8D7A`, special-ID tables guarded below nine, and two eleven-entry selector rows
-whose ten callers set `$0F` to zero through ten. Bank `$16` is 99.38% complete with 101 bytes left; newly closed
-ranges include masked dual-use lookups, sentinel-terminated offset streams, service-return-bounded tables, and
-source-attributed runtime bytes.
+whose ten callers set `$0F` to zero through ten. Bank `$16` is now fully classified. Its title-menu tables are proven
+from the `$B78C` slot-mask builder and UI records `$53-$55`, and scripted COPY/ERASE walks exercised all eight
+slot masks. Its text-input and dialogue-row tables are proven from the only records that select them.
+
+Corrections made in the 2026-09-27 pass:
+
+- Three reviewed-unused claims were wrong and are now typed: `$13:$94EC-$951A`, `$10:$95EF-$9600`, and
+  `$1D:$B285-$B287`.
+- `$16:$B71F` was wrong as reviewed-unused. It is the last byte of the keyboard list, now `$B699-$B71F`.
+- Six reviewed-unused claims were withdrawn for lacking index bounds. Five are now resolved with proofs:
+  `$12:$914C-$914F` and `$12:$91D1-$91D7` are reviewed-unused under a chapter bound, `$16:$A4D6-$A4DD` is
+  reviewed-unused, `$1F:$ED49-$ED4A` is the 99th audio period entry, and `$16:$BC41-$BC42` is read data (see
+  the next item). At that checkpoint `$0F/$1F:$DFF0` remained open; the final classification pass below resolves it.
+- `$16:$BC35` claimed six status pairs because `$10:$9613` "returns zero through six", and the `$16:$BC29/$BC2F`
+  bounds used that claim. `$9613` returns zero through seven: field five (poison) gives seven. The table has seven
+  pairs, `$BC35-$BC42`, and both bounds are now `$00-$0C`. Runtime never contradicted the old bound because no
+  trace displayed a poisoned member there.
+- The `$16:$A4CE` evidence attributed Y at `$8E75/$8E88` to `AND #$07` at `$8E53`. That instruction only compares
+  against Y; the caller at `$8CEF-$8CF9` masks and counts Y.
+- The names `$16:$B755` and `$16:$B785` were wrong. They are title-menu and adventure-log row counts, not party
+  data.
 
 ## Completion Definition
 
@@ -97,29 +120,13 @@ Semantic assembly is done only when there are:
 
 ## Long-Term Direction
 
-1. Finish semantic disassembly and content typing.
+1. Finish semantic disassembly and content typing. - Done
 2. Build lossless asset decoders and encoders.
 3. Define engine-neutral game-state and content schemas.
 4. Implement a headless deterministic simulation.
 5. Validate combat, movement, events, and RNG against emulator traces.
 6. Build one vertical slice in the chosen engine.
 7. Add editing tools and begin intentional gameplay changes.
-
-## Largest Unclassified Blocks
-
-Current exact intervals, largest first:
-
-- `$08:$8ABF-$8ADA` (28 bytes): an uncapped `$8AA2,Y` reference can theoretically reach this selector-like block;
-  progression traces observed Y values one and two but did not establish a static ceiling
-- `$16:$B232-$B249` (24 bytes): two-stage indices depend on `$F3/$F8/$03DC` without complete producer bounds
-- `$13:$8D2A-$8D3B` (18 bytes): no complete static or runtime extent proof
-- `$16:$B1E8-$B1F8` (17 bytes): two-stage text/UI lookup whose `$03DC/$F3` domains are not fully bounded
-- `$16:$B964-$B974` (17 bytes): two-stage text/UI lookup whose `$03DC/$F8` domains are not fully bounded
-- `$10:$8FE5-$8FF4` (16 bytes): indexed battle-party data still lacks a complete producer bound
-- `$10:$AE6E-$AE7D` (16 bytes): indexed battle-party data still lacks a complete producer bound
-- `$13:$8DD7-$8DE6` (16 bytes): possible indexed continuation remains reachable from an uncapped base
-- `$1E:$87FC-$880B` (16 bytes): indexed map-interaction data still lacks a complete producer bound
-- `$08:$8AA1-$8AAE` (14 bytes): the preceding indexed selector base has no proven terminal index
 
 ## Control-Flow Conflicts
 

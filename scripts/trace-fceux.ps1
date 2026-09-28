@@ -2,14 +2,18 @@ param(
     [string]$Rom,
     [ValidateRange(60, 36000)]
     [int]$Frames = 1800,
-    [ValidateSet('startup', 'banking', 'menus', 'maps', 'battle', 'combat-walk', 'ui-fuzz', 'text', 'save-load', 'audio', 'graphics', 'explore', 'buttons', 'wander', 'hunt-assets', 'seek-world')]
+    [ValidateSet('startup', 'banking', 'menus', 'maps', 'battle', 'combat-walk', 'ui-fuzz', 'text', 'save-load', 'audio', 'graphics', 'explore', 'buttons', 'wander', 'hunt-assets', 'seek-world', 'fight', 'script')]
     [string]$TraceMode = 'explore',
     [switch]$Visible,
     [string]$Fceux,
     [string]$FceuxConfig,
     [string]$StateArchive,
     [ValidateRange(-1, 9)]
-    [int]$StateSlot = -1
+    [int]$StateSlot = -1,
+    [ValidateRange(60, 3600)]
+    [int]$TimeoutSeconds = 180,
+    [string]$InputScript,
+    [switch]$BatteryOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -86,8 +90,11 @@ if (-not [string]::IsNullOrWhiteSpace($StateArchive)) {
                 $sourceStream.Dispose()
             }
         }
-        $loadState = $true
-        $stateDescription = "$($resolvedStateArchive.Replace('\', '/'))::$($stateEntries[0].FullName)"
+        # -BatteryOnly boots from power-on with the archived battery RAM so title-screen adventure-log
+        # menus run against real saved logs; the snapshot itself is not loaded.
+        $loadState = -not $BatteryOnly
+        if ($BatteryOnly) { Remove-Item -LiteralPath $workingState -Force }
+        $stateDescription = if ($BatteryOnly) { "$($resolvedStateArchive.Replace('\', '/'))::battery-only" } else { "$($resolvedStateArchive.Replace('\', '/'))::$($stateEntries[0].FullName)" }
     } finally {
         $archive.Dispose()
     }
@@ -113,6 +120,11 @@ $luaObservationOutput = $sessionObservationOutputPath.Replace('\', '/')
 $luaDone = (Join-Path $workRoot 'trace.done').Replace('\', '/')
 $luaApiLog = $apiLogPath.Replace('\', '/')
 $luaScreenshot = $screenshotPath.Replace('\', '/')
+$luaInputScript = ''
+if ($TraceMode -eq 'script') {
+    if ([string]::IsNullOrWhiteSpace($InputScript)) { throw 'The script trace mode requires -InputScript' }
+    $luaInputScript = (Resolve-Path -LiteralPath $InputScript).Path.Replace('\', '/')
+}
 $luaRom = $workingRom.Replace('\', '/')
 $luaBootstrap = (Join-Path $workRoot 'lua-bootstrap.txt').Replace('\', '/')
 $launcherHeader = @"
@@ -128,6 +140,8 @@ DW4_TRACE_CONFIG_DATA = {
     done = '$luaDone',
     api_log = '$luaApiLog',
     screenshot = '$luaScreenshot',
+    input_script = '$luaInputScript',
+    snapshot_prefix = '$($workRoot.Replace('\', '/'))/snapshot',
     bootstrap = '$luaBootstrap',
     rom = '$luaRom',
     load_state = $($loadState.ToString().ToLowerInvariant()),
@@ -146,6 +160,7 @@ Remove-Item -LiteralPath $sessionObservationOutputPath -Force -ErrorAction Silen
 Remove-Item -LiteralPath (Join-Path $workRoot 'trace.done') -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $apiLogPath -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $screenshotPath -Force -ErrorAction SilentlyContinue
+Get-ChildItem -LiteralPath $workRoot -Filter 'snapshot-*.gd' | Remove-Item -Force
 Remove-Item -LiteralPath (Join-Path $workRoot 'lua-bootstrap.txt') -Force -ErrorAction SilentlyContinue
 
 $stateArgument = if ($loadState) { " -loadstate `"$workingState`"" } else { '' }
@@ -160,13 +175,13 @@ if (-not $Visible) {
     $startParameters.WindowStyle = 'Hidden'
 }
 $process = Start-Process @startParameters
-if (-not $process.WaitForExit(180000)) {
+if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
     [void]$process.CloseMainWindow()
     if (-not $process.WaitForExit(5000)) {
         $process.Kill()
         [void]$process.WaitForExit(5000)
     }
-    throw "FCEUX trace exceeded the three-minute bound"
+    throw "FCEUX trace exceeded the $TimeoutSeconds-second bound"
 }
 
 if (-not (Test-Path -LiteralPath $sessionOutputPath)) {

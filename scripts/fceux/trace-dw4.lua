@@ -79,7 +79,21 @@ local observation_sites = {
     [0x16B983] = true,
     [0x16BC29] = true,
     [0x16BC2F] = true,
-    [0x16BC73] = true
+    [0x16BC73] = true,
+    [0x10853A] = true,
+    [0x108F1A] = true,
+    [0x108FD6] = true,
+    [0x11923E] = true,
+    [0x128610] = true,
+    [0x18A84C] = true,
+    [0x18A854] = true,
+    [0x1CB79F] = true,
+    [0x1DAEE3] = true,
+    [0x1DB33D] = true,
+    [0x1E969F] = true,
+    [0x1EBA50] = true,
+    [0x1EBA81] = true,
+    [0x1EBAB8] = true
 }
 
 local function sync_loaded_mapper()
@@ -239,6 +253,30 @@ memory.registerread(0x8000, 0x8000, record_read)
 memory.registerwrite(0x6000, 0x2000, record_sram_write)
 memory.registerwrite(0x8000, 0x8000, mapper_write)
 
+-- Script profile: each non-comment line of config.input_script is "<frame> <count> <buttons>" to hold the
+-- comma-separated buttons for <count> frames starting at <frame>, or "<frame> shot" to save a numbered
+-- GD screenshot for reviewing where a reproducible menu walk has reached.
+local scripted_inputs = {}
+local scripted_shots = {}
+if config.profile == "script" then
+    for line in io.lines(config.input_script) do
+        local start_frame, rest = line:match("^%s*(%d+)%s+(.-)%s*$")
+        if start_frame ~= nil then
+            start_frame = tonumber(start_frame)
+            if rest == "shot" then
+                scripted_shots[start_frame] = true
+            else
+                local count, buttons = rest:match("^(%d+)%s+(%S+)$")
+                for offset = 0, tonumber(count) - 1 do
+                    local frame_input = scripted_inputs[start_frame + offset] or {}
+                    for button in buttons:gmatch("[^,]+") do frame_input[button] = 1 end
+                    scripted_inputs[start_frame + offset] = frame_input
+                end
+            end
+        end
+    end
+end
+
 local completed_frames = 0
 local random_state = 0x4D57
 local fuzz_button = "A"
@@ -272,6 +310,12 @@ for frame = 1, config.frames do
                 input.left = 1
             end
         end
+    elseif config.profile == "script" then
+        input = scripted_inputs[frame] or {}
+    elseif config.profile == "fight" then
+        -- Battle input that only confirms: the cursor stays on each menu's first entry, so the hero
+        -- keeps choosing FIGHT against the first target while AI tactics drive the other members.
+        if frame % 8 == 0 then input.A = 1 end
     elseif config.profile == "combat-walk" then
         if frame % 15 == 0 or frame % 15 == 1 then input.A = 1 end
         if frame % 211 == 0 then input.B = 1 end
@@ -366,6 +410,11 @@ for frame = 1, config.frames do
     end
     joypad.set(1, input)
     FCEU.frameadvance()
+    if scripted_shots[frame] then
+        local shot = assert(io.open(string.format("%s-%05d.gd", config.snapshot_prefix, frame), "wb"))
+        shot:write(gui.gdscreenshot())
+        shot:close()
+    end
     completed_frames = frame
     if target_bank ~= nil and config.profile == "hunt-assets" then
         break

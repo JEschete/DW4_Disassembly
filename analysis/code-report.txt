@@ -2458,7 +2458,7 @@ Seeds:
   bank $15:$A99A | Entry pointer table | Bank $15 pointer at $9604: Command $00 callback operand parsed from a pointer-delimited effect script
   bank $15:$B017 | Entry pointer table | Bank $15 pointer at $963F: Command $00 callback operand parsed from a pointer-delimited effect script and overlapping the script pointer table boundary
   Ghidra headless observations: 50538 instruction starts
-  FCEUX runtime observations: 33992 instruction starts
+  FCEUX runtime observations: 35410 instruction starts
 
 Supplementary Ghidra evidence not accepted:
   bank $0F:$D049 contradicted: starts inside an established instruction or inline operand
@@ -2474,6 +2474,7 @@ Supplementary Ghidra evidence not accepted:
   bank $12:$884C contradicted: starts inside an established instruction or inline operand
   bank $12:$85A9 block rejected: its decode raised an analyzer warning or overlapped a verified content range
   bank $12:$884C block rejected: its decode raised an analyzer warning or overlapped a verified content range
+  bank $12:$A9C2 block rejected: its decode raised an analyzer warning or overlapped a verified content range
   bank $12:$A9ED block rejected: its decode raised an analyzer warning or overlapped a verified content range
   bank $12:$AA0D block rejected: its decode raised an analyzer warning or overlapped a verified content range
   bank $13:$A089 contradicted: starts inside an established instruction or inline operand
@@ -2535,7 +2536,7 @@ Coverage:
   bank $0F: 6535 instructions, 13469 bytes, 0 warnings
   bank $10: 6903 instructions, 12965 bytes, 0 warnings
   bank $11: 6550 instructions, 11895 bytes, 0 warnings
-  bank $12: 5861 instructions, 11495 bytes, 0 warnings
+  bank $12: 5859 instructions, 11492 bytes, 0 warnings
   bank $13: 6217 instructions, 12891 bytes, 0 warnings
   bank $14: 5454 instructions, 10677 bytes, 0 warnings
   bank $15: 4308 instructions, 8558 bytes, 0 warnings

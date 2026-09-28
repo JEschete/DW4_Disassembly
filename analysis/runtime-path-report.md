@@ -3,12 +3,12 @@
 - **startup** [PASS]: exec 1F:C03D-C15A, 97 observed addresses. RESET initialization through mapper setup
 - **banking** [PASS]: exec 1F:FF91-FFD8, 36 observed addresses. SUROM PRG and outer-bank selection
 - **menus** [PASS]: exec 16:8028-874C, 668 observed addresses. Text and window user-interface services
-- **maps** [PASS]: exec 08:803C-B7F7, 1436 observed addresses. Map tile, routing, and tileset services
-- **battle** [PASS]: exec 10:8080-BC7E, 3525 observed addresses. Battle party and combat services
+- **maps** [PASS]: exec 08:803C-B7F7, 1438 observed addresses. Map tile, routing, and tileset services
+- **battle** [PASS]: exec 10:8080-BC7E, 3708 observed addresses. Battle party and combat services
 - **text** [PASS]: exec 16:874C-87D8, 63 observed addresses. Text-group selection and Huffman symbol decoding
 - **save-load** [PASS]: exec 12:8EAD-90A9, 219 observed addresses. Persistent chapter/save-state initialization path
 - **save-load** [PASS]: write -:6000-6300, 767 observed addresses. Observed persistent SRAM mutation
 - **audio** [PASS]: exec 1F:E771-E790, 15 observed addresses. Audio sequence reader
-- **audio** [PASS]: read 19:814E-BF7E, 4184 observed addresses. Track pointers, bank selectors, and sequence data
+- **audio** [PASS]: read 19:814E-BF7E, 4601 observed addresses. Track pointers, bank selectors, and sequence data
 - **graphics** [PASS]: read 0C:8000-C000, 4614 observed addresses. Raw NES 2bpp map graphics
-- **graphics** [PASS]: read 0D:8000-BE44, 3667 observed addresses. Raw map and character graphics
+- **graphics** [PASS]: read 0D:8000-BE44, 5875 observed addresses. Raw map and character graphics

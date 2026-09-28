@@ -70,9 +70,9 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 0F	CF38	brk	$10,$87	2	BrkDefault	CF3B	yes	causal-resume
 0F	CF3D	brk	$06,$EF	2	BrkDefault	CF40	yes	-
 0F	CF5B	brk	$16,$EF	2	BrkDefault	CF5E	yes	causal-resume
-0F	CF70	brk	$00,$87	2	BrkDefault	CF73	yes	-
+0F	CF70	brk	$00,$87	2	BrkDefault	CF73	yes	causal-resume
 0F	CF75	brk	$1C,$EF	2	BrkDefault	CF78	yes	-
-0F	CF78	brk	$0A,$EF	2	BrkDefault	CF7B	yes	-
+0F	CF78	brk	$0A,$EF	2	BrkDefault	CF7B	yes	causal-resume
 0F	CF8D	brk	$02,$EF	2	BrkDefault	CF90	yes	causal-resume
 0F	D001	brk	$81,$FB	2	BrkSelector FB	D004	yes	-
 0F	D010	brk	$A2,$FB	2	BrkSelector FB	D013	yes	causal-resume
@@ -109,7 +109,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 10	8B5E	jsr	$00	1	JsrInline 8C18	8B62	yes	-
 10	8B63	jsr	$02	1	JsrInline 8C18	8B67	yes	-
 10	8B68	jsr	$03	1	JsrInline 8C18	8B6C	yes	-
-10	8B6D	jsr	$04	1	JsrInline 8C18	8B71	yes	-
+10	8B6D	jsr	$04	1	JsrInline 8C18	8B71	yes	causal-resume
 10	8B72	jsr	$05	1	JsrInline 8C18	8B76	yes	causal-resume
 10	9DC9	brk	$62,$43,$40	3	BrkSelector 43	9DCD	yes	causal-resume
 10	9DD5	brk	$46,$53	2	BrkSelector 53	9DD8	yes	causal-resume
@@ -174,7 +174,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 10	B37E	brk	$29,$C3,$0E	3	BrkSelector C3	B382	yes	-
 10	B38C	brk	$2D,$A3	2	BrkSelector A3	B38F	yes	-
 10	B3BD	brk	$09,$3F	2	BrkDefault	B3C0	yes	causal-resume
-10	B3C4	brk	$2B,$0F	2	BrkService 10:2B	B3C7	yes	-
+10	B3C4	brk	$2B,$0F	2	BrkService 10:2B	B3C7	yes	causal-resume
 10	B3D3	brk	$68,$73	2	BrkSelector 73	B3D6	yes	causal-resume
 10	B3E8	brk	$2B,$0F	2	BrkService 10:2B	B3EB	yes	-
 10	B3EE	brk	$2A,$0F	2	BrkService 10:2A	B3F1	yes	-
@@ -262,10 +262,10 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 11	8059	brk	$13,$2F	2	BrkDefault	805C	yes	causal-resume
 11	8061	brk	$07,$6F,$3D	3	BrkService 16:07	8065	yes	causal-resume
 11	806E	brk	$30,$0F	2	BrkDefault	8071	yes	causal-resume
-11	807A	brk	$13,$2F	2	BrkDefault	807D	yes	-
-11	8080	brk	$0B,$3F	2	BrkDefault	8083	yes	-
-11	808B	brk	$13,$2F	2	BrkDefault	808E	yes	-
-11	8091	brk	$05,$2F	2	BrkDefault	8094	yes	-
+11	807A	brk	$13,$2F	2	BrkDefault	807D	yes	causal-resume
+11	8080	brk	$0B,$3F	2	BrkDefault	8083	yes	causal-resume
+11	808B	brk	$13,$2F	2	BrkDefault	808E	yes	causal-resume
+11	8091	brk	$05,$2F	2	BrkDefault	8094	yes	causal-resume
 11	80B8	brk	$0D,$FB	2	BrkSelector FB	80BB	yes	-
 11	80BB	brk	$27,$0F	2	BrkDefault	80BE	yes	-
 11	80BE	brk	$0A,$4F	2	BrkDefault	80C1	yes	-
@@ -384,9 +384,9 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 11	88A3	brk	$04,$1F	2	BrkDefault	88A6	yes	causal-resume
 11	88D1	brk	$00,$3F	2	BrkDefault	88D4	yes	causal-resume
 11	8927	brk	$06,$1F	2	BrkDefault	892A	yes	causal-resume
-11	892C	brk	$23,$A3	2	BrkSelector A3	892F	yes	-
-11	8933	brk	$1D,$0F	2	BrkDefault	8936	yes	-
-11	8936	brk	$1E,$0F	2	BrkDefault	8939	yes	-
+11	892C	brk	$23,$A3	2	BrkSelector A3	892F	yes	causal-resume
+11	8933	brk	$1D,$0F	2	BrkDefault	8936	yes	causal-resume
+11	8936	brk	$1E,$0F	2	BrkDefault	8939	yes	causal-resume
 11	893A	brk	$03,$1F	2	BrkDefault	893D	yes	causal-resume
 11	893D	brk	$0E,$3F	2	BrkDefault	8940	yes	causal-resume
 11	8948	brk	$01,$1F	2	BrkDefault	894B	yes	-
@@ -1079,9 +1079,9 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 11	AA2B	brk	$2A,$A3	2	BrkSelector A3	AA2E	yes	-
 11	AA38	brk	$67,$73	2	BrkSelector 73	AA3B	yes	-
 11	AA46	brk	$44,$53	2	BrkSelector 53	AA49	yes	-
-11	AA75	brk	$2B,$C3,$09	3	BrkSelector C3	AA79	yes	-
-11	AA7E	brk	$67,$73	2	BrkSelector 73	AA81	yes	-
-11	AA82	brk	$45,$93,$19	3	BrkSelector 93	AA86	yes	-
+11	AA75	brk	$2B,$C3,$09	3	BrkSelector C3	AA79	yes	causal-resume
+11	AA7E	brk	$67,$73	2	BrkSelector 73	AA81	yes	causal-resume
+11	AA82	brk	$45,$93,$19	3	BrkSelector 93	AA86	yes	causal-resume
 11	AAA9	brk	$E1,$D3,$89	3	BrkSelector D3	AAAD	yes	-
 11	AAAD	brk	$0D,$FB	2	BrkSelector FB	AAB0	yes	-
 11	AAC7	brk	$62,$43,$41	3	BrkSelector 43	AACB	yes	-
@@ -1090,10 +1090,10 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 11	AAE7	brk	$16,$2F	2	BrkDefault	AAEA	yes	-
 11	AAEA	brk	$15,$2F	2	BrkDefault	AAED	yes	-
 11	AB02	brk	$02,$B3	2	BrkSelector B3	AB05	yes	-
-11	AB08	brk	$29,$C3,$0E	3	BrkSelector C3	AB0C	yes	-
-11	AB0E	brk	$21,$B3	2	BrkSelector B3	AB11	yes	-
-11	AB16	brk	$17,$0F	2	BrkDefault	AB19	yes	-
-11	AB23	brk	$02,$A3	2	BrkSelector A3	AB26	yes	-
+11	AB08	brk	$29,$C3,$0E	3	BrkSelector C3	AB0C	yes	causal-resume
+11	AB0E	brk	$21,$B3	2	BrkSelector B3	AB11	yes	causal-resume
+11	AB16	brk	$17,$0F	2	BrkDefault	AB19	yes	causal-resume
+11	AB23	brk	$02,$A3	2	BrkSelector A3	AB26	yes	causal-resume
 11	AB4E	brk	$0A,$3F	2	BrkDefault	AB51	yes	causal-resume
 11	AB64	brk	$0B,$B3	2	BrkSelector B3	AB67	yes	-
 11	AB6F	brk	$07,$A3	2	BrkSelector A3	AB72	yes	-
@@ -1633,7 +1633,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 12	8694	brk	$E0,$D3,$89	3	BrkSelector D3	8698	yes	-
 12	8698	brk	$07,$1F	2	BrkDefault	869B	yes	-
 12	869B	brk	$2A,$C3,$06	3	BrkSelector C3	869F	yes	-
-12	86B6	brk	$10,$1F	2	BrkDefault	86B9	yes	-
+12	86B6	brk	$10,$1F	2	BrkDefault	86B9	yes	causal-resume
 12	86D1	brk	$09,$9F	2	BrkDefault	86D4	yes	-
 12	86D9	brk	$0E,$FB	2	BrkSelector FB	86DC	yes	-
 12	86E2	brk	$2D,$0F	2	BrkDefault	86E5	yes	-
@@ -1655,22 +1655,22 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 12	879F	brk	$2E,$FB	2	BrkSelector FB	87A2	yes	-
 12	87A3	brk	$2F,$FB	2	BrkSelector FB	87A6	yes	-
 12	87A7	brk	$30,$FB	2	BrkSelector FB	87AA	yes	-
-12	87B0	brk	$07,$6F,$5F	3	BrkService 16:07	87B4	yes	-
-12	87B4	brk	$11,$FB	2	BrkSelector FB	87B7	yes	-
+12	87B0	brk	$07,$6F,$5F	3	BrkService 16:07	87B4	yes	causal-resume
+12	87B4	brk	$11,$FB	2	BrkSelector FB	87B7	yes	causal-resume
 12	87CA	brk	$08,$0B	2	BrkSelector 0B	87CD	yes	-
-12	87D0	brk	$09,$0B	2	BrkSelector 0B	87D3	yes	-
+12	87D0	brk	$09,$0B	2	BrkSelector 0B	87D3	yes	causal-resume
 12	87DE	brk	$0A,$0B	2	BrkSelector 0B	87E1	yes	-
 12	87E4	brk	$0B,$0B	2	BrkSelector 0B	87E7	yes	-
-12	8810	brk	$62,$23,$09	3	BrkSelector 23	8814	yes	-
+12	8810	brk	$62,$23,$09	3	BrkSelector 23	8814	yes	causal-resume
 12	881F	brk	$2D,$0F	2	BrkDefault	8822	yes	-
 12	8824	brk	$0C,$0B	2	BrkSelector 0B	8827	yes	-
-12	882A	brk	$0D,$0B	2	BrkSelector 0B	882D	yes	-
-12	883E	brk	$27,$43,$09	3	BrkSelector 43	8842	yes	-
-12	8876	brk	$4B,$33	2	BrkSelector 33	8879	yes	-
-12	8885	brk	$C3,$1B	2	BrkSelector 1B	8888	yes	-
-12	8888	brk	$08,$2F	2	BrkDefault	888B	yes	-
-12	888E	brk	$07,$9F	2	BrkDefault	8891	yes	-
-12	8898	brk	$09,$9F	2	BrkDefault	889B	yes	-
+12	882A	brk	$0D,$0B	2	BrkSelector 0B	882D	yes	causal-resume
+12	883E	brk	$27,$43,$09	3	BrkSelector 43	8842	yes	causal-resume
+12	8876	brk	$4B,$33	2	BrkSelector 33	8879	yes	causal-resume
+12	8885	brk	$C3,$1B	2	BrkSelector 1B	8888	yes	causal-resume
+12	8888	brk	$08,$2F	2	BrkDefault	888B	yes	causal-resume
+12	888E	brk	$07,$9F	2	BrkDefault	8891	yes	causal-resume
+12	8898	brk	$09,$9F	2	BrkDefault	889B	yes	causal-resume
 12	889E	brk	$29,$B3	2	BrkSelector B3	88A1	yes	-
 12	88C7	brk	$82,$0B	2	BrkSelector 0B	88CA	yes	-
 12	88E8	brk	$29,$C3,$0E	3	BrkSelector C3	88EC	yes	-
@@ -1695,10 +1695,10 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 12	91E6	brk	$17,$0F	2	BrkDefault	91E9	yes	-
 12	91F3	brk	$63,$73	2	BrkSelector 73	91F6	yes	-
 12	91F8	brk	$0F,$33	2	BrkSelector 33	91FB	yes	-
-12	9219	brk	$1C,$B3	2	BrkSelector B3	921C	yes	-
-12	9222	brk	$10,$0F	2	BrkDefault	9225	yes	-
+12	9219	brk	$1C,$B3	2	BrkSelector B3	921C	yes	causal-resume
+12	9222	brk	$10,$0F	2	BrkDefault	9225	yes	causal-resume
 12	9227	brk	$66,$73	2	BrkSelector 73	922A	yes	-
-12	922C	brk	$25,$B3	2	BrkSelector B3	922F	yes	-
+12	922C	brk	$25,$B3	2	BrkSelector B3	922F	yes	causal-resume
 12	9248	brk	$2D,$B3	2	BrkSelector B3	924B	yes	-
 12	9268	brk	$C7,$1B	2	BrkSelector 1B	926B	yes	-
 12	926E	brk	$C8,$1B	2	BrkSelector 1B	9271	yes	-
@@ -1848,11 +1848,11 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 12	9C34	brk	$25,$43,$08	3	BrkSelector 43	9C38	yes	-
 12	9C50	brk	$62,$23,$08	3	BrkSelector 23	9C54	yes	-
 12	9C5D	brk	$0F,$23,$08	3	BrkSelector 23	9C61	yes	-
-12	9C7F	brk	$62,$23,$09	3	BrkSelector 23	9C83	yes	-
-12	9C8C	brk	$0F,$23,$09	3	BrkSelector 23	9C90	yes	-
-12	9C98	brk	$2B,$23,$09	3	BrkSelector 23	9C9C	yes	-
-12	9C9E	brk	$25,$23,$09	3	BrkSelector 23	9CA2	yes	-
-12	9CC8	brk	$64,$33	2	BrkSelector 33	9CCB	yes	-
+12	9C7F	brk	$62,$23,$09	3	BrkSelector 23	9C83	yes	causal-resume
+12	9C8C	brk	$0F,$23,$09	3	BrkSelector 23	9C90	yes	causal-resume
+12	9C98	brk	$2B,$23,$09	3	BrkSelector 23	9C9C	yes	causal-resume
+12	9C9E	brk	$25,$23,$09	3	BrkSelector 23	9CA2	yes	causal-resume
+12	9CC8	brk	$64,$33	2	BrkSelector 33	9CCB	yes	causal-resume
 12	9CDD	brk	$07,$6F,$FF	3	BrkService 16:07	9CE1	yes	-
 12	9CFB	brk	$07,$6F,$43	3	BrkService 16:07	9CFF	yes	-
 12	9D0B	brk	$2B,$23,$09	3	BrkSelector 23	9D0F	yes	-
@@ -1981,15 +1981,15 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 12	AAE5	brk	$04,$9F	2	BrkDefault	AAE8	yes	causal-resume
 12	AAF0	brk	$07,$6F,$55	3	BrkService 16:07	AAF4	yes	causal-resume
 12	AAFF	brk	$07,$6F,$54	3	BrkService 16:07	AB03	yes	causal-resume
-12	AB16	brk	$01,$6F,$56	3	BrkService 16:01	AB1A	yes	-
+12	AB16	brk	$01,$6F,$56	3	BrkService 16:01	AB1A	yes	legacy-address-only
 12	AB4B	brk	$07,$6F,$58	3	BrkService 16:07	AB4F	yes	causal-resume
 12	AB67	brk	$07,$6F,$57	3	BrkService 16:07	AB6B	yes	causal-resume
 12	AB6B	brk	$07,$6F,$59	3	BrkService 16:07	AB6F	yes	causal-resume
 12	AB89	brk	$01,$6F,$56	3	BrkService 16:01	AB8D	yes	causal-resume
 12	ABA8	brk	$11,$3F	2	BrkDefault	ABAB	yes	causal-resume
 12	ABB5	brk	$05,$5F	2	BrkDefault	ABB8	yes	causal-resume
-12	ABF0	brk	$01,$6F,$5A	3	BrkService 16:01	ABF4	yes	-
-12	ABF4	brk	$07,$6F,$48	3	BrkService 16:07	ABF8	yes	-
+12	ABF0	brk	$01,$6F,$5A	3	BrkService 16:01	ABF4	yes	causal-resume
+12	ABF4	brk	$07,$6F,$48	3	BrkService 16:07	ABF8	yes	causal-resume
 12	AD62	brk	$12,$DF	2	BrkDefault	AD65	yes	causal-resume
 12	AD94	brk	$62,$23,$4B	3	BrkSelector 23	AD98	yes	-
 12	ADA9	brk	$44,$93,$07	3	BrkSelector 93	ADAD	yes	-
@@ -2122,7 +2122,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 13	8469	brk	$29,$C3,$0F	3	BrkSelector C3	846D	yes	causal-resume
 13	84AD	brk	$29,$C3,$0C	3	BrkSelector C3	84B1	yes	causal-resume
 13	86C3	brk	$13,$8F	2	BrkDefault	86C6	yes	-
-13	97DD	brk	$0F,$8F	2	BrkDefault	97E0	yes	-
+13	97DD	brk	$0F,$8F	2	BrkDefault	97E0	yes	causal-resume
 13	A812	brk	$2B,$0F	2	BrkService 10:2B	A815	yes	-
 13	A84E	brk	$2A,$0F	2	BrkService 10:2A	A851	yes	-
 13	A912	brk	$15,$0F	2	BrkDefault	A915	yes	-
@@ -2709,8 +2709,8 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	8442	brk	$13,$DF	2	BrkDefault	8445	yes	causal-resume
 16	8892	brk	$16,$EB,$10	3	BrkSelector EB	8896	yes	causal-resume
 16	8BB3	brk	$12,$DF	2	BrkDefault	8BB6	yes	causal-resume
-16	8F6A	brk	$12,$DF	2	BrkDefault	8F6D	yes	legacy-address-only
-16	8F70	brk	$13,$DF	2	BrkDefault	8F73	yes	-
+16	8F6A	brk	$12,$DF	2	BrkDefault	8F6D	yes	causal-resume
+16	8F70	brk	$13,$DF	2	BrkDefault	8F73	yes	causal-resume
 16	92D1	brk	$12,$DF	2	BrkDefault	92D4	yes	causal-resume
 16	92D5	brk	$13,$DF	2	BrkDefault	92D8	yes	causal-resume
 16	9A90	brk	$85,$FB	2	BrkSelector FB	9A93	yes	-
@@ -2721,7 +2721,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	9D65	brk	$3F,$33	2	BrkSelector 33	9D68	yes	causal-resume
 16	9DCA	brk	$85,$FB	2	BrkSelector FB	9DCD	yes	-
 16	9F1B	brk	$2C,$33	2	BrkSelector 33	9F1E	yes	-
-16	9F74	brk	$00,$03	2	BrkSelector 03	9F77	yes	legacy-address-only
+16	9F74	brk	$00,$03	2	BrkSelector 03	9F77	yes	causal-resume
 16	9F88	brk	$2D,$53	2	BrkSelector 53	9F8B	yes	causal-resume
 16	9F9A	brk	$3D,$53	2	BrkSelector 53	9F9D	yes	causal-resume
 16	A0E4	brk	$03,$E7	2	BrkDefault	A0E7	yes	-
@@ -2732,7 +2732,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	AB3C	brk	$2B,$53	2	BrkSelector 53	AB3F	yes	causal-resume
 16	AB62	brk	$29,$53	2	BrkSelector 53	AB65	yes	causal-resume
 16	AB94	brk	$2C,$73	2	BrkSelector 73	AB97	yes	causal-resume
-16	ABBA	brk	$00,$13	2	BrkSelector 13	ABBD	yes	legacy-address-only
+16	ABBA	brk	$00,$13	2	BrkSelector 13	ABBD	yes	causal-resume
 16	ABCB	brk	$3B,$73	2	BrkSelector 73	ABCE	yes	causal-resume
 16	AC56	brk	$47,$73	2	BrkSelector 73	AC59	yes	causal-resume
 16	AC6D	brk	$2B,$53	2	BrkSelector 53	AC70	yes	-
@@ -2747,11 +2747,11 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	AE20	brk	$2C,$73	2	BrkSelector 73	AE23	yes	-
 16	AE76	brk	$4D,$33	2	BrkSelector 33	AE79	yes	causal-resume
 16	AE7E	brk	$04,$B7	2	BrkDefault	AE81	yes	causal-resume
-16	AE95	brk	$4D,$33	2	BrkSelector 33	AE98	yes	-
-16	AF81	brk	$2B,$53	2	BrkSelector 53	AF84	yes	legacy-address-only
-16	AF8A	brk	$0A,$0F	2	BrkDefault	AF8D	yes	legacy-address-only
-16	AF92	brk	$10,$53	2	BrkSelector 53	AF95	yes	legacy-address-only
-16	AF9A	brk	$13,$0F	2	BrkDefault	AF9D	yes	legacy-address-only
+16	AE95	brk	$4D,$33	2	BrkSelector 33	AE98	yes	causal-resume
+16	AF81	brk	$2B,$53	2	BrkSelector 53	AF84	yes	causal-resume
+16	AF8A	brk	$0A,$0F	2	BrkDefault	AF8D	yes	causal-resume
+16	AF92	brk	$10,$53	2	BrkSelector 53	AF95	yes	causal-resume
+16	AF9A	brk	$13,$0F	2	BrkDefault	AF9D	yes	causal-resume
 16	AFE0	brk	$2B,$53	2	BrkSelector 53	AFE3	yes	causal-resume
 16	AFE9	brk	$0A,$0F	2	BrkDefault	AFEC	yes	causal-resume
 16	AFF8	brk	$3B,$73	2	BrkSelector 73	AFFB	yes	causal-resume
@@ -2767,15 +2767,15 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	B50B	brk	$3E,$53	2	BrkSelector 53	B50E	yes	causal-resume
 16	B51F	brk	$3C,$53	2	BrkSelector 53	B522	yes	causal-resume
 16	B542	brk	$47,$73	2	BrkSelector 73	B545	yes	causal-resume
-16	B555	brk	$00,$13	2	BrkSelector 13	B558	yes	legacy-address-only
+16	B555	brk	$00,$13	2	BrkSelector 13	B558	yes	causal-resume
 16	B5B4	brk	$29,$C3,$0E	3	BrkSelector C3	B5B8	yes	causal-resume
 16	B5CA	brk	$2D,$B3	2	BrkSelector B3	B5CD	yes	causal-resume
 16	B5D6	brk	$29,$C3,$0C	3	BrkSelector C3	B5DA	yes	causal-resume
 16	B5DE	brk	$67,$33	2	BrkSelector 33	B5E1	yes	-
-16	B61B	brk	$13,$1F	2	BrkDefault	B61E	yes	-
+16	B61B	brk	$13,$1F	2	BrkDefault	B61E	yes	causal-resume
 16	B62B	brk	$00,$5F	2	BrkDefault	B62E	yes	-
 16	B632	brk	$06,$5F	2	BrkDefault	B635	yes	-
-16	B63D	brk	$3E,$53	2	BrkSelector 53	B640	yes	-
+16	B63D	brk	$3E,$53	2	BrkSelector 53	B640	yes	causal-resume
 16	B643	brk	$2B,$53	2	BrkSelector 53	B646	yes	causal-resume
 16	B722	brk	$2D,$53	2	BrkSelector 53	B725	yes	-
 16	B733	brk	$86,$FB	2	BrkSelector FB	B736	yes	causal-resume
@@ -2784,7 +2784,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	B7D4	brk	$62,$33	2	BrkSelector 33	B7D7	yes	causal-resume
 16	B84C	brk	$62,$23,$40	3	BrkSelector 23	B850	yes	causal-resume
 16	B8C9	brk	$2D,$0F	2	BrkDefault	B8CC	yes	-
-16	B9A1	brk	$00,$13	2	BrkSelector 13	B9A4	yes	legacy-address-only
+16	B9A1	brk	$00,$13	2	BrkSelector 13	B9A4	yes	causal-resume
 16	BA4C	brk	$2D,$0F	2	BrkDefault	BA4F	yes	causal-resume
 16	BA54	brk	$62,$23,$40	3	BrkSelector 23	BA58	yes	causal-resume
 16	BA68	brk	$2A,$53	2	BrkSelector 53	BA6B	yes	causal-resume
@@ -2800,7 +2800,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 16	BF40	brk	$3C,$53	2	BrkSelector 53	BF43	yes	-
 16	BF98	brk	$62,$33	2	BrkSelector 33	BF9B	yes	-
 16	BFA1	brk	$62,$23,$40	3	BrkSelector 23	BFA5	yes	-
-16	BFA6	brk	$5D,$33	2	BrkSelector 33	BFA9	yes	-
+16	BFA6	brk	$5D,$33	2	BrkSelector 33	BFA9	yes	causal-resume
 17	8068	brk	$07,$6F,$3D	3	BrkService 16:07	806C	yes	-
 17	80B9	brk	$7A,$4B	2	BrkSelector 4B	80BC	yes	-
 17	8179	brk	$85,$FB	2	BrkSelector FB	817C	yes	-
@@ -2898,8 +2898,8 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 18	A186	brk	$1E,$FB	2	BrkSelector FB	A189	yes	-
 18	A189	brk	$0A,$4F	2	BrkDefault	A18C	yes	causal-resume
 18	A196	brk	$18,$1F	2	BrkDefault	A199	yes	-
-18	A19C	brk	$00,$1F	2	BrkDefault	A19F	yes	legacy-address-only
-18	A1A4	brk	$15,$EF	2	BrkDefault	A1A7	yes	-
+18	A19C	brk	$00,$1F	2	BrkDefault	A19F	yes	causal-resume
+18	A1A4	brk	$15,$EF	2	BrkDefault	A1A7	yes	causal-resume
 18	A21C	brk	$17,$0F	2	BrkDefault	A21F	yes	causal-resume
 18	A26A	brk	$62,$33	2	BrkSelector 33	A26D	yes	causal-resume
 18	A818	brk	$80,$4B	2	BrkSelector 4B	A81B	yes	-
@@ -3024,9 +3024,9 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1B	B049	brk	$00,$E7	2	BrkDefault	B04C	yes	-
 1B	B04C	brk	$08,$87	2	BrkDefault	B04F	yes	-
 1B	B04F	brk	$1E,$EF	2	BrkDefault	B052	yes	-
-1C	97B3	brk	$03,$87	2	BrkDefault	97B6	yes	-
-1C	9851	brk	$04,$87	2	BrkDefault	9854	yes	-
-1C	9856	brk	$04,$87	2	BrkDefault	9859	yes	-
+1C	97B3	brk	$03,$87	2	BrkDefault	97B6	yes	causal-resume
+1C	9851	brk	$04,$87	2	BrkDefault	9854	yes	causal-resume
+1C	9856	brk	$04,$87	2	BrkDefault	9859	yes	causal-resume
 1C	9862	brk	$03,$87	2	BrkDefault	9865	yes	causal-resume
 1C	9A5A	brk	$04,$87	2	BrkDefault	9A5D	yes	causal-resume
 1C	9C5F	brk	$26,$EB,$20	3	BrkSelector EB	9C63	yes	-
@@ -3393,7 +3393,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1C	BB2C	brk	$70,$4B	2	BrkSelector 4B	BB2F	yes	-
 1C	BB2F	brk	$71,$4B	2	BrkSelector 4B	BB32	yes	-
 1C	BB3A	brk	$20,$CB,$08	3	BrkSelector CB	BB3E	yes	-
-1C	BB42	brk	$6A,$4B	2	BrkSelector 4B	BB45	yes	-
+1C	BB42	brk	$6A,$4B	2	BrkSelector 4B	BB45	yes	legacy-address-only
 1C	BB4A	brk	$01,$8F	2	BrkDefault	BB4D	yes	-
 1C	BB4D	brk	$26,$CB,$20	3	BrkSelector CB	BB51	yes	-
 1C	BB51	brk	$6F,$33	2	BrkSelector 33	BB54	yes	-
@@ -3777,7 +3777,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1D	B5C1	brk	$20,$CB,$02	3	BrkSelector CB	B5C5	yes	-
 1D	B5CA	brk	$3B,$EF	2	BrkDefault	B5CD	yes	-
 1D	B5DA	brk	$07,$CF	2	BrkDefault	B5DD	yes	-
-1D	B610	brk	$07,$CF	2	BrkDefault	B613	yes	-
+1D	B610	brk	$07,$CF	2	BrkDefault	B613	yes	legacy-address-only
 1D	B787	brk	$52,$73	2	BrkSelector 73	B78A	yes	-
 1D	B799	brk	$0D,$87	2	BrkDefault	B79C	yes	-
 1D	B7A0	brk	$0D,$87	2	BrkDefault	B7A3	yes	-
@@ -3811,10 +3811,10 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1E	8206	brk	$09,$6F,$0A	3	BrkService 16:09	820A	yes	causal-resume
 1E	820D	brk	$2B,$53	2	BrkSelector 53	8210	yes	causal-resume
 1E	821A	brk	$3C,$73	2	BrkSelector 73	821D	yes	-
-1E	8222	brk	$85,$FB	2	BrkSelector FB	8225	yes	-
-1E	8225	brk	$09,$6F,$0C	3	BrkService 16:09	8229	yes	-
-1E	822C	brk	$2B,$53	2	BrkSelector 53	822F	yes	-
-1E	8236	brk	$09,$6F,$0D	3	BrkService 16:09	823A	yes	-
+1E	8222	brk	$85,$FB	2	BrkSelector FB	8225	yes	causal-resume
+1E	8225	brk	$09,$6F,$0C	3	BrkService 16:09	8229	yes	causal-resume
+1E	822C	brk	$2B,$53	2	BrkSelector 53	822F	yes	causal-resume
+1E	8236	brk	$09,$6F,$0D	3	BrkService 16:09	823A	yes	causal-resume
 1E	8240	brk	$07,$6F,$0E	3	BrkService 16:07	8244	yes	causal-resume
 1E	824C	brk	$07,$6F,$11	3	BrkService 16:07	8250	yes	-
 1E	8253	brk	$07,$6F,$10	3	BrkService 16:07	8257	yes	causal-resume
@@ -3848,7 +3848,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1E	8389	brk	$A9,$FB	2	BrkSelector FB	838C	yes	-
 1E	838E	brk	$03,$BF	2	BrkDefault	8391	yes	-
 1E	83D3	brk	$90,$FB	2	BrkSelector FB	83D6	yes	-
-1E	83FE	brk	$07,$6F,$1E	3	BrkService 16:07	8402	yes	-
+1E	83FE	brk	$07,$6F,$1E	3	BrkService 16:07	8402	yes	causal-resume
 1E	8413	brk	$07,$6F,$26	3	BrkService 16:07	8417	yes	-
 1E	8417	brk	$07,$6F,$21	3	BrkService 16:07	841B	yes	-
 1E	8430	brk	$07,$6F,$25	3	BrkService 16:07	8434	yes	-
@@ -3862,10 +3862,10 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1E	848E	brk	$0E,$DB,$EF	3	BrkSelector DB	8492	yes	-
 1E	8497	brk	$27,$0F	2	BrkDefault	849A	yes	-
 1E	849A	brk	$09,$9F	2	BrkDefault	849D	yes	-
-1E	84A3	brk	$07,$6F,$29	3	BrkService 16:07	84A7	yes	-
-1E	84A7	brk	$07,$6F,$27	3	BrkService 16:07	84AB	yes	-
-1E	84AF	brk	$4E,$73	2	BrkSelector 73	84B2	yes	-
-1E	84B2	brk	$07,$6F,$29	3	BrkService 16:07	84B6	yes	-
+1E	84A3	brk	$07,$6F,$29	3	BrkService 16:07	84A7	yes	causal-resume
+1E	84A7	brk	$07,$6F,$27	3	BrkService 16:07	84AB	yes	causal-resume
+1E	84AF	brk	$4E,$73	2	BrkSelector 73	84B2	yes	causal-resume
+1E	84B2	brk	$07,$6F,$29	3	BrkService 16:07	84B6	yes	causal-resume
 1E	84D6	brk	$01,$6F,$FE	3	BrkService 16:01	84DA	yes	-
 1E	84DB	brk	$5D,$33	2	BrkSelector 33	84DE	yes	-
 1E	84E7	brk	$62,$33	2	BrkSelector 33	84EA	yes	-
@@ -4022,11 +4022,11 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1E	9F05	brk	$0B,$6F	2	BrkDefault	9F08	yes	legacy-address-only
 1E	9F51	brk	$02,$87	2	BrkDefault	9F54	yes	causal-resume
 1E	A0AD	brk	$04,$BF	2	BrkDefault	A0B0	yes	causal-resume
-1E	A1ED	brk	$02,$87	2	BrkDefault	A1F0	yes	-
-1E	A1F0	brk	$03,$DF	2	BrkDefault	A1F3	yes	-
-1E	A1F6	brk	$11,$87	2	BrkDefault	A1F9	yes	-
-1E	A1FD	brk	$02,$CF	2	BrkDefault	A200	yes	-
-1E	A21A	brk	$07,$87	2	BrkDefault	A21D	yes	-
+1E	A1ED	brk	$02,$87	2	BrkDefault	A1F0	yes	causal-resume
+1E	A1F0	brk	$03,$DF	2	BrkDefault	A1F3	yes	causal-resume
+1E	A1F6	brk	$11,$87	2	BrkDefault	A1F9	yes	causal-resume
+1E	A1FD	brk	$02,$CF	2	BrkDefault	A200	yes	causal-resume
+1E	A21A	brk	$07,$87	2	BrkDefault	A21D	yes	causal-resume
 1E	A237	brk	$62,$23,$40	3	BrkSelector 23	A23B	yes	causal-resume
 1E	A23D	brk	$62,$23,$43	3	BrkSelector 23	A241	yes	causal-resume
 1E	A243	brk	$62,$23,$48	3	BrkSelector 23	A247	yes	causal-resume
@@ -4313,7 +4313,7 @@ Bank	Address	Kind	Operands	OperandCount	Rule	Continuation	ContinuationDecoded	Ru
 1F	D0E6	brk	$C2,$4B	2	BrkSelector 4B	D0E9	yes	-
 1F	D1F8	brk	$07,$6F,$FF	3	BrkService 16:07	D1FC	yes	causal-resume
 1F	D1FE	brk	$07,$6F,$43	3	BrkService 16:07	D202	yes	causal-resume
-1F	D203	brk	$04,$6F	2	BrkDefault	D206	yes	legacy-address-only
+1F	D203	brk	$04,$6F	2	BrkDefault	D206	yes	causal-resume
 1F	D70F	brk	$0B,$6F	2	BrkDefault	D712	yes	causal-resume
 1F	DA9E	brk	$01,$8F	2	BrkDefault	DAA1	yes	-
 1F	DD14	brk	$09,$EF	2	BrkDefault	DD17	yes	-

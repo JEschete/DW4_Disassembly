@@ -156,13 +156,21 @@ internal static class Program
         CodeAnalyzer.ValidateGuardedFlowRecovery(
             rom.AsMemory(HeaderSize), guardedSeeds, baselineAnalyses, analyses);
         Console.WriteLine($"validated {guardedSeeds.Count} guarded flow-recovery seeds");
+        List<IndexBound> indexBounds = IndexBounds.Load(Path.Combine(projectRoot, "config", "index-bounds.tsv"));
+        IndexBounds.Validate(
+            indexBounds,
+            analyses,
+            Path.Combine(projectRoot, "analysis", "fceux-read-sources.tsv"),
+            Path.Combine(projectRoot, "analysis", "fceux-observations.tsv"),
+            BuildTypedByteLookup(evidencedContentRanges, analyses));
+        Console.WriteLine($"validated {indexBounds.Count} index bounds");
         ValidateReviewedUnusedRanges(
             Path.Combine(projectRoot, "analysis", "fceux-exec.tsv"),
             Path.Combine(projectRoot, "analysis", "fceux-read-sources.tsv"),
             reviewedUnusedRanges,
             entryTables.Entries,
             codeExclusions,
-            evidencedContentRanges,
+            indexBounds,
             analyses);
         ValidateCodeDataOverlaps(contentRanges, codeDataOverlaps, analyses);
         WriteInlineOperandReport(
@@ -174,6 +182,7 @@ internal static class Program
             analyses);
         CitationValidator.Validate(
             contentRanges.Select(range => (range.Bank, $"content range ${range.Bank:X2}:${range.Start:X4}", range.Reason))
+                .Concat(indexBounds.Select(bound => (bound.Bank, $"index bound ${bound.Bank:X2}:${bound.Consumer:X4}", bound.Evidence)))
                 .Concat(File.ReadLines(Path.Combine(projectRoot, "config", "code-entry-tables.tsv"))
                     .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
                     .Select(line => line.Split('\t'))
@@ -634,7 +643,7 @@ internal static class Program
         IReadOnlyList<ContentRange> ranges,
         IReadOnlyList<EntryPointer> entries,
         IReadOnlyList<CodeExclusion> exclusions,
-        IReadOnlyList<ContentRange> boundedContentRanges,
+        IReadOnlyList<IndexBound> indexBounds,
         IReadOnlyDictionary<int, BankAnalysis> analyses)
     {
         if (ranges.Count == 0)
@@ -665,25 +674,33 @@ internal static class Program
                 entry.TargetBank == range.Bank && entry.Target >= range.Start && entry.Target < range.EndExclusive);
             bool exclusionOverlap = exclusions.Any(exclusion =>
                 exclusion.Bank == range.Bank && exclusion.Start < range.EndExclusive && exclusion.EndExclusive > range.Start);
-            bool staticReference = analyses.Any(pair => pair.Value.Instructions.Values.Any(instruction =>
-            {
-                int referencedAddress = instruction.Operand1 | (instruction.Operand2 << 8);
-                if (TargetBank(pair.Key, referencedAddress) != range.Bank)
+            // An indexed consumer reaches base through base+255 unless config/index-bounds.tsv declares a
+            // proven index range for it; a base inside another typed table is not treated as a bound.
+            List<string> references = analyses.SelectMany(pair => pair.Value.Instructions.Values
+                .Where(instruction =>
                 {
-                    return false;
-                }
-                bool independentlyBounded = boundedContentRanges.Any(content =>
-                    content.Bank == range.Bank && referencedAddress >= content.Start &&
-                    referencedAddress < content.EndExclusive && content.EndExclusive <= range.Start);
-                return instruction.Opcode.Mode switch
-                {
-                    AddressingMode.Absolute => referencedAddress >= range.Start && referencedAddress < range.EndExclusive,
-                    AddressingMode.AbsoluteX or AddressingMode.AbsoluteY =>
-                        !independentlyBounded && referencedAddress < range.EndExclusive &&
-                        referencedAddress + 0xFF >= range.Start,
-                    _ => false
-                };
-            }));
+                    int referencedAddress = instruction.Operand1 | (instruction.Operand2 << 8);
+                    if (TargetBank(pair.Key, referencedAddress) != range.Bank)
+                    {
+                        return false;
+                    }
+                    if (indexBounds.FirstOrDefault(bound => bound.Bank == pair.Key && bound.Consumer == instruction.Address)
+                        is IndexBound declared)
+                    {
+                        return referencedAddress + declared.MinIndex < range.EndExclusive &&
+                            referencedAddress + declared.MaxIndex >= range.Start;
+                    }
+                    return instruction.Opcode.Mode switch
+                    {
+                        AddressingMode.Absolute => referencedAddress >= range.Start && referencedAddress < range.EndExclusive,
+                        AddressingMode.AbsoluteX or AddressingMode.AbsoluteY =>
+                            referencedAddress < range.EndExclusive && referencedAddress + 0xFF >= range.Start,
+                        _ => false
+                    };
+                })
+                .Select(instruction => $"${pair.Key:X2}:${instruction.Address:X4}"))
+                .ToList();
+            bool staticReference = references.Count != 0;
             bool runtimeExecution = Enumerable.Range(range.Start, range.EndExclusive - range.Start)
                 .Any(address => executed.Contains((range.Bank, address)));
             bool runtimeRead = Enumerable.Range(range.Start, range.EndExclusive - range.Start)
@@ -695,7 +712,8 @@ internal static class Program
                 errors.Add(
                     $"${range.Bank:X2}:${range.Start:X4}-${range.EndExclusive - 1:X4} is not unused " +
                     $"(code={overlapsCode}, inline={overlapsInlineData}, pointer={pointerTarget}, exclusion={exclusionOverlap}, " +
-                    $"reference={staticReference}, executed={runtimeExecution}, read={runtimeRead})");
+                    $"reference={staticReference}{(references.Count == 0 ? string.Empty : $" [{string.Join(" ", references)}]")}, " +
+                    $"executed={runtimeExecution}, read={runtimeRead})");
             }
         }
 
@@ -705,6 +723,44 @@ internal static class Program
                 $"reviewed unused-data validation failed ({errors.Count}): {string.Join("; ", errors)}");
         }
         Console.WriteLine($"validated {ranges.Count} reviewed unused-data ranges");
+    }
+
+    private static Func<int, int, bool> BuildTypedByteLookup(
+        IReadOnlyList<ContentRange> evidencedContentRanges,
+        IReadOnlyDictionary<int, BankAnalysis> analyses)
+    {
+        bool[][] typed = new bool[PrgBankCount][];
+        for (int bank = 0; bank < PrgBankCount; bank++)
+        {
+            typed[bank] = new bool[PrgBankSize];
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            foreach (DecodedInstruction instruction in analyses[bank].Instructions.Values)
+            {
+                for (int index = 0; index < instruction.Opcode.Size; index++)
+                {
+                    typed[bank][instruction.Address - cpuBase + index] = true;
+                }
+            }
+
+            foreach (int offset in analyses[bank].InlineDataOffsets)
+            {
+                typed[bank][offset] = true;
+            }
+
+            foreach (ContentRange range in evidencedContentRanges.Where(range => range.Bank == bank))
+            {
+                for (int address = range.Start; address < range.EndExclusive; address++)
+                {
+                    typed[bank][address - cpuBase] = true;
+                }
+            }
+        }
+
+        return (bank, address) =>
+        {
+            int offset = address - CodeAnalyzer.CpuBase(bank);
+            return offset is >= 0 and < PrgBankSize && typed[bank][offset];
+        };
     }
 
     private static HashSet<(int Bank, int Address)> LoadRuntimeAddresses(string path, int columnCount)

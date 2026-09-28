@@ -1044,3 +1044,125 @@ The remaining large ranges are intentionally open. Directory targets alone do no
 and `$12` data, `$12:$B977-$BA3D` has no consumer, bank `$18:$ADA3-$AE4E` depends on the unbounded value `$62D5`,
 and the larger bank `$13/$1E` tables still have variable-derived endpoints. Further classification requires new
 interpreter discovery, variable-range proof, or targeted runtime reads.
+
+## Index-Bound Ledger And Title-Menu Pass - 2026-09-27
+
+This pass took detailed coverage from 523,911 bytes (99.93%, 377 bytes in 42 ranges) to 524,226 / 524,288 bytes
+(99.99%). It leaves 62 bytes in 13 ranges, each listed in [STATUS.md](STATUS.md) with its blocker. Some earlier
+claims were wrong and are recorded below, including changes that lowered the metric.
+
+### New enforcement
+
+- `config/index-bounds.tsv` and `tools/Dw4Tool/IndexBounds.cs`: each row caps one decoded absolute-indexed
+  consumer to a cited index range. Extraction fails if a source-attributed runtime read or a recorded X/Y
+  observation falls outside the bound, or if any byte the bound can reach is untyped. Opcode fetches and
+  interrupt-vector reads logged with the consumer's PC are excluded from the cross-check. The ledger has 149 rows.
+- The reviewed-unused rule is now strict: an indexed reference covers base through base+255 unless an index
+  bound caps it. There is no exemption for bases inside other content ranges.
+
+### Corrections
+
+- The strict rule showed that three reviewed-unused claims were read. `$13:$94EC-$951A`, `$10:$95EF-$9600`, and
+  `$1D:$B285-$B287` are now typed from their readers.
+- Six reviewed-unused claims were withdrawn because no index bound could be proven for a reference that reaches
+  them: `$0F/$1F:$DFF0`, `$12:$914C-$914F`, `$12:$91D1-$91D7`, `$16:$A4D6-$A4DD`, `$16:$BC41-$BC42`, and
+  `$1F:$ED49-$ED4A`. All six remain unclassified.
+- A proposed bound of `$00-$38` for `$12:$9006` was rejected by the tool, because runtime observed X up to 63.
+  The bound is `$00-$3F`.
+- `$17:$9DC8-$9DCF` lost an unsupported code exclusion and the label `Bank17_MapTimingValues`. It is reviewed-unused
+  because the `BCS $9D70` at `$9DC6` is always taken.
+- `$16:$B71F` was recorded as reviewed-unused, but it is the final `D` of `END` in the keyboard list. FCEUX read it
+  from `$AF4F` during hero naming. The list is now `$B699-$B71F`: a three-byte header plus six rows of `$16`
+  characters. The code at `$B720` is the handler that the RTS-biased pointer `$B71F` selects, which is how the
+  earlier boundary was misplaced.
+- `$16:$B755` (`TextUiPartyCounts`) and `$16:$B785` (`TextUiPartyClasses`) were misnamed. They are the title-menu
+  row counts per slot mask and the adventure-log row counts (population counts). They are now `TitleMenuRowCounts`
+  and `AdventureLogRowCounts`.
+
+### Runtime tooling
+
+`scripts/trace-fceux.ps1` gained `-TraceMode script -InputScript <file>` for frame-scheduled button input and GD
+snapshots ("`<frame> <count> <buttons>`" or "`<frame> shot`"). It also gained `-BatteryOnly` to boot from an
+archive's battery RAM without loading its snapshot, and `-TimeoutSeconds`. All data from these runs merges into the
+normal `analysis/fceux-*.tsv` corpus.
+
+### Newly typed content
+
+- Guest-class tables `$10:$8540`, `$10:$8F28`, `$10:$8FE5`, `$1E:$96A3`, and `$16:$AB50`. Guest classes 8-14
+  come from the join handler at `$10:$93DA-$93F7` with arguments at `$1D:$B787`, `$1C:$B667`, and `$1C:$B63D`.
+  Class 15 is held in savestates 25-28.
+- `$18:$ADA3-$ADAE` party-level brackets, bounded by the capped level increment.
+- Title-menu tables `$16:$B1E8`, `$B1F0`, `$B232-$B249`, `$B964`, and `$B96C`. `$03DC` is the three-bit slot mask
+  that `$B78C-$B79E` builds. Handler `$B74B` (UI record `$53`) or `$B773` (records `$54/$55`) stores it, and those
+  records are the only users of set-1 commands one and two and of selection handlers six and seven. Scripted
+  COPY/ERASE walks from `States/state20.zip` battery RAM exercised all eight masks, and every table byte was read.
+- Text-input tables `$16:$A151`, `$16:$AEFB`, and `$12:$BB01`, indexed by list number `$03DD`. Record `$57` is the
+  only record that selects a list, and it selects list eight. The other slots are typed by base and following code,
+  with their unreached status stated in the reasons.
+- Dialogue row offsets `$16:$AE50/$AE72`, for records `$43/$50` and `$3D/$5F`, which declare four rows through
+  `$B650`. These have no runtime reads.
+- `$16:$AB2E`: the third display code, read while the field STATUS screen opened window `$0D`.
+- `$12:$8614-$861A`: seven message-speed delays. Both paths into `$860D` exclude speed index seven.
+- `$12:$BBCC-$BBD3`: column masks. Y comes from the bank `$16:$9C7F` metric row, whose values are 0, 1, 2, 6, and 8.
+- `$11:$926B-$9271`: Necrosaro form IDs for stages one to seven. `$7206` has other writers, so the ceiling rests on
+  the `$D2` terminal check at `$920E` rather than a proof that `$7206` changes only here.
+
+### Continuation: 62 to 15 bytes
+
+Detailed coverage is now 524,273 / 524,288 (99.997%). The ledger holds 166 index bounds and 53 reviewed-unused
+ranges.
+
+Proofs added:
+
+- `$08:$8AA2-$8AAE`: `$07` is the tileset passed to bank `$08` service two, from bank `$17` MapInfo submap records
+  masked with `$3F`. Every one of the seventy-three maps' records (each list ends at an `$FF`) holds a value from one
+  to `$32`, so Y = `$07` >> 2 is at most `$0C`.
+- `$12:$914C-$914F` and `$12:$91D1-$91D7` are reviewed-unused. `SaveCurrentChapterMinus1` is at most four. The
+  chapter-end INC at `$1B:$AC02` runs only for chapters zero to three, the `$12:$9067` store writes four, and the
+  chapter-select writers are dead because `LDA $C000 / AND #$08 / BNE` at `$1E:$A35B` always branches (`$C000` holds
+  `$FF`). No indexed store reaches `$615A`.
+- `$12:$8614-$861A`: both paths into `$860D` exclude message speed seven.
+- `$12:$BB01` and `$12:$BBCC`: the bank `$12` text-input and column tables. The column count comes from the bank
+  `$16:$9C7F` metric row.
+- `$16:$A151`, `$AE50`, `$AE72`, `$AEFB`, `$AD47`, and `$AB2E`: text-input, dialogue-row, status-selector and
+  display-code tables. Record-level proofs cover every opener and embedded command byte.
+- `$16:$A4D6-$A4DD` is reviewed-unused. Its only uncapped readers, `$A1CD/$A1DA`, are on the list-zero path, which
+  never runs because record `$57`, the only mode-`$0D` window, stores list eight.
+- `$1D:$AEFE-$AF05`: map event `$64` fires only inside two `82 08 ... 81` object-script loops, so the loop counter
+  is eight down to one.
+- `$1F:$ED49`: the 99th audio period entry, ending at the normalization routine.
+- `$11:$926B`: Necrosaro form IDs. The ceiling rests on the `$D2` terminal check, because `$7206` has other
+  writers.
+
+Corrections:
+
+- The `$16:$BC35` pair count and the `$16:$BC29/$BC2F` bounds assumed `$10:$9613` returns zero through six. It
+  returns up to seven (poison), so the table has seven pairs.
+- The `$16:$A4CE` evidence misattributed its Y mask.
+- Both are fixed.
+
+Tooling:
+
+- A map-object script walker (scratch, not yet in `Dw4Tool`) enumerates bank `$05` and `$1C` entity lists and
+  their length-prefixed script blocks, using command lengths read from the fixed-bank handlers.
+- It reproduces all 181 runtime-fetched command sites.
+- It shows that script memory writes target only `$00F9`, `$0530`, and flags `$627B-$62AA`.
+
+The remaining 15 bytes at this checkpoint are described in [STATUS.md](STATUS.md); the final closure is recorded
+below.
+
+### Final byte-classification closure
+
+Detailed coverage is now 524,288 / 524,288 bytes (100%), with 169 enforced index bounds and 53 reviewed-unused
+ranges. The final four proofs were:
+
+- `$1C:$B7A3-$B7A4`: the reader at `$B79F` is reached only after `($6299 & $7F)` passes explicit lower bound `$08`
+  and upper bound `$3F` checks.
+- `$1D:$B363-$B366`: paired map events `$79/$7A` constrain `PlayerLocalY` to 9 or 11 and hold it under negative
+  cutscene state `$0530`; the two readers at `$B33D/$B34A` therefore use X zero or two.
+- `$0F/$1F:$DFF0`: only invalid map-object command `$C6` selects this dispatch byte. The sole `$C6` adjacent to a
+  declared script follows `$05:$B7D4-$B7F7`, whose reachable path unconditionally redirects through command `$84`
+  at `$B7DA` to `$B7CD` before that tail can execute.
+- `$1E:$BAD0-$BAD6`: the unmodified chapter-three state-9 snapshot supplies Taloon's eight sprite frames, and a
+  ROM-backed simulation of the exact twelve-iteration feedback loop at `$BA41-$BACD` consumes every index
+  `$08-$0E` through `$BAC8,Y`.

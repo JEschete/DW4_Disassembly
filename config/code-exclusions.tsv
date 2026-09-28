@@ -208,7 +208,6 @@
 17	9D30	9D32	Content classification	Inline operands for fixed-bank BRK service at $9D2F
 17	9D3A	9D3C	Content classification	Inline operands for fixed-bank BRK service at $9D39
 17	9D3E	9D40	Content classification	Inline operands for fixed-bank BRK service at $9D3D
-17	9DC8	9DD0	Content classification	Bytes after BCS $9D70 at $9DC6, which is always taken because it is reached only when BCC $9D8C at $9DC4 falls through; no consumer is known
 17	9E14	9E16	Content classification	Inline operands for fixed-bank BRK service at $9E13
 17	9E58	9E68	Content classification	Eight little-endian numeric values
 17	9ED7	9EE6	Content classification	Three five-byte map comparison tables
