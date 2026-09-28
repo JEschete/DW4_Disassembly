@@ -5622,7 +5622,7 @@ AdvanceBattleRecordPointerByScaledStride:
         lda     #$0A                            ; A6E4 A9 0A                    ..
         sta     $24                             ; A6E6 85 24                    .$
         ldx     #$04                            ; A6E8 A2 04                    ..
-        jsr     UpperFixedEngine_Entry_C3CE     ; A6EA 20 CE C3                  ..
+        jsr     ResolveBankedPointerIntoZeroPage; A6EA 20 CE C3                  ..
         clc                                     ; A6ED 18                       .
         lda     $04                           ; A6EE A5 04                    ..
         adc     $02                             ; A6F0 65 02                    e.
@@ -6423,7 +6423,7 @@ CommitBattleTransitionModeToEngine:
         jsr     ResolveBattleTransitionModeFromWorldState; AC21 20 B9 AB         ..
         lda     $0514                           ; AC24 AD 14 05                 ...
         sta     $05FD                           ; AC27 8D FD 05                 ...
-        jmp     UpperFixedEngine_Entry_C5B9     ; AC2A 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; AC2A 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 SeedBattleSlotDescriptors:
         brk                                     ; AC2D 00                       .

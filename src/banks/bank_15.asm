@@ -820,14 +820,14 @@ Bank15_InterpretEffectScript:
         bit     $E7                             ; 9901 24 E7                    $.
         bmi     ItemEffectInventory_Branch_990B ; 9903 30 06                    0.
         jsr     WaitForFreshButtonPress         ; 9905 20 CC C8                  ..
-        jmp     UpperFixedEngine_Entry_D1F3     ; 9908 4C F3 D1                 L..
+        jmp     StopMapCue                      ; 9908 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_990B:
         bvs     ItemEffectInventory_Branch_9913 ; 990B 70 06                    p.
 ItemEffectInventory_Branch_990D:
-        jsr     UpperFixedEngine_Entry_D218     ; 990D 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; 990D 20 18 D2                 ..
 ItemEffectInventory_Branch_9910:
-        jmp     UpperFixedEngine_Entry_D1F3     ; 9910 4C F3 D1                 L..
+        jmp     StopMapCue                      ; 9910 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9913:
         rts                                     ; 9913 60                       `
@@ -1697,7 +1697,7 @@ ItemEffectInventory_Branch_9DF0:
         sta     PlayerLocalX                    ; 9DF9 85 44                    .D
         lda     #$05                            ; 9DFB A9 05                    ..
         sta     PlayerLocalY                    ; 9DFD 85 45                    .E
-        jsr     UpperFixedEngine_Entry_D210     ; 9DFF 20 10 D2                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; 9DFF 20 10 D2                  ..
         jsr     EffectCallback_PreserveDdAroundAea6; 9E02 20 BC A6               ..
         ldx     #$01                            ; 9E05 A2 01                    ..
         lda     #$1B                            ; 9E07 A9 1B                    ..
@@ -1743,7 +1743,7 @@ ItemEffectInventory_Branch_9E55:
         rts                                     ; 9E55 60                       `
 ; ----------------------------------------------------------------------------
 EffectCallback_EnterSubmap00At051C:
-        jsr     UpperFixedEngine_Entry_D210     ; 9E56 20 10 D2                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; 9E56 20 10 D2                  ..
         lda     #$00                            ; 9E59 A9 00                    ..
         sta     CurrentSubmapNumber             ; 9E5B 85 64                    .d
         lda     #$05                            ; 9E5D A9 05                    ..
@@ -1762,7 +1762,7 @@ EffectCallback_EnterSubmap00At051C:
         ora     #$03                            ; 9E77 09 03                    ..
         sta     $7006,x                         ; 9E79 9D 06 70                 ..p
         jsr     EffectCallback_Preserve0001AndInvokeLookup43; 9E7C 20 C9 A4      ..
-        jmp     UpperFixedEngine_Entry_C5BF     ; 9E7F 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; 9E7F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_ProcessLookup74Gate:
         lda     #$74                            ; 9E82 A9 74                    .t
@@ -2118,7 +2118,7 @@ EffectCallback_RunA66AThenEnterSubmap01At040C:
         pha                                     ; A0A7 48                       H
         lda     $E1                             ; A0A8 A5 E1                    ..
         pha                                     ; A0AA 48                       H
-        jsr     UpperFixedEngine_Entry_D214     ; A0AB 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; A0AB 20 14 D2                 ..
         brk                                     ; A0AE 00                       .
         db   $05,$8F                         ; A0AF 05 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -2157,11 +2157,11 @@ ItemEffectInventory_Branch_A0CE:
         ldx     #$01                            ; A0EC A2 01                    ..
         lda     #$22                            ; A0EE A9 22                    ."
         sta     $7046,x                         ; A0F0 9D 46 70                 .Fp
-        jsr     UpperFixedEngine_Entry_D214     ; A0F3 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; A0F3 20 14 D2                 ..
         jmp     EffectCallback_SetInterpreterStatus01; A0F6 4C AE B0            L..
 ; ----------------------------------------------------------------------------
 EffectCallback_EnterSubmap01At040CAfterDelay:
-        jsr     UpperFixedEngine_Entry_D214     ; A0F9 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; A0F9 20 14 D2                 ..
         jsr     EffectCallback_RunA732A738AndAdvanceTime; A0FC 20 C5 A6          ..
 EffectCallback_EnterSubmap01At040C:
         lda     #$82                            ; A0FF A9 82                    ..
@@ -2177,7 +2177,7 @@ EffectCallback_EnterSubmap01At040C:
         brk                                     ; A112 00                       .
         db   $31,$EF                         ; A113 31 EF                    1.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5BF     ; A115 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; A115 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_AdjustPackedNibbleState628F:
         lda     $628F                           ; A118 AD 8F 62                 ..b
@@ -2329,7 +2329,7 @@ ItemEffectInventory_Branch_A209:
         rts                                     ; A20B 60                       `
 ; ----------------------------------------------------------------------------
 EffectCallback_WaitAndSetSlot2Command11:
-        jsr     UpperFixedEngine_Entry_D218     ; A20C 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; A20C 20 18 D2                 ..
         brk                                     ; A20F 00                       .
         db   $05,$CB,$01                     ; A210 05 CB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -2753,12 +2753,12 @@ EffectCallback_SetStatus01ThenWaitLongWithCurrentSlot11:
 EffectCallback_SetCurrentSlotCommand11AndWaitLong:
         jsr     EffectCallback_SetCurrentSlotCommand11; A48C 20 9E A4            ..
         jsr     EffectCallback_SetInterpreterStatus01; A48F 20 AE B0             ..
-        jmp     UpperFixedEngine_Entry_D218     ; A492 4C 18 D2                 L..
+        jmp     WaitForButtonStateOneEightyFrames; A492 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A495:
         jsr     EffectCallback_SetCurrentSlotCommand11; A495 20 9E A4            ..
         jsr     EffectCallback_SetInterpreterStatus01; A498 20 AE B0             ..
-        jmp     UpperFixedEngine_Entry_D210     ; A49B 4C 10 D2                 L..
+        jmp     WaitForButtonStateSixtyFrames   ; A49B 4C 10 D2                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_SetCurrentSlotCommand11:
         ldx     $E8                             ; A49E A6 E8                    ..
@@ -2795,7 +2795,7 @@ EffectCallback_RunLookup43ThenWaitForInput:
         db   $42,$3B                         ; A4C1 42 3B                    B;
 ; ----------------------------------------------------------------------------
         jsr     WaitForFreshButtonPress         ; A4C3 20 CC C8                  ..
-        jmp     UpperFixedEngine_Entry_D1F3     ; A4C6 4C F3 D1                 L..
+        jmp     StopMapCue                      ; A4C6 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_Preserve0001AndInvokeLookup43:
         lda     $00                             ; A4C9 A5 00                    ..
@@ -3096,7 +3096,7 @@ EffectCallback_UseFacingWithHighBitAndRefreshDdScene:
         ora     #$80                            ; A687 09 80                    ..
 ItemEffectInventory_Branch_A689:
         sta     $DD                             ; A689 85 DD                    ..
-        jsr     UpperFixedEngine_Entry_D210     ; A68B 20 10 D2                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; A68B 20 10 D2                  ..
         jsr     EffectCallback_PreserveDdAroundAea6; A68E 20 BC A6               ..
         jmp     EffectCallback_RunLookup43RefreshAndResumeRendering; A691 4C A9 A6L..
 ; ----------------------------------------------------------------------------
@@ -3120,7 +3120,7 @@ EffectCallback_RunLookup43RefreshAndResumeRendering:
         db   $05,$6F                         ; A6AF 05 6F                    .o
 ; ----------------------------------------------------------------------------
         jsr     EffectCallback_RunBrk079fAnd099f; A6B1 20 3F B0                  ?.
-        jmp     UpperFixedEngine_Entry_C5BF     ; A6B4 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; A6B4 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_InvokeLookup07:
         lda     #$07                            ; A6B7 A9 07                    ..
@@ -3208,7 +3208,7 @@ EffectCallback_FadePaletteToBlack:
         brk                                     ; A732 00                       .
         db   $04,$9F                         ; A733 04 9F                    ..
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5C5     ; A735 4C C5 C5                 L..
+        jmp     FadePaletteFromBlack            ; A735 4C C5 C5                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_TriggerFlag1CInChapter5Map12:
         lda     SaveCurrentChapterMinus1        ; A738 AD 5A 61                 .Za
@@ -3338,7 +3338,7 @@ ItemEffectInventory_Branch_A7A8:
         brk                                     ; A7E0 00                       .
         db   $10,$3F                         ; A7E1 10 3F                    .?
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_E52C     ; A7E3 20 2C E5                  ,.
+        jsr     ClampPartyGoldTo9999999         ; A7E3 20 2C E5                  ,.
         brk                                     ; A7E6 00                       .
         db   $8D,$3B                         ; A7E7 8D 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -3795,7 +3795,7 @@ EffectCallback_RunBrk007fThenStatusC0:
         jmp     ItemEffectInventory_Branch_B0B2 ; AA71 4C B2 B0                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_WaitShortThenRunBrk0Adf:
-        jsr     UpperFixedEngine_Entry_D214     ; AA74 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AA74 20 14 D2                 ..
         brk                                     ; AA77 00                       .
         db   $0A,$DF                         ; AA78 0A DF                    ..
 ; ----------------------------------------------------------------------------
@@ -3892,7 +3892,7 @@ ItemEffectInventory_Branch_AAE7:
         brk                                     ; AAEC 00                       .
         db   $07,$CF                         ; AAED 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D214     ; AAEF 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AAEF 20 14 D2                 ..
         jmp     EffectCallback_SetInterpreterStatus01; AAF2 4C AE B0            L..
 ; ----------------------------------------------------------------------------
 EffectCallback_SetFlag0C:
@@ -4050,8 +4050,8 @@ ItemEffectInventory_Branch_ABBA:
         brk                                     ; ABBA 00                       .
         db   $5D,$4B                         ; ABBB 5D 4B                    ]K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D214     ; ABBD 20 14 D2                  ..
-        jsr     UpperFixedEngine_Entry_D1F3     ; ABC0 20 F3 D1                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; ABBD 20 14 D2                 ..
+        jsr     StopMapCue                      ; ABC0 20 F3 D1                  ..
         lda     #$24                            ; ABC3 A9 24                    .$
         brk                                     ; ABC5 00                       .
         db   $07,$CF                         ; ABC6 07 CF                    ..
@@ -4758,7 +4758,7 @@ EffectCallback_SetFlag2EThenWaitShort:
         jmp     ItemEffectInventory_Branch_A495 ; AFB1 4C 95 A4                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_WaitShortThenRunBrk11Df:
-        jsr     UpperFixedEngine_Entry_D214     ; AFB4 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AFB4 20 14 D2                 ..
         brk                                     ; AFB7 00                       .
         db   $11,$DF                         ; AFB8 11 DF                    ..
 ; ----------------------------------------------------------------------------
@@ -4789,7 +4789,7 @@ EffectCallback_Copy6fe6FromEntity1To0AndRender:
         jmp     WaitForNmi                      ; AFED 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AFF0:
-        jsr     UpperFixedEngine_Entry_D214     ; AFF0 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AFF0 20 14 D2                 ..
         lda     #$00                            ; AFF3 A9 00                    ..
         sta     CurrentSubmapNumber             ; AFF5 85 64                    .d
         jsr     EffectCallback_PreserveDdAroundAea6; AFF7 20 BC A6               ..
@@ -4803,7 +4803,7 @@ ItemEffectInventory_Branch_AFF0:
         ora     #$03                            ; B007 09 03                    ..
         sta     $7000                           ; B009 8D 00 70                 ..p
         jsr     EffectCallback_Preserve0001AndInvokeLookup43; B00C 20 C9 A4      ..
-        jmp     UpperFixedEngine_Entry_C5BF     ; B00F 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; B00F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_WaitShortThenSetFlag31:
         lda     #$31                            ; B012 A9 31                    .1
@@ -4969,14 +4969,14 @@ EffectCallback_WaitShortThenSetFlagAndStatus01:
         pha                                     ; B0CE 48                       H
         tya                                     ; B0CF 98                       .
         pha                                     ; B0D0 48                       H
-        jsr     UpperFixedEngine_Entry_D214     ; B0D1 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; B0D1 20 14 D2                 ..
         jmp     ItemEffectInventory_Branch_B0DD ; B0D4 4C DD B0                 L..
 ; ----------------------------------------------------------------------------
 EffectCallback_Wait180FramesThenSetFlagAndStatus01:
         pha                                     ; B0D7 48                       H
         tya                                     ; B0D8 98                       .
         pha                                     ; B0D9 48                       H
-        jsr     UpperFixedEngine_Entry_D218     ; B0DA 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B0DA 20 18 D2                 ..
 ItemEffectInventory_Branch_B0DD:
         pla                                     ; B0DD 68                       h
         tay                                     ; B0DE A8                       .
@@ -6045,7 +6045,7 @@ ItemEffectInventory_Branch_B73D:
         brk                                     ; B740 00                       .
         db   $04,$9F                         ; B741 04 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5C5     ; B743 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; B743 20 C5 C5                  ..
         jsr     ResetDisplayState               ; B746 20 4E C5                  N.
         lda     #$43                            ; B749 A9 43                    .C
         jsr     EffectCallback_InvokeLookupWithDaPreserved; B74B 20 B5 B7        ..
@@ -6058,7 +6058,7 @@ ItemEffectInventory_Branch_B73D:
 ; ----------------------------------------------------------------------------
         jsr     ResetMapEntityMotionState       ; B757 20 01 E5                  ..
         jsr     WaitForNmi                      ; B75A 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C5BF     ; B75D 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B75D 20 BF C5                  ..
         brk                                     ; B760 00                       .
         db   $94,$2B                         ; B761 94 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -7284,7 +7284,7 @@ EffectCallback_RunTemporaryFeMapSelection:
 ItemEffectInventory_Branch_BEF6:
         jsr     EffectCallback_RunSelectionFlowMode2; BEF6 20 33 B8              3.
 ItemEffectInventory_Branch_BEF9:
-        jsr     UpperFixedEngine_Entry_D218     ; BEF9 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; BEF9 20 18 D2                 ..
         pla                                     ; BEFC 68                       h
         sta     CurrentSubmapNumber             ; BEFD 85 64                    .d
         pla                                     ; BEFF 68                       h
@@ -7336,7 +7336,7 @@ ItemEffectInventory_Branch_BF36:
         brk                                     ; BF36 00                       .
         db   $36,$2B                         ; BF37 36 2B                    6+
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D210     ; BF39 20 10 D2                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; BF39 20 10 D2                  ..
         lda     CurrentSubmapNumber             ; BF3C A5 64                    .d
         cmp     #$FE                            ; BF3E C9 FE                    ..
         beq     ItemEffectInventory_Branch_BF48 ; BF40 F0 06                    ..

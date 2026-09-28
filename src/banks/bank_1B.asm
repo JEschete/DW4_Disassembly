@@ -14,10 +14,10 @@ Bank1B_EventDirectoryTextOverlay:
 ; ----------------------------------------------------------------------------
 Bank1B_MapEventServices:
         ldy     #$01                            ; 8020 A0 01                    ..
-        jsr     MapEventText_Entry_8097         ; 8022 20 97 80                  ..
+        jsr     FindEntityInMapOverlayRecords   ; 8022 20 97 80                  ..
         bcs     MapEventText_Branch_802E        ; 8025 B0 07                    ..
         ldy     #$00                            ; 8027 A0 00                    ..
-        jsr     MapEventText_Entry_8097         ; 8029 20 97 80                  ..
+        jsr     FindEntityInMapOverlayRecords   ; 8029 20 97 80                  ..
         bcs     MapEventText_Branch_8030        ; 802C B0 02                    ..
 MapEventText_Branch_802E:
         clc                                     ; 802E 18                       .
@@ -71,7 +71,7 @@ MapEventText_Branch_8079:
         db   $93,$FB                         ; 8080 93 FB                    ..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8082:
-        jsr     UpperFixedEngine_Entry_C5C5     ; 8082 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; 8082 20 C5 C5                  ..
         pla                                     ; 8085 68                       h
         brk                                     ; 8086 00                       .
         db   $1E,$EF                         ; 8087 1E EF                    ..
@@ -89,7 +89,7 @@ MapEventText_Branch_8082:
         db   $06                             ; 8092 06                       .
         db   $00,$06,$07,$00                 ; 8093 00 06 07 00              ....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8097:
+FindEntityInMapOverlayRecords:
         ldx     #$00                            ; 8097 A2 00                    ..
 MapEventText_Branch_8099:
         lda     $05A0,x                         ; 8099 BD A0 05                 ...
@@ -114,7 +114,7 @@ MapEventText_Branch_80B8:
         clc                                     ; 80B8 18                       .
         rts                                     ; 80B9 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_80BA:
+TestMapOverlayRestrictedLocation:
         lda     CurrentMapNumber                ; 80BA A5 63                    .c
         cmp     #$43                            ; 80BC C9 43                    .C
         bne     MapEventText_Branch_80CC        ; 80BE D0 0C                    ..
@@ -141,8 +141,8 @@ MapEventText_Branch_80DE:
         clc                                     ; 80DE 18                       .
         rts                                     ; 80DF 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_80E0:
-        jsr     MapEventText_Entry_810D         ; 80E0 20 0D 81                  ..
+BuildCurrentMapOverlayRecords:
+        jsr     CollectCurrentMapOverlayRecords ; 80E0 20 0D 81                  ..
         lda     CurrentMapNumber                ; 80E3 A5 63                    .c
         cmp     #$2C                            ; 80E5 C9 2C                    .,
         beq     MapEventText_Branch_8101        ; 80E7 F0 18                    ..
@@ -169,7 +169,7 @@ MapEventText_Branch_8101:
 MapEventText_Branch_810C:
         rts                                     ; 810C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_810D:
+CollectCurrentMapOverlayRecords:
         lda     $822D                           ; 810D AD 2D 82                 .-.
         sta     $51                             ; 8110 85 51                    .Q
         lda     $822E                           ; 8112 AD 2E 82                 ...
@@ -177,11 +177,11 @@ MapEventText_Entry_810D:
         ldx     #$00                            ; 8117 A2 00                    ..
 MapEventText_Branch_8119:
         ldy     #$00                            ; 8119 A0 00                    ..
-        jsr     MapEventText_Entry_8207         ; 811B 20 07 82                  ..
+        jsr     MatchMapSubmapOverlayRecord     ; 811B 20 07 82                  ..
         bcs     MapEventText_Branch_8135        ; 811E B0 15                    ..
 MapEventText_Branch_8120:
         ldy     #$05                            ; 8120 A0 05                    ..
-        jsr     MapEventText_Entry_8207         ; 8122 20 07 82                  ..
+        jsr     MatchMapSubmapOverlayRecord     ; 8122 20 07 82                  ..
         bcs     MapEventText_Branch_8142        ; 8125 B0 1B                    ..
 MapEventText_Branch_8127:
         lda     $51                             ; 8127 A5 51                    .Q
@@ -194,19 +194,19 @@ MapEventText_Branch_8127:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8135:
         ldy     #$02                            ; 8135 A0 02                    ..
-        jsr     MapEventText_Entry_814F         ; 8137 20 4F 81                  O.
+        jsr     CopyMapOverlayCoordinatePair    ; 8137 20 4F 81                  O.
         ldy     #$05                            ; 813A A0 05                    ..
-        jsr     MapEventText_Entry_815D         ; 813C 20 5D 81                  ].
+        jsr     CopyMapOverlayPayload           ; 813C 20 5D 81                  ].
         jmp     MapEventText_Branch_8120        ; 813F 4C 20 81                 L .
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8142:
         ldy     #$07                            ; 8142 A0 07                    ..
-        jsr     MapEventText_Entry_814F         ; 8144 20 4F 81                  O.
+        jsr     CopyMapOverlayCoordinatePair    ; 8144 20 4F 81                  O.
         ldy     #$00                            ; 8147 A0 00                    ..
-        jsr     MapEventText_Entry_815D         ; 8149 20 5D 81                  ].
+        jsr     CopyMapOverlayPayload           ; 8149 20 5D 81                  ].
         jmp     MapEventText_Branch_8127        ; 814C 4C 27 81                 L'.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_814F:
+CopyMapOverlayCoordinatePair:
         lda     ($51),y                         ; 814F B1 51                    .Q
         sta     $05A0,x                         ; 8151 9D A0 05                 ...
         iny                                     ; 8154 C8                       .
@@ -216,7 +216,7 @@ MapEventText_Entry_814F:
         inx                                     ; 815B E8                       .
         rts                                     ; 815C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_815D:
+CopyMapOverlayPayload:
         lda     ($51),y                         ; 815D B1 51                    .Q
         sta     $05A0,x                         ; 815F 9D A0 05                 ...
         iny                                     ; 8162 C8                       .
@@ -224,20 +224,20 @@ MapEventText_Entry_815D:
         cmp     #$45                            ; 8164 C9 45                    .E
         bne     MapEventText_Branch_8170        ; 8166 D0 08                    ..
         lda     ($51),y                         ; 8168 B1 51                    .Q
-        jsr     MapEventText_Entry_81CB         ; 816A 20 CB 81                  ..
+        jsr     ResolveOverlayMapVariant        ; 816A 20 CB 81                  ..
         jmp     MapEventText_Branch_8188        ; 816D 4C 88 81                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8170:
         cmp     #$38                            ; 8170 C9 38                    .8
         bne     MapEventText_Branch_817A        ; 8172 D0 06                    ..
-        jsr     MapEventText_Entry_81ED         ; 8174 20 ED 81                  ..
+        jsr     ResolveOverlayTileVariant       ; 8174 20 ED 81                  ..
         jmp     MapEventText_Branch_8188        ; 8177 4C 88 81                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_817A:
         cmp     #$43                            ; 817A C9 43                    .C
         bne     MapEventText_Branch_8186        ; 817C D0 08                    ..
         lda     ($51),y                         ; 817E B1 51                    .Q
-        jsr     MapEventText_Entry_81FA         ; 8180 20 FA 81                  ..
+        jsr     ResolveOverlaySubmapVariant     ; 8180 20 FA 81                  ..
         jmp     MapEventText_Branch_8188        ; 8183 4C 88 81                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8186:
@@ -283,7 +283,7 @@ MapEventText_Branch_81BC:
 MapEventText_Branch_81C8:
         jmp     MapEventText_Branch_81C8        ; 81C8 4C C8 81                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_81CB:
+ResolveOverlayMapVariant:
         cmp     #$05                            ; 81CB C9 05                    ..
         bne     MapEventText_Branch_81DC        ; 81CD D0 0D                    ..
         lda     $62AA                           ; 81CF AD AA 62                 ..b
@@ -310,7 +310,7 @@ MapEventText_Branch_81EA:
 MapEventText_Branch_81EC:
         rts                                     ; 81EC 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_81ED:
+ResolveOverlayTileVariant:
         lda     $62AA                           ; 81ED AD AA 62                 ..b
         asl     a                               ; 81F0 0A                       .
         asl     a                               ; 81F1 0A                       .
@@ -321,7 +321,7 @@ MapEventText_Entry_81ED:
 MapEventText_Branch_81F9:
         rts                                     ; 81F9 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_81FA:
+ResolveOverlaySubmapVariant:
         cmp     #$00                            ; 81FA C9 00                    ..
         bne     MapEventText_Branch_8206        ; 81FC D0 08                    ..
         brk                                     ; 81FE 00                       .
@@ -332,7 +332,7 @@ MapEventText_Entry_81FA:
 MapEventText_Branch_8206:
         rts                                     ; 8206 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8207:
+MatchMapSubmapOverlayRecord:
         lda     ($51),y                         ; 8207 B1 51                    .Q
         cmp     #$FF                            ; 8209 C9 FF                    ..
         beq     MapEventText_Branch_8227        ; 820B F0 1A                    ..
@@ -342,7 +342,7 @@ MapEventText_Entry_8207:
         cmp     #$45                            ; 8212 C9 45                    .E
         bne     MapEventText_Branch_821E        ; 8214 D0 08                    ..
         lda     ($51),y                         ; 8216 B1 51                    .Q
-        jsr     MapEventText_Entry_81CB         ; 8218 20 CB 81                  ..
+        jsr     ResolveOverlayMapVariant        ; 8218 20 CB 81                  ..
         jmp     MapEventText_Branch_8220        ; 821B 4C 20 82                 L .
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_821E:
@@ -521,24 +521,24 @@ MapEventText_Branch_8227:
         db   $84,$29,$00,$07,$05,$82,$29,$01 ; 8706 84 29 00 07 05 82 29 01  .)....).
         db   $08,$0E,$84,$FF                 ; 870E 08 0E 84 FF              ....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8712:
-        jsr     MapEventText_Entry_8719         ; 8712 20 19 87                  ..
+RunMapGraphicsAnimationAndFinalize:
+        jsr     RunMapGraphicsAnimationLoop     ; 8712 20 19 87                  ..
         brk                                     ; 8715 00                       .
         db   $09,$8F                         ; 8716 09 8F                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; 8718 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8719:
-        jsr     MapEventText_Entry_87E9         ; 8719 20 E9 87                  ..
+RunMapGraphicsAnimationLoop:
+        jsr     InitializeMapGraphicsAnimationWorkspace; 8719 20 E9 87           ..
 MapEventText_Branch_871C:
-        jsr     MapEventText_Entry_87C0         ; 871C 20 C0 87                  ..
-        jsr     MapEventText_Entry_8728         ; 871F 20 28 87                  (.
-        jsr     MapEventText_Entry_87AE         ; 8722 20 AE 87                  ..
+        jsr     QueueFourMapGraphicsBlocks      ; 871C 20 C0 87                  ..
+        jsr     RenderMapGraphicsAnimationFrame ; 871F 20 28 87                  (.
+        jsr     AdvanceMapGraphicsAnimationPhase; 8722 20 AE 87                  ..
         jmp     MapEventText_Branch_871C        ; 8725 4C 1C 87                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8728:
-        jsr     MapEventText_Entry_877E         ; 8728 20 7E 87                  ~.
-        jsr     MapEventText_Entry_873D         ; 872B 20 3D 87                  =.
+RenderMapGraphicsAnimationFrame:
+        jsr     CopyAnimatedMapGraphicsSlices   ; 8728 20 7E 87                  ~.
+        jsr     AnimateFourMapGraphicsPoints    ; 872B 20 3D 87                  =.
         ldx     $058E                           ; 872E AE 8E 05                 ...
         lda     Bank1B_AnimationTimingValues,x  ; 8731 BD 38 87                 .8.
         tax                                     ; 8734 AA                       .
@@ -547,28 +547,28 @@ MapEventText_Entry_8728:
 Bank1B_AnimationTimingValues:
         db   $00,$14,$0F,$01,$03             ; 8738 00 14 0F 01 03           .....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_873D:
+AnimateFourMapGraphicsPoints:
         lda     $0540                           ; 873D AD 40 05                 .@.
-        jsr     MapEventText_Entry_8774         ; 8740 20 74 87                  t.
+        jsr     RenderMapGraphicsPoint          ; 8740 20 74 87                  t.
         inc     $053E                           ; 8743 EE 3E 05                 .>.
         inc     $0540                           ; 8746 EE 40 05                 .@.
         lda     $0540                           ; 8749 AD 40 05                 .@.
         dec     $0540                           ; 874C CE 40 05                 .@.
-        jsr     MapEventText_Entry_8774         ; 874F 20 74 87                  t.
+        jsr     RenderMapGraphicsPoint          ; 874F 20 74 87                  t.
         dec     $053E                           ; 8752 CE 3E 05                 .>.
         inc     $053F                           ; 8755 EE 3F 05                 .?.
         lda     $0541                           ; 8758 AD 41 05                 .A.
-        jsr     MapEventText_Entry_8774         ; 875B 20 74 87                  t.
+        jsr     RenderMapGraphicsPoint          ; 875B 20 74 87                  t.
         inc     $053E                           ; 875E EE 3E 05                 .>.
         inc     $0541                           ; 8761 EE 41 05                 .A.
         lda     $0541                           ; 8764 AD 41 05                 .A.
         dec     $0541                           ; 8767 CE 41 05                 .A.
-        jsr     MapEventText_Entry_8774         ; 876A 20 74 87                  t.
+        jsr     RenderMapGraphicsPoint          ; 876A 20 74 87                  t.
         dec     $053E                           ; 876D CE 3E 05                 .>.
         dec     $053F                           ; 8770 CE 3F 05                 .?.
         rts                                     ; 8773 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8774:
+RenderMapGraphicsPoint:
         ldx     $053E                           ; 8774 AE 3E 05                 .>.
         ldy     $053F                           ; 8777 AC 3F 05                 .?.
         brk                                     ; 877A 00                       .
@@ -576,7 +576,7 @@ MapEventText_Entry_8774:
 ; ----------------------------------------------------------------------------
         rts                                     ; 877D 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_877E:
+CopyAnimatedMapGraphicsSlices:
         lda     $57                             ; 877E A5 57                    .W
         and     #$01                            ; 8780 29 01                    ).
         asl     a                               ; 8782 0A                       .
@@ -610,7 +610,7 @@ MapEventText_Branch_87A0:
         bne     MapEventText_Branch_87A0        ; 87AB D0 F3                    ..
         rts                                     ; 87AD 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_87AE:
+AdvanceMapGraphicsAnimationPhase:
         lda     $56                             ; 87AE A5 56                    .V
         clc                                     ; 87B0 18                       .
         adc     #$08                            ; 87B1 69 08                    i.
@@ -624,17 +624,17 @@ MapEventText_Entry_87AE:
 MapEventText_Branch_87BF:
         rts                                     ; 87BF 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_87C0:
+QueueFourMapGraphicsBlocks:
         lda     #$00                            ; 87C0 A9 00                    ..
         sta     $55                             ; 87C2 85 55                    .U
 MapEventText_Branch_87C4:
-        jsr     MapEventText_Entry_8853         ; 87C4 20 53 88                  S.
-        jsr     MapEventText_Entry_887D         ; 87C7 20 7D 88                  }.
+        jsr     SelectMapGraphicsPpuAddress     ; 87C4 20 53 88                  S.
+        jsr     AppendMapGraphicsPpuBlock       ; 87C7 20 7D 88                  }.
         jsr     RequestPpuUpdateAndWait         ; 87CA 20 2D C6                  -.
-        jsr     MapEventText_Entry_87D3         ; 87CD 20 D3 87                  ..
+        jsr     AdvanceMapGraphicsSourcePage    ; 87CD 20 D3 87                  ..
         jmp     MapEventText_Branch_87C4        ; 87D0 4C C4 87                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_87D3:
+AdvanceMapGraphicsSourcePage:
         lda     $53                             ; 87D3 A5 53                    .S
         clc                                     ; 87D5 18                       .
         adc     #$40                            ; 87D6 69 40                    i@
@@ -651,7 +651,7 @@ MapEventText_Branch_87DE:
 MapEventText_Branch_87E8:
         rts                                     ; 87E8 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_87E9:
+InitializeMapGraphicsAnimationWorkspace:
         lda     Bank1B_GraphicsPagePointers,x   ; 87E9 BD A8 88                 ...
         sta     $53                             ; 87EC 85 53                    .S
         lda     $88A9,x                         ; 87EE BD A9 88                 ...
@@ -715,7 +715,7 @@ MapEventText_Branch_882D:
         bcc     MapEventText_Branch_882D        ; 8850 90 DB                    ..
         rts                                     ; 8852 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_8853:
+SelectMapGraphicsPpuAddress:
         lda     $55                             ; 8853 A5 55                    .U
         asl     a                               ; 8855 0A                       .
         clc                                     ; 8856 18                       .
@@ -736,7 +736,7 @@ MapEventText_Entry_8853:
         sta     $6F41,x                         ; 8879 9D 41 6F                 .Ao
         rts                                     ; 887C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_887D:
+AppendMapGraphicsPpuBlock:
         ldx     $050A                           ; 887D AE 0A 05                 ...
         lda     $52                             ; 8880 A5 52                    .R
         ora     #$80                            ; 8882 09 80                    ..
@@ -764,7 +764,7 @@ Bank1B_GraphicsPagePointers:
         db   $35                             ; 88A8 35                       5
         db   $89,$35,$8D                     ; 88A9 89 35 8D                 .5.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_88AC:
+UploadCurrentMapGraphicsPage:
         ldx     #$00                            ; 88AC A2 00                    ..
 MapEventText_Branch_88AE:
         lda     Bank1B_MapGraphicsRouting,x     ; 88AE BD 16 89                 ...
@@ -1091,22 +1091,22 @@ Bank1B_GraphicsPageB:
         db   $02,$02,$02,$82,$02,$82,$C0,$00 ; 9125 02 02 02 82 02 82 C0 00  ........
         db   $34,$34,$34,$B4,$14,$94,$C4,$00 ; 912D 34 34 34 B4 14 94 C4 00  444.....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9135:
-        jsr     MapEventText_Entry_92B3         ; 9135 20 B3 92                  ..
-        jsr     MapEventText_Entry_9292         ; 9138 20 92 92                  ..
-        jsr     MapEventText_Entry_9227         ; 913B 20 27 92                  '.
-        jsr     MapEventText_Entry_924B         ; 913E 20 4B 92                  K.
+RunMapSpriteMotionAnimation:
+        jsr     UploadMapAnimationSpriteGraphics; 9135 20 B3 92                  ..
+        jsr     InitializeMapAnimationOamRange  ; 9138 20 92 92                  ..
+        jsr     MoveTwelveSpritesVertically     ; 913B 20 27 92                  '.
+        jsr     QueueMapAnimationBlankRows      ; 913E 20 4B 92                  K.
         jsr     WaitForNmi                      ; 9141 20 74 FF                  t.
-        jsr     MapEventText_Entry_91A8         ; 9144 20 A8 91                  ..
+        jsr     RunMapSpriteJitterPhase         ; 9144 20 A8 91                  ..
         brk                                     ; 9147 00                       .
         db   $0A,$FB                         ; 9148 0A FB                    ..
 ; ----------------------------------------------------------------------------
         lda     #$10                            ; 914A A9 10                    ..
         sta     $16                             ; 914C 85 16                    ..
 MapEventText_Branch_914E:
-        jsr     MapEventText_Entry_917E         ; 914E 20 7E 91                  ~.
+        jsr     AdvanceMapSpriteMotionFrame     ; 914E 20 7E 91                  ~.
         jsr     WaitForNmi                      ; 9151 20 74 FF                  t.
-        jsr     MapEventText_Entry_917E         ; 9154 20 7E 91                  ~.
+        jsr     AdvanceMapSpriteMotionFrame     ; 9154 20 7E 91                  ~.
         brk                                     ; 9157 00                       .
         db   $AF,$FB                         ; 9158 AF FB                    ..
 ; ----------------------------------------------------------------------------
@@ -1129,17 +1129,17 @@ MapEventText_Branch_9175:
         bcc     MapEventText_Branch_914E        ; 9179 90 D3                    ..
         jmp     WaitForNmi                      ; 917B 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_917E:
+AdvanceMapSpriteMotionFrame:
         lda     $52                             ; 917E A5 52                    .R
         cmp     #$60                            ; 9180 C9 60                    .`
         bcs     MapEventText_Branch_918A        ; 9182 B0 06                    ..
-        jsr     MapEventText_Entry_918E         ; 9184 20 8E 91                  ..
-        jsr     MapEventText_Entry_924B         ; 9187 20 4B 92                  K.
+        jsr     MoveMapSpriteViewportUpLeft     ; 9184 20 8E 91                  ..
+        jsr     QueueMapAnimationBlankRows      ; 9187 20 4B 92                  K.
 MapEventText_Branch_918A:
-        jsr     MapEventText_Entry_93BF         ; 918A 20 BF 93                  ..
+        jsr     UpdateMapAnimationLatePhase     ; 918A 20 BF 93                  ..
         rts                                     ; 918D 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_918E:
+MoveMapSpriteViewportUpLeft:
         lda     $0508                           ; 918E AD 08 05                 ...
         sec                                     ; 9191 38                       8
         sbc     #$08                            ; 9192 E9 08                    ..
@@ -1153,20 +1153,20 @@ MapEventText_Branch_91A1:
         dec     $0509                           ; 91A4 CE 09 05                 ...
         rts                                     ; 91A7 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_91A8:
-        jsr     MapEventText_Entry_9323         ; 91A8 20 23 93                  #.
-        jsr     MapEventText_Entry_9209         ; 91AB 20 09 92                  ..
-        jsr     MapEventText_Entry_91C3         ; 91AE 20 C3 91                  ..
-        jsr     MapEventText_Entry_91E6         ; 91B1 20 E6 91                  ..
-        jsr     MapEventText_Entry_932D         ; 91B4 20 2D 93                  -.
+RunMapSpriteJitterPhase:
+        jsr     InitializeMapAnimationFrameZero ; 91A8 20 23 93                  #.
+        jsr     UpdateMapSpriteAnimationTiming  ; 91AB 20 09 92                  ..
+        jsr     ApplyRandomHorizontalSpriteJitter; 91AE 20 C3 91                 ..
+        jsr     MoveTwelveSpritesHorizontally   ; 91B1 20 E6 91                  ..
+        jsr     InitializeMapAnimationFrameTwo  ; 91B4 20 2D 93                  -.
         jsr     WaitForNmi                      ; 91B7 20 74 FF                  t.
         inc     $52                             ; 91BA E6 52                    .R
         lda     $52                             ; 91BC A5 52                    .R
         cmp     #$50                            ; 91BE C9 50                    .P
-        bcc     MapEventText_Entry_91A8         ; 91C0 90 E6                    ..
+        bcc     RunMapSpriteJitterPhase         ; 91C0 90 E6                    ..
         rts                                     ; 91C2 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_91C3:
+ApplyRandomHorizontalSpriteJitter:
         lda     $52                             ; 91C3 A5 52                    .R
         lsr     a                               ; 91C5 4A                       J
         bcs     MapEventText_Branch_91D9        ; 91C6 B0 11                    ..
@@ -1189,7 +1189,7 @@ MapEventText_Branch_91D9:
 ; ----------------------------------------------------------------------------
         rts                                     ; 91E5 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_91E6:
+MoveTwelveSpritesHorizontally:
         ldy     $53                             ; 91E6 A4 53                    .S
         lda     $52                             ; 91E8 A5 52                    .R
         lsr     a                               ; 91EA 4A                       J
@@ -1214,10 +1214,10 @@ MapEventText_Branch_91F7:
         bcc     MapEventText_Branch_91F7        ; 9206 90 EF                    ..
         rts                                     ; 9208 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9209:
-        jsr     MapEventText_Entry_9227         ; 9209 20 27 92                  '.
-        jsr     MapEventText_Entry_9241         ; 920C 20 41 92                  A.
-        jsr     MapEventText_Entry_924B         ; 920F 20 4B 92                  K.
+UpdateMapSpriteAnimationTiming:
+        jsr     MoveTwelveSpritesVertically     ; 9209 20 27 92                  '.
+        jsr     SubtractMapAnimationScrollDelta ; 920C 20 41 92                  A.
+        jsr     QueueMapAnimationBlankRows      ; 920F 20 4B 92                  K.
         lda     $52                             ; 9212 A5 52                    .R
         lsr     a                               ; 9214 4A                       J
         lsr     a                               ; 9215 4A                       J
@@ -1233,7 +1233,7 @@ MapEventText_Branch_9221:
 Bank1B_AnimationSoundIds:
         db   $08,$06,$03,$00,$00             ; 9222 08 06 03 00 00           .....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9227:
+MoveTwelveSpritesVertically:
         lda     $52                             ; 9227 A5 52                    .R
         cmp     #$50                            ; 9229 C9 50                    .P
         bcs     MapEventText_Branch_9240        ; 922B B0 13                    ..
@@ -1252,14 +1252,14 @@ MapEventText_Branch_922F:
 MapEventText_Branch_9240:
         rts                                     ; 9240 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9241:
+SubtractMapAnimationScrollDelta:
         lda     $0509                           ; 9241 AD 09 05                 ...
         sec                                     ; 9244 38                       8
         sbc     $51                             ; 9245 E5 51                    .Q
         sta     $0509                           ; 9247 8D 09 05                 ...
         rts                                     ; 924A 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_924B:
+QueueMapAnimationBlankRows:
         lda     $0509                           ; 924B AD 09 05                 ...
         and     #$07                            ; 924E 29 07                    ).
         cmp     #$07                            ; 9250 C9 07                    ..
@@ -1294,7 +1294,7 @@ MapEventText_Branch_927E:
 MapEventText_Branch_9291:
         rts                                     ; 9291 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9292:
+InitializeMapAnimationOamRange:
         ldx     #$01                            ; 9292 A2 01                    ..
         stx     $51                             ; 9294 86 51                    .Q
         dex                                     ; 9296 CA                       .
@@ -1315,7 +1315,7 @@ MapEventText_Branch_92A0:
         bcc     MapEventText_Branch_92A0        ; 92B0 90 EE                    ..
         rts                                     ; 92B2 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_92B3:
+UploadMapAnimationSpriteGraphics:
         lda     #$D0                            ; 92B3 A9 D0                    ..
         sta     $49                             ; 92B5 85 49                    .I
         lda     #$07                            ; 92B7 A9 07                    ..
@@ -1327,7 +1327,7 @@ MapEventText_Entry_92B3:
         lda     #$20                            ; 92C5 A9 20                    .
         sta     $55                             ; 92C7 85 55                    .U
 MapEventText_Branch_92C9:
-        jsr     MapEventText_Entry_92E5         ; 92C9 20 E5 92                  ..
+        jsr     UploadNextMapAnimationGraphicsBlock; 92C9 20 E5 92               ..
         dec     $55                             ; 92CC C6 55                    .U
         bne     MapEventText_Branch_92C9        ; 92CE D0 F9                    ..
         lda     #$30                            ; 92D0 A9 30                    .0
@@ -1336,10 +1336,10 @@ MapEventText_Branch_92C9:
         sta     $0610                           ; 92D7 8D 10 06                 ...
         lda     #$17                            ; 92DA A9 17                    ..
         sta     $0611                           ; 92DC 8D 11 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; 92DF 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 92DF 20 B9 C5                  ..
         jmp     WaitForNmi                      ; 92E2 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_92E5:
+UploadNextMapAnimationGraphicsBlock:
         lda     $4A                             ; 92E5 A5 4A                    .J
         ora     #$80                            ; 92E7 09 80                    ..
         sta     $0300                           ; 92E9 8D 00 03                 ...
@@ -1377,16 +1377,16 @@ Bank1B_GraphicsSourcePointer:
         db   $8F                             ; 9321 8F                       .
         db   $96                             ; 9322 96                       .
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9323:
+InitializeMapAnimationFrameZero:
         lda     #$00                            ; 9323 A9 00                    ..
         sta     $56                             ; 9325 85 56                    .V
-        jsr     MapEventText_Entry_9331         ; 9327 20 31 93                  1.
+        jsr     UpdateMapAnimationFrame         ; 9327 20 31 93                  1.
         jmp     WaitForNmi                      ; 932A 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_932D:
+InitializeMapAnimationFrameTwo:
         lda     #$02                            ; 932D A9 02                    ..
         sta     $56                             ; 932F 85 56                    .V
-MapEventText_Entry_9331:
+UpdateMapAnimationFrame:
         lda     $52                             ; 9331 A5 52                    .R
         cmp     #$40                            ; 9333 C9 40                    .@
         bcc     MapEventText_Branch_9351        ; 9335 90 1A                    ..
@@ -1403,7 +1403,7 @@ MapEventText_Entry_9331:
         pla                                     ; 9349 68                       h
         tax                                     ; 934A AA                       .
         lda     $93AF,x                         ; 934B BD AF 93                 ...
-        jsr     MapEventText_Entry_947E         ; 934E 20 7E 94                  ~.
+        jsr     BuildMapAnimationSpriteLayout   ; 934E 20 7E 94                  ~.
 MapEventText_Branch_9351:
         lda     $52                             ; 9351 A5 52                    .R
         cmp     #$48                            ; 9353 C9 48                    .H
@@ -1436,7 +1436,7 @@ Bank1B_AnimationFrameTablesA:
         db   $00,$00,$00,$00,$01,$01,$02,$02 ; 93AF 00 00 00 00 01 01 02 02  ........
         db   $03,$03,$04,$04,$04,$0A,$0A,$09 ; 93B7 03 03 04 04 04 0A 0A 09  ........
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_93BF:
+UpdateMapAnimationLatePhase:
         lda     $52                             ; 93BF A5 52                    .R
         cmp     #$56                            ; 93C1 C9 56                    .V
         bcs     MapEventText_Branch_93F8        ; 93C3 B0 33                    .3
@@ -1462,8 +1462,8 @@ MapEventText_Entry_93BF:
         sbc     $5A                             ; 93E5 E5 5A                    .Z
         sta     $58                             ; 93E7 85 58                    .X
         pla                                     ; 93E9 68                       h
-        jsr     MapEventText_Entry_947E         ; 93EA 20 7E 94                  ~.
-        jsr     MapEventText_Entry_9449         ; 93ED 20 49 94                  I.
+        jsr     BuildMapAnimationSpriteLayout   ; 93EA 20 7E 94                  ~.
+        jsr     OffsetTwelveAnimationSprites    ; 93ED 20 49 94                  I.
         pla                                     ; 93F0 68                       h
         tay                                     ; 93F1 A8                       .
         ldx     $9478,y                         ; 93F2 BE 78 94                 .x.
@@ -1520,8 +1520,8 @@ MapEventText_Branch_9432:
         sbc     $5A                             ; 9441 E5 5A                    .Z
         sta     $58                             ; 9443 85 58                    .X
         pla                                     ; 9445 68                       h
-        jsr     MapEventText_Entry_947E         ; 9446 20 7E 94                  ~.
-MapEventText_Entry_9449:
+        jsr     BuildMapAnimationSpriteLayout   ; 9446 20 7E 94                  ~.
+OffsetTwelveAnimationSprites:
         ldx     #$00                            ; 9449 A2 00                    ..
 MapEventText_Branch_944B:
         lda     $0200,x                         ; 944B BD 00 02                 ...
@@ -1547,7 +1547,7 @@ Bank1B_AnimationFrameTablesB:
         db   $09,$08,$07,$04,$05,$06         ; 9472 09 08 07 04 05 06        ......
         db   $04,$03,$03,$02,$02,$02         ; 9478 04 03 03 02 02 02        ......
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_947E:
+BuildMapAnimationSpriteLayout:
         cmp     #$04                            ; 947E C9 04                    ..
         bcs     MapEventText_Branch_9485        ; 9480 B0 03                    ..
         jmp     MapEventText_Branch_94FE        ; 9482 4C FE 94                 L..
@@ -1568,11 +1568,11 @@ MapEventText_Branch_9485:
         lda     $58                             ; 9498 A5 58                    .X
         sta     $55                             ; 949A 85 55                    .U
         ldy     #$00                            ; 949C A0 00                    ..
-        jsr     MapEventText_Entry_94AA         ; 949E 20 AA 94                  ..
-        jsr     MapEventText_Entry_94AA         ; 94A1 20 AA 94                  ..
-        jsr     MapEventText_Entry_94AA         ; 94A4 20 AA 94                  ..
-        jsr     MapEventText_Entry_94AA         ; 94A7 20 AA 94                  ..
-MapEventText_Entry_94AA:
+        jsr     BuildTwentySpriteAnimationRow   ; 949E 20 AA 94                  ..
+        jsr     BuildTwentySpriteAnimationRow   ; 94A1 20 AA 94                  ..
+        jsr     BuildTwentySpriteAnimationRow   ; 94A4 20 AA 94                  ..
+        jsr     BuildTwentySpriteAnimationRow   ; 94A7 20 AA 94                  ..
+BuildTwentySpriteAnimationRow:
         lda     $55                             ; 94AA A5 55                    .U
         sta     $0230,y                         ; 94AC 99 30 02                 .0.
         sta     $0234,y                         ; 94AF 99 34 02                 .4.
@@ -1589,18 +1589,18 @@ MapEventText_Entry_94AA:
         sta     $023F,y                         ; 94CC 99 3F 02                 .?.
         adc     #$08                            ; 94CF 69 08                    i.
         sta     $0243,y                         ; 94D1 99 43 02                 .C.
-        jsr     MapEventText_Entry_94EB         ; 94D4 20 EB 94                  ..
-        jsr     MapEventText_Entry_94EB         ; 94D7 20 EB 94                  ..
-        jsr     MapEventText_Entry_94EB         ; 94DA 20 EB 94                  ..
-        jsr     MapEventText_Entry_94EB         ; 94DD 20 EB 94                  ..
-        jsr     MapEventText_Entry_94EB         ; 94E0 20 EB 94                  ..
+        jsr     CopyAnimationLayoutSprite       ; 94D4 20 EB 94                  ..
+        jsr     CopyAnimationLayoutSprite       ; 94D7 20 EB 94                  ..
+        jsr     CopyAnimationLayoutSprite       ; 94DA 20 EB 94                  ..
+        jsr     CopyAnimationLayoutSprite       ; 94DD 20 EB 94                  ..
+        jsr     CopyAnimationLayoutSprite       ; 94E0 20 EB 94                  ..
         lda     $55                             ; 94E3 A5 55                    .U
         clc                                     ; 94E5 18                       .
         adc     #$08                            ; 94E6 69 08                    i.
         sta     $55                             ; 94E8 85 55                    .U
         rts                                     ; 94EA 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_94EB:
+CopyAnimationLayoutSprite:
         lda     Bank1B_SpriteLayouts,x          ; 94EB BD E0 95                 ...
         bne     MapEventText_Branch_94F5        ; 94EE D0 05                    ..
         lda     #$F7                            ; 94F0 A9 F7                    ..
@@ -1616,7 +1616,7 @@ MapEventText_Branch_94F5:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_94FE:
         pha                                     ; 94FE 48                       H
-        jsr     MapEventText_Entry_95B9         ; 94FF 20 B9 95                  ..
+        jsr     HideMapAnimationOamRange        ; 94FF 20 B9 95                  ..
         pla                                     ; 9502 68                       h
         cmp     #$00                            ; 9503 C9 00                    ..
         bne     MapEventText_Branch_951E        ; 9505 D0 17                    ..
@@ -1667,9 +1667,9 @@ MapEventText_Branch_9559:
         sta     $55                             ; 9561 85 55                    .U
         ldy     #$30                            ; 9563 A0 30                    .0
         ldx     #$02                            ; 9565 A2 02                    ..
-        jsr     MapEventText_Entry_956D         ; 9567 20 6D 95                  m.
-        jsr     MapEventText_Entry_956D         ; 956A 20 6D 95                  m.
-MapEventText_Entry_956D:
+        jsr     BuildWideAnimationSpriteRow     ; 9567 20 6D 95                  m.
+        jsr     BuildWideAnimationSpriteRow     ; 956A 20 6D 95                  m.
+BuildWideAnimationSpriteRow:
         lda     $57                             ; 956D A5 57                    .W
         adc     #$08                            ; 956F 69 08                    i.
         sta     $56                             ; 9571 85 56                    .V
@@ -1681,23 +1681,23 @@ MapEventText_Branch_9576:
         sta     $55                             ; 957A 85 55                    .U
         ldy     #$30                            ; 957C A0 30                    .0
         ldx     #$0B                            ; 957E A2 0B                    ..
-        jsr     MapEventText_Entry_9586         ; 9580 20 86 95                  ..
-        jsr     MapEventText_Entry_9586         ; 9583 20 86 95                  ..
-MapEventText_Entry_9586:
+        jsr     BuildCompactAnimationSpriteRow  ; 9580 20 86 95                  ..
+        jsr     BuildCompactAnimationSpriteRow  ; 9583 20 86 95                  ..
+BuildCompactAnimationSpriteRow:
         lda     $57                             ; 9586 A5 57                    .W
         adc     #$04                            ; 9588 69 04                    i.
         sta     $56                             ; 958A 85 56                    .V
-        jsr     MapEventText_Entry_959F         ; 958C 20 9F 95                  ..
+        jsr     WriteAnimationSpriteOam         ; 958C 20 9F 95                  ..
 MapEventText_Branch_958F:
-        jsr     MapEventText_Entry_959F         ; 958F 20 9F 95                  ..
-        jsr     MapEventText_Entry_959F         ; 9592 20 9F 95                  ..
-        jsr     MapEventText_Entry_959F         ; 9595 20 9F 95                  ..
+        jsr     WriteAnimationSpriteOam         ; 958F 20 9F 95                  ..
+        jsr     WriteAnimationSpriteOam         ; 9592 20 9F 95                  ..
+        jsr     WriteAnimationSpriteOam         ; 9595 20 9F 95                  ..
         lda     $55                             ; 9598 A5 55                    .U
         adc     #$08                            ; 959A 69 08                    i.
         sta     $55                             ; 959C 85 55                    .U
         rts                                     ; 959E 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_959F:
+WriteAnimationSpriteOam:
         lda     $55                             ; 959F A5 55                    .U
         sta     $0200,y                         ; 95A1 99 00 02                 ...
         lda     Bank1B_SpriteTileIds,x          ; 95A4 BD C9 95                 ...
@@ -1713,7 +1713,7 @@ MapEventText_Entry_959F:
         iny                                     ; 95B7 C8                       .
         rts                                     ; 95B8 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_95B9:
+HideMapAnimationOamRange:
         ldx     #$30                            ; 95B9 A2 30                    .0
         lda     #$F7                            ; 95BB A9 F7                    ..
 MapEventText_Branch_95BD:
@@ -2012,22 +2012,22 @@ Bank1B_SpriteGraphics:
         db   $41,$41,$41,$22,$02,$40,$00,$E1 ; 9E80 41 41 41 22 02 40 00 E1  AAA".@..
         db   $41,$C1,$C1,$63,$23,$06,$18     ; 9E88 41 C1 C1 63 23 06 18     A..c#..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9E8F:
+BeginScriptedGraphicsReveal:
         brk                                     ; 9E8F 00                       .
         db   $26,$CB,$80                     ; 9E90 26 CB 80                 &..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_F1BF     ; 9E93 20 BF F1                  ..
+        jsr     RunFixedGraphicsReveal          ; 9E93 20 BF F1                  ..
         rts                                     ; 9E96 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9E97:
+RunScriptedGraphicsReveal:
         ldx     #$14                            ; 9E97 A2 14                    ..
         jsr     WaitFrames                      ; 9E99 20 0C C9                  ..
         brk                                     ; 9E9C 00                       .
         db   $23,$FB                         ; 9E9D 23 FB                    #.
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_9F91         ; 9E9F 20 91 9F                  ..
+        jsr     InitializeGraphicsRevealTransfer; 9E9F 20 91 9F                  ..
 MapEventText_Branch_9EA2:
-        jsr     MapEventText_Entry_9F16         ; 9EA2 20 16 9F                  ..
+        jsr     QueueRevealGraphicsBlock        ; 9EA2 20 16 9F                  ..
         lda     $1F                             ; 9EA5 A5 1F                    ..
         ora     #$40                            ; 9EA7 09 40                    .@
         sta     $1F                             ; 9EA9 85 1F                    ..
@@ -2035,7 +2035,7 @@ MapEventText_Branch_9EA2:
         lda     $1F                             ; 9EAE A5 1F                    ..
         and     #$BF                            ; 9EB0 29 BF                    ).
         sta     $1F                             ; 9EB2 85 1F                    ..
-        jsr     MapEventText_Entry_9ED0         ; 9EB4 20 D0 9E                  ..
+        jsr     RotateRevealPaletteForFortyFrames; 9EB4 20 D0 9E                 ..
         inc     $51                             ; 9EB7 E6 51                    .Q
         lda     $51                             ; 9EB9 A5 51                    .Q
         cmp     #$05                            ; 9EBB C9 05                    ..
@@ -2054,7 +2054,7 @@ MapEventText_Branch_9EA2:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9ECF 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9ED0:
+RotateRevealPaletteForFortyFrames:
         ldx     #$28                            ; 9ED0 A2 28                    .(
 MapEventText_Branch_9ED2:
         txa                                     ; 9ED2 8A                       .
@@ -2090,10 +2090,10 @@ MapEventText_Branch_9F0D:
         bne     MapEventText_Branch_9ED2        ; 9F13 D0 BD                    ..
         rts                                     ; 9F15 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9F16:
+QueueRevealGraphicsBlock:
         lda     $51                             ; 9F16 A5 51                    .Q
         bne     MapEventText_Branch_9F1D        ; 9F18 D0 03                    ..
-        jsr     MapEventText_Entry_9F51         ; 9F1A 20 51 9F                  Q.
+        jsr     InitializeRevealPpuRows         ; 9F1A 20 51 9F                  Q.
 MapEventText_Branch_9F1D:
         ldx     $050A                           ; 9F1D AE 0A 05                 ...
         lda     #$9F                            ; 9F20 A9 9F                    ..
@@ -2124,7 +2124,7 @@ MapEventText_Branch_9F34:
 MapEventText_Branch_9F50:
         rts                                     ; 9F50 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9F51:
+InitializeRevealPpuRows:
         ldx     $050A                           ; 9F51 AE 0A 05                 ...
         lda     $1C                             ; 9F54 A5 1C                    ..
         ora     #$80                            ; 9F56 09 80                    ..
@@ -2152,14 +2152,14 @@ MapEventText_Entry_9F51:
         stx     $050A                           ; 9F8D 8E 0A 05                 ...
         rts                                     ; 9F90 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9F91:
+InitializeGraphicsRevealTransfer:
         lda     #$00                            ; 9F91 A9 00                    ..
         sta     $51                             ; 9F93 85 51                    .Q
         lda     $9FBC                           ; 9F95 AD BC 9F                 ...
         sta     $49                             ; 9F98 85 49                    .I
         lda     $9FBD                           ; 9F9A AD BD 9F                 ...
         sta     $4A                             ; 9F9D 85 4A                    .J
-        jsr     MapEventText_Entry_9FB3         ; 9F9F 20 B3 9F                  ..
+        jsr     SetGraphicsRevealOrigin         ; 9F9F 20 B3 9F                  ..
         jsr     ComputeNametableTileAddress     ; 9FA2 20 62 C6                  b.
         ldx     #$FC                            ; 9FA5 A2 FC                    ..
         stx     $52                             ; 9FA7 86 52                    .R
@@ -2171,7 +2171,7 @@ MapEventText_Entry_9F91:
         stx     $55                             ; 9FB0 86 55                    .U
         rts                                     ; 9FB2 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_9FB3:
+SetGraphicsRevealOrigin:
         lda     #$10                            ; 9FB3 A9 10                    ..
         sta     $00                           ; 9FB5 85 00                    ..
         lda     #$0C                            ; 9FB7 A9 0C                    ..
@@ -2225,7 +2225,7 @@ Bank1B_MapEventService_A0FE:
         brk                                     ; A0FE 00                       .
         db   $94,$FB                         ; A0FF 94 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_A11D         ; A101 20 1D A1                  ..
+        jsr     RunExpandingRasterWaveTransition; A101 20 1D A1                  ..
         jsr     ResetDisplayState               ; A104 20 4E C5                  N.
         brk                                     ; A107 00                       .
         db   $0A,$87                         ; A108 0A 87                    ..
@@ -2236,35 +2236,35 @@ Bank1B_MapEventService_A0FE:
         brk                                     ; A110 00                       .
         db   $3C,$EF                         ; A111 3C EF                    <.
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_A498         ; A113 20 98 A4                  ..
+        jsr     ClearTransitionNametablesAndOam ; A113 20 98 A4                  ..
         brk                                     ; A116 00                       .
         db   $09,$9F                         ; A117 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_A127         ; A119 20 27 A1                  '.
+        jsr     RunContractingRasterWaveTransition; A119 20 27 A1                '.
         rts                                     ; A11C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A11D:
-        jsr     MapEventText_Entry_A2D3         ; A11D 20 D3 A2                  ..
-        jsr     MapEventText_Entry_A29E         ; A120 20 9E A2                  ..
-        jsr     MapEventText_Entry_A137         ; A123 20 37 A1                  7.
+RunExpandingRasterWaveTransition:
+        jsr     ResetOamAndWaitForRasterFrame   ; A11D 20 D3 A2                  ..
+        jsr     InitializeRasterWaveScrollTable ; A120 20 9E A2                  ..
+        jsr     AnimateExpandingRasterWave      ; A123 20 37 A1                  7.
         rts                                     ; A126 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A127:
-        jsr     UpperFixedEngine_Entry_C5A8     ; A127 20 A8 C5                  ..
+RunContractingRasterWaveTransition:
+        jsr     ClearDisplaySuspensionFlag      ; A127 20 A8 C5                  ..
         jsr     EnableRenderingAfterVBlank      ; A12A 20 92 C5                  ..
-        jsr     MapEventText_Entry_A2D3         ; A12D 20 D3 A2                  ..
-        jsr     MapEventText_Entry_A203         ; A130 20 03 A2                  ..
-        jsr     MapEventText_Entry_A168         ; A133 20 68 A1                  h.
+        jsr     ResetOamAndWaitForRasterFrame   ; A12D 20 D3 A2                  ..
+        jsr     BuildContractingWaveScrollTable ; A130 20 03 A2                  ..
+        jsr     AnimateContractingRasterWave    ; A133 20 68 A1                  h.
         rts                                     ; A136 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A137:
-        jsr     MapEventText_Entry_A32D         ; A137 20 2D A3                  -.
-        jsr     MapEventText_Entry_A2D9         ; A13A 20 D9 A2                  ..
-        jsr     MapEventText_Entry_A194         ; A13D 20 94 A1                  ..
-        jsr     MapEventText_Entry_A2E9         ; A140 20 E9 A2                  ..
+AnimateExpandingRasterWave:
+        jsr     QueueRasterWavePpuCommand       ; A137 20 2D A3                  -.
+        jsr     LatchRasterWavePpuUpdate        ; A13A 20 D9 A2                  ..
+        jsr     RenderRasterScrollTable         ; A13D 20 94 A1                  ..
+        jsr     RotateRasterWaveTables          ; A140 20 E9 A2                  ..
         dec     $52                             ; A143 C6 52                    .R
-        bne     MapEventText_Entry_A137         ; A145 D0 F0                    ..
-        jsr     MapEventText_Entry_A380         ; A147 20 80 A3                  ..
+        bne     AnimateExpandingRasterWave      ; A145 D0 F0                    ..
+        jsr     ApplyForwardRasterWaveOffsets   ; A147 20 80 A3                  ..
         lda     $53                             ; A14A A5 53                    .S
         cmp     #$FF                            ; A14C C9 FF                    ..
         bne     MapEventText_Branch_A154        ; A14E D0 04                    ..
@@ -2281,17 +2281,17 @@ MapEventText_Branch_A15F:
         sta     $53                             ; A15F 85 53                    .S
         sta     $52                             ; A161 85 52                    .R
         dec     $51                             ; A163 C6 51                    .Q
-        bne     MapEventText_Entry_A137         ; A165 D0 D0                    ..
+        bne     AnimateExpandingRasterWave      ; A165 D0 D0                    ..
         rts                                     ; A167 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A168:
-        jsr     MapEventText_Entry_A320         ; A168 20 20 A3                   .
-        jsr     MapEventText_Entry_A2D9         ; A16B 20 D9 A2                  ..
-        jsr     MapEventText_Entry_A194         ; A16E 20 94 A1                  ..
-        jsr     MapEventText_Entry_A2E9         ; A171 20 E9 A2                  ..
+AnimateContractingRasterWave:
+        jsr     SelectContractingWaveAmplitude  ; A168 20 20 A3                   .
+        jsr     LatchRasterWavePpuUpdate        ; A16B 20 D9 A2                  ..
+        jsr     RenderRasterScrollTable         ; A16E 20 94 A1                  ..
+        jsr     RotateRasterWaveTables          ; A171 20 E9 A2                  ..
         dec     $52                             ; A174 C6 52                    .R
-        bne     MapEventText_Entry_A168         ; A176 D0 F0                    ..
-        jsr     MapEventText_Entry_A3C8         ; A178 20 C8 A3                  ..
+        bne     AnimateContractingRasterWave    ; A176 D0 F0                    ..
+        jsr     ApplyReverseRasterWaveOffsets   ; A178 20 C8 A3                  ..
         lda     $51                             ; A17B A5 51                    .Q
         cmp     #$06                            ; A17D C9 06                    ..
         bcs     MapEventText_Branch_A18F        ; A17F B0 0E                    ..
@@ -2302,14 +2302,14 @@ MapEventText_Entry_A168:
 MapEventText_Branch_A188:
         sta     $52                             ; A188 85 52                    .R
         dec     $51                             ; A18A C6 51                    .Q
-        bne     MapEventText_Entry_A168         ; A18C D0 DA                    ..
+        bne     AnimateContractingRasterWave    ; A18C D0 DA                    ..
         rts                                     ; A18E 60                       `
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_A18F:
         lda     $53                             ; A18F A5 53                    .S
         jmp     MapEventText_Branch_A188        ; A191 4C 88 A1                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A194:
+RenderRasterScrollTable:
         lda     #$04                            ; A194 A9 04                    ..
         sta     $58                             ; A196 85 58                    .X
         ldy     #$00                            ; A198 A0 00                    ..
@@ -2372,7 +2372,7 @@ MapEventText_Branch_A1E5:
         sta     PPUSCROLL                       ; A1FF 8D 05 20                 ..
         rts                                     ; A202 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A203:
+BuildContractingWaveScrollTable:
         lda     #$30                            ; A203 A9 30                    .0
         sta     $51                             ; A205 85 51                    .Q
         lda     #$02                            ; A207 A9 02                    ..
@@ -2460,7 +2460,7 @@ MapEventText_Branch_A295:
         bne     MapEventText_Branch_A295        ; A29B D0 F8                    ..
         rts                                     ; A29D 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A29E:
+InitializeRasterWaveScrollTable:
         lda     #$30                            ; A29E A9 30                    .0
         sta     $51                             ; A2A0 85 51                    .Q
         lda     #$01                            ; A2A2 A9 01                    ..
@@ -2490,11 +2490,11 @@ MapEventText_Branch_A2CA:
         bne     MapEventText_Branch_A2CA        ; A2D0 D0 F8                    ..
         rts                                     ; A2D2 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A2D3:
+ResetOamAndWaitForRasterFrame:
         jsr     InitializeOamShadow             ; A2D3 20 43 C5                  C.
         jmp     WaitForNmi                      ; A2D6 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A2D9:
+LatchRasterWavePpuUpdate:
         lda     $1F                             ; A2D9 A5 1F                    ..
         ora     #$08                            ; A2DB 09 08                    ..
         sta     $1F                             ; A2DD 85 1F                    ..
@@ -2504,7 +2504,7 @@ MapEventText_Entry_A2D9:
         sta     $1F                             ; A2E6 85 1F                    ..
         rts                                     ; A2E8 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A2E9:
+RotateRasterWaveTables:
         ldx     #$7F                            ; A2E9 A2 7F                    ..
 MapEventText_Branch_A2EB:
         lda     $7700,x                         ; A2EB BD 00 77                 ..w
@@ -2537,7 +2537,7 @@ MapEventText_Branch_A30C:
 MapEventText_Branch_A31F:
         rts                                     ; A31F 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A320:
+SelectContractingWaveAmplitude:
         lda     $51                             ; A320 A5 51                    .Q
         cmp     #$29                            ; A322 C9 29                    .)
         bcc     MapEventText_Branch_A31F        ; A324 90 F9                    ..
@@ -2546,7 +2546,7 @@ MapEventText_Entry_A320:
         lsr     a                               ; A329 4A                       J
         jmp     MapEventText_Branch_A33B        ; A32A 4C 3B A3                 L;.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A32D:
+QueueRasterWavePpuCommand:
         ldx     $51                             ; A32D A6 51                    .Q
         cpx     #$09                            ; A32F E0 09                    ..
         bcs     MapEventText_Branch_A31F        ; A331 B0 EC                    ..
@@ -2599,7 +2599,7 @@ MapEventText_Branch_A36F:
         sta     $050B                           ; A37A 8D 0B 05                 ...
         jmp     RequestPpuUpdate                ; A37D 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A380:
+ApplyForwardRasterWaveOffsets:
         lda     $55                             ; A380 A5 55                    .U
         asl     a                               ; A382 0A                       .
         and     #$7F                            ; A383 29 7F                    ).
@@ -2616,7 +2616,7 @@ MapEventText_Branch_A388:
         sta     $7700,y                         ; A39A 99 00 77                 ..w
         eor     $59                             ; A39D 45 59                    EY
         bpl     MapEventText_Branch_A3A3        ; A39F 10 02                    ..
-        bmi     MapEventText_Entry_A3B0         ; A3A1 30 0D                    0.
+        bmi     ToggleRasterWaveNametableOnWrap ; A3A1 30 0D                    0.
 MapEventText_Branch_A3A3:
         iny                                     ; A3A3 C8                       .
         iny                                     ; A3A4 C8                       .
@@ -2629,7 +2629,7 @@ MapEventText_Branch_A3A3:
         bne     MapEventText_Branch_A388        ; A3AD D0 D9                    ..
         rts                                     ; A3AF 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A3B0:
+ToggleRasterWaveNametableOnWrap:
         lda     $59                             ; A3B0 A5 59                    .Y
         sec                                     ; A3B2 38                       8
         sbc     #$20                            ; A3B3 E9 20                    .
@@ -2647,7 +2647,7 @@ MapEventText_Entry_A3B0:
 MapEventText_Branch_A3C7:
         rts                                     ; A3C7 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A3C8:
+ApplyReverseRasterWaveOffsets:
         lda     $55                             ; A3C8 A5 55                    .U
         asl     a                               ; A3CA 0A                       .
         and     #$7F                            ; A3CB 29 7F                    ).
@@ -2664,7 +2664,7 @@ MapEventText_Branch_A3D0:
         sta     $7700,y                         ; A3E2 99 00 77                 ..w
         eor     $59                             ; A3E5 45 59                    EY
         bpl     MapEventText_Branch_A3EC        ; A3E7 10 03                    ..
-        jsr     MapEventText_Entry_A3B0         ; A3E9 20 B0 A3                  ..
+        jsr     ToggleRasterWaveNametableOnWrap ; A3E9 20 B0 A3                  ..
 MapEventText_Branch_A3EC:
         iny                                     ; A3EC C8                       .
         iny                                     ; A3ED C8                       .
@@ -2701,7 +2701,7 @@ Bank1B_MapMotionTables:
         db   $D7,$DA,$DA                     ; A491 D7 DA DA                 ...
         db   $2C,$29,$26,$26                 ; A494 2C 29 26 26              ,)&&
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A498:
+ClearTransitionNametablesAndOam:
         jsr     SuspendRenderingUpdates         ; A498 20 AF C5                  ..
         lda     $46                             ; A49B A5 46                    .F
         bne     MapEventText_Branch_A4DA        ; A49D D0 3B                    .;
@@ -2722,22 +2722,22 @@ MapEventText_Branch_A4B1:
         lda     PPUSTATUS                       ; A4BA AD 02 20                 ..
         lda     #$23                            ; A4BD A9 23                    .#
         sta     PPUADDR                         ; A4BF 8D 06 20                 ..
-        jsr     MapEventText_Entry_A4DD         ; A4C2 20 DD A4                  ..
+        jsr     FillNametableAttributeTableAA   ; A4C2 20 DD A4                  ..
         lda     #$27                            ; A4C5 A9 27                    .'
         sta     PPUADDR                         ; A4C7 8D 06 20                 ..
-        jsr     MapEventText_Entry_A4DD         ; A4CA 20 DD A4                  ..
+        jsr     FillNametableAttributeTableAA   ; A4CA 20 DD A4                  ..
         ldx     #$7F                            ; A4CD A2 7F                    ..
         lda     #$AA                            ; A4CF A9 AA                    ..
 MapEventText_Branch_A4D1:
         sta     $0400,x                         ; A4D1 9D 00 04                 ...
         dex                                     ; A4D4 CA                       .
         bpl     MapEventText_Branch_A4D1        ; A4D5 10 FA                    ..
-MapEventText_Entry_A4D7:
+RestoreDisplayAfterRasterTransition:
         jsr     FixedTrampoline03               ; A4D7 20 0A C0                  ..
 MapEventText_Branch_A4DA:
-        jmp     UpperFixedEngine_Entry_C58F     ; A4DA 4C 8F C5                 L..
+        jmp     ResumeRenderingAfterPpuWork     ; A4DA 4C 8F C5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A4DD:
+FillNametableAttributeTableAA:
         lda     #$C0                            ; A4DD A9 C0                    ..
         sta     PPUADDR                         ; A4DF 8D 06 20                 ..
         ldx     #$00                            ; A4E2 A2 00                    ..
@@ -2749,7 +2749,7 @@ MapEventText_Branch_A4E6:
         bcc     MapEventText_Branch_A4E6        ; A4EC 90 F8                    ..
         rts                                     ; A4EE 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A4EF:
+RunChapterTitlePresentation:
         lda     $1F                             ; A4EF A5 1F                    ..
         ora     #$08                            ; A4F1 09 08                    ..
         sta     $1F                             ; A4F3 85 1F                    ..
@@ -2757,14 +2757,14 @@ MapEventText_Entry_A4EF:
         brk                                     ; A4F7 00                       .
         db   $02,$9F                         ; A4F8 02 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_A71C         ; A4FA 20 1C A7                  ..
+        jsr     BlankChapterTitlePalette        ; A4FA 20 1C A7                  ..
         jsr     SuspendRenderingUpdates         ; A4FD 20 AF C5                  ..
-        jsr     MapEventText_Entry_A706         ; A500 20 06 A7                  ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; A503 20 B9 C5                  ..
-        jsr     MapEventText_Entry_A530         ; A506 20 30 A5                  0.
+        jsr     InitializeChapterTitlePalette   ; A500 20 06 A7                  ..
+        jsr     SubmitPaletteWithoutFade        ; A503 20 B9 C5                  ..
+        jsr     RunChapterTitleOpeningSequence  ; A506 20 30 A5                  0.
         bcs     MapEventText_Branch_A521        ; A509 B0 16                    ..
-        jsr     MapEventText_Entry_A71C         ; A50B 20 1C A7                  ..
-        jsr     MapEventText_Entry_A7B2         ; A50E 20 B2 A7                  ..
+        jsr     BlankChapterTitlePalette        ; A50B 20 1C A7                  ..
+        jsr     EnterChapterTitleInteraction    ; A50E 20 B2 A7                  ..
         lda     $B0                             ; A511 A5 B0                    ..
         and     #$20                            ; A513 29 20                    )
         bne     MapEventText_Branch_A521        ; A515 D0 0A                    ..
@@ -2779,29 +2779,29 @@ MapEventText_Branch_A521:
         lda     $1F                             ; A521 A5 1F                    ..
         and     #$F7                            ; A523 29 F7                    ).
         sta     $1F                             ; A525 85 1F                    ..
-        jsr     MapEventText_Entry_A71C         ; A527 20 1C A7                  ..
+        jsr     BlankChapterTitlePalette        ; A527 20 1C A7                  ..
         brk                                     ; A52A 00                       .
         db   $08,$8F                         ; A52B 08 8F                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEventText_Entry_A75B         ; A52D 4C 5B A7                 L[.
+        jmp     InstallChapterTitlePalette      ; A52D 4C 5B A7                 L[.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A530:
+RunChapterTitleOpeningSequence:
         ldx     #$01                            ; A530 A2 01                    ..
-        jsr     UpperFixedEngine_Entry_F3FB     ; A532 20 FB F3                  ..
+        jsr     UploadFixedGraphicsPages        ; A532 20 FB F3                  ..
         lda     #$00                            ; A535 A9 00                    ..
-        jsr     MapEventText_Entry_A580         ; A537 20 80 A5                  ..
+        jsr     WriteChapterTitlePpuStreamOffset; A537 20 80 A5                  ..
         lda     #$01                            ; A53A A9 01                    ..
-        jsr     MapEventText_Entry_A580         ; A53C 20 80 A5                  ..
-        jsr     UpperFixedEngine_Entry_C58F     ; A53F 20 8F C5                  ..
+        jsr     WriteChapterTitlePpuStreamOffset; A53C 20 80 A5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; A53F 20 8F C5                  ..
         ldx     #$78                            ; A542 A2 78                    .x
         jsr     WaitFrames                      ; A544 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; A547 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; A547 20 C5 C5                  ..
         jsr     ResetDisplayState               ; A54A 20 4E C5                  N.
         jsr     SuspendRenderingUpdates         ; A54D 20 AF C5                  ..
         lda     #$09                            ; A550 A9 09                    ..
-        jsr     MapEventText_Entry_A580         ; A552 20 80 A5                  ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; A555 20 BF C5                  ..
-        jsr     UpperFixedEngine_Entry_C58F     ; A558 20 8F C5                  ..
+        jsr     WriteChapterTitlePpuStreamOffset; A552 20 80 A5                  ..
+        jsr     FadePaletteToBlack              ; A555 20 BF C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; A558 20 8F C5                  ..
         lda     #$98                            ; A55B A9 98                    ..
         sta     $0505                           ; A55D 8D 05 05                 ...
         lda     $1F                             ; A560 A5 1F                    ..
@@ -2825,13 +2825,13 @@ MapEventText_Branch_A57A:
         sta     $0505                           ; A57C 8D 05 05                 ...
         rts                                     ; A57F 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A580:
+WriteChapterTitlePpuStreamOffset:
         pha                                     ; A580 48                       H
-        jsr     MapEventText_Entry_A588         ; A581 20 88 A5                  ..
+        jsr     WriteChapterTitlePpuStream      ; A581 20 88 A5                  ..
         pla                                     ; A584 68                       h
         jmp     MapEventText_Branch_A58C        ; A585 4C 8C A5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A588:
+WriteChapterTitlePpuStream:
         ldx     #$00                            ; A588 A2 00                    ..
         beq     MapEventText_Branch_A58E        ; A58A F0 02                    ..
 MapEventText_Branch_A58C:
@@ -2924,7 +2924,7 @@ Bank1B_PpuCommandStreams:
         db   $00,$27,$12,$19,$1D,$0F,$18,$00 ; A6E3 00 27 12 19 1D 0F 18 00  .'......
         db   $33,$18,$0F,$1D,$FF             ; A6EB 33 18 0F 1D FF           3....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A6F0:
+FillNametableAttributes55:
         lda     PPUSTATUS                       ; A6F0 AD 02 20                 ..
         lda     #$23                            ; A6F3 A9 23                    .#
         sta     PPUADDR                         ; A6F5 8D 06 20                 ..
@@ -2937,7 +2937,7 @@ MapEventText_Branch_A6FF:
         bpl     MapEventText_Branch_A6FF        ; A703 10 FA                    ..
         rts                                     ; A705 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A706:
+InitializeChapterTitlePalette:
         ldx     #$17                            ; A706 A2 17                    ..
         lda     #$13                            ; A708 A9 13                    ..
 MapEventText_Branch_A70A:
@@ -2953,44 +2953,44 @@ MapEventText_Branch_A711:
 Bank1B_MapSetupValues:
         db   $0F,$21,$0F,$32                 ; A718 0F 21 0F 32              .!.2
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A71C:
+BlankChapterTitlePalette:
         lda     #$0F                            ; A71C A9 0F                    ..
         ldx     #$18                            ; A71E A2 18                    ..
 MapEventText_Branch_A720:
         sta     $05FC,x                         ; A720 9D FC 05                 ...
         dex                                     ; A723 CA                       .
         bpl     MapEventText_Branch_A720        ; A724 10 FA                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; A726 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A726 20 B9 C5                  ..
         jmp     WaitForNmi                      ; A729 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A72C:
+ShowChapterTitleWithoutMusicWait:
         lda     #$00                            ; A72C A9 00                    ..
         beq     MapEventText_Branch_A732        ; A72E F0 02                    ..
-MapEventText_Entry_A730:
+ShowChapterTitleWithMusicWait:
         lda     #$01                            ; A730 A9 01                    ..
 MapEventText_Branch_A732:
         sta     $0F                             ; A732 85 0F                    ..
-        jsr     MapEventText_Entry_A77B         ; A734 20 7B A7                  {.
+        jsr     BuildChapterTitleNametable      ; A734 20 7B A7                  {.
         ldx     #$1F                            ; A737 A2 1F                    ..
-        jsr     MapEventText_Entry_A6F0         ; A739 20 F0 A6                  ..
-        jsr     MapEventText_Entry_A75B         ; A73C 20 5B A7                  [.
+        jsr     FillNametableAttributes55       ; A739 20 F0 A6                  ..
+        jsr     InstallChapterTitlePalette      ; A73C 20 5B A7                  [.
         jsr     WaitForNmi                      ; A73F 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C58F     ; A742 20 8F C5                  ..
-        jsr     UpperFixedEngine_Entry_D218     ; A745 20 18 D2                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; A742 20 8F C5                  ..
+        jsr     WaitForButtonStateOneEightyFrames; A745 20 18 D2                 ..
         lda     $0F                             ; A748 A5 0F                    ..
         beq     MapEventText_Branch_A754        ; A74A F0 08                    ..
 MapEventText_Branch_A74C:
         lda     $6BF9                           ; A74C AD F9 6B                 ..k
         beq     MapEventText_Branch_A74C        ; A74F F0 FB                    ..
-        jsr     UpperFixedEngine_Entry_C8E1     ; A751 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; A751 20 E1 C8                  ..
 MapEventText_Branch_A754:
-        jsr     UpperFixedEngine_Entry_C5C5     ; A754 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; A754 20 C5 C5                  ..
         brk                                     ; A757 00                       .
         db   $08,$8F                         ; A758 08 8F                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; A75A 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A75B:
+InstallChapterTitlePalette:
         ldx     #$03                            ; A75B A2 03                    ..
 MapEventText_Branch_A75D:
         lda     Bank1B_PpuSetupValues,x         ; A75D BD 72 A7                 .r.
@@ -3000,14 +3000,14 @@ MapEventText_Branch_A75D:
         ldx     SaveCurrentChapterMinus1        ; A766 AE 5A 61                 .Za
         lda     $A776,x                         ; A769 BD 76 A7                 .v.
         sta     $0600                           ; A76C 8D 00 06                 ...
-        jmp     UpperFixedEngine_Entry_C5B9     ; A76F 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; A76F 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 Bank1B_PpuSetupValues:
         db   $0F,$30,$0F,$0F                 ; A772 0F 30 0F 0F              .0..
         db   $21,$24,$2A,$23,$2C             ; A776 21 24 2A 23 2C           !$*#,
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A77B:
-        jsr     UpperFixedEngine_Entry_C5C5     ; A77B 20 C5 C5                  ..
+BuildChapterTitleNametable:
+        jsr     FadePaletteFromBlack            ; A77B 20 C5 C5                  ..
         jsr     ResetDisplayState               ; A77E 20 4E C5                  N.
         jsr     SuspendRenderingUpdates         ; A781 20 AF C5                  ..
         lda     #$00                            ; A784 A9 00                    ..
@@ -3018,37 +3018,37 @@ MapEventText_Entry_A77B:
         lda     #$18                            ; A791 A9 18                    ..
         sta     $0506                           ; A793 8D 06 05                 ...
         ldx     #$00                            ; A796 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_F3FB     ; A798 20 FB F3                  ..
+        jsr     UploadFixedGraphicsPages        ; A798 20 FB F3                  ..
         lda     $0F                             ; A79B A5 0F                    ..
         beq     MapEventText_Branch_A7A4        ; A79D F0 05                    ..
         lda     #$02                            ; A79F A9 02                    ..
-        jsr     MapEventText_Entry_A588         ; A7A1 20 88 A5                  ..
+        jsr     WriteChapterTitlePpuStream      ; A7A1 20 88 A5                  ..
 MapEventText_Branch_A7A4:
         lda     #$03                            ; A7A4 A9 03                    ..
-        jsr     MapEventText_Entry_A588         ; A7A6 20 88 A5                  ..
+        jsr     WriteChapterTitlePpuStream      ; A7A6 20 88 A5                  ..
         lda     SaveCurrentChapterMinus1        ; A7A9 AD 5A 61                 .Za
         clc                                     ; A7AC 18                       .
         adc     #$04                            ; A7AD 69 04                    i.
-        jmp     MapEventText_Entry_A588         ; A7AF 4C 88 A5                 L..
+        jmp     WriteChapterTitlePpuStream      ; A7AF 4C 88 A5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A7B2:
+EnterChapterTitleInteraction:
         lda     $1F                             ; A7B2 A5 1F                    ..
         ora     #$08                            ; A7B4 09 08                    ..
         sta     $1F                             ; A7B6 85 1F                    ..
         jsr     ResetDisplayState               ; A7B8 20 4E C5                  N.
-        jsr     MapEventText_Entry_AF67         ; A7BB 20 67 AF                  g.
-MapEventText_Entry_A7BE:
+        jsr     InitializeScriptedMapEventRam   ; A7BB 20 67 AF                  g.
+RunChapterTitleInteractionLoop:
         jsr     FixedTrampoline13               ; A7BE 20 3A C0                  :.
         jsr     SuspendRenderingUpdates         ; A7C1 20 AF C5                  ..
         ldx     #$00                            ; A7C4 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_F3FB     ; A7C6 20 FB F3                  ..
-        jsr     MapEventText_Entry_A8A8         ; A7C9 20 A8 A8                  ..
-        jsr     UpperFixedEngine_Entry_C5A8     ; A7CC 20 A8 C5                  ..
+        jsr     UploadFixedGraphicsPages        ; A7C6 20 FB F3                  ..
+        jsr     BuildChapterTitleScreenBuffers  ; A7C9 20 A8 A8                  ..
+        jsr     ClearDisplaySuspensionFlag      ; A7CC 20 A8 C5                  ..
         jsr     WaitForNmi                      ; A7CF 20 74 FF                  t.
         ldx     #$0C                            ; A7D2 A2 0C                    ..
-        jsr     MapEventText_Entry_A85A         ; A7D4 20 5A A8                  Z.
+        jsr     InstallChapterTitlePpuTemplateAndWait; A7D4 20 5A A8             Z.
         jsr     EnableRenderingAfterVBlank      ; A7D7 20 92 C5                  ..
-        jsr     UpperFixedEngine_Entry_FECD     ; A7DA 20 CD FE                  ..
+        jsr     InitializeRasterScrollEffect    ; A7DA 20 CD FE                  ..
         jsr     WaitForNmi                      ; A7DD 20 74 FF                  t.
         lda     $6BF9                           ; A7E0 AD F9 6B                 ..k
         sta     $58                             ; A7E3 85 58                    .X
@@ -3057,9 +3057,9 @@ MapEventText_Entry_A7BE:
         sta     $0E                             ; A7E9 85 0E                    ..
         sta     $0F                             ; A7EB 85 0F                    ..
 MapEventText_Branch_A7ED:
-        jsr     MapEventText_Entry_A9F0         ; A7ED 20 F0 A9                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A7F0 20 10 FF                  ..
-        jsr     MapEventText_Entry_A816         ; A7F3 20 16 A8                  ..
+        jsr     AdvanceChapterTitleGraphicAnimation; A7ED 20 F0 A9               ..
+        jsr     AdvanceRasterScrollEffect       ; A7F0 20 10 FF                  ..
+        jsr     HandleChapterTitleMusicTransition; A7F3 20 16 A8                 ..
         lda     $B0                             ; A7F6 A5 B0                    ..
         and     #$20                            ; A7F8 29 20                    )
         bne     MapEventText_Branch_A803        ; A7FA D0 07                    ..
@@ -3070,13 +3070,13 @@ MapEventText_Branch_A803:
         lda     $1F                             ; A803 A5 1F                    ..
         and     #$F7                            ; A805 29 F7                    ).
         sta     $1F                             ; A807 85 1F                    ..
-        jsr     MapEventText_Entry_A82B         ; A809 20 2B A8                  +.
+        jsr     FadeOutChapterTitlePalette      ; A809 20 2B A8                  +.
         lda     #$30                            ; A80C A9 30                    .0
         sta     $05FD                           ; A80E 8D FD 05                 ...
         lda     #$0E                            ; A811 A9 0E                    ..
         jmp     WriteMmc1Control                ; A813 4C 18 C1                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A816:
+HandleChapterTitleMusicTransition:
         ldx     $58                             ; A816 A6 58                    .X
         lda     $6BF9                           ; A818 AD F9 6B                 ..k
         sta     $58                             ; A81B 85 58                    .X
@@ -3085,37 +3085,37 @@ MapEventText_Entry_A816:
         cpx     #$01                            ; A821 E0 01                    ..
         bne     MapEventText_Branch_A82A        ; A823 D0 05                    ..
         ldx     #$19                            ; A825 A2 19                    ..
-        jsr     MapEventText_Entry_A85A         ; A827 20 5A A8                  Z.
+        jsr     InstallChapterTitlePpuTemplateAndWait; A827 20 5A A8             Z.
 MapEventText_Branch_A82A:
         rts                                     ; A82A 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A82B:
+FadeOutChapterTitlePalette:
         ldx     #$26                            ; A82B A2 26                    .&
-        jsr     MapEventText_Entry_A85A         ; A82D 20 5A A8                  Z.
+        jsr     InstallChapterTitlePpuTemplateAndWait; A82D 20 5A A8             Z.
         lda     #$10                            ; A830 A9 10                    ..
         sta     $16                             ; A832 85 16                    ..
-        jsr     MapEventText_Entry_A83D         ; A834 20 3D A8                  =.
-        jsr     MapEventText_Entry_A83D         ; A837 20 3D A8                  =.
-        jsr     MapEventText_Entry_A83D         ; A83A 20 3D A8                  =.
-MapEventText_Entry_A83D:
+        jsr     AdvanceChapterTitlePaletteFade  ; A834 20 3D A8                  =.
+        jsr     AdvanceChapterTitlePaletteFade  ; A837 20 3D A8                  =.
+        jsr     AdvanceChapterTitlePaletteFade  ; A83A 20 3D A8                  =.
+AdvanceChapterTitlePaletteFade:
         jsr     BuildPaletteUpdateCommand       ; A83D 20 DE C5                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A840 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A843 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A846 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A849 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A84C 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; A84F 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A840 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A843 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A846 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A849 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A84C 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; A84F 20 10 FF                  ..
         lda     $16                             ; A852 A5 16                    ..
         clc                                     ; A854 18                       .
         adc     #$10                            ; A855 69 10                    i.
         sta     $16                             ; A857 85 16                    ..
         rts                                     ; A859 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A85A:
-        jsr     MapEventText_Entry_A860         ; A85A 20 60 A8                  `.
+InstallChapterTitlePpuTemplateAndWait:
+        jsr     InstallChapterTitlePpuTemplate  ; A85A 20 60 A8                  `.
         jmp     RequestPpuUpdateAndWait         ; A85D 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A860:
+InstallChapterTitlePpuTemplate:
         ldy     #$0C                            ; A860 A0 0C                    ..
 MapEventText_Branch_A862:
         lda     Bank1B_PpuUpdateTemplates,x     ; A862 BD 74 A8                 .t.
@@ -3125,7 +3125,7 @@ MapEventText_Branch_A862:
         bpl     MapEventText_Branch_A862        ; A86A 10 F6                    ..
         lda     #$3C                            ; A86C A9 3C                    .<
         sta     $060B                           ; A86E 8D 0B 06                 ...
-        jmp     UpperFixedEngine_Entry_C5B9     ; A871 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; A871 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 Bank1B_PpuUpdateTemplates:
         db   $3C,$20,$3C,$2C,$06,$2C,$2C,$3C ; A874 3C 20 3C 2C 06 2C 2C 3C  < <,.,,<
@@ -3136,8 +3136,8 @@ Bank1B_PpuUpdateTemplates:
         db   $20,$3C,$2C,$06,$2C,$2C,$3C,$3C ; A89C 20 3C 2C 06 2C 2C 3C 3C   <,.,,<<
         db   $3C,$30,$10,$00                 ; A8A4 3C 30 10 00              <0..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A8A8:
-        jsr     MapEventText_Entry_A9A2         ; A8A8 20 A2 A9                  ..
+BuildChapterTitleScreenBuffers:
+        jsr     ClearChapterTitleNametableBuffers; A8A8 20 A2 A9                 ..
         lda     Bank1B_RamDestinationPointer    ; A8AB AD AF A9                 ...
         sta     $00                           ; A8AE 85 00                    ..
         lda     $A9B0                           ; A8B0 AD B0 A9                 ...
@@ -3146,20 +3146,20 @@ MapEventText_Entry_A8A8:
         sta     $04                             ; A8B7 85 04                    ..
         ldx     #$00                            ; A8B9 A2 00                    ..
         ldy     #$00                            ; A8BB A0 00                    ..
-        jsr     MapEventText_Entry_A969         ; A8BD 20 69 A9                  i.
+        jsr     AppendChapterTitleTileRun       ; A8BD 20 69 A9                  i.
         stx     $03                             ; A8C0 86 03                    ..
 MapEventText_Branch_A8C2:
         ldx     $03                             ; A8C2 A6 03                    ..
-        jsr     MapEventText_Entry_A969         ; A8C4 20 69 A9                  i.
+        jsr     AppendChapterTitleTileRun       ; A8C4 20 69 A9                  i.
         dec     $04                             ; A8C7 C6 04                    ..
         bne     MapEventText_Branch_A8C2        ; A8C9 D0 F7                    ..
-        jsr     MapEventText_Entry_A969         ; A8CB 20 69 A9                  i.
-        jsr     MapEventText_Entry_A91E         ; A8CE 20 1E A9                  ..
-        jsr     MapEventText_Entry_A9B1         ; A8D1 20 B1 A9                  ..
-        jsr     MapEventText_Entry_A8D8         ; A8D4 20 D8 A8                  ..
+        jsr     AppendChapterTitleTileRun       ; A8CB 20 69 A9                  i.
+        jsr     FillChapterTitleNametableRuns   ; A8CE 20 1E A9                  ..
+        jsr     UploadChapterTitleNametableBuffers; A8D1 20 B1 A9                ..
+        jsr     UploadChapterTitlePatternTiles  ; A8D4 20 D8 A8                  ..
         rts                                     ; A8D7 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A8D8:
+UploadChapterTitlePatternTiles:
         lda     PPUSTATUS                       ; A8D8 AD 02 20                 ..
         lda     #$18                            ; A8DB A9 18                    ..
         sta     PPUADDR                         ; A8DD 8D 06 20                 ..
@@ -3170,11 +3170,11 @@ MapEventText_Entry_A8D8:
 MapEventText_Branch_A8E9:
         ldx     #$09                            ; A8E9 A2 09                    ..
 MapEventText_Branch_A8EB:
-        jsr     MapEventText_Entry_A902         ; A8EB 20 02 A9                  ..
+        jsr     UploadChapterTitlePatternRow    ; A8EB 20 02 A9                  ..
         dec     $00                           ; A8EE C6 00                    ..
         txa                                     ; A8F0 8A                       .
         beq     MapEventText_Branch_A8F6        ; A8F1 F0 03                    ..
-        jsr     MapEventText_Entry_A902         ; A8F3 20 02 A9                  ..
+        jsr     UploadChapterTitlePatternRow    ; A8F3 20 02 A9                  ..
 MapEventText_Branch_A8F6:
         inc     $00                           ; A8F6 E6 00                    ..
         dex                                     ; A8F8 CA                       .
@@ -3184,7 +3184,7 @@ MapEventText_Branch_A8F6:
         bpl     MapEventText_Branch_A8E9        ; A8FF 10 E8                    ..
         rts                                     ; A901 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A902:
+UploadChapterTitlePatternRow:
         txa                                     ; A902 8A                       .
         pha                                     ; A903 48                       H
         ldx     $00                           ; A904 A6 00                    ..
@@ -3204,7 +3204,7 @@ MapEventText_Branch_A90B:
 Bank1B_GraphicsRowOffsets:
         db   $00,$10,$40,$50                 ; A91A 00 10 40 50              ..@P
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A91E:
+FillChapterTitleNametableRuns:
         ldx     #$0B                            ; A91E A2 0B                    ..
 MapEventText_Branch_A920:
         lda     Bank1B_NametableFillRecords,x   ; A920 BD 3F A9                 .?.
@@ -3248,7 +3248,7 @@ MapEventText_Branch_A962:
         inx                                     ; A966 E8                       .
         inx                                     ; A967 E8                       .
         inx                                     ; A968 E8                       .
-MapEventText_Entry_A969:
+AppendChapterTitleTileRun:
         lda     Bank1B_PpuTileRunRecords,x      ; A969 BD 72 A9                 .r.
         sta     $02                             ; A96C 85 02                    ..
         bne     MapEventText_Branch_A94B        ; A96E D0 DB                    ..
@@ -3265,7 +3265,7 @@ Bank1B_PpuTileRunRecords:
         db   $04,$00,$00,$00,$01,$88,$89,$0A ; A994 04 00 00 00 01 88 89 0A  ........
         db   $8A,$89,$01,$8A,$8B,$00         ; A99C 8A 89 01 8A 8B 00        ......
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A9A2:
+ClearChapterTitleNametableBuffers:
         lda     #$00                            ; A9A2 A9 00                    ..
         tay                                     ; A9A4 A8                       .
 MapEventText_Branch_A9A5:
@@ -3279,7 +3279,7 @@ Bank1B_RamDestinationPointer:
         db   $84                             ; A9AF 84                       .
         db   $78                             ; A9B0 78                       x
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A9B1:
+UploadChapterTitleNametableBuffers:
         lda     PPUSTATUS                       ; A9B1 AD 02 20                 ..
         lda     #$20                            ; A9B4 A9 20                    .
         sta     PPUADDR                         ; A9B6 8D 06 20                 ..
@@ -3303,16 +3303,16 @@ MapEventText_Branch_A9C9:
         sta     PPUADDR                         ; A9DB 8D 06 20                 ..
         lda     #$FF                            ; A9DE A9 FF                    ..
         ldx     #$17                            ; A9E0 A2 17                    ..
-        jsr     MapEventText_Entry_A9E9         ; A9E2 20 E9 A9                  ..
+        jsr     WriteRepeatedPpuByte            ; A9E2 20 E9 A9                  ..
         lda     #$5F                            ; A9E5 A9 5F                    ._
         ldx     #$07                            ; A9E7 A2 07                    ..
-MapEventText_Entry_A9E9:
+WriteRepeatedPpuByte:
         sta     PPUDATA                         ; A9E9 8D 07 20                 ..
         dex                                     ; A9EC CA                       .
-        bpl     MapEventText_Entry_A9E9         ; A9ED 10 FA                    ..
+        bpl     WriteRepeatedPpuByte            ; A9ED 10 FA                    ..
         rts                                     ; A9EF 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_A9F0:
+AdvanceChapterTitleGraphicAnimation:
         lda     $0E                             ; A9F0 A5 0E                    ..
         clc                                     ; A9F2 18                       .
         adc     #$20                            ; A9F3 69 20                    i
@@ -3343,7 +3343,7 @@ MapEventText_Branch_AA1D:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AA1E:
         ldx     #$33                            ; AA1E A2 33                    .3
-        jsr     MapEventText_Entry_A860         ; AA20 20 60 A8                  `.
+        jsr     InstallChapterTitlePpuTemplate  ; AA20 20 60 A8                  `.
         jmp     RequestPpuUpdate                ; AA23 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AA26:
@@ -3442,7 +3442,7 @@ Bank1B_MapRendererTables:
         db   $3B                             ; AAF5 3B                       ;
         db   $F5,$6B,$F6                     ; AAF6 F5 6B F6                 .k.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AAF9:
+DispatchChapterMapEventHandler:
         php                                     ; AAF9 08                       .
         lda     SaveCurrentChapterMinus1        ; AAFA AD 5A 61                 .Za
         asl     a                               ; AAFD 0A                       .
@@ -3454,7 +3454,7 @@ MapEventText_Entry_AAF9:
         plp                                     ; AB09 28                       (
         jmp     ($0000)                         ; AB0A 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AB0D:
+HandleChapterOneMapEvent:
         lda     $6283                           ; AB0D AD 83 62                 ..b
         and     #$A0                            ; AB10 29 A0                    ).
         cmp     #$80                            ; AB12 C9 80                    ..
@@ -3481,7 +3481,7 @@ MapEventText_Entry_AB0D:
 MapEventText_Branch_AB38:
         rts                                     ; AB38 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AB39:
+HandleChapterTwoMapEvent:
         bcs     MapEventText_Branch_AB41        ; AB39 B0 06                    ..
         lda     CurrentSubmapNumber             ; AB3B A5 64                    .d
         cmp     #$00                            ; AB3D C9 00                    ..
@@ -3501,7 +3501,7 @@ MapEventText_Branch_AB41:
 MapEventText_Branch_AB51:
         rts                                     ; AB51 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AB52:
+HandleChapterThreeMapEvent:
         lda     CurrentMapNumber                ; AB52 A5 63                    .c
         cmp     #$3A                            ; AB54 C9 3A                    .:
         bne     MapEventText_Branch_AB74        ; AB56 D0 1C                    ..
@@ -3515,7 +3515,7 @@ MapEventText_Entry_AB52:
 ; ----------------------------------------------------------------------------
         ldx     #$C8                            ; AB65 A2 C8                    ..
         jsr     WaitFrames                      ; AB67 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; AB6A 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; AB6A 20 C5 C5                  ..
         lda     #$7C                            ; AB6D A9 7C                    .|
         ldx     #$03                            ; AB6F A2 03                    ..
         jmp     MapEventText_Branch_ABB6        ; AB71 4C B6 AB                 L..
@@ -3523,11 +3523,11 @@ MapEventText_Entry_AB52:
 MapEventText_Branch_AB74:
         rts                                     ; AB74 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AB75:
+HandleChapterFourMapEvent:
         brk                                     ; AB75 00                       .
         db   $0F,$EB,$10                     ; AB76 0F EB 10                 ...
 ; ----------------------------------------------------------------------------
-        beq     MapEventText_Entry_ABA6         ; AB79 F0 2B                    .+
+        beq     HandleChapterFiveMapEvent       ; AB79 F0 2B                    .+
         lda     CurrentMapNumber                ; AB7B A5 63                    .c
         cmp     #$04                            ; AB7D C9 04                    ..
         bne     MapEventText_Branch_AB8C        ; AB7F D0 0B                    ..
@@ -3540,7 +3540,7 @@ MapEventText_Entry_AB75:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AB8C:
         cmp     #$11                            ; AB8C C9 11                    ..
-        bne     MapEventText_Entry_ABA6         ; AB8E D0 16                    ..
+        bne     HandleChapterFiveMapEvent       ; AB8E D0 16                    ..
         dec     PlayerWorldX                    ; AB90 C6 42                    .B
         lda     #$80                            ; AB92 A9 80                    ..
         sta     $0533                           ; AB94 8D 33 05                 .3.
@@ -3550,7 +3550,7 @@ MapEventText_Branch_AB8C:
         sta     $0530                           ; AB9E 8D 30 05                 .0.
         lda     #$0F                            ; ABA1 A9 0F                    ..
         sta     $0531                           ; ABA3 8D 31 05                 .1.
-MapEventText_Entry_ABA6:
+HandleChapterFiveMapEvent:
         brk                                     ; ABA6 00                       .
         db   $26,$EB,$20                     ; ABA7 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
@@ -3582,7 +3582,7 @@ MapEventText_Branch_ABB6:
         brk                                     ; ABCE 00                       .
         db   $07,$6F,$43                     ; ABCF 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; ABD2 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; ABD2 20 BF C5                  ..
         lda     #$00                            ; ABD5 A9 00                    ..
         sta     $6BDE                           ; ABD7 8D DE 6B                 ..k
         pla                                     ; ABDA 68                       h
@@ -3591,7 +3591,7 @@ MapEventText_Branch_ABB6:
         brk                                     ; ABDD 00                       .
         db   $04,$6F                         ; ABDE 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; ABE0 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; ABE0 20 18 D2                 ..
         lda     SaveCurrentChapterMinus1        ; ABE3 AD 5A 61                 .Za
         clc                                     ; ABE6 18                       .
         adc     #$25                            ; ABE7 69 25                    i%
@@ -3600,14 +3600,14 @@ MapEventText_Branch_ABB6:
 ; ----------------------------------------------------------------------------
         sec                                     ; ABEC 38                       8
         ror     $6282                           ; ABED 6E 82 62                 n.b
-        jsr     MapEventText_Entry_A730         ; ABF0 20 30 A7                  0.
+        jsr     ShowChapterTitleWithMusicWait   ; ABF0 20 30 A7                  0.
         jsr     ResetDisplayState               ; ABF3 20 4E C5                  N.
         lda     #$80                            ; ABF6 A9 80                    ..
         sta     $6BDE                           ; ABF8 8D DE 6B                 ..k
         brk                                     ; ABFB 00                       .
         db   $07,$6F,$43                     ; ABFC 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; ABFF 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; ABFF 20 BF C5                  ..
         inc     SaveCurrentChapterMinus1        ; AC02 EE 5A 61                 .Za
         lda     SaveCurrentChapterMinus1        ; AC05 AD 5A 61                 .Za
         sta     $FD                             ; AC08 85 FD                    ..
@@ -3638,17 +3638,17 @@ MapEventText_Branch_AC27:
         brk                                     ; AC2C 00                       .
         db   $BE,$3B                         ; AC2D BE 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_AC43         ; AC2F 20 43 AC                  C.
+        jsr     PromptScriptedMapEventChoice    ; AC2F 20 43 AC                  C.
         bcc     MapEventText_Branch_AC4F        ; AC32 90 1B                    ..
         lda     #$00                            ; AC34 A9 00                    ..
         sta     $6BDE                           ; AC36 8D DE 6B                 ..k
         brk                                     ; AC39 00                       .
         db   $BF,$3B                         ; AC3A BF 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_AC43         ; AC3C 20 43 AC                  C.
+        jsr     PromptScriptedMapEventChoice    ; AC3C 20 43 AC                  C.
         bcs     MapEventText_Branch_AC27        ; AC3F B0 E6                    ..
         bcc     MapEventText_Branch_AC52        ; AC41 90 0F                    ..
-MapEventText_Entry_AC43:
+PromptScriptedMapEventChoice:
         lda     #$80                            ; AC43 A9 80                    ..
         sta     $6BDE                           ; AC45 8D DE 6B                 ..k
         brk                                     ; AC48 00                       .
@@ -3679,20 +3679,20 @@ MapEventText_Branch_AC65:
         sta     $1F                             ; AC69 85 1F                    ..
         lda     #$00                            ; AC6B A9 00                    ..
         sta     $0513                           ; AC6D 8D 13 05                 ...
-        jsr     MapEventText_Entry_AD49         ; AC70 20 49 AD                  I.
-        jsr     MapEventText_Entry_AE32         ; AC73 20 32 AE                  2.
+        jsr     BeginScriptedMapEventPresentation; AC70 20 49 AD                 I.
+        jsr     InitializeScriptedMapEventStream; AC73 20 32 AE                  2.
         jmp     MapEventText_Branch_AC7C        ; AC76 4C 7C AC                 L|.
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AC79:
-        jsr     UpperFixedEngine_Entry_C5C5     ; AC79 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; AC79 20 C5 C5                  ..
 MapEventText_Branch_AC7C:
-        jsr     MapEventText_Entry_AE80         ; AC7C 20 80 AE                  ..
+        jsr     DecodeNextMapEventStreamRecord  ; AC7C 20 80 AE                  ..
         brk                                     ; AC7F 00                       .
         db   $01,$87                         ; AC80 01 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEventText_Entry_ACEA         ; AC82 20 EA AC                  ..
+        jsr     PrepareScriptedMapEventScene    ; AC82 20 EA AC                  ..
 MapEventText_Branch_AC85:
-        jsr     MapEventText_Entry_ACB5         ; AC85 20 B5 AC                  ..
+        jsr     AdvanceScriptedMapEventFrames   ; AC85 20 B5 AC                  ..
         lda     $41                             ; AC88 A5 41                    .A
         bpl     MapEventText_Branch_ACA6        ; AC8A 10 1A                    ..
         dec     $6B                             ; AC8C C6 6B                    .k
@@ -3704,8 +3704,8 @@ MapEventText_Branch_AC90:
         bne     MapEventText_Branch_AC79        ; AC96 D0 E1                    ..
         ldx     #$78                            ; AC98 A2 78                    .x
         jsr     WaitFrames                      ; AC9A 20 0C C9                  ..
-        jsr     MapEventText_Entry_B54C         ; AC9D 20 4C B5                  L.
-MapEventText_Entry_ACA0:
+        jsr     BeginScrollingMapEventFinale    ; AC9D 20 4C B5                  L.
+ExitScriptedMapEventScene:
         jsr     FixedTrampoline10               ; ACA0 20 31 C0                  1.
         jmp     UpperFixedEngine_Branch_C0E9    ; ACA3 4C E9 C0                 L..
 ; ----------------------------------------------------------------------------
@@ -3719,20 +3719,20 @@ MapEventText_Branch_ACA6:
 ; ----------------------------------------------------------------------------
         jmp     MapEventText_Branch_AC90        ; ACB2 4C 90 AC                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_ACB5:
+AdvanceScriptedMapEventFrames:
         ldx     #$10                            ; ACB5 A2 10                    ..
 MapEventText_Branch_ACB7:
         txa                                     ; ACB7 8A                       .
         pha                                     ; ACB8 48                       H
-        jsr     MapEventText_Entry_ACC5         ; ACB9 20 C5 AC                  ..
-        jsr     UpperFixedEngine_Entry_C9ED     ; ACBC 20 ED C9                  ..
+        jsr     ResetScriptedMapEventObjects    ; ACB9 20 C5 AC                  ..
+        jsr     UpdateMapFrameSystems           ; ACBC 20 ED C9                  ..
         pla                                     ; ACBF 68                       h
         tax                                     ; ACC0 AA                       .
         dex                                     ; ACC1 CA                       .
         bne     MapEventText_Branch_ACB7        ; ACC2 D0 F3                    ..
         rts                                     ; ACC4 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_ACC5:
+ResetScriptedMapEventObjects:
         lda     $41                             ; ACC5 A5 41                    .A
         bpl     MapEventText_Branch_ACDB        ; ACC7 10 12                    ..
         lda     #$8F                            ; ACC9 A9 8F                    ..
@@ -3750,7 +3750,7 @@ MapEventText_Branch_ACDB:
         sta     $6BEA                           ; ACE6 8D EA 6B                 ..k
         rts                                     ; ACE9 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_ACEA:
+PrepareScriptedMapEventScene:
         lda     $41                             ; ACEA A5 41                    .A
         bpl     MapEventText_Branch_AD19        ; ACEC 10 2B                    .+
         brk                                     ; ACEE 00                       .
@@ -3773,8 +3773,8 @@ MapEventText_Branch_AD0A:
         sta     $6F40,x                         ; AD0D 9D 40 6F                 .@o
         dex                                     ; AD10 CA                       .
         bpl     MapEventText_Branch_AD0A        ; AD11 10 F7                    ..
-        jsr     UpperFixedEngine_Entry_C58F     ; AD13 20 8F C5                  ..
-        jmp     UpperFixedEngine_Entry_C5BF     ; AD16 4C BF C5                 L..
+        jsr     ResumeRenderingAfterPpuWork     ; AD13 20 8F C5                  ..
+        jmp     FadePaletteToBlack              ; AD16 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AD19:
         lda     #$1E                            ; AD19 A9 1E                    ..
@@ -3789,7 +3789,7 @@ Bank1B_DormantMapHandlerRti:
         beq     MapEventText_Branch_AD2F        ; AD25 F0 08                    ..
         lda     #$0F                            ; AD27 A9 0F                    ..
         sta     $060A                           ; AD29 8D 0A 06                 ...
-        jsr     UpperFixedEngine_Entry_C5BF     ; AD2C 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; AD2C 20 BF C5                  ..
 MapEventText_Branch_AD2F:
         lda     #$00                            ; AD2F A9 00                    ..
         sta     $3C                             ; AD31 85 3C                    .<
@@ -3803,14 +3803,14 @@ Bank1B_DormantMapHandlerRts:
         bne     MapEventText_Branch_AD48        ; AD3A D0 0C                    ..
         lda     #$0F                            ; AD3C A9 0F                    ..
         sta     $060A                           ; AD3E 8D 0A 06                 ...
-        jsr     UpperFixedEngine_Entry_C5BF     ; AD41 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; AD41 20 BF C5                  ..
         brk                                     ; AD44 00                       .
         db   $2A,$CB,$40                     ; AD45 2A CB 40                 *.@
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AD48:
         rts                                     ; AD48 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AD49:
+BeginScriptedMapEventPresentation:
         brk                                     ; AD49 00                       .
         db   $04,$9F                         ; AD4A 04 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -3826,12 +3826,12 @@ MapEventText_Branch_AD4C:
         ldx     #$00                            ; AD5B A2 00                    ..
         jsr     WaitFrames                      ; AD5D 20 0C C9                  ..
         jsr     ResetDisplayState               ; AD60 20 4E C5                  N.
-        jsr     MapEventText_Entry_AF67         ; AD63 20 67 AF                  g.
+        jsr     InitializeScriptedMapEventRam   ; AD63 20 67 AF                  g.
         ldx     #$78                            ; AD66 A2 78                    .x
         jsr     WaitFrames                      ; AD68 20 0C C9                  ..
-MapEventText_Entry_AD6B:
+RunScriptedMapEventPaletteSequence:
         jsr     FixedTrampoline12               ; AD6B 20 37 C0                  7.
-        jsr     UpperFixedEngine_Entry_FECD     ; AD6E 20 CD FE                  ..
+        jsr     InitializeRasterScrollEffect    ; AD6E 20 CD FE                  ..
         jsr     WaitForNmi                      ; AD71 20 74 FF                  t.
         lda     #$00                            ; AD74 A9 00                    ..
         sta     $0508                           ; AD76 8D 08 05                 ...
@@ -3859,7 +3859,7 @@ MapEventText_Branch_AD94:
         bcc     MapEventText_Branch_ADA7        ; ADA3 90 02                    ..
         inc     $01                             ; ADA5 E6 01                    ..
 MapEventText_Branch_ADA7:
-        jsr     UpperFixedEngine_Entry_C5B9     ; ADA7 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; ADA7 20 B9 C5                  ..
         lda     $02                             ; ADAA A5 02                    ..
         cmp     #$06                            ; ADAC C9 06                    ..
         bne     MapEventText_Branch_ADB3        ; ADAE D0 03                    ..
@@ -3867,43 +3867,43 @@ MapEventText_Branch_ADA7:
 MapEventText_Branch_ADB3:
         jsr     EnableRenderingAfterVBlank      ; ADB3 20 92 C5                  ..
         ldx     #$C8                            ; ADB6 A2 C8                    ..
-        jsr     MapEventText_Entry_ADF5         ; ADB8 20 F5 AD                  ..
+        jsr     WaitFixedEngineTicks            ; ADB8 20 F5 AD                  ..
         ldy     $02                             ; ADBB A4 02                    ..
         ldx     $ADFF,y                         ; ADBD BE FF AD                 ...
-        jsr     MapEventText_Entry_ADF5         ; ADC0 20 F5 AD                  ..
+        jsr     WaitFixedEngineTicks            ; ADC0 20 F5 AD                  ..
         dec     $02                             ; ADC3 C6 02                    ..
         bne     MapEventText_Branch_AD92        ; ADC5 D0 CB                    ..
         lda     #$0F                            ; ADC7 A9 0F                    ..
         sta     $05FC                           ; ADC9 8D FC 05                 ...
-        jsr     MapEventText_Entry_ADD4         ; ADCC 20 D4 AD                  ..
+        jsr     FadeScriptedMapEventPalette     ; ADCC 20 D4 AD                  ..
         lda     #$0E                            ; ADCF A9 0E                    ..
         jmp     WriteMmc1Control                ; ADD1 4C 18 C1                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_ADD4:
+FadeScriptedMapEventPalette:
         lda     #$10                            ; ADD4 A9 10                    ..
         sta     $16                             ; ADD6 85 16                    ..
-        jsr     MapEventText_Entry_ADE1         ; ADD8 20 E1 AD                  ..
-        jsr     MapEventText_Entry_ADE1         ; ADDB 20 E1 AD                  ..
-        jsr     MapEventText_Entry_ADE1         ; ADDE 20 E1 AD                  ..
-MapEventText_Entry_ADE1:
+        jsr     AdvanceScriptedMapEventPaletteFade; ADD8 20 E1 AD                ..
+        jsr     AdvanceScriptedMapEventPaletteFade; ADDB 20 E1 AD                ..
+        jsr     AdvanceScriptedMapEventPaletteFade; ADDE 20 E1 AD                ..
+AdvanceScriptedMapEventPaletteFade:
         jsr     BuildPaletteUpdateCommand       ; ADE1 20 DE C5                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; ADE4 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; ADE7 20 10 FF                  ..
-        jsr     UpperFixedEngine_Entry_FF10     ; ADEA 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; ADE4 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; ADE7 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; ADEA 20 10 FF                  ..
         lda     $16                             ; ADED A5 16                    ..
         clc                                     ; ADEF 18                       .
         adc     #$10                            ; ADF0 69 10                    i.
         sta     $16                             ; ADF2 85 16                    ..
         rts                                     ; ADF4 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_ADF5:
+WaitFixedEngineTicks:
         txa                                     ; ADF5 8A                       .
         pha                                     ; ADF6 48                       H
-        jsr     UpperFixedEngine_Entry_FF10     ; ADF7 20 10 FF                  ..
+        jsr     AdvanceRasterScrollEffect       ; ADF7 20 10 FF                  ..
         pla                                     ; ADFA 68                       h
         tax                                     ; ADFB AA                       .
         dex                                     ; ADFC CA                       .
-        bne     MapEventText_Entry_ADF5         ; ADFD D0 F6                    ..
+        bne     WaitFixedEngineTicks            ; ADFD D0 F6                    ..
         rts                                     ; ADFF 60                       `
 ; ----------------------------------------------------------------------------
 Bank1B_AnimationDelays:
@@ -3918,7 +3918,7 @@ Bank1B_PpuFrameData:
         db   $20,$12,$32,$12,$20,$3C,$02,$20 ; AE28 20 12 32 12 20 3C 02 20   .2. <.
         db   $02,$22                         ; AE30 02 22                    ."
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AE32:
+InitializeScriptedMapEventStream:
         brk                                     ; AE32 00                       .
         db   $0D,$CB,$80                     ; AE33 0D CB 80                 ...
 ; ----------------------------------------------------------------------------
@@ -3943,40 +3943,40 @@ MapEventText_Entry_AE32:
 ; ----------------------------------------------------------------------------
         jsr     SuspendRenderingUpdates         ; AE60 20 AF C5                  ..
         ldx     #$00                            ; AE63 A2 00                    ..
-        jsr     MapEventText_Entry_AE7A         ; AE65 20 7A AE                  z.
+        jsr     LoadScriptedMapEventSpriteSlot  ; AE65 20 7A AE                  z.
         ldx     #$01                            ; AE68 A2 01                    ..
-        jsr     MapEventText_Entry_AE7A         ; AE6A 20 7A AE                  z.
+        jsr     LoadScriptedMapEventSpriteSlot  ; AE6A 20 7A AE                  z.
         ldx     #$02                            ; AE6D A2 02                    ..
-        jsr     MapEventText_Entry_AE7A         ; AE6F 20 7A AE                  z.
+        jsr     LoadScriptedMapEventSpriteSlot  ; AE6F 20 7A AE                  z.
         ldx     #$03                            ; AE72 A2 03                    ..
-        jsr     MapEventText_Entry_AE7A         ; AE74 20 7A AE                  z.
-        jmp     UpperFixedEngine_Entry_C58F     ; AE77 4C 8F C5                 L..
+        jsr     LoadScriptedMapEventSpriteSlot  ; AE74 20 7A AE                  z.
+        jmp     ResumeRenderingAfterPpuWork     ; AE77 4C 8F C5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AE7A:
+LoadScriptedMapEventSpriteSlot:
         lda     #$53                            ; AE7A A9 53                    .S
         brk                                     ; AE7C 00                       .
         db   $0B,$87                         ; AE7D 0B 87                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; AE7F 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AE80:
+DecodeNextMapEventStreamRecord:
         ldy     #$00                            ; AE80 A0 00                    ..
         lda     ($69),y                         ; AE82 B1 69                    .i
         bmi     MapEventText_Branch_AEAE        ; AE84 30 28                    0(
         sta     CurrentMapNumber                ; AE86 85 63                    .c
-        jsr     MapEventText_Entry_AEA5         ; AE88 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AE88 20 A5 AE                  ..
         sta     CurrentSubmapNumber             ; AE8B 85 64                    .d
-        jsr     MapEventText_Entry_AEA5         ; AE8D 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AE8D 20 A5 AE                  ..
         sta     PlayerLocalX                    ; AE90 85 44                    .D
-        jsr     MapEventText_Entry_AEA5         ; AE92 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AE92 20 A5 AE                  ..
         sta     PlayerLocalY                    ; AE95 85 45                    .E
-        jsr     MapEventText_Entry_AEA5         ; AE97 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AE97 20 A5 AE                  ..
         sta     SaveTimeOfDay                   ; AE9A 8D ED 62                 ..b
         and     #$7F                            ; AE9D 29 7F                    ).
         sta     $6B                             ; AE9F 85 6B                    .k
         lda     #$80                            ; AEA1 A9 80                    ..
         sta     $41                             ; AEA3 85 41                    .A
-MapEventText_Entry_AEA5:
+AdvanceMapEventStreamPointer:
         inc     $69                             ; AEA5 E6 69                    .i
         bne     MapEventText_Branch_AEAB        ; AEA7 D0 02                    ..
         inc     $6A                             ; AEA9 E6 6A                    .j
@@ -3986,14 +3986,14 @@ MapEventText_Branch_AEAB:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AEAE:
         sta     $0530                           ; AEAE 8D 30 05                 .0.
-        jsr     MapEventText_Entry_AEA5         ; AEB1 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AEB1 20 A5 AE                  ..
         sta     $51                             ; AEB4 85 51                    .Q
-        jsr     MapEventText_Entry_AEA5         ; AEB6 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AEB6 20 A5 AE                  ..
         sta     $52                             ; AEB9 85 52                    .R
-        jsr     MapEventText_Entry_AEA5         ; AEBB 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AEBB 20 A5 AE                  ..
         sta     $0531                           ; AEBE 8D 31 05                 .1.
         tax                                     ; AEC1 AA                       .
-        jsr     MapEventText_Entry_AEA5         ; AEC2 20 A5 AE                  ..
+        jsr     AdvanceMapEventStreamPointer    ; AEC2 20 A5 AE                  ..
         ldy     #$00                            ; AEC5 A0 00                    ..
 MapEventText_Branch_AEC7:
         lda     ($51),y                         ; AEC7 B1 51                    .Q
@@ -4032,7 +4032,7 @@ Bank1B_MapEventPayloads:
         db   $2F,$2F,$2F,$29,$8F,$8F,$8F,$8F ; AF5A 2F 2F 2F 29 8F 8F 8F 8F  ///)....
         db   $8F,$8F,$86,$2F,$29             ; AF62 8F 8F 86 2F 29           .../)
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AF67:
+InitializeScriptedMapEventRam:
         ldy     #$85                            ; AF67 A0 85                    ..
 MapEventText_Branch_AF69:
         lda     $AF72,y                         ; AF69 B9 72 AF                 .r.
@@ -4060,19 +4060,19 @@ Bank1B_RamInitializationData:
         db   $00,$FF,$C0,$FF,$B3,$FF,$00,$FF ; AFEB 00 FF C0 FF B3 FF 00 FF  ........
         db   $00,$FF,$00,$FF                 ; AFF3 00 FF 00 FF              ....
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_AFF7:
-        jsr     UpperFixedEngine_Entry_D1F3     ; AFF7 20 F3 D1                  ..
+RunDayNightTransitionPresentation:
+        jsr     StopMapCue                      ; AFF7 20 F3 D1                  ..
         ldx     #$1E                            ; AFFA A2 1E                    ..
         jsr     WaitFrames                      ; AFFC 20 0C C9                  ..
         jsr     InitializeOamShadow             ; AFFF 20 43 C5                  C.
         ldx     #$00                            ; B002 A2 00                    ..
         ldy     #$00                            ; B004 A0 00                    ..
-        jsr     MapEventText_Entry_B309         ; B006 20 09 B3                  ..
-        jsr     MapEventText_Entry_B32A         ; B009 20 2A B3                  *.
-        jsr     MapEventText_Entry_B0F2         ; B00C 20 F2 B0                  ..
-        jsr     MapEventText_Entry_B4D6         ; B00F 20 D6 B4                  ..
-        jsr     MapEventText_Entry_B05E         ; B012 20 5E B0                  ^.
-        jsr     MapEventText_Entry_B32E         ; B015 20 2E B3                  ..
+        jsr     InitializeGeneratedPpuCodePointers; B006 20 09 B3                ..
+        jsr     InstallGeneratedPpuNmiCallback  ; B009 20 2A B3                  *.
+        jsr     BuildFirstGeneratedPpuReadProgram; B00C 20 F2 B0                 ..
+        jsr     BackupDayNightAnimationWorkspace; B00F 20 D6 B4                  ..
+        jsr     AnimateDayNightTransitionForward; B012 20 5E B0                  ^.
+        jsr     RestoreNmiCallbackAfterGeneratedTransfer; B015 20 2E B3          ..
         jsr     InitializeOamShadow             ; B018 20 43 C5                  C.
         jsr     WaitForNmi                      ; B01B 20 74 FF                  t.
         lda     SaveTimeOfDay                   ; B01E AD ED 62                 ..b
@@ -4120,22 +4120,22 @@ MapEventText_Branch_B049:
         sta     $054F                           ; B05A 8D 4F 05                 .O.
         rts                                     ; B05D 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B05E:
+AnimateDayNightTransitionForward:
         lda     #$00                            ; B05E A9 00                    ..
         sta     $53                             ; B060 85 53                    .S
 MapEventText_Branch_B062:
         lda     $53                             ; B062 A5 53                    .S
         pha                                     ; B064 48                       H
-        jsr     MapEventText_Entry_B0DC         ; B065 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B068 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B06B 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B06E 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B065 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B068 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B06B 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B06E 20 DC B0                  ..
         pla                                     ; B071 68                       h
         sta     $53                             ; B072 85 53                    .S
-        jsr     MapEventText_Entry_B0DC         ; B074 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B077 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B07A 20 DC B0                  ..
-        jsr     MapEventText_Entry_B0DC         ; B07D 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B074 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B077 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B07A 20 DC B0                  ..
+        jsr     AdvanceDayNightTransitionForward; B07D 20 DC B0                  ..
         lda     $53                             ; B080 A5 53                    .S
         cmp     #$0C                            ; B082 C9 0C                    ..
         bcc     MapEventText_Branch_B062        ; B084 90 DC                    ..
@@ -4145,61 +4145,61 @@ MapEventText_Branch_B062:
         sec                                     ; B08C 38                       8
         sbc     #$04                            ; B08D E9 04                    ..
         sta     $53                             ; B08F 85 53                    .S
-        jsr     MapEventText_Entry_B09A         ; B091 20 9A B0                  ..
-        jsr     MapEventText_Entry_B09A         ; B094 20 9A B0                  ..
-        jsr     MapEventText_Entry_B09A         ; B097 20 9A B0                  ..
-MapEventText_Entry_B09A:
-        jsr     MapEventText_Entry_B0DC         ; B09A 20 DC B0                  ..
-        jsr     MapEventText_Entry_B32E         ; B09D 20 2E B3                  ..
+        jsr     AdvanceDayNightTransitionPalette; B091 20 9A B0                  ..
+        jsr     AdvanceDayNightTransitionPalette; B094 20 9A B0                  ..
+        jsr     AdvanceDayNightTransitionPalette; B097 20 9A B0                  ..
+AdvanceDayNightTransitionPalette:
+        jsr     AdvanceDayNightTransitionForward; B09A 20 DC B0                  ..
+        jsr     RestoreNmiCallbackAfterGeneratedTransfer; B09D 20 2E B3          ..
         jsr     BuildPaletteUpdateCommand       ; B0A0 20 DE C5                  ..
         lda     $16                             ; B0A3 A5 16                    ..
         clc                                     ; B0A5 18                       .
         adc     #$10                            ; B0A6 69 10                    i.
         sta     $16                             ; B0A8 85 16                    ..
         jsr     InitializeOamShadow             ; B0AA 20 43 C5                  C.
-        jmp     MapEventText_Entry_B32A         ; B0AD 4C 2A B3                 L*.
+        jmp     InstallGeneratedPpuNmiCallback  ; B0AD 4C 2A B3                 L*.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B0B0:
+AnimateDayNightTransitionReverse:
         lda     #$0B                            ; B0B0 A9 0B                    ..
         sta     $53                             ; B0B2 85 53                    .S
 MapEventText_Branch_B0B4:
         lda     $53                             ; B0B4 A5 53                    .S
         pha                                     ; B0B6 48                       H
-        jsr     MapEventText_Entry_B0E7         ; B0B7 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0BA 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0BD 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0C0 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0B7 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0BA 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0BD 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0C0 20 E7 B0                  ..
         pla                                     ; B0C3 68                       h
         sta     $53                             ; B0C4 85 53                    .S
-        jsr     MapEventText_Entry_B0E7         ; B0C6 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0C9 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0CC 20 E7 B0                  ..
-        jsr     MapEventText_Entry_B0E7         ; B0CF 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0C6 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0C9 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0CC 20 E7 B0                  ..
+        jsr     AdvanceDayNightTransitionReverse; B0CF 20 E7 B0                  ..
         lda     $53                             ; B0D2 A5 53                    .S
         cmp     #$FF                            ; B0D4 C9 FF                    ..
         bne     MapEventText_Branch_B0B4        ; B0D6 D0 DC                    ..
-        jsr     MapEventText_Entry_B0EC         ; B0D8 20 EC B0                  ..
+        jsr     RefreshDayNightTransitionBuffers; B0D8 20 EC B0                  ..
         rts                                     ; B0DB 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B0DC:
-        jsr     MapEventText_Entry_B36F         ; B0DC 20 6F B3                  o.
+AdvanceDayNightTransitionForward:
+        jsr     GenerateDayNightTileMaskTable   ; B0DC 20 6F B3                  o.
         inc     $53                             ; B0DF E6 53                    .S
-        jsr     MapEventText_Entry_B112         ; B0E1 20 12 B1                  ..
+        jsr     BuildSecondGeneratedPpuReadProgram; B0E1 20 12 B1                ..
         jmp     MapEventText_Branch_B511        ; B0E4 4C 11 B5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B0E7:
-        jsr     MapEventText_Entry_B36F         ; B0E7 20 6F B3                  o.
+AdvanceDayNightTransitionReverse:
+        jsr     GenerateDayNightTileMaskTable   ; B0E7 20 6F B3                  o.
         dec     $53                             ; B0EA C6 53                    .S
-MapEventText_Entry_B0EC:
-        jsr     MapEventText_Entry_B112         ; B0EC 20 12 B1                  ..
+RefreshDayNightTransitionBuffers:
+        jsr     BuildSecondGeneratedPpuReadProgram; B0EC 20 12 B1                ..
         jmp     MapEventText_Branch_B511        ; B0EF 4C 11 B5                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B0F2:
-        jsr     MapEventText_Entry_B13D         ; B0F2 20 3D B1                  =.
+BuildFirstGeneratedPpuReadProgram:
+        jsr     TerminateFirstGeneratedPpuProgram; B0F2 20 3D B1                 =.
 MapEventText_Branch_B0F5:
-        jsr     MapEventText_Entry_B158         ; B0F5 20 58 B1                  X.
-        jsr     MapEventText_Entry_B2C8         ; B0F8 20 C8 B2                  ..
-        jsr     MapEventText_Entry_B149         ; B0FB 20 49 B1                  I.
+        jsr     PatchFirstGeneratedPpuProgramBoundary; B0F5 20 58 B1             X.
+        jsr     ExecuteGeneratedPpuTransfer     ; B0F8 20 C8 B2                  ..
+        jsr     AdvanceGeneratedPpuSourceByB0   ; B0FB 20 49 B1                  I.
         lda     $4B                             ; B0FE A5 4B                    .K
         clc                                     ; B100 18                       .
         adc     #$B0                            ; B101 69 B0                    i.
@@ -4213,36 +4213,36 @@ MapEventText_Branch_B109:
         bcc     MapEventText_Branch_B0F5        ; B10F 90 E4                    ..
         rts                                     ; B111 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B112:
+BuildSecondGeneratedPpuReadProgram:
         ldx     #$02                            ; B112 A2 02                    ..
         ldy     #$00                            ; B114 A0 00                    ..
-        jsr     MapEventText_Entry_B309         ; B116 20 09 B3                  ..
-        jsr     MapEventText_Entry_B143         ; B119 20 43 B1                  C.
+        jsr     InitializeGeneratedPpuCodePointers; B116 20 09 B3                ..
+        jsr     TerminateSecondGeneratedPpuProgram; B119 20 43 B1                C.
         ldx     #$02                            ; B11C A2 02                    ..
         ldy     #$02                            ; B11E A0 02                    ..
-        jsr     MapEventText_Entry_B309         ; B120 20 09 B3                  ..
+        jsr     InitializeGeneratedPpuCodePointers; B120 20 09 B3                ..
 MapEventText_Branch_B123:
         ldx     #$02                            ; B123 A2 02                    ..
-        jsr     MapEventText_Entry_B319         ; B125 20 19 B3                  ..
-        jsr     MapEventText_Entry_B346         ; B128 20 46 B3                  F.
-        jsr     MapEventText_Entry_B176         ; B12B 20 76 B1                  v.
-        jsr     MapEventText_Entry_B2C8         ; B12E 20 C8 B2                  ..
-        jsr     MapEventText_Entry_B164         ; B131 20 64 B1                  d.
+        jsr     SelectGeneratedPpuTransferSource; B125 20 19 B3                  ..
+        jsr     CopyGeneratedPpuProgramToSource ; B128 20 46 B3                  F.
+        jsr     PatchSecondGeneratedPpuProgramBoundary; B12B 20 76 B1            v.
+        jsr     ExecuteGeneratedPpuTransfer     ; B12E 20 C8 B2                  ..
+        jsr     AdvanceGeneratedPpuSourceBy0133 ; B131 20 64 B1                  d.
         inc     $52                             ; B134 E6 52                    .R
         lda     $52                             ; B136 A5 52                    .R
         cmp     #$06                            ; B138 C9 06                    ..
         bcc     MapEventText_Branch_B123        ; B13A 90 E7                    ..
         rts                                     ; B13C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B13D:
-        jsr     MapEventText_Entry_B182         ; B13D 20 82 B1                  ..
+TerminateFirstGeneratedPpuProgram:
+        jsr     EmitFirstGeneratedPpuReadLoop   ; B13D 20 82 B1                  ..
         jmp     MapEventText_Branch_B2C3        ; B140 4C C3 B2                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B143:
-        jsr     MapEventText_Entry_B198         ; B143 20 98 B1                  ..
+TerminateSecondGeneratedPpuProgram:
+        jsr     EmitSecondGeneratedPpuReadLoop  ; B143 20 98 B1                  ..
         jmp     MapEventText_Branch_B2C3        ; B146 4C C3 B2                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B149:
+AdvanceGeneratedPpuSourceByB0:
         lda     $75C0                           ; B149 AD C0 75                 ..u
         clc                                     ; B14C 18                       .
         adc     #$B0                            ; B14D 69 B0                    i.
@@ -4252,7 +4252,7 @@ MapEventText_Entry_B149:
 MapEventText_Branch_B157:
         rts                                     ; B157 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B158:
+PatchFirstGeneratedPpuProgramBoundary:
         lda     $52                             ; B158 A5 52                    .R
         cmp     #$0A                            ; B15A C9 0A                    ..
         bcc     MapEventText_Branch_B163        ; B15C 90 05                    ..
@@ -4261,7 +4261,7 @@ MapEventText_Entry_B158:
 MapEventText_Branch_B163:
         rts                                     ; B163 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B164:
+AdvanceGeneratedPpuSourceBy0133:
         lda     $75C0                           ; B164 AD C0 75                 ..u
         clc                                     ; B167 18                       .
         adc     #$33                            ; B168 69 33                    i3
@@ -4271,7 +4271,7 @@ MapEventText_Entry_B164:
         sta     $75BB                           ; B172 8D BB 75                 ..u
         rts                                     ; B175 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B176:
+PatchSecondGeneratedPpuProgramBoundary:
         lda     $52                             ; B176 A5 52                    .R
         cmp     #$05                            ; B178 C9 05                    ..
         bcc     MapEventText_Branch_B181        ; B17A 90 05                    ..
@@ -4280,36 +4280,36 @@ MapEventText_Entry_B176:
 MapEventText_Branch_B181:
         rts                                     ; B181 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B182:
+EmitFirstGeneratedPpuReadLoop:
         ldy     #$00                            ; B182 A0 00                    ..
-        jsr     MapEventText_Entry_B1AE         ; B184 20 AE B1                  ..
+        jsr     AppendPpuReadStoreBlock         ; B184 20 AE B1                  ..
         ldx     #$B0                            ; B187 A2 B0                    ..
         lda     $52                             ; B189 A5 52                    .R
         cmp     #$0A                            ; B18B C9 0A                    ..
         bcc     MapEventText_Branch_B191        ; B18D 90 02                    ..
         ldx     #$50                            ; B18F A2 50                    .P
 MapEventText_Branch_B191:
-        jsr     MapEventText_Entry_B262         ; B191 20 62 B2                  b.
+        jsr     AppendPpuReadStoreTail          ; B191 20 62 B2                  b.
         dex                                     ; B194 CA                       .
         bne     MapEventText_Branch_B191        ; B195 D0 FA                    ..
         rts                                     ; B197 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B198:
+EmitSecondGeneratedPpuReadLoop:
         ldy     #$00                            ; B198 A0 00                    ..
-        jsr     MapEventText_Entry_B219         ; B19A 20 19 B2                  ..
+        jsr     AppendPpuReadSetupBlock         ; B19A 20 19 B2                  ..
         ldx     #$00                            ; B19D A2 00                    ..
 MapEventText_Branch_B19F:
-        jsr     MapEventText_Entry_B293         ; B19F 20 93 B2                  ..
+        jsr     AppendZeroPpuWriteInstruction   ; B19F 20 93 B2                  ..
         dex                                     ; B1A2 CA                       .
         bne     MapEventText_Branch_B19F        ; B1A3 D0 FA                    ..
         ldx     #$33                            ; B1A5 A2 33                    .3
 MapEventText_Branch_B1A7:
-        jsr     MapEventText_Entry_B293         ; B1A7 20 93 B2                  ..
+        jsr     AppendZeroPpuWriteInstruction   ; B1A7 20 93 B2                  ..
         dex                                     ; B1AA CA                       .
         bne     MapEventText_Branch_B1A7        ; B1AB D0 FA                    ..
         rts                                     ; B1AD 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B1AE:
+AppendPpuReadStoreBlock:
         lda     Bank1B_RuntimeCodeTemplate      ; B1AE AD 09 B2                 ...
         sta     ($49),y                         ; B1B1 91 49                    .I
         iny                                     ; B1B3 C8                       .
@@ -4377,7 +4377,7 @@ Bank1B_RuntimeCodeTemplate:
         db   $4B                             ; B217 4B                       K
         db   $C8                             ; B218 C8                       .
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B219:
+AppendPpuReadSetupBlock:
         lda     Bank1B_RuntimeCodeTemplate      ; B219 AD 09 B2                 ...
         sta     ($49),y                         ; B21C 91 49                    .I
         iny                                     ; B21E C8                       .
@@ -4418,7 +4418,7 @@ MapEventText_Branch_B25F:
         ldy     #$00                            ; B25F A0 00                    ..
         rts                                     ; B261 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B262:
+AppendPpuReadStoreTail:
         lda     $B213                           ; B262 AD 13 B2                 ...
         sta     ($49),y                         ; B265 91 49                    .I
         iny                                     ; B267 C8                       .
@@ -4447,7 +4447,7 @@ MapEventText_Branch_B290:
         ldy     #$00                            ; B290 A0 00                    ..
         rts                                     ; B292 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B293:
+AppendZeroPpuWriteInstruction:
         lda     Bank1B_PpuWriteCodeTemplate     ; B293 AD BE B2                 ...
         sta     ($49),y                         ; B296 91 49                    .I
         iny                                     ; B298 C8                       .
@@ -4485,7 +4485,7 @@ MapEventText_Branch_B2C3:
         sta     ($49),y                         ; B2C5 91 49                    .I
         rts                                     ; B2C7 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B2C8:
+ExecuteGeneratedPpuTransfer:
         lda     #$80                            ; B2C8 A9 80                    ..
         sta     $51                             ; B2CA 85 51                    .Q
         ldy     #$00                            ; B2CC A0 00                    ..
@@ -4520,7 +4520,7 @@ MapEventText_Branch_B2E4:
         sta     PPUSCROLL                       ; B303 8D 05 20                 ..
         jmp     UpperFixedEngine_Branch_C1A0    ; B306 4C A0 C1                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B309:
+InitializeGeneratedPpuCodePointers:
         lda     #$00                            ; B309 A9 00                    ..
         sta     $51                             ; B30B 85 51                    .Q
         sta     $52                             ; B30D 85 52                    .R
@@ -4528,7 +4528,7 @@ MapEventText_Entry_B309:
         sta     $49                             ; B312 85 49                    .I
         lda     $B325,y                         ; B314 B9 25 B3                 .%.
         sta     $4A                             ; B317 85 4A                    .J
-MapEventText_Entry_B319:
+SelectGeneratedPpuTransferSource:
         lda     $B326,x                         ; B319 BD 26 B3                 .&.
         sta     $4B                             ; B31C 85 4B                    .K
         lda     $B327,x                         ; B31E BD 27 B3                 .'.
@@ -4541,10 +4541,10 @@ Bank1B_RamPointerTable:
         db   $8A                             ; B326 8A                       .
         db   $6E,$C5,$75                     ; B327 6E C5 75                 n.u
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B32A:
+InstallGeneratedPpuNmiCallback:
         ldx     #$00                            ; B32A A2 00                    ..
         beq     MapEventText_Branch_B332        ; B32C F0 04                    ..
-MapEventText_Entry_B32E:
+RestoreNmiCallbackAfterGeneratedTransfer:
         ldx     #$02                            ; B32E A2 02                    ..
         bne     MapEventText_Branch_B335        ; B330 D0 03                    ..
 MapEventText_Branch_B332:
@@ -4560,21 +4560,21 @@ Bank1B_NmiCallbackPointers:
         db   $D3                             ; B342 D3                       .
         db   $B2,$5A,$C1                     ; B343 B2 5A C1                 .Z.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B346:
+CopyGeneratedPpuProgramToSource:
         ldy     #$00                            ; B346 A0 00                    ..
         ldx     #$00                            ; B348 A2 00                    ..
 MapEventText_Branch_B34A:
-        jsr     MapEventText_Entry_B359         ; B34A 20 59 B3                  Y.
+        jsr     CopyGeneratedPpuProgramByte     ; B34A 20 59 B3                  Y.
         inx                                     ; B34D E8                       .
         bne     MapEventText_Branch_B34A        ; B34E D0 FA                    ..
         ldx     #$33                            ; B350 A2 33                    .3
 MapEventText_Branch_B352:
-        jsr     MapEventText_Entry_B359         ; B352 20 59 B3                  Y.
+        jsr     CopyGeneratedPpuProgramByte     ; B352 20 59 B3                  Y.
         dex                                     ; B355 CA                       .
         bne     MapEventText_Branch_B352        ; B356 D0 FA                    ..
         rts                                     ; B358 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B359:
+CopyGeneratedPpuProgramByte:
         lda     ($49),y                         ; B359 B1 49                    .I
         sta     ($4B),y                         ; B35B 91 4B                    .K
         inc     $49                             ; B35D E6 49                    .I
@@ -4590,19 +4590,19 @@ MapEventText_Branch_B363:
 MapEventText_Branch_B36E:
         rts                                     ; B36E 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B36F:
+GenerateDayNightTileMaskTable:
         ldx     #$00                            ; B36F A2 00                    ..
-        jsr     MapEventText_Entry_B319         ; B371 20 19 B3                  ..
+        jsr     SelectGeneratedPpuTransferSource; B371 20 19 B3                  ..
         ldx     #$73                            ; B374 A2 73                    .s
 MapEventText_Branch_B376:
-        jsr     MapEventText_Entry_B37D         ; B376 20 7D B3                  }.
+        jsr     GenerateDayNightTileMaskGroup   ; B376 20 7D B3                  }.
         dex                                     ; B379 CA                       .
         bne     MapEventText_Branch_B376        ; B37A D0 FA                    ..
         rts                                     ; B37C 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B37D:
+GenerateDayNightTileMaskGroup:
         ldy     #$00                            ; B37D A0 00                    ..
-        jsr     MapEventText_Entry_B38E         ; B37F 20 8E B3                  ..
+        jsr     GenerateDayNightTileMaskPair    ; B37F 20 8E B3                  ..
         lda     $4B                             ; B382 A5 4B                    .K
         clc                                     ; B384 18                       .
         adc     #$10                            ; B385 69 10                    i.
@@ -4612,28 +4612,28 @@ MapEventText_Entry_B37D:
 MapEventText_Branch_B38D:
         rts                                     ; B38D 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B38E:
-        jsr     MapEventText_Entry_B391         ; B38E 20 91 B3                  ..
-MapEventText_Entry_B391:
+GenerateDayNightTileMaskPair:
+        jsr     ExpandDayNightTileMaskPattern   ; B38E 20 91 B3                  ..
+ExpandDayNightTileMaskPattern:
         lda     $53                             ; B391 A5 53                    .S
         and     #$02                            ; B393 29 02                    ).
         bne     MapEventText_Branch_B3BC        ; B395 D0 25                    .%
-        jsr     MapEventText_Entry_B419         ; B397 20 19 B4                  ..
+        jsr     DecodeDayNightPackedMaskByte    ; B397 20 19 B4                  ..
         sta     ($4B),y                         ; B39A 91 4B                    .K
         iny                                     ; B39C C8                       .
         sta     ($4B),y                         ; B39D 91 4B                    .K
         iny                                     ; B39F C8                       .
-        jsr     MapEventText_Entry_B3E9         ; B3A0 20 E9 B3                  ..
+        jsr     SelectPhaseFourPreviousMaskByte ; B3A0 20 E9 B3                  ..
         sta     ($4B),y                         ; B3A3 91 4B                    .K
         iny                                     ; B3A5 C8                       .
         sta     ($4B),y                         ; B3A6 91 4B                    .K
         iny                                     ; B3A8 C8                       .
-        jsr     MapEventText_Entry_B3F4         ; B3A9 20 F4 B3                  ..
+        jsr     SelectPhaseEightPreviousMaskByte; B3A9 20 F4 B3                  ..
         sta     ($4B),y                         ; B3AC 91 4B                    .K
         iny                                     ; B3AE C8                       .
         sta     ($4B),y                         ; B3AF 91 4B                    .K
         iny                                     ; B3B1 C8                       .
-        jsr     MapEventText_Entry_B3E9         ; B3B2 20 E9 B3                  ..
+        jsr     SelectPhaseFourPreviousMaskByte ; B3B2 20 E9 B3                  ..
         sta     ($4B),y                         ; B3B5 91 4B                    .K
         iny                                     ; B3B7 C8                       .
         sta     ($4B),y                         ; B3B8 91 4B                    .K
@@ -4642,28 +4642,28 @@ MapEventText_Entry_B391:
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_B3BC:
         iny                                     ; B3BC C8                       .
-        jsr     MapEventText_Entry_B419         ; B3BD 20 19 B4                  ..
+        jsr     DecodeDayNightPackedMaskByte    ; B3BD 20 19 B4                  ..
         sta     ($4B),y                         ; B3C0 91 4B                    .K
         dey                                     ; B3C2 88                       .
         sta     ($4B),y                         ; B3C3 91 4B                    .K
         iny                                     ; B3C5 C8                       .
         iny                                     ; B3C6 C8                       .
         iny                                     ; B3C7 C8                       .
-        jsr     MapEventText_Entry_B3FF         ; B3C8 20 FF B3                  ..
+        jsr     SelectPhaseFourPriorPairMaskByte; B3C8 20 FF B3                  ..
         sta     ($4B),y                         ; B3CB 91 4B                    .K
         dey                                     ; B3CD 88                       .
         sta     ($4B),y                         ; B3CE 91 4B                    .K
         iny                                     ; B3D0 C8                       .
         iny                                     ; B3D1 C8                       .
         iny                                     ; B3D2 C8                       .
-        jsr     MapEventText_Entry_B40C         ; B3D3 20 0C B4                  ..
+        jsr     SelectPhaseEightPriorPairMaskByte; B3D3 20 0C B4                 ..
         sta     ($4B),y                         ; B3D6 91 4B                    .K
         dey                                     ; B3D8 88                       .
         sta     ($4B),y                         ; B3D9 91 4B                    .K
         iny                                     ; B3DB C8                       .
         iny                                     ; B3DC C8                       .
         iny                                     ; B3DD C8                       .
-        jsr     MapEventText_Entry_B3FF         ; B3DE 20 FF B3                  ..
+        jsr     SelectPhaseFourPriorPairMaskByte; B3DE 20 FF B3                  ..
         sta     ($4B),y                         ; B3E1 91 4B                    .K
         dey                                     ; B3E3 88                       .
         sta     ($4B),y                         ; B3E4 91 4B                    .K
@@ -4671,28 +4671,28 @@ MapEventText_Branch_B3BC:
         iny                                     ; B3E7 C8                       .
         rts                                     ; B3E8 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B3E9:
+SelectPhaseFourPreviousMaskByte:
         lda     $53                             ; B3E9 A5 53                    .S
         cmp     #$04                            ; B3EB C9 04                    ..
-        bcc     MapEventText_Entry_B419         ; B3ED 90 2A                    .*
+        bcc     DecodeDayNightPackedMaskByte    ; B3ED 90 2A                    .*
         dey                                     ; B3EF 88                       .
         lda     ($4B),y                         ; B3F0 B1 4B                    .K
         iny                                     ; B3F2 C8                       .
         rts                                     ; B3F3 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B3F4:
+SelectPhaseEightPreviousMaskByte:
         lda     $53                             ; B3F4 A5 53                    .S
         cmp     #$08                            ; B3F6 C9 08                    ..
-        bcc     MapEventText_Entry_B419         ; B3F8 90 1F                    ..
+        bcc     DecodeDayNightPackedMaskByte    ; B3F8 90 1F                    ..
         dey                                     ; B3FA 88                       .
         lda     ($4B),y                         ; B3FB B1 4B                    .K
         iny                                     ; B3FD C8                       .
         rts                                     ; B3FE 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B3FF:
+SelectPhaseFourPriorPairMaskByte:
         lda     $53                             ; B3FF A5 53                    .S
         cmp     #$04                            ; B401 C9 04                    ..
-        bcc     MapEventText_Entry_B419         ; B403 90 14                    ..
+        bcc     DecodeDayNightPackedMaskByte    ; B403 90 14                    ..
         dey                                     ; B405 88                       .
         dey                                     ; B406 88                       .
         lda     ($4B),y                         ; B407 B1 4B                    .K
@@ -4700,10 +4700,10 @@ MapEventText_Entry_B3FF:
         iny                                     ; B40A C8                       .
         rts                                     ; B40B 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B40C:
+SelectPhaseEightPriorPairMaskByte:
         lda     $53                             ; B40C A5 53                    .S
         cmp     #$08                            ; B40E C9 08                    ..
-        bcc     MapEventText_Entry_B419         ; B410 90 07                    ..
+        bcc     DecodeDayNightPackedMaskByte    ; B410 90 07                    ..
         dey                                     ; B412 88                       .
         dey                                     ; B413 88                       .
         lda     ($4B),y                         ; B414 B1 4B                    .K
@@ -4711,7 +4711,7 @@ MapEventText_Entry_B40C:
         iny                                     ; B417 C8                       .
         rts                                     ; B418 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B419:
+DecodeDayNightPackedMaskByte:
         lda     $53                             ; B419 A5 53                    .S
         and     #$0C                            ; B41B 29 0C                    ).
         beq     MapEventText_Branch_B43E        ; B41D F0 1F                    ..
@@ -4882,7 +4882,7 @@ MapEventText_Branch_B4D2:
         lsr     a                               ; B4D4 4A                       J
         rts                                     ; B4D5 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B4D6:
+BackupDayNightAnimationWorkspace:
         ldx     #$00                            ; B4D6 A2 00                    ..
 MapEventText_Branch_B4D8:
         lda     $6E8A,x                         ; B4D8 BD 8A 6E                 ..n
@@ -4936,41 +4936,41 @@ MapEventText_Branch_B542:
         bpl     MapEventText_Branch_B542        ; B549 10 F7                    ..
         rts                                     ; B54B 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B54C:
-        jsr     UpperFixedEngine_Entry_C5C5     ; B54C 20 C5 C5                  ..
+BeginScrollingMapEventFinale:
+        jsr     FadePaletteFromBlack            ; B54C 20 C5 C5                  ..
         jsr     SuspendRenderingUpdates         ; B54F 20 AF C5                  ..
         ldx     #$01                            ; B552 A2 01                    ..
-        jsr     UpperFixedEngine_Entry_F3FB     ; B554 20 FB F3                  ..
+        jsr     UploadFixedGraphicsPages        ; B554 20 FB F3                  ..
         jsr     ResetDisplayState               ; B557 20 4E C5                  N.
-MapEventText_Entry_B55A:
+RunScrollingMapEventFinale:
         jsr     FixedTrampoline11               ; B55A 20 34 C0                  4.
-        jsr     MapEventText_Entry_B5FF         ; B55D 20 FF B5                  ..
+        jsr     InitializeScrollingFinaleState  ; B55D 20 FF B5                  ..
         ldx     #$64                            ; B560 A2 64                    .d
         jsr     WaitFrames                      ; B562 20 0C C9                  ..
         lda     #$21                            ; B565 A9 21                    .!
         sta     $05FD                           ; B567 8D FD 05                 ...
         lda     #$32                            ; B56A A9 32                    .2
         sta     $05FF                           ; B56C 8D FF 05                 ...
-        jsr     UpperFixedEngine_Entry_C58F     ; B56F 20 8F C5                  ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; B572 20 BF C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; B56F 20 8F C5                  ..
+        jsr     FadePaletteToBlack              ; B572 20 BF C5                  ..
         lda     $1F                             ; B575 A5 1F                    ..
         ora     #$40                            ; B577 09 40                    .@
         sta     $1F                             ; B579 85 1F                    ..
 MapEventText_Branch_B57B:
-        jsr     MapEventText_Entry_B597         ; B57B 20 97 B5                  ..
+        jsr     AdvanceFinaleVerticalScroll     ; B57B 20 97 B5                  ..
         lda     $52                             ; B57E A5 52                    .R
         and     #$0F                            ; B580 29 0F                    ).
         bne     MapEventText_Branch_B58A        ; B582 D0 06                    ..
-        jsr     MapEventText_Entry_B5AF         ; B584 20 AF B5                  ..
-        jsr     MapEventText_Entry_B626         ; B587 20 26 B6                  &.
+        jsr     QueueBlankFinaleNametableRow    ; B584 20 AF B5                  ..
+        jsr     AdvanceFinaleGraphicsStream     ; B587 20 26 B6                  &.
 MapEventText_Branch_B58A:
-        jsr     MapEventText_Entry_B6C6         ; B58A 20 C6 B6                  ..
+        jsr     QueueFinalePatternUpdate        ; B58A 20 C6 B6                  ..
         inc     $52                             ; B58D E6 52                    .R
         ldx     #$03                            ; B58F A2 03                    ..
         jsr     WaitFrames                      ; B591 20 0C C9                  ..
         jmp     MapEventText_Branch_B57B        ; B594 4C 7B B5                 L{.
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B597:
+AdvanceFinaleVerticalScroll:
         lda     $0509                           ; B597 AD 09 05                 ...
         clc                                     ; B59A 18                       .
         adc     #$01                            ; B59B 69 01                    i.
@@ -4984,7 +4984,7 @@ MapEventText_Branch_B5AB:
         sta     $0509                           ; B5AB 8D 09 05                 ...
         rts                                     ; B5AE 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B5AF:
+QueueBlankFinaleNametableRow:
         lda     $4B                             ; B5AF A5 4B                    .K
         and     #$C0                            ; B5B1 29 C0                    ).
         clc                                     ; B5B3 18                       .
@@ -5028,13 +5028,13 @@ MapEventText_Branch_B5EA:
         sta     $1F                             ; B5FC 85 1F                    ..
         rts                                     ; B5FE 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B5FF:
+InitializeScrollingFinaleState:
         lda     #$00                            ; B5FF A9 00                    ..
         sta     $4B                             ; B601 85 4B                    .K
         lda     #$28                            ; B603 A9 28                    .(
         sta     $4C                             ; B605 85 4C                    .L
         ldx     #$00                            ; B607 A2 00                    ..
-        jsr     MapEventText_Entry_B64F         ; B609 20 4F B6                  O.
+        jsr     DecodeNextFinaleGraphicsRun     ; B609 20 4F B6                  O.
         lda     #$00                            ; B60C A9 00                    ..
         sta     $52                             ; B60E 85 52                    .R
         sta     $0508                           ; B610 8D 08 05                 ...
@@ -5046,9 +5046,9 @@ MapEventText_Entry_B5FF:
         ora     #$01                            ; B621 09 01                    ..
         jmp     WriteMmc1Control                ; B623 4C 18 C1                 L..
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B626:
+AdvanceFinaleGraphicsStream:
         ldx     #$01                            ; B626 A2 01                    ..
-        jsr     MapEventText_Entry_B64F         ; B628 20 4F B6                  O.
+        jsr     DecodeNextFinaleGraphicsRun     ; B628 20 4F B6                  O.
         txa                                     ; B62B 8A                       .
         beq     MapEventText_Branch_B64E        ; B62C F0 20                    .
         pla                                     ; B62E 68                       h
@@ -5068,7 +5068,7 @@ MapEventText_Entry_B626:
 MapEventText_Branch_B64E:
         rts                                     ; B64E 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B64F:
+DecodeNextFinaleGraphicsRun:
         txa                                     ; B64F 8A                       .
         bne     MapEventText_Branch_B665        ; B650 D0 13                    ..
         lda     Bank1B_RamStreamPointer         ; B652 AD C4 B6                 ...
@@ -5146,7 +5146,7 @@ Bank1B_RamStreamPointer:
         db   $00                             ; B6C4 00                       .
         db   $78                             ; B6C5 78                       x
 ; ----------------------------------------------------------------------------
-MapEventText_Entry_B6C6:
+QueueFinalePatternUpdate:
         lda     $52                             ; B6C6 A5 52                    .R
         lsr     a                               ; B6C8 4A                       J
         bcc     MapEventText_Branch_B707        ; B6C9 90 3C                    .<

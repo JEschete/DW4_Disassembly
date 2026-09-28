@@ -1191,7 +1191,7 @@ BattleSetupServices_Branch_872C:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_872F:
         jsr     WaitForFreshButtonPress         ; 872F 20 CC C8                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; 8732 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; 8732 20 C5 C5                  ..
         lda     $1F                             ; 8735 A5 1F                    ..
         and     #$F7                            ; 8737 29 F7                    ).
         sta     $1F                             ; 8739 85 1F                    ..
@@ -1242,7 +1242,7 @@ BattleSetupServices_Branch_877D:
         brk                                     ; 877D 00                       .
         db   $09,$9F                         ; 877E 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D214     ; 8780 4C 14 D2                 L..
+        jmp     WaitForButtonStateOneTwentyFrames; 8780 4C 14 D2                L..
 ; ----------------------------------------------------------------------------
 BattleSetup_CheckTransitionBounds:
         brk                                     ; 8783 00                       .
@@ -1415,7 +1415,7 @@ BattleSetupServices_Branch_8888:
         brk                                     ; 8888 00                       .
         db   $08,$2F                         ; 8889 08 2F                    ./
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D218     ; 888B 4C 18 D2                 L..
+        jmp     WaitForButtonStateOneEightyFrames; 888B 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
 BattleSetup_RequireAEHeader:
         brk                                     ; 888E 00                       .
@@ -2637,7 +2637,7 @@ BattleSetupServices_Branch_93FD:
 BattleSetupServices_Branch_9418:
         jsr     WaitForFreshButtonPress         ; 9418 20 CC C8                  ..
 BattleSetupServices_Branch_941B:
-        jmp     UpperFixedEngine_Entry_D1F3     ; 941B 4C F3 D1                 L..
+        jmp     StopMapCue                      ; 941B 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_941E:
         brk                                     ; 941E 00                       .
@@ -3318,7 +3318,7 @@ BattleSetup_ReadBankedSelectionByte:
         lda     #$10                            ; 9778 A9 10                    ..
         sta     $23                             ; 977A 85 23                    .#
         ldx     #$00                            ; 977C A2 00                    ..
-        jsr     UpperFixedEngine_Entry_C3CE     ; 977E 20 CE C3                  ..
+        jsr     ResolveBankedPointerIntoZeroPage; 977E 20 CE C3                  ..
         ldy     $6279                           ; 9781 AC 79 62                 .yb
         jsr     ReadBankedByteThroughPointer    ; 9784 20 EA C3                  ..
         rts                                     ; 9787 60                       `
@@ -3359,7 +3359,7 @@ BattleSetupServices_Branch_97A8:
         rts                                     ; 97A8 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetup_RunEncounterIntroSequence:
-        jsr     UpperFixedEngine_Entry_D1F3     ; 97A9 20 F3 D1                  ..
+        jsr     StopMapCue                      ; 97A9 20 F3 D1                  ..
         brk                                     ; 97AC 00                       .
         db   $2A,$FB                         ; 97AD 2A FB                    *.
 ; ----------------------------------------------------------------------------
@@ -3386,16 +3386,16 @@ BattleSetup_AnimateEncounterScene:
         jsr     BattleSetup_RunEncounterIntroRevealLoop; 97CD 20 87 98           ..
         ldx     #$06                            ; 97D0 A2 06                    ..
         jsr     BattleSetup_LoadEncounterSpriteFrame; 97D2 20 F6 98              ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; 97D5 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; 97D5 20 C5 C5                  ..
         lda     #$3C                            ; 97D8 A9 3C                    .<
-        jsr     UpperFixedEngine_Entry_C78C     ; 97DA 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; 97DA 20 8C C7                  ..
         lda     #$F7                            ; 97DD A9 F7                    ..
         sta     $0200,y                         ; 97DF 99 00 02                 ...
         sta     $0203,y                         ; 97E2 99 03 02                 ...
         ldx     #$06                            ; 97E5 A2 06                    ..
         jsr     WaitFrames                      ; 97E7 20 0C C9                  ..
         jsr     BattleSetup_CopyEncounterSpriteOamTemplate; 97EA 20 1A 99        ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; 97ED 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; 97ED 20 BF C5                  ..
         lda     #$03                            ; 97F0 A9 03                    ..
         sta     $05                             ; 97F2 85 05                    ..
         ldx     #$00                            ; 97F4 A2 00                    ..
@@ -3461,7 +3461,7 @@ BattleSetupServices_Branch_985E:
         sta     $0602,x                         ; 985E 9D 02 06                 ...
         dex                                     ; 9861 CA                       .
         bne     BattleSetupServices_Branch_985E ; 9862 D0 FA                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 9864 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 9864 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 9867 20 74 FF                  t.
         rts                                     ; 986A 60                       `
 ; ----------------------------------------------------------------------------
@@ -3539,7 +3539,7 @@ BattleSetupServices_Branch_98F8:
         bpl     BattleSetupServices_Branch_98F8 ; 9900 10 F6                    ..
         lda     $990E,x                         ; 9902 BD 0E 99                 ...
         sta     $0602                           ; 9905 8D 02 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; 9908 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 9908 20 B9 C5                  ..
         ldx     #$06                            ; 990B A2 06                    ..
 L990E = $+ 1
         jsr     WaitFrames                      ; 990D 20 0C C9                  ..
@@ -3696,7 +3696,7 @@ BattleSetupServices_Branch_9B1E:
 ; ----------------------------------------------------------------------------
 BattleSetup_AdvanceEncounterSpriteTileFrame:
         lda     #$3C                            ; 9B26 A9 3C                    .<
-        jsr     UpperFixedEngine_Entry_C78C     ; 9B28 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; 9B28 20 8C C7                  ..
         tya                                     ; 9B2B 98                       .
         tax                                     ; 9B2C AA                       .
         inc     $0201,x                         ; 9B2D FE 01 02                 ...
@@ -3768,7 +3768,7 @@ BattleSetup_CopyEncounterSpriteToOam:
         lda     ($4F),y                         ; 9B98 B1 4F                    .O
         pha                                     ; 9B9A 48                       H
         lda     #$3C                            ; 9B9B A9 3C                    .<
-        jsr     UpperFixedEngine_Entry_C78C     ; 9B9D 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; 9B9D 20 8C C7                  ..
         lda     #$84                            ; 9BA0 A9 84                    ..
         sta     $0203,y                         ; 9BA2 99 03 02                 ...
         lda     #$6D                            ; 9BA5 A9 6D                    .m
@@ -3783,7 +3783,7 @@ BattleSetup_AdjustEncounterSpritePosition:
         pha                                     ; 9BB3 48                       H
         pha                                     ; 9BB4 48                       H
         lda     #$3C                            ; 9BB5 A9 3C                    .<
-        jsr     UpperFixedEngine_Entry_C78C     ; 9BB7 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; 9BB7 20 8C C7                  ..
         pla                                     ; 9BBA 68                       h
         and     #$0F                            ; 9BBB 29 0F                    ).
         eor     $01                             ; 9BBD 45 01                    E.
@@ -3942,7 +3942,7 @@ BattleSetupServices_Branch_9CC8:
         sta     $62D5                           ; 9CCD 8D D5 62                 ..b
         lda     $6BDE                           ; 9CD0 AD DE 6B                 ..k
         bmi     BattleSetupServices_Branch_9CE3 ; 9CD3 30 0E                    0.
-        jsr     UpperFixedEngine_Entry_C8E1     ; 9CD5 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; 9CD5 20 E1 C8                  ..
         lda     $6E03                           ; 9CD8 AD 03 6E                 ..n
         beq     BattleSetupServices_Branch_9CE3 ; 9CDB F0 06                    ..
         brk                                     ; 9CDD 00                       .
@@ -4716,10 +4716,10 @@ BattleSetupServices_Branch_A327:
         cmp     #$00                            ; A342 C9 00                    ..
         bne     BattleSetupServices_Branch_A357 ; A344 D0 11                    ..
         jsr     BattleSetup_PulseTransitionPalette; A346 20 89 A4                ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; A349 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; A349 20 C5 C5                  ..
         lda     #$FF                            ; A34C A9 FF                    ..
         sta     $05FC                           ; A34E 8D FC 05                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; A351 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A351 20 B9 C5                  ..
         jmp     BattleSetupServices_Branch_A391 ; A354 4C 91 A3                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A357:
@@ -4917,7 +4917,7 @@ BattleSetupServices_Branch_A48B:
         pha                                     ; A48C 48                       H
         lda     $A4A1,x                         ; A48D BD A1 A4                 ...
         sta     $05FC                           ; A490 8D FC 05                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; A493 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A493 20 B9 C5                  ..
         ldx     #$03                            ; A496 A2 03                    ..
         jsr     WaitFrames                      ; A498 20 0C C9                  ..
         pla                                     ; A49B 68                       h
@@ -5123,7 +5123,7 @@ BattleSetupServices_Branch_A5A5:
         db   $D0,$2B                         ; A5AA D0 2B                    .+
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A5AC:
-        jsr     UpperFixedEngine_Entry_C8E1     ; A5AC 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; A5AC 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_A58E ; A5AF 4C 8E A5                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_QueryModeSelector:
@@ -5163,7 +5163,7 @@ BattleSetupServices_Branch_A5CE:
         db   $C1,$2B                         ; A5D3 C1 2B                    .+
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A5D5:
-        jsr     UpperFixedEngine_Entry_C8E1     ; A5D5 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; A5D5 20 E1 C8                  ..
         sec                                     ; A5D8 38                       8
         rts                                     ; A5D9 60                       `
 ; ----------------------------------------------------------------------------
@@ -5292,7 +5292,7 @@ BattleSetupServices_Branch_A676:
         brk                                     ; A681 00                       .
         db   $F4,$3B                         ; A682 F4 3B                    .;
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A684 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A684 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
         db   $60                             ; A687 60                       `
         db   $33,$1F,$1E,$1D,$13,$0E,$0F,$40 ; A688 33 1F 1E 1D 13 0E 0F 40  3......@
@@ -5334,7 +5334,7 @@ BattleSetup_LoadValidatedEncounterBackdrop:
         brk                                     ; A6C7 00                       .
         db   $C4,$2B                         ; A6C8 C4 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C8E1     ; A6CA 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; A6CA 20 E1 C8                  ..
 BattleSetupServices_Branch_A6CD:
         rts                                     ; A6CD 60                       `
 ; ----------------------------------------------------------------------------
@@ -5350,7 +5350,7 @@ BattleSetupServices_Branch_A6D0:
         db   $F4,$3B                         ; A6DC F4 3B                    .;
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A6DE:
-        jmp     UpperFixedEngine_Entry_C8E1     ; A6DE 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A6DE 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
         db   $36,$0F,$1E,$1F,$1C,$18,$40     ; A6E1 36 0F 1E 1F 1C 18 40     6.....@
 ; ----------------------------------------------------------------------------
@@ -5384,7 +5384,7 @@ BattleSetupServices_Branch_A70B:
         db   $04,$6F                         ; A70F 04 6F                    .o
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A711:
-        jmp     UpperFixedEngine_Entry_C8E1     ; A711 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A711 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_SetTransitionFlags60:
         jsr     BattleSetup_LatchSetupOperands  ; A714 20 3B A9                  ;.
@@ -5448,13 +5448,13 @@ BattleSetupServices_Branch_A777:
         brk                                     ; A777 00                       .
         db   $C5,$2B                         ; A778 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A77A 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A77A 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A77D:
         brk                                     ; A77D 00                       .
         db   $4B,$0B                         ; A77E 4B 0B                    K.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A780 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A780 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_CheckBattleEntryGate:
         jsr     BattleSetup_LatchSetupOperands  ; A783 20 3B A9                  ;.
@@ -5509,7 +5509,7 @@ BattleSetupServices_Branch_A7BD:
         brk                                     ; A7CA 00                       .
         db   $07,$6F,$10                     ; A7CB 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A7CE 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A7CE 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_RunBattleEntryChoiceFromScriptOffset2:
         jsr     BattleSetup_LatchSetupOperands  ; A7D1 20 3B A9                  ;.
@@ -5587,13 +5587,13 @@ BattleSetupServices_Branch_A829:
         brk                                     ; A84B 00                       .
         db   $07,$6F,$10                     ; A84C 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A84F 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A84F 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_ReturnToUpperEngine:
         brk                                     ; A852 00                       .
         db   $C5,$2B                         ; A853 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A855 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A855 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_CompareOperandAcrossWindow:
         jsr     BattleSetup_LatchSetupOperands  ; A858 20 3B A9                  ;.
@@ -5665,7 +5665,7 @@ BattleSetupServices_Branch_A8AF:
         inx                                     ; A8AF E8                       .
         dec     $00                           ; A8B0 C6 00                    ..
         bne     BattleSetupServices_Branch_A871 ; A8B2 D0 BD                    ..
-        jmp     UpperFixedEngine_Entry_C8E1     ; A8B4 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A8B4 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_ConfirmModeSevenSelection:
         jsr     BattleSetup_LatchSetupOperands  ; A8B7 20 3B A9                  ;.
@@ -5680,7 +5680,7 @@ BattleSetup_ConfirmModeSevenSelection:
         brk                                     ; A8CA 00                       .
         db   $CC,$2B                         ; A8CB CC 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A8CD 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A8CD 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_ConfirmModeOneSelectionWithRandomGate:
         jsr     BattleSetup_LatchSetupOperands  ; A8D0 20 3B A9                  ;.
@@ -5698,7 +5698,7 @@ BattleSetupServices_Branch_A8DD:
         brk                                     ; A8E8 00                       .
         db   $CE,$2B                         ; A8E9 CE 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A8EB 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A8EB 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_ConfirmModeOneSelectionAndSeedPrompt:
         jsr     BattleSetup_LatchSetupOperands  ; A8EE 20 3B A9                  ;.
@@ -5759,7 +5759,7 @@ BattleSetupServices_Branch_A935:
         brk                                     ; A935 00                       .
         db   $27,$0F                         ; A936 27 0F                    '.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8E1     ; A938 4C E1 C8                 L..
+        jmp     WaitForButtonPress              ; A938 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_LatchSetupOperands:
         pha                                     ; A93B 48                       H
@@ -5892,8 +5892,8 @@ BattleSetup_InitializeSetupDisplayState:
         lda     #$80                            ; AA1D A9 80                    ..
         sta     $6BDE                           ; AA1F 8D DE 6B                 ..k
         jsr     ResetDisplayState               ; AA22 20 4E C5                  N.
-        jsr     UpperFixedEngine_Entry_C58F     ; AA25 20 8F C5                  ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; AA28 20 BF C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; AA25 20 8F C5                  ..
+        jsr     FadePaletteToBlack              ; AA28 20 BF C5                  ..
         jsr     BattleSetup_RefreshPrimarySetupMirrors; AA2B 20 41 AA            A.
         jsr     BattleSetup_BuildThreeSlotSetupList; AA2E 20 5B AA               [.
         brk                                     ; AA31 00                       .
@@ -6004,7 +6004,7 @@ BattleSetupServices_Branch_AADC:
         brk                                     ; AADC 00                       .
         db   $10,$2F                         ; AADD 10 2F                    ./
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5C5     ; AADF 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; AADF 20 C5 C5                  ..
         jsr     ResetDisplayState               ; AAE2 20 4E C5                  N.
         brk                                     ; AAE5 00                       .
         db   $04,$9F                         ; AAE6 04 9F                    ..
@@ -6600,7 +6600,7 @@ BattleSetupServices_Branch_AE83:
         bcc     BattleSetupServices_Branch_AE8E ; AE89 90 03                    ..
         jsr     BattleSetup_LoadSelectionRowState; AE8B 20 04 AF                 ..
 BattleSetupServices_Branch_AE8E:
-        jmp     UpperFixedEngine_Entry_D1F3     ; AE8E 4C F3 D1                 L..
+        jmp     StopMapCue                      ; AE8E 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AE91:
         lda     $00                           ; AE91 A5 00                    ..
@@ -6626,7 +6626,7 @@ BattleSetupServices_Branch_AEA5:
         brk                                     ; AEB2 00                       .
         db   $C5,$2B                         ; AEB3 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C8E1     ; AEB5 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; AEB5 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_AE8E ; AEB8 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AEBB:
@@ -6656,7 +6656,7 @@ BattleSetupServices_Branch_AEE6:
         brk                                     ; AEE6 00                       .
         db   $04,$6F                         ; AEE7 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C8E1     ; AEE9 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; AEE9 20 E1 C8                  ..
         clc                                     ; AEEC 18                       .
         jmp     BattleSetupServices_Branch_AE8E ; AEED 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
@@ -6670,7 +6670,7 @@ BattleSetupServices_Branch_AEF0:
         brk                                     ; AEFB 00                       .
         db   $C5,$2B                         ; AEFC C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C8E1     ; AEFE 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; AEFE 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_AE8E ; AF01 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
 BattleSetup_LoadSelectionRowState:
@@ -6723,7 +6723,7 @@ BattleSetupServices_Branch_AF49:
         db   $07,$6F,$10                     ; AF52 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AF55:
-        jsr     UpperFixedEngine_Entry_C8E1     ; AF55 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; AF55 20 E1 C8                  ..
         sec                                     ; AF58 38                       8
         rts                                     ; AF59 60                       `
 ; ----------------------------------------------------------------------------
@@ -6793,7 +6793,7 @@ BattleSetup_HandleSelectionConfirmResult:
 ; ----------------------------------------------------------------------------
         jsr     BattleSetup_SelectBattleMode1   ; AFC8 20 6D B5                  m.
 BattleSetupServices_Branch_AFCB:
-        jsr     UpperFixedEngine_Entry_C8E1     ; AFCB 20 E1 C8                  ..
+        jsr     WaitForButtonPress              ; AFCB 20 E1 C8                  ..
 BattleSetupServices_Branch_AFCE:
         clc                                     ; AFCE 18                       .
         rts                                     ; AFCF 60                       `
@@ -7110,7 +7110,7 @@ BattleSetupServices_Branch_B1D9:
         lda     $627D                           ; B1D9 AD 7D 62                 .}b
         ora     #$01                            ; B1DC 09 01                    ..
         sta     $627D                           ; B1DE 8D 7D 62                 .}b
-        jsr     UpperFixedEngine_Entry_D218     ; B1E1 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B1E1 20 18 D2                 ..
         clc                                     ; B1E4 18                       .
         rts                                     ; B1E5 60                       `
 ; ----------------------------------------------------------------------------
@@ -7252,7 +7252,7 @@ BattleSetupServices_Branch_B2C6:
         jmp     BattleSetupServices_Branch_AFCB ; B2D3 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B2D6:
-        jsr     UpperFixedEngine_Entry_D218     ; B2D6 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B2D6 20 18 D2                 ..
         clc                                     ; B2D9 18                       .
         rts                                     ; B2DA 60                       `
 ; ----------------------------------------------------------------------------
@@ -7370,7 +7370,7 @@ BattleSetup_HandleMap42EncounterIntro:
         brk                                     ; B39B 00                       .
         db   $18,$CB,$10                     ; B39C 18 CB 10                 ...
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B39F 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B39F 20 18 D2                 ..
         jsr     BattleSetup_RunEncounterIntroSequence; B3A2 20 A9 97             ..
         brk                                     ; B3A5 00                       .
         db   $07,$6F,$50                     ; B3A6 07 6F 50                 .oP
@@ -7600,7 +7600,7 @@ BattleSetup_RunBattleIntroOverlayOrMode1Fallback:
         brk                                     ; B504 00                       .
         db   $09,$9F                         ; B505 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5C5     ; B507 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; B507 20 C5 C5                  ..
         brk                                     ; B50A 00                       .
         db   $6F,$33                         ; B50B 6F 33                    o3
 ; ----------------------------------------------------------------------------

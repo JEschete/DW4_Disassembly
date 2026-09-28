@@ -90,7 +90,7 @@ BattleActionServices_Branch_809C:
         lda     SaveCurrentChapterMinus1        ; 809C AD 5A 61                 .Za
         cmp     #$03                            ; 809F C9 03                    ..
         bne     BattleActionServices_Branch_809B; 80A1 D0 F8                    ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; 80A3 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; 80A3 20 C5 C5                  ..
         jsr     ResetDisplayState               ; 80A6 20 4E C5                  N.
         ldx     #$01                            ; 80A9 A2 01                    ..
         stx     $6E49                           ; 80AB 8E 49 6E                 .In
@@ -10898,7 +10898,7 @@ BattleActionServices_Branch_BD92:
         clc                                     ; BD97 18                       .
         adc     #$20                            ; BD98 69 20                    i
         sta     $05FD                           ; BD9A 8D FD 05                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; BD9D 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; BD9D 20 B9 C5                  ..
         ldx     #$04                            ; BDA0 A2 04                    ..
         jsr     WaitFrames                      ; BDA2 20 0C C9                  ..
         pla                                     ; BDA5 68                       h
@@ -10909,7 +10909,7 @@ BattleActionServices_Branch_BD92:
         sta     $05FD                           ; BDAC 8D FD 05                 ...
         lda     $8A                             ; BDAF A5 8A                    ..
         sta     $05FC                           ; BDB1 8D FC 05                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; BDB4 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; BDB4 20 B9 C5                  ..
         ldx     #$0F                            ; BDB7 A2 0F                    ..
         jmp     WaitFrames                      ; BDB9 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
@@ -10933,7 +10933,7 @@ BattleActionServices_Branch_BDD3:
         sta     $05FC,y                         ; BDD3 99 FC 05                 ...
         dey                                     ; BDD6 88                       .
         bne     BattleActionServices_Branch_BDD3; BDD7 D0 FA                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; BDD9 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; BDD9 20 B9 C5                  ..
         ldx     #$01                            ; BDDC A2 01                    ..
         jsr     WaitFrames                      ; BDDE 20 0C C9                  ..
         jsr     RestoreBattleDisplayPaletteBuffer; BDE1 20 EE BD                 ..
@@ -10950,7 +10950,7 @@ BattleActionServices_Branch_BDF0:
         sta     $05FC,x                         ; BDF3 9D FC 05                 ...
         dex                                     ; BDF6 CA                       .
         bpl     BattleActionServices_Branch_BDF0; BDF7 10 F7                    ..
-        jmp     UpperFixedEngine_Entry_C5B9     ; BDF9 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; BDF9 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 CommitQueuedMarkerBattleSlotMatch:
         jsr     ResolveAndCommitBattleSlotMatchForMarker; BDFC 20 A9 A1          ..

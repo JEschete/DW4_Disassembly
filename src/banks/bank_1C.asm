@@ -753,13 +753,13 @@ Bank1C_DecodeMapEntityData:
         sta     CurrentSubmapNumber             ; 96DA 85 64                    .d
 MapEntitySystem_Branch_96DC:
         lda     $00                           ; 96DC A5 00                    ..
-        jsr     MapEntitySystem_Entry_96FC      ; 96DE 20 FC 96                  ..
+        jsr     DecodeMapEntityRecordHeader     ; 96DE 20 FC 96                  ..
         pla                                     ; 96E1 68                       h
         sta     CurrentSubmapNumber             ; 96E2 85 64                    .d
         lda     $03                             ; 96E4 A5 03                    ..
         rts                                     ; 96E6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_96E7:
+CopyMapEntityDataPointerToDecoder:
         ldx     $3A                             ; 96E7 A6 3A                    .:
         stx     $DA                             ; 96E9 86 DA                    ..
         ldx     $3B                             ; 96EB A6 3B                    .;
@@ -767,48 +767,48 @@ MapEntitySystem_Entry_96E7:
 MapEntitySystem_Branch_96EF:
         rts                                     ; 96EF 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_96F0:
-        jsr     MapEntitySystem_Entry_994E      ; 96F0 20 4E 99                  N.
+ReadEntityVariantFlagAndSelectField3:
+        jsr     ReadMapEntityRecordByte         ; 96F0 20 4E 99                  N.
         and     #$80                            ; 96F3 29 80                    ).
         eor     #$80                            ; 96F5 49 80                    I.
         sta     $05                             ; 96F7 85 05                    ..
         ldy     #$03                            ; 96F9 A0 03                    ..
         rts                                     ; 96FB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_96FC:
-        jsr     MapEntitySystem_Entry_96E7      ; 96FC 20 E7 96                  ..
+DecodeMapEntityRecordHeader:
+        jsr     CopyMapEntityDataPointerToDecoder; 96FC 20 E7 96                 ..
         tax                                     ; 96FF AA                       .
         beq     MapEntitySystem_Branch_971A     ; 9700 F0 18                    ..
 MapEntitySystem_Branch_9702:
         ldy     #$00                            ; 9702 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9704 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9704 20 4E 99                  N.
         beq     MapEntitySystem_Branch_96EF     ; 9707 F0 E6                    ..
-        jsr     MapEntitySystem_Entry_9B71      ; 9709 20 71 9B                  q.
-        jsr     MapEntitySystem_Entry_9BB0      ; 970C 20 B0 9B                  ..
-        jsr     MapEntitySystem_Entry_9BBA      ; 970F 20 BA 9B                  ..
-        jsr     MapEntitySystem_Entry_9798      ; 9712 20 98 97                  ..
+        jsr     AdvanceMapEntityRecordPointer   ; 9709 20 71 9B                  q.
+        jsr     SkipEntityRecordBlockForFlag10  ; 970C 20 B0 9B                  ..
+        jsr     SkipEntityRecordBlockForFlag08  ; 970F 20 BA 9B                  ..
+        jsr     TestMapEntityRecordTimeVariant  ; 9712 20 98 97                  ..
         bcs     MapEntitySystem_Branch_9702     ; 9715 B0 EB                    ..
         dex                                     ; 9717 CA                       .
         bne     MapEntitySystem_Branch_9702     ; 9718 D0 E8                    ..
 MapEntitySystem_Branch_971A:
-        jsr     MapEntitySystem_Entry_9798      ; 971A 20 98 97                  ..
+        jsr     TestMapEntityRecordTimeVariant  ; 971A 20 98 97                  ..
         bcc     MapEntitySystem_Branch_972B     ; 971D 90 0C                    ..
-        jsr     MapEntitySystem_Entry_9B71      ; 971F 20 71 9B                  q.
-        jsr     MapEntitySystem_Entry_9BB0      ; 9722 20 B0 9B                  ..
-        jsr     MapEntitySystem_Entry_9BBA      ; 9725 20 BA 9B                  ..
+        jsr     AdvanceMapEntityRecordPointer   ; 971F 20 71 9B                  q.
+        jsr     SkipEntityRecordBlockForFlag10  ; 9722 20 B0 9B                  ..
+        jsr     SkipEntityRecordBlockForFlag08  ; 9725 20 BA 9B                  ..
         jmp     MapEntitySystem_Branch_971A     ; 9728 4C 1A 97                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_972B:
         ldy     #$00                            ; 972B A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 972D 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 972D 20 4E 99                  N.
         sta     $02                             ; 9730 85 02                    ..
         and     #$80                            ; 9732 29 80                    ).
         sta     $04                             ; 9734 85 04                    ..
-        jsr     MapEntitySystem_Entry_9BD9      ; 9736 20 D9 9B                  ..
+        jsr     CompareEntityRecordTimeToNightThreshold; 9736 20 D9 9B           ..
         bcs     MapEntitySystem_Branch_975A     ; 9739 B0 1F                    ..
         ldy     #$05                            ; 973B A0 05                    ..
-        jsr     MapEntitySystem_Entry_96F0      ; 973D 20 F0 96                  ..
-        jsr     MapEntitySystem_Entry_994E      ; 9740 20 4E 99                  N.
+        jsr     ReadEntityVariantFlagAndSelectField3; 973D 20 F0 96              ..
+        jsr     ReadMapEntityRecordByte         ; 9740 20 4E 99                  N.
         lsr     a                               ; 9743 4A                       J
         ora     $04                             ; 9744 05 04                    ..
         lsr     a                               ; 9746 4A                       J
@@ -816,7 +816,7 @@ MapEntitySystem_Branch_972B:
         sta     $03                             ; 9749 85 03                    ..
 MapEntitySystem_Branch_974B:
         ldy     #$01                            ; 974B A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 974D 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 974D 20 4E 99                  N.
         and     #$1C                            ; 9750 29 1C                    ).
         lsr     a                               ; 9752 4A                       J
         lsr     a                               ; 9753 4A                       J
@@ -825,17 +825,17 @@ MapEntitySystem_Branch_974B:
         bne     MapEntitySystem_Branch_9792     ; 9758 D0 38                    .8
 MapEntitySystem_Branch_975A:
         ldy     #$06                            ; 975A A0 06                    ..
-        jsr     MapEntitySystem_Entry_96F0      ; 975C 20 F0 96                  ..
+        jsr     ReadEntityVariantFlagAndSelectField3; 975C 20 F0 96              ..
         lda     $02                             ; 975F A5 02                    ..
         lsr     a                               ; 9761 4A                       J
         bcs     MapEntitySystem_Branch_976F     ; 9762 B0 0B                    ..
         ldy     #$01                            ; 9764 A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9766 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9766 20 4E 99                  N.
         and     #$80                            ; 9769 29 80                    ).
         sta     $04                             ; 976B 85 04                    ..
         ldy     #$07                            ; 976D A0 07                    ..
 MapEntitySystem_Branch_976F:
-        jsr     MapEntitySystem_Entry_994E      ; 976F 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 976F 20 4E 99                  N.
         lsr     a                               ; 9772 4A                       J
         ora     $04                             ; 9773 05 04                    ..
         lsr     a                               ; 9775 4A                       J
@@ -845,7 +845,7 @@ MapEntitySystem_Branch_976F:
         and     #$02                            ; 977C 29 02                    ).
         bne     MapEntitySystem_Branch_974B     ; 977E D0 CB                    ..
         ldy     #$01                            ; 9780 A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9782 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9782 20 4E 99                  N.
         and     #$03                            ; 9785 29 03                    ).
         sta     $01                             ; 9787 85 01                    ..
         ldy     #$08                            ; 9789 A0 08                    ..
@@ -854,20 +854,20 @@ MapEntitySystem_Branch_976F:
         beq     MapEntitySystem_Branch_9792     ; 978F F0 01                    ..
         dey                                     ; 9791 88                       .
 MapEntitySystem_Branch_9792:
-        jsr     MapEntitySystem_Entry_994E      ; 9792 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9792 20 4E 99                  N.
         sta     $00                           ; 9795 85 00                    ..
         rts                                     ; 9797 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9798:
+TestMapEntityRecordTimeVariant:
         ldy     #$00                            ; 9798 A0 00                    ..
-        jsr     MapEntitySystem_Entry_9BD9      ; 979A 20 D9 9B                  ..
+        jsr     CompareEntityRecordTimeToNightThreshold; 979A 20 D9 9B           ..
         bcs     MapEntitySystem_Branch_97A8     ; 979D B0 09                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 979F 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 979F 20 4E 99                  N.
         and     #$10                            ; 97A2 29 10                    ).
         beq     MapEntitySystem_Branch_97B1     ; 97A4 F0 0B                    ..
         bne     MapEntitySystem_Branch_97AF     ; 97A6 D0 07                    ..
 MapEntitySystem_Branch_97A8:
-        jsr     MapEntitySystem_Entry_994E      ; 97A8 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 97A8 20 4E 99                  N.
         and     #$08                            ; 97AB 29 08                    ).
         beq     MapEntitySystem_Branch_97B1     ; 97AD F0 02                    ..
 MapEntitySystem_Branch_97AF:
@@ -878,12 +878,12 @@ MapEntitySystem_Branch_97B1:
         sec                                     ; 97B1 38                       8
         rts                                     ; 97B2 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_97B3:
+InitializeMapEntityDecoder:
         brk                                     ; 97B3 00                       .
         db   $03,$87                         ; 97B4 03 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_984A      ; 97B6 20 4A 98                  J.
-        jsr     MapEntitySystem_Entry_96E7      ; 97B9 20 E7 96                  ..
+        jsr     SelectMapEntityGraphicsVariant  ; 97B6 20 4A 98                  J.
+        jsr     CopyMapEntityDataPointerToDecoder; 97B9 20 E7 96                 ..
 Bank1C_MapEntityServices:
         ldx     #$0F                            ; 97BC A2 0F                    ..
         lda     #$FF                            ; 97BE A9 FF                    ..
@@ -893,22 +893,22 @@ MapEntitySystem_Branch_97C0:
         bpl     MapEntitySystem_Branch_97C0     ; 97C4 10 FA                    ..
         rts                                     ; 97C6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_97C7:
+DecodeMapEntityGraphicsRecords:
         lda     $41                             ; 97C7 A5 41                    .A
         bpl     MapEntitySystem_Branch_9849     ; 97C9 10 7E                    .~
-        jsr     MapEntitySystem_Entry_97B3      ; 97CB 20 B3 97                  ..
+        jsr     InitializeMapEntityDecoder      ; 97CB 20 B3 97                  ..
         ldy     #$00                            ; 97CE A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 97D0 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 97D0 20 4E 99                  N.
         beq     MapEntitySystem_Branch_9849     ; 97D3 F0 74                    .t
 MapEntitySystem_Branch_97D5:
         ldy     #$00                            ; 97D5 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 97D7 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 97D7 20 4E 99                  N.
         sta     $03                             ; 97DA 85 03                    ..
-        jsr     MapEntitySystem_Entry_9BD9      ; 97DC 20 D9 9B                  ..
+        jsr     CompareEntityRecordTimeToNightThreshold; 97DC 20 D9 9B           ..
         bcs     MapEntitySystem_Branch_97F5     ; 97DF B0 14                    ..
 MapEntitySystem_Branch_97E1:
         ldy     #$01                            ; 97E1 A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 97E3 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 97E3 20 4E 99                  N.
         and     #$40                            ; 97E6 29 40                    )@
         asl     a                               ; 97E8 0A                       .
         sta     $DC                             ; 97E9 85 DC                    ..
@@ -922,7 +922,7 @@ MapEntitySystem_Branch_97F5:
         and     #$10                            ; 97F7 29 10                    ).
         beq     MapEntitySystem_Branch_97E1     ; 97F9 F0 E6                    ..
         ldy     #$01                            ; 97FB A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 97FD 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 97FD 20 4E 99                  N.
         and     #$20                            ; 9800 29 20                    )
         asl     a                               ; 9802 0A                       .
         asl     a                               ; 9803 0A                       .
@@ -944,11 +944,11 @@ MapEntitySystem_Branch_9816:
 MapEntitySystem_Branch_9820:
         ldy     #$01                            ; 9820 A0 01                    ..
 MapEntitySystem_Branch_9822:
-        jsr     MapEntitySystem_Entry_994E      ; 9822 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9822 20 4E 99                  N.
         asl     a                               ; 9825 0A                       .
         php                                     ; 9826 08                       .
         ldy     $00                           ; 9827 A4 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9829 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9829 20 4E 99                  N.
         plp                                     ; 982C 28                       (
         ror     a                               ; 982D 6A                       j
         lsr     a                               ; 982E 4A                       J
@@ -956,18 +956,18 @@ MapEntitySystem_Branch_9822:
         adc     #$0F                            ; 9830 69 0F                    i.
         ora     $DC                             ; 9832 05 DC                    ..
         ldx     #$00                            ; 9834 A2 00                    ..
-        jsr     MapEntitySystem_Entry_9A37      ; 9836 20 37 9A                  7.
+        jsr     ResolveMapEntityGraphicsSlot    ; 9836 20 37 9A                  7.
 MapEntitySystem_Branch_9839:
-        jsr     MapEntitySystem_Entry_9B71      ; 9839 20 71 9B                  q.
-        jsr     MapEntitySystem_Entry_9BB0      ; 983C 20 B0 9B                  ..
-        jsr     MapEntitySystem_Entry_9BBA      ; 983F 20 BA 9B                  ..
+        jsr     AdvanceMapEntityRecordPointer   ; 9839 20 71 9B                  q.
+        jsr     SkipEntityRecordBlockForFlag10  ; 983C 20 B0 9B                  ..
+        jsr     SkipEntityRecordBlockForFlag08  ; 983F 20 BA 9B                  ..
         ldy     #$00                            ; 9842 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9844 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9844 20 4E 99                  N.
         bne     MapEntitySystem_Branch_97D5     ; 9847 D0 8C                    ..
 MapEntitySystem_Branch_9849:
         rts                                     ; 9849 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_984A:
+SelectMapEntityGraphicsVariant:
         bit     $07BA                           ; 984A 2C BA 07                 ,..
         bpl     MapEntitySystem_Branch_9859     ; 984D 10 0A                    ..
         lda     #$09                            ; 984F A9 09                    ..
@@ -981,35 +981,35 @@ MapEntitySystem_Entry_984A:
 MapEntitySystem_Branch_9859:
         rts                                     ; 9859 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_985A:
+InitializeMapEntityRuntimeSlots:
         lda     #$05                            ; 985A A9 05                    ..
         sta     $67                             ; 985C 85 67                    .g
         lda     $41                             ; 985E A5 41                    .A
-        bpl     MapEntitySystem_Entry_98B3      ; 9860 10 51                    .Q
+        bpl     ResetAllMapEntitySlots          ; 9860 10 51                    .Q
         brk                                     ; 9862 00                       .
         db   $03,$87                         ; 9863 03 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_984A      ; 9865 20 4A 98                  J.
-        jsr     MapEntitySystem_Entry_9B00      ; 9868 20 00 9B                  ..
+        jsr     SelectMapEntityGraphicsVariant  ; 9865 20 4A 98                  J.
+        jsr     LoadCurrentMapEntityDataPointer ; 9868 20 00 9B                  ..
         jsr     Bank1C_MapEntityServices        ; 986B 20 BC 97                  ..
-        jsr     MapEntitySystem_Entry_9C0F      ; 986E 20 0F 9C                  ..
+        jsr     ResetDynamicMapEntitySlots      ; 986E 20 0F 9C                  ..
         ldx     #$07                            ; 9871 A2 07                    ..
 MapEntitySystem_Branch_9873:
         sta     $DF,x                           ; 9873 95 DF                    ..
         dex                                     ; 9875 CA                       .
         bpl     MapEntitySystem_Branch_9873     ; 9876 10 FB                    ..
         ldy     #$00                            ; 9878 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 987A 20 4E 99                  N.
-        beq     MapEntitySystem_Entry_9890      ; 987D F0 11                    ..
-        jsr     MapEntitySystem_Entry_9C28      ; 987F 20 28 9C                  (.
-        bcc     MapEntitySystem_Entry_9890      ; 9882 90 0C                    ..
+        jsr     ReadMapEntityRecordByte         ; 987A 20 4E 99                  N.
+        beq     CacheTilesUnderMapEntities      ; 987D F0 11                    ..
+        jsr     TestMapEntitySuppressionFlags   ; 987F 20 28 9C                  (.
+        bcc     CacheTilesUnderMapEntities      ; 9882 90 0C                    ..
         ldx     #$06                            ; 9884 A2 06                    ..
 MapEntitySystem_Branch_9886:
-        jsr     MapEntitySystem_Entry_98D8      ; 9886 20 D8 98                  ..
+        jsr     DecodeMapEntityIntoRuntimeSlot  ; 9886 20 D8 98                  ..
         ldy     #$00                            ; 9889 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 988B 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 988B 20 4E 99                  N.
         bne     MapEntitySystem_Branch_9886     ; 988E D0 F6                    ..
-MapEntitySystem_Entry_9890:
+CacheTilesUnderMapEntities:
         ldx     #$00                            ; 9890 A2 00                    ..
 MapEntitySystem_Branch_9892:
         lda     $7020,x                         ; 9892 BD 20 70                 . p
@@ -1033,7 +1033,7 @@ MapEntitySystem_Branch_9892:
 MapEntitySystem_Branch_98B2:
         rts                                     ; 98B2 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_98B3:
+ResetAllMapEntitySlots:
         lda     #$00                            ; 98B3 A9 00                    ..
         sta     $46                             ; 98B5 85 46                    .F
         ldx     #$1F                            ; 98B7 A2 1F                    ..
@@ -1052,16 +1052,16 @@ MapEntitySystem_Branch_98B9:
         bpl     MapEntitySystem_Branch_98B9     ; 98D5 10 E2                    ..
         rts                                     ; 98D7 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_98D8:
+DecodeMapEntityIntoRuntimeSlot:
         ldy     #$00                            ; 98D8 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 98DA 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 98DA 20 4E 99                  N.
         sta     $01                             ; 98DD 85 01                    ..
-        jsr     MapEntitySystem_Entry_9BD9      ; 98DF 20 D9 9B                  ..
+        jsr     CompareEntityRecordTimeToNightThreshold; 98DF 20 D9 9B           ..
         bcs     MapEntitySystem_Branch_9901     ; 98E2 B0 1D                    ..
         lda     $01                             ; 98E4 A5 01                    ..
         and     #$10                            ; 98E6 29 10                    ).
         beq     MapEntitySystem_Branch_9945     ; 98E8 F0 5B                    .[
-        jsr     MapEntitySystem_Entry_9BDF      ; 98EA 20 DF 9B                  ..
+        jsr     ClearMapEntityRuntimeSlot       ; 98EA 20 DF 9B                  ..
         ldy     #$00                            ; 98ED A0 00                    ..
 MapEntitySystem_Branch_98EF:
         lda     #$03                            ; 98EF A9 03                    ..
@@ -1072,7 +1072,7 @@ MapEntitySystem_Branch_98EF:
         sta     $08                             ; 98F9 85 08                    ..
         tya                                     ; 98FB 98                       .
 MapEntitySystem_Branch_98FC:
-        jsr     MapEntitySystem_Entry_995C      ; 98FC 20 5C 99                  \.
+        jsr     PopulateMapEntityRuntimeFields  ; 98FC 20 5C 99                  \.
         inx                                     ; 98FF E8                       .
         rts                                     ; 9900 60                       `
 ; ----------------------------------------------------------------------------
@@ -1080,7 +1080,7 @@ MapEntitySystem_Branch_9901:
         lda     $01                             ; 9901 A5 01                    ..
         and     #$08                            ; 9903 29 08                    ).
         beq     MapEntitySystem_Branch_9945     ; 9905 F0 3E                    .>
-        jsr     MapEntitySystem_Entry_9BDF      ; 9907 20 DF 9B                  ..
+        jsr     ClearMapEntityRuntimeSlot       ; 9907 20 DF 9B                  ..
         ldy     #$01                            ; 990A A0 01                    ..
         lda     $01                             ; 990C A5 01                    ..
         and     #$10                            ; 990E 29 10                    ).
@@ -1119,11 +1119,11 @@ MapEntitySystem_Branch_9941:
         lda     #$01                            ; 9941 A9 01                    ..
         bne     MapEntitySystem_Branch_98FC     ; 9943 D0 B7                    ..
 MapEntitySystem_Branch_9945:
-        jsr     MapEntitySystem_Entry_9B71      ; 9945 20 71 9B                  q.
-        jsr     MapEntitySystem_Entry_9BB0      ; 9948 20 B0 9B                  ..
-        jmp     MapEntitySystem_Entry_9BBA      ; 994B 4C BA 9B                 L..
+        jsr     AdvanceMapEntityRecordPointer   ; 9945 20 71 9B                  q.
+        jsr     SkipEntityRecordBlockForFlag10  ; 9948 20 B0 9B                  ..
+        jmp     SkipEntityRecordBlockForFlag08  ; 994B 4C BA 9B                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_994E:
+ReadMapEntityRecordByte:
         stx     $0E                             ; 994E 86 0E                    ..
         ldx     #$DA                            ; 9950 A2 DA                    ..
         lda     $67                             ; 9952 A5 67                    .g
@@ -1132,7 +1132,7 @@ MapEntitySystem_Entry_994E:
         ora     #$00                            ; 9959 09 00                    ..
         rts                                     ; 995B 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_995C:
+PopulateMapEntityRuntimeFields:
         pha                                     ; 995C 48                       H
         ldy     #$00                            ; 995D A0 00                    ..
         sty     $DC                             ; 995F 84 DC                    ..
@@ -1140,50 +1140,50 @@ MapEntitySystem_Entry_995C:
         cmp     #$00                            ; 9963 C9 00                    ..
         bne     MapEntitySystem_Branch_998F     ; 9965 D0 28                    .(
         ldy     #$01                            ; 9967 A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9969 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9969 20 4E 99                  N.
         and     #$40                            ; 996C 29 40                    )@
         beq     MapEntitySystem_Branch_9974     ; 996E F0 04                    ..
         lda     #$80                            ; 9970 A9 80                    ..
         sta     $DC                             ; 9972 85 DC                    ..
 MapEntitySystem_Branch_9974:
         ldy     #$05                            ; 9974 A0 05                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9976 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9976 20 4E 99                  N.
         and     #$80                            ; 9979 29 80                    ).
         sta     $70E0,x                         ; 997B 9D E0 70                 ..p
         lda     $01                             ; 997E A5 01                    ..
         and     #$40                            ; 9980 29 40                    )@
-        jsr     MapEntitySystem_Entry_9A2B      ; 9982 20 2B 9A                  +.
+        jsr     MergeEntityVariantStateAndReadField2; 9982 20 2B 9A              +.
         lsr     a                               ; 9985 4A                       J
         lsr     a                               ; 9986 4A                       J
         lsr     a                               ; 9987 4A                       J
         lsr     a                               ; 9988 4A                       J
-        jsr     MapEntitySystem_Entry_9A74      ; 9989 20 74 9A                  t.
+        jsr     InitializeMapEntityMotionState  ; 9989 20 74 9A                  t.
         jmp     MapEntitySystem_Branch_99B3     ; 998C 4C B3 99                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_998F:
         ldy     #$01                            ; 998F A0 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9991 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9991 20 4E 99                  N.
         and     #$20                            ; 9994 29 20                    )
         beq     MapEntitySystem_Branch_999C     ; 9996 F0 04                    ..
         lda     #$80                            ; 9998 A9 80                    ..
         sta     $DC                             ; 999A 85 DC                    ..
 MapEntitySystem_Branch_999C:
         ldy     #$06                            ; 999C A0 06                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 999E 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 999E 20 4E 99                  N.
         and     #$80                            ; 99A1 29 80                    ).
         sta     $70E0,x                         ; 99A3 9D E0 70                 ..p
         lda     $01                             ; 99A6 A5 01                    ..
         and     #$20                            ; 99A8 29 20                    )
         asl     a                               ; 99AA 0A                       .
-        jsr     MapEntitySystem_Entry_9A2B      ; 99AB 20 2B 9A                  +.
+        jsr     MergeEntityVariantStateAndReadField2; 99AB 20 2B 9A              +.
         and     #$0F                            ; 99AE 29 0F                    ).
-        jsr     MapEntitySystem_Entry_9A74      ; 99B0 20 74 9A                  t.
+        jsr     InitializeMapEntityMotionState  ; 99B0 20 74 9A                  t.
 MapEntitySystem_Branch_99B3:
         ldy     $06                             ; 99B3 A4 06                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 99B5 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 99B5 20 4E 99                  N.
         and     #$03                            ; 99B8 29 03                    ).
         sta     $7000,x                         ; 99BA 9D 00 70                 ..p
-        jsr     MapEntitySystem_Entry_994E      ; 99BD 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 99BD 20 4E 99                  N.
         and     #$FC                            ; 99C0 29 FC                    ).
         pha                                     ; 99C2 48                       H
         tya                                     ; 99C3 98                       .
@@ -1196,7 +1196,7 @@ MapEntitySystem_Branch_99B3:
 MapEntitySystem_Branch_99CF:
         ldy     #$01                            ; 99CF A0 01                    ..
 MapEntitySystem_Branch_99D1:
-        jsr     MapEntitySystem_Entry_994E      ; 99D1 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 99D1 20 4E 99                  N.
         asl     a                               ; 99D4 0A                       .
         pla                                     ; 99D5 68                       h
         tay                                     ; 99D6 A8                       .
@@ -1206,21 +1206,21 @@ MapEntitySystem_Branch_99D1:
         clc                                     ; 99DA 18                       .
         adc     #$0F                            ; 99DB 69 0F                    i.
         ora     $DC                             ; 99DD 05 DC                    ..
-        jsr     MapEntitySystem_Entry_9A37      ; 99DF 20 37 9A                  7.
+        jsr     ResolveMapEntityGraphicsSlot    ; 99DF 20 37 9A                  7.
         ldy     $08                             ; 99E2 A4 08                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 99E4 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 99E4 20 4E 99                  N.
         and     #$7F                            ; 99E7 29 7F                    ).
         sta     $6F60,x                         ; 99E9 9D 60 6F                 .`o
         sta     $6FA0,x                         ; 99EC 9D A0 6F                 ..o
         iny                                     ; 99EF C8                       .
-        jsr     MapEntitySystem_Entry_994E      ; 99F0 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 99F0 20 4E 99                  N.
         and     #$7F                            ; 99F3 29 7F                    ).
         sta     $6F80,x                         ; 99F5 9D 80 6F                 ..o
         sta     $6FC0,x                         ; 99F8 9D C0 6F                 ..o
-        jsr     MapEntitySystem_Entry_9B71      ; 99FB 20 71 9B                  q.
+        jsr     AdvanceMapEntityRecordPointer   ; 99FB 20 71 9B                  q.
         pla                                     ; 99FE 68                       h
         beq     MapEntitySystem_Branch_9A16     ; 99FF F0 15                    ..
-        jsr     MapEntitySystem_Entry_9BB0      ; 9A01 20 B0 9B                  ..
+        jsr     SkipEntityRecordBlockForFlag10  ; 9A01 20 B0 9B                  ..
         lda     $DA                             ; 9A04 A5 DA                    ..
         clc                                     ; 9A06 18                       .
         adc     #$01                            ; 9A07 69 01                    i.
@@ -1228,7 +1228,7 @@ MapEntitySystem_Branch_99D1:
         lda     $DB                             ; 9A0C A5 DB                    ..
         adc     #$00                            ; 9A0E 69 00                    i.
         sta     $7060,x                         ; 9A10 9D 60 70                 .`p
-        jmp     MapEntitySystem_Entry_9BBA      ; 9A13 4C BA 9B                 L..
+        jmp     SkipEntityRecordBlockForFlag08  ; 9A13 4C BA 9B                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_9A16:
         lda     $DA                             ; 9A16 A5 DA                    ..
@@ -1238,17 +1238,17 @@ MapEntitySystem_Branch_9A16:
         lda     $DB                             ; 9A1E A5 DB                    ..
         adc     #$00                            ; 9A20 69 00                    i.
         sta     $7060,x                         ; 9A22 9D 60 70                 .`p
-        jsr     MapEntitySystem_Entry_9BB0      ; 9A25 20 B0 9B                  ..
-        jmp     MapEntitySystem_Entry_9BBA      ; 9A28 4C BA 9B                 L..
+        jsr     SkipEntityRecordBlockForFlag10  ; 9A25 20 B0 9B                  ..
+        jmp     SkipEntityRecordBlockForFlag08  ; 9A28 4C BA 9B                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9A2B:
+MergeEntityVariantStateAndReadField2:
         ora     $70E0,x                         ; 9A2B 1D E0 70                 ..p
         sta     $70E0,x                         ; 9A2E 9D E0 70                 ..p
         ldy     #$02                            ; 9A31 A0 02                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9A33 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9A33 20 4E 99                  N.
         rts                                     ; 9A36 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9A37:
+ResolveMapEntityGraphicsSlot:
         sta     $00                           ; 9A37 85 00                    ..
         ldy     #$00                            ; 9A39 A0 00                    ..
 MapEntitySystem_Branch_9A3B:
@@ -1293,13 +1293,13 @@ MapEntitySystem_Branch_9A6C:
 MapEntitySystem_Branch_9A73:
         rts                                     ; 9A73 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9A74:
+InitializeMapEntityMotionState:
         sta     $00                           ; 9A74 85 00                    ..
         cmp     #$08                            ; 9A76 C9 08                    ..
         bcs     MapEntitySystem_Branch_9A89     ; 9A78 B0 0F                    ..
         sta     $7040,x                         ; 9A7A 9D 40 70                 .@p
         lda     $00                           ; 9A7D A5 00                    ..
-        jsr     MapEntitySystem_Entry_9AFB      ; 9A7F 20 FB 9A                  ..
+        jsr     ShiftEntityMotionNibbleLeft     ; 9A7F 20 FB 9A                  ..
         ora     $7040,x                         ; 9A82 1D 40 70                 .@p
         sta     $7040,x                         ; 9A85 9D 40 70                 .@p
         rts                                     ; 9A88 60                       `
@@ -1312,7 +1312,7 @@ MapEntitySystem_Branch_9A89:
         bcc     MapEntitySystem_Branch_9AB9     ; 9A8E 90 29                    .)
         lda     $DF,y                           ; 9A90 B9 DF 00                 ...
         and     #$0F                            ; 9A93 29 0F                    ).
-        jsr     MapEntitySystem_Entry_9AE7      ; 9A95 20 E7 9A                  ..
+        jsr     SetEntityPackedMotionState      ; 9A95 20 E7 9A                  ..
         cmp     $00                           ; 9A98 C5 00                    ..
         bcs     MapEntitySystem_Branch_9AB0     ; 9A9A B0 14                    ..
         clc                                     ; 9A9C 18                       .
@@ -1338,7 +1338,7 @@ MapEntitySystem_Branch_9AB9:
         lsr     a                               ; 9ABD 4A                       J
         lsr     a                               ; 9ABE 4A                       J
         lsr     a                               ; 9ABF 4A                       J
-        jsr     MapEntitySystem_Entry_9AE7      ; 9AC0 20 E7 9A                  ..
+        jsr     SetEntityPackedMotionState      ; 9AC0 20 E7 9A                  ..
         cmp     $00                           ; 9AC3 C5 00                    ..
         bcs     MapEntitySystem_Branch_9ADE     ; 9AC5 B0 17                    ..
         clc                                     ; 9AC7 18                       .
@@ -1348,7 +1348,7 @@ MapEntitySystem_Branch_9AB9:
         and     #$0F                            ; 9ACE 29 0F                    ).
         sta     $DF,y                           ; 9AD0 99 DF 00                 ...
         pla                                     ; 9AD3 68                       h
-        jsr     MapEntitySystem_Entry_9AFB      ; 9AD4 20 FB 9A                  ..
+        jsr     ShiftEntityMotionNibbleLeft     ; 9AD4 20 FB 9A                  ..
         ora     $DF,y                           ; 9AD7 19 DF 00                 ...
         sta     $DF,y                           ; 9ADA 99 DF 00                 ...
         rts                                     ; 9ADD 60                       `
@@ -1359,27 +1359,27 @@ MapEntitySystem_Branch_9ADE:
         sta     $DF,y                           ; 9AE3 99 DF 00                 ...
         rts                                     ; 9AE6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9AE7:
+SetEntityPackedMotionState:
         pha                                     ; 9AE7 48                       H
         clc                                     ; 9AE8 18                       .
         adc     #$01                            ; 9AE9 69 01                    i.
         sta     $7040,x                         ; 9AEB 9D 40 70                 .@p
         lda     $00                           ; 9AEE A5 00                    ..
-        jsr     MapEntitySystem_Entry_9AFB      ; 9AF0 20 FB 9A                  ..
+        jsr     ShiftEntityMotionNibbleLeft     ; 9AF0 20 FB 9A                  ..
         ora     $7040,x                         ; 9AF3 1D 40 70                 .@p
         sta     $7040,x                         ; 9AF6 9D 40 70                 .@p
         pla                                     ; 9AF9 68                       h
         rts                                     ; 9AFA 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9AFB:
+ShiftEntityMotionNibbleLeft:
         asl     a                               ; 9AFB 0A                       .
         asl     a                               ; 9AFC 0A                       .
         asl     a                               ; 9AFD 0A                       .
         asl     a                               ; 9AFE 0A                       .
         rts                                     ; 9AFF 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9B00:
-        jsr     MapEntitySystem_Entry_9CC1      ; 9B00 20 C1 9C                  ..
+LoadCurrentMapEntityDataPointer:
+        jsr     LoadSavedMapEntityOverridePointer; 9B00 20 C1 9C                 ..
         bcc     MapEntitySystem_Branch_9B08     ; 9B03 90 03                    ..
         jmp     MapEntitySystem_Branch_9B68     ; 9B05 4C 68 9B                 Lh.
 ; ----------------------------------------------------------------------------
@@ -1420,13 +1420,13 @@ MapEntitySystem_Branch_9B3F:
         beq     MapEntitySystem_Branch_9B68     ; 9B45 F0 21                    .!
 MapEntitySystem_Branch_9B47:
         ldy     #$00                            ; 9B47 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9B49 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9B49 20 4E 99                  N.
         beq     MapEntitySystem_Branch_9B5E     ; 9B4C F0 10                    ..
-        jsr     MapEntitySystem_Entry_9B71      ; 9B4E 20 71 9B                  q.
-        jsr     MapEntitySystem_Entry_9BB0      ; 9B51 20 B0 9B                  ..
-        jsr     MapEntitySystem_Entry_9BBA      ; 9B54 20 BA 9B                  ..
+        jsr     AdvanceMapEntityRecordPointer   ; 9B4E 20 71 9B                  q.
+        jsr     SkipEntityRecordBlockForFlag10  ; 9B51 20 B0 9B                  ..
+        jsr     SkipEntityRecordBlockForFlag08  ; 9B54 20 BA 9B                  ..
         ldy     #$00                            ; 9B57 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9B59 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9B59 20 4E 99                  N.
         bne     MapEntitySystem_Branch_9B47     ; 9B5C D0 E9                    ..
 MapEntitySystem_Branch_9B5E:
         inc     $DA                             ; 9B5E E6 DA                    ..
@@ -1442,12 +1442,12 @@ MapEntitySystem_Branch_9B68:
         sta     $3B                             ; 9B6E 85 3B                    .;
         rts                                     ; 9B70 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9B71:
+AdvanceMapEntityRecordPointer:
         lda     #$07                            ; 9B71 A9 07                    ..
         sta     $00                           ; 9B73 85 00                    ..
         ldy     #$00                            ; 9B75 A0 00                    ..
         sty     $01                             ; 9B77 84 01                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9B79 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9B79 20 4E 99                  N.
         sta     $03                             ; 9B7C 85 03                    ..
         and     #$10                            ; 9B7E 29 10                    ).
         beq     MapEntitySystem_Branch_9BA2     ; 9B80 F0 20                    .
@@ -1479,25 +1479,25 @@ MapEntitySystem_Branch_9BA2:
         sta     $DB                             ; 9BAD 85 DB                    ..
         rts                                     ; 9BAF 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9BB0:
+SkipEntityRecordBlockForFlag10:
         lda     $03                             ; 9BB0 A5 03                    ..
         and     #$10                            ; 9BB2 29 10                    ).
         beq     MapEntitySystem_Branch_9BB9     ; 9BB4 F0 03                    ..
-        jsr     MapEntitySystem_Entry_9BC4      ; 9BB6 20 C4 9B                  ..
+        jsr     SkipLengthPrefixedEntityRecordBlock; 9BB6 20 C4 9B               ..
 MapEntitySystem_Branch_9BB9:
         rts                                     ; 9BB9 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9BBA:
+SkipEntityRecordBlockForFlag08:
         lda     $03                             ; 9BBA A5 03                    ..
         and     #$08                            ; 9BBC 29 08                    ).
         beq     MapEntitySystem_Branch_9BC3     ; 9BBE F0 03                    ..
-        jsr     MapEntitySystem_Entry_9BC4      ; 9BC0 20 C4 9B                  ..
+        jsr     SkipLengthPrefixedEntityRecordBlock; 9BC0 20 C4 9B               ..
 MapEntitySystem_Branch_9BC3:
         rts                                     ; 9BC3 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9BC4:
+SkipLengthPrefixedEntityRecordBlock:
         ldy     #$00                            ; 9BC4 A0 00                    ..
-        jsr     MapEntitySystem_Entry_994E      ; 9BC6 20 4E 99                  N.
+        jsr     ReadMapEntityRecordByte         ; 9BC6 20 4E 99                  N.
         clc                                     ; 9BC9 18                       .
         adc     $DA                             ; 9BCA 65 DA                    e.
         sta     $DA                             ; 9BCC 85 DA                    ..
@@ -1510,14 +1510,14 @@ MapEntitySystem_Branch_9BD2:
 MapEntitySystem_Branch_9BD8:
         rts                                     ; 9BD8 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9BD9:
+CompareEntityRecordTimeToNightThreshold:
         lda     SaveTimeOfDay                   ; 9BD9 AD ED 62                 ..b
         cmp     #$78                            ; 9BDC C9 78                    .x
         rts                                     ; 9BDE 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9BDF:
+ClearMapEntityRuntimeSlot:
         lda     #$00                            ; 9BDF A9 00                    ..
-MapEntitySystem_Entry_9BE1:
+FillMapEntityRuntimeSlot:
         sta     $6FE0,x                         ; 9BE1 9D E0 6F                 ..o
         sta     $7000,x                         ; 9BE4 9D 00 70                 ..p
         sta     $7040,x                         ; 9BE7 9D 40 70                 .@p
@@ -1535,7 +1535,7 @@ MapEntitySystem_Entry_9BE1:
         sta     $71E0,x                         ; 9C0B 9D E0 71                 ..q
         rts                                     ; 9C0E 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9C0F:
+ResetDynamicMapEntitySlots:
         ldx     #$1F                            ; 9C0F A2 1F                    ..
         lda     #$FF                            ; 9C11 A9 FF                    ..
 MapEntitySystem_Branch_9C13:
@@ -1543,13 +1543,13 @@ MapEntitySystem_Branch_9C13:
         sta     $6F80,x                         ; 9C16 9D 80 6F                 ..o
         sta     $6FA0,x                         ; 9C19 9D A0 6F                 ..o
         sta     $6FC0,x                         ; 9C1C 9D C0 6F                 ..o
-        jsr     MapEntitySystem_Entry_9BE1      ; 9C1F 20 E1 9B                  ..
+        jsr     FillMapEntityRuntimeSlot        ; 9C1F 20 E1 9B                  ..
         dex                                     ; 9C22 CA                       .
         cpx     #$06                            ; 9C23 E0 06                    ..
         bcs     MapEntitySystem_Branch_9C13     ; 9C25 B0 EC                    ..
         rts                                     ; 9C27 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9C28:
+TestMapEntitySuppressionFlags:
         lda     $62A5                           ; 9C28 AD A5 62                 ..b
         bmi     MapEntitySystem_Branch_9C6D     ; 9C2B 30 40                    0@
         ldx     #$00                            ; 9C2D A2 00                    ..
@@ -1593,7 +1593,7 @@ MapEntitySystem_Branch_9C6D:
         sec                                     ; 9C6D 38                       8
         rts                                     ; 9C6E 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9C6F:
+ApplySpecialMapEntitySuppression:
         lda     $62A5                           ; 9C6F AD A5 62                 ..b
         bmi     MapEntitySystem_Branch_9CC0     ; 9C72 30 4C                    0L
         brk                                     ; 9C74 00                       .
@@ -1649,7 +1649,7 @@ MapEntitySystem_Branch_9CBF:
 MapEntitySystem_Branch_9CC0:
         rts                                     ; 9CC0 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9CC1:
+LoadSavedMapEntityOverridePointer:
         lda     $9D0E                           ; 9CC1 AD 0E 9D                 ...
         sta     $DC                             ; 9CC4 85 DC                    ..
         lda     $9D0F                           ; 9CC6 AD 0F 9D                 ...
@@ -1678,7 +1678,7 @@ MapEntitySystem_Branch_9CCB:
         iny                                     ; 9CF2 C8                       .
         lda     ($DC),y                         ; 9CF3 B1 DC                    ..
         sta     $DB                             ; 9CF5 85 DB                    ..
-        jsr     MapEntitySystem_Entry_9C6F      ; 9CF7 20 6F 9C                  o.
+        jsr     ApplySpecialMapEntitySuppression; 9CF7 20 6F 9C                  o.
         lda     #$1C                            ; 9CFA A9 1C                    ..
         sta     $67                             ; 9CFC 85 67                    .g
         sec                                     ; 9CFE 38                       8
@@ -1751,16 +1751,16 @@ MapEntitySystem_Branch_9D0B:
         db   $29,$29,$01,$20,$29,$44,$03,$10 ; 9E9C 29 29 01 20 29 44 03 10  )). )D..
         db   $29,$FF                         ; 9EA4 29 FF                    ).
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9EA6:
+ApplyMapEntityPostInitialization:
         lda     $62A5                           ; 9EA6 AD A5 62                 ..b
         bmi     MapEntitySystem_Branch_9EB4     ; 9EA9 30 09                    0.
-        jsr     MapEntitySystem_Entry_9EB5      ; 9EAB 20 B5 9E                  ..
-        jsr     MapEntitySystem_Entry_A010      ; 9EAE 20 10 A0                  ..
-        jsr     MapEntitySystem_Entry_AD32      ; 9EB1 20 32 AD                  2.
+        jsr     ApplyTrackedEntityMapOverrides  ; 9EAB 20 B5 9E                  ..
+        jsr     DispatchMapSubmapEntityHandler  ; 9EAE 20 10 A0                  ..
+        jsr     ApplyChapterSpecificEntitySuppression; 9EB1 20 32 AD             2.
 MapEntitySystem_Branch_9EB4:
         rts                                     ; 9EB4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_9EB5:
+ApplyTrackedEntityMapOverrides:
         ldx     #$00                            ; 9EB5 A2 00                    ..
         lda     SaveTimeOfDay                   ; 9EB7 AD ED 62                 ..b
         cmp     #$78                            ; 9EBA C9 78                    .x
@@ -1895,7 +1895,7 @@ MapEntitySystem_Branch_9F76:
         db   $00,$02,$38,$04,$01,$01,$2E,$00 ; A005 00 02 38 04 01 01 2E 00  ..8.....
         db   $00,$01,$FF                     ; A00D 00 01 FF                 ...
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A010:
+DispatchMapSubmapEntityHandler:
         ldx     #$00                            ; A010 A2 00                    ..
 MapEntitySystem_Branch_A012:
         lda     Bank1C_MapSubmapKeys,x          ; A012 BD F5 AB                 ...
@@ -1920,7 +1920,7 @@ MapEntitySystem_Branch_A028:
         sta     $01                             ; A030 85 01                    ..
         jmp     ($0000)                         ; A032 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A035:
+HideMapEntityCoordinates:
         lda     #$80                            ; A035 A9 80                    ..
         sta     $6F66,x                         ; A037 9D 66 6F                 .fo
         sta     $6F86,x                         ; A03A 9D 86 6F                 ..o
@@ -1928,12 +1928,12 @@ MapEntitySystem_Entry_A035:
         sta     $6FC6,x                         ; A040 9D C6 6F                 ..o
         rts                                     ; A043 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A044:
+CompareMapEntityTimeToNightThreshold:
         lda     SaveTimeOfDay                   ; A044 AD ED 62                 ..b
         cmp     #$78                            ; A047 C9 78                    .x
         rts                                     ; A049 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A04A:
+SetMapEntityCoordinates:
         sta     $6F66,x                         ; A04A 9D 66 6F                 .fo
         sta     $6FA6,x                         ; A04D 9D A6 6F                 ..o
         tya                                     ; A050 98                       .
@@ -1941,7 +1941,7 @@ MapEntitySystem_Entry_A04A:
         sta     $6FC6,x                         ; A054 9D C6 6F                 ..o
         rts                                     ; A057 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A058:
+ConfigureEntitiesForMapFlagState:
         lda     PlayerLocalX                    ; A058 A5 44                    .D
         cmp     #$07                            ; A05A C9 07                    ..
         bne     MapEntitySystem_Branch_A07E     ; A05C D0 20                    .
@@ -1954,7 +1954,7 @@ MapEntitySystem_Entry_A058:
 MapEntitySystem_Branch_A068:
         lda     #$07                            ; A068 A9 07                    ..
         ldy     #$15                            ; A06A A0 15                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; A06C 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; A06C 20 4A A0                  J.
         lda     $7006,x                         ; A06F BD 06 70                 ..p
         and     #$FC                            ; A072 29 FC                    ).
         ora     #$02                            ; A074 09 02                    ..
@@ -1969,82 +1969,82 @@ MapEntitySystem_Branch_A07E:
         cmp     #$10                            ; A087 C9 10                    ..
         beq     MapEntitySystem_Branch_A0C3     ; A089 F0 38                    .8
         cmp     #$30                            ; A08B C9 30                    .0
-        bne     MapEntitySystem_Entry_A0C6      ; A08D D0 37                    .7
-        jsr     MapEntitySystem_Entry_A035      ; A08F 20 35 A0                  5.
+        bne     HideMapEntitiesFourteenThroughSixteen; A08D D0 37               .7
+        jsr     HideMapEntityCoordinates        ; A08F 20 35 A0                  5.
         lda     #$76                            ; A092 A9 76                    .v
         brk                                     ; A094 00                       .
         db   $66,$73                         ; A095 66 73                    fs
 ; ----------------------------------------------------------------------------
         bcs     MapEntitySystem_Branch_A0AD     ; A097 B0 14                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A099 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A099 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A0AD     ; A09C 90 0F                    ..
         bcs     MapEntitySystem_Branch_A0AA     ; A09E B0 0A                    ..
 MapEntitySystem_Branch_A0A0:
         ldx     #$06                            ; A0A0 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0A2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0A2 20 35 A0                  5.
         ldx     #$05                            ; A0A5 A2 05                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0A7 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0A7 20 35 A0                  5.
 MapEntitySystem_Branch_A0AA:
-        jsr     MapEntitySystem_Entry_A0C6      ; A0AA 20 C6 A0                  ..
+        jsr     HideMapEntitiesFourteenThroughSixteen; A0AA 20 C6 A0             ..
 MapEntitySystem_Branch_A0AD:
         ldx     #$03                            ; A0AD A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0AF 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0AF 20 35 A0                  5.
         ldx     #$04                            ; A0B2 A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0B4 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0B4 20 35 A0                  5.
         ldx     #$02                            ; A0B7 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0B9 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0B9 20 35 A0                  5.
         brk                                     ; A0BC 00                       .
         db   $0A,$EB,$01                     ; A0BD 0A EB 01                 ...
 ; ----------------------------------------------------------------------------
-        bne     MapEntitySystem_Entry_A0C6      ; A0C0 D0 04                    ..
+        bne     HideMapEntitiesFourteenThroughSixteen; A0C0 D0 04               ..
         rts                                     ; A0C2 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A0C3:
-        jsr     MapEntitySystem_Entry_A035      ; A0C3 20 35 A0                  5.
-MapEntitySystem_Entry_A0C6:
+        jsr     HideMapEntityCoordinates        ; A0C3 20 35 A0                  5.
+HideMapEntitiesFourteenThroughSixteen:
         ldx     #$10                            ; A0C6 A2 10                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0C8 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0C8 20 35 A0                  5.
         ldx     #$0F                            ; A0CB A2 0F                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0CD 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0CD 20 35 A0                  5.
         ldx     #$0E                            ; A0D0 A2 0E                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0D2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0D2 20 35 A0                  5.
         rts                                     ; A0D5 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A0D6:
+HideFirstTwoEntitiesUnlessState6287:
         bit     $6287                           ; A0D6 2C 87 62                 ,.b
         bvs     MapEntitySystem_Branch_A0E5     ; A0D9 70 0A                    p.
         ldx     #$00                            ; A0DB A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0DD 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0DD 20 35 A0                  5.
         ldx     #$01                            ; A0E0 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0E2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0E2 20 35 A0                  5.
 MapEntitySystem_Branch_A0E5:
         rts                                     ; A0E5 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A0E6:
+HideFirstTwoEntitiesForFlag03_01:
         brk                                     ; A0E6 00                       .
         db   $03,$EB,$01                     ; A0E7 03 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A0F6     ; A0EA F0 0A                    ..
         ldx     #$00                            ; A0EC A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0EE 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0EE 20 35 A0                  5.
         ldx     #$01                            ; A0F1 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A0F3 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A0F3 20 35 A0                  5.
 MapEntitySystem_Branch_A0F6:
         rts                                     ; A0F6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A0F7:
-        jsr     MapEntitySystem_Entry_A044      ; A0F7 20 44 A0                  D.
+HideEntityOneForDaytimeState627E:
+        jsr     CompareMapEntityTimeToNightThreshold; A0F7 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A10A     ; A0FA B0 0E                    ..
         lda     $627E                           ; A0FC AD 7E 62                 .~b
         and     #$0E                            ; A0FF 29 0E                    ).
         cmp     #$0E                            ; A101 C9 0E                    ..
         bne     MapEntitySystem_Branch_A10A     ; A103 D0 05                    ..
         ldx     #$01                            ; A105 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A107 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A107 20 35 A0                  5.
 MapEntitySystem_Branch_A10A:
         rts                                     ; A10A 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A10B:
+ApplyChapterDependentEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A10B AD 5A 61                 .Za
         cmp     #$04                            ; A10E C9 04                    ..
         beq     MapEntitySystem_Branch_A129     ; A110 F0 17                    ..
@@ -2052,14 +2052,14 @@ MapEntitySystem_Entry_A10B:
         db   $09,$EB,$40                     ; A113 09 EB 40                 ..@
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A128     ; A116 D0 10                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A118 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A118 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A128     ; A11B B0 0B                    ..
         brk                                     ; A11D 00                       .
         db   $04,$EB,$01                     ; A11E 04 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A128     ; A121 F0 05                    ..
         ldx     #$0A                            ; A123 A2 0A                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A125 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A125 20 35 A0                  5.
 MapEntitySystem_Branch_A128:
         rts                                     ; A128 60                       `
 ; ----------------------------------------------------------------------------
@@ -2076,16 +2076,16 @@ MapEntitySystem_Branch_A129:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A139:
         ldx     #$02                            ; A139 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A13B 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A13B 20 35 A0                  5.
 MapEntitySystem_Branch_A13E:
         ldx     #$01                            ; A13E A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A140 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A140 20 35 A0                  5.
 MapEntitySystem_Branch_A143:
         ldx     #$00                            ; A143 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A145 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A145 20 35 A0                  5.
         rts                                     ; A148 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A149:
+ApplyAlternateChapterEntityVisibility:
         brk                                     ; A149 00                       .
         db   $09,$EB,$40                     ; A14A 09 EB 40                 ..@
 ; ----------------------------------------------------------------------------
@@ -2095,7 +2095,7 @@ MapEntitySystem_Entry_A149:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A15A     ; A153 F0 05                    ..
         ldx     #$00                            ; A155 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A157 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A157 20 35 A0                  5.
 MapEntitySystem_Branch_A15A:
         rts                                     ; A15A 60                       `
 ; ----------------------------------------------------------------------------
@@ -2110,11 +2110,11 @@ MapEntitySystem_Branch_A15B:
         beq     MapEntitySystem_Branch_A15A     ; A165 F0 F3                    ..
 MapEntitySystem_Branch_A167:
         ldx     #$06                            ; A167 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A169 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A169 20 35 A0                  5.
         ldx     #$03                            ; A16C A2 03                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A16E 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A16E 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A171:
+ApplyFlagDrivenEntityGroupVisibility:
         brk                                     ; A171 00                       .
         db   $03,$EB,$10                     ; A172 03 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2122,7 +2122,7 @@ MapEntitySystem_Entry_A171:
         ldy     #$09                            ; A177 A0 09                    ..
         ldx     #$0C                            ; A179 A2 0C                    ..
 MapEntitySystem_Branch_A17B:
-        jsr     MapEntitySystem_Entry_A035      ; A17B 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A17B 20 35 A0                  5.
         inx                                     ; A17E E8                       .
         dey                                     ; A17F 88                       .
         bne     MapEntitySystem_Branch_A17B     ; A180 D0 F9                    ..
@@ -2132,7 +2132,7 @@ MapEntitySystem_Branch_A182:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A18D     ; A186 F0 05                    ..
         ldx     #$00                            ; A188 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A18A 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A18A 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A18D:
         lda     PlayerLocalY                    ; A18D A5 45                    .E
@@ -2147,17 +2147,17 @@ MapEntitySystem_Branch_A18D:
         lda     #$16                            ; A1A2 A9 16                    ..
         sta     $6F86,x                         ; A1A4 9D 86 6F                 ..o
         sta     $6FC6,x                         ; A1A7 9D C6 6F                 ..o
-        jsr     MapEntitySystem_Entry_AD1E      ; A1AA 20 1E AD                  ..
+        jsr     CacheTileUnderMapEntity         ; A1AA 20 1E AD                  ..
 MapEntitySystem_Branch_A1AD:
         rts                                     ; A1AD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A1AE:
+ApplySaveFlag03EntityVisibility:
         brk                                     ; A1AE 00                       .
         db   $03,$EB,$20                     ; A1AF 03 EB 20                 ..
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A1BC     ; A1B2 D0 08                    ..
         ldx     #$01                            ; A1B4 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A1B6 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A1B6 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A1C0     ; A1B9 4C C0 A1                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A1BC:
@@ -2168,37 +2168,37 @@ MapEntitySystem_Branch_A1C0:
         brk                                     ; A1C0 00                       .
         db   $03,$EB,$40                     ; A1C1 03 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A1C4:
+HideEntityTwoWhenFlag03_40Clear:
         bne     MapEntitySystem_Branch_A1CB     ; A1C4 D0 05                    ..
         ldx     #$02                            ; A1C6 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A1C8 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A1C8 20 35 A0                  5.
 MapEntitySystem_Branch_A1CB:
         rts                                     ; A1CB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A1CC:
+ApplyTimeDependentEntitySevenOrElevenVisibility:
         brk                                     ; A1CC 00                       .
         db   $07,$EB,$10                     ; A1CD 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bne     MapEntitySystem_Entry_A1E3      ; A1D0 D0 11                    ..
+        bne     HideEntityByTimeOfDay           ; A1D0 D0 11                    ..
         brk                                     ; A1D2 00                       .
         db   $03,$EB,$60                     ; A1D3 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A1E2     ; A1D6 F0 0A                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A1D8 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A1D8 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A1E2     ; A1DB B0 05                    ..
 MapEntitySystem_Branch_A1DD:
         ldx     #$0B                            ; A1DD A2 0B                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A1DF 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A1DF 20 35 A0                  5.
 MapEntitySystem_Branch_A1E2:
         rts                                     ; A1E2 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A1E3:
-        jsr     MapEntitySystem_Entry_A044      ; A1E3 20 44 A0                  D.
+HideEntityByTimeOfDay:
+        jsr     CompareMapEntityTimeToNightThreshold; A1E3 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A1DD     ; A1E6 90 F5                    ..
         ldx     #$07                            ; A1E8 A2 07                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A1EA 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A1EA 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A1ED:
+ApplyMapEntityVisibilityFlags07_04_0B:
         brk                                     ; A1ED 00                       .
         db   $07,$EB,$10                     ; A1EE 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2207,26 +2207,26 @@ MapEntitySystem_Entry_A1ED:
         db   $04,$EB,$08                     ; A1F4 04 EB 08                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A213     ; A1F7 F0 1A                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A1F9 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A1F9 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A220     ; A1FC B0 22                    ."
         ldx     #$04                            ; A1FE A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A200 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A200 20 35 A0                  5.
 MapEntitySystem_Branch_A203:
         ldx     #$00                            ; A203 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A205 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A205 20 35 A0                  5.
         brk                                     ; A208 00                       .
         db   $0B,$EB,$20                     ; A209 0B EB 20                 ..
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A226     ; A20C F0 18                    ..
         ldx     #$01                            ; A20E A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A210 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A210 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A213:
         lda     #$07                            ; A213 A9 07                    ..
         sta     $6FE0                           ; A215 8D E0 6F                 ..o
         inc     $7000                           ; A218 EE 00 70                 ..p
         ldx     #$01                            ; A21B A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A21D 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A21D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A220:
         brk                                     ; A220 00                       .
@@ -2236,7 +2236,7 @@ MapEntitySystem_Branch_A220:
 MapEntitySystem_Branch_A226:
         rts                                     ; A226 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A227:
+ApplyMapEntityVisibilityFlagsAndVehicleState:
         brk                                     ; A227 00                       .
         db   $07,$EB,$10                     ; A228 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2244,67 +2244,67 @@ MapEntitySystem_Entry_A227:
         bit     $6281                           ; A22D 2C 81 62                 ,.b
         bvc     MapEntitySystem_Branch_A237     ; A230 50 05                    P.
         ldx     #$01                            ; A232 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A234 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A234 20 35 A0                  5.
 MapEntitySystem_Branch_A237:
         bit     $6283                           ; A237 2C 83 62                 ,.b
         bpl     MapEntitySystem_Branch_A246     ; A23A 10 0A                    ..
 MapEntitySystem_Branch_A23C:
         ldx     #$00                            ; A23C A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A23E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A23E 20 35 A0                  5.
         ldx     #$02                            ; A241 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A243 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A243 20 35 A0                  5.
 MapEntitySystem_Branch_A246:
         rts                                     ; A246 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A247:
         ldx     #$01                            ; A247 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A249 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A249 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A23C     ; A24C 4C 3C A2                 L<.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A24F:
+HideEntityTwoForNightFlagState:
         brk                                     ; A24F 00                       .
         db   $07,$EB,$10                     ; A250 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A265     ; A253 D0 10                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A255 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A255 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A265     ; A258 90 0B                    ..
         brk                                     ; A25A 00                       .
         db   $03,$EB,$60                     ; A25B 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A25E:
+HideEntityTwoAfterFlag03Check:
         beq     MapEntitySystem_Branch_A265     ; A25E F0 05                    ..
         ldx     #$02                            ; A260 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A262 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A262 20 35 A0                  5.
 MapEntitySystem_Branch_A265:
         rts                                     ; A265 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A266:
+ApplyLargeEntityGroupVisibilityFlag08:
         ldx     #$06                            ; A266 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A268 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A268 20 35 A0                  5.
         ldx     #$07                            ; A26B A2 07                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A26D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A26D 20 35 A0                  5.
         ldx     #$08                            ; A270 A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A272 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A272 20 35 A0                  5.
         brk                                     ; A275 00                       .
         db   $08,$EB,$80                     ; A276 08 EB 80                 ...
 ; ----------------------------------------------------------------------------
         bpl     MapEntitySystem_Branch_A299     ; A279 10 1E                    ..
         ldx     #$02                            ; A27B A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A27D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A27D 20 35 A0                  5.
         ldx     #$01                            ; A280 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A282 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A282 20 35 A0                  5.
         ldx     #$03                            ; A285 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A287 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A287 20 35 A0                  5.
         ldx     #$03                            ; A28A A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A28C 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A28C 20 35 A0                  5.
         ldx     #$00                            ; A28F A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A291 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A291 20 35 A0                  5.
         ldx     #$04                            ; A294 A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A296 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A296 20 35 A0                  5.
 MapEntitySystem_Branch_A299:
         rts                                     ; A299 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A29A:
+ApplyDayNightEntityVisibilitySet:
         brk                                     ; A29A 00                       .
         db   $07,$EB,$10                     ; A29B 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2312,7 +2312,7 @@ MapEntitySystem_Entry_A29A:
         rts                                     ; A2A0 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A2A1:
-        jsr     MapEntitySystem_Entry_A044      ; A2A1 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A2A1 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A2D5     ; A2A4 B0 2F                    ./
         brk                                     ; A2A6 00                       .
         db   $0A,$EB,$01                     ; A2A7 0A EB 01                 ...
@@ -2320,7 +2320,7 @@ MapEntitySystem_Branch_A2A1:
         bne     MapEntitySystem_Branch_A2B4     ; A2AA D0 08                    ..
 MapEntitySystem_Branch_A2AC:
         ldx     #$0F                            ; A2AC A2 0F                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A2AE 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2AE 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A2BA     ; A2B1 4C BA A2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A2B4:
@@ -2334,7 +2334,7 @@ MapEntitySystem_Branch_A2BA:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A2C8     ; A2BE F0 08                    ..
         ldx     #$0D                            ; A2C0 A2 0D                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A2C2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2C2 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A2D0     ; A2C5 4C D0 A2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A2C8:
@@ -2346,28 +2346,28 @@ MapEntitySystem_Branch_A2C8:
 MapEntitySystem_Branch_A2D0:
         ldx     #$0B                            ; A2D0 A2 0B                    ..
 MapEntitySystem_Branch_A2D2:
-        jsr     MapEntitySystem_Entry_A035      ; A2D2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2D2 20 35 A0                  5.
 MapEntitySystem_Branch_A2D5:
         brk                                     ; A2D5 00                       .
         db   $05,$EB,$04                     ; A2D6 05 EB 04                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A2E8     ; A2D9 D0 0D                    ..
         ldx     #$02                            ; A2DB A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A2DD 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2DD 20 35 A0                  5.
 MapEntitySystem_Branch_A2E0:
         ldx     #$03                            ; A2E0 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A2E2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2E2 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A2F3     ; A2E5 4C F3 A2                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A2E8:
         ldx     #$00                            ; A2E8 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A2EA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A2EA 20 35 A0                  5.
         brk                                     ; A2ED 00                       .
         db   $0B,$EB,$04                     ; A2EE 0B EB 04                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A2E0     ; A2F1 D0 ED                    ..
 MapEntitySystem_Branch_A2F3:
-        jsr     MapEntitySystem_Entry_A044      ; A2F3 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A2F3 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A321     ; A2F6 B0 29                    .)
         brk                                     ; A2F8 00                       .
         db   $05,$EB,$10                     ; A2F9 05 EB 10                 ...
@@ -2388,7 +2388,7 @@ MapEntitySystem_Branch_A315:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A320     ; A319 F0 05                    ..
         ldx     #$0C                            ; A31B A2 0C                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A31D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A31D 20 35 A0                  5.
 MapEntitySystem_Branch_A320:
         rts                                     ; A320 60                       `
 ; ----------------------------------------------------------------------------
@@ -2398,23 +2398,23 @@ MapEntitySystem_Branch_A321:
 ; ----------------------------------------------------------------------------
         rts                                     ; A325 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A326:
+HideEntityZeroForDaytimeFlagState:
         brk                                     ; A326 00                       .
         db   $07,$EB,$10                     ; A327 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A33C     ; A32A D0 10                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A32C 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A32C 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A33C     ; A32F B0 0B                    ..
         brk                                     ; A331 00                       .
         db   $0A,$EB,$01                     ; A332 0A EB 01                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A33C     ; A335 D0 05                    ..
         ldx     #$00                            ; A337 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A339 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A339 20 35 A0                  5.
 MapEntitySystem_Branch_A33C:
         rts                                     ; A33C 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A33D:
+ApplyChapterAndState6283Visibility:
         lda     SaveCurrentChapterMinus1        ; A33D AD 5A 61                 .Za
         cmp     #$04                            ; A340 C9 04                    ..
         beq     MapEntitySystem_Branch_A36D     ; A342 F0 29                    .)
@@ -2423,15 +2423,15 @@ MapEntitySystem_Entry_A33D:
         and     #$20                            ; A349 29 20                    )
         beq     MapEntitySystem_Branch_A357     ; A34B F0 0A                    ..
         ldx     #$13                            ; A34D A2 13                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A34F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A34F 20 35 A0                  5.
         ldx     #$07                            ; A352 A2 07                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A354 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A354 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A357:
         ldx     #$11                            ; A357 A2 11                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A359 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A359 20 35 A0                  5.
         ldx     #$09                            ; A35C A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A35E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A35E 20 35 A0                  5.
         lda     #$11                            ; A361 A9 11                    ..
         ldx     #$07                            ; A363 A2 07                    ..
         sta     $7046,x                         ; A365 9D 46 70                 .Fp
@@ -2440,18 +2440,18 @@ MapEntitySystem_Branch_A357:
 MapEntitySystem_Branch_A36D:
         rts                                     ; A36D 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A36E:
+HideEntityZeroForChapterTwoState:
         bit     $627B                           ; A36E 2C 7B 62                 ,{b
         bvc     MapEntitySystem_Branch_A37F     ; A371 50 0C                    P.
         lda     SaveCurrentChapterMinus1        ; A373 AD 5A 61                 .Za
         cmp     #$01                            ; A376 C9 01                    ..
         bne     MapEntitySystem_Branch_A37F     ; A378 D0 05                    ..
         ldx     #$00                            ; A37A A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A37C 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A37C 20 35 A0                  5.
 MapEntitySystem_Branch_A37F:
         rts                                     ; A37F 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A380:
+ApplyChapterAndPlayerXEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A380 AD 5A 61                 .Za
         cmp     #$04                            ; A383 C9 04                    ..
         beq     MapEntitySystem_Branch_A3A7     ; A385 F0 20                    .
@@ -2459,34 +2459,34 @@ MapEntitySystem_Entry_A380:
         cmp     #$16                            ; A389 C9 16                    ..
         beq     MapEntitySystem_Branch_A398     ; A38B F0 0B                    ..
         ldx     #$08                            ; A38D A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A38F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A38F 20 35 A0                  5.
         ldx     #$09                            ; A392 A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A394 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A394 20 35 A0                  5.
         rts                                     ; A397 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A398:
         ldx     #$0A                            ; A398 A2 0A                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A39A 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A39A 20 35 A0                  5.
         ldx     #$0B                            ; A39D A2 0B                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A39F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A39F 20 35 A0                  5.
         ldx     #$0C                            ; A3A2 A2 0C                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3A4 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3A4 20 35 A0                  5.
 MapEntitySystem_Branch_A3A7:
         rts                                     ; A3A7 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A3A8:
+HideEntitiesZeroAndOneForFlag0B_02:
         brk                                     ; A3A8 00                       .
         db   $0B,$EB,$02                     ; A3A9 0B EB 02                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A3B8     ; A3AC F0 0A                    ..
         ldx     #$00                            ; A3AE A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3B0 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3B0 20 35 A0                  5.
         ldx     #$01                            ; A3B3 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3B5 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3B5 20 35 A0                  5.
 MapEntitySystem_Branch_A3B8:
         rts                                     ; A3B8 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A3B9:
+ApplyChapterTimeEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A3B9 AD 5A 61                 .Za
         cmp     #$01                            ; A3BC C9 01                    ..
         bne     MapEntitySystem_Branch_A3D1     ; A3BE D0 11                    ..
@@ -2499,7 +2499,7 @@ MapEntitySystem_Entry_A3B9:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A3D1     ; A3CA F0 05                    ..
         ldx     #$00                            ; A3CC A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3CE 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3CE 20 35 A0                  5.
 MapEntitySystem_Branch_A3D1:
         lda     SaveCurrentChapterMinus1        ; A3D1 AD 5A 61                 .Za
         cmp     #$04                            ; A3D4 C9 04                    ..
@@ -2516,7 +2516,7 @@ MapEntitySystem_Branch_A3D1:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A3F2     ; A3EB F0 05                    ..
         ldx     #$07                            ; A3ED A2 07                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3EF 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3EF 20 35 A0                  5.
 MapEntitySystem_Branch_A3F2:
         brk                                     ; A3F2 00                       .
         db   $0B,$EB,$20                     ; A3F3 0B EB 20                 ..
@@ -2524,7 +2524,7 @@ MapEntitySystem_Branch_A3F2:
         bne     MapEntitySystem_Branch_A3FD     ; A3F6 D0 05                    ..
 MapEntitySystem_Branch_A3F8:
         ldx     #$0C                            ; A3F8 A2 0C                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A3FA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A3FA 20 35 A0                  5.
 MapEntitySystem_Branch_A3FD:
         rts                                     ; A3FD 60                       `
 ; ----------------------------------------------------------------------------
@@ -2535,9 +2535,9 @@ MapEntitySystem_Branch_A3FE:
         lda     #$77                            ; A405 A9 77                    .w
         sta     $7046,x                         ; A407 9D 46 70                 .Fp
         ldx     #$01                            ; A40A A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A40C 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A40C 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A40F:
+ApplyFlag07EntityGroupVisibility:
         ldx     #$0F                            ; A40F A2 0F                    ..
         brk                                     ; A411 00                       .
         db   $07,$EB,$10                     ; A412 07 EB 10                 ...
@@ -2548,17 +2548,17 @@ MapEntitySystem_Entry_A40F:
         bne     MapEntitySystem_Branch_A42F     ; A41C D0 11                    ..
 MapEntitySystem_Branch_A41E:
         ldx     #$0B                            ; A41E A2 0B                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A420 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A420 20 35 A0                  5.
         ldx     #$0C                            ; A423 A2 0C                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A425 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A425 20 35 A0                  5.
         ldx     #$0D                            ; A428 A2 0D                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A42A 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A42A 20 35 A0                  5.
         ldx     #$0E                            ; A42D A2 0E                    ..
 MapEntitySystem_Branch_A42F:
-        jmp     MapEntitySystem_Entry_A035      ; A42F 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A42F 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A432:
-        jsr     MapEntitySystem_Entry_A035      ; A432 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A432 20 35 A0                  5.
         brk                                     ; A435 00                       .
         db   $1A,$EB,$02                     ; A436 1A EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -2573,10 +2573,10 @@ MapEntitySystem_Branch_A43C:
         lda     #$0B                            ; A446 A9 0B                    ..
         sta     $6F86,x                         ; A448 9D 86 6F                 ..o
         sta     $6FC6,x                         ; A44B 9D C6 6F                 ..o
-        jsr     MapEntitySystem_Entry_AD1E      ; A44E 20 1E AD                  ..
+        jsr     CacheTileUnderMapEntity         ; A44E 20 1E AD                  ..
         jmp     MapEntitySystem_Branch_A41E     ; A451 4C 1E A4                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A454:
+ApplyFlags07_19_1A_0FEntityVisibility:
         brk                                     ; A454 00                       .
         db   $07,$EB,$10                     ; A455 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2585,17 +2585,17 @@ MapEntitySystem_Entry_A454:
         db   $19,$EB,$01                     ; A45B 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A488     ; A45E F0 28                    .(
-        jsr     MapEntitySystem_Entry_A044      ; A460 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A460 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A46A     ; A463 B0 05                    ..
         ldx     #$03                            ; A465 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A467 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A467 20 35 A0                  5.
 MapEntitySystem_Branch_A46A:
         brk                                     ; A46A 00                       .
         db   $1A,$EB,$20                     ; A46B 1A EB 20                 ..
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A488     ; A46E F0 18                    ..
         ldx     #$00                            ; A470 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A472 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A472 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A475:
         brk                                     ; A475 00                       .
@@ -2609,39 +2609,39 @@ MapEntitySystem_Branch_A475:
         bne     MapEntitySystem_Branch_A485     ; A481 D0 02                    ..
         ldx     #$04                            ; A483 A2 04                    ..
 MapEntitySystem_Branch_A485:
-        jsr     MapEntitySystem_Entry_A035      ; A485 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A485 20 35 A0                  5.
 MapEntitySystem_Branch_A488:
         rts                                     ; A488 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A489:
+ApplyFlags07And05EntityVisibility:
         brk                                     ; A489 00                       .
         db   $07,$EB,$10                     ; A48A 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A494     ; A48D F0 05                    ..
         ldx     #$03                            ; A48F A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A491 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A491 20 35 A0                  5.
 MapEntitySystem_Branch_A494:
         brk                                     ; A494 00                       .
         db   $05,$EB,$04                     ; A495 05 EB 04                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A49F     ; A498 F0 05                    ..
         ldx     #$02                            ; A49A A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A49C 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A49C 20 35 A0                  5.
 MapEntitySystem_Branch_A49F:
         rts                                     ; A49F 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A4A0:
+HideEntityZeroForFlag09_20:
         brk                                     ; A4A0 00                       .
         db   $09,$EB,$20                     ; A4A1 09 EB 20                 ..
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A4AB     ; A4A4 F0 05                    ..
         ldx     #$00                            ; A4A6 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4A8 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A4A8 20 35 A0                  5.
 MapEntitySystem_Branch_A4AB:
         rts                                     ; A4AB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A4AC:
-        jsr     MapEntitySystem_Entry_A044      ; A4AC 20 44 A0                  D.
+ApplyDayNightFlagEntityVisibility:
+        jsr     CompareMapEntityTimeToNightThreshold; A4AC 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A4C8     ; A4AF 90 17                    ..
         brk                                     ; A4B1 00                       .
         db   $07,$EB,$10                     ; A4B2 07 EB 10                 ...
@@ -2653,9 +2653,9 @@ MapEntitySystem_Entry_A4AC:
         bne     MapEntitySystem_Branch_A4C7     ; A4BB D0 0A                    ..
 MapEntitySystem_Branch_A4BD:
         ldx     #$01                            ; A4BD A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4BF 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A4BF 20 35 A0                  5.
         ldx     #$00                            ; A4C2 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A4C4 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A4C4 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A4C7:
         rts                                     ; A4C7 60                       `
@@ -2666,17 +2666,17 @@ MapEntitySystem_Branch_A4C8:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A4DD     ; A4CC F0 0F                    ..
         ldx     #$00                            ; A4CE A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4D0 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A4D0 20 35 A0                  5.
         ldx     #$01                            ; A4D3 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4D5 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A4D5 20 35 A0                  5.
         ldx     #$08                            ; A4D8 A2 08                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A4DA 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A4DA 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A4DD:
         ldx     #$0F                            ; A4DD A2 0F                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A4DF 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A4DF 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A4E2:
+ApplyFlags07_0BEntityVisibility:
         brk                                     ; A4E2 00                       .
         db   $07,$EB,$10                     ; A4E3 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2686,35 +2686,35 @@ MapEntitySystem_Entry_A4E2:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A50E     ; A4EC D0 20                    .
         ldx     #$01                            ; A4EE A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4F0 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A4F3 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A4F0 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A4F3 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A508     ; A4F6 90 10                    ..
         ldx     #$02                            ; A4F8 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A4FA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A4FA 20 35 A0                  5.
         brk                                     ; A4FD 00                       .
         db   $07,$EB,$40                     ; A4FE 07 EB 40                 ..@
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A509     ; A501 D0 06                    ..
         ldx     #$03                            ; A503 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A505 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A505 20 35 A0                  5.
 MapEntitySystem_Branch_A508:
         rts                                     ; A508 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A509:
         ldx     #$00                            ; A509 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A50B 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A50B 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A50E:
         ldx     #$00                            ; A50E A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A510 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A513 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A510 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A513 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A51D     ; A516 90 05                    ..
         ldx     #$03                            ; A518 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A51A 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A51A 20 35 A0                  5.
 MapEntitySystem_Branch_A51D:
         rts                                     ; A51D 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A51E:
+ApplyChapterEntityZeroAndFourVisibility:
         lda     SaveCurrentChapterMinus1        ; A51E AD 5A 61                 .Za
         cmp     #$02                            ; A521 C9 02                    ..
         bne     MapEntitySystem_Branch_A53A     ; A523 D0 15                    ..
@@ -2723,25 +2723,25 @@ MapEntitySystem_Entry_A51E:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A530     ; A529 F0 05                    ..
         ldx     #$00                            ; A52B A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A52D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A52D 20 35 A0                  5.
 MapEntitySystem_Branch_A530:
-        jsr     MapEntitySystem_Entry_A044      ; A530 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A530 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A548     ; A533 90 13                    ..
 MapEntitySystem_Branch_A535:
         ldx     #$04                            ; A535 A2 04                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A537 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A537 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A53A:
         cmp     #$01                            ; A53A C9 01                    ..
         bne     MapEntitySystem_Branch_A535     ; A53C D0 F7                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A53E 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A53E 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A548     ; A541 90 05                    ..
         ldx     #$00                            ; A543 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A545 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A545 20 35 A0                  5.
 MapEntitySystem_Branch_A548:
         rts                                     ; A548 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A549:
+HideEntityZeroForFlags05Or0B:
         brk                                     ; A549 00                       .
         db   $05,$EB,$02                     ; A54A 05 EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -2752,20 +2752,20 @@ MapEntitySystem_Entry_A549:
         bne     MapEntitySystem_Branch_A55A     ; A553 D0 05                    ..
 MapEntitySystem_Branch_A555:
         ldx     #$00                            ; A555 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A557 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A557 20 35 A0                  5.
 MapEntitySystem_Branch_A55A:
         rts                                     ; A55A 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A55B:
+HideEntityZeroForState62AA_20:
         lda     $62AA                           ; A55B AD AA 62                 ..b
         and     #$20                            ; A55E 29 20                    )
         beq     MapEntitySystem_Branch_A567     ; A560 F0 05                    ..
         ldx     #$00                            ; A562 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A564 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A564 20 35 A0                  5.
 MapEntitySystem_Branch_A567:
         rts                                     ; A567 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A568:
+PositionEntityOneAt0E_09:
         lda     PlayerLocalX                    ; A568 A5 44                    .D
         cmp     #$0E                            ; A56A C9 0E                    ..
         bne     MapEntitySystem_Branch_A57E     ; A56C D0 10                    ..
@@ -2778,7 +2778,7 @@ MapEntitySystem_Entry_A568:
 MapEntitySystem_Branch_A57E:
         rts                                     ; A57E 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A57F:
+ApplyChapterAndFlag17EntityZeroVisibility:
         lda     SaveCurrentChapterMinus1        ; A57F AD 5A 61                 .Za
         cmp     #$04                            ; A582 C9 04                    ..
         beq     MapEntitySystem_Branch_A599     ; A584 F0 13                    ..
@@ -2792,7 +2792,7 @@ MapEntitySystem_Entry_A57F:
         beq     MapEntitySystem_Branch_A59F     ; A592 F0 0B                    ..
 MapEntitySystem_Branch_A594:
         ldx     #$00                            ; A594 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A596 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A596 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A599:
         brk                                     ; A599 00                       .
@@ -2802,18 +2802,18 @@ MapEntitySystem_Branch_A599:
 MapEntitySystem_Branch_A59F:
         rts                                     ; A59F 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A5A0:
+HideFirstTwoEntitiesInChapterFive:
         lda     SaveCurrentChapterMinus1        ; A5A0 AD 5A 61                 .Za
         cmp     #$04                            ; A5A3 C9 04                    ..
         bne     MapEntitySystem_Branch_A5B1     ; A5A5 D0 0A                    ..
         ldx     #$00                            ; A5A7 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A5A9 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A5A9 20 35 A0                  5.
         ldx     #$01                            ; A5AC A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A5AE 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A5AE 20 35 A0                  5.
 MapEntitySystem_Branch_A5B1:
         rts                                     ; A5B1 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A5B2:
+HideFirstThreeEntitiesForChapterFiveFlag17:
         lda     SaveCurrentChapterMinus1        ; A5B2 AD 5A 61                 .Za
         cmp     #$04                            ; A5B5 C9 04                    ..
         bne     MapEntitySystem_Branch_A5CE     ; A5B7 D0 15                    ..
@@ -2822,15 +2822,15 @@ MapEntitySystem_Entry_A5B2:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A5CE     ; A5BD F0 0F                    ..
         ldx     #$02                            ; A5BF A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A5C1 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A5C1 20 35 A0                  5.
         ldx     #$01                            ; A5C4 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A5C6 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A5C6 20 35 A0                  5.
         ldx     #$00                            ; A5C9 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A5CB 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A5CB 20 35 A0                  5.
 MapEntitySystem_Branch_A5CE:
         rts                                     ; A5CE 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A5CF:
+InitializeEntitySixWhenPresentationIdle:
         lda     $0530                           ; A5CF AD 30 05                 .0.
         bne     MapEntitySystem_Branch_A5F5     ; A5D2 D0 21                    .!
         ldx     #$06                            ; A5D4 A2 06                    ..
@@ -2849,11 +2849,11 @@ MapEntitySystem_Entry_A5CF:
 MapEntitySystem_Branch_A5F5:
         rts                                     ; A5F5 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A5F6:
+ApplyRowSixAndFlag17EntityConfiguration:
         lda     PlayerLocalY                    ; A5F6 A5 45                    .E
         cmp     #$06                            ; A5F8 C9 06                    ..
         bne     MapEntitySystem_Branch_A619     ; A5FA D0 1D                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A5FC 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A5FC 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A619     ; A5FF 90 18                    ..
         lda     #$04                            ; A601 A9 04                    ..
         ldx     #$0B                            ; A603 A2 0B                    ..
@@ -2872,11 +2872,11 @@ MapEntitySystem_Branch_A619:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A631     ; A61D F0 12                    ..
         ldx     #$00                            ; A61F A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A621 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A624 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A621 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A624 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A63D     ; A627 90 14                    ..
         ldx     #$08                            ; A629 A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A62B 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A62B 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A63D     ; A62E 4C 3D A6                 L=.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A631:
@@ -2891,9 +2891,9 @@ MapEntitySystem_Branch_A631:
 MapEntitySystem_Branch_A63D:
         ldx     #$05                            ; A63D A2 05                    ..
 MapEntitySystem_Branch_A63F:
-        jsr     MapEntitySystem_Entry_A035      ; A63F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A63F 20 35 A0                  5.
 MapEntitySystem_Branch_A642:
-        jsr     MapEntitySystem_Entry_A044      ; A642 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A642 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A657     ; A645 90 10                    ..
         brk                                     ; A647 00                       .
         db   $18,$EB,$40                     ; A648 18 EB 40                 ..@
@@ -2905,16 +2905,16 @@ MapEntitySystem_Branch_A642:
 MapEntitySystem_Branch_A652:
         ldx     #$0E                            ; A652 A2 0E                    ..
 MapEntitySystem_Branch_A654:
-        jmp     MapEntitySystem_Entry_A035      ; A654 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A654 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A657:
         rts                                     ; A657 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A658:
-        jsr     MapEntitySystem_Entry_A044      ; A658 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A658 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A662     ; A65B 90 05                    ..
         ldx     #$08                            ; A65D A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A65F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A65F 20 35 A0                  5.
 MapEntitySystem_Branch_A662:
         ldx     #$05                            ; A662 A2 05                    ..
         lda     #$1A                            ; A664 A9 1A                    ..
@@ -2930,69 +2930,69 @@ MapEntitySystem_Branch_A662:
         ldx     #$00                            ; A67E A2 00                    ..
         jmp     MapEntitySystem_Branch_A63F     ; A680 4C 3F A6                 L?.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A683:
+ApplyState62AAEntityVisibility:
         lda     $62AA                           ; A683 AD AA 62                 ..b
         lsr     a                               ; A686 4A                       J
         bcc     MapEntitySystem_Branch_A698     ; A687 90 0F                    ..
         ldx     #$00                            ; A689 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A68B 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A68B 20 35 A0                  5.
         ldx     #$02                            ; A68E A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A690 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A690 20 35 A0                  5.
         ldx     #$01                            ; A693 A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A695 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A695 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A698:
         ldx     #$00                            ; A698 A2 00                    ..
         lda     $0530                           ; A69A AD 30 05                 .0.
         bmi     MapEntitySystem_Branch_A6A6     ; A69D 30 07                    0.
         ldx     #$02                            ; A69F A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A6A1 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A6A1 20 35 A0                  5.
         ldx     #$01                            ; A6A4 A2 01                    ..
 MapEntitySystem_Branch_A6A6:
-        jmp     MapEntitySystem_Entry_A035      ; A6A6 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A6A6 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A6A9:
+HideEntityTwoForFlag18_20:
         brk                                     ; A6A9 00                       .
         db   $18,$EB,$20                     ; A6AA 18 EB 20                 ..
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A6B4     ; A6AD F0 05                    ..
         ldx     #$02                            ; A6AF A2 02                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A6B1 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A6B1 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A6B4:
         rts                                     ; A6B4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A6B5:
-        jsr     MapEntitySystem_Entry_A044      ; A6B5 20 44 A0                  D.
+HideEntitiesThirteenThroughSixteenByTimeAndParty:
+        jsr     CompareMapEntityTimeToNightThreshold; A6B5 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A6C9     ; A6B8 B0 0F                    ..
         lda     SaveJoinedCharacterFlags        ; A6BA AD 92 62                 ..b
         bpl     MapEntitySystem_Branch_A6C9     ; A6BD 10 0A                    ..
         ldx     #$0D                            ; A6BF A2 0D                    ..
 MapEntitySystem_Branch_A6C1:
-        jsr     MapEntitySystem_Entry_A035      ; A6C1 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A6C1 20 35 A0                  5.
         inx                                     ; A6C4 E8                       .
         cpx     #$11                            ; A6C5 E0 11                    ..
         bcc     MapEntitySystem_Branch_A6C1     ; A6C7 90 F8                    ..
 MapEntitySystem_Branch_A6C9:
         rts                                     ; A6C9 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A6CA:
+ApplyLateGameMapEntityVisibility:
         brk                                     ; A6CA 00                       .
         db   $26,$EB,$10                     ; A6CB 26 EB 10                 &..
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A6D8     ; A6CE D0 08                    ..
         ldx     #$02                            ; A6D0 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A6D2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A6D2 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A6DD     ; A6D5 4C DD A6                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A6D8:
         ldx     #$01                            ; A6D8 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A6DA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A6DA 20 35 A0                  5.
 MapEntitySystem_Branch_A6DD:
         lda     $6294                           ; A6DD AD 94 62                 ..b
         bpl     MapEntitySystem_Branch_A71E     ; A6E0 10 3C                    .<
         ldx     #$00                            ; A6E2 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A6E4 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A6E4 20 35 A0                  5.
         brk                                     ; A6E7 00                       .
         db   $16,$EB,$08                     ; A6E8 16 EB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -3015,36 +3015,36 @@ MapEntitySystem_Branch_A70A:
         brk                                     ; A70A 00                       .
         db   $19,$EB,$40                     ; A70B 19 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A70E:
+ApplyFlag19EntityVisibilityContinuation:
         beq     MapEntitySystem_Branch_A728     ; A70E F0 18                    ..
         ldx     #$06                            ; A710 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A712 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A732      ; A715 20 32 A7                  2.
+        jsr     HideMapEntityCoordinates        ; A712 20 35 A0                  5.
+        jsr     HideMapEntityThree              ; A715 20 32 A7                  2.
         brk                                     ; A718 00                       .
         db   $17,$EB,$02                     ; A719 17 EB 02                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A723     ; A71C F0 05                    ..
 MapEntitySystem_Branch_A71E:
         ldx     #$05                            ; A71E A2 05                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A720 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A720 20 35 A0                  5.
 MapEntitySystem_Branch_A723:
         ldx     #$04                            ; A723 A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A725 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A725 20 35 A0                  5.
 MapEntitySystem_Branch_A728:
         brk                                     ; A728 00                       .
         db   $17,$EB,$10                     ; A729 17 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A731     ; A72C F0 03                    ..
-        jmp     MapEntitySystem_Entry_A732      ; A72E 4C 32 A7                 L2.
+        jmp     HideMapEntityThree              ; A72E 4C 32 A7                 L2.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A731:
         rts                                     ; A731 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A732:
+HideMapEntityThree:
         ldx     #$03                            ; A732 A2 03                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A734 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A734 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A737:
+ApplyPartyAndFlag26EntityGroupVisibility:
         lda     $6BE8                           ; A737 AD E8 6B                 ..k
         bpl     MapEntitySystem_Branch_A742     ; A73A 10 06                    ..
         lda     PlayerLocalX                    ; A73C A5 44                    .D
@@ -3052,9 +3052,9 @@ MapEntitySystem_Entry_A737:
         bcs     MapEntitySystem_Branch_A751     ; A740 B0 0F                    ..
 MapEntitySystem_Branch_A742:
         ldx     #$05                            ; A742 A2 05                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A744 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A744 20 35 A0                  5.
         ldx     #$06                            ; A747 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A749 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A749 20 35 A0                  5.
         lda     $6BE8                           ; A74C AD E8 6B                 ..k
         bpl     MapEntitySystem_Branch_A75D     ; A74F 10 0C                    ..
 MapEntitySystem_Branch_A751:
@@ -3068,21 +3068,21 @@ MapEntitySystem_Branch_A751:
         beq     MapEntitySystem_Branch_A77B     ; A75B F0 1E                    ..
 MapEntitySystem_Branch_A75D:
         ldx     #$01                            ; A75D A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A75F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A75F 20 35 A0                  5.
         ldx     #$02                            ; A762 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A764 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A764 20 35 A0                  5.
         ldx     #$03                            ; A767 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A769 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A769 20 35 A0                  5.
         ldx     #$04                            ; A76C A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A76E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A76E 20 35 A0                  5.
         ldx     #$07                            ; A771 A2 07                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A773 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A773 20 35 A0                  5.
         ldx     #$08                            ; A776 A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A778 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A778 20 35 A0                  5.
 MapEntitySystem_Branch_A77B:
         rts                                     ; A77B 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A77C:
+HideEntitiesOneAndTwoByPlayerXAndFlag18:
         lda     PlayerLocalX                    ; A77C A5 44                    .D
         cmp     #$12                            ; A77E C9 12                    ..
         bcs     MapEntitySystem_Branch_A78D     ; A780 B0 0B                    ..
@@ -3094,13 +3094,13 @@ MapEntitySystem_Entry_A77C:
         beq     MapEntitySystem_Branch_A797     ; A78B F0 0A                    ..
 MapEntitySystem_Branch_A78D:
         ldx     #$02                            ; A78D A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A78F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A78F 20 35 A0                  5.
         ldx     #$01                            ; A792 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A794 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A794 20 35 A0                  5.
 MapEntitySystem_Branch_A797:
         rts                                     ; A797 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A798:
+CopyEntityOneSourceToZeroOrHide:
         ldx     #$00                            ; A798 A2 00                    ..
         brk                                     ; A79A 00                       .
         db   $18,$EB,$08                     ; A79B 18 EB 08                 ...
@@ -3123,57 +3123,57 @@ MapEntitySystem_Branch_A7BB:
         db   $18,$EB,$10                     ; A7BC 18 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A7C4     ; A7BF F0 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A7C1 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A7C1 20 35 A0                  5.
 MapEntitySystem_Branch_A7C4:
         rts                                     ; A7C4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A7C5:
+HideFirstFourEntitiesForFlag18_01:
         brk                                     ; A7C5 00                       .
         db   $18,$EB,$01                     ; A7C6 18 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A7D5     ; A7C9 F0 0A                    ..
         ldx     #$00                            ; A7CB A2 00                    ..
 MapEntitySystem_Branch_A7CD:
-        jsr     MapEntitySystem_Entry_A035      ; A7CD 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A7CD 20 35 A0                  5.
         inx                                     ; A7D0 E8                       .
         cpx     #$04                            ; A7D1 E0 04                    ..
         bcc     MapEntitySystem_Branch_A7CD     ; A7D3 90 F8                    ..
 MapEntitySystem_Branch_A7D5:
         rts                                     ; A7D5 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A7D6:
+HideEntityZeroOrOneByFlagAndTime:
         brk                                     ; A7D6 00                       .
         db   $07,$EB,$10                     ; A7D7 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A7E7     ; A7DA D0 0B                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A7DC 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A7DC 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A7E6     ; A7DF B0 05                    ..
         ldx     #$01                            ; A7E1 A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A7E3 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A7E3 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A7E6:
         rts                                     ; A7E6 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A7E7:
         ldx     #$00                            ; A7E7 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A7E9 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A7E9 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A7EC:
+HideEntitiesEightAndNineAtNight:
         brk                                     ; A7EC 00                       .
         db   $07,$EB,$10                     ; A7ED 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A801     ; A7F0 F0 0F                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A7F2 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A7F2 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A801     ; A7F5 90 0A                    ..
         ldx     #$09                            ; A7F7 A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A7F9 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A7F9 20 35 A0                  5.
         ldx     #$08                            ; A7FC A2 08                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A7FE 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A7FE 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A801:
         rts                                     ; A801 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A802:
+ApplyFlag07And1ANightEntitySetup:
         brk                                     ; A802 00                       .
         db   $07,$EB,$10                     ; A803 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3183,8 +3183,8 @@ MapEntitySystem_Entry_A802:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A82F     ; A80C D0 21                    .!
         ldx     #$00                            ; A80E A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A810 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A813 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A810 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A813 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A82F     ; A816 B0 17                    ..
         ldx     #$09                            ; A818 A2 09                    ..
         lda     #$0C                            ; A81A A9 0C                    ..
@@ -3198,15 +3198,15 @@ MapEntitySystem_Entry_A802:
 MapEntitySystem_Branch_A82F:
         rts                                     ; A82F 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A830:
+ApplyFlag07DayNightEntitySetup:
         brk                                     ; A830 00                       .
         db   $07,$EB,$10                     ; A831 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A84B     ; A834 F0 15                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A836 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A836 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A84A     ; A839 90 0F                    ..
         ldx     #$09                            ; A83B A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A83D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A83D 20 35 A0                  5.
         ldx     #$06                            ; A840 A2 06                    ..
         lda     $70E6,x                         ; A842 BD E6 70                 ..p
         and     #$7F                            ; A845 29 7F                    ).
@@ -3216,37 +3216,37 @@ MapEntitySystem_Branch_A84A:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A84B:
         ldx     #$02                            ; A84B A2 02                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A84D 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A84D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A850:
+HideFirstFourEntitiesForFlag18_04:
         brk                                     ; A850 00                       .
         db   $18,$EB,$04                     ; A851 18 EB 04                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A86A     ; A854 F0 14                    ..
         ldx     #$00                            ; A856 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A858 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A858 20 35 A0                  5.
         ldx     #$01                            ; A85B A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A85D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A85D 20 35 A0                  5.
         ldx     #$02                            ; A860 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A862 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A862 20 35 A0                  5.
         ldx     #$03                            ; A865 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A867 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A867 20 35 A0                  5.
 MapEntitySystem_Branch_A86A:
         rts                                     ; A86A 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A86B:
+HideEntityZeroForFlag07Daytime:
         brk                                     ; A86B 00                       .
         db   $07,$EB,$10                     ; A86C 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A87B     ; A86F D0 0A                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A871 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A871 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A87B     ; A874 B0 05                    ..
         ldx     #$00                            ; A876 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A878 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A878 20 35 A0                  5.
 MapEntitySystem_Branch_A87B:
         rts                                     ; A87B 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A87C:
+HideEntityZeroForFlags26Or0A:
         brk                                     ; A87C 00                       .
         db   $26,$EB,$04                     ; A87D 26 EB 04                 &..
 ; ----------------------------------------------------------------------------
@@ -3257,19 +3257,19 @@ MapEntitySystem_Entry_A87C:
         beq     MapEntitySystem_Branch_A88D     ; A886 F0 05                    ..
 MapEntitySystem_Branch_A888:
         ldx     #$00                            ; A888 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A88A 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A88A 20 35 A0                  5.
 MapEntitySystem_Branch_A88D:
         rts                                     ; A88D 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A88E:
+ApplyNightEntityThreeOrFourState:
         brk                                     ; A88E 00                       .
         db   $07,$EB,$10                     ; A88F 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A8B4     ; A892 F0 20                    .
-        jsr     MapEntitySystem_Entry_A044      ; A894 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A894 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A89E     ; A897 90 05                    ..
         ldx     #$04                            ; A899 A2 04                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A89B 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A89B 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A89E:
         brk                                     ; A89E 00                       .
@@ -3285,7 +3285,7 @@ MapEntitySystem_Branch_A89E:
 MapEntitySystem_Branch_A8B4:
         rts                                     ; A8B4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A8B5:
+HideEntityZeroForFlags1DOr19:
         brk                                     ; A8B5 00                       .
         db   $1D,$EB,$01                     ; A8B6 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3296,20 +3296,20 @@ MapEntitySystem_Entry_A8B5:
         beq     MapEntitySystem_Branch_A8C6     ; A8BF F0 05                    ..
 MapEntitySystem_Branch_A8C1:
         ldx     #$00                            ; A8C1 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A8C3 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A8C3 20 35 A0                  5.
 MapEntitySystem_Branch_A8C6:
         rts                                     ; A8C6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A8C7:
+ApplyFlag07DayNightEntityPositions:
         brk                                     ; A8C7 00                       .
         db   $07,$EB,$10                     ; A8C8 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A8F4     ; A8CB F0 27                    .'
         ldx     #$01                            ; A8CD A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A8CF 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A8CF 20 35 A0                  5.
         ldx     #$00                            ; A8D2 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A8D4 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A8D7 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A8D4 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A8D7 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A8EF     ; A8DA B0 13                    ..
         ldx     #$02                            ; A8DC A2 02                    ..
         lda     #$21                            ; A8DE A9 21                    .!
@@ -3326,25 +3326,25 @@ MapEntitySystem_Branch_A8EF:
         jmp     MapEntitySystem_Branch_A8FB     ; A8F1 4C FB A8                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A8F4:
-        jsr     MapEntitySystem_Entry_A044      ; A8F4 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A8F4 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A8EE     ; A8F7 90 F5                    ..
         ldx     #$02                            ; A8F9 A2 02                    ..
 MapEntitySystem_Branch_A8FB:
-        jmp     MapEntitySystem_Entry_A035      ; A8FB 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A8FB 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A8FE:
+ApplyChapterFiveJoinedPartyEntities:
         lda     SaveCurrentChapterMinus1        ; A8FE AD 5A 61                 .Za
         cmp     #$04                            ; A901 C9 04                    ..
         bne     MapEntitySystem_Branch_A956     ; A903 D0 51                    .Q
         lda     SaveJoinedCharacterFlags        ; A905 AD 92 62                 ..b
         and     #$1C                            ; A908 29 1C                    ).
         cmp     #$1C                            ; A90A C9 1C                    ..
-        bne     MapEntitySystem_Entry_A957      ; A90C D0 49                    .I
+        bne     HideMapEntitiesOneThroughThree  ; A90C D0 49                    .I
         brk                                     ; A90E 00                       .
         db   $16,$EB,$01                     ; A90F 16 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A956     ; A912 F0 42                    .B
-        jsr     MapEntitySystem_Entry_A957      ; A914 20 57 A9                  W.
+        jsr     HideMapEntitiesOneThroughThree  ; A914 20 57 A9                  W.
         ldx     #$08                            ; A917 A2 08                    ..
         lda     #$14                            ; A919 A9 14                    ..
         sta     $6F66,x                         ; A91B 9D 66 6F                 .fo
@@ -3354,40 +3354,40 @@ MapEntitySystem_Entry_A8FE:
         sta     $6FC6,x                         ; A926 9D C6 6F                 ..o
         lda     #$11                            ; A929 A9 11                    ..
         sta     $7046,x                         ; A92B 9D 46 70                 .Fp
-        jsr     MapEntitySystem_Entry_AD1E      ; A92E 20 1E AD                  ..
+        jsr     CacheTileUnderMapEntity         ; A92E 20 1E AD                  ..
         brk                                     ; A931 00                       .
         db   $19,$EB,$01                     ; A932 19 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A94B     ; A935 F0 14                    ..
         ldx     #$08                            ; A937 A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A939 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A939 20 35 A0                  5.
         ldx     #$04                            ; A93C A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A93E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A93E 20 35 A0                  5.
         ldx     #$05                            ; A941 A2 05                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A943 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A943 20 35 A0                  5.
         ldx     #$06                            ; A946 A2 06                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A948 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A948 20 35 A0                  5.
 MapEntitySystem_Branch_A94B:
         brk                                     ; A94B 00                       .
         db   $16,$EB,$04                     ; A94C 16 EB 04                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A956     ; A94F F0 05                    ..
         ldx     #$09                            ; A951 A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A953 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A953 20 35 A0                  5.
 MapEntitySystem_Branch_A956:
         rts                                     ; A956 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A957:
+HideMapEntitiesOneThroughThree:
         ldx     #$03                            ; A957 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A959 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A959 20 35 A0                  5.
         ldx     #$02                            ; A95C A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A95E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A95E 20 35 A0                  5.
         ldx     #$01                            ; A961 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A963 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A963 20 35 A0                  5.
         rts                                     ; A966 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A967:
-        jsr     MapEntitySystem_Entry_A044      ; A967 20 44 A0                  D.
+HideEntityFiveOrSixAtNight:
+        jsr     CompareMapEntityTimeToNightThreshold; A967 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A979     ; A96A 90 0D                    ..
         ldx     #$05                            ; A96C A2 05                    ..
         brk                                     ; A96E 00                       .
@@ -3396,45 +3396,45 @@ MapEntitySystem_Entry_A967:
         bne     MapEntitySystem_Branch_A976     ; A972 D0 02                    ..
         ldx     #$06                            ; A974 A2 06                    ..
 MapEntitySystem_Branch_A976:
-        jmp     MapEntitySystem_Entry_A035      ; A976 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A976 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A979:
         rts                                     ; A979 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A97A:
+HideEntityThreeForFlag07Daytime:
         brk                                     ; A97A 00                       .
         db   $07,$EB,$10                     ; A97B 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A98A     ; A97E F0 0A                    ..
-        jsr     MapEntitySystem_Entry_A044      ; A980 20 44 A0                  D.
+        jsr     CompareMapEntityTimeToNightThreshold; A980 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A98A     ; A983 B0 05                    ..
         ldx     #$03                            ; A985 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A987 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A987 20 35 A0                  5.
 MapEntitySystem_Branch_A98A:
         rts                                     ; A98A 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A98B:
+ApplyFlag1DEntityVisibility:
         brk                                     ; A98B 00                       .
         db   $1D,$EB,$80                     ; A98C 1D EB 80                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A99B     ; A98F F0 0A                    ..
         ldx     #$0B                            ; A991 A2 0B                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A993 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A993 20 35 A0                  5.
         ldx     #$0C                            ; A996 A2 0C                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A998 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A998 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A99B:
         ldx     #$01                            ; A99B A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; A99D 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; A99D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A9A0:
+ApplyMapEntityStateAfterFlag1D_40:
         brk                                     ; A9A0 00                       .
         db   $1D,$EB,$40                     ; A9A1 1D EB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A9A4:
+ApplyPlayerAndState6299EntityVisibility:
         bne     MapEntitySystem_Branch_A9AB     ; A9A4 D0 05                    ..
         ldx     #$03                            ; A9A6 A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9A8 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9A8 20 35 A0                  5.
 MapEntitySystem_Branch_A9AB:
         lda     PlayerLocalX                    ; A9AB A5 44                    .D
         cmp     #$01                            ; A9AD C9 01                    ..
@@ -3443,11 +3443,11 @@ MapEntitySystem_Branch_A9AB:
         bmi     MapEntitySystem_Branch_A9BB     ; A9B4 30 05                    0.
 MapEntitySystem_Branch_A9B6:
         ldx     #$04                            ; A9B6 A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9B8 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9B8 20 35 A0                  5.
 MapEntitySystem_Branch_A9BB:
         lda     $6299                           ; A9BB AD 99 62                 ..b
         bpl     MapEntitySystem_Branch_A9D2     ; A9BE 10 12                    ..
-        jsr     MapEntitySystem_Entry_B78E      ; A9C0 20 8E B7                  ..
+        jsr     NormalizeWorldMapSelectionId    ; A9C0 20 8E B7                  ..
         tay                                     ; A9C3 A8                       .
         ldx     #$05                            ; A9C4 A2 05                    ..
         lda     $6FE6,x                         ; A9C6 BD E6 6F                 ..o
@@ -3463,47 +3463,47 @@ MapEntitySystem_Branch_A9BB:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A9D2:
         ldx     #$05                            ; A9D2 A2 05                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9D4 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9D4 20 35 A0                  5.
         rts                                     ; A9D7 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A9D8:
+ApplyFlags16And1DEntityVisibility:
         brk                                     ; A9D8 00                       .
         db   $16,$EB,$10                     ; A9D9 16 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_A9ED     ; A9DC D0 0F                    ..
         ldx     #$02                            ; A9DE A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9E0 20 35 A0                  5.
-        jsr     MapEntitySystem_Entry_A044      ; A9E3 20 44 A0                  D.
+        jsr     HideMapEntityCoordinates        ; A9E0 20 35 A0                  5.
+        jsr     CompareMapEntityTimeToNightThreshold; A9E3 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A9ED     ; A9E6 B0 05                    ..
         ldx     #$00                            ; A9E8 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9EA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9EA 20 35 A0                  5.
 MapEntitySystem_Branch_A9ED:
         brk                                     ; A9ED 00                       .
         db   $1D,$EB,$01                     ; A9EE 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A9FD     ; A9F1 F0 0A                    ..
         ldx     #$01                            ; A9F3 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9F5 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9F5 20 35 A0                  5.
         ldx     #$00                            ; A9F8 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; A9FA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; A9FA 20 35 A0                  5.
 MapEntitySystem_Branch_A9FD:
         rts                                     ; A9FD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_A9FE:
+ApplyFlag1D09EntityVisibility:
         brk                                     ; A9FE 00                       .
         db   $1D,$EB,$09                     ; A9FF 1D EB 09                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A9FD     ; AA02 F0 F9                    ..
         ldx     #$01                            ; AA04 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA06 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA06 20 35 A0                  5.
         brk                                     ; AA09 00                       .
         db   $1D,$EB,$01                     ; AA0A 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A9FD     ; AA0D F0 EE                    ..
         ldx     #$00                            ; AA0F A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; AA11 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; AA11 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AA14:
+ApplyFlag1DEntityDirectionAndVisibility:
         brk                                     ; AA14 00                       .
         db   $1D,$EB,$01                     ; AA15 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3521,25 +3521,25 @@ MapEntitySystem_Branch_AA2B:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AA40     ; AA2F F0 0F                    ..
         ldx     #$01                            ; AA31 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA33 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA33 20 35 A0                  5.
         ldx     #$02                            ; AA36 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA38 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA38 20 35 A0                  5.
         ldx     #$03                            ; AA3B A2 03                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA3D 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA3D 20 35 A0                  5.
 MapEntitySystem_Branch_AA40:
         rts                                     ; AA40 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AA41:
+HideEntityZeroForFlag1D_01:
         brk                                     ; AA41 00                       .
         db   $1D,$EB,$01                     ; AA42 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AA4C     ; AA45 F0 05                    ..
         ldx     #$00                            ; AA47 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA49 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA49 20 35 A0                  5.
 MapEntitySystem_Branch_AA4C:
         rts                                     ; AA4C 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AA4D:
+ApplyState6298EntityPositions:
         ldx     #$00                            ; AA4D A2 00                    ..
         lda     $6298                           ; AA4F AD 98 62                 ..b
         bpl     MapEntitySystem_Branch_AA74     ; AA52 10 20                    .
@@ -3549,36 +3549,36 @@ MapEntitySystem_Entry_AA4D:
         db   $0E,$EB,$08                     ; AA59 0E EB 08                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AA74     ; AA5C F0 16                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA5E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA5E 20 35 A0                  5.
         ldx     #$02                            ; AA61 A2 02                    ..
         lda     #$05                            ; AA63 A9 05                    ..
         ldy     #$07                            ; AA65 A0 07                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AA67 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AA67 20 4A A0                  J.
         ldx     #$01                            ; AA6A A2 01                    ..
         lda     #$30                            ; AA6C A9 30                    .0
         ldy     #$30                            ; AA6E A0 30                    .0
-        jsr     MapEntitySystem_Entry_A04A      ; AA70 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AA70 20 4A A0                  J.
         rts                                     ; AA73 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AA74:
-        jsr     MapEntitySystem_Entry_A035      ; AA74 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA74 20 35 A0                  5.
 MapEntitySystem_Branch_AA77:
         ldx     #$02                            ; AA77 A2 02                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA79 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA79 20 35 A0                  5.
         ldx     #$01                            ; AA7C A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA7E 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA7E 20 35 A0                  5.
         rts                                     ; AA81 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AA82:
+ApplyFlag1AEntityGroupConfiguration:
         brk                                     ; AA82 00                       .
         db   $1A,$EB,$01                     ; AA83 1A EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AAAE     ; AA86 F0 26                    .&
         ldx     #$01                            ; AA88 A2 01                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AA8A 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA8A 20 35 A0                  5.
         ldx     #$02                            ; AA8D A2 02                    ..
 MapEntitySystem_Branch_AA8F:
-        jsr     MapEntitySystem_Entry_A035      ; AA8F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AA8F 20 35 A0                  5.
         inx                                     ; AA92 E8                       .
         cpx     #$08                            ; AA93 E0 08                    ..
         bcc     MapEntitySystem_Branch_AA8F     ; AA95 90 F8                    ..
@@ -3590,28 +3590,28 @@ MapEntitySystem_Branch_AA8F:
         sta     $7006,x                         ; AAA3 9D 06 70                 ..p
         lda     #$0B                            ; AAA6 A9 0B                    ..
         ldy     #$15                            ; AAA8 A0 15                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AAAA 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AAAA 20 4A A0                  J.
         rts                                     ; AAAD 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AAAE:
         ldx     #$08                            ; AAAE A2 08                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AAB0 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AAB0 20 35 A0                  5.
         ldx     #$09                            ; AAB3 A2 09                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AAB5 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AAB5 20 35 A0                  5.
         ldx     #$0A                            ; AAB8 A2 0A                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AABA 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AABA 20 35 A0                  5.
 MapEntitySystem_Branch_AABD:
         rts                                     ; AABD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AABE:
+HideEntityZeroForFlag20_20:
         brk                                     ; AABE 00                       .
         db   $20,$EB,$20                     ; AABF 20 EB 20                  .
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AABD     ; AAC2 F0 F9                    ..
         ldx     #$00                            ; AAC4 A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; AAC6 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; AAC6 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AAC9:
+ApplyFlags26And20EntityPositions:
         brk                                     ; AAC9 00                       .
         db   $26,$EB,$20                     ; AACA 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
@@ -3621,7 +3621,7 @@ MapEntitySystem_Entry_AAC9:
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_AADA     ; AAD3 D0 05                    ..
         ldx     #$02                            ; AAD5 A2 02                    ..
-        jmp     MapEntitySystem_Entry_A035      ; AAD7 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; AAD7 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AADA:
         brk                                     ; AADA 00                       .
@@ -3629,7 +3629,7 @@ MapEntitySystem_Branch_AADA:
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_AAE5     ; AADE F0 05                    ..
         ldx     #$00                            ; AAE0 A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; AAE2 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AAE2 20 35 A0                  5.
 MapEntitySystem_Branch_AAE5:
         rts                                     ; AAE5 60                       `
 ; ----------------------------------------------------------------------------
@@ -3637,18 +3637,18 @@ MapEntitySystem_Branch_AAE6:
         ldx     #$02                            ; AAE6 A2 02                    ..
         lda     #$07                            ; AAE8 A9 07                    ..
         ldy     #$08                            ; AAEA A0 08                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AAEC 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AAEC 20 4A A0                  J.
         ldx     #$01                            ; AAEF A2 01                    ..
         lda     #$04                            ; AAF1 A9 04                    ..
         ldy     #$0C                            ; AAF3 A0 0C                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AAF5 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AAF5 20 4A A0                  J.
         lda     $7006,x                         ; AAF8 BD 06 70                 ..p
         and     #$FC                            ; AAFB 29 FC                    ).
         sta     $7006,x                         ; AAFD 9D 06 70                 ..p
         rts                                     ; AB00 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AB01:
-        jsr     MapEntitySystem_Entry_A044      ; AB01 20 44 A0                  D.
+PositionEntityFiveAt15_11ByTime:
+        jsr     CompareMapEntityTimeToNightThreshold; AB01 20 44 A0              D.
         bcs     MapEntitySystem_Branch_AB15     ; AB04 B0 0F                    ..
         brk                                     ; AB06 00                       .
         db   $0A,$EB,$10                     ; AB07 0A EB 10                 ...
@@ -3657,11 +3657,11 @@ MapEntitySystem_Entry_AB01:
         ldx     #$05                            ; AB0C A2 05                    ..
         lda     #$15                            ; AB0E A9 15                    ..
         ldy     #$11                            ; AB10 A0 11                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AB12 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AB12 20 4A A0                  J.
 MapEntitySystem_Branch_AB15:
         rts                                     ; AB15 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AB16:
+PositionEntityZeroAt05_0DOnRow09:
         lda     PlayerLocalY                    ; AB16 A5 45                    .E
         cmp     #$09                            ; AB18 C9 09                    ..
         bne     MapEntitySystem_Branch_AB36     ; AB1A D0 1A                    ..
@@ -3674,24 +3674,24 @@ MapEntitySystem_Entry_AB16:
         lda     #$0D                            ; AB2B A9 0D                    ..
         sta     $6F86,x                         ; AB2D 9D 86 6F                 ..o
         sta     $6FC6,x                         ; AB30 9D C6 6F                 ..o
-        jsr     MapEntitySystem_Entry_AD1E      ; AB33 20 1E AD                  ..
+        jsr     CacheTileUnderMapEntity         ; AB33 20 1E AD                  ..
 MapEntitySystem_Branch_AB36:
         rts                                     ; AB36 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AB37:
+ApplyState6289EntityPositions:
         lda     $6289                           ; AB37 AD 89 62                 ..b
         bpl     MapEntitySystem_Branch_AB36     ; AB3A 10 FA                    ..
         ldx     #$01                            ; AB3C A2 01                    ..
         lda     #$10                            ; AB3E A9 10                    ..
         ldy     #$1A                            ; AB40 A0 1A                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; AB42 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; AB42 20 4A A0                  J.
         lda     $7006,x                         ; AB45 BD 06 70                 ..p
         ora     #$02                            ; AB48 09 02                    ..
         sta     $7006,x                         ; AB4A 9D 06 70                 ..p
         ldx     #$00                            ; AB4D A2 00                    ..
-        jmp     MapEntitySystem_Entry_A035      ; AB4F 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; AB4F 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AB52:
+MoveEntityZeroToRow02AtPlayerX03:
         lda     PlayerLocalX                    ; AB52 A5 44                    .D
         cmp     #$03                            ; AB54 C9 03                    ..
         bne     MapEntitySystem_Branch_AB62     ; AB56 D0 0A                    ..
@@ -3702,7 +3702,7 @@ MapEntitySystem_Entry_AB52:
 MapEntitySystem_Branch_AB62:
         rts                                     ; AB62 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AB63:
+ApplyFlag0AEntityZeroOnePositions:
         brk                                     ; AB63 00                       .
         db   $0A,$EB,$04                     ; AB64 0A EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3734,29 +3734,29 @@ MapEntitySystem_Branch_AB9A:
         ldx     #$01                            ; AB9A A2 01                    ..
         lda     #$0B                            ; AB9C A9 0B                    ..
         ldy     #$19                            ; AB9E A0 19                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; ABA0 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; ABA0 20 4A A0                  J.
         ldx     #$00                            ; ABA3 A2 00                    ..
         lda     #$0B                            ; ABA5 A9 0B                    ..
         ldy     #$1A                            ; ABA7 A0 1A                    ..
-        jmp     MapEntitySystem_Entry_A04A      ; ABA9 4C 4A A0                 LJ.
+        jmp     SetMapEntityCoordinates         ; ABA9 4C 4A A0                 LJ.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_ABAC:
+ApplyFlag26EntityPairVisibility:
         brk                                     ; ABAC 00                       .
         db   $26,$EB,$20                     ; ABAD 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_ABBC     ; ABB0 D0 0A                    ..
         ldx     #$04                            ; ABB2 A2 04                    ..
-        jsr     MapEntitySystem_Entry_A035      ; ABB4 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; ABB4 20 35 A0                  5.
         ldx     #$03                            ; ABB7 A2 03                    ..
-        jmp     MapEntitySystem_Entry_A035      ; ABB9 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; ABB9 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_ABBC:
         ldx     #$00                            ; ABBC A2 00                    ..
-        jsr     MapEntitySystem_Entry_A035      ; ABBE 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; ABBE 20 35 A0                  5.
         ldx     #$01                            ; ABC1 A2 01                    ..
-        jmp     MapEntitySystem_Entry_A035      ; ABC3 4C 35 A0                 L5.
+        jmp     HideMapEntityCoordinates        ; ABC3 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_ABC6:
+UpdateEntityZeroAtPlayerX1D:
         ldx     #$00                            ; ABC6 A2 00                    ..
         lda     $70E6,x                         ; ABC8 BD E6 70                 ..p
         ora     #$01                            ; ABCB 09 01                    ..
@@ -3766,11 +3766,11 @@ MapEntitySystem_Entry_ABC6:
         bne     MapEntitySystem_Branch_ABDD     ; ABD4 D0 07                    ..
         lda     #$1B                            ; ABD6 A9 1B                    ..
         ldy     #$0F                            ; ABD8 A0 0F                    ..
-        jsr     MapEntitySystem_Entry_A04A      ; ABDA 20 4A A0                  J.
+        jsr     SetMapEntityCoordinates         ; ABDA 20 4A A0                  J.
 MapEntitySystem_Branch_ABDD:
         rts                                     ; ABDD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_ABDE:
+PositionEntityOneAt11_14ForFlag0D:
         brk                                     ; ABDE 00                       .
         db   $0D,$EB,$01                     ; ABDF 0D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3781,7 +3781,7 @@ MapEntitySystem_Entry_ABDE:
         sta     $7006,x                         ; ABEB 9D 06 70                 ..p
         lda     #$11                            ; ABEE A9 11                    ..
         ldy     #$14                            ; ABF0 A0 14                    ..
-        jmp     MapEntitySystem_Entry_A04A      ; ABF2 4C 4A A0                 LJ.
+        jmp     SetMapEntityCoordinates         ; ABF2 4C 4A A0                 LJ.
 ; ----------------------------------------------------------------------------
 Bank1C_MapSubmapKeys:
         db   $0F                             ; ABF5 0F                       .
@@ -3826,7 +3826,7 @@ Bank1C_MapSubmapEventPointers:
         db   $AB,$52,$AB,$63,$AB,$AC,$AB,$C6 ; AD13 AB 52 AB 63 AB AC AB C6  .R.c....
         db   $AB,$DE,$AB                     ; AD1B AB DE AB                 ...
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AD1E:
+CacheTileUnderMapEntity:
         txa                                     ; AD1E 8A                       .
         pha                                     ; AD1F 48                       H
         ldy     $6F86,x                         ; AD20 BC 86 6F                 ..o
@@ -3840,7 +3840,7 @@ MapEntitySystem_Entry_AD1E:
         sta     $7146,x                         ; AD2E 9D 46 71                 .Fq
         rts                                     ; AD31 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AD32:
+ApplyChapterSpecificEntitySuppression:
         ldy     #$00                            ; AD32 A0 00                    ..
 MapEntitySystem_Branch_AD34:
         lda     $AD5A,y                         ; AD34 B9 5A AD                 .Z.
@@ -3854,7 +3854,7 @@ MapEntitySystem_Branch_AD34:
         cmp     SaveCurrentChapterMinus1        ; AD47 CD 5A 61                 .Za
         beq     MapEntitySystem_Branch_AD52     ; AD4A F0 06                    ..
         ldx     $AD5D,y                         ; AD4C BE 5D AD                 .].
-        jsr     MapEntitySystem_Entry_A035      ; AD4F 20 35 A0                  5.
+        jsr     HideMapEntityCoordinates        ; AD4F 20 35 A0                  5.
 MapEntitySystem_Branch_AD52:
         iny                                     ; AD52 C8                       .
         iny                                     ; AD53 C8                       .
@@ -3870,7 +3870,7 @@ MapEntitySystem_Branch_AD59:
         db   $01                             ; AD5C 01                       .
         db   $02,$FF                         ; AD5D 02 FF                    ..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AD5F:
+DispatchMapEntityEventById:
         asl     a                               ; AD5F 0A                       .
         tax                                     ; AD60 AA                       .
         lda     Bank1C_MapEventPointers,x       ; AD61 BD 4B BF                 .K.
@@ -3879,7 +3879,7 @@ MapEntitySystem_Entry_AD5F:
         sta     $01                             ; AD69 85 01                    ..
         jmp     ($0000)                         ; AD6B 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AD6E:
+RunMapEntitySceneTransition05:
         lda     #$05                            ; AD6E A9 05                    ..
         brk                                     ; AD70 00                       .
         db   $01,$8F                         ; AD71 01 8F                    ..
@@ -3915,7 +3915,7 @@ MapEntitySystem_Branch_AD9D:
         brk                                     ; ADA5 00                       .
         db   $15,$EF                         ; ADA6 15 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BF46      ; ADA8 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; ADA8 20 46 BF                  F.
         brk                                     ; ADAB 00                       .
         db   $20,$3B                         ; ADAC 20 3B                     ;
 ; ----------------------------------------------------------------------------
@@ -3923,8 +3923,8 @@ MapEntitySystem_Branch_AD9D:
         jsr     SetEntityCoordinateSentinel81   ; ADB0 20 37 BF                  7.
         ldx     #$03                            ; ADB3 A2 03                    ..
         jsr     SetEntityCoordinateSentinel81   ; ADB5 20 37 BF                  7.
-        jsr     UpperFixedEngine_Entry_DFF1     ; ADB8 20 F1 DF                  ..
-        jsr     UpperFixedEngine_Entry_D218     ; ADBB 20 18 D2                  ..
+        jsr     InitializeMapEntityRendering    ; ADB8 20 F1 DF                  ..
+        jsr     WaitForButtonStateOneEightyFrames; ADBB 20 18 D2                 ..
         lda     #$8F                            ; ADBE A9 8F                    ..
         ldx     #$04                            ; ADC0 A2 04                    ..
         jsr     InitializeMapPresentationState  ; ADC2 20 16 BF                  ..
@@ -3933,7 +3933,7 @@ MapEntitySystem_Branch_AD9D:
 ; ----------------------------------------------------------------------------
         rts                                     ; ADC9 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_ADCA:
+ActivateEntitiesTwoThroughFourAndStart85:
         ldx     #$02                            ; ADCA A2 02                    ..
         lda     #$11                            ; ADCC A9 11                    ..
         sta     $7046,x                         ; ADCE 9D 46 70                 .Fp
@@ -3950,7 +3950,7 @@ MapEntitySystem_Entry_ADCA:
         lda     #$85                            ; ADEB A9 85                    ..
         jmp     StartMapPresentation            ; ADED 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_ADF0:
+RunScriptedFourEntityScene:
         lda     #$0C                            ; ADF0 A9 0C                    ..
         sta     $29                             ; ADF2 85 29                    .)
         brk                                     ; ADF4 00                       .
@@ -3963,24 +3963,24 @@ MapEntitySystem_Entry_ADF0:
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; ADFF A2 03                    ..
         lda     #$40                            ; AE01 A9 40                    .@
-        jsr     MapEntitySystem_Entry_BED3      ; AE03 20 D3 BE                  ..
+        jsr     RunMapEntityService0D_87        ; AE03 20 D3 BE                  ..
         ldy     #$03                            ; AE06 A0 03                    ..
         ldx     $6FE6,y                         ; AE08 BE E6 6F                 ..o
         ldy     #$02                            ; AE0B A0 02                    ..
         txa                                     ; AE0D 8A                       .
         sta     $6FE6,y                         ; AE0E 99 E6 6F                 ..o
         lda     #$24                            ; AE11 A9 24                    .$
-        jsr     MapEntitySystem_Entry_BED3      ; AE13 20 D3 BE                  ..
+        jsr     RunMapEntityService0D_87        ; AE13 20 D3 BE                  ..
         ldx     #$03                            ; AE16 A2 03                    ..
         ldy     PlayerLocalX                    ; AE18 A4 44                    .D
         dey                                     ; AE1A 88                       .
         lda     #$01                            ; AE1B A9 01                    ..
-        jsr     MapEntitySystem_Entry_AEDF      ; AE1D 20 DF AE                  ..
+        jsr     PositionEventEntityBesidePlayer ; AE1D 20 DF AE                  ..
         ldx     #$02                            ; AE20 A2 02                    ..
         ldy     PlayerLocalX                    ; AE22 A4 44                    .D
         iny                                     ; AE24 C8                       .
         lda     #$03                            ; AE25 A9 03                    ..
-        jsr     MapEntitySystem_Entry_AEDF      ; AE27 20 DF AE                  ..
+        jsr     PositionEventEntityBesidePlayer ; AE27 20 DF AE                  ..
         ldy     PlayerLocalY                    ; AE2A A4 45                    .E
         dey                                     ; AE2C 88                       .
         sty     $6F83                           ; AE2D 8C 83 6F                 ..o
@@ -3992,7 +3992,7 @@ MapEntitySystem_Entry_ADF0:
         brk                                     ; AE3D 00                       .
         db   $0A,$6F                         ; AE3E 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BED6      ; AE40 20 D6 BE                  ..
+        jsr     RunPresentationPulseAndAdvancePhase; AE40 20 D6 BE               ..
         brk                                     ; AE43 00                       .
         db   $05,$DB,$BF                     ; AE44 05 DB BF                 ...
 ; ----------------------------------------------------------------------------
@@ -4052,30 +4052,30 @@ MapEntitySystem_Entry_ADF0:
         brk                                     ; AEB0 00                       .
         db   $03,$EF                         ; AEB1 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; AEB3 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; AEB3 20 BF C5                  ..
         lda     $627F                           ; AEB6 AD 7F 62                 ..b
         ora     #$80                            ; AEB9 09 80                    ..
         sta     $627F                           ; AEBB 8D 7F 62                 ..b
-        jsr     MapEntitySystem_Entry_BF46      ; AEBE 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; AEBE 20 46 BF                  F.
         ldx     #$03                            ; AEC1 A2 03                    ..
         lda     #$4D                            ; AEC3 A9 4D                    .M
         brk                                     ; AEC5 00                       .
         db   $04,$6F                         ; AEC6 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D214     ; AEC8 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AEC8 20 14 D2                 ..
         lda     #$00                            ; AECB A9 00                    ..
         sta     SaveTimeOfDay                   ; AECD 8D ED 62                 ..b
         lda     #$47                            ; AED0 A9 47                    .G
         sta     PlayerWorldX                    ; AED2 85 42                    .B
         lda     #$39                            ; AED4 A9 39                    .9
         sta     PlayerWorldY                    ; AED6 85 43                    .C
-        jsr     UpperFixedEngine_Entry_C5C5     ; AED8 20 C5 C5                  ..
+        jsr     FadePaletteFromBlack            ; AED8 20 C5 C5                  ..
         brk                                     ; AEDB 00                       .
         db   $32,$EF                         ; AEDC 32 EF                    2.
 ; ----------------------------------------------------------------------------
         rts                                     ; AEDE 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AEDF:
+PositionEventEntityBesidePlayer:
         sta     $7006,x                         ; AEDF 9D 06 70                 ..p
         tya                                     ; AEE2 98                       .
         sta     $6F66,x                         ; AEE3 9D 66 6F                 .fo
@@ -4088,9 +4088,9 @@ MapEntitySystem_Entry_AEDF:
         brk                                     ; AEF6 00                       .
         db   $0A,$6F                         ; AEF7 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_BED6      ; AEF9 4C D6 BE                 L..
+        jmp     RunPresentationPulseAndAdvancePhase; AEF9 4C D6 BE              L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AEFC:
+RunMapEventVariantSequence:
         lda     $6285                           ; AEFC AD 85 62                 ..b
         ora     #$20                            ; AEFF 09 20                    .
         sta     $6285                           ; AF01 8D 85 62                 ..b
@@ -4148,16 +4148,16 @@ MapEntitySystem_Branch_AF5C:
         brk                                     ; AF5C 00                       .
         db   $03,$EF                         ; AF5D 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; AF5F 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; AF5F 20 BF C5                  ..
         lda     $6287                           ; AF62 AD 87 62                 ..b
         and     #$07                            ; AF65 29 07                    ).
         cmp     #$04                            ; AF67 C9 04                    ..
         bcs     MapEntitySystem_Branch_AFBA     ; AF69 B0 4F                    .O
         pha                                     ; AF6B 48                       H
-        jsr     MapEntitySystem_Entry_BF46      ; AF6C 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; AF6C 20 46 BF                  F.
         pla                                     ; AF6F 68                       h
         pha                                     ; AF70 48                       H
-        jsr     MapEntitySystem_Entry_AFDA      ; AF71 20 DA AF                  ..
+        jsr     LoadMapEventScriptRecord        ; AF71 20 DA AF                  ..
         brk                                     ; AF74 00                       .
         db   $81,$3B                         ; AF75 81 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -4201,23 +4201,23 @@ MapEntitySystem_Branch_AF95:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AFA5:
         pla                                     ; AFA5 68                       h
-        jsr     MapEntitySystem_Entry_AFD7      ; AFA6 20 D7 AF                  ..
+        jsr     LoadMapEventScriptOffsetPlusFour; AFA6 20 D7 AF                  ..
         brk                                     ; AFA9 00                       .
         db   $82,$3B                         ; AFAA 82 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; AFAC 20 18 D2                  ..
-        jsr     UpperFixedEngine_Entry_D1F3     ; AFAF 20 F3 D1                  ..
+        jsr     WaitForButtonStateOneEightyFrames; AFAC 20 18 D2                 ..
+        jsr     StopMapCue                      ; AFAF 20 F3 D1                  ..
         lda     #$11                            ; AFB2 A9 11                    ..
         ldx     #$07                            ; AFB4 A2 07                    ..
         sta     $7046,x                         ; AFB6 9D 46 70                 .Fp
         rts                                     ; AFB9 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_AFBA:
-        jsr     MapEntitySystem_Entry_BF46      ; AFBA 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; AFBA 20 46 BF                  F.
         brk                                     ; AFBD 00                       .
         db   $83,$3B                         ; AFBE 83 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; AFC0 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; AFC0 20 0A D2                  ..
         lda     #$00                            ; AFC3 A9 00                    ..
         ldx     #$0A                            ; AFC5 A2 0A                    ..
         sta     $7046,x                         ; AFC7 9D 46 70                 .Fp
@@ -4228,10 +4228,10 @@ MapEntitySystem_Branch_AFBA:
         sta     $7046,x                         ; AFD3 9D 46 70                 .Fp
         rts                                     ; AFD6 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AFD7:
+LoadMapEventScriptOffsetPlusFour:
         clc                                     ; AFD7 18                       .
         adc     #$04                            ; AFD8 69 04                    i.
-MapEntitySystem_Entry_AFDA:
+LoadMapEventScriptRecord:
         adc     #$1B                            ; AFDA 69 1B                    i.
         ldx     #$07                            ; AFDC A2 07                    ..
         brk                                     ; AFDE 00                       .
@@ -4248,8 +4248,8 @@ MapEntitySystem_Branch_AFE3:
 ; ----------------------------------------------------------------------------
         db   $07,$08,$09,$0A,$0B             ; AFEF 07 08 09 0A 0B           .....
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_AFF4:
-        jsr     UpperFixedEngine_Entry_D218     ; AFF4 20 18 D2                  ..
+RunEntitySourceSwapScene:
+        jsr     WaitForButtonStateOneEightyFrames; AFF4 20 18 D2                 ..
         jsr     StartDefaultMapPresentation     ; AFF7 20 12 BF                  ..
         lda     #$04                            ; AFFA A9 04                    ..
         brk                                     ; AFFC 00                       .
@@ -4280,16 +4280,16 @@ MapEntitySystem_Entry_AFF4:
         lda     #$11                            ; B026 A9 11                    ..
         ldx     #$03                            ; B028 A2 03                    ..
         sta     $7046,x                         ; B02A 9D 46 70                 .Fp
-        jmp     UpperFixedEngine_Entry_C5BF     ; B02D 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; B02D 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B030:
+TransferEntityThreeCountersToOne:
         brk                                     ; B030 00                       .
         db   $04,$9F                         ; B031 04 9F                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B033 00                       .
         db   $32,$FB                         ; B034 32 FB                    2.
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; B036 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; B036 20 0A D2                  ..
         brk                                     ; B039 00                       .
         db   $07,$9F                         ; B03A 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -4308,7 +4308,7 @@ MapEntitySystem_Entry_B030:
         sta     $7006,x                         ; B05A 9D 06 70                 ..p
         rts                                     ; B05D 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B05E:
+AnimateEntityTwoSpritesUpward:
         brk                                     ; B05E 00                       .
         db   $92,$FB                         ; B05F 92 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4323,7 +4323,7 @@ MapEntitySystem_Entry_B05E:
         sta     $6FC6,x                         ; B074 9D C6 6F                 ..o
         lda     $7006,x                         ; B077 BD 06 70                 ..p
         and     #$3C                            ; B07A 29 3C                    )<
-        jsr     UpperFixedEngine_Entry_C78C     ; B07C 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; B07C 20 8C C7                  ..
         lda     #$01                            ; B07F A9 01                    ..
         sta     $51                             ; B081 85 51                    .Q
 MapEntitySystem_Branch_B083:
@@ -4358,7 +4358,7 @@ MapEntitySystem_Branch_B0B2:
         sta     $1F                             ; B0B6 85 1F                    ..
         rts                                     ; B0B8 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B0B9:
+ActivateEntitiesTwoAndThreePresentation8F:
         ldx     #$02                            ; B0B9 A2 02                    ..
         lda     #$11                            ; B0BB A9 11                    ..
         sta     $7046,x                         ; B0BD 9D 46 70                 .Fp
@@ -4366,7 +4366,7 @@ MapEntitySystem_Entry_B0B9:
         sta     $7046,x                         ; B0C2 9D 46 70                 .Fp
         jmp     StartDefaultMapPresentation     ; B0C5 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B0C8:
+TransferEntityOneOrTwoToFour:
         lda     #$11                            ; B0C8 A9 11                    ..
         ldx     #$02                            ; B0CA A2 02                    ..
         sta     $7046,x                         ; B0CC 9D 46 70                 .Fp
@@ -4393,15 +4393,15 @@ MapEntitySystem_Branch_B0DD:
 ; ----------------------------------------------------------------------------
         rts                                     ; B0FB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B0FC:
-        jsr     UpperFixedEngine_Entry_C5C5     ; B0FC 20 C5 C5                  ..
+TransitionToSubmapZeroAt05_1C:
+        jsr     FadePaletteFromBlack            ; B0FC 20 C5 C5                  ..
         lda     #$80                            ; B0FF A9 80                    ..
         sta     $6BDE                           ; B101 8D DE 6B                 ..k
         jsr     ResetDisplayState               ; B104 20 4E C5                  N.
-        jsr     MapEntitySystem_Entry_BF46      ; B107 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; B107 20 46 BF                  F.
         lda     #$30                            ; B10A A9 30                    .0
         sta     $05FD                           ; B10C 8D FD 05                 ...
-        jsr     UpperFixedEngine_Entry_C5BF     ; B10F 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B10F 20 BF C5                  ..
         lda     #$00                            ; B112 A9 00                    ..
         sta     $6BDE                           ; B114 8D DE 6B                 ..k
         brk                                     ; B117 00                       .
@@ -4410,8 +4410,8 @@ MapEntitySystem_Entry_B0FC:
         brk                                     ; B11A 00                       .
         db   $5B,$3B                         ; B11B 5B 3B                    [;
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B11D 20 18 D2                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; B120 20 C5 C5                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B11D 20 18 D2                 ..
+        jsr     FadePaletteFromBlack            ; B120 20 C5 C5                  ..
         lda     #$00                            ; B123 A9 00                    ..
         sta     SaveTimeOfDay                   ; B125 8D ED 62                 ..b
         lda     #$00                            ; B128 A9 00                    ..
@@ -4431,8 +4431,8 @@ MapEntitySystem_Entry_B0FC:
         lda     $7006,x                         ; B13E BD 06 70                 ..p
         ora     #$03                            ; B141 09 03                    ..
         sta     $7006,x                         ; B143 9D 06 70                 ..p
-        jsr     UpperFixedEngine_Entry_C5BF     ; B146 20 BF C5                  ..
-        jsr     MapEntitySystem_Entry_BF46      ; B149 20 46 BF                  F.
+        jsr     FadePaletteToBlack              ; B146 20 BF C5                  ..
+        jsr     RunMapEntityService07_6F_43     ; B149 20 46 BF                  F.
         brk                                     ; B14C 00                       .
         db   $5C,$3B                         ; B14D 5C 3B                    \;
 ; ----------------------------------------------------------------------------
@@ -4440,10 +4440,10 @@ MapEntitySystem_Entry_B0FC:
         lda     $7006,x                         ; B151 BD 06 70                 ..p
         and     #$FC                            ; B154 29 FC                    ).
         sta     $7006,x                         ; B156 9D 06 70                 ..p
-MapEntitySystem_Entry_B159:
+ReturnAfterSubmapTransitionScene:
         rts                                     ; B159 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B15A:
+InitializePresentationAndClearScriptArgs:
         ldx     #$08                            ; B15A A2 08                    ..
         lda     #$80                            ; B15C A9 80                    ..
         tay                                     ; B15E A8                       .
@@ -4459,7 +4459,7 @@ MapEntitySystem_Entry_B15A:
         sta     $FC                             ; B174 85 FC                    ..
         rts                                     ; B176 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B177:
+RunEntitySwapAndVerticalOamScene:
         brk                                     ; B177 00                       .
         db   $8E,$FB                         ; B178 8E FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4470,20 +4470,20 @@ MapEntitySystem_Entry_B177:
         brk                                     ; B17F 00                       .
         db   $03,$4F                         ; B180 03 4F                    .O
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D210     ; B182 20 10 D2                  ..
-        jsr     UpperFixedEngine_Entry_D1F3     ; B185 20 F3 D1                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; B182 20 10 D2                  ..
+        jsr     StopMapCue                      ; B185 20 F3 D1                  ..
         brk                                     ; B188 00                       .
         db   $92,$FB                         ; B189 92 FB                    ..
 ; ----------------------------------------------------------------------------
         lda     $1F                             ; B18B A5 1F                    ..
         ora     #$08                            ; B18D 09 08                    ..
         sta     $1F                             ; B18F 85 1F                    ..
-        jsr     MapEntitySystem_Entry_B1CB      ; B191 20 CB B1                  ..
+        jsr     MoveEntityZeroSpritesVertically ; B191 20 CB B1                  ..
         brk                                     ; B194 00                       .
         db   $A5,$FB                         ; B195 A5 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B22B      ; B197 20 2B B2                  +.
-        jsr     MapEntitySystem_Entry_B1C6      ; B19A 20 C6 B1                  ..
+        jsr     PulseMapVerticalScroll          ; B197 20 2B B2                  +.
+        jsr     MoveEntityZeroSpritesDown       ; B19A 20 C6 B1                  ..
         lda     $1F                             ; B19D A5 1F                    ..
         and     #$F7                            ; B19F 29 F7                    ).
         sta     $1F                             ; B1A1 85 1F                    ..
@@ -4498,24 +4498,24 @@ MapEntitySystem_Entry_B177:
         lda     $70E6,x                         ; B1B7 BD E6 70                 ..p
         and     #$7F                            ; B1BA 29 7F                    ).
         sta     $70E6,x                         ; B1BC 9D E6 70                 ..p
-        jsr     MapEntitySystem_Entry_BF46      ; B1BF 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; B1BF 20 46 BF                  F.
         brk                                     ; B1C2 00                       .
         db   $3A,$3B                         ; B1C3 3A 3B                    :;
 ; ----------------------------------------------------------------------------
         rts                                     ; B1C5 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B1C6:
+MoveEntityZeroSpritesDown:
         lda     #$FF                            ; B1C6 A9 FF                    ..
         jmp     MapEntitySystem_Branch_B1CD     ; B1C8 4C CD B1                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B1CB:
+MoveEntityZeroSpritesVertically:
         lda     #$00                            ; B1CB A9 00                    ..
 MapEntitySystem_Branch_B1CD:
         sta     $52                             ; B1CD 85 52                    .R
         ldx     #$00                            ; B1CF A2 00                    ..
         lda     $7006,x                         ; B1D1 BD 06 70                 ..p
         and     #$3C                            ; B1D4 29 3C                    )<
-        jsr     UpperFixedEngine_Entry_C78C     ; B1D6 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; B1D6 20 8C C7                  ..
         lda     $3D                             ; B1D9 A5 3D                    .=
         asl     a                               ; B1DB 0A                       .
         asl     a                               ; B1DC 0A                       .
@@ -4552,7 +4552,7 @@ MapEntitySystem_Branch_B1F2:
         db   $01,$02,$02,$04,$04,$05,$05,$06 ; B21B 01 02 02 04 04 05 05 06  ........
         db   $07,$08,$09,$09,$0A,$0B,$0B,$0C ; B223 07 08 09 09 0A 0B 0B 0C  ........
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B22B:
+PulseMapVerticalScroll:
         ldx     #$1C                            ; B22B A2 1C                    ..
 MapEntitySystem_Branch_B22D:
         txa                                     ; B22D 8A                       .
@@ -4572,16 +4572,16 @@ MapEntitySystem_Branch_B22D:
         bne     MapEntitySystem_Branch_B22D     ; B247 D0 E4                    ..
         rts                                     ; B249 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B24A:
+InitializeWorldMapEntityScene:
         ldy     #$00                            ; B24A A0 00                    ..
         ldx     #$07                            ; B24C A2 07                    ..
-        jsr     MapEntitySystem_Entry_B2B4      ; B24E 20 B4 B2                  ..
+        jsr     TransferMapEntitySlot           ; B24E 20 B4 B2                  ..
         ldx     #$0A                            ; B251 A2 0A                    ..
-        jsr     MapEntitySystem_Entry_B2B4      ; B253 20 B4 B2                  ..
+        jsr     TransferMapEntitySlot           ; B253 20 B4 B2                  ..
         ldx     #$09                            ; B256 A2 09                    ..
-        jsr     MapEntitySystem_Entry_B2B4      ; B258 20 B4 B2                  ..
+        jsr     TransferMapEntitySlot           ; B258 20 B4 B2                  ..
         ldx     #$08                            ; B25B A2 08                    ..
-        jsr     MapEntitySystem_Entry_B2B4      ; B25D 20 B4 B2                  ..
+        jsr     TransferMapEntitySlot           ; B25D 20 B4 B2                  ..
         ldx     #$05                            ; B260 A2 05                    ..
         lda     #$11                            ; B262 A9 11                    ..
         sta     $7046,x                         ; B264 9D 46 70                 .Fp
@@ -4614,7 +4614,7 @@ MapEntitySystem_Branch_B275:
         db   $17,$CB,$20                     ; B299 17 CB 20                 ..
 ; ----------------------------------------------------------------------------
         lda     #$05                            ; B29C A9 05                    ..
-MapEntitySystem_Entry_B29E:
+RunWorldMapTransitionService:
         pha                                     ; B29E 48                       H
         brk                                     ; B29F 00                       .
         db   $6F,$33                         ; B2A0 6F 33                    o3
@@ -4638,7 +4638,7 @@ MapEntitySystem_Entry_B29E:
 MapEntitySystem_Branch_B2B3:
         rts                                     ; B2B3 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B2B4:
+TransferMapEntitySlot:
         lda     $6F60,y                         ; B2B4 B9 60 6F                 .`o
         sta     $6F60,x                         ; B2B7 9D 60 6F                 .`o
         sta     $6FA0,x                         ; B2BA 9D A0 6F                 ..o
@@ -4676,7 +4676,7 @@ MapEntitySystem_Entry_B2B4:
         iny                                     ; B312 C8                       .
         rts                                     ; B313 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B314:
+RunMapScenePresentation0F:
         lda     #$0F                            ; B314 A9 0F                    ..
         brk                                     ; B316 00                       .
         db   $01,$8F                         ; B317 01 8F                    ..
@@ -4684,23 +4684,23 @@ MapEntitySystem_Entry_B314:
         brk                                     ; B319 00                       .
         db   $1A,$CB,$40                     ; B31A 1A CB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B31D:
+RunMapSceneServices1FAnd08:
         brk                                     ; B31D 00                       .
         db   $1F,$EF                         ; B31E 1F EF                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; B320 00                       .
         db   $08,$CF                         ; B321 08 CF                    ..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B323:
+RefreshMapSceneAndResumeRendering:
         brk                                     ; B323 00                       .
         db   $0A,$6F                         ; B324 0A 6F                    .o
 ; ----------------------------------------------------------------------------
         brk                                     ; B326 00                       .
         db   $03,$EF                         ; B327 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5BF     ; B329 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; B329 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B32C:
+RunMapScenePresentation10:
         lda     #$10                            ; B32C A9 10                    ..
         brk                                     ; B32E 00                       .
         db   $01,$8F                         ; B32F 01 8F                    ..
@@ -4739,9 +4739,9 @@ MapEntitySystem_Entry_B32C:
 ; ----------------------------------------------------------------------------
         lda     #$8F                            ; B36A A9 8F                    ..
         jsr     StartMapPresentation            ; B36C 20 14 BF                  ..
-        jmp     UpperFixedEngine_Entry_C5BF     ; B36F 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; B36F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B372:
+RunMap37SubmapOneCoordinateEffect:
         lda     CurrentMapNumber                ; B372 A5 63                    .c
         cmp     #$37                            ; B374 C9 37                    .7
         bne     MapEntitySystem_Branch_B397     ; B376 D0 1F                    ..
@@ -4767,7 +4767,7 @@ MapEntitySystem_Entry_B372:
 MapEntitySystem_Branch_B397:
         rts                                     ; B397 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B398:
+RunMapScenePresentation0C:
         lda     #$0C                            ; B398 A9 0C                    ..
         brk                                     ; B39A 00                       .
         db   $01,$8F                         ; B39B 01 8F                    ..
@@ -4792,10 +4792,10 @@ MapEntitySystem_Entry_B398:
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; B3B1 A9 00                    ..
         sta     $0530                           ; B3B3 8D 30 05                 .0.
-        jsr     UpperFixedEngine_Entry_C5BF     ; B3B6 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B3B6 20 BF C5                  ..
         rts                                     ; B3B9 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B3BA:
+ProcessThreeSelectedMapEntities:
         ldx     #$00                            ; B3BA A2 00                    ..
         stx     $5B                             ; B3BC 86 5B                    .[
 MapEntitySystem_Branch_B3BE:
@@ -4895,7 +4895,7 @@ MapEntitySystem_Branch_B43C:
         beq     MapEntitySystem_Branch_B469     ; B44C F0 1B                    ..
         lda     $7000,x                         ; B44E BD 00 70                 ..p
         and     #$3C                            ; B451 29 3C                    )<
-        jsr     UpperFixedEngine_Entry_C78C     ; B453 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; B453 20 8C C7                  ..
         ldx     #$00                            ; B456 A2 00                    ..
 MapEntitySystem_Branch_B458:
         lda     $0200,y                         ; B458 B9 00 02                 ...
@@ -4909,13 +4909,13 @@ MapEntitySystem_Branch_B458:
 MapEntitySystem_Branch_B469:
         jsr     WaitForNmi                      ; B469 20 74 FF                  t.
         ldx     #$00                            ; B46C A2 00                    ..
-        jsr     MapEntitySystem_Entry_B498      ; B46E 20 98 B4                  ..
+        jsr     RunIndexedFourStepMapEffect     ; B46E 20 98 B4                  ..
         ldy     #$00                            ; B471 A0 00                    ..
-        jsr     MapEntitySystem_Entry_B4BC      ; B473 20 BC B4                  ..
+        jsr     AnimateFourEntitySpritesWithScroll; B473 20 BC B4                ..
         ldx     #$02                            ; B476 A2 02                    ..
-        jsr     MapEntitySystem_Entry_B498      ; B478 20 98 B4                  ..
+        jsr     RunIndexedFourStepMapEffect     ; B478 20 98 B4                  ..
         ldy     #$08                            ; B47B A0 08                    ..
-        jsr     MapEntitySystem_Entry_B4BC      ; B47D 20 BC B4                  ..
+        jsr     AnimateFourEntitySpritesWithScroll; B47D 20 BC B4                ..
         lda     #$00                            ; B480 A9 00                    ..
         sta     $7020                           ; B482 8D 20 70                 . p
         lda     #$80                            ; B485 A9 80                    ..
@@ -4929,9 +4929,9 @@ MapEntitySystem_Branch_B469:
 ; ----------------------------------------------------------------------------
         rts                                     ; B497 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B498:
-        jsr     MapEntitySystem_Entry_B49B      ; B498 20 9B B4                  ..
-MapEntitySystem_Entry_B49B:
+RunIndexedFourStepMapEffect:
+        jsr     RunNextIndexedMapEffect         ; B498 20 9B B4                  ..
+RunNextIndexedMapEffect:
         txa                                     ; B49B 8A                       .
         pha                                     ; B49C 48                       H
         lda     $B4B0,x                         ; B49D BD B0 B4                 ...
@@ -4952,7 +4952,7 @@ MapEntitySystem_Entry_B49B:
         db   $0B,$0B,$0C,$0C                 ; B4B4 0B 0B 0C 0C              ....
         db   $16,$17,$16,$17                 ; B4B8 16 17 16 17              ....
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B4BC:
+AnimateFourEntitySpritesWithScroll:
         lda     $0200                           ; B4BC AD 00 02                 ...
         clc                                     ; B4BF 18                       .
         adc     $B4FB,y                         ; B4C0 79 FB B4                 y..
@@ -4979,17 +4979,17 @@ MapEntitySystem_Entry_B4BC:
         iny                                     ; B4F4 C8                       .
         tya                                     ; B4F5 98                       .
         and     #$07                            ; B4F6 29 07                    ).
-        bne     MapEntitySystem_Entry_B4BC      ; B4F8 D0 C2                    ..
+        bne     AnimateFourEntitySpritesWithScroll; B4F8 D0 C2                  ..
         rts                                     ; B4FA 60                       `
 ; ----------------------------------------------------------------------------
         db   $F6,$FD,$FE,$FF,$01,$02,$03,$0A ; B4FB F6 FD FE FF 01 02 03 0A  ........
         db   $FC,$FE,$FF,$FF,$01,$01,$02,$04 ; B503 FC FE FF FF 01 01 02 04  ........
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B50B:
+RunTwoEntitySelectionScene:
         ldx     #$05                            ; B50B A2 05                    ..
-        jsr     MapEntitySystem_Entry_B56A      ; B50D 20 6A B5                  j.
+        jsr     TurnMapEntityTowardPlayer       ; B50D 20 6A B5                  j.
         ldx     #$06                            ; B510 A2 06                    ..
-        jsr     MapEntitySystem_Entry_B56A      ; B512 20 6A B5                  j.
+        jsr     TurnMapEntityTowardPlayer       ; B512 20 6A B5                  j.
         brk                                     ; B515 00                       .
         db   $07,$6F,$43                     ; B516 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5025,14 +5025,14 @@ MapEntitySystem_Branch_B535:
         ldx     #$05                            ; B540 A2 05                    ..
 MapEntitySystem_Branch_B542:
         ldy     #$01                            ; B542 A0 01                    ..
-        jsr     MapEntitySystem_Entry_B577      ; B544 20 77 B5                  w.
+        jsr     TransferSelectedEntityToPartySlot; B544 20 77 B5                 w.
         ldx     #$05                            ; B547 A2 05                    ..
         lda     PlayerLocalX                    ; B549 A5 44                    .D
         cmp     #$17                            ; B54B C9 17                    ..
         bcs     MapEntitySystem_Branch_B551     ; B54D B0 02                    ..
         ldx     #$06                            ; B54F A2 06                    ..
 MapEntitySystem_Branch_B551:
-        jsr     MapEntitySystem_Entry_B577      ; B551 20 77 B5                  w.
+        jsr     TransferSelectedEntityToPartySlot; B551 20 77 B5                 w.
         brk                                     ; B554 00                       .
         db   $54,$33                         ; B555 54 33                    T3
 ; ----------------------------------------------------------------------------
@@ -5050,9 +5050,9 @@ MapEntitySystem_Branch_B551:
         brk                                     ; B564 00                       .
         db   $0D,$87                         ; B565 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D20A     ; B567 4C 0A D2                 L..
+        jmp     WaitThenStopMapCue              ; B567 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B56A:
+TurnMapEntityTowardPlayer:
         lda     $7006,x                         ; B56A BD 06 70                 ..p
         and     #$FC                            ; B56D 29 FC                    ).
         ora     $3D                             ; B56F 05 3D                    .=
@@ -5060,7 +5060,7 @@ MapEntitySystem_Entry_B56A:
         sta     $7006,x                         ; B573 9D 06 70                 ..p
         rts                                     ; B576 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B577:
+TransferSelectedEntityToPartySlot:
         lda     $6F66,x                         ; B577 BD 66 6F                 .fo
         sta     $6F60,y                         ; B57A 99 60 6F                 .`o
         sta     $6FA0,y                         ; B57D 99 A0 6F                 ..o
@@ -5096,7 +5096,7 @@ MapEntitySystem_Branch_B5AC:
         iny                                     ; B5C0 C8                       .
         rts                                     ; B5C1 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B5C2:
+RunPresentation0EEntityScene:
         lda     #$0E                            ; B5C2 A9 0E                    ..
         brk                                     ; B5C4 00                       .
         db   $01,$8F                         ; B5C5 01 8F                    ..
@@ -5140,21 +5140,21 @@ MapEntitySystem_Entry_B5C2:
         brk                                     ; B60D 00                       .
         db   $16,$CB,$04                     ; B60E 16 CB 04                 ...
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5BF     ; B611 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; B611 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B614:
+RunPresentation84WorldTransition04:
         lda     #$84                            ; B614 A9 84                    ..
         jsr     StartMapPresentation            ; B616 20 14 BF                  ..
         lda     #$04                            ; B619 A9 04                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B61B 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B61B 20 9E B2                  ..
         brk                                     ; B61E 00                       .
         db   $17,$CB,$10                     ; B61F 17 CB 10                 ...
 ; ----------------------------------------------------------------------------
         rts                                     ; B622 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B623:
+RunWorldTransition06Presentation82:
         lda     #$06                            ; B623 A9 06                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B625 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B625 20 9E B2                  ..
         ldx     #$00                            ; B628 A2 00                    ..
         lda     #$11                            ; B62A A9 11                    ..
         sta     $7046,x                         ; B62C 9D 46 70                 .Fp
@@ -5164,11 +5164,11 @@ MapEntitySystem_Entry_B623:
         lda     #$82                            ; B633 A9 82                    ..
         jmp     StartMapPresentation            ; B635 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B638:
+RunPresentation85WorldTransition0D:
         lda     #$85                            ; B638 A9 85                    ..
         jsr     StartMapPresentation            ; B63A 20 14 BF                  ..
         lda     #$0D                            ; B63D A9 0D                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B63F 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B63F 20 9E B2                  ..
         brk                                     ; B642 00                       .
         db   $1A,$CB,$02                     ; B643 1A CB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -5180,7 +5180,7 @@ MapEntitySystem_Entry_B638:
         sta     $7046,x                         ; B64E 9D 46 70                 .Fp
         rts                                     ; B651 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B652:
+InitializeCoordinateSelectedScene:
         ldx     #$02                            ; B652 A2 02                    ..
         lda     #$11                            ; B654 A9 11                    ..
         sta     $7046,x                         ; B656 9D 46 70                 .Fp
@@ -5253,13 +5253,13 @@ MapEntitySystem_Branch_B691:
         db   $5E                             ; B6E6 5E                       ^
         db   $05                             ; B6E7 05                       .
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B6E8:
+ActivateEntityTwelveAndPresent:
         ldx     #$0C                            ; B6E8 A2 0C                    ..
         lda     #$11                            ; B6EA A9 11                    ..
         sta     $7046,x                         ; B6EC 9D 46 70                 .Fp
         jmp     StartDefaultMapPresentation     ; B6EF 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B6F2:
+RunPresentation12AndSetFlags:
         lda     #$12                            ; B6F2 A9 12                    ..
         brk                                     ; B6F4 00                       .
         db   $01,$8F                         ; B6F5 01 8F                    ..
@@ -5267,7 +5267,7 @@ MapEntitySystem_Entry_B6F2:
         brk                                     ; B6F7 00                       .
         db   $1D,$CB,$40                     ; B6F8 1D CB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B6FB:
+PositionPlayer05_08AndRunScene:
         brk                                     ; B6FB 00                       .
         db   $0E,$CB,$08                     ; B6FC 0E CB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -5287,18 +5287,18 @@ MapEntitySystem_Entry_B6FB:
         ldx     #$01                            ; B719 A2 01                    ..
         lda     #$11                            ; B71B A9 11                    ..
         sta     $7046,x                         ; B71D 9D 46 70                 .Fp
-        jsr     MapEntitySystem_Entry_B31D      ; B720 20 1D B3                  ..
-        jsr     MapEntitySystem_Entry_BF46      ; B723 20 46 BF                  F.
+        jsr     RunMapSceneServices1FAnd08      ; B720 20 1D B3                  ..
+        jsr     RunMapEntityService07_6F_43     ; B723 20 46 BF                  F.
         brk                                     ; B726 00                       .
         db   $44,$4B                         ; B727 44 4B                    DK
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; B729 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; B729 20 0A D2                  ..
         lda     #$00                            ; B72C A9 00                    ..
         sta     $F9                             ; B72E 85 F9                    ..
         sta     $FA                             ; B730 85 FA                    ..
         rts                                     ; B732 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B733:
+RunSelectedWorldMapEntityTransition:
         tya                                     ; B733 98                       .
         tax                                     ; B734 AA                       .
         lda     $6299                           ; B735 AD 99 62                 ..b
@@ -5342,7 +5342,7 @@ MapEntitySystem_Branch_B755:
 ; ----------------------------------------------------------------------------
         ldy     #$05                            ; B774 A0 05                    ..
         ldx     $6FE6,y                         ; B776 BE E6 6F                 ..o
-        jsr     MapEntitySystem_Entry_B78E      ; B779 20 8E B7                  ..
+        jsr     NormalizeWorldMapSelectionId    ; B779 20 8E B7                  ..
         brk                                     ; B77C 00                       .
         db   $0D,$87                         ; B77D 0D 87                    ..
 ; ----------------------------------------------------------------------------
@@ -5350,14 +5350,14 @@ MapEntitySystem_Branch_B755:
         jsr     RenderMapEntity                 ; B781 20 04 D8                  ..
         pla                                     ; B784 68                       h
         pha                                     ; B785 48                       H
-        jsr     MapEntitySystem_Entry_B29E      ; B786 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B786 20 9E B2                  ..
         brk                                     ; B789 00                       .
         db   $60,$0B                         ; B78A 60 0B                    `.
 ; ----------------------------------------------------------------------------
         pla                                     ; B78C 68                       h
         rts                                     ; B78D 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B78E:
+NormalizeWorldMapSelectionId:
         lda     $6299                           ; B78E AD 99 62                 ..b
         and     #$7F                            ; B791 29 7F                    ).
         cmp     #$40                            ; B793 C9 40                    .@
@@ -5375,15 +5375,15 @@ MapEntitySystem_Branch_B7A2:
 ; ----------------------------------------------------------------------------
         db   $4C,$14                         ; B7A3 4C 14                    L.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B7A5:
+RunMap1BTransitionSequence:
         jsr     ResetDisplayState               ; B7A5 20 4E C5                  N.
-        jsr     MapEntitySystem_Entry_B827      ; B7A8 20 27 B8                  '.
+        jsr     ClearMapTransitionEntityBuffers ; B7A8 20 27 B8                  '.
         brk                                     ; B7AB 00                       .
         db   $07,$6F,$43                     ; B7AC 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B7AF A2 3C                    .<
         jsr     WaitFrames                      ; B7B1 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; B7B4 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B7B4 20 BF C5                  ..
         lda     $053A                           ; B7B7 AD 3A 05                 .:.
         sta     $F9                             ; B7BA 85 F9                    ..
         brk                                     ; B7BC 00                       .
@@ -5395,20 +5395,20 @@ MapEntitySystem_Entry_B7A5:
         brk                                     ; B7C2 00                       .
         db   $1D,$EB,$01                     ; B7C3 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        bne     MapEntitySystem_Entry_B83A      ; B7C6 D0 72                    .r
+        bne     LoadMap1BSubmapFourScene        ; B7C6 D0 72                    .r
         jsr     SuspendRenderingUpdates         ; B7C8 20 AF C5                  ..
-        jsr     UpperFixedEngine_Entry_C58F     ; B7CB 20 8F C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; B7CB 20 8F C5                  ..
         brk                                     ; B7CE 00                       .
         db   $16,$CB,$10                     ; B7CF 16 CB 10                 ...
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B8CD      ; B7D2 20 CD B8                  ..
+        jsr     LoadMap1BSubmapZeroDestination  ; B7D2 20 CD B8                  ..
         brk                                     ; B7D5 00                       .
         db   $43,$EF                         ; B7D6 43 EF                    C.
 ; ----------------------------------------------------------------------------
         brk                                     ; B7D8 00                       .
         db   $16,$DB,$EF                     ; B7D9 16 DB EF                 ...
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B8DE      ; B7DC 20 DE B8                  ..
+        jsr     HideFirstSixMapEntities         ; B7DC 20 DE B8                  ..
         brk                                     ; B7DF 00                       .
         db   $0A,$6F                         ; B7E0 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -5416,7 +5416,7 @@ MapEntitySystem_Entry_B7A5:
         brk                                     ; B7E5 00                       .
         db   $0D,$DF                         ; B7E6 0D DF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C58F     ; B7E8 20 8F C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; B7E8 20 8F C5                  ..
         brk                                     ; B7EB 00                       .
         db   $0E,$DF                         ; B7EC 0E DF                    ..
 ; ----------------------------------------------------------------------------
@@ -5445,19 +5445,19 @@ MapEntitySystem_Entry_B7A5:
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B80E A2 3C                    .<
         jsr     WaitFrames                      ; B810 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_C5BF     ; B813 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B813 20 BF C5                  ..
         brk                                     ; B816 00                       .
         db   $38,$4B                         ; B817 38 4B                    8K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B819 20 18 D2                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; B81C 20 C5 C5                  ..
-        jsr     MapEntitySystem_Entry_B8EC      ; B81F 20 EC B8                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B819 20 18 D2                 ..
+        jsr     FadePaletteFromBlack            ; B81C 20 C5 C5                  ..
+        jsr     SetPlayerLocalPosition11_14     ; B81F 20 EC B8                  ..
         brk                                     ; B822 00                       .
         db   $16,$DB,$EF                     ; B823 16 DB EF                 ...
 ; ----------------------------------------------------------------------------
         rts                                     ; B826 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B827:
+ClearMapTransitionEntityBuffers:
         lda     #$80                            ; B827 A9 80                    ..
         sta     $0508                           ; B829 8D 08 05                 ...
         ldx     #$00                            ; B82C A2 00                    ..
@@ -5469,7 +5469,7 @@ MapEntitySystem_Branch_B830:
         bne     MapEntitySystem_Branch_B830     ; B837 D0 F7                    ..
         rts                                     ; B839 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B83A:
+LoadMap1BSubmapFourScene:
         lda     #$1B                            ; B83A A9 1B                    ..
         sta     CurrentMapNumber                ; B83C 85 63                    .c
         lda     #$04                            ; B83E A9 04                    ..
@@ -5481,11 +5481,11 @@ MapEntitySystem_Entry_B83A:
         brk                                     ; B84A 00                       .
         db   $43,$EF                         ; B84B 43 EF                    C.
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B8DE      ; B84D 20 DE B8                  ..
+        jsr     HideFirstSixMapEntities         ; B84D 20 DE B8                  ..
         brk                                     ; B850 00                       .
         db   $0A,$6F                         ; B851 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; B853 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; B853 20 BF C5                  ..
         brk                                     ; B856 00                       .
         db   $07,$6F,$43                     ; B857 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5495,7 +5495,7 @@ MapEntitySystem_Entry_B83A:
         brk                                     ; B85D 00                       .
         db   $8A,$FB                         ; B85E 8A FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B860 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B860 20 18 D2                 ..
         ldx     #$04                            ; B863 A2 04                    ..
         lda     #$08                            ; B865 A9 08                    ..
         sta     $6F66,x                         ; B867 9D 66 6F                 .fo
@@ -5506,13 +5506,13 @@ MapEntitySystem_Entry_B83A:
         brk                                     ; B870 00                       .
         db   $CF,$4B                         ; B871 CF 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B873 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B873 20 18 D2                 ..
         ldx     #$01                            ; B876 A2 01                    ..
-        jsr     MapEntitySystem_Entry_B8BF      ; B878 20 BF B8                  ..
+        jsr     HideEntityAndPauseFortyFiveFrames; B878 20 BF B8                 ..
         ldx     #$02                            ; B87B A2 02                    ..
-        jsr     MapEntitySystem_Entry_B8BF      ; B87D 20 BF B8                  ..
+        jsr     HideEntityAndPauseFortyFiveFrames; B87D 20 BF B8                 ..
         ldx     #$03                            ; B880 A2 03                    ..
-        jsr     MapEntitySystem_Entry_B8BF      ; B882 20 BF B8                  ..
+        jsr     HideEntityAndPauseFortyFiveFrames; B882 20 BF B8                 ..
         brk                                     ; B885 00                       .
         db   $D0,$4B                         ; B886 D0 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -5524,23 +5524,23 @@ MapEntitySystem_Entry_B83A:
         brk                                     ; B890 00                       .
         db   $0E,$FB                         ; B891 0E FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; B893 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; B893 20 18 D2                 ..
         brk                                     ; B896 00                       .
         db   $D1,$4B                         ; B897 D1 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D214     ; B899 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; B899 20 14 D2                 ..
         ldx     #$17                            ; B89C A2 17                    ..
         lda     #$15                            ; B89E A9 15                    ..
 MapEntitySystem_Branch_B8A0:
         sta     $05FD,x                         ; B8A0 9D FD 05                 ...
         dex                                     ; B8A3 CA                       .
         bpl     MapEntitySystem_Branch_B8A0     ; B8A4 10 FA                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; B8A6 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; B8A6 20 B9 C5                  ..
         brk                                     ; B8A9 00                       .
         db   $9B,$FB                         ; B8AA 9B FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D210     ; B8AC 20 10 D2                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; B8AF 20 C5 C5                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; B8AC 20 10 D2                  ..
+        jsr     FadePaletteFromBlack            ; B8AF 20 C5 C5                  ..
         ldx     #$00                            ; B8B2 A2 00                    ..
         brk                                     ; B8B4 00                       .
         db   $23,$EF                         ; B8B5 23 EF                    #.
@@ -5549,9 +5549,9 @@ MapEntitySystem_Branch_B8A0:
         brk                                     ; B8B9 00                       .
         db   $0D,$87                         ; B8BA 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_B8EC      ; B8BC 4C EC B8                 L..
+        jmp     SetPlayerLocalPosition11_14     ; B8BC 4C EC B8                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B8BF:
+HideEntityAndPauseFortyFiveFrames:
         jsr     SetEntityCoordinateSentinel81   ; B8BF 20 37 BF                  7.
         brk                                     ; B8C2 00                       .
         db   $87,$FB                         ; B8C3 87 FB                    ..
@@ -5562,7 +5562,7 @@ MapEntitySystem_Entry_B8BF:
         ldx     #$2D                            ; B8C8 A2 2D                    .-
         jmp     WaitFrames                      ; B8CA 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B8CD:
+LoadMap1BSubmapZeroDestination:
         lda     #$1B                            ; B8CD A9 1B                    ..
         sta     CurrentMapNumber                ; B8CF 85 63                    .c
         lda     #$00                            ; B8D1 A9 00                    ..
@@ -5573,7 +5573,7 @@ MapEntitySystem_Entry_B8CD:
         sta     PlayerLocalY                    ; B8DB 85 45                    .E
         rts                                     ; B8DD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B8DE:
+HideFirstSixMapEntities:
         ldx     #$05                            ; B8DE A2 05                    ..
 MapEntitySystem_Branch_B8E0:
         lda     $7020,x                         ; B8E0 BD 20 70                 . p
@@ -5583,14 +5583,14 @@ MapEntitySystem_Branch_B8E0:
         bpl     MapEntitySystem_Branch_B8E0     ; B8E9 10 F5                    ..
         rts                                     ; B8EB 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B8EC:
+SetPlayerLocalPosition11_14:
         lda     #$11                            ; B8EC A9 11                    ..
         sta     PlayerLocalX                    ; B8EE 85 44                    .D
         lda     #$14                            ; B8F0 A9 14                    ..
         sta     PlayerLocalY                    ; B8F2 85 45                    .E
         rts                                     ; B8F4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B8F5:
+RunPresentation11AndSetFlag1D_08:
         lda     #$11                            ; B8F5 A9 11                    ..
         brk                                     ; B8F7 00                       .
         db   $01,$8F                         ; B8F8 01 8F                    ..
@@ -5598,9 +5598,9 @@ MapEntitySystem_Entry_B8F5:
         brk                                     ; B8FA 00                       .
         db   $1D,$CB,$08                     ; B8FB 1D CB 08                 ...
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_B31D      ; B8FE 4C 1D B3                 L..
+        jmp     RunMapSceneServices1FAnd08      ; B8FE 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B901:
+SetSavedWorldPosition8F_D0:
         brk                                     ; B901 00                       .
         db   $13,$CB,$02                     ; B902 13 CB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -5610,10 +5610,10 @@ MapEntitySystem_Entry_B901:
         sta     SavePlayerWorldY                ; B90C 8D 98 61                 ..a
         rts                                     ; B90F 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B910:
+RunStoredWorldMapTransition:
         lda     $6299                           ; B910 AD 99 62                 ..b
         and     #$3F                            ; B913 29 3F                    )?
-        jsr     MapEntitySystem_Entry_B29E      ; B915 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B915 20 9E B2                  ..
         lda     $6299                           ; B918 AD 99 62                 ..b
         pha                                     ; B91B 48                       H
         brk                                     ; B91C 00                       .
@@ -5643,9 +5643,9 @@ MapEntitySystem_Branch_B939:
         brk                                     ; B939 00                       .
         db   $0A,$6F                         ; B93A 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D218     ; B93C 4C 18 D2                 L..
+        jmp     WaitForButtonStateOneEightyFrames; B93C 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B93F:
+HideTrackedSceneEntityAndRefresh:
         tya                                     ; B93F 98                       .
         brk                                     ; B940 00                       .
         db   $01,$8F                         ; B941 01 8F                    ..
@@ -5659,27 +5659,27 @@ MapEntitySystem_Entry_B93F:
         brk                                     ; B94E 00                       .
         db   $1F,$EF                         ; B94F 1F EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_B323      ; B951 4C 23 B3                 L#.
+        jmp     RefreshMapSceneAndResumeRendering; B951 4C 23 B3                L#.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B954:
-        jsr     UpperFixedEngine_Entry_D1F3     ; B954 20 F3 D1                  ..
+AnimateEntityOneSpritesUpward:
+        jsr     StopMapCue                      ; B954 20 F3 D1                  ..
         brk                                     ; B957 00                       .
         db   $92,$FB                         ; B958 92 FB                    ..
 ; ----------------------------------------------------------------------------
         lda     $1F                             ; B95A A5 1F                    ..
         ora     #$08                            ; B95C 09 08                    ..
         sta     $1F                             ; B95E 85 1F                    ..
-        jsr     MapEntitySystem_Entry_B96A      ; B960 20 6A B9                  j.
+        jsr     MoveEntityOneSpritesUp          ; B960 20 6A B9                  j.
         lda     $1F                             ; B963 A5 1F                    ..
         and     #$F7                            ; B965 29 F7                    ).
         sta     $1F                             ; B967 85 1F                    ..
         rts                                     ; B969 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B96A:
+MoveEntityOneSpritesUp:
         ldx     #$01                            ; B96A A2 01                    ..
         lda     $7006,x                         ; B96C BD 06 70                 ..p
         and     #$3C                            ; B96F 29 3C                    )<
-        jsr     UpperFixedEngine_Entry_C78C     ; B971 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; B971 20 8C C7                  ..
         ldx     #$00                            ; B974 A2 00                    ..
 MapEntitySystem_Branch_B976:
         lda     $0200,y                         ; B976 B9 00 02                 ...
@@ -5697,7 +5697,7 @@ MapEntitySystem_Branch_B976:
         bcc     MapEntitySystem_Branch_B976     ; B992 90 E2                    ..
         rts                                     ; B994 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B995:
+RunPresentation13AndSetFlag1D_04:
         lda     #$13                            ; B995 A9 13                    ..
         brk                                     ; B997 00                       .
         db   $01,$8F                         ; B998 01 8F                    ..
@@ -5705,9 +5705,9 @@ MapEntitySystem_Entry_B995:
         brk                                     ; B99A 00                       .
         db   $1D,$CB,$04                     ; B99B 1D CB 04                 ...
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_B31D      ; B99E 4C 1D B3                 L..
+        jmp     RunMapSceneServices1FAnd08      ; B99E 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B9A1:
+RunPresentation14EntityFourScene:
         lda     #$14                            ; B9A1 A9 14                    ..
         brk                                     ; B9A3 00                       .
         db   $01,$8F                         ; B9A4 01 8F                    ..
@@ -5728,19 +5728,19 @@ MapEntitySystem_Entry_B9A1:
         brk                                     ; B9C2 00                       .
         db   $0F,$EF                         ; B9C3 0F EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     MapEntitySystem_Entry_B31D      ; B9C5 4C 1D B3                 L..
+        jmp     RunMapSceneServices1FAnd08      ; B9C5 4C 1D B3                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B9C8:
+RunWorldTransitionSequence01_07_04:
         lda     #$01                            ; B9C8 A9 01                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B9CA 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B9CA 20 9E B2                  ..
         lda     #$07                            ; B9CD A9 07                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B9CF 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B9CF 20 9E B2                  ..
         brk                                     ; B9D2 00                       .
         db   $17,$EB,$10                     ; B9D3 17 EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Branch_B9DD     ; B9D6 D0 05                    ..
         lda     #$04                            ; B9D8 A9 04                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; B9DA 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; B9DA 20 9E B2                  ..
 MapEntitySystem_Branch_B9DD:
         brk                                     ; B9DD 00                       .
         db   $17,$CB,$1C                     ; B9DE 17 CB 1C                 ...
@@ -5748,7 +5748,7 @@ MapEntitySystem_Branch_B9DD:
         brk                                     ; B9E1 00                       .
         db   $19,$CB,$40                     ; B9E2 19 CB 40                 ..@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B9E5:
+HideEntitiesThreeFourSixAndRefresh:
         ldx     #$04                            ; B9E5 A2 04                    ..
         jsr     SetEntityCoordinateSentinel81   ; B9E7 20 37 BF                  7.
         ldx     #$06                            ; B9EA A2 06                    ..
@@ -5758,9 +5758,9 @@ MapEntitySystem_Entry_B9E5:
         brk                                     ; B9F4 00                       .
         db   $0A,$6F                         ; B9F5 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D20A     ; B9F7 4C 0A D2                 L..
+        jmp     WaitThenStopMapCue              ; B9F7 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_B9FA:
+RunPresentation15EntitySixScene:
         lda     #$15                            ; B9FA A9 15                    ..
         brk                                     ; B9FC 00                       .
         db   $01,$8F                         ; B9FD 01 8F                    ..
@@ -5783,17 +5783,17 @@ MapEntitySystem_Entry_B9FA:
         brk                                     ; BA18 00                       .
         db   $0B,$87                         ; BA19 0B 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B323      ; BA1B 20 23 B3                  #.
-        jsr     MapEntitySystem_Entry_BF46      ; BA1E 20 46 BF                  F.
+        jsr     RefreshMapSceneAndResumeRendering; BA1B 20 23 B3                 #.
+        jsr     RunMapEntityService07_6F_43     ; BA1E 20 46 BF                  F.
         lda     #$06                            ; BA21 A9 06                    ..
         sta     $059C                           ; BA23 8D 9C 05                 ...
         brk                                     ; BA26 00                       .
         db   $65,$4B                         ; BA27 65 4B                    eK
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BACE      ; BA29 20 CE BA                  ..
-        jmp     UpperFixedEngine_Entry_D20A     ; BA2C 4C 0A D2                 L..
+        jsr     RunThreePulseMapSceneEffect     ; BA29 20 CE BA                  ..
+        jmp     WaitThenStopMapCue              ; BA2C 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BA2F:
+StartPresentation16EntitySixScene:
         lda     #$16                            ; BA2F A9 16                    ..
         brk                                     ; BA31 00                       .
         db   $01,$8F                         ; BA32 01 8F                    ..
@@ -5801,7 +5801,7 @@ MapEntitySystem_Entry_BA2F:
         brk                                     ; BA34 00                       .
         db   $29,$CB,$40                     ; BA35 29 CB 40                 ).@
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BA38:
+RunPresentation16EntitySixContinuation:
         brk                                     ; BA38 00                       .
         db   $1F,$EF                         ; BA39 1F EF                    ..
 ; ----------------------------------------------------------------------------
@@ -5817,17 +5817,17 @@ MapEntitySystem_Entry_BA38:
         brk                                     ; BA4D 00                       .
         db   $0B,$87                         ; BA4E 0B 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B323      ; BA50 20 23 B3                  #.
-        jsr     MapEntitySystem_Entry_BF46      ; BA53 20 46 BF                  F.
+        jsr     RefreshMapSceneAndResumeRendering; BA50 20 23 B3                 #.
+        jsr     RunMapEntityService07_6F_43     ; BA53 20 46 BF                  F.
         lda     #$06                            ; BA56 A9 06                    ..
         sta     $059C                           ; BA58 8D 9C 05                 ...
         brk                                     ; BA5B 00                       .
         db   $67,$4B                         ; BA5C 67 4B                    gK
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BACE      ; BA5E 20 CE BA                  ..
-        jmp     UpperFixedEngine_Entry_D20A     ; BA61 4C 0A D2                 L..
+        jsr     RunThreePulseMapSceneEffect     ; BA5E 20 CE BA                  ..
+        jmp     WaitThenStopMapCue              ; BA61 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BA64:
+RunPresentation17EntitySixScene:
         lda     #$17                            ; BA64 A9 17                    ..
         brk                                     ; BA66 00                       .
         db   $01,$8F                         ; BA67 01 8F                    ..
@@ -5850,17 +5850,17 @@ MapEntitySystem_Entry_BA64:
         brk                                     ; BA82 00                       .
         db   $0B,$87                         ; BA83 0B 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B323      ; BA85 20 23 B3                  #.
-        jsr     MapEntitySystem_Entry_BF46      ; BA88 20 46 BF                  F.
+        jsr     RefreshMapSceneAndResumeRendering; BA85 20 23 B3                 #.
+        jsr     RunMapEntityService07_6F_43     ; BA88 20 46 BF                  F.
         lda     #$06                            ; BA8B A9 06                    ..
         sta     $059C                           ; BA8D 8D 9C 05                 ...
         brk                                     ; BA90 00                       .
         db   $68,$4B                         ; BA91 68 4B                    hK
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BACE      ; BA93 20 CE BA                  ..
-        jmp     UpperFixedEngine_Entry_D20A     ; BA96 4C 0A D2                 L..
+        jsr     RunThreePulseMapSceneEffect     ; BA93 20 CE BA                  ..
+        jmp     WaitThenStopMapCue              ; BA96 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BA99:
+RunPresentation18EntitySixScene:
         lda     #$18                            ; BA99 A9 18                    ..
         brk                                     ; BA9B 00                       .
         db   $01,$8F                         ; BA9C 01 8F                    ..
@@ -5883,17 +5883,17 @@ MapEntitySystem_Entry_BA99:
         brk                                     ; BAB7 00                       .
         db   $0B,$87                         ; BAB8 0B 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_B323      ; BABA 20 23 B3                  #.
-        jsr     MapEntitySystem_Entry_BF46      ; BABD 20 46 BF                  F.
+        jsr     RefreshMapSceneAndResumeRendering; BABA 20 23 B3                 #.
+        jsr     RunMapEntityService07_6F_43     ; BABD 20 46 BF                  F.
         lda     #$06                            ; BAC0 A9 06                    ..
         sta     $059C                           ; BAC2 8D 9C 05                 ...
         brk                                     ; BAC5 00                       .
         db   $69,$4B                         ; BAC6 69 4B                    iK
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BACE      ; BAC8 20 CE BA                  ..
-        jmp     UpperFixedEngine_Entry_D20A     ; BACB 4C 0A D2                 L..
+        jsr     RunThreePulseMapSceneEffect     ; BAC8 20 CE BA                  ..
+        jmp     WaitThenStopMapCue              ; BACB 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BACE:
+RunThreePulseMapSceneEffect:
         brk                                     ; BACE 00                       .
         db   $84,$FB                         ; BACF 84 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5912,7 +5912,7 @@ MapEntitySystem_Entry_BACE:
 ; ----------------------------------------------------------------------------
         rts                                     ; BAE4 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BAE5:
+ActivateEntityTwoAndPresentation8F:
         ldx     #$02                            ; BAE5 A2 02                    ..
         lda     $7006,x                         ; BAE7 BD 06 70                 ..p
         ora     #$03                            ; BAEA 09 03                    ..
@@ -5923,13 +5923,13 @@ MapEntitySystem_Entry_BAE5:
         brk                                     ; BAF2 00                       .
         db   $6D,$4B                         ; BAF3 6D 4B                    mK
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; BAF5 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; BAF5 20 18 D2                 ..
         lda     #$11                            ; BAF8 A9 11                    ..
         ldx     #$00                            ; BAFA A2 00                    ..
         sta     $7046,x                         ; BAFC 9D 46 70                 .Fp
         jmp     StartDefaultMapPresentation     ; BAFF 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BB02:
+RunFlag20EntityTwoTransition:
         brk                                     ; BB02 00                       .
         db   $20,$EB,$08                     ; BB03 20 EB 08                  ..
 ; ----------------------------------------------------------------------------
@@ -5940,7 +5940,7 @@ MapEntitySystem_Entry_BB02:
         ora     $3D                             ; BB0F 05 3D                    .=
         eor     #$02                            ; BB11 49 02                    I.
         sta     $7006,x                         ; BB13 9D 06 70                 ..p
-        jsr     MapEntitySystem_Entry_BF46      ; BB16 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; BB16 20 46 BF                  F.
         brk                                     ; BB19 00                       .
         db   $6E,$4B                         ; BB1A 6E 4B                    nK
 ; ----------------------------------------------------------------------------
@@ -5948,7 +5948,7 @@ MapEntitySystem_Entry_BB02:
         db   $6F,$4B                         ; BB1D 6F 4B                    oK
 ; ----------------------------------------------------------------------------
         lda     #$0F                            ; BB1F A9 0F                    ..
-        jsr     MapEntitySystem_Entry_B29E      ; BB21 20 9E B2                  ..
+        jsr     RunWorldMapTransitionService    ; BB21 20 9E B2                  ..
         ldx     #$00                            ; BB24 A2 00                    ..
         jsr     SetEntityCoordinateSentinel81   ; BB26 20 37 BF                  7.
         brk                                     ; BB29 00                       .
@@ -5960,7 +5960,7 @@ MapEntitySystem_Entry_BB02:
         brk                                     ; BB2F 00                       .
         db   $71,$4B                         ; BB30 71 4B                    qK
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; BB32 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; BB32 20 0A D2                  ..
         lda     #$00                            ; BB35 A9 00                    ..
         sta     $0530                           ; BB37 8D 30 05                 .0.
         brk                                     ; BB3A 00                       .
@@ -5969,12 +5969,12 @@ MapEntitySystem_Entry_BB02:
 MapEntitySystem_Branch_BB3E:
         rts                                     ; BB3E 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BB3F:
-        jsr     MapEntitySystem_Entry_BF46      ; BB3F 20 46 BF                  F.
+TransitionToPosition15_05AtTimeZero:
+        jsr     RunMapEntityService07_6F_43     ; BB3F 20 46 BF                  F.
         brk                                     ; BB42 00                       .
         db   $6A,$4B                         ; BB43 6A 4B                    jK
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; BB45 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; BB45 20 18 D2                 ..
         lda     #$19                            ; BB48 A9 19                    ..
         brk                                     ; BB4A 00                       .
         db   $01,$8F                         ; BB4B 01 8F                    ..
@@ -6051,23 +6051,23 @@ MapEntitySystem_Branch_BB79:
         brk                                     ; BBCE 00                       .
         db   $0A,$6F                         ; BBCF 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; BBD1 20 BF C5                  ..
-        jsr     MapEntitySystem_Entry_BF46      ; BBD4 20 46 BF                  F.
+        jsr     FadePaletteToBlack              ; BBD1 20 BF C5                  ..
+        jsr     RunMapEntityService07_6F_43     ; BBD4 20 46 BF                  F.
         brk                                     ; BBD7 00                       .
         db   $6B,$4B                         ; BBD8 6B 4B                    kK
 ; ----------------------------------------------------------------------------
         lda     #$28                            ; BBDA A9 28                    .(
         sta     $0F                             ; BBDC 85 0F                    ..
-        jsr     MapEntitySystem_Entry_BCFF      ; BBDE 20 FF BC                  ..
+        jsr     BuildFixedEntitySpriteBlock     ; BBDE 20 FF BC                  ..
 MapEntitySystem_Branch_BBE1:
-        jsr     MapEntitySystem_Entry_BD54      ; BBE1 20 54 BD                  T.
-        jsr     MapEntitySystem_Entry_BD75      ; BBE4 20 75 BD                  u.
+        jsr     SaveAndHideOamRange30To6F       ; BBE1 20 54 BD                  T.
+        jsr     RestoreOamRange70To7F           ; BBE4 20 75 BD                  u.
         ldx     $0F                             ; BBE7 A6 0F                    ..
         beq     MapEntitySystem_Branch_BC09     ; BBE9 F0 1E                    ..
         ldx     #$03                            ; BBEB A2 03                    ..
         jsr     WaitFrames                      ; BBED 20 0C C9                  ..
-        jsr     MapEntitySystem_Entry_BD83      ; BBF0 20 83 BD                  ..
-        jsr     MapEntitySystem_Entry_BD67      ; BBF3 20 67 BD                  g.
+        jsr     SaveAndHideOamRange70To7F       ; BBF0 20 83 BD                  ..
+        jsr     RestoreOamRange30To6F           ; BBF3 20 67 BD                  g.
         lda     $0F                             ; BBF6 A5 0F                    ..
         sec                                     ; BBF8 38                       8
         sbc     #$14                            ; BBF9 E9 14                    ..
@@ -6081,7 +6081,7 @@ MapEntitySystem_Branch_BBFF:
         jmp     MapEntitySystem_Branch_BBE1     ; BC06 4C E1 BB                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_BC09:
-        jsr     MapEntitySystem_Entry_BD83      ; BC09 20 83 BD                  ..
+        jsr     SaveAndHideOamRange70To7F       ; BC09 20 83 BD                  ..
         jsr     WaitForNmi                      ; BC0C 20 74 FF                  t.
         ldx     #$02                            ; BC0F A2 02                    ..
         jsr     SetEntityCoordinateSentinel81   ; BC11 20 37 BF                  7.
@@ -6094,7 +6094,7 @@ MapEntitySystem_Branch_BC09:
         brk                                     ; BC23 00                       .
         db   $83,$4B                         ; BC24 83 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; BC26 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; BC26 20 0A D2                  ..
         brk                                     ; BC29 00                       .
         db   $06,$BF                         ; BC2A 06 BF                    ..
 ; ----------------------------------------------------------------------------
@@ -6110,19 +6110,19 @@ MapEntitySystem_Branch_BC09:
         db   $01,$87                         ; BC3D 01 87                    ..
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; BC3F A9 00                    ..
-        jsr     MapEntitySystem_Entry_BCEF      ; BC41 20 EF BC                  ..
+        jsr     FindPartyMemberIndexById        ; BC41 20 EF BC                  ..
         txa                                     ; BC44 8A                       .
         pha                                     ; BC45 48                       H
         lda     #$07                            ; BC46 A9 07                    ..
-        jsr     MapEntitySystem_Entry_BCEF      ; BC48 20 EF BC                  ..
+        jsr     FindPartyMemberIndexById        ; BC48 20 EF BC                  ..
         txa                                     ; BC4B 8A                       .
         pha                                     ; BC4C 48                       H
         lda     #$06                            ; BC4D A9 06                    ..
-        jsr     MapEntitySystem_Entry_BCEF      ; BC4F 20 EF BC                  ..
+        jsr     FindPartyMemberIndexById        ; BC4F 20 EF BC                  ..
         txa                                     ; BC52 8A                       .
         pha                                     ; BC53 48                       H
         lda     #$03                            ; BC54 A9 03                    ..
-        jsr     MapEntitySystem_Entry_BCEF      ; BC56 20 EF BC                  ..
+        jsr     FindPartyMemberIndexById        ; BC56 20 EF BC                  ..
         stx     $71                             ; BC59 86 71                    .q
         pla                                     ; BC5B 68                       h
         sta     $70                             ; BC5C 85 70                    .p
@@ -6179,14 +6179,14 @@ MapEntitySystem_Branch_BC8A:
 ; ----------------------------------------------------------------------------
         lda     #$01                            ; BC9A A9 01                    ..
         sta     CurrentTilesetCandidate         ; BC9C 85 65                    .e
-        jsr     UpperFixedEngine_Entry_C5BF     ; BC9E 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; BC9E 20 BF C5                  ..
         lda     $1F                             ; BCA1 A5 1F                    ..
         and     #$F7                            ; BCA3 29 F7                    ).
         sta     $1F                             ; BCA5 85 1F                    ..
         brk                                     ; BCA7 00                       .
         db   $0D,$CB,$80                     ; BCA8 0D CB 80                 ...
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BF46      ; BCAB 20 46 BF                  F.
+        jsr     RunMapEntityService07_6F_43     ; BCAB 20 46 BF                  F.
         brk                                     ; BCAE 00                       .
         db   $B0,$4B                         ; BCAF B0 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -6234,12 +6234,12 @@ MapEntitySystem_Branch_BCD3:
         brk                                     ; BCE3 00                       .
         db   $B2,$4B                         ; BCE4 B2 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; BCE6 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; BCE6 20 0A D2                  ..
         lda     #$00                            ; BCE9 A9 00                    ..
         sta     $0530                           ; BCEB 8D 30 05                 .0.
         rts                                     ; BCEE 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BCEF:
+FindPartyMemberIndexById:
         sta     $00                           ; BCEF 85 00                    ..
         ldx     #$00                            ; BCF1 A2 00                    ..
 MapEntitySystem_Branch_BCF3:
@@ -6254,7 +6254,7 @@ MapEntitySystem_Branch_BCF3:
 MapEntitySystem_Branch_BCFE:
         rts                                     ; BCFE 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BCFF:
+BuildFixedEntitySpriteBlock:
         lda     #$0A                            ; BCFF A9 0A                    ..
         jsr     SelectEntitySpriteDefinition    ; BD01 20 64 D8                  d.
         lda     #$02                            ; BD04 A9 02                    ..
@@ -6290,7 +6290,7 @@ MapEntitySystem_Entry_BCFF:
         sta     $7F7F                           ; BD50 8D 7F 7F                 ...
         rts                                     ; BD53 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BD54:
+SaveAndHideOamRange30To6F:
         ldx     #$30                            ; BD54 A2 30                    .0
 MapEntitySystem_Branch_BD56:
         lda     $0200,x                         ; BD56 BD 00 02                 ...
@@ -6302,7 +6302,7 @@ MapEntitySystem_Branch_BD56:
         bcc     MapEntitySystem_Branch_BD56     ; BD64 90 F0                    ..
         rts                                     ; BD66 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BD67:
+RestoreOamRange30To6F:
         ldx     #$30                            ; BD67 A2 30                    .0
 MapEntitySystem_Branch_BD69:
         lda     $7F00,x                         ; BD69 BD 00 7F                 ...
@@ -6312,7 +6312,7 @@ MapEntitySystem_Branch_BD69:
         bcc     MapEntitySystem_Branch_BD69     ; BD72 90 F5                    ..
         rts                                     ; BD74 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BD75:
+RestoreOamRange70To7F:
         ldx     #$70                            ; BD75 A2 70                    .p
 MapEntitySystem_Branch_BD77:
         lda     $7F00,x                         ; BD77 BD 00 7F                 ...
@@ -6322,7 +6322,7 @@ MapEntitySystem_Branch_BD77:
         bcc     MapEntitySystem_Branch_BD77     ; BD80 90 F5                    ..
         rts                                     ; BD82 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BD83:
+SaveAndHideOamRange70To7F:
         ldx     #$70                            ; BD83 A2 70                    .p
 MapEntitySystem_Branch_BD85:
         lda     $0200,x                         ; BD85 BD 00 02                 ...
@@ -6334,7 +6334,7 @@ MapEntitySystem_Branch_BD85:
         bcc     MapEntitySystem_Branch_BD85     ; BD93 90 F0                    ..
         rts                                     ; BD95 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BD96:
+LoadSubmapZeroDestination10_09:
         lda     #$00                            ; BD96 A9 00                    ..
         sta     CurrentSubmapNumber             ; BD98 85 64                    .d
         lda     #$10                            ; BD9A A9 10                    ..
@@ -6351,7 +6351,7 @@ MapEntitySystem_Entry_BD96:
         brk                                     ; BDAF 00                       .
         db   $0A,$6F                         ; BDB0 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; BDB2 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; BDB2 20 BF C5                  ..
         lda     #$01                            ; BDB5 A9 01                    ..
         sta     $0515                           ; BDB7 8D 15 05                 ...
         lda     #$06                            ; BDBA A9 06                    ..
@@ -6366,10 +6366,10 @@ MapEntitySystem_Entry_BD96:
         brk                                     ; BDCA 00                       .
         db   $13,$CB,$01                     ; BDCB 13 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_CCEA     ; BDCE 20 EA CC                  ..
+        jsr     RenderPlayerAtLocalPosition     ; BDCE 20 EA CC                  ..
         rts                                     ; BDD1 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BDD2:
+RunPartyMemberSelectionPpuEffect:
         brk                                     ; BDD2 00                       .
         db   $62,$23,$40                     ; BDD3 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -6393,7 +6393,7 @@ MapEntitySystem_Branch_BDE5:
 ; ----------------------------------------------------------------------------
         pla                                     ; BDEB 68                       h
         sta     $6E                             ; BDEC 85 6E                    .n
-        jsr     UpperFixedEngine_Entry_D210     ; BDEE 20 10 D2                  ..
+        jsr     WaitForButtonStateSixtyFrames   ; BDEE 20 10 D2                  ..
         ldy     #$0A                            ; BDF1 A0 0A                    ..
 MapEntitySystem_Branch_BDF3:
         tya                                     ; BDF3 98                       .
@@ -6413,7 +6413,7 @@ MapEntitySystem_Branch_BDF7:
         brk                                     ; BE06 00                       .
         db   $85,$FB                         ; BE07 85 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MapEntitySystem_Entry_BE1F      ; BE09 20 1F BE                  ..
+        jsr     QueueEightByteMapEventPpuBlock  ; BE09 20 1F BE                  ..
         pla                                     ; BE0C 68                       h
         tax                                     ; BE0D AA                       .
         dex                                     ; BE0E CA                       .
@@ -6422,13 +6422,13 @@ MapEntitySystem_Branch_BDF7:
         tay                                     ; BE12 A8                       .
         dey                                     ; BE13 88                       .
         bne     MapEntitySystem_Branch_BDF3     ; BE14 D0 DD                    ..
-        jsr     UpperFixedEngine_Entry_D20A     ; BE16 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; BE16 20 0A D2                  ..
         brk                                     ; BE19 00                       .
         db   $08,$2F                         ; BE1A 08 2F                    ./
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D1F3     ; BE1C 4C F3 D1                 L..
+        jmp     StopMapCue                      ; BE1C 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BE1F:
+QueueEightByteMapEventPpuBlock:
         lda     #$13                            ; BE1F A9 13                    ..
         sta     $00                           ; BE21 85 00                    ..
         lda     #$1A                            ; BE23 A9 1A                    ..
@@ -6459,17 +6459,17 @@ MapEntitySystem_Branch_BE46:
         inc     $050B                           ; BE52 EE 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; BE55 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BE58:
+StartMapPresentation83:
         lda     #$83                            ; BE58 A9 83                    ..
         jmp     StartMapPresentation            ; BE5A 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BE5D:
-        jsr     MapEntitySystem_Entry_BE90      ; BE5D 20 90 BE                  ..
-        jsr     MapEntitySystem_Entry_BE90      ; BE60 20 90 BE                  ..
-        jsr     MapEntitySystem_Entry_BE90      ; BE63 20 90 BE                  ..
-        jsr     MapEntitySystem_Entry_BE90      ; BE66 20 90 BE                  ..
-        jsr     MapEntitySystem_Entry_BE90      ; BE69 20 90 BE                  ..
-        jsr     UpperFixedEngine_Entry_C5C5     ; BE6C 20 C5 C5                  ..
+PulseThenTransitionToMap2C:
+        jsr     RunMapPulseAndScrollSixteenSteps; BE5D 20 90 BE                  ..
+        jsr     RunMapPulseAndScrollSixteenSteps; BE60 20 90 BE                  ..
+        jsr     RunMapPulseAndScrollSixteenSteps; BE63 20 90 BE                  ..
+        jsr     RunMapPulseAndScrollSixteenSteps; BE66 20 90 BE                  ..
+        jsr     RunMapPulseAndScrollSixteenSteps; BE69 20 90 BE                  ..
+        jsr     FadePaletteFromBlack            ; BE6C 20 C5 C5                  ..
         lda     #$2C                            ; BE6F A9 2C                    .,
         sta     CurrentMapNumber                ; BE71 85 63                    .c
         lda     #$00                            ; BE73 A9 00                    ..
@@ -6489,17 +6489,17 @@ MapEntitySystem_Branch_BE82:
         brk                                     ; BE8A 00                       .
         db   $0A,$6F                         ; BE8B 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5BF     ; BE8D 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; BE8D 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BE90:
+RunMapPulseAndScrollSixteenSteps:
         brk                                     ; BE90 00                       .
         db   $95,$FB                         ; BE91 95 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$10                            ; BE93 A2 10                    ..
-        jmp     MapEntitySystem_Entry_BEF2      ; BE95 4C F2 BE                 L..
+        jmp     RunRepeatedVerticalScrollPulses ; BE95 4C F2 BE                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BE98:
-        jsr     UpperFixedEngine_Entry_C5C5     ; BE98 20 C5 C5                  ..
+TransitionToMap48SubmapFour:
+        jsr     FadePaletteFromBlack            ; BE98 20 C5 C5                  ..
         lda     #$48                            ; BE9B A9 48                    .H
         sta     CurrentMapNumber                ; BE9D 85 63                    .c
         lda     #$04                            ; BE9F A9 04                    ..
@@ -6512,9 +6512,9 @@ MapEntitySystem_Entry_BE98:
         brk                                     ; BEAD 00                       .
         db   $31,$EF                         ; BEAE 31 EF                    1.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C5BF     ; BEB0 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; BEB0 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BEB3:
+RunPresentation1AAndDispatchEvent10:
         lda     #$1A                            ; BEB3 A9 1A                    ..
         brk                                     ; BEB5 00                       .
         db   $01,$8F                         ; BEB6 01 8F                    ..
@@ -6532,20 +6532,20 @@ MapEntitySystem_Entry_BEB3:
         brk                                     ; BEC8 00                       .
         db   $03,$EF                         ; BEC9 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5BF     ; BECB 20 BF C5                  ..
+        jsr     FadePaletteToBlack              ; BECB 20 BF C5                  ..
         lda     #$10                            ; BECE A9 10                    ..
-        jmp     MapEntitySystem_Entry_AD5F      ; BED0 4C 5F AD                 L_.
+        jmp     DispatchMapEntityEventById      ; BED0 4C 5F AD                 L_.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BED3:
+RunMapEntityService0D_87:
         brk                                     ; BED3 00                       .
         db   $0D,$87                         ; BED4 0D 87                    ..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BED6:
+RunPresentationPulseAndAdvancePhase:
         brk                                     ; BED6 00                       .
         db   $95,$FB                         ; BED7 95 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     $29                             ; BED9 A6 29                    .)
-        jsr     MapEntitySystem_Entry_BEF2      ; BEDB 20 F2 BE                  ..
+        jsr     RunRepeatedVerticalScrollPulses ; BEDB 20 F2 BE                  ..
         lda     #$1D                            ; BEDE A9 1D                    ..
         sec                                     ; BEE0 38                       8
         sbc     $29                             ; BEE1 E5 29                    .)
@@ -6560,17 +6560,17 @@ MapEntitySystem_Entry_BED6:
 ; ----------------------------------------------------------------------------
         db   $A2,$1C                         ; BEF0 A2 1C                    ..
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BEF2:
+RunRepeatedVerticalScrollPulses:
         txa                                     ; BEF2 8A                       .
         lsr     a                               ; BEF3 4A                       J
         lsr     a                               ; BEF4 4A                       J
         sta     $51                             ; BEF5 85 51                    .Q
-        jsr     MapEntitySystem_Entry_BEFE      ; BEF7 20 FE BE                  ..
+        jsr     PulseVerticalScrollOnce         ; BEF7 20 FE BE                  ..
         dex                                     ; BEFA CA                       .
-        bne     MapEntitySystem_Entry_BEF2      ; BEFB D0 F5                    ..
+        bne     RunRepeatedVerticalScrollPulses ; BEFB D0 F5                    ..
         rts                                     ; BEFD 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BEFE:
+PulseVerticalScrollOnce:
         lda     $0509                           ; BEFE AD 09 05                 ...
         pha                                     ; BF01 48                       H
         clc                                     ; BF02 18                       .
@@ -6613,7 +6613,7 @@ MapEntitySystem_Branch_BF39:
         sta     $6FC6,x                         ; BF42 9D C6 6F                 ..o
         rts                                     ; BF45 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BF46:
+RunMapEntityService07_6F_43:
         brk                                     ; BF46 00                       .
         db   $07,$6F,$43                     ; BF47 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------

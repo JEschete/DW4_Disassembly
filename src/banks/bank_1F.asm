@@ -39,10 +39,10 @@ FixedTrampoline09:
         jmp     ResetApuChannels                ; C01C 4C 8A F0                 L..
 ; ----------------------------------------------------------------------------
 FixedTrampoline0A:
-        jmp     UpperFixedEngine_Entry_EF5B     ; C01F 4C 5B EF                 L[.
+        jmp     StartAudioTrack                 ; C01F 4C 5B EF                 L[.
 ; ----------------------------------------------------------------------------
 FixedTrampoline0B:
-        jmp     UpperFixedEngine_Entry_F057     ; C022 4C 57 F0                 LW.
+        jmp     SetAudioSequenceCompletionFlags ; C022 4C 57 F0                 LW.
 ; ----------------------------------------------------------------------------
 FixedTrampoline0C:
         jmp     UpperFixedEngine_Branch_F05E    ; C025 4C 5E F0                 L^.
@@ -140,9 +140,9 @@ UpperFixedEngine_Branch_C0B0:
         db   $5A                             ; C0D2 5A                       Z
         db   $C1                             ; C0D3 C1                       .
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C0D4:
+WaitForTwoVBlankCycles:
         lda     PPUSTATUS                       ; C0D4 AD 02 20                 ..
-        bpl     UpperFixedEngine_Entry_C0D4     ; C0D7 10 FB                    ..
+        bpl     WaitForTwoVBlankCycles          ; C0D7 10 FB                    ..
 UpperFixedEngine_Branch_C0D9:
         lda     PPUSTATUS                       ; C0D9 AD 02 20                 ..
         bmi     UpperFixedEngine_Branch_C0D9    ; C0DC 30 FB                    0.
@@ -232,9 +232,9 @@ NmiHandler:
         cmp     #$81                            ; C171 C9 81                    ..
         bcs     UpperFixedEngine_Branch_C181    ; C173 B0 0C                    ..
         lda     PPUSTATUS                       ; C175 AD 02 20                 ..
-        jsr     UpperFixedEngine_Entry_C222     ; C178 20 22 C2                  ".
-        jsr     UpperFixedEngine_Entry_C303     ; C17B 20 03 C3                  ..
-        jsr     UpperFixedEngine_Entry_C2EA     ; C17E 20 EA C2                  ..
+        jsr     ProcessNmiPpuUpdates            ; C178 20 22 C2                  ".
+        jsr     TransferOamUnlessSuppressed     ; C17B 20 03 C3                  ..
+        jsr     RestorePpuControlMaskAndScroll  ; C17E 20 EA C2                  ..
 UpperFixedEngine_Branch_C181:
         tsx                                     ; C181 BA                       .
         ldy     $0106,x                         ; C182 BC 06 01                 ...
@@ -327,7 +327,7 @@ UpperFixedEngine_Branch_C219:
 ; ----------------------------------------------------------------------------
         db   $80                             ; C221 80                       .
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C222:
+ProcessNmiPpuUpdates:
         lda     $1F                             ; C222 A5 1F                    ..
         and     #$20                            ; C224 29 20                    )
         bne     UpperFixedEngine_Branch_C23A    ; C226 D0 12                    ..
@@ -429,7 +429,7 @@ UpperFixedEngine_Branch_C299:
         bne     UpperFixedEngine_Branch_C299    ; C2E5 D0 B2                    ..
         jmp     UpperFixedEngine_Branch_C276    ; C2E7 4C 76 C2                 Lv.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C2EA:
+RestorePpuControlMaskAndScroll:
         lda     $0505                           ; C2EA AD 05 05                 ...
         sta     PPUCTRL                         ; C2ED 8D 00 20                 ..
         lda     $0506                           ; C2F0 AD 06 05                 ...
@@ -440,7 +440,7 @@ UpperFixedEngine_Entry_C2EA:
         sta     PPUSCROLL                       ; C2FF 8D 05 20                 ..
         rts                                     ; C302 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C303:
+TransferOamUnlessSuppressed:
         bit     $1F                             ; C303 24 1F                    $.
         bvs     UpperFixedEngine_Branch_C314    ; C305 70 0D                    p.
         lda     $0506                           ; C307 AD 06 05                 ...
@@ -503,7 +503,7 @@ UpperFixedEngine_Branch_C38B:
         php                                     ; C393 08                       .
         lda     $0507                           ; C394 AD 07 05                 ...
         sta     $0517                           ; C397 8D 17 05                 ...
-        jsr     UpperFixedEngine_Entry_C3BA     ; C39A 20 BA C3                  ..
+        jsr     ResolveBankServicePointer       ; C39A 20 BA C3                  ..
         lda     #$4C                            ; C39D A9 4C                    .L
         sta     $23                           ; C39F 85 23                    .#
         ldx     $21                             ; C3A1 A6 21                    .!
@@ -522,7 +522,7 @@ UpperFixedEngine_Branch_C38B:
         plp                                     ; C3B8 28                       (
         rts                                     ; C3B9 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C3BA:
+ResolveBankServicePointer:
         lda     $23                           ; C3BA A5 23                    .#
         jsr     SelectPrgBank                   ; C3BC 20 91 FF                  ..
         lda     $24                             ; C3BF A5 24                    .$
@@ -534,12 +534,12 @@ UpperFixedEngine_Entry_C3BA:
         sta     $25                             ; C3CB 85 25                    .%
         rts                                     ; C3CD 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C3CE:
+ResolveBankedPointerIntoZeroPage:
         sta     $20                             ; C3CE 85 20                    .
         stx     $21                             ; C3D0 86 21                    .!
         lda     $0507                           ; C3D2 AD 07 05                 ...
         pha                                     ; C3D5 48                       H
-        jsr     UpperFixedEngine_Entry_C3BA     ; C3D6 20 BA C3                  ..
+        jsr     ResolveBankServicePointer       ; C3D6 20 BA C3                  ..
         pla                                     ; C3D9 68                       h
         jsr     SelectPrgBank                   ; C3DA 20 91 FF                  ..
         ldx     $21                             ; C3DD A6 21                    .!
@@ -619,7 +619,7 @@ UpperFixedEngine_Branch_C451:
         plp                                     ; C459 28                       (
         pla                                     ; C45A 68                       h
         lda     $20                             ; C45B A5 20                    .
-        jmp     UpperFixedEngine_Entry_C3CE     ; C45D 4C CE C3                 L..
+        jmp     ResolveBankedPointerIntoZeroPage; C45D 4C CE C3                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_C460:
         jmp     UpperFixedEngine_Branch_C4F8    ; C460 4C F8 C4                 L..
@@ -819,8 +819,8 @@ UpperFixedEngine_Branch_C585:
         bne     UpperFixedEngine_Branch_C585    ; C58C D0 F7                    ..
         rts                                     ; C58E 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C58F:
-        jsr     UpperFixedEngine_Entry_C5A8     ; C58F 20 A8 C5                  ..
+ResumeRenderingAfterPpuWork:
+        jsr     ClearDisplaySuspensionFlag      ; C58F 20 A8 C5                  ..
 EnableRenderingAfterVBlank:
         ldy     #$18                            ; C592 A0 18                    ..
         bne     UpperFixedEngine_Branch_C598    ; C594 D0 02                    ..
@@ -836,7 +836,7 @@ UpperFixedEngine_Branch_C59B:
         sta     $0506                           ; C5A4 8D 06 05                 ...
         rts                                     ; C5A7 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C5A8:
+ClearDisplaySuspensionFlag:
         lda     $1F                             ; C5A8 A5 1F                    ..
         and     #$7F                            ; C5AA 29 7F                    ).
         sta     $1F                             ; C5AC 85 1F                    ..
@@ -849,15 +849,15 @@ SuspendRenderingUpdates:
         sta     $1F                             ; C5B6 85 1F                    ..
         rts                                     ; C5B8 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C5B9:
+SubmitPaletteWithoutFade:
         lda     #$00                            ; C5B9 A9 00                    ..
         sta     $16                             ; C5BB 85 16                    ..
         beq     BuildPaletteUpdateCommand       ; C5BD F0 1F                    ..
-UpperFixedEngine_Entry_C5BF:
+FadePaletteToBlack:
         lda     #$40                            ; C5BF A9 40                    .@
         ldx     #$F0                            ; C5C1 A2 F0                    ..
         bne     UpperFixedEngine_Branch_C5C8    ; C5C3 D0 03                    ..
-UpperFixedEngine_Entry_C5C5:
+FadePaletteFromBlack:
         lda     #$10                            ; C5C5 A9 10                    ..
         tax                                     ; C5C7 AA                       .
 UpperFixedEngine_Branch_C5C8:
@@ -1008,7 +1008,7 @@ UpperFixedEngine_Branch_C69B:
 UpperFixedEngine_Branch_C6BE:
         rts                                     ; C6BE 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C6BF:
+SetNametableAttributePalette:
         and     #$03                            ; C6BF 29 03                    ).
         sta     $0D                             ; C6C1 85 0D                    ..
 ApplyNametableAttributeBits:
@@ -1087,7 +1087,7 @@ QueueNametableAttributeUpdate:
 CopySpriteRecordToOam:
         tya                                     ; C73E 98                       .
         pha                                     ; C73F 48                       H
-        jsr     UpperFixedEngine_Entry_C78C     ; C740 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; C740 20 8C C7                  ..
         lda     $00,x                           ; C743 B5 00                    ..
         sta     $0200,y                         ; C745 99 00 02                 ...
         lda     $01,x                           ; C748 B5 01                    ..
@@ -1108,7 +1108,7 @@ UpperFixedEngine_Branch_C757:
 CopySpriteTileAttributesToOam:
         tya                                     ; C75E 98                       .
         pha                                     ; C75F 48                       H
-        jsr     UpperFixedEngine_Entry_C78C     ; C760 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; C760 20 8C C7                  ..
         lda     $01,x                           ; C763 B5 01                    ..
         sta     $0201,y                         ; C765 99 01 02                 ...
         lda     $02,x                           ; C768 B5 02                    ..
@@ -1118,7 +1118,7 @@ CopySpriteTileAttributesToOam:
 CopyOamSpriteRecord:
         tya                                     ; C770 98                       .
         pha                                     ; C771 48                       H
-        jsr     UpperFixedEngine_Entry_C78C     ; C772 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; C772 20 8C C7                  ..
         lda     $0200,y                         ; C775 B9 00 02                 ...
         sta     $00,x                           ; C778 95 00                    ..
         lda     $0201,y                         ; C77A B9 01 02                 ...
@@ -1129,7 +1129,7 @@ CopyOamSpriteRecord:
         sta     $03,x                           ; C787 95 03                    ..
         jmp     UpperFixedEngine_Branch_C757    ; C789 4C 57 C7                 LW.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C78C:
+ConvertSpriteIndexToOamOffset:
         tay                                     ; C78C A8                       .
         txa                                     ; C78D 8A                       .
         pha                                     ; C78E 48                       H
@@ -1209,7 +1209,7 @@ UpperFixedEngine_Branch_C7EC:
         pla                                     ; C7F6 68                       h
         jmp     SelectPrgBank                   ; C7F7 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C7FA:
+SubtractByteFromPointerEntry:
         nop                                     ; C7FA EA                       .
 SubtractByteFromPointer:
         eor     #$FF                            ; C7FB 49 FF                    I.
@@ -1371,11 +1371,11 @@ UpperFixedEngine_Branch_C8CE:
         beq     UpperFixedEngine_Branch_C8EB    ; C8DB F0 0E                    ..
         lda     ButtonsPressed                  ; C8DD A5 14                    ..
         bne     UpperFixedEngine_Branch_C8CE    ; C8DF D0 ED                    ..
-UpperFixedEngine_Entry_C8E1:
+WaitForButtonPress:
         jsr     WaitForNmi                      ; C8E1 20 74 FF                  t.
         jsr     ReadControllers                 ; C8E4 20 EC C8                  ..
         lda     ButtonsPressed                  ; C8E7 A5 14                    ..
-        beq     UpperFixedEngine_Entry_C8E1     ; C8E9 F0 F6                    ..
+        beq     WaitForButtonPress              ; C8E9 F0 F6                    ..
 UpperFixedEngine_Branch_C8EB:
         rts                                     ; C8EB 60                       `
 ; ----------------------------------------------------------------------------
@@ -1406,19 +1406,19 @@ WaitFrames:
         bne     WaitFrames                      ; C910 D0 FA                    ..
         rts                                     ; C912 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C913:
+PreserveRegistersAndRotateOam:
         txa                                     ; C913 8A                       .
         pha                                     ; C914 48                       H
         tya                                     ; C915 98                       .
         pha                                     ; C916 48                       H
-        jsr     UpperFixedEngine_Entry_C91F     ; C917 20 1F C9                  ..
+        jsr     RotateAnimatedOamBlocks         ; C917 20 1F C9                  ..
         pla                                     ; C91A 68                       h
         tay                                     ; C91B A8                       .
         pla                                     ; C91C 68                       h
         tax                                     ; C91D AA                       .
         rts                                     ; C91E 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C91F:
+RotateAnimatedOamBlocks:
         lda     $1F                             ; C91F A5 1F                    ..
         and     #$C8                            ; C921 29 C8                    ).
         bne     UpperFixedEngine_Branch_C94A    ; C923 D0 25                    .%
@@ -1484,7 +1484,7 @@ UpperFixedEngine_Branch_C977:
         db   $22,$EF                         ; C97B 22 EF                    ".
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_C97D:
-        jsr     UpperFixedEngine_Entry_C9ED     ; C97D 20 ED C9                  ..
+        jsr     UpdateMapFrameSystems           ; C97D 20 ED C9                  ..
         jmp     UpperFixedEngine_Branch_C97D    ; C980 4C 7D C9                 L}.
 ; ----------------------------------------------------------------------------
 InstallRamBankSwitchCode:
@@ -1509,54 +1509,54 @@ UpperFixedEngine_Branch_C985:
         db   $BF,$EA,$EA,$AD,$CC,$07,$20,$91 ; C9DF BF EA EA AD CC 07 20 91  ...... .
         db   $FF,$AD,$CA,$07,$28,$60         ; C9E7 FF AD CA 07 28 60        ....(`
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_C9ED:
-        jsr     UpperFixedEngine_Entry_CBB4     ; C9ED 20 B4 CB                  ..
-        jsr     UpperFixedEngine_Entry_CB98     ; C9F0 20 98 CB                  ..
-        jsr     UpperFixedEngine_Entry_CA21     ; C9F3 20 21 CA                  !.
-        jsr     UpperFixedEngine_Entry_D542     ; C9F6 20 42 D5                  B.
-        jsr     UpperFixedEngine_Entry_E06E     ; C9F9 20 6E E0                  n.
+UpdateMapFrameSystems:
+        jsr     AdvancePlayerAnimationCounter   ; C9ED 20 B4 CB                  ..
+        jsr     PollPrimaryButtonWithDelay      ; C9F0 20 98 CB                  ..
+        jsr     UpdatePlayerMapInput            ; C9F3 20 21 CA                  !.
+        jsr     UpdateMapObjects                ; C9F6 20 42 D5                  B.
+        jsr     UpdateMapEntityRendering        ; C9F9 20 6E E0                  n.
         brk                                     ; C9FC 00                       .
         db   $00,$DF                         ; C9FD 00 DF                    ..
 ; ----------------------------------------------------------------------------
         jsr     FixedTrampoline00               ; C9FF 20 01 C0                  ..
-        jsr     UpperFixedEngine_Entry_CE09     ; CA02 20 09 CE                  ..
+        jsr     ProcessMapInputAndEvents        ; CA02 20 09 CE                  ..
         jsr     RenderPartyMapEntities          ; CA05 20 D5 D7                  ..
         ldx     $052F                           ; CA08 AE 2F 05                 ./.
         jsr     WaitFrames                      ; CA0B 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_CA17     ; CA0E 20 17 CA                  ..
-        jsr     UpperFixedEngine_Entry_D1E1     ; CA11 20 E1 D1                  ..
+        jsr     WaitForButton04Release          ; CA0E 20 17 CA                  ..
+        jsr     WaitForMapTransitionCompletion  ; CA11 20 E1 D1                  ..
         inc     $3C                             ; CA14 E6 3C                    .<
         rts                                     ; CA16 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CA17:
+WaitForButton04Release:
         jsr     ReadButtonsUnlessInputSuppressed; CA17 20 41 D2                  A.
         lda     ButtonsPressed                  ; CA1A A5 14                    ..
         and     #$04                            ; CA1C 29 04                    ).
-        bne     UpperFixedEngine_Entry_CA17     ; CA1E D0 F7                    ..
+        bne     WaitForButton04Release          ; CA1E D0 F7                    ..
         rts                                     ; CA20 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CA21:
+UpdatePlayerMapInput:
         ldx     $058E                           ; CA21 AE 8E 05                 ...
         lda     UpperFixedEngine_Branch_CA3C,x  ; CA24 BD 3C CA                 .<.
         and     $3C                             ; CA27 25 3C                    %<
         bne     UpperFixedEngine_Branch_CA3C    ; CA29 D0 11                    ..
         lda     #$01                            ; CA2B A9 01                    ..
         sta     $052F                           ; CA2D 8D 2F 05                 ./.
-        jsr     UpperFixedEngine_Entry_CA41     ; CA30 20 41 CA                  A.
-        jsr     UpperFixedEngine_Entry_CB1E     ; CA33 20 1E CB                  ..
-        jsr     UpperFixedEngine_Entry_CBF8     ; CA36 20 F8 CB                  ..
-        jsr     UpperFixedEngine_Entry_CB71     ; CA39 20 71 CB                  q.
+        jsr     ResolveMapMovementInput         ; CA30 20 41 CA                  A.
+        jsr     ApplyDirectionalMapInput        ; CA33 20 1E CB                  ..
+        jsr     HandlePlayerActionInput         ; CA36 20 F8 CB                  ..
+        jsr     UpdateMapInteractionTimer       ; CA39 20 71 CB                  q.
 UpperFixedEngine_Branch_CA3C:
         rts                                     ; CA3C 60                       `
 ; ----------------------------------------------------------------------------
         db   $0F,$07,$0F,$03                 ; CA3D 0F 07 0F 03              ....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CA41:
+ResolveMapMovementInput:
         lda     $0530                           ; CA41 AD 30 05                 .0.
         bpl     UpperFixedEngine_Branch_CA55    ; CA44 10 0F                    ..
         lda     #$FF                            ; CA46 A9 FF                    ..
         sta     $56                             ; CA48 85 56                    .V
-        jsr     UpperFixedEngine_Entry_DB18     ; CA4A 20 18 DB                  ..
+        jsr     AdvanceBank1CMapObjectPresentation; CA4A 20 18 DB                ..
         sta     ButtonsPressed                  ; CA4D 85 14                    ..
         lda     $0530                           ; CA4F AD 30 05                 .0.
         bpl     UpperFixedEngine_Branch_CA55    ; CA52 10 01                    ..
@@ -1616,9 +1616,9 @@ UpperFixedEngine_Branch_CAA0:
         ora     #$08                            ; CAB4 09 08                    ..
         sta     $3C                             ; CAB6 85 3C                    .<
         ldx     #$00                            ; CAB8 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_CABE     ; CABA 20 BE CA                  ..
+        jsr     ResetPartyFollowerMotionSlot    ; CABA 20 BE CA                  ..
         inx                                     ; CABD E8                       .
-UpperFixedEngine_Entry_CABE:
+ResetPartyFollowerMotionSlot:
         lda     $7004,x                         ; CABE BD 04 70                 ..p
         and     #$7F                            ; CAC1 29 7F                    ).
         sta     $7004,x                         ; CAC3 9D 04 70                 ..p
@@ -1635,7 +1635,7 @@ UpperFixedEngine_Branch_CAD8:
         and     #$03                            ; CADA 29 03                    ).
         jmp     UpperFixedEngine_Branch_CAEA    ; CADC 4C EA CA                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CADF:
+SetInputModeAndReadControllers:
         sta     $058E                           ; CADF 8D 8E 05                 ...
         lda     #$20                            ; CAE2 A9 20                    .
         sta     $058F                           ; CAE4 8D 8F 05                 ...
@@ -1668,7 +1668,7 @@ UpperFixedEngine_Branch_CB17:
 ; ----------------------------------------------------------------------------
         db   $10,$80,$20,$40                 ; CB1A 10 80 20 40              .. @
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CB1E:
+ApplyDirectionalMapInput:
         lda     $0515                           ; CB1E AD 15 05                 ...
         cmp     #$02                            ; CB21 C9 02                    ..
         bne     UpperFixedEngine_Branch_CB33    ; CB23 D0 0E                    ..
@@ -1687,34 +1687,34 @@ UpperFixedEngine_Branch_CB33:
         beq     UpperFixedEngine_Branch_CB64    ; CB38 F0 2A                    .*
         dex                                     ; CB3A CA                       .
         beq     UpperFixedEngine_Branch_CB57    ; CB3B F0 1A                    ..
-        jsr     UpperFixedEngine_Entry_CBCA     ; CB3D 20 CA CB                  ..
-        jsr     UpperFixedEngine_Entry_CBD6     ; CB40 20 D6 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBE4     ; CB43 20 E4 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBBE     ; CB46 20 BE CB                  ..
+        jsr     HandleLeftMovementInput         ; CB3D 20 CA CB                  ..
+        jsr     HandleUpMovementInput           ; CB40 20 D6 CB                  ..
+        jsr     HandleDownMovementInput         ; CB43 20 E4 CB                  ..
+        jsr     HandleRightMovementInput        ; CB46 20 BE CB                  ..
         rts                                     ; CB49 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CB4A:
-        jsr     UpperFixedEngine_Entry_CBD6     ; CB4A 20 D6 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBBE     ; CB4D 20 BE CB                  ..
-        jsr     UpperFixedEngine_Entry_CBCA     ; CB50 20 CA CB                  ..
-        jsr     UpperFixedEngine_Entry_CBE4     ; CB53 20 E4 CB                  ..
+        jsr     HandleUpMovementInput           ; CB4A 20 D6 CB                  ..
+        jsr     HandleRightMovementInput        ; CB4D 20 BE CB                  ..
+        jsr     HandleLeftMovementInput         ; CB50 20 CA CB                  ..
+        jsr     HandleDownMovementInput         ; CB53 20 E4 CB                  ..
         rts                                     ; CB56 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CB57:
-        jsr     UpperFixedEngine_Entry_CBE4     ; CB57 20 E4 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBCA     ; CB5A 20 CA CB                  ..
-        jsr     UpperFixedEngine_Entry_CBBE     ; CB5D 20 BE CB                  ..
-        jsr     UpperFixedEngine_Entry_CBD6     ; CB60 20 D6 CB                  ..
+        jsr     HandleDownMovementInput         ; CB57 20 E4 CB                  ..
+        jsr     HandleLeftMovementInput         ; CB5A 20 CA CB                  ..
+        jsr     HandleRightMovementInput        ; CB5D 20 BE CB                  ..
+        jsr     HandleUpMovementInput           ; CB60 20 D6 CB                  ..
         rts                                     ; CB63 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CB64:
-        jsr     UpperFixedEngine_Entry_CBBE     ; CB64 20 BE CB                  ..
-        jsr     UpperFixedEngine_Entry_CBE4     ; CB67 20 E4 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBD6     ; CB6A 20 D6 CB                  ..
-        jsr     UpperFixedEngine_Entry_CBCA     ; CB6D 20 CA CB                  ..
+        jsr     HandleRightMovementInput        ; CB64 20 BE CB                  ..
+        jsr     HandleDownMovementInput         ; CB67 20 E4 CB                  ..
+        jsr     HandleUpMovementInput           ; CB6A 20 D6 CB                  ..
+        jsr     HandleLeftMovementInput         ; CB6D 20 CA CB                  ..
         rts                                     ; CB70 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CB71:
+UpdateMapInteractionTimer:
         lda     $0530                           ; CB71 AD 30 05                 .0.
         bmi     UpperFixedEngine_Branch_CB97    ; CB74 30 21                    0!
         lda     $0599                           ; CB76 AD 99 05                 ...
@@ -1740,7 +1740,7 @@ UpperFixedEngine_Branch_CB93:
 UpperFixedEngine_Branch_CB97:
         rts                                     ; CB97 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CB98:
+PollPrimaryButtonWithDelay:
         lda     $052E                           ; CB98 AD 2E 05                 ...
         beq     UpperFixedEngine_Branch_CBA1    ; CB9B F0 04                    ..
         dec     $052E                           ; CB9D CE 2E 05                 ...
@@ -1756,50 +1756,50 @@ UpperFixedEngine_Branch_CBA1:
         sta     $0529                           ; CBB0 8D 29 05                 .).
         rts                                     ; CBB3 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBB4:
+AdvancePlayerAnimationCounter:
         lda     $0526                           ; CBB4 AD 26 05                 .&.
         clc                                     ; CBB7 18                       .
         adc     #$08                            ; CBB8 69 08                    i.
         sta     $0526                           ; CBBA 8D 26 05                 .&.
         rts                                     ; CBBD 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBBE:
+HandleRightMovementInput:
         lda     ButtonsPressed                  ; CBBE A5 14                    ..
         bpl     UpperFixedEngine_Branch_CBF7    ; CBC0 10 35                    .5
-        jsr     UpperFixedEngine_Entry_CD85     ; CBC2 20 85 CD                  ..
+        jsr     PrepareMovementAudioAndState    ; CBC2 20 85 CD                  ..
         lda     #$01                            ; CBC5 A9 01                    ..
         jmp     UpperFixedEngine_Branch_CBEF    ; CBC7 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBCA:
+HandleLeftMovementInput:
         bit     ButtonsPressed                  ; CBCA 24 14                    $.
         bvc     UpperFixedEngine_Branch_CBF7    ; CBCC 50 29                    P)
-        jsr     UpperFixedEngine_Entry_CD85     ; CBCE 20 85 CD                  ..
+        jsr     PrepareMovementAudioAndState    ; CBCE 20 85 CD                  ..
         lda     #$03                            ; CBD1 A9 03                    ..
         jmp     UpperFixedEngine_Branch_CBEF    ; CBD3 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBD6:
+HandleUpMovementInput:
         lda     ButtonsPressed                  ; CBD6 A5 14                    ..
         and     #$10                            ; CBD8 29 10                    ).
         beq     UpperFixedEngine_Branch_CBF7    ; CBDA F0 1B                    ..
-        jsr     UpperFixedEngine_Entry_CD85     ; CBDC 20 85 CD                  ..
+        jsr     PrepareMovementAudioAndState    ; CBDC 20 85 CD                  ..
         lda     #$00                            ; CBDF A9 00                    ..
         jmp     UpperFixedEngine_Branch_CBEF    ; CBE1 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBE4:
+HandleDownMovementInput:
         lda     ButtonsPressed                  ; CBE4 A5 14                    ..
         and     #$20                            ; CBE6 29 20                    )
         beq     UpperFixedEngine_Branch_CBF7    ; CBE8 F0 0D                    ..
-        jsr     UpperFixedEngine_Entry_CD85     ; CBEA 20 85 CD                  ..
+        jsr     PrepareMovementAudioAndState    ; CBEA 20 85 CD                  ..
         lda     #$02                            ; CBED A9 02                    ..
 UpperFixedEngine_Branch_CBEF:
         sta     $3D                             ; CBEF 85 3D                    .=
-        jsr     UpperFixedEngine_Entry_CC88     ; CBF1 20 88 CC                  ..
+        jsr     BeginPlayerMovement             ; CBF1 20 88 CC                  ..
         jmp     UpperFixedEngine_Branch_D0C4    ; CBF4 4C C4 D0                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CBF7:
         rts                                     ; CBF7 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CBF8:
+HandlePlayerActionInput:
         lda     $0530                           ; CBF8 AD 30 05                 .0.
         bmi     UpperFixedEngine_Branch_CC64    ; CBFB 30 67                    0g
         lda     ButtonsPressed                  ; CBFD A5 14                    ..
@@ -1850,7 +1850,7 @@ UpperFixedEngine_Branch_CC33:
         brk                                     ; CC52 00                       .
         db   $0E,$EF                         ; CC53 0E EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_DFF1     ; CC55 20 F1 DF                  ..
+        jsr     InitializeMapEntityRendering    ; CC55 20 F1 DF                  ..
         brk                                     ; CC58 00                       .
         db   $09,$9F                         ; CC59 09 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -1884,15 +1884,15 @@ UpperFixedEngine_Branch_CC7D:
 UpperFixedEngine_Branch_CC81:
         lda     #$0B                            ; CC81 A9 0B                    ..
         ldx     #$03                            ; CC83 A2 03                    ..
-        jmp     UpperFixedEngine_Entry_D1ED     ; CC85 4C ED D1                 L..
+        jmp     PlayMapCueAndWaitForInput       ; CC85 4C ED D1                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CC88:
-        jsr     UpperFixedEngine_Entry_CF91     ; CC88 20 91 CF                  ..
-        jsr     UpperFixedEngine_Entry_CC91     ; CC8B 20 91 CC                  ..
+BeginPlayerMovement:
+        jsr     ResolvePlayerMovementDestination; CC88 20 91 CF                  ..
+        jsr     MovePlayerAndFollowers          ; CC8B 20 91 CC                  ..
         jmp     UpperFixedEngine_Branch_CDC9    ; CC8E 4C C9 CD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CC91:
-        jsr     UpperFixedEngine_Entry_D16F     ; CC91 20 6F D1                  o.
+MovePlayerAndFollowers:
+        jsr     GetPlayerFacingDestination      ; CC91 20 6F D1                  o.
         sta     PlayerWorldY,x                  ; CC94 95 43                    .C
         sta     $6F80                           ; CC96 8D 80 6F                 ..o
         lda     $52                           ; CC99 A5 52                    .R
@@ -1901,7 +1901,7 @@ UpperFixedEngine_Entry_CC91:
         lda     $0515                           ; CCA0 AD 15 05                 ...
         beq     UpperFixedEngine_Branch_CCE9    ; CCA3 F0 44                    .D
         cpx     #$00                            ; CCA5 E0 00                    ..
-        bne     UpperFixedEngine_Entry_CCEA     ; CCA7 D0 41                    .A
+        bne     RenderPlayerAtLocalPosition     ; CCA7 D0 41                    .A
         and     #$02                            ; CCA9 29 02                    ).
         tax                                     ; CCAB AA                       .
         lsr     a                               ; CCAC 4A                       J
@@ -1923,20 +1923,20 @@ UpperFixedEngine_Entry_CC91:
         sbc     #$01                            ; CCD0 E9 01                    ..
         sta     $6F87,y                         ; CCD2 99 87 6F                 ..o
 UpperFixedEngine_Branch_CCD5:
-        jsr     UpperFixedEngine_Entry_CD78     ; CCD5 20 78 CD                  x.
+        jsr     ApplyFacingToFollowerEntity     ; CCD5 20 78 CD                  x.
         cpx     #$00                            ; CCD8 E0 00                    ..
         beq     UpperFixedEngine_Branch_CD3B    ; CCDA F0 5F                    ._
         iny                                     ; CCDC C8                       .
-        jsr     UpperFixedEngine_Entry_CD78     ; CCDD 20 78 CD                  x.
+        jsr     ApplyFacingToFollowerEntity     ; CCDD 20 78 CD                  x.
         iny                                     ; CCE0 C8                       .
-        jsr     UpperFixedEngine_Entry_CD78     ; CCE1 20 78 CD                  x.
+        jsr     ApplyFacingToFollowerEntity     ; CCE1 20 78 CD                  x.
         dey                                     ; CCE4 88                       .
         dey                                     ; CCE5 88                       .
-        jsr     UpperFixedEngine_Entry_CD0F     ; CCE6 20 0F CD                  ..
+        jsr     OffsetFollowerSpriteFormation   ; CCE6 20 0F CD                  ..
 UpperFixedEngine_Branch_CCE9:
         rts                                     ; CCE9 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CCEA:
+RenderPlayerAtLocalPosition:
         lda     $0534                           ; CCEA AD 34 05                 .4.
         and     #$1F                            ; CCED 29 1F                    ).
         tax                                     ; CCEF AA                       .
@@ -1953,7 +1953,7 @@ UpperFixedEngine_Entry_CCEA:
         sta     $7000,x                         ; CD09 9D 00 70                 ..p
         jmp     RenderVisibleMapEntity          ; CD0C 4C FC D7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CD0F:
+OffsetFollowerSpriteFormation:
         lda     $57                             ; CD0F A5 57                    .W
         beq     UpperFixedEngine_Branch_CD3B    ; CD11 F0 28                    .(
         txa                                     ; CD13 8A                       .
@@ -1998,10 +1998,10 @@ UpperFixedEngine_Branch_CD3E:
         beq     UpperFixedEngine_Branch_CCE9    ; CD47 F0 A0                    ..
         ldx     #$08                            ; CD49 A2 08                    ..
         jsr     RenderVisibleMapEntity          ; CD4B 20 FC D7                  ..
-        jsr     UpperFixedEngine_Entry_CD52     ; CD4E 20 52 CD                  R.
+        jsr     SelectVehicleSpriteSlot         ; CD4E 20 52 CD                  R.
         rts                                     ; CD51 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CD52:
+SelectVehicleSpriteSlot:
         ldx     #$0B                            ; CD52 A2 0B                    ..
         lda     $7140                           ; CD54 AD 40 71                 .@q
         beq     UpperFixedEngine_Branch_CD6A    ; CD57 F0 11                    ..
@@ -2023,7 +2023,7 @@ UpperFixedEngine_Branch_CD6A:
 ; ----------------------------------------------------------------------------
         db   $01,$06,$0D,$0E,$0F,$11,$12,$13 ; CD70 01 06 0D 0E 0F 11 12 13  ........
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CD78:
+ApplyFacingToFollowerEntity:
         lda     $7006,y                         ; CD78 B9 06 70                 ..p
         and     #$FC                            ; CD7B 29 FC                    ).
         ora     $3D                             ; CD7D 05 3D                    .=
@@ -2031,7 +2031,7 @@ UpperFixedEngine_Entry_CD78:
         sta     $7006,y                         ; CD81 99 06 70                 ..p
         rts                                     ; CD84 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CD85:
+PrepareMovementAudioAndState:
         lda     $0539                           ; CD85 AD 39 05                 .9.
         bpl     UpperFixedEngine_Branch_CD8E    ; CD88 10 04                    ..
         brk                                     ; CD8A 00                       .
@@ -2066,13 +2066,13 @@ UpperFixedEngine_Branch_CDAF:
 UpperFixedEngine_Branch_CDB6:
         tya                                     ; CDB6 98                       .
         ldx     #$03                            ; CDB7 A2 03                    ..
-        jsr     UpperFixedEngine_Entry_D1FD     ; CDB9 20 FD D1                  ..
+        jsr     PlayMapCue                      ; CDB9 20 FD D1                  ..
         ldx     #$03                            ; CDBC A2 03                    ..
         lda     #$BD                            ; CDBE A9 BD                    ..
         brk                                     ; CDC0 00                       .
         db   $04,$6F                         ; CDC1 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D1F0     ; CDC3 20 F0 D1                  ..
+        jsr     WaitForInputAndStopMapCue       ; CDC3 20 F0 D1                  ..
         pla                                     ; CDC6 68                       h
         pla                                     ; CDC7 68                       h
 UpperFixedEngine_Branch_CDC8:
@@ -2085,10 +2085,10 @@ UpperFixedEngine_Branch_CDC9:
         lda     #$10                            ; CDD1 A9 10                    ..
         sta     $3E                             ; CDD3 85 3E                    .>
         jsr     FixedTrampoline02               ; CDD5 20 07 C0                  ..
-        jsr     UpperFixedEngine_Entry_CDDC     ; CDD8 20 DC CD                  ..
+        jsr     AdvanceTimeOfDayClock           ; CDD8 20 DC CD                  ..
         rts                                     ; CDDB 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CDDC:
+AdvanceTimeOfDayClock:
         lda     $41                             ; CDDC A5 41                    .A
         bmi     UpperFixedEngine_Branch_CE08    ; CDDE 30 28                    0(
         lda     $6288                           ; CDE0 AD 88 62                 ..b
@@ -2110,11 +2110,11 @@ UpperFixedEngine_Entry_CDDC:
 UpperFixedEngine_Branch_CE08:
         rts                                     ; CE08 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CE09:
+ProcessMapInputAndEvents:
         cmp     #$00                            ; CE09 C9 00                    ..
         bne     UpperFixedEngine_Branch_CE50    ; CE0B D0 43                    .C
         lda     $41                             ; CE0D A5 41                    .A
-        bpl     UpperFixedEngine_Entry_CE80     ; CE0F 10 6F                    .o
+        bpl     ProcessInteriorMapInput         ; CE0F 10 6F                    .o
         lda     PlayerLocalX                    ; CE11 A5 44                    .D
         sta     $6FA0                           ; CE13 8D A0 6F                 ..o
         lda     PlayerLocalY                    ; CE16 A5 45                    .E
@@ -2132,23 +2132,23 @@ UpperFixedEngine_Entry_CE09:
         jmp     UpperFixedEngine_Branch_CE31    ; CE2B 4C 31 CE                 L1.
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CE2E:
-        jsr     UpperFixedEngine_Entry_CE72     ; CE2E 20 72 CE                  r.
+        jsr     CompleteActiveEntityPath        ; CE2E 20 72 CE                  r.
 UpperFixedEngine_Branch_CE31:
-        jsr     UpperFixedEngine_Entry_CF56     ; CE31 20 56 CF                  V.
+        jsr     InvokeStepEventWhenOnWorldMap   ; CE31 20 56 CF                  V.
         brk                                     ; CE34 00                       .
         db   $00,$BF                         ; CE35 00 BF                    ..
 ; ----------------------------------------------------------------------------
         bcs     UpperFixedEngine_Branch_CE47    ; CE37 B0 0E                    ..
-        jsr     UpperFixedEngine_Entry_CF5F     ; CE39 20 5F CF                  _.
-        jsr     UpperFixedEngine_Entry_CEBE     ; CE3C 20 BE CE                  ..
+        jsr     UpdateWorldTerrainStateFlag     ; CE39 20 5F CF                  _.
+        jsr     DispatchTerrainEvent            ; CE3C 20 BE CE                  ..
         bcs     UpperFixedEngine_Branch_CE4A    ; CE3F B0 09                    ..
-        jsr     UpperFixedEngine_Entry_CF8D     ; CE41 20 8D CF                  ..
+        jsr     InvokeTerrainEffectService      ; CE41 20 8D CF                  ..
         jmp     UpperFixedEngine_Branch_CE4A    ; CE44 4C 4A CE                 LJ.
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CE47:
-        jsr     UpperFixedEngine_Entry_CF56     ; CE47 20 56 CF                  V.
+        jsr     InvokeStepEventWhenOnWorldMap   ; CE47 20 56 CF                  V.
 UpperFixedEngine_Branch_CE4A:
-        jsr     UpperFixedEngine_Entry_CEA9     ; CE4A 20 A9 CE                  ..
+        jsr     HandleMapLoopExitInput          ; CE4A 20 A9 CE                  ..
         jmp     FixedTrampoline05               ; CE4D 4C 10 C0                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CE50:
@@ -2173,15 +2173,15 @@ UpperFixedEngine_Branch_CE69:
         bne     UpperFixedEngine_Branch_CE68    ; CE6B D0 FB                    ..
         lda     $0527                           ; CE6D AD 27 05                 .'.
         bpl     UpperFixedEngine_Branch_CE68    ; CE70 10 F6                    ..
-UpperFixedEngine_Entry_CE72:
+CompleteActiveEntityPath:
         lda     #$00                            ; CE72 A9 00                    ..
         sta     $0527                           ; CE74 8D 27 05                 .'.
         lda     $0593                           ; CE77 AD 93 05                 ...
         ldx     $0594                           ; CE7A AE 94 05                 ...
-        jmp     UpperFixedEngine_Entry_D207     ; CE7D 4C 07 D2                 L..
+        jmp     PlayMapCueThenStop              ; CE7D 4C 07 D2                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CE80:
-        jsr     UpperFixedEngine_Entry_CF56     ; CE80 20 56 CF                  V.
+ProcessInteriorMapInput:
+        jsr     InvokeStepEventWhenOnWorldMap   ; CE80 20 56 CF                  V.
         lda     $0527                           ; CE83 AD 27 05                 .'.
         beq     UpperFixedEngine_Branch_CE9A    ; CE86 F0 12                    ..
         sta     $0515                           ; CE88 8D 15 05                 ...
@@ -2199,13 +2199,13 @@ UpperFixedEngine_Entry_CE80:
         rts                                     ; CE99 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_CE9A:
-        jsr     UpperFixedEngine_Entry_CF03     ; CE9A 20 03 CF                  ..
-        jsr     UpperFixedEngine_Entry_CF38     ; CE9D 20 38 CF                  8.
-        jsr     UpperFixedEngine_Entry_CF41     ; CEA0 20 41 CF                  A.
-        jsr     UpperFixedEngine_Entry_CEA9     ; CEA3 20 A9 CE                  ..
+        jsr     HandleSpecialWorldTerrainPair   ; CE9A 20 03 CF                  ..
+        jsr     TryStartRandomEncounter         ; CE9D 20 38 CF                  8.
+        jsr     HandleChapterFourWorldCoordinate; CEA0 20 41 CF                  A.
+        jsr     HandleMapLoopExitInput          ; CEA3 20 A9 CE                  ..
         jmp     FixedTrampoline05               ; CEA6 4C 10 C0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CEA9:
+HandleMapLoopExitInput:
         lda     $C000                           ; CEA9 AD 00 C0                 ...
         and     #$40                            ; CEAC 29 40                    )@
         bne     UpperFixedEngine_Branch_CEB6    ; CEAE D0 06                    ..
@@ -2221,7 +2221,7 @@ UpperFixedEngine_Branch_CEB6:
 UpperFixedEngine_Branch_CEBD:
         rts                                     ; CEBD 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CEBE:
+DispatchTerrainEvent:
         lda     $059E                           ; CEBE AD 9E 05                 ...
         ldx     #$00                            ; CEC1 A2 00                    ..
         and     #$7F                            ; CEC3 29 7F                    ).
@@ -2253,7 +2253,7 @@ UpperFixedEngine_Branch_CEE6:
         brk                                     ; CEE6 00                       .
         db   $1B,$EF                         ; CEE7 1B EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_CEBE     ; CEE9 20 BE CE                  ..
+        jsr     DispatchTerrainEvent            ; CEE9 20 BE CE                  ..
         sec                                     ; CEEC 38                       8
         rts                                     ; CEED 60                       `
 ; ----------------------------------------------------------------------------
@@ -2275,7 +2275,7 @@ Bank1F_EventSelectorIds:
         db   $06,$07,$08,$09,$25,$26,$0A,$0C ; CEF8 06 07 08 09 25 26 0A 0C  ....%&..
         db   $05,$0B,$0F                     ; CF00 05 0B 0F                 ...
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF03:
+HandleSpecialWorldTerrainPair:
         lda     $0515                           ; CF03 AD 15 05                 ...
         cmp     #$02                            ; CF06 C9 02                    ..
         beq     UpperFixedEngine_Branch_CF37    ; CF08 F0 2D                    .-
@@ -2306,7 +2306,7 @@ UpperFixedEngine_Branch_CF34:
 UpperFixedEngine_Branch_CF37:
         rts                                     ; CF37 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF38:
+TryStartRandomEncounter:
         brk                                     ; CF38 00                       .
         db   $10,$87                         ; CF39 10 87                    ..
 ; ----------------------------------------------------------------------------
@@ -2317,7 +2317,7 @@ UpperFixedEngine_Entry_CF38:
 UpperFixedEngine_Branch_CF40:
         rts                                     ; CF40 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF41:
+HandleChapterFourWorldCoordinate:
         lda     SaveCurrentChapterMinus1        ; CF41 AD 5A 61                 .Za
         cmp     #$03                            ; CF44 C9 03                    ..
         bne     UpperFixedEngine_Branch_CF55    ; CF46 D0 0D                    ..
@@ -2326,11 +2326,11 @@ UpperFixedEngine_Entry_CF41:
         bne     UpperFixedEngine_Branch_CF55    ; CF4C D0 07                    ..
         ldx     #$03                            ; CF4E A2 03                    ..
         lda     #$AB                            ; CF50 A9 AB                    ..
-        jsr     UpperFixedEngine_Entry_D207     ; CF52 20 07 D2                  ..
+        jsr     PlayMapCueThenStop              ; CF52 20 07 D2                  ..
 UpperFixedEngine_Branch_CF55:
         rts                                     ; CF55 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF56:
+InvokeStepEventWhenOnWorldMap:
         lda     $0515                           ; CF56 AD 15 05                 ...
         bne     UpperFixedEngine_Branch_CF5E    ; CF59 D0 03                    ..
         brk                                     ; CF5B 00                       .
@@ -2339,7 +2339,7 @@ UpperFixedEngine_Entry_CF56:
 UpperFixedEngine_Branch_CF5E:
         rts                                     ; CF5E 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF5F:
+UpdateWorldTerrainStateFlag:
         lda     $46                             ; CF5F A5 46                    .F
         sta     $47                             ; CF61 85 47                    .G
         lda     $7140                           ; CF63 AD 40 71                 .@q
@@ -2369,13 +2369,13 @@ UpperFixedEngine_Branch_CF7D:
         sta     $627D                           ; CF89 8D 7D 62                 .}b
         rts                                     ; CF8C 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF8D:
+InvokeTerrainEffectService:
         brk                                     ; CF8D 00                       .
         db   $02,$EF                         ; CF8E 02 EF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; CF90 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_CF91:
+ResolvePlayerMovementDestination:
         lda     $7000                           ; CF91 AD 00 70                 ..p
         and     #$FC                            ; CF94 29 FC                    ).
         ora     $3D                             ; CF96 05 3D                    .=
@@ -2384,7 +2384,7 @@ UpperFixedEngine_Entry_CF91:
         ldx     #$00                            ; CF9D A2 00                    ..
         stx     $0527                           ; CF9F 8E 27 05                 .'.
         jsr     RenderVisibleMapEntity          ; CFA2 20 FC D7                  ..
-        jsr     UpperFixedEngine_Entry_D16F     ; CFA5 20 6F D1                  o.
+        jsr     GetPlayerFacingDestination      ; CFA5 20 6F D1                  o.
         bit     $41                             ; CFA8 24 41                    $A
         bpl     UpperFixedEngine_Branch_CFAF    ; CFAA 10 03                    ..
         jmp     UpperFixedEngine_Branch_D050    ; CFAC 4C 50 D0                 LP.
@@ -2441,7 +2441,7 @@ UpperFixedEngine_Branch_D007:
         bpl     UpperFixedEngine_Branch_CFF3    ; D008 10 E9                    ..
 UpperFixedEngine_Branch_D00A:
         lda     $54                             ; D00A A5 54                    .T
-        jsr     UpperFixedEngine_Entry_D1C9     ; D00C 20 C9 D1                  ..
+        jsr     PushRecentMapTile               ; D00C 20 C9 D1                  ..
         rts                                     ; D00F 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D010:
@@ -2478,7 +2478,7 @@ UpperFixedEngine_Branch_D03F:
         brk                                     ; D03F 00                       .
         db   $0E,$EF                         ; D040 0E EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_DFF1     ; D042 20 F1 DF                  ..
+        jsr     InitializeMapEntityRendering    ; D042 20 F1 DF                  ..
         lda     $7000                           ; D045 AD 00 70                 ..p
         ora     #$40                            ; D048 09 40                    .@
         sta     $7000                           ; D04A 8D 00 70                 ..p
@@ -2543,7 +2543,7 @@ UpperFixedEngine_Branch_D0B5:
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D0B8:
         tya                                     ; D0B8 98                       .
-        jsr     UpperFixedEngine_Entry_D1C9     ; D0B9 20 C9 D1                  ..
+        jsr     PushRecentMapTile               ; D0B9 20 C9 D1                  ..
         rts                                     ; D0BC 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D0BD:
@@ -2581,7 +2581,7 @@ UpperFixedEngine_Branch_D0E2:
         brk                                     ; D0E6 00                       .
         db   $C2,$4B                         ; D0E7 C2 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D20A     ; D0E9 20 0A D2                  ..
+        jsr     WaitThenStopMapCue              ; D0E9 20 0A D2                  ..
         jmp     UpperFixedEngine_Branch_D010    ; D0EC 4C 10 D0                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D0EF:
@@ -2602,7 +2602,7 @@ UpperFixedEngine_Branch_D0FC:
         sta     $70E0,x                         ; D10D 9D E0 70                 ..p
         txa                                     ; D110 8A                       .
         pha                                     ; D111 48                       H
-        jsr     UpperFixedEngine_Entry_D53B     ; D112 20 3B D5                  ;.
+        jsr     UpdateMapObjectsForced          ; D112 20 3B D5                  ;.
         pla                                     ; D115 68                       h
         tax                                     ; D116 AA                       .
         lda     $7000,x                         ; D117 BD 00 70                 ..p
@@ -2657,7 +2657,7 @@ UpperFixedEngine_Branch_D14A:
 UpperFixedEngine_Branch_D16C:
         jmp     UpperFixedEngine_Branch_D0C2    ; D16C 4C C2 D0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D16F:
+GetPlayerFacingDestination:
         lda     $41                             ; D16F A5 41                    .A
         rol     a                               ; D171 2A                       *
         rol     a                               ; D172 2A                       *
@@ -2705,7 +2705,7 @@ UpperFixedEngine_Branch_D1B4:
         db   $00                             ; D1C1 00                       .
         db   $08,$01,$F8,$00,$F8,$01,$08     ; D1C2 08 01 F8 00 F8 01 08     .......
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D1C9:
+PushRecentMapTile:
         pha                                     ; D1C9 48                       H
         lda     $7142                           ; D1CA AD 42 71                 .Bq
         sta     $7143                           ; D1CD 8D 43 71                 .Cq
@@ -2717,19 +2717,19 @@ UpperFixedEngine_Entry_D1C9:
         sta     $7140                           ; D1DD 8D 40 71                 .@q
         rts                                     ; D1E0 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D1E1:
+WaitForMapTransitionCompletion:
         lda     $07BB                           ; D1E1 AD BB 07                 ...
         bpl     UpperFixedEngine_Branch_D1EC    ; D1E4 10 06                    ..
-        jsr     UpperFixedEngine_Entry_E3E2     ; D1E6 20 E2 E3                  ..
+        jsr     ResolveEntitySpriteConflicts    ; D1E6 20 E2 E3                  ..
         jsr     WaitForNmi                      ; D1E9 20 74 FF                  t.
 UpperFixedEngine_Branch_D1EC:
         rts                                     ; D1EC 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D1ED:
-        jsr     UpperFixedEngine_Entry_D1FD     ; D1ED 20 FD D1                  ..
-UpperFixedEngine_Entry_D1F0:
+PlayMapCueAndWaitForInput:
+        jsr     PlayMapCue                      ; D1ED 20 FD D1                  ..
+WaitForInputAndStopMapCue:
         jsr     WaitForFreshButtonPress         ; D1F0 20 CC C8                  ..
-UpperFixedEngine_Entry_D1F3:
+StopMapCue:
         lda     #$00                            ; D1F3 A9 00                    ..
         sta     $0539                           ; D1F5 8D 39 05                 .9.
         brk                                     ; D1F8 00                       .
@@ -2737,7 +2737,7 @@ UpperFixedEngine_Entry_D1F3:
 ; ----------------------------------------------------------------------------
         rts                                     ; D1FC 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D1FD:
+PlayMapCue:
         pha                                     ; D1FD 48                       H
         brk                                     ; D1FE 00                       .
         db   $07,$6F,$43                     ; D1FF 07 6F 43                 .oC
@@ -2748,19 +2748,19 @@ UpperFixedEngine_Entry_D1FD:
 ; ----------------------------------------------------------------------------
         rts                                     ; D206 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D207:
-        jsr     UpperFixedEngine_Entry_D1FD     ; D207 20 FD D1                  ..
-UpperFixedEngine_Entry_D20A:
-        jsr     UpperFixedEngine_Entry_D218     ; D20A 20 18 D2                  ..
-        jmp     UpperFixedEngine_Entry_D1F3     ; D20D 4C F3 D1                 L..
+PlayMapCueThenStop:
+        jsr     PlayMapCue                      ; D207 20 FD D1                  ..
+WaitThenStopMapCue:
+        jsr     WaitForButtonStateOneEightyFrames; D20A 20 18 D2                 ..
+        jmp     StopMapCue                      ; D20D 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D210:
+WaitForButtonStateSixtyFrames:
         lda     #$3C                            ; D210 A9 3C                    .<
         bne     UpperFixedEngine_Branch_D21A    ; D212 D0 06                    ..
-UpperFixedEngine_Entry_D214:
+WaitForButtonStateOneTwentyFrames:
         lda     #$78                            ; D214 A9 78                    .x
         bne     UpperFixedEngine_Branch_D21A    ; D216 D0 02                    ..
-UpperFixedEngine_Entry_D218:
+WaitForButtonStateOneEightyFrames:
         lda     #$B4                            ; D218 A9 B4                    ..
 UpperFixedEngine_Branch_D21A:
         sta     $00                             ; D21A 85 00                    ..
@@ -2842,12 +2842,12 @@ ReadWorldMapTileTripletBanked:
         pha                                     ; D29C 48                       H
         inc     $00                             ; D29D E6 00                    ..
         lda     $02                             ; D29F A5 02                    ..
-        jsr     UpperFixedEngine_Entry_D35F     ; D2A1 20 5F D3                  _.
+        jsr     FinishForwardWorldMapRunDecode  ; D2A1 20 5F D3                  _.
         jsr     ApplyWorldMapTileOverride       ; D2A4 20 23 D5                  #.
         pha                                     ; D2A7 48                       H
         inc     $00                             ; D2A8 E6 00                    ..
         lda     $02                             ; D2AA A5 02                    ..
-        jsr     UpperFixedEngine_Entry_D35F     ; D2AC 20 5F D3                  _.
+        jsr     FinishForwardWorldMapRunDecode  ; D2AC 20 5F D3                  _.
         jsr     ApplyWorldMapTileOverride       ; D2AF 20 23 D5                  #.
         tay                                     ; D2B2 A8                       .
         pla                                     ; D2B3 68                       h
@@ -2967,7 +2967,7 @@ UpperFixedEngine_Branch_D358:
         and     #$1F                            ; D35A 29 1F                    ).
         sec                                     ; D35C 38                       8
         adc     $02                             ; D35D 65 02                    e.
-UpperFixedEngine_Entry_D35F:
+FinishForwardWorldMapRunDecode:
         sta     $02                             ; D35F 85 02                    ..
         cmp     $00                             ; D361 C5 00                    ..
         bcc     UpperFixedEngine_Branch_D342    ; D363 90 DD                    ..
@@ -3095,7 +3095,7 @@ UpperFixedEngine_Branch_D410:
         jsr     SelectOutOfBoundsMapTile        ; D416 20 59 D4                  Y.
         rts                                     ; D419 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D41A:
+ReadMapTileAndAdvanceColumnPointer:
         cpx     $3F                             ; D41A E4 3F                    .?
         bcs     UpperFixedEngine_Branch_D410    ; D41C B0 F2                    ..
         cpy     $40                             ; D41E C4 40                    .@
@@ -3114,7 +3114,7 @@ UpperFixedEngine_Branch_D435:
         pla                                     ; D435 68                       h
         rts                                     ; D436 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D437:
+ReadMapTileAndAdvanceRowPointer:
         cpx     $3F                             ; D437 E4 3F                    .?
         bcs     UpperFixedEngine_Branch_D410    ; D439 B0 D5                    ..
         cpy     $40                             ; D43B C4 40                    .@
@@ -3158,7 +3158,7 @@ UpperFixedEngine_Branch_D472:
         db   $01,$02,$04,$08,$10,$20,$40,$80 ; D476 01 02 04 08 10 20 40 80  ..... @.
         db   $44,$EE,$EE,$44,$11,$BB,$BB,$11 ; D47E 44 EE EE 44 11 BB BB 11  D..D....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D486:
+SelectMapTileGraphicsRecord:
         cmp     #$00                            ; D486 C9 00                    ..
         bne     UpperFixedEngine_Branch_D490    ; D488 D0 06                    ..
         jsr     ComputeWorldMapNeighborMask     ; D48A 20 B5 D4                  ..
@@ -3227,7 +3227,7 @@ UpperFixedEngine_Branch_D4F0:
         asl     $59                             ; D4F0 06 59                    .Y
         rts                                     ; D4F2 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D4F3:
+ResolveMapTileGraphicsRecord:
         pha                                     ; D4F3 48                       H
         and     #$E0                            ; D4F4 29 E0                    ).
         cmp     $46                             ; D4F6 C5 46                    .F
@@ -3279,12 +3279,12 @@ UpperFixedEngine_Branch_D539:
         pla                                     ; D539 68                       h
         rts                                     ; D53A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D53B:
+UpdateMapObjectsForced:
         lda     #$FF                            ; D53B A9 FF                    ..
         sta     $56                             ; D53D 85 56                    .V
         jmp     UpperFixedEngine_Branch_D546    ; D53F 4C 46 D5                 LF.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D542:
+UpdateMapObjects:
         lda     #$00                            ; D542 A9 00                    ..
         sta     $56                             ; D544 85 56                    .V
 UpperFixedEngine_Branch_D546:
@@ -3310,30 +3310,30 @@ UpperFixedEngine_Branch_D546:
 UpperFixedEngine_Branch_D56C:
         lda     $67                             ; D56C A5 67                    .g
         jsr     SelectPrgBank                   ; D56E 20 91 FF                  ..
-        jsr     UpperFixedEngine_Entry_D57F     ; D571 20 7F D5                  ..
+        jsr     RunForcedMapObjectUpdateLoop    ; D571 20 7F D5                  ..
         lda     $7024                           ; D574 AD 24 70                 .$p
         and     $7025                           ; D577 2D 25 70                 -%p
         bmi     UpperFixedEngine_Branch_D5AC    ; D57A 30 30                    00
         jmp     FixedTrampoline06               ; D57C 4C 13 C0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D57F:
-        jsr     UpperFixedEngine_Entry_D607     ; D57F 20 07 D6                  ..
-        jsr     UpperFixedEngine_Entry_D5EE     ; D582 20 EE D5                  ..
-        jmp     UpperFixedEngine_Entry_D57F     ; D585 4C 7F D5                 L..
+RunForcedMapObjectUpdateLoop:
+        jsr     ProcessCurrentMapObjectSlot     ; D57F 20 07 D6                  ..
+        jsr     AdvanceMapObjectIndexOrExit     ; D582 20 EE D5                  ..
+        jmp     RunForcedMapObjectUpdateLoop    ; D585 4C 7F D5                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D588:
         pha                                     ; D588 48                       H
-        jsr     UpperFixedEngine_Entry_D5C0     ; D589 20 C0 D5                  ..
+        jsr     ProcessNextAnimatedMapObject    ; D589 20 C0 D5                  ..
         pla                                     ; D58C 68                       h
         and     #$07                            ; D58D 29 07                    ).
         bne     UpperFixedEngine_Branch_D5AC    ; D58F D0 1B                    ..
         lda     $41                             ; D591 A5 41                    .A
         bpl     UpperFixedEngine_Branch_D598    ; D593 10 03                    ..
-        jsr     UpperFixedEngine_Entry_D5AD     ; D595 20 AD D5                  ..
+        jsr     RunMapObjectAnimationLoop       ; D595 20 AD D5                  ..
 UpperFixedEngine_Branch_D598:
         ldx     #$00                            ; D598 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_D59D     ; D59A 20 9D D5                  ..
-UpperFixedEngine_Entry_D59D:
+        jsr     ApplyMapObjectMotionFlag        ; D59A 20 9D D5                  ..
+ApplyMapObjectMotionFlag:
         lda     $052A,x                         ; D59D BD 2A 05                 .*.
         and     #$40                            ; D5A0 29 40                    )@
         beq     UpperFixedEngine_Branch_D5AB    ; D5A2 F0 07                    ..
@@ -3345,19 +3345,19 @@ UpperFixedEngine_Branch_D5AB:
 UpperFixedEngine_Branch_D5AC:
         rts                                     ; D5AC 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5AD:
+RunMapObjectAnimationLoop:
         lda     $67                             ; D5AD A5 67                    .g
         jsr     SelectPrgBank                   ; D5AF 20 91 FF                  ..
 UpperFixedEngine_Branch_D5B2:
-        jsr     UpperFixedEngine_Entry_D5FE     ; D5B2 20 FE D5                  ..
-        jsr     UpperFixedEngine_Entry_D5EE     ; D5B5 20 EE D5                  ..
+        jsr     ProcessNextForcedMapObject      ; D5B2 20 FE D5                  ..
+        jsr     AdvanceMapObjectIndexOrExit     ; D5B5 20 EE D5                  ..
         jmp     UpperFixedEngine_Branch_D5B2    ; D5B8 4C B2 D5                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5BB:
+RestoreMapObjectCallerBank:
         lda     $58                             ; D5BB A5 58                    .X
         jmp     SelectPrgBank                   ; D5BD 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5C0:
+ProcessNextAnimatedMapObject:
         ldx     $51                             ; D5C0 A6 51                    .Q
         lda     $7020,x                         ; D5C2 BD 20 70                 . p
         cmp     #$FF                            ; D5C5 C9 FF                    ..
@@ -3367,26 +3367,26 @@ UpperFixedEngine_Entry_D5C0:
         bmi     UpperFixedEngine_Branch_D5DA    ; D5CE 30 0A                    0.
         lda     #$09                            ; D5D0 A9 09                    ..
         sta     $57                             ; D5D2 85 57                    .W
-        jsr     UpperFixedEngine_Entry_D5EA     ; D5D4 20 EA D5                  ..
+        jsr     UpdateCurrentMapObjectAnimation ; D5D4 20 EA D5                  ..
         jmp     UpperFixedEngine_Branch_D5DD    ; D5D7 4C DD D5                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D5DA:
-        jsr     UpperFixedEngine_Entry_D9CB     ; D5DA 20 CB D9                  ..
+        jsr     AnimateEntityMotionCountup      ; D5DA 20 CB D9                  ..
 UpperFixedEngine_Branch_D5DD:
         inc     $51                             ; D5DD E6 51                    .Q
         lda     $51                             ; D5DF A5 51                    .Q
         cmp     #$1E                            ; D5E1 C9 1E                    ..
-        bcc     UpperFixedEngine_Entry_D5C0     ; D5E3 90 DB                    ..
+        bcc     ProcessNextAnimatedMapObject    ; D5E3 90 DB                    ..
 UpperFixedEngine_Branch_D5E5:
         lda     #$06                            ; D5E5 A9 06                    ..
         sta     $51                             ; D5E7 85 51                    .Q
         rts                                     ; D5E9 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5EA:
-        jsr     UpperFixedEngine_Entry_D94B     ; D5EA 20 4B D9                  K.
+UpdateCurrentMapObjectAnimation:
+        jsr     AnimateEntityMotionCountdown    ; D5EA 20 4B D9                  K.
         rts                                     ; D5ED 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5EE:
+AdvanceMapObjectIndexOrExit:
         inc     $51                             ; D5EE E6 51                    .Q
         lda     $51                             ; D5F0 A5 51                    .Q
         cmp     #$1E                            ; D5F2 C9 1E                    ..
@@ -3400,30 +3400,30 @@ UpperFixedEngine_Branch_D5FB:
 UpperFixedEngine_Branch_D5FD:
         rts                                     ; D5FD 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D5FE:
+ProcessNextForcedMapObject:
         ldx     $51                             ; D5FE A6 51                    .Q
         lda     $70E0,x                         ; D600 BD E0 70                 ..p
         and     #$40                            ; D603 29 40                    )@
         beq     UpperFixedEngine_Branch_D5FD    ; D605 F0 F6                    ..
-UpperFixedEngine_Entry_D607:
+ProcessCurrentMapObjectSlot:
         ldx     $51                             ; D607 A6 51                    .Q
         lda     $7020,x                         ; D609 BD 20 70                 . p
         cmp     #$FF                            ; D60C C9 FF                    ..
         beq     UpperFixedEngine_Branch_D5F6    ; D60E F0 E6                    ..
-        jsr     UpperFixedEngine_Entry_D63B     ; D610 20 3B D6                  ;.
+        jsr     TestMapObjectCommandReady       ; D610 20 3B D6                  ;.
         bcc     UpperFixedEngine_Branch_D61B    ; D613 90 06                    ..
-        jsr     UpperFixedEngine_Entry_D621     ; D615 20 21 D6                  !.
+        jsr     RefreshMapObjectViewportFlag    ; D615 20 21 D6                  !.
         jsr     DispatchMapObjectCommand        ; D618 20 91 D8                  ..
 UpperFixedEngine_Branch_D61B:
-        jsr     UpperFixedEngine_Entry_D684     ; D61B 20 84 D6                  ..
+        jsr     UpdateMapObjectTerrainAndCollision; D61B 20 84 D6                ..
         jmp     UpperFixedEngine_Branch_D76E    ; D61E 4C 6E D7                 Ln.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D621:
+RefreshMapObjectViewportFlag:
         lda     $6F60,x                         ; D621 BD 60 6F                 .`o
         sta     $52                           ; D624 85 52                    .R
         lda     $6F80,x                         ; D626 BD 80 6F                 ..o
         sta     $53                             ; D629 85 53                    .S
-        jsr     UpperFixedEngine_Entry_D6F4     ; D62B 20 F4 D6                  ..
+        jsr     UpdateMapObjectViewportInteraction; D62B 20 F4 D6                ..
         bcs     UpperFixedEngine_Branch_D63A    ; D62E B0 0A                    ..
         ldx     $51                             ; D630 A6 51                    .Q
         lda     $7020,x                         ; D632 BD 20 70                 . p
@@ -3432,7 +3432,7 @@ UpperFixedEngine_Entry_D621:
 UpperFixedEngine_Branch_D63A:
         rts                                     ; D63A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D63B:
+TestMapObjectCommandReady:
         lda     $56                             ; D63B A5 56                    .V
         beq     UpperFixedEngine_Branch_D646    ; D63D F0 07                    ..
         lda     $70E0,x                         ; D63F BD E0 70                 ..p
@@ -3471,7 +3471,7 @@ UpperFixedEngine_Branch_D673:
         clc                                     ; D682 18                       .
         rts                                     ; D683 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D684:
+UpdateMapObjectTerrainAndCollision:
         php                                     ; D684 08                       .
         jsr     GetEntityFacingCoordinates      ; D685 20 52 D7                  R.
         plp                                     ; D688 28                       (
@@ -3488,16 +3488,16 @@ UpperFixedEngine_Branch_D695:
         sta     $55                             ; D69C 85 55                    .U
         and     #$E0                            ; D69E 29 E0                    ).
         sta     $54                             ; D6A0 85 54                    .T
-        jsr     UpperFixedEngine_Entry_D6B6     ; D6A2 20 B6 D6                  ..
-        jsr     UpperFixedEngine_Entry_D6DB     ; D6A5 20 DB D6                  ..
-        jsr     UpperFixedEngine_Entry_D6E8     ; D6A8 20 E8 D6                  ..
-        jsr     UpperFixedEngine_Entry_D6F4     ; D6AB 20 F4 D6                  ..
+        jsr     ValidateMapObjectTerrainType    ; D6A2 20 B6 D6                  ..
+        jsr     ValidateMapObjectCoordinates    ; D6A5 20 DB D6                  ..
+        jsr     ValidateMapObjectTerrainClass   ; D6A8 20 E8 D6                  ..
+        jsr     UpdateMapObjectViewportInteraction; D6AB 20 F4 D6                ..
         ldx     $51                             ; D6AE A6 51                    .Q
         lda     $55                             ; D6B0 A5 55                    .U
         sta     $7140,x                         ; D6B2 9D 40 71                 .@q
         rts                                     ; D6B5 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D6B6:
+ValidateMapObjectTerrainType:
         lda     $55                             ; D6B6 A5 55                    .U
         and     #$1F                            ; D6B8 29 1F                    ).
         tax                                     ; D6BA AA                       .
@@ -3526,7 +3526,7 @@ UpperFixedEngine_Branch_D6D8:
         pla                                     ; D6D9 68                       h
         rts                                     ; D6DA 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D6DB:
+ValidateMapObjectCoordinates:
         lda     $52                           ; D6DB A5 52                    .R
         cmp     $3F                             ; D6DD C5 3F                    .?
         bcs     UpperFixedEngine_Branch_D6D6    ; D6DF B0 F5                    ..
@@ -3535,7 +3535,7 @@ UpperFixedEngine_Entry_D6DB:
         bcs     UpperFixedEngine_Branch_D6D6    ; D6E5 B0 EF                    ..
         rts                                     ; D6E7 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D6E8:
+ValidateMapObjectTerrainClass:
         ldx     $51                             ; D6E8 A6 51                    .Q
         lda     $7140,x                         ; D6EA BD 40 71                 .@q
         and     #$E0                            ; D6ED 29 E0                    ).
@@ -3543,7 +3543,7 @@ UpperFixedEngine_Entry_D6E8:
         bne     UpperFixedEngine_Branch_D6D6    ; D6F1 D0 E3                    ..
         rts                                     ; D6F3 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D6F4:
+UpdateMapObjectViewportInteraction:
         lda     $0539                           ; D6F4 AD 39 05                 .9.
         bpl     UpperFixedEngine_Branch_D720    ; D6F7 10 27                    .'
         lda     $52                           ; D6F9 A5 52                    .R
@@ -3711,7 +3711,7 @@ RenderMapEntity:
         cpx     #$00                            ; D80E E0 00                    ..
         bne     UpperFixedEngine_Branch_D85D    ; D810 D0 4B                    .K
 UpperFixedEngine_Branch_D812:
-        jsr     UpperFixedEngine_Entry_C78C     ; D812 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; D812 20 8C C7                  ..
         lda     $6FE0,x                         ; D815 BD E0 6F                 ..o
         and     #$0F                            ; D818 29 0F                    ).
         jsr     SelectEntitySpriteDefinition    ; D81A 20 64 D8                  d.
@@ -3885,12 +3885,12 @@ TurnEntityCounterclockwiseCommand:
         sbc     #$01                            ; D92C E9 01                    ..
         jmp     UpperFixedEngine_Branch_D910    ; D92E 4C 10 D9                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D931:
-        jsr     UpperFixedEngine_Entry_D9AB     ; D931 20 AB D9                  ..
+SetEntityMotionActiveCommand:
+        jsr     MarkEntityMotionActiveAndAdvance; D931 20 AB D9                  ..
         jmp     UpperFixedEngine_Branch_DDF0    ; D934 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D937:
-        jsr     UpperFixedEngine_Entry_D9AB     ; D937 20 AB D9                  ..
+DeactivateEntityCoordinatesCommand:
+        jsr     MarkEntityMotionActiveAndAdvance; D937 20 AB D9                  ..
         lda     #$81                            ; D93A A9 81                    ..
         sta     $6F60,x                         ; D93C 9D 60 6F                 .`o
         sta     $6F80,x                         ; D93F 9D 80 6F                 ..o
@@ -3898,7 +3898,7 @@ UpperFixedEngine_Entry_D937:
         sta     $6FC0,x                         ; D945 9D C0 6F                 ..o
         jmp     UpperFixedEngine_Branch_DDF0    ; D948 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D94B:
+AnimateEntityMotionCountdown:
         ldx     $51                             ; D94B A6 51                    .Q
         lda     $7160,x                         ; D94D BD 60 71                 .`q
         beq     UpperFixedEngine_Branch_D99B    ; D950 F0 49                    .I
@@ -3949,14 +3949,14 @@ UpperFixedEngine_Branch_D9A0:
         sta     $7020,x                         ; D9A5 9D 20 70                 . p
         jmp     UpperFixedEngine_Branch_DDF0    ; D9A8 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D9AB:
+MarkEntityMotionActiveAndAdvance:
         ldx     $51                             ; D9AB A6 51                    .Q
         lda     $7020,x                         ; D9AD BD 20 70                 . p
         ora     #$80                            ; D9B0 09 80                    ..
         sta     $7020,x                         ; D9B2 9D 20 70                 . p
         jmp     AdvanceMapObjectScriptOneByte   ; D9B5 4C E3 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D9B8:
+ClearEntityMotionAndSavePosition:
         ldx     $51                             ; D9B8 A6 51                    .Q
         lda     $7020,x                         ; D9BA BD 20 70                 . p
         and     #$7F                            ; D9BD 29 7F                    ).
@@ -3965,7 +3965,7 @@ UpperFixedEngine_Entry_D9B8:
         jsr     AdvanceMapObjectScriptOneByte   ; D9C5 20 E3 DD                  ..
         jmp     UpperFixedEngine_Branch_DDF0    ; D9C8 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_D9CB:
+AnimateEntityMotionCountup:
         ldx     $51                             ; D9CB A6 51                    .Q
         lda     $7160,x                         ; D9CD BD 60 71                 .`q
         beq     UpperFixedEngine_Branch_DA06    ; D9D0 F0 34                    .4
@@ -4008,7 +4008,7 @@ SaveEntityCoordinates:
         sta     $6FC0,x                         ; DA1A 9D C0 6F                 ..o
         rts                                     ; DA1D 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DA1E:
+ApplyPlayerFacingToMovingEntity:
         lda     $3E                             ; DA1E A5 3E                    .>
         beq     UpperFixedEngine_Branch_DA2B    ; DA20 F0 09                    ..
         ldx     $51                             ; DA22 A6 51                    .Q
@@ -4088,7 +4088,7 @@ StartMapPresentationCommand:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Branch_DDF0    ; DAA1 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DAA4:
+RunBank1CMapObjectPresentationCommand:
         lda     $0507                           ; DAA4 AD 07 05                 ...
         pha                                     ; DAA7 48                       H
         cmp     #$1C                            ; DAA8 C9 1C                    ..
@@ -4099,7 +4099,7 @@ UpperFixedEngine_Entry_DAA4:
         sec                                     ; DAB2 38                       8
 UpperFixedEngine_Branch_DAB3:
         php                                     ; DAB3 08                       .
-        jsr     UpperFixedEngine_Entry_DAC6     ; DAB4 20 C6 DA                  ..
+        jsr     InitializeBank1CMapObjectPresentation; DAB4 20 C6 DA             ..
         ldx     $51                             ; DAB7 A6 51                    .Q
         jsr     AdvanceMapObjectScriptTwoBytes  ; DAB9 20 E0 DD                  ..
         plp                                     ; DABC 28                       (
@@ -4109,7 +4109,7 @@ UpperFixedEngine_Branch_DAB3:
 UpperFixedEngine_Branch_DAC3:
         jmp     UpperFixedEngine_Branch_DDF0    ; DAC3 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DAC6:
+InitializeBank1CMapObjectPresentation:
         lda     $8014                           ; DAC6 AD 14 80                 ...
         sta     $55                             ; DAC9 85 55                    .U
         lda     $8015                           ; DACB AD 15 80                 ...
@@ -4146,14 +4146,14 @@ UpperFixedEngine_Branch_DB03:
         sta     $0532                           ; DB05 8D 32 05                 .2.
         lda     $56                             ; DB08 A5 56                    .V
         sta     $0533                           ; DB0A 8D 33 05                 .3.
-        jsr     UpperFixedEngine_Entry_DB6A     ; DB0D 20 6A DB                  j.
+        jsr     ReadBank1CMapObjectPresentationByte; DB0D 20 6A DB               j.
         and     #$0F                            ; DB10 29 0F                    ).
         ora     #$80                            ; DB12 09 80                    ..
         sta     $0530                           ; DB14 8D 30 05                 .0.
         rts                                     ; DB17 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DB18:
-        jsr     UpperFixedEngine_Entry_DB6A     ; DB18 20 6A DB                  j.
+AdvanceBank1CMapObjectPresentation:
+        jsr     ReadBank1CMapObjectPresentationByte; DB18 20 6A DB               j.
         and     #$F0                            ; DB1B 29 F0                    ).
         pha                                     ; DB1D 48                       H
         dec     $0530                           ; DB1E CE 30 05                 .0.
@@ -4199,7 +4199,7 @@ UpperFixedEngine_Branch_DB66:
         and     #$F0                            ; DB67 29 F0                    ).
         rts                                     ; DB69 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DB6A:
+ReadBank1CMapObjectPresentationByte:
         ldy     #$00                            ; DB6A A0 00                    ..
         lda     $0532                           ; DB6C AD 32 05                 .2.
         sta     $00                             ; DB6F 85 00                    ..
@@ -4324,7 +4324,7 @@ DecodeMapFlagOperand:
         dey                                     ; DC49 88                       .
         rts                                     ; DC4A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DC4B:
+MoveEntityTowardTargetOrPlayer:
         lda     #$00                            ; DC4B A9 00                    ..
         sta     $54                             ; DC4D 85 54                    .T
         lda     $71A0,x                         ; DC4F BD A0 71                 ..q
@@ -4417,12 +4417,12 @@ UpperFixedEngine_Branch_DCF9:
         jsr     AdvanceMapObjectScriptOneByte   ; DCF9 20 E3 DD                  ..
         jmp     DispatchMapObjectCommand        ; DCFC 4C 91 D8                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DCFF:
+MoveEntityTowardTargetWithRandomTie:
         lda     #$02                            ; DCFF A9 02                    ..
         sta     $54                             ; DD01 85 54                    .T
         jmp     UpperFixedEngine_Branch_DC9F    ; DD03 4C 9F DC                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DD06:
+InvokeMapEventWithThreeOperands:
         ldy     #$01                            ; DD06 A0 01                    ..
         lda     ($4D),y                         ; DD08 B1 4D                    .M
         tax                                     ; DD0A AA                       .
@@ -4440,7 +4440,7 @@ UpperFixedEngine_Entry_DD06:
         jsr     AdvanceMapObjectScriptFourBytes ; DD19 20 DA DD                  ..
         jmp     DispatchMapObjectCommand        ; DD1C 4C 91 D8                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DD1F:
+SelectRandomAllowedEntityDirection:
         ldy     #$01                            ; DD1F A0 01                    ..
         lda     #$0F                            ; DD21 A9 0F                    ..
         sta     $54                             ; DD23 85 54                    .T
@@ -4528,7 +4528,7 @@ UpperFixedEngine_Branch_DD9F:
         clc                                     ; DDAD 18                       .
         rts                                     ; DDAE 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DDAF:
+BranchOnPlayerLocalCoordinates:
         ldy     #$01                            ; DDAF A0 01                    ..
         lda     ($4D),y                         ; DDB1 B1 4D                    .M
         cmp     PlayerLocalX                    ; DDB3 C5 44                    .D
@@ -4545,7 +4545,7 @@ UpperFixedEngine_Branch_DDC4:
         lda     ($4D),y                         ; DDC6 B1 4D                    .M
         jmp     UpperFixedEngine_Branch_D8AB    ; DDC8 4C AB D8                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DDCB:
+InvokeMapPresentationCommand:
         ldy     #$01                            ; DDCB A0 01                    ..
         lda     ($4D),y                         ; DDCD B1 4D                    .M
         brk                                     ; DDCF 00                       .
@@ -4588,7 +4588,7 @@ SetEntityFacingDirection:
         sta     $7000,x                         ; DE02 9D 00 70                 ..p
         rts                                     ; DE05 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DE06:
+RestoreMapObjectLoopPointer:
         ldx     $51                             ; DE06 A6 51                    .Q
         jmp     UpperFixedEngine_Branch_DE12    ; DE08 4C 12 DE                 L..
 ; ----------------------------------------------------------------------------
@@ -4675,7 +4675,7 @@ DispatchMapObjectOperationCommand:
         db   $A9                             ; DEA5 A9                       .
         db   $DE,$CE,$DE                     ; DEA6 DE CE DE                 ...
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DEA9:
+AdvanceScriptPointerAtLocalCoordinate:
         lda     PlayerLocalX                    ; DEA9 A5 44                    .D
         cmp     #$0A                            ; DEAB C9 0A                    ..
         bne     UpperFixedEngine_Branch_DECB    ; DEAD D0 1C                    ..
@@ -4695,7 +4695,7 @@ UpperFixedEngine_Entry_DEA9:
 UpperFixedEngine_Branch_DECB:
         jmp     UpperFixedEngine_Branch_DDF0    ; DECB 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DECE:
+NoOpMapObjectOperation:
         rts                                     ; DECE 60                       `
 ; ----------------------------------------------------------------------------
 SetEntityFacingFromPlayerCommand:
@@ -4754,7 +4754,7 @@ UpperFixedEngine_Branch_DEFC:
         db   $DE,$6D,$DE,$92,$DE,$CF,$DE,$E5 ; DF6D DE 6D DE 92 DE CF DE E5  .m......
         db   $DE,$E5,$DE,$E5,$DE             ; DF75 DE E5 DE E5 DE           .....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DF7A:
+ReadThreeBankedMapDataBytes:
         lda     $0507                           ; DF7A AD 07 05                 ...
         pha                                     ; DF7D 48                       H
         lda     $51                             ; DF7E A5 51                    .Q
@@ -4762,18 +4762,18 @@ UpperFixedEngine_Entry_DF7A:
         ldy     #$00                            ; DF83 A0 00                    ..
         lda     ($49),y                         ; DF85 B1 49                    .I
         sta     $98                             ; DF87 85 98                    ..
-        jsr     UpperFixedEngine_Entry_DF9F     ; DF89 20 9F DF                  ..
+        jsr     AdvanceBankedMapDataPointer     ; DF89 20 9F DF                  ..
         lda     ($49),y                         ; DF8C B1 49                    .I
         sta     $99                             ; DF8E 85 99                    ..
-        jsr     UpperFixedEngine_Entry_DF9F     ; DF90 20 9F DF                  ..
+        jsr     AdvanceBankedMapDataPointer     ; DF90 20 9F DF                  ..
         lda     ($49),y                         ; DF93 B1 49                    .I
         sta     $9A                             ; DF95 85 9A                    ..
-        jsr     UpperFixedEngine_Entry_DF9F     ; DF97 20 9F DF                  ..
+        jsr     AdvanceBankedMapDataPointer     ; DF97 20 9F DF                  ..
         pla                                     ; DF9A 68                       h
         jsr     SelectPrgBank                   ; DF9B 20 91 FF                  ..
         rts                                     ; DF9E 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DF9F:
+AdvanceBankedMapDataPointer:
         pha                                     ; DF9F 48                       H
         inc     $49                             ; DFA0 E6 49                    .I
         bne     UpperFixedEngine_Branch_DFA6    ; DFA2 D0 02                    ..
@@ -4821,14 +4821,14 @@ UpperFixedEngine_Branch_DFED:
 ; ----------------------------------------------------------------------------
         db   $0A,$BF                         ; DFEF 0A BF                    ..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_DFF1:
+InitializeMapEntityRendering:
         lda     #$00                            ; DFF1 A9 00                    ..
         sta     $07BB                           ; DFF3 8D BB 07                 ...
         sta     $EA                             ; DFF6 85 EA                    ..
         sta     $EB                             ; DFF8 85 EB                    ..
         jsr     HideAllOamSprites               ; DFFA 20 F6 E4                  ..
 LDFFF = $+ 2
-        jsr     UpperFixedEngine_Entry_E402     ; DFFD 20 02 E4                  ..
+        jsr     ClearEntitySpriteConflictFlags  ; DFFD 20 02 E4                  ..
         lda     $41                             ; E000 A5 41                    .A
         bpl     UpperFixedEngine_Branch_E015    ; E002 10 11                    ..
         lda     PlayerLocalY                    ; E004 A5 45                    .E
@@ -4854,7 +4854,7 @@ UpperFixedEngine_Branch_E023:
         lda     $61                             ; E023 A5 61                    .a
         ora     #$01                            ; E025 09 01                    ..
         sta     $61                             ; E027 85 61                    .a
-        jsr     UpperFixedEngine_Entry_E147     ; E029 20 47 E1                  G.
+        jsr     InitializePlayerOamPosition     ; E029 20 47 E1                  G.
         lda     #$00                            ; E02C A9 00                    ..
         sta     $16                             ; E02E 85 16                    ..
         jsr     RenderMapEntityFromCachedSprites; E030 20 68 E3                  h.
@@ -4871,7 +4871,7 @@ UpperFixedEngine_Branch_E035:
         lda     $7020,x                         ; E049 BD 20 70                 . p
         and     #$90                            ; E04C 29 90                    ).
         bne     UpperFixedEngine_Branch_E060    ; E04E D0 10                    ..
-        jsr     UpperFixedEngine_Entry_E169     ; E050 20 69 E1                  i.
+        jsr     RenderEntityWithinViewport      ; E050 20 69 E1                  i.
         lda     $E4                             ; E053 A5 E4                    ..
         sta     $7000,x                         ; E055 9D 00 70                 ..p
         bcc     UpperFixedEngine_Branch_E068    ; E058 90 0E                    ..
@@ -4879,7 +4879,7 @@ UpperFixedEngine_Branch_E035:
         jmp     UpperFixedEngine_Branch_E068    ; E05D 4C 68 E0                 Lh.
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E060:
-        jsr     UpperFixedEngine_Entry_E160     ; E060 20 60 E1                  `.
+        jsr     HideEntityWithoutSpriteDefinition; E060 20 60 E1                 `.
         lda     $E4                             ; E063 A5 E4                    ..
         sta     $7000,x                         ; E065 9D 00 70                 ..p
 UpperFixedEngine_Branch_E068:
@@ -4889,8 +4889,8 @@ UpperFixedEngine_Branch_E068:
 UpperFixedEngine_Branch_E06D:
         rts                                     ; E06D 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E06E:
-        jsr     UpperFixedEngine_Entry_E147     ; E06E 20 47 E1                  G.
+UpdateMapEntityRendering:
+        jsr     InitializePlayerOamPosition     ; E06E 20 47 E1                  G.
         lda     $3E                             ; E071 A5 3E                    .>
         beq     UpperFixedEngine_Branch_E0BE    ; E073 F0 49                    .I
         lda     $7000                           ; E075 AD 00 70                 ..p
@@ -4951,11 +4951,11 @@ UpperFixedEngine_Branch_E0C8:
         lda     $7020,x                         ; E0CF BD 20 70                 . p
         and     #$90                            ; E0D2 29 90                    ).
         beq     UpperFixedEngine_Branch_E0DC    ; E0D4 F0 06                    ..
-        jsr     UpperFixedEngine_Entry_E160     ; E0D6 20 60 E1                  `.
+        jsr     HideEntityWithoutSpriteDefinition; E0D6 20 60 E1                 `.
         jmp     UpperFixedEngine_Branch_E0DF    ; E0D9 4C DF E0                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E0DC:
-        jsr     UpperFixedEngine_Entry_E169     ; E0DC 20 69 E1                  i.
+        jsr     RenderEntityWithinViewport      ; E0DC 20 69 E1                  i.
 UpperFixedEngine_Branch_E0DF:
         lda     $E4                             ; E0DF A5 E4                    ..
         sta     $7000,x                         ; E0E1 9D 00 70                 ..p
@@ -4979,12 +4979,12 @@ UpperFixedEngine_Branch_E0FB:
         sta     $E5                             ; E100 85 E5                    ..
         and     #$90                            ; E102 29 90                    ).
         beq     UpperFixedEngine_Branch_E10C    ; E104 F0 06                    ..
-        jsr     UpperFixedEngine_Entry_E160     ; E106 20 60 E1                  `.
+        jsr     HideEntityWithoutSpriteDefinition; E106 20 60 E1                 `.
         jmp     UpperFixedEngine_Branch_E12B    ; E109 4C 2B E1                 L+.
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E10C:
         lda     $E4                             ; E10C A5 E4                    ..
-        jsr     UpperFixedEngine_Entry_E2EE     ; E10E 20 EE E2                  ..
+        jsr     AdvanceEntitySubtilePosition    ; E10E 20 EE E2                  ..
         lda     $E5                             ; E111 A5 E5                    ..
         and     #$40                            ; E113 29 40                    )@
         beq     UpperFixedEngine_Branch_E128    ; E115 F0 11                    ..
@@ -4996,9 +4996,9 @@ UpperFixedEngine_Branch_E10C:
         asl     $E2                             ; E121 06 E2                    ..
 UpperFixedEngine_Branch_E123:
         lda     $E5                             ; E123 A5 E5                    ..
-        jsr     UpperFixedEngine_Entry_E2EE     ; E125 20 EE E2                  ..
+        jsr     AdvanceEntitySubtilePosition    ; E125 20 EE E2                  ..
 UpperFixedEngine_Branch_E128:
-        jsr     UpperFixedEngine_Entry_E169     ; E128 20 69 E1                  i.
+        jsr     RenderEntityWithinViewport      ; E128 20 69 E1                  i.
 UpperFixedEngine_Branch_E12B:
         lda     $3C                             ; E12B A5 3C                    .<
         and     $E3                             ; E12D 25 E3                    %.
@@ -5018,7 +5018,7 @@ UpperFixedEngine_Branch_E139:
 UpperFixedEngine_Branch_E146:
         rts                                     ; E146 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E147:
+InitializePlayerOamPosition:
         lda     $7020                           ; E147 AD 20 70                 . p
         and     #$90                            ; E14A 29 90                    ).
         beq     UpperFixedEngine_Branch_E152    ; E14C F0 04                    ..
@@ -5033,14 +5033,14 @@ UpperFixedEngine_Branch_E152:
         tax                                     ; E15C AA                       .
         jmp     UpperFixedEngine_Branch_E336    ; E15D 4C 36 E3                 L6.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E160:
+HideEntityWithoutSpriteDefinition:
         lda     $E4                             ; E160 A5 E4                    ..
         and     #$3C                            ; E162 29 3C                    )<
         sta     $E2                             ; E164 85 E2                    ..
         bne     UpperFixedEngine_Branch_E1A9    ; E166 D0 41                    .A
         rts                                     ; E168 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E169:
+RenderEntityWithinViewport:
         lda     $E4                             ; E169 A5 E4                    ..
         and     #$3C                            ; E16B 29 3C                    )<
         sta     $E2                             ; E16D 85 E2                    ..
@@ -5048,7 +5048,7 @@ UpperFixedEngine_Entry_E169:
         and     #$E0                            ; E172 29 E0                    ).
         cmp     $46                             ; E174 C5 46                    .F
         bne     UpperFixedEngine_Branch_E1A5    ; E176 D0 2D                    .-
-UpperFixedEngine_Entry_E178:
+ComputeAndClipEntityScreenPosition:
         lda     $7120,x                         ; E178 BD 20 71                 . q
         sec                                     ; E17B 38                       8
         sbc     $EB                             ; E17C E5 EB                    ..
@@ -5076,9 +5076,9 @@ UpperFixedEngine_Branch_E1A5:
         lda     $E2                             ; E1A5 A5 E2                    ..
         beq     UpperFixedEngine_Branch_E1D1    ; E1A7 F0 28                    .(
 UpperFixedEngine_Branch_E1A9:
-        jsr     UpperFixedEngine_Entry_C78C     ; E1A9 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E1A9 20 8C C7                  ..
         lda     $E2                             ; E1AC A5 E2                    ..
-        jsr     UpperFixedEngine_Entry_E4BB     ; E1AE 20 BB E4                  ..
+        jsr     ReleaseEntityOamBlock           ; E1AE 20 BB E4                  ..
         lda     $E4                             ; E1B1 A5 E4                    ..
         and     #$C3                            ; E1B3 29 C3                    ).
         sta     $E4                             ; E1B5 85 E4                    ..
@@ -5114,19 +5114,19 @@ UpperFixedEngine_Branch_E1D3:
         sta     $E6                             ; E1F0 85 E6                    ..
         lda     $E2                             ; E1F2 A5 E2                    ..
         bne     UpperFixedEngine_Branch_E20E    ; E1F4 D0 18                    ..
-        jsr     UpperFixedEngine_Entry_E45C     ; E1F6 20 5C E4                  \.
+        jsr     AllocateEntityOamBlock          ; E1F6 20 5C E4                  \.
         sta     $E2                             ; E1F9 85 E2                    ..
         lda     $E4                             ; E1FB A5 E4                    ..
         and     #$C3                            ; E1FD 29 C3                    ).
         ora     $E2                             ; E1FF 05 E2                    ..
         sta     $E4                             ; E201 85 E4                    ..
         lda     $E2                             ; E203 A5 E2                    ..
-        jsr     UpperFixedEngine_Entry_C78C     ; E205 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E205 20 8C C7                  ..
         jsr     RenderMapEntityFromCachedSprites; E208 20 68 E3                  h.
         jmp     UpperFixedEngine_Branch_E211    ; E20B 4C 11 E2                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E20E:
-        jsr     UpperFixedEngine_Entry_C78C     ; E20E 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E20E 20 8C C7                  ..
 UpperFixedEngine_Branch_E211:
         lda     $E6                             ; E211 A5 E6                    ..
         lsr     a                               ; E213 4A                       J
@@ -5164,19 +5164,19 @@ UpperFixedEngine_Branch_E211:
 UpperFixedEngine_Branch_E24D:
         lda     $E2                             ; E24D A5 E2                    ..
         bne     UpperFixedEngine_Branch_E269    ; E24F D0 18                    ..
-        jsr     UpperFixedEngine_Entry_E45C     ; E251 20 5C E4                  \.
+        jsr     AllocateEntityOamBlock          ; E251 20 5C E4                  \.
         sta     $E2                             ; E254 85 E2                    ..
         lda     $E4                             ; E256 A5 E4                    ..
         and     #$C3                            ; E258 29 C3                    ).
         ora     $E2                             ; E25A 05 E2                    ..
         sta     $E4                             ; E25C 85 E4                    ..
         lda     $E2                             ; E25E A5 E2                    ..
-        jsr     UpperFixedEngine_Entry_C78C     ; E260 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E260 20 8C C7                  ..
         jsr     RenderMapEntityFromCachedSprites; E263 20 68 E3                  h.
         jmp     UpperFixedEngine_Branch_E26C    ; E266 4C 6C E2                 Ll.
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E269:
-        jsr     UpperFixedEngine_Entry_C78C     ; E269 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E269 20 8C C7                  ..
 UpperFixedEngine_Branch_E26C:
         lda     $DF                             ; E26C A5 DF                    ..
         cmp     #$0F                            ; E26E C9 0F                    ..
@@ -5250,7 +5250,7 @@ UpperFixedEngine_Branch_E2AE:
         sec                                     ; E2EC 38                       8
         rts                                     ; E2ED 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E2EE:
+AdvanceEntitySubtilePosition:
         and     #$03                            ; E2EE 29 03                    ).
         bne     UpperFixedEngine_Branch_E301    ; E2F0 D0 0F                    ..
         lda     $7120,x                         ; E2F2 BD 20 71                 . q
@@ -5297,7 +5297,7 @@ UpperFixedEngine_Branch_E335:
         rts                                     ; E335 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E336:
-        jsr     UpperFixedEngine_Entry_C78C     ; E336 20 8C C7                  ..
+        jsr     ConvertSpriteIndexToOamOffset   ; E336 20 8C C7                  ..
         lda     $00                             ; E339 A5 00                    ..
         asl     a                               ; E33B 0A                       .
         asl     a                               ; E33C 0A                       .
@@ -5395,7 +5395,7 @@ RenderMapEntityFromCachedSprites:
         db   $00                             ; E3E0 00                       .
         db   $72                             ; E3E1 72                       r
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E3E2:
+ResolveEntitySpriteConflicts:
         lda     $07BB                           ; E3E2 AD BB 07                 ...
         and     #$7F                            ; E3E5 29 7F                    ).
         sta     $07BB                           ; E3E7 8D BB 07                 ...
@@ -5403,16 +5403,16 @@ UpperFixedEngine_Entry_E3E2:
 UpperFixedEngine_Branch_E3EC:
         lda     $7020,x                         ; E3EC BD 20 70                 . p
         cmp     #$FF                            ; E3EF C9 FF                    ..
-        beq     UpperFixedEngine_Entry_E402     ; E3F1 F0 0F                    ..
+        beq     ClearEntitySpriteConflictFlags  ; E3F1 F0 0F                    ..
         lda     $70E0,x                         ; E3F3 BD E0 70                 ..p
         and     #$20                            ; E3F6 29 20                    )
         beq     UpperFixedEngine_Branch_E3FD    ; E3F8 F0 03                    ..
-        jsr     UpperFixedEngine_Entry_E419     ; E3FA 20 19 E4                  ..
+        jsr     ResolveOneEntitySpriteConflict  ; E3FA 20 19 E4                  ..
 UpperFixedEngine_Branch_E3FD:
         inx                                     ; E3FD E8                       .
         cpx     #$1E                            ; E3FE E0 1E                    ..
         bcc     UpperFixedEngine_Branch_E3EC    ; E400 90 EA                    ..
-UpperFixedEngine_Entry_E402:
+ClearEntitySpriteConflictFlags:
         ldx     #$01                            ; E402 A2 01                    ..
 UpperFixedEngine_Branch_E404:
         lda     $7020,x                         ; E404 BD 20 70                 . p
@@ -5427,7 +5427,7 @@ UpperFixedEngine_Branch_E404:
 UpperFixedEngine_Branch_E418:
         rts                                     ; E418 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E419:
+ResolveOneEntitySpriteConflict:
         ldy     #$01                            ; E419 A0 01                    ..
 UpperFixedEngine_Branch_E41B:
         lda     $7020,y                         ; E41B B9 20 70                 . p
@@ -5446,10 +5446,10 @@ UpperFixedEngine_Branch_E430:
 UpperFixedEngine_Branch_E435:
         pla                                     ; E435 68                       h
         pla                                     ; E436 68                       h
-        jmp     UpperFixedEngine_Entry_E402     ; E437 4C 02 E4                 L..
+        jmp     ClearEntitySpriteConflictFlags  ; E437 4C 02 E4                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_E43A:
-        jsr     UpperFixedEngine_Entry_E4BB     ; E43A 20 BB E4                  ..
+        jsr     ReleaseEntityOamBlock           ; E43A 20 BB E4                  ..
         lda     $7000,y                         ; E43D B9 00 70                 ..p
         and     #$C3                            ; E440 29 C3                    ).
         sta     $7000,y                         ; E442 99 00 70                 ..p
@@ -5457,7 +5457,7 @@ UpperFixedEngine_Branch_E43A:
         sta     $E4                             ; E448 85 E4                    ..
         lda     #$00                            ; E44A A9 00                    ..
         sta     $E2                             ; E44C 85 E2                    ..
-        jsr     UpperFixedEngine_Entry_E178     ; E44E 20 78 E1                  x.
+        jsr     ComputeAndClipEntityScreenPosition; E44E 20 78 E1                x.
         bcc     UpperFixedEngine_Branch_E456    ; E451 90 03                    ..
         jsr     RenderMapEntityFromCachedSprites; E453 20 68 E3                  h.
 UpperFixedEngine_Branch_E456:
@@ -5465,7 +5465,7 @@ UpperFixedEngine_Branch_E456:
         sta     $7000,x                         ; E458 9D 00 70                 ..p
         rts                                     ; E45B 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E45C:
+AllocateEntityOamBlock:
         lda     $61                             ; E45C A5 61                    .a
         cmp     #$FF                            ; E45E C9 FF                    ..
         beq     UpperFixedEngine_Branch_E481    ; E460 F0 1F                    ..
@@ -5527,7 +5527,7 @@ UpperFixedEngine_Branch_E4A8:
         pla                                     ; E4B9 68                       h
         rts                                     ; E4BA 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E4BB:
+ReleaseEntityOamBlock:
         sta     $00                             ; E4BB 85 00                    ..
         cmp     #$20                            ; E4BD C9 20                    .
         bcs     UpperFixedEngine_Branch_E4DC    ; E4BF B0 1B                    ..
@@ -5603,7 +5603,7 @@ UpperFixedEngine_Branch_E517:
 UpperFixedEngine_Branch_E52B:
         rts                                     ; E52B 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E52C:
+ClampPartyGoldTo9999999:
         lda     $1A                             ; E52C A5 1A                    ..
         bne     UpperFixedEngine_Branch_E53E    ; E52E D0 0E                    ..
         lda     $FD                             ; E530 A5 FD                    ..
@@ -5823,7 +5823,7 @@ UpperFixedEngine_Branch_E687:
 UpperFixedEngine_Branch_E68E:
         lda     #$19                            ; E68E A9 19                    ..
         sta     $6E86                           ; E690 8D 86 6E                 ..n
-        jsr     UpperFixedEngine_Entry_FF94     ; E693 20 94 FF                  ..
+        jsr     ApplyCurrentPrgBankSelection    ; E693 20 94 FF                  ..
         lda     #$00                            ; E696 A9 00                    ..
         sta     $B4                             ; E698 85 B4                    ..
         lda     $B0                             ; E69A A5 B0                    ..
@@ -5839,10 +5839,10 @@ UpperFixedEngine_Branch_E68E:
 UpperFixedEngine_Branch_E6B2:
         ldy     #$04                            ; E6B2 A0 04                    ..
         ldx     #$08                            ; E6B4 A2 08                    ..
-        jsr     UpperFixedEngine_Entry_E77C     ; E6B6 20 7C E7                  |.
+        jsr     ProcessAudioChannelSequence     ; E6B6 20 7C E7                  |.
         ldy     #$04                            ; E6B9 A0 04                    ..
         ldx     #$08                            ; E6BB A2 08                    ..
-        jsr     UpperFixedEngine_Entry_E739     ; E6BD 20 39 E7                  9.
+        jsr     UpdateAudioChannelOutput        ; E6BD 20 39 E7                  9.
         lda     $BD                             ; E6C0 A5 BD                    ..
         clc                                     ; E6C2 18                       .
         adc     $BC                             ; E6C3 65 BC                    e.
@@ -5851,37 +5851,37 @@ UpperFixedEngine_Branch_E6B2:
 UpperFixedEngine_Branch_E6C9:
         sbc     #$96                            ; E6C9 E9 96                    ..
         sta     $BD                             ; E6CB 85 BD                    ..
-        jsr     UpperFixedEngine_Entry_F0E3     ; E6CD 20 E3 F0                  ..
+        jsr     SelectAudioSequenceBank         ; E6CD 20 E3 F0                  ..
         ldy     #$00                            ; E6D0 A0 00                    ..
         ldx     #$00                            ; E6D2 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_E77C     ; E6D4 20 7C E7                  |.
+        jsr     ProcessAudioChannelSequence     ; E6D4 20 7C E7                  |.
         ldy     #$01                            ; E6D7 A0 01                    ..
         ldx     #$02                            ; E6D9 A2 02                    ..
-        jsr     UpperFixedEngine_Entry_E77C     ; E6DB 20 7C E7                  |.
+        jsr     ProcessAudioChannelSequence     ; E6DB 20 7C E7                  |.
         ldy     #$02                            ; E6DE A0 02                    ..
         ldx     #$04                            ; E6E0 A2 04                    ..
-        jsr     UpperFixedEngine_Entry_E77C     ; E6E2 20 7C E7                  |.
-        jsr     UpperFixedEngine_Entry_F0F6     ; E6E5 20 F6 F0                  ..
+        jsr     ProcessAudioChannelSequence     ; E6E2 20 7C E7                  |.
+        jsr     SelectDefaultAudioSequenceBank  ; E6E5 20 F6 F0                  ..
         ldy     #$03                            ; E6E8 A0 03                    ..
         ldx     #$06                            ; E6EA A2 06                    ..
-        jsr     UpperFixedEngine_Entry_E77C     ; E6EC 20 7C E7                  |.
-        jsr     UpperFixedEngine_Entry_EEE2     ; E6EF 20 E2 EE                  ..
+        jsr     ProcessAudioChannelSequence     ; E6EC 20 7C E7                  |.
+        jsr     AdvanceAudioFadeState           ; E6EF 20 E2 EE                  ..
         lda     $BD                             ; E6F2 A5 BD                    ..
         cmp     #$6A                            ; E6F4 C9 6A                    .j
         bcc     UpperFixedEngine_Branch_E6C9    ; E6F6 90 D1                    ..
 UpperFixedEngine_Branch_E6F8:
         ldy     #$00                            ; E6F8 A0 00                    ..
         ldx     #$00                            ; E6FA A2 00                    ..
-        jsr     UpperFixedEngine_Entry_E739     ; E6FC 20 39 E7                  9.
+        jsr     UpdateAudioChannelOutput        ; E6FC 20 39 E7                  9.
         ldy     #$01                            ; E6FF A0 01                    ..
         ldx     #$02                            ; E701 A2 02                    ..
-        jsr     UpperFixedEngine_Entry_E739     ; E703 20 39 E7                  9.
+        jsr     UpdateAudioChannelOutput        ; E703 20 39 E7                  9.
         ldy     #$02                            ; E706 A0 02                    ..
         ldx     #$04                            ; E708 A2 04                    ..
-        jsr     UpperFixedEngine_Entry_E739     ; E70A 20 39 E7                  9.
+        jsr     UpdateAudioChannelOutput        ; E70A 20 39 E7                  9.
         ldy     #$03                            ; E70D A0 03                    ..
         ldx     #$06                            ; E70F A2 06                    ..
-        jsr     UpperFixedEngine_Entry_E739     ; E711 20 39 E7                  9.
+        jsr     UpdateAudioChannelOutput        ; E711 20 39 E7                  9.
         lda     $0647                           ; E714 AD 47 06                 .G.
         cmp     #$FF                            ; E717 C9 FF                    ..
         bne     UpperFixedEngine_Branch_E726    ; E719 D0 0B                    ..
@@ -5902,7 +5902,7 @@ UpperFixedEngine_Branch_E726:
 UpperFixedEngine_Branch_E738:
         rts                                     ; E738 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E739:
+UpdateAudioChannelOutput:
         lda     $0620,x                         ; E739 BD 20 06                 . .
         beq     UpperFixedEngine_Branch_E770    ; E73C F0 32                    .2
         cpy     #$03                            ; E73E C0 03                    ..
@@ -5919,8 +5919,8 @@ UpperFixedEngine_Branch_E748:
         lda     $0628                           ; E752 AD 28 06                 .(.
         bne     UpperFixedEngine_Branch_E770    ; E755 D0 19                    ..
 UpperFixedEngine_Branch_E757:
-        jsr     UpperFixedEngine_Entry_EAFC     ; E757 20 FC EA                  ..
-        jsr     UpperFixedEngine_Entry_ED69     ; E75A 20 69 ED                  i.
+        jsr     UpdateApuChannelRegisters       ; E757 20 FC EA                  ..
+        jsr     SilenceAudioChannel             ; E75A 20 69 ED                  i.
         ldy     $A4                             ; E75D A4 A4                    ..
         lda     $B4                             ; E75F A5 B4                    ..
         and     $EAF1,y                         ; E761 39 F1 EA                 9..
@@ -5941,7 +5941,7 @@ ReadAudioSequenceByte:
 UpperFixedEngine_Branch_E77B:
         rts                                     ; E77B 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E77C:
+ProcessAudioChannelSequence:
         sty     $A4                             ; E77C 84 A4                    ..
         stx     $A5                             ; E77E 86 A5                    ..
         lda     $0620,x                         ; E780 BD 20 06                 . .
@@ -5957,7 +5957,7 @@ UpperFixedEngine_Entry_E77C:
         lda     $6BFA,y                         ; E798 B9 FA 6B                 ..k
         cmp     #$FF                            ; E79B C9 FF                    ..
         bne     UpperFixedEngine_Branch_E7BB    ; E79D D0 1C                    ..
-        jsr     UpperFixedEngine_Entry_F0F6     ; E79F 20 F6 F0                  ..
+        jsr     SelectDefaultAudioSequenceBank  ; E79F 20 F6 F0                  ..
         ldy     $063D,x                         ; E7A2 BC 3D 06                 .=.
         lda     $8337,y                         ; E7A5 B9 37 83                 .7.
         sta     $A0                             ; E7A8 85 A0                    ..
@@ -5967,7 +5967,7 @@ UpperFixedEngine_Entry_E77C:
         lda     ($A0),y                         ; E7B1 B1 A0                    ..
         sta     $063C,x                         ; E7B3 9D 3C 06                 .<.
         ldy     $A4                             ; E7B6 A4 A4                    ..
-        jsr     UpperFixedEngine_Entry_F0E3     ; E7B8 20 E3 F0                  ..
+        jsr     SelectAudioSequenceBank         ; E7B8 20 E3 F0                  ..
 UpperFixedEngine_Branch_E7BB:
         dec     $0621,x                         ; E7BB DE 21 06                 .!.
         bne     UpperFixedEngine_Branch_E811    ; E7BE D0 51                    .Q
@@ -6026,7 +6026,7 @@ UpperFixedEngine_Branch_E811:
         db   $50,$F0,$2C,$E9,$83,$E8,$55,$E8 ; E832 50 F0 2C E9 83 E8 55 E8  P.,...U.
         db   $7D,$E8,$59,$E8,$68,$E8,$49,$E9 ; E83A 7D E8 59 E8 68 E8 49 E9  }.Y.h.I.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E842:
+SetAudioPatternTablePointer:
         jsr     ReadAudioSequenceByte           ; E842 20 71 E7                  q.
         sta     $6C03,x                         ; E845 9D 03 6C                 ..l
         jsr     ReadAudioSequenceByte           ; E848 20 71 E7                  q.
@@ -6036,10 +6036,10 @@ UpperFixedEngine_Branch_E850:
         sta     $6C09,y                         ; E850 99 09 6C                 ..l
         jmp     UpperFixedEngine_Branch_E7DC    ; E853 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E856:
+DisableAudioPatternTable:
         lda     #$FF                            ; E856 A9 FF                    ..
         bmi     UpperFixedEngine_Branch_E850    ; E858 30 F6                    0.
-UpperFixedEngine_Entry_E85A:
+IncrementAudioPitchOctave:
         lda     $B1,y                           ; E85A B9 B1 00                 ...
         clc                                     ; E85D 18                       .
         adc     #$10                            ; E85E 69 10                    i.
@@ -6049,7 +6049,7 @@ UpperFixedEngine_Entry_E85A:
 UpperFixedEngine_Branch_E866:
         jmp     UpperFixedEngine_Branch_E7DC    ; E866 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E869:
+DecrementAudioPitchOctave:
         lda     $B1,y                           ; E869 B9 B1 00                 ...
         tax                                     ; E86C AA                       .
         sec                                     ; E86D 38                       8
@@ -6061,26 +6061,26 @@ UpperFixedEngine_Entry_E869:
         sta     $B1,y                           ; E878 99 B1 00                 ...
         jmp     UpperFixedEngine_Branch_E7DC    ; E87B 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E87E:
+IncrementAudioSequenceSignal:
         inc     $6BF9                           ; E87E EE F9 6B                 ..k
         jmp     UpperFixedEngine_Branch_E7DC    ; E881 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E884:
+SetAudioChannelSignal:
         jsr     ReadAudioSequenceByte           ; E884 20 71 E7                  q.
         sta     $6BFA,y                         ; E887 99 FA 6B                 ..k
         jmp     UpperFixedEngine_Branch_E7DC    ; E88A 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E88D:
-        jsr     UpperFixedEngine_Entry_E893     ; E88D 20 93 E8                  ..
+EnableAudioSequencePause:
+        jsr     SetAudioSequencePauseFlag       ; E88D 20 93 E8                  ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E890 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E893:
+SetAudioSequencePauseFlag:
         lda     #$20                            ; E893 A9 20                    .
         ora     $B0                             ; E895 05 B0                    ..
         sta     $B0                             ; E897 85 B0                    ..
         rts                                     ; E899 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E89A:
+SetAudioPitchLowNibble:
         jsr     ReadAudioSequenceByte           ; E89A 20 71 E7                  q.
         and     #$0F                            ; E89D 29 0F                    ).
         sta     $10                             ; E89F 85 10                    ..
@@ -6090,13 +6090,13 @@ UpperFixedEngine_Entry_E89A:
         sta     $B1,y                           ; E8A8 99 B1 00                 ...
         jmp     UpperFixedEngine_Branch_E7DC    ; E8AB 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8AE:
+WriteAudioPulseSweep:
         jsr     ReadAudioSequenceByte           ; E8AE 20 71 E7                  q.
         ldx     $EC7F,y                         ; E8B1 BE 7F EC                 ...
         sta     $4001,x                         ; E8B4 9D 01 40                 ..@
         jmp     UpperFixedEngine_Branch_E7DC    ; E8B7 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8BA:
+ConfigureAudioPitchModulation:
         jsr     ReadAudioSequenceByte           ; E8BA 20 71 E7                  q.
         sta     $10                             ; E8BD 85 10                    ..
         and     #$01                            ; E8BF 29 01                    ).
@@ -6112,7 +6112,7 @@ UpperFixedEngine_Branch_E8D0:
         sta     $B5,y                           ; E8D2 99 B5 00                 ...
         jmp     UpperFixedEngine_Branch_E7DC    ; E8D5 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8D8:
+SetAudioGlobalLowNibble:
         lda     $B0                             ; E8D8 A5 B0                    ..
         and     #$F0                            ; E8DA 29 F0                    ).
         sta     $10                             ; E8DC 85 10                    ..
@@ -6122,22 +6122,22 @@ UpperFixedEngine_Entry_E8D8:
         sta     $B0                             ; E8E5 85 B0                    ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E8E7 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8EA:
-        jsr     UpperFixedEngine_Entry_EEB9     ; E8EA 20 B9 EE                  ..
+IncrementAudioGlobalParameter:
+        jsr     IncrementAudioGlobalLowNibble   ; E8EA 20 B9 EE                  ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E8ED 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8F0:
-        jsr     UpperFixedEngine_Entry_EEC6     ; E8F0 20 C6 EE                  ..
+DecrementAudioGlobalParameter:
+        jsr     DecrementAudioGlobalLowNibble   ; E8F0 20 C6 EE                  ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E8F3 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E8F6:
+BeginAudioSequenceLoopTwice:
         lda     $064B,y                         ; E8F6 B9 4B 06                 .K.
         php                                     ; E8F9 08                       .
         lda     #$02                            ; E8FA A9 02                    ..
         plp                                     ; E8FC 28                       (
         jmp     UpperFixedEngine_Branch_E908    ; E8FD 4C 08 E9                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E900:
+BeginAudioSequenceLoop:
         lda     $064B,y                         ; E900 B9 4B 06                 .K.
         php                                     ; E903 08                       .
         jsr     ReadAudioSequenceByte           ; E904 20 71 E7                  q.
@@ -6164,7 +6164,7 @@ UpperFixedEngine_Branch_E927:
         jsr     ReadAudioSequenceByte           ; E927 20 71 E7                  q.
         jmp     UpperFixedEngine_Branch_E7DC    ; E92A 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E92D:
+SetAudioPitchHighNibble:
         lda     $B1,y                           ; E92D B9 B1 00                 ...
         and     #$0F                            ; E930 29 0F                    ).
         sta     $10                             ; E932 85 10                    ..
@@ -6174,36 +6174,36 @@ UpperFixedEngine_Entry_E92D:
         sta     $B1,y                           ; E93B 99 B1 00                 ...
         jmp     UpperFixedEngine_Branch_E7DC    ; E93E 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E941:
+SetAudioPitchOffset:
         jsr     ReadAudioSequenceByte           ; E941 20 71 E7                  q.
 UpperFixedEngine_Branch_E944:
         sta     $6BFE,x                         ; E944 9D FE 6B                 ..k
         jmp     UpperFixedEngine_Branch_E7DC    ; E947 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E94A:
+AddAudioPitchOffset:
         jsr     ReadAudioSequenceByte           ; E94A 20 71 E7                  q.
         clc                                     ; E94D 18                       .
         adc     $6BFE,x                         ; E94E 7D FE 6B                 }.k
         jmp     UpperFixedEngine_Branch_E944    ; E951 4C 44 E9                 LD.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E954:
+EnableAudioChannelMask:
         lda     $EAF0,y                         ; E954 B9 F0 EA                 ...
         ora     $B0                             ; E957 05 B0                    ..
         sta     $B0                             ; E959 85 B0                    ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E95B 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E95E:
+DisableAudioChannelMask:
         lda     $EAF6,y                         ; E95E B9 F6 EA                 ...
         and     $B0                             ; E961 25 B0                    %.
         sta     $B0                             ; E963 85 B0                    ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E965 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E968:
+SetAudioDurationScale:
         jsr     ReadAudioSequenceByte           ; E968 20 71 E7                  q.
         sta     $BC                             ; E96B 85 BC                    ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E96D 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E970:
+CallAudioSequenceSubroutine:
         jsr     ReadAudioSequenceByte           ; E970 20 71 E7                  q.
         pha                                     ; E973 48                       H
         jsr     ReadAudioSequenceByte           ; E974 20 71 E7                  q.
@@ -6221,7 +6221,7 @@ UpperFixedEngine_Branch_E987:
         sta     $A6,x                           ; E98A 95 A6                    ..
         jmp     UpperFixedEngine_Branch_E7DC    ; E98C 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_E98F:
+ReturnFromAudioSequenceSubroutine:
         lda     $0634,x                         ; E98F BD 34 06                 .4.
         sta     $A6,x                           ; E992 95 A6                    ..
         lda     $0635,x                         ; E994 BD 35 06                 .5.
@@ -6307,7 +6307,7 @@ UpperFixedEngine_Branch_EA16:
         ldy     #$01                            ; EA2B A0 01                    ..
         sty     $A4                             ; EA2D 84 A4                    ..
         stx     $A5                             ; EA2F 86 A5                    ..
-        jsr     UpperFixedEngine_Entry_EC59     ; EA31 20 59 EC                  Y.
+        jsr     WriteAudioChannelPeriod         ; EA31 20 59 EC                  Y.
         ldx     #$08                            ; EA34 A2 08                    ..
         ldy     #$04                            ; EA36 A0 04                    ..
         sty     $A4                             ; EA38 84 A4                    ..
@@ -6370,7 +6370,7 @@ UpperFixedEngine_Branch_EA99:
         sta     $10                             ; EAA3 85 10                    ..
         dec     $11                             ; EAA5 C6 11                    ..
         inc     $10                             ; EAA7 E6 10                    ..
-        jsr     UpperFixedEngine_Entry_EE8C     ; EAA9 20 8C EE                  ..
+        jsr     ComputeRaisedAudioEnvelopeLevel ; EAA9 20 8C EE                  ..
         cmp     #$00                            ; EAAC C9 00                    ..
         bne     UpperFixedEngine_Branch_EABA    ; EAAE D0 0A                    ..
 UpperFixedEngine_Branch_EAB0:
@@ -6384,7 +6384,7 @@ UpperFixedEngine_Branch_EABA:
         bne     UpperFixedEngine_Branch_EAE2    ; EAC0 D0 20                    .
         lda     #$FF                            ; EAC2 A9 FF                    ..
         sta     $0646,y                         ; EAC4 99 46 06                 .F.
-        jsr     UpperFixedEngine_Entry_ED69     ; EAC7 20 69 ED                  i.
+        jsr     SilenceAudioChannel             ; EAC7 20 69 ED                  i.
         ldy     $A4                             ; EACA A4 A4                    ..
         cpy     #$04                            ; EACC C0 04                    ..
         bne     UpperFixedEngine_Branch_EAE1    ; EACE D0 11                    ..
@@ -6413,7 +6413,7 @@ UpperFixedEngine_Branch_EAEF:
         db   $80,$40,$20,$10,$08             ; EAF1 80 40 20 10 08           .@ ..
         db   $FF,$7F,$BF,$DF,$EF,$F7         ; EAF6 FF 7F BF DF EF F7        ......
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EAFC:
+UpdateApuChannelRegisters:
         sty     $A4                             ; EAFC 84 A4                    ..
         stx     $A5                             ; EAFE 86 A5                    ..
         lda     #$00                            ; EB00 A9 00                    ..
@@ -6534,7 +6534,7 @@ UpperFixedEngine_Branch_EBB4:
         lda     $0646,y                         ; EBBB B9 46 06                 .F.
         cmp     #$FF                            ; EBBE C9 FF                    ..
         beq     UpperFixedEngine_Branch_EB95    ; EBC0 F0 D3                    ..
-        jsr     UpperFixedEngine_Entry_ED4B     ; EBC2 20 4B ED                  K.
+        jsr     ComputeAudioPeriodTableIndex    ; EBC2 20 4B ED                  K.
         lda     Bank1F_AudioPeriodTable,x       ; EBC5 BD 85 EC                 ...
         sta     $10                             ; EBC8 85 10                    ..
         sta     $A2                             ; EBCA 85 A2                    ..
@@ -6605,7 +6605,7 @@ UpperFixedEngine_Branch_EC10:
         sta     $4002,y                         ; EC41 99 02 40                 ..@
         rts                                     ; EC44 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EC45:
+ReturnIfAudioNoteUnchanged:
         ldx     $A5                             ; EC45 A6 A5                    ..
         lda     $0620,x                         ; EC47 BD 20 06                 . .
         cmp     $0621,x                         ; EC4A DD 21 06                 .!.
@@ -6617,11 +6617,11 @@ UpperFixedEngine_Branch_EC50:
         lda     $B4                             ; EC52 A5 B4                    ..
         and     $EAF1,y                         ; EC54 39 F1 EA                 9..
         beq     UpperFixedEngine_Branch_EC7E    ; EC57 F0 25                    .%
-UpperFixedEngine_Entry_EC59:
+WriteAudioChannelPeriod:
         lda     $0646,y                         ; EC59 B9 46 06                 .F.
         cmp     #$FF                            ; EC5C C9 FF                    ..
         beq     UpperFixedEngine_Branch_EC7E    ; EC5E F0 1E                    ..
-        jsr     UpperFixedEngine_Entry_ED4B     ; EC60 20 4B ED                  K.
+        jsr     ComputeAudioPeriodTableIndex    ; EC60 20 4B ED                  K.
         lda     Bank1F_AudioPeriodTable,x       ; EC63 BD 85 EC                 ...
         sta     $10                             ; EC66 85 10                    ..
         lda     $EC86,x                         ; EC68 BD 86 EC                 ...
@@ -6666,7 +6666,7 @@ Bank1F_AudioPeriodTable:
         db   $00,$20,$00,$20,$00,$20,$00,$20 ; ED3E 00 20 00 20 00 20 00 20  . . . .
         db   $00,$20,$00,$20,$00             ; ED46 00 20 00 20 00           . . .
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_ED4B:
+ComputeAudioPeriodTableIndex:
         clc                                     ; ED4B 18                       .
         adc     #$03                            ; ED4C 69 03                    i.
         cpy     #$04                            ; ED4E C0 04                    ..
@@ -6687,7 +6687,7 @@ UpperFixedEngine_Branch_ED66:
         tax                                     ; ED67 AA                       .
         rts                                     ; ED68 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_ED69:
+SilenceAudioChannel:
         ldy     $A4                             ; ED69 A4 A4                    ..
         ldx     $A5                             ; ED6B A6 A5                    ..
         lda     #$B0                            ; ED6D A9 B0                    ..
@@ -6744,7 +6744,7 @@ UpperFixedEngine_Branch_EDC1:
         lda     $B0                             ; EDCF A5 B0                    ..
         and     #$0F                            ; EDD1 29 0F                    ).
         sta     $11                             ; EDD3 85 11                    ..
-        jsr     UpperFixedEngine_Entry_EE8E     ; EDD5 20 8E EE                  ..
+        jsr     ComputeAudioEnvelopeLevel       ; EDD5 20 8E EE                  ..
 UpperFixedEngine_Branch_EDD8:
         jmp     UpperFixedEngine_Branch_EE68    ; EDD8 4C 68 EE                 Lh.
 ; ----------------------------------------------------------------------------
@@ -6766,7 +6766,7 @@ UpperFixedEngine_Branch_EDDE:
         lsr     a                               ; EDF2 4A                       J
         sta     $11                             ; EDF3 85 11                    ..
         beq     UpperFixedEngine_Branch_EDFC    ; EDF5 F0 05                    ..
-        jsr     UpperFixedEngine_Entry_EE8C     ; EDF7 20 8C EE                  ..
+        jsr     ComputeRaisedAudioEnvelopeLevel ; EDF7 20 8C EE                  ..
         sta     $10                             ; EDFA 85 10                    ..
 UpperFixedEngine_Branch_EDFC:
         lda     $063C,x                         ; EDFC BD 3C 06                 .<.
@@ -6828,7 +6828,7 @@ UpperFixedEngine_Branch_EE58:
         beq     UpperFixedEngine_Branch_EE6A    ; EE5F F0 09                    ..
         and     #$0F                            ; EE61 29 0F                    ).
         sta     $11                             ; EE63 85 11                    ..
-        jsr     UpperFixedEngine_Entry_EE8C     ; EE65 20 8C EE                  ..
+        jsr     ComputeRaisedAudioEnvelopeLevel ; EE65 20 8C EE                  ..
 UpperFixedEngine_Branch_EE68:
         and     #$0F                            ; EE68 29 0F                    ).
 UpperFixedEngine_Branch_EE6A:
@@ -6851,9 +6851,9 @@ UpperFixedEngine_Branch_EE7A:
 ; ----------------------------------------------------------------------------
         db   $82,$82,$02,$00,$02             ; EE87 82 82 02 00 02           .....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EE8C:
+ComputeRaisedAudioEnvelopeLevel:
         inc     $11                             ; EE8C E6 11                    ..
-UpperFixedEngine_Entry_EE8E:
+ComputeAudioEnvelopeLevel:
         lda     $10                             ; EE8E A5 10                    ..
         eor     #$FF                            ; EE90 49 FF                    I.
         sta     $10                             ; EE92 85 10                    ..
@@ -6884,7 +6884,7 @@ UpperFixedEngine_Branch_EEB1:
 UpperFixedEngine_Branch_EEB8:
         rts                                     ; EEB8 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EEB9:
+IncrementAudioGlobalLowNibble:
         ldx     $B0                             ; EEB9 A6 B0                    ..
         inx                                     ; EEBB E8                       .
         txa                                     ; EEBC 8A                       .
@@ -6895,7 +6895,7 @@ UpperFixedEngine_Branch_EEC3:
         ldx     $A5                             ; EEC3 A6 A5                    ..
         rts                                     ; EEC5 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EEC6:
+DecrementAudioGlobalLowNibble:
         ldx     $B0                             ; EEC6 A6 B0                    ..
         dex                                     ; EEC8 CA                       .
         txa                                     ; EEC9 8A                       .
@@ -6916,7 +6916,7 @@ UpperFixedEngine_Branch_EED5:
         sta     $B0                             ; EEDF 85 B0                    ..
         rts                                     ; EEE1 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EEE2:
+AdvanceAudioFadeState:
         bit     $BB                             ; EEE2 24 BB                    $.
         bvc     UpperFixedEngine_Branch_EF0B    ; EEE4 50 25                    P%
         ldx     $BB                             ; EEE6 A6 BB                    ..
@@ -6932,10 +6932,10 @@ UpperFixedEngine_Entry_EEE2:
         lda     $B0                             ; EEF7 A5 B0                    ..
         and     #$0F                            ; EEF9 29 0F                    ).
         beq     UpperFixedEngine_Branch_EF0C    ; EEFB F0 0F                    ..
-        jmp     UpperFixedEngine_Entry_EEC6     ; EEFD 4C C6 EE                 L..
+        jmp     DecrementAudioGlobalLowNibble   ; EEFD 4C C6 EE                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_EF00:
-        jsr     UpperFixedEngine_Entry_EEB9     ; EF00 20 B9 EE                  ..
+        jsr     IncrementAudioGlobalLowNibble   ; EF00 20 B9 EE                  ..
         lda     $B0                             ; EF03 A5 B0                    ..
         and     #$0F                            ; EF05 29 0F                    ).
         cmp     #$0F                            ; EF07 C9 0F                    ..
@@ -6984,8 +6984,8 @@ UpperFixedEngine_Branch_EF34:
 UpperFixedEngine_Branch_EF58:
         jmp     UpperFixedEngine_Branch_F083    ; EF58 4C 83 F0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_EF5B:
-        jsr     UpperFixedEngine_Entry_F07A     ; EF5B 20 7A F0                  z.
+StartAudioTrack:
+        jsr     ClearAudioRestartFlag           ; EF5B 20 7A F0                  z.
         tax                                     ; EF5E AA                       .
         asl     a                               ; EF5F 0A                       .
         bcs     UpperFixedEngine_Branch_EF11    ; EF60 B0 AF                    ..
@@ -7026,7 +7026,7 @@ UpperFixedEngine_Branch_EF93:
 UpperFixedEngine_Branch_EFA1:
         lda     ($00),y                         ; EFA1 B1 00                    ..
         sta     $24                             ; EFA3 85 24                    .$
-        jsr     UpperFixedEngine_Entry_C3CE     ; EFA5 20 CE C3                  ..
+        jsr     ResolveBankedPointerIntoZeroPage; EFA5 20 CE C3                  ..
         iny                                     ; EFA8 C8                       .
         iny                                     ; EFA9 C8                       .
         inx                                     ; EFAA E8                       .
@@ -7122,18 +7122,18 @@ UpperFixedEngine_Branch_F029:
         sta     $00                             ; F04C 85 00                    ..
         jmp     UpperFixedEngine_Branch_F083    ; F04E 4C 83 F0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F051:
-        jsr     UpperFixedEngine_Entry_F057     ; F051 20 57 F0                  W.
+SignalAudioSequenceCompletion:
+        jsr     SetAudioSequenceCompletionFlags ; F051 20 57 F0                  W.
         jmp     UpperFixedEngine_Branch_E7DC    ; F054 4C DC E7                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F057:
+SetAudioSequenceCompletionFlags:
         lda     #$45                            ; F057 A9 45                    .E
         ora     $BB                             ; F059 05 BB                    ..
         sta     $BB                             ; F05B 85 BB                    ..
         rts                                     ; F05D 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_F05E:
-        jsr     UpperFixedEngine_Entry_F07A     ; F05E 20 7A F0                  z.
+        jsr     ClearAudioRestartFlag           ; F05E 20 7A F0                  z.
         asl     a                               ; F061 0A                       .
         cmp     $BF                             ; F062 C5 BF                    ..
         beq     UpperFixedEngine_Branch_F071    ; F064 F0 0B                    ..
@@ -7149,7 +7149,7 @@ UpperFixedEngine_Branch_F071:
         sta     $BB                             ; F075 85 BB                    ..
         jmp     UpperFixedEngine_Branch_F083    ; F077 4C 83 F0                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F07A:
+ClearAudioRestartFlag:
         pha                                     ; F07A 48                       H
         lda     $BF                             ; F07B A5 BF                    ..
         and     #$FE                            ; F07D 29 FE                    ).
@@ -7178,9 +7178,9 @@ ResetApuChannels:
         sta     $BD                             ; F0A4 85 BD                    ..
         lda     #$00                            ; F0A6 A9 00                    ..
         sta     $BB                             ; F0A8 85 BB                    ..
-        jsr     UpperFixedEngine_Entry_EF5B     ; F0AA 20 5B EF                  [.
+        jsr     StartAudioTrack                 ; F0AA 20 5B EF                  [.
         lda     #$80                            ; F0AD A9 80                    ..
-        jsr     UpperFixedEngine_Entry_EF5B     ; F0AF 20 5B EF                  [.
+        jsr     StartAudioTrack                 ; F0AF 20 5B EF                  [.
         cli                                     ; F0B2 58                       X
         rts                                     ; F0B3 60                       `
 ; ----------------------------------------------------------------------------
@@ -7195,7 +7195,7 @@ UpperFixedEngine_Branch_F0BD:
         beq     UpperFixedEngine_Branch_F0BD    ; F0C4 F0 F7                    ..
         rts                                     ; F0C6 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F0C7:
+WaitForAudioCompletionOrButton:
         jsr     WaitForNmi                      ; F0C7 20 74 FF                  t.
         jsr     WaitForNmi                      ; F0CA 20 74 FF                  t.
         jsr     WaitForNmi                      ; F0CD 20 74 FF                  t.
@@ -7211,7 +7211,7 @@ UpperFixedEngine_Branch_F0D0:
 UpperFixedEngine_Branch_F0E2:
         rts                                     ; F0E2 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F0E3:
+SelectAudioSequenceBank:
         lda     $6BFC                           ; F0E3 AD FC 6B                 ..k
         bne     UpperFixedEngine_Branch_F0EA    ; F0E6 D0 02                    ..
         lda     #$19                            ; F0E8 A9 19                    ..
@@ -7219,20 +7219,20 @@ UpperFixedEngine_Branch_F0EA:
         cmp     $6E86                           ; F0EA CD 86 6E                 ..n
         beq     UpperFixedEngine_Branch_F0F5    ; F0ED F0 06                    ..
         sta     $6E86                           ; F0EF 8D 86 6E                 ..n
-        jsr     UpperFixedEngine_Entry_FF94     ; F0F2 20 94 FF                  ..
+        jsr     ApplyCurrentPrgBankSelection    ; F0F2 20 94 FF                  ..
 UpperFixedEngine_Branch_F0F5:
         rts                                     ; F0F5 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F0F6:
+SelectDefaultAudioSequenceBank:
         lda     #$19                            ; F0F6 A9 19                    ..
         cmp     $6E86                           ; F0F8 CD 86 6E                 ..n
         beq     UpperFixedEngine_Branch_F103    ; F0FB F0 06                    ..
         sta     $6E86                           ; F0FD 8D 86 6E                 ..n
-        jsr     UpperFixedEngine_Entry_FF94     ; F100 20 94 FF                  ..
+        jsr     ApplyCurrentPrgBankSelection    ; F100 20 94 FF                  ..
 UpperFixedEngine_Branch_F103:
         rts                                     ; F103 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F104:
+InitializeChapterSelectionMenu:
         lda     #$26                            ; F104 A9 26                    .&
         sta     $04F3                           ; F106 8D F3 04                 ...
         lda     #$55                            ; F109 A9 55                    .U
@@ -7246,15 +7246,15 @@ UpperFixedEngine_Branch_F110:
         brk                                     ; F119 00                       .
         db   $12,$DF                         ; F11A 12 DF                    ..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F11C:
+RunChapterSelectionLoop:
         jsr     ReadControllers                 ; F11C 20 EC C8                  ..
-        jsr     UpperFixedEngine_Entry_F12E     ; F11F 20 2E F1                  ..
-        jsr     UpperFixedEngine_Entry_F158     ; F122 20 58 F1                  X.
-        jsr     UpperFixedEngine_Entry_F182     ; F125 20 82 F1                  ..
-        jsr     UpperFixedEngine_Entry_F190     ; F128 20 90 F1                  ..
-        jmp     UpperFixedEngine_Entry_F11C     ; F12B 4C 1C F1                 L..
+        jsr     DrawChapterSelectionCursor      ; F11F 20 2E F1                  ..
+        jsr     HandleChapterSelectionHorizontalInput; F122 20 58 F1             X.
+        jsr     AcceptChapterSelection          ; F125 20 82 F1                  ..
+        jsr     CancelChapterSelection          ; F128 20 90 F1                  ..
+        jmp     RunChapterSelectionLoop         ; F12B 4C 1C F1                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F12E:
+DrawChapterSelectionCursor:
         lda     #$0B                            ; F12E A9 0B                    ..
         sta     $00                             ; F130 85 00                    ..
         lda     #$0C                            ; F132 A9 0C                    ..
@@ -7279,7 +7279,7 @@ UpperFixedEngine_Branch_F138:
         jsr     QueueNametableTileUpdate        ; F152 20 5A C6                  Z.
         jmp     RequestPpuUpdateAndWait         ; F155 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F158:
+HandleChapterSelectionHorizontalInput:
         lda     ButtonsPressed                  ; F158 A5 14                    ..
         asl     a                               ; F15A 0A                       .
         bcc     UpperFixedEngine_Branch_F16B    ; F15B 90 0E                    ..
@@ -7287,7 +7287,7 @@ UpperFixedEngine_Entry_F158:
         cmp     #$04                            ; F160 C9 04                    ..
         beq     UpperFixedEngine_Branch_F16B    ; F162 F0 07                    ..
         inc     SaveCurrentChapterMinus1        ; F164 EE 5A 61                 .Za
-        jsr     UpperFixedEngine_Entry_F17A     ; F167 20 7A F1                  z.
+        jsr     RedrawChapterSelectionCursor    ; F167 20 7A F1                  z.
         rts                                     ; F16A 60                       `
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_F16B:
@@ -7296,16 +7296,16 @@ UpperFixedEngine_Branch_F16B:
         lda     SaveCurrentChapterMinus1        ; F16E AD 5A 61                 .Za
         beq     UpperFixedEngine_Branch_F179    ; F171 F0 06                    ..
         dec     SaveCurrentChapterMinus1        ; F173 CE 5A 61                 .Za
-        jsr     UpperFixedEngine_Entry_F17A     ; F176 20 7A F1                  z.
+        jsr     RedrawChapterSelectionCursor    ; F176 20 7A F1                  z.
 UpperFixedEngine_Branch_F179:
         rts                                     ; F179 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F17A:
-        jsr     UpperFixedEngine_Entry_F12E     ; F17A 20 2E F1                  ..
+RedrawChapterSelectionCursor:
+        jsr     DrawChapterSelectionCursor      ; F17A 20 2E F1                  ..
         ldx     #$0A                            ; F17D A2 0A                    ..
         jmp     WaitFrames                      ; F17F 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F182:
+AcceptChapterSelection:
         lda     ButtonsPressed                  ; F182 A5 14                    ..
         lsr     a                               ; F184 4A                       J
         bcc     UpperFixedEngine_Branch_F18F    ; F185 90 08                    ..
@@ -7318,7 +7318,7 @@ UpperFixedEngine_Entry_F182:
 UpperFixedEngine_Branch_F18F:
         rts                                     ; F18F 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F190:
+CancelChapterSelection:
         lda     ButtonsPressed                  ; F190 A5 14                    ..
         and     #$02                            ; F192 29 02                    ).
         beq     UpperFixedEngine_Branch_F19A    ; F194 F0 04                    ..
@@ -7335,15 +7335,15 @@ Bank1F_UiTemplate:
         db   $84,$00,$02,$00,$03,$00,$04,$00 ; F1B3 84 00 02 00 03 00 04 00  ........
         db   $05,$00,$06,$88                 ; F1BB 05 00 06 88              ....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F1BF:
+RunFixedGraphicsReveal:
         ldx     #$14                            ; F1BF A2 14                    ..
         jsr     WaitFrames                      ; F1C1 20 0C C9                  ..
         brk                                     ; F1C4 00                       .
         db   $9D,$FB                         ; F1C5 9D FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_F271     ; F1C7 20 71 F2                  q.
+        jsr     InitializeFixedGraphicsReveal   ; F1C7 20 71 F2                  q.
 UpperFixedEngine_Branch_F1CA:
-        jsr     UpperFixedEngine_Entry_F1F6     ; F1CA 20 F6 F1                  ..
+        jsr     QueueFixedRevealGraphicsBlock   ; F1CA 20 F6 F1                  ..
         lda     $1F                             ; F1CD A5 1F                    ..
         ora     #$40                            ; F1CF 09 40                    .@
         sta     $1F                             ; F1D1 85 1F                    ..
@@ -7357,16 +7357,16 @@ UpperFixedEngine_Branch_F1CA:
         lda     $51                             ; F1E3 A5 51                    .Q
         cmp     #$05                            ; F1E5 C9 05                    ..
         bcc     UpperFixedEngine_Branch_F1CA    ; F1E7 90 E1                    ..
-        jsr     UpperFixedEngine_Entry_F29E     ; F1E9 20 9E F2                  ..
-        jsr     UpperFixedEngine_Entry_F231     ; F1EC 20 31 F2                  1.
-        jsr     UpperFixedEngine_Entry_F2B3     ; F1EF 20 B3 F2                  ..
+        jsr     LoadFixedRevealTileValues       ; F1E9 20 9E F2                  ..
+        jsr     InitializeFixedRevealPpuRows    ; F1EC 20 31 F2                  1.
+        jsr     QueueFixedRevealAttributePalette; F1EF 20 B3 F2                  ..
         jsr     RequestPpuUpdateAndWait         ; F1F2 20 2D C6                  -.
         rts                                     ; F1F5 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F1F6:
+QueueFixedRevealGraphicsBlock:
         lda     $51                             ; F1F6 A5 51                    .Q
         bne     UpperFixedEngine_Branch_F1FD    ; F1F8 D0 03                    ..
-        jsr     UpperFixedEngine_Entry_F231     ; F1FA 20 31 F2                  1.
+        jsr     InitializeFixedRevealPpuRows    ; F1FA 20 31 F2                  1.
 UpperFixedEngine_Branch_F1FD:
         ldx     $050A                           ; F1FD AE 0A 05                 ...
         lda     #$9F                            ; F200 A9 9F                    ..
@@ -7397,7 +7397,7 @@ UpperFixedEngine_Branch_F214:
 UpperFixedEngine_Branch_F230:
         rts                                     ; F230 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F231:
+InitializeFixedRevealPpuRows:
         ldx     $050A                           ; F231 AE 0A 05                 ...
         lda     $1C                             ; F234 A5 1C                    ..
         ora     #$80                            ; F236 09 80                    ..
@@ -7425,14 +7425,14 @@ UpperFixedEngine_Entry_F231:
         stx     $050A                           ; F26D 8E 0A 05                 ...
         rts                                     ; F270 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F271:
+InitializeFixedGraphicsReveal:
         lda     #$00                            ; F271 A9 00                    ..
         sta     $51                             ; F273 85 51                    .Q
         lda     $F29C                           ; F275 AD 9C F2                 ...
         sta     $49                             ; F278 85 49                    .I
         lda     $F29D                           ; F27A AD 9D F2                 ...
         sta     $4A                             ; F27D 85 4A                    .J
-        jsr     UpperFixedEngine_Entry_F293     ; F27F 20 93 F2                  ..
+        jsr     SetFixedGraphicsRevealOrigin    ; F27F 20 93 F2                  ..
         jsr     ComputeNametableTileAddress     ; F282 20 62 C6                  b.
         ldx     #$FC                            ; F285 A2 FC                    ..
         stx     $52                           ; F287 86 52                    .R
@@ -7444,7 +7444,7 @@ UpperFixedEngine_Entry_F271:
         stx     $55                             ; F290 86 55                    .U
         rts                                     ; F292 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F293:
+SetFixedGraphicsRevealOrigin:
         lda     #$10                            ; F293 A9 10                    ..
         sta     $00                             ; F295 85 00                    ..
         lda     #$0C                            ; F297 A9 0C                    ..
@@ -7454,7 +7454,7 @@ UpperFixedEngine_Entry_F293:
         db   $BB                             ; F29C BB                       .
         db   $F2                             ; F29D F2                       .
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F29E:
+LoadFixedRevealTileValues:
         lda     $7608                           ; F29E AD 08 76                 ..v
         sta     $52                           ; F2A1 85 52                    .R
         lda     $7609                           ; F2A3 AD 09 76                 ..v
@@ -7465,8 +7465,8 @@ UpperFixedEngine_Entry_F29E:
         sta     $55                             ; F2B0 85 55                    .U
         rts                                     ; F2B2 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F2B3:
-        jsr     UpperFixedEngine_Entry_F293     ; F2B3 20 93 F2                  ..
+QueueFixedRevealAttributePalette:
+        jsr     SetFixedGraphicsRevealOrigin    ; F2B3 20 93 F2                  ..
         lda     #$02                            ; F2B6 A9 02                    ..
         jmp     QueueNametableAttributeUpdate   ; F2B8 4C 27 C7                 L'.
 ; ----------------------------------------------------------------------------
@@ -7511,16 +7511,16 @@ UpperFixedEngine_Entry_F2B3:
         db   $FB,$DF,$FF,$FF,$E4,$D2,$B0,$83 ; F3EB FB DF FF FF E4 D2 B0 83  ........
         db   $FB,$DF,$FF,$FF,$E4,$C9,$84,$83 ; F3F3 FB DF FF FF E4 C9 84 83  ........
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F3FB:
+UploadFixedGraphicsPages:
         stx     $05                             ; F3FB 86 05                    ..
         txa                                     ; F3FD 8A                       .
-        beq     UpperFixedEngine_Entry_F405     ; F3FE F0 05                    ..
-        jsr     UpperFixedEngine_Entry_F405     ; F400 20 05 F4                  ..
+        beq     UploadFixedGraphicsPage         ; F3FE F0 05                    ..
+        jsr     UploadFixedGraphicsPage         ; F400 20 05 F4                  ..
         dec     $05                             ; F403 C6 05                    ..
-UpperFixedEngine_Entry_F405:
-        jsr     UpperFixedEngine_Entry_F453     ; F405 20 53 F4                  S.
+UploadFixedGraphicsPage:
+        jsr     InitializeFixedGraphicsPagePointers; F405 20 53 F4               S.
 UpperFixedEngine_Branch_F408:
-        jsr     UpperFixedEngine_Entry_F41B     ; F408 20 1B F4                  ..
+        jsr     WriteFixedGraphicsColumnRuns    ; F408 20 1B F4                  ..
         lda     $00                             ; F40B A5 00                    ..
         clc                                     ; F40D 18                       .
         adc     #$10                            ; F40E 69 10                    i.
@@ -7532,7 +7532,7 @@ UpperFixedEngine_Branch_F416:
         bne     UpperFixedEngine_Branch_F408    ; F418 D0 EE                    ..
         rts                                     ; F41A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F41B:
+WriteFixedGraphicsColumnRuns:
         ldx     $05                             ; F41B A6 05                    ..
         beq     UpperFixedEngine_Branch_F421    ; F41D F0 02                    ..
         ldx     #$03                            ; F41F A2 03                    ..
@@ -7562,7 +7562,7 @@ UpperFixedEngine_Branch_F43E:
         db   $02,$05,$00,$07,$09,$00,$09,$05 ; F447 02 05 00 07 09 00 09 05  ........
         db   $00,$00,$10,$FF                 ; F44F 00 00 10 FF              ....
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_F453:
+InitializeFixedGraphicsPagePointers:
         ldx     $05                             ; F453 A6 05                    ..
         ldy     $F471,x                         ; F455 BC 71 F4                 .q.
         ldx     #$03                            ; F458 A2 03                    ..
@@ -7887,32 +7887,32 @@ Bank1F_FixedGraphics:
         db   $00,$A0,$14,$00,$44,$00,$20,$00 ; FDEB 00 A0 14 00 44 00 20 00  ....D. .
         db   $01,$80,$00,$00,$00,$00,$00,$00 ; FDF3 01 80 00 00 00 00 00 00  ........
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FDFB:
-        jsr     UpperFixedEngine_Entry_FE6B     ; FDFB 20 6B FE                  k.
-        jsr     UpperFixedEngine_Entry_FE52     ; FDFE 20 52 FE                  R.
-        jsr     UpperFixedEngine_Entry_FE27     ; FE01 20 27 FE                  '.
-        jsr     UpperFixedEngine_Entry_FE52     ; FE04 20 52 FE                  R.
-        jsr     UpperFixedEngine_Entry_FE0B     ; FE07 20 0B FE                  ..
+RunFourSpritePresentationEffect:
+        jsr     QueuePresentationEffectGraphics ; FDFB 20 6B FE                  k.
+        jsr     MoveFourEffectSpritesLeft       ; FDFE 20 52 FE                  R.
+        jsr     InstallFourEffectSpriteTiles    ; FE01 20 27 FE                  '.
+        jsr     MoveFourEffectSpritesLeft       ; FE04 20 52 FE                  R.
+        jsr     MoveFourEffectSpritesRight      ; FE07 20 0B FE                  ..
         rts                                     ; FE0A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE0B:
+MoveFourEffectSpritesRight:
         ldx     #$08                            ; FE0B A2 08                    ..
 UpperFixedEngine_Branch_FE0D:
-        jsr     UpperFixedEngine_Entry_FE1A     ; FE0D 20 1A FE                  ..
-        jsr     UpperFixedEngine_Entry_FE1A     ; FE10 20 1A FE                  ..
+        jsr     IncrementFourEffectSpriteX      ; FE0D 20 1A FE                  ..
+        jsr     IncrementFourEffectSpriteX      ; FE10 20 1A FE                  ..
         jsr     WaitForNmi                      ; FE13 20 74 FF                  t.
         dex                                     ; FE16 CA                       .
         bne     UpperFixedEngine_Branch_FE0D    ; FE17 D0 F4                    ..
         rts                                     ; FE19 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE1A:
+IncrementFourEffectSpriteX:
         inc     $0210                           ; FE1A EE 10 02                 ...
         inc     $0214                           ; FE1D EE 14 02                 ...
         inc     $0218                           ; FE20 EE 18 02                 ...
         inc     $021C                           ; FE23 EE 1C 02                 ...
         rts                                     ; FE26 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE27:
+InstallFourEffectSpriteTiles:
         ldy     #$10                            ; FE27 A0 10                    ..
         ldx     #$00                            ; FE29 A2 00                    ..
 UpperFixedEngine_Branch_FE2B:
@@ -7933,23 +7933,23 @@ UpperFixedEngine_Branch_FE2B:
         db   $00,$01,$00,$41,$01,$01,$01,$41 ; FE42 00 01 00 41 01 01 01 41  ...A...A
         db   $02,$02,$02,$42,$03,$02,$03,$42 ; FE4A 02 02 02 42 03 02 03 42  ...B...B
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE52:
+MoveFourEffectSpritesLeft:
         ldx     #$10                            ; FE52 A2 10                    ..
 UpperFixedEngine_Branch_FE54:
-        jsr     UpperFixedEngine_Entry_FE5E     ; FE54 20 5E FE                  ^.
+        jsr     DecrementFourEffectSpriteX      ; FE54 20 5E FE                  ^.
         jsr     WaitForNmi                      ; FE57 20 74 FF                  t.
         dex                                     ; FE5A CA                       .
         bne     UpperFixedEngine_Branch_FE54    ; FE5B D0 F7                    ..
         rts                                     ; FE5D 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE5E:
+DecrementFourEffectSpriteX:
         dec     $0210                           ; FE5E CE 10 02                 ...
         dec     $0214                           ; FE61 CE 14 02                 ...
         dec     $0218                           ; FE64 CE 18 02                 ...
         dec     $021C                           ; FE67 CE 1C 02                 ...
         rts                                     ; FE6A 60                       `
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FE6B:
+QueuePresentationEffectGraphics:
         lda     #$80                            ; FE6B A9 80                    ..
         sta     $0300                           ; FE6D 8D 00 03                 ...
         lda     #$40                            ; FE70 A9 40                    .@
@@ -7975,7 +7975,7 @@ UpperFixedEngine_Branch_FE7C:
         db   $17,$23,$03,$03,$3F,$3F,$3F,$1E ; FEBD 17 23 03 03 3F 3F 3F 1E  .#..???.
         db   $1F,$3D,$3D,$3D,$3D,$15,$3F,$00 ; FEC5 1F 3D 3D 3D 3D 15 3F 00  .====.?.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FECD:
+InitializeRasterScrollEffect:
         lda     $0508                           ; FECD AD 08 05                 ...
         sta     $7B                             ; FED0 85 7B                    .{
         sta     $7C                             ; FED2 85 7C                    .|
@@ -8006,7 +8006,7 @@ UpperFixedEngine_Branch_FEFF:
         inc     $050B                           ; FF0A EE 0B 05                 ...
         jmp     RequestPpuUpdate                ; FF0D 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
-UpperFixedEngine_Entry_FF10:
+AdvanceRasterScrollEffect:
         ldy     #$02                            ; FF10 A0 02                    ..
         ldx     #$00                            ; FF12 A2 00                    ..
 UpperFixedEngine_Branch_FF14:
@@ -8067,7 +8067,7 @@ UpperFixedEngine_Branch_FF77:
         beq     UpperFixedEngine_Branch_FF77    ; FF7E F0 F7                    ..
         nop                                     ; FF80 EA                       .
         nop                                     ; FF81 EA                       .
-        jsr     UpperFixedEngine_Entry_C913     ; FF82 20 13 C9                  ..
+        jsr     PreserveRegistersAndRotateOam   ; FF82 20 13 C9                  ..
         rts                                     ; FF85 60                       `
 ; ----------------------------------------------------------------------------
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; FF86 FF FF FF FF FF FF FF FF  ........
@@ -8076,7 +8076,7 @@ UpperFixedEngine_Branch_FF77:
 ; ----------------------------------------------------------------------------
 SelectPrgBank:
         sta     $0507                           ; FF91 8D 07 05                 ...
-UpperFixedEngine_Entry_FF94:
+ApplyCurrentPrgBankSelection:
         pha                                     ; FF94 48                       H
         lda     $0501                           ; FF95 AD 01 05                 ...
         and     #$EF                            ; FF98 29 EF                    ).

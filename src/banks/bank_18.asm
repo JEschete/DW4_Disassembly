@@ -822,7 +822,7 @@ Bank18_EncounterRecords:
         db   $01,$08,$FF,$FF,$24,$24,$99,$99 ; 994A 01 08 FF FF 24 24 99 99  ....$$..
         db   $99,$99,$0C,$00,$A8,$75,$00,$00 ; 9952 99 99 0C 00 A8 75 00 00  .....u..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_995A:
+InitializeBattleActionLists:
         ldx     #$6B                            ; 995A A2 6B                    .k
         lda     #$FF                            ; 995C A9 FF                    ..
 MonsterBattleFont_Branch_995E:
@@ -841,29 +841,29 @@ MonsterBattleFont_Branch_996F:
         tay                                     ; 9974 A8                       .
         lda     $727A,y                         ; 9975 B9 7A 72                 .zr
         bpl     MonsterBattleFont_Branch_997D   ; 9978 10 03                    ..
-        jsr     MonsterBattleFont_Entry_9997    ; 997A 20 97 99                  ..
+        jsr     BuildBattleActionList           ; 997A 20 97 99                  ..
 MonsterBattleFont_Branch_997D:
         dec     $7B                             ; 997D C6 7B                    .{
         bpl     MonsterBattleFont_Branch_996F   ; 997F 10 EE                    ..
         rts                                     ; 9981 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9982:
+BuildBattleActionsForSlot96:
         ldy     $96                             ; 9982 A4 96                    ..
         lda     BattleSlotDescriptors,y         ; 9984 B9 F4 72                 ..r
         and     #$0F                            ; 9987 29 0F                    ).
         tax                                     ; 9989 AA                       .
         cpy     #$04                            ; 998A C0 04                    ..
-        bcs     MonsterBattleFont_Entry_9997    ; 998C B0 09                    ..
-        jsr     MonsterBattleFont_Entry_99DE    ; 998E 20 DE 99                  ..
-MonsterBattleFont_Entry_9991:
+        bcs     BuildBattleActionList           ; 998C B0 09                    ..
+        jsr     SelectPartyBattleActionId       ; 998E 20 DE 99                  ..
+BuildDefaultBattleActionList:
         ldx     #$08                            ; 9991 A2 08                    ..
         stx     $7B                             ; 9993 86 7B                    .{
         bne     MonsterBattleFont_Branch_999A   ; 9995 D0 03                    ..
-MonsterBattleFont_Entry_9997:
-        jsr     MonsterBattleFont_Entry_99BD    ; 9997 20 BD 99                  ..
+BuildBattleActionList:
+        jsr     ResolveMonsterBattleActionSource; 9997 20 BD 99                  ..
 MonsterBattleFont_Branch_999A:
         sta     $00                             ; 999A 85 00                    ..
-        jsr     MonsterBattleFont_Entry_99F9    ; 999C 20 F9 99                  ..
+        jsr     DecodeMonsterBattleActionRecordPreserveState; 999C 20 F9 99      ..
         lda     $7B                             ; 999F A5 7B                    .{
         asl     a                               ; 99A1 0A                       .
         sta     $02                             ; 99A2 85 02                    ..
@@ -882,7 +882,7 @@ MonsterBattleFont_Branch_99AA:
         bcc     MonsterBattleFont_Branch_99AA   ; 99BA 90 EE                    ..
         rts                                     ; 99BC 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_99BD:
+ResolveMonsterBattleActionSource:
         lda     $99ED,x                         ; 99BD BD ED 99                 ...
         tay                                     ; 99C0 A8                       .
         lda     $727B,y                         ; 99C1 B9 7B 72                 .{r
@@ -904,7 +904,7 @@ MonsterBattleFont_Branch_99D4:
         lda     $7206,y                         ; 99DA B9 06 72                 ..r
         rts                                     ; 99DD 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_99DE:
+SelectPartyBattleActionId:
         brk                                     ; 99DE 00                       .
         db   $67,$73                         ; 99DF 67 73                    gs
 ; ----------------------------------------------------------------------------
@@ -922,7 +922,7 @@ MonsterBattleFont_Branch_99EC:
         db   $00,$0E,$1C,$2A,$38,$46,$54,$62 ; 99ED 00 0E 1C 2A 38 46 54 62  ...*8FTb
         db   $D3,$D4,$D5,$E9                 ; 99F5 D3 D4 D5 E9              ....
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_99F9:
+DecodeMonsterBattleActionRecordPreserveState:
         sta     $756B                           ; 99F9 8D 6B 75                 .ku
         lda     $8A                             ; 99FC A5 8A                    ..
         pha                                     ; 99FE 48                       H
@@ -935,7 +935,7 @@ MonsterBattleFont_Entry_99F9:
         lda     $87                             ; 9A08 A5 87                    ..
         pha                                     ; 9A0A 48                       H
         lda     $756B                           ; 9A0B AD 6B 75                 .ku
-        jsr     MonsterBattleFont_Entry_9A21    ; 9A0E 20 21 9A                  !.
+        jsr     DecodeMonsterBattleActionRecord ; 9A0E 20 21 9A                  !.
         pla                                     ; 9A11 68                       h
         sta     $87                             ; 9A12 85 87                    ..
         pla                                     ; 9A14 68                       h
@@ -948,7 +948,7 @@ MonsterBattleFont_Entry_99F9:
         sta     $8A                             ; 9A1E 85 8A                    ..
         rts                                     ; 9A20 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9A21:
+DecodeMonsterBattleActionRecord:
         pha                                     ; 9A21 48                       H
         ldx     #$05                            ; 9A22 A2 05                    ..
 MonsterBattleFont_Branch_9A24:
@@ -959,7 +959,7 @@ MonsterBattleFont_Branch_9A24:
         dex                                     ; 9A2E CA                       .
         bpl     MonsterBattleFont_Branch_9A24   ; 9A2F 10 F3                    ..
         pla                                     ; 9A31 68                       h
-        jsr     MonsterBattleFont_Entry_9B94    ; 9A32 20 94 9B                  ..
+        jsr     SelectMonsterRecordPointer      ; 9A32 20 94 9B                  ..
         ldy     #$0A                            ; 9A35 A0 0A                    ..
         lda     ($86),y                         ; 9A37 B1 86                    ..
         rol     a                               ; 9A39 2A                       *
@@ -980,7 +980,7 @@ MonsterBattleFont_Branch_9A24:
 MonsterBattleFont_Branch_9A51:
         lda     ($86),y                         ; 9A51 B1 86                    ..
         and     #$7F                            ; 9A53 29 7F                    ).
-        jsr     MonsterBattleFont_Entry_9A72    ; 9A55 20 72 9A                  r.
+        jsr     AccumulateMonsterBattleActionWeight; 9A55 20 72 9A               r.
         iny                                     ; 9A58 C8                       .
         cpy     #$0F                            ; 9A59 C0 0F                    ..
         bcc     MonsterBattleFont_Branch_9A51   ; 9A5B 90 F4                    ..
@@ -998,7 +998,7 @@ MonsterBattleFont_Branch_9A5E:
         bcc     MonsterBattleFont_Branch_9A5E   ; 9A6F 90 ED                    ..
         rts                                     ; 9A71 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9A72:
+AccumulateMonsterBattleActionWeight:
         sta     $8C                             ; 9A72 85 8C                    ..
         ldx     #$05                            ; 9A74 A2 05                    ..
 MonsterBattleFont_Branch_9A76:
@@ -1042,9 +1042,9 @@ MonsterBattleFont_Branch_9AA3:
         db   $02,$01                         ; 9AB9 02 01                    ..
         db   $2B,$2B,$2B,$2A,$2A,$2A         ; 9ABB 2B 2B 2B 2A 2A 2A        +++***
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9AC1:
+LoadMonsterPrimaryBattleAttributes:
         lda     $7206,x                         ; 9AC1 BD 06 72                 ..r
-        jsr     MonsterBattleFont_Entry_9B94    ; 9AC4 20 94 9B                  ..
+        jsr     SelectMonsterRecordPointer      ; 9AC4 20 94 9B                  ..
         ldy     #$05                            ; 9AC7 A0 05                    ..
         lda     ($86),y                         ; 9AC9 B1 86                    ..
         sta     $0C                             ; 9ACB 85 0C                    ..
@@ -1054,15 +1054,15 @@ MonsterBattleFont_Entry_9AC1:
         sta     $0D                             ; 9AD3 85 0D                    ..
         rts                                     ; 9AD5 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9AD6:
+LoadBattleSlotMonsterAttributes:
         ldx     $81                             ; 9AD6 A6 81                    ..
-        jsr     MonsterBattleFont_Entry_9BCC    ; 9AD8 20 CC 9B                  ..
+        jsr     SelectBattleSlotMonsterRecord   ; 9AD8 20 CC 9B                  ..
         ldy     #$0D                            ; 9ADB A0 0D                    ..
         lda     ($86),y                         ; 9ADD B1 86                    ..
         and     #$03                            ; 9ADF 29 03                    ).
         tax                                     ; 9AE1 AA                       .
         lda     $7206,x                         ; 9AE2 BD 06 72                 ..r
-        jsr     MonsterBattleFont_Entry_9B94    ; 9AE5 20 94 9B                  ..
+        jsr     SelectMonsterRecordPointer      ; 9AE5 20 94 9B                  ..
         ldy     #$04                            ; 9AE8 A0 04                    ..
         lda     ($86),y                         ; 9AEA B1 86                    ..
         sta     $02                             ; 9AEC 85 02                    ..
@@ -1072,7 +1072,7 @@ MonsterBattleFont_Entry_9AD6:
         sta     $03                             ; 9AF4 85 03                    ..
         rts                                     ; 9AF6 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9AF7:
+BuildMonsterSpecialActionRecords:
         ldx     #$1F                            ; 9AF7 A2 1F                    ..
         lda     #$00                            ; 9AF9 A9 00                    ..
 MonsterBattleFont_Branch_9AFB:
@@ -1083,7 +1083,7 @@ MonsterBattleFont_Branch_9AFB:
         sta     $81                             ; 9B03 85 81                    ..
 MonsterBattleFont_Branch_9B05:
         ldx     $81                             ; 9B05 A6 81                    ..
-        jsr     MonsterBattleFont_Entry_9BCC    ; 9B07 20 CC 9B                  ..
+        jsr     SelectBattleSlotMonsterRecord   ; 9B07 20 CC 9B                  ..
         ldy     #$06                            ; 9B0A A0 06                    ..
         lda     ($86),y                         ; 9B0C B1 86                    ..
         bpl     MonsterBattleFont_Branch_9B3A   ; 9B0E 10 2A                    .*
@@ -1112,14 +1112,14 @@ MonsterBattleFont_Branch_9B29:
 MonsterBattleFont_Branch_9B33:
         cmp     #$FF                            ; 9B33 C9 FF                    ..
         beq     MonsterBattleFont_Branch_9B3A   ; 9B35 F0 03                    ..
-        jsr     MonsterBattleFont_Entry_9B3F    ; 9B37 20 3F 9B                  ?.
+        jsr     PackMonsterSpecialActionRecord  ; 9B37 20 3F 9B                  ?.
 MonsterBattleFont_Branch_9B3A:
         dec     $81                             ; 9B3A C6 81                    ..
         bpl     MonsterBattleFont_Branch_9B05   ; 9B3C 10 C7                    ..
         rts                                     ; 9B3E 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9B3F:
-        jsr     MonsterBattleFont_Entry_9B94    ; 9B3F 20 94 9B                  ..
+PackMonsterSpecialActionRecord:
+        jsr     SelectMonsterRecordPointer      ; 9B3F 20 94 9B                  ..
         lda     $81                             ; 9B42 A5 81                    ..
         asl     a                               ; 9B44 0A                       .
         asl     a                               ; 9B45 0A                       .
@@ -1168,9 +1168,9 @@ MonsterBattleFont_Entry_9B3F:
         sta     $754E,x                         ; 9B90 9D 4E 75                 .Nu
         rts                                     ; 9B93 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9B94:
+SelectMonsterRecordPointer:
         ldx     #$86                            ; 9B94 A2 86                    ..
-MonsterBattleFont_Entry_9B96:
+SelectMonsterRecordPointerAtX:
         sta     $00,x                           ; 9B96 95 00                    ..
         lda     #$00                            ; 9B98 A9 00                    ..
         sta     $01,x                           ; 9B9A 95 01                    ..
@@ -1188,13 +1188,13 @@ MonsterBattleFont_Entry_9B96:
         db   $46                             ; 9BB1 46                       F
         db   $80                             ; 9BB2 80                       .
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9BB3:
+LoadMonsterRecordField:
         sta     $79                             ; 9BB3 85 79                    .y
         txa                                     ; 9BB5 8A                       .
         pha                                     ; 9BB6 48                       H
         lda     $79                             ; 9BB7 A5 79                    .y
         ldx     #$79                            ; 9BB9 A2 79                    .y
-        jsr     MonsterBattleFont_Entry_9B96    ; 9BBB 20 96 9B                  ..
+        jsr     SelectMonsterRecordPointerAtX   ; 9BBB 20 96 9B                  ..
         pla                                     ; 9BBE 68                       h
         tax                                     ; 9BBF AA                       .
         lda     ($79),y                         ; 9BC0 B1 79                    .y
@@ -1205,7 +1205,7 @@ MonsterBattleFont_Entry_9BB3:
         lda     ($79),y                         ; 9BC9 B1 79                    .y
         rts                                     ; 9BCB 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9BCC:
+SelectBattleSlotMonsterRecord:
         txa                                     ; 9BCC 8A                       .
         asl     a                               ; 9BCD 0A                       .
         sta     $86                             ; 9BCE 85 86                    ..
@@ -1225,7 +1225,7 @@ MonsterBattleFont_Entry_9BCC:
         db   $74                             ; 9BE4 74                       t
         db   $72                             ; 9BE5 72                       r
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9BE6:
+TryInitializeRandomEncounter:
         lda     $058E                           ; 9BE6 AD 8E 05                 ...
         cmp     #$02                            ; 9BE9 C9 02                    ..
         beq     MonsterBattleFont_Branch_9BF2   ; 9BEB F0 05                    ..
@@ -1235,7 +1235,7 @@ MonsterBattleFont_Branch_9BF2:
         rts                                     ; 9BF2 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9BF3:
-        jsr     MonsterBattleFont_Entry_A0F9    ; 9BF3 20 F9 A0                  ..
+        jsr     ClearBattleFormationState       ; 9BF3 20 F9 A0                  ..
         lda     $0515                           ; 9BF6 AD 15 05                 ...
         cmp     #$02                            ; 9BF9 C9 02                    ..
         beq     MonsterBattleFont_Branch_9C18   ; 9BFB F0 1B                    ..
@@ -1244,18 +1244,18 @@ MonsterBattleFont_Branch_9BF3:
         jmp     MonsterBattleFont_Branch_9F79   ; 9C01 4C 79 9F                 Ly.
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9C04:
-        jsr     MonsterBattleFont_Entry_9C19    ; 9C04 20 19 9C                  ..
-        jsr     MonsterBattleFont_Entry_9CCC    ; 9C07 20 CC 9C                  ..
-        jsr     MonsterBattleFont_Entry_9CB2    ; 9C0A 20 B2 9C                  ..
-        jsr     MonsterBattleFont_Entry_A0BA    ; 9C0D 20 BA A0                  ..
-        jsr     MonsterBattleFont_Entry_9CF6    ; 9C10 20 F6 9C                  ..
+        jsr     SelectWorldEncounterZone        ; 9C04 20 19 9C                  ..
+        jsr     ComputeEncounterWeightOffset    ; 9C07 20 CC 9C                  ..
+        jsr     ComputeTerrainEncounterRate     ; 9C0A 20 B2 9C                  ..
+        jsr     ApplyEncounterCooldownAndLevelCheck; 9C0D 20 BA A0               ..
+        jsr     RollRandomEncounterThreshold    ; 9C10 20 F6 9C                  ..
         bcs     MonsterBattleFont_Branch_9C18   ; 9C13 B0 03                    ..
         jmp     MonsterBattleFont_Branch_9D0E   ; 9C15 4C 0E 9D                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9C18:
         rts                                     ; 9C18 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9C19:
+SelectWorldEncounterZone:
         lda     $0515                           ; 9C19 AD 15 05                 ...
         cmp     #$02                            ; 9C1C C9 02                    ..
         bne     MonsterBattleFont_Branch_9C23   ; 9C1E D0 03                    ..
@@ -1292,7 +1292,7 @@ MonsterBattleFont_Branch_9C3F:
 MonsterBattleFont_Branch_9C51:
         lda     #$35                            ; 9C51 A9 35                    .5
 MonsterBattleFont_Branch_9C53:
-        jmp     MonsterBattleFont_Entry_9C88    ; 9C53 4C 88 9C                 L..
+        jmp     SelectBattleFormationRecord     ; 9C53 4C 88 9C                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9C56:
         lda     #$36                            ; 9C56 A9 36                    .6
@@ -1318,7 +1318,7 @@ MonsterBattleFont_Branch_9C64:
         cpx     #$01                            ; 9C78 E0 01                    ..
         beq     MonsterBattleFont_Branch_9C81   ; 9C7A F0 05                    ..
         and     #$3F                            ; 9C7C 29 3F                    )?
-        jmp     MonsterBattleFont_Entry_9C88    ; 9C7E 4C 88 9C                 L..
+        jmp     SelectBattleFormationRecord     ; 9C7E 4C 88 9C                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9C81:
         lda     $07                             ; 9C81 A5 07                    ..
@@ -1326,7 +1326,7 @@ MonsterBattleFont_Branch_9C81:
         rol     a                               ; 9C84 2A                       *
         rol     a                               ; 9C85 2A                       *
         and     #$03                            ; 9C86 29 03                    ).
-MonsterBattleFont_Entry_9C88:
+SelectBattleFormationRecord:
         sta     $07                             ; 9C88 85 07                    ..
         sta     $00                             ; 9C8A 85 00                    ..
         lda     #$00                            ; 9C8C A9 00                    ..
@@ -1350,7 +1350,7 @@ MonsterBattleFont_Entry_9C88:
         sta     $0E                             ; 9CAF 85 0E                    ..
         rts                                     ; 9CB1 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9CB2:
+ComputeTerrainEncounterRate:
         ldx     $7140                           ; 9CB2 AE 40 71                 .@q
         cpx     #$08                            ; 9CB5 E0 08                    ..
         bcc     MonsterBattleFont_Branch_9CBC   ; 9CB7 90 03                    ..
@@ -1359,16 +1359,16 @@ MonsterBattleFont_Entry_9CB2:
         rts                                     ; 9CBB 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9CBC:
-        jsr     MonsterBattleFont_Entry_A231    ; 9CBC 20 31 A2                  1.
+        jsr     CompareBattleTimeToNightThreshold; 9CBC 20 31 A2                 1.
         bcs     MonsterBattleFont_Branch_9CC6   ; 9CBF B0 05                    ..
         lda     Bank18_EncounterRateTables,x    ; 9CC1 BD 7B A2                 .{.
         bne     MonsterBattleFont_Branch_9CC9   ; 9CC4 D0 03                    ..
 MonsterBattleFont_Branch_9CC6:
         lda     $A283,x                         ; 9CC6 BD 83 A2                 ...
 MonsterBattleFont_Branch_9CC9:
-        jmp     MonsterBattleFont_Entry_9CE8    ; 9CC9 4C E8 9C                 L..
+        jmp     ScaleEncounterRateByFourteen    ; 9CC9 4C E8 9C                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9CCC:
+ComputeEncounterWeightOffset:
         lda     $6E42                           ; 9CCC AD 42 6E                 .Bn
         cmp     #$03                            ; 9CCF C9 03                    ..
         bcs     MonsterBattleFont_Branch_9CDD   ; 9CD1 B0 0A                    ..
@@ -1385,7 +1385,7 @@ MonsterBattleFont_Branch_9CDF:
         ldx     #$0E                            ; 9CE3 A2 0E                    ..
         jmp     MultiplyPointerWord             ; 9CE5 4C 27 C8                 L'.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9CE8:
+ScaleEncounterRateByFourteen:
         ldx     #$0E                            ; 9CE8 A2 0E                    ..
         jsr     MultiplyPointerWord             ; 9CEA 20 27 C8                  '.
         lda     $0F                             ; 9CED A5 0F                    ..
@@ -1394,7 +1394,7 @@ MonsterBattleFont_Entry_9CE8:
         sta     $0F                             ; 9CF3 85 0F                    ..
         rts                                     ; 9CF5 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9CF6:
+RollRandomEncounterThreshold:
         lda     $6BEB                           ; 9CF6 AD EB 6B                 ..k
         beq     MonsterBattleFont_Branch_9D06   ; 9CF9 F0 0B                    ..
         dec     $6BEB                           ; 9CFB CE EB 6B                 ..k
@@ -1429,16 +1429,16 @@ MonsterBattleFont_Branch_9D0E:
         jmp     MonsterBattleFont_Branch_A11A   ; 9D2A 4C 1A A1                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9D2D:
-        jsr     MonsterBattleFont_Entry_9D45    ; 9D2D 20 45 9D                  E.
-        jsr     MonsterBattleFont_Entry_9D58    ; 9D30 20 58 9D                  X.
-        jsr     MonsterBattleFont_Entry_9D6B    ; 9D33 20 6B 9D                  k.
-        jsr     MonsterBattleFont_Entry_9D9C    ; 9D36 20 9C 9D                  ..
-        jsr     MonsterBattleFont_Entry_9DBB    ; 9D39 20 BB 9D                  ..
-        jsr     MonsterBattleFont_Entry_9DDE    ; 9D3C 20 DE 9D                  ..
-        jsr     MonsterBattleFont_Entry_9E0D    ; 9D3F 20 0D 9E                  ..
+        jsr     SelectFormationWeightTableOffset; 9D2D 20 45 9D                  E.
+        jsr     LoadFormationControlByte        ; 9D30 20 58 9D                  X.
+        jsr     InitializeFormationAvailabilityMasks; 9D33 20 6B 9D              k.
+        jsr     MaskUnavailableFormationEntries ; 9D36 20 9C 9D                  ..
+        jsr     SumAvailableFormationWeights    ; 9D39 20 BB 9D                  ..
+        jsr     SelectWeightedFormationEntry    ; 9D3C 20 DE 9D                  ..
+        jsr     ExpandSelectedBattleFormation   ; 9D3F 20 0D 9E                  ..
         jmp     MonsterBattleFont_Branch_A11A   ; 9D42 4C 1A A1                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9D45:
+SelectFormationWeightTableOffset:
         lda     #$00                            ; 9D45 A9 00                    ..
         sta     $0F                             ; 9D47 85 0F                    ..
         lda     $0B                             ; 9D49 A5 0B                    ..
@@ -1450,7 +1450,7 @@ MonsterBattleFont_Entry_9D45:
         lda     #$12                            ; 9D53 A9 12                    ..
         jmp     MultiplyPointerWord             ; 9D55 4C 27 C8                 L'.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9D58:
+LoadFormationControlByte:
         ldy     #$01                            ; 9D58 A0 01                    ..
         lda     ($00),y                         ; 9D5A B1 00                    ..
         sta     $6E01                           ; 9D5C 8D 01 6E                 ..n
@@ -1463,10 +1463,10 @@ MonsterBattleFont_Entry_9D58:
 MonsterBattleFont_Branch_9D6A:
         rts                                     ; 9D6A 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9D6B:
+InitializeFormationAvailabilityMasks:
         lda     a:$41                           ; 9D6B AD 41 00                 .A.
         bmi     MonsterBattleFont_Branch_9D8F   ; 9D6E 30 1F                    0.
-        jsr     MonsterBattleFont_Entry_A231    ; 9D70 20 31 A2                  1.
+        jsr     CompareBattleTimeToNightThreshold; 9D70 20 31 A2                 1.
         bcs     MonsterBattleFont_Branch_9D82   ; 9D73 B0 0D                    ..
         lda     #$EF                            ; 9D75 A9 EF                    ..
         sta     $D2                             ; 9D77 85 D2                    ..
@@ -1494,14 +1494,14 @@ MonsterBattleFont_Branch_9D8F:
         sta     $83                             ; 9D99 85 83                    ..
         rts                                     ; 9D9B 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9D9C:
+MaskUnavailableFormationEntries:
         ldy     #$00                            ; 9D9C A0 00                    ..
 MonsterBattleFont_Branch_9D9E:
         lda     ($00),y                         ; 9D9E B1 00                    ..
         cmp     #$FF                            ; 9DA0 C9 FF                    ..
         bne     MonsterBattleFont_Branch_9DB5   ; 9DA2 D0 11                    ..
         tya                                     ; 9DA4 98                       .
-        jsr     MonsterBattleFont_Entry_A257    ; 9DA5 20 57 A2                  W.
+        jsr     BuildLowBitsClearMask           ; 9DA5 20 57 A2                  W.
         pha                                     ; 9DA8 48                       H
         tya                                     ; 9DA9 98                       .
         lsr     a                               ; 9DAA 4A                       J
@@ -1518,7 +1518,7 @@ MonsterBattleFont_Branch_9DB5:
         bne     MonsterBattleFont_Branch_9D9E   ; 9DB8 D0 E4                    ..
         rts                                     ; 9DBA 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9DBB:
+SumAvailableFormationWeights:
         lda     $0E                             ; 9DBB A5 0E                    ..
         sta     $04                             ; 9DBD 85 04                    ..
         ldx     #$00                            ; 9DBF A2 00                    ..
@@ -1545,7 +1545,7 @@ MonsterBattleFont_Branch_9DD6:
         bne     MonsterBattleFont_Branch_9DC5   ; 9DDB D0 E8                    ..
         rts                                     ; 9DDD 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9DDE:
+SelectWeightedFormationEntry:
         ldx     $0E                             ; 9DDE A6 0E                    ..
         cmp     #$FF                            ; 9DE0 C9 FF                    ..
         bne     MonsterBattleFont_Branch_9DEA   ; 9DE2 D0 06                    ..
@@ -1583,7 +1583,7 @@ MonsterBattleFont_Branch_9E0A:
         pla                                     ; 9E0B 68                       h
         rts                                     ; 9E0C 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9E0D:
+ExpandSelectedBattleFormation:
         cpy     #$05                            ; 9E0D C0 05                    ..
         bcc     MonsterBattleFont_Branch_9E67   ; 9E0F 90 56                    .V
         beq     MonsterBattleFont_Branch_9E6A   ; 9E11 F0 57                    .W
@@ -1694,7 +1694,7 @@ MonsterBattleFont_Branch_9EA5:
 MonsterBattleFont_Branch_9EB9:
         lda     ($00),y                         ; 9EB9 B1 00                    ..
         sta     $6E45                           ; 9EBB 8D 45 6E                 .En
-        jsr     MonsterBattleFont_Entry_9F34    ; 9EBE 20 34 9F                  4.
+        jsr     SelectWeightedMonsterId         ; 9EBE 20 34 9F                  4.
         sta     $6E46                           ; 9EC1 8D 46 6E                 .Fn
         lda     #$01                            ; 9EC4 A9 01                    ..
         sta     $6E49                           ; 9EC6 8D 49 6E                 .In
@@ -1714,7 +1714,7 @@ MonsterBattleFont_Branch_9ED8:
         pha                                     ; 9EE1 48                       H
         tya                                     ; 9EE2 98                       .
         pha                                     ; 9EE3 48                       H
-        jsr     MonsterBattleFont_Entry_9F34    ; 9EE4 20 34 9F                  4.
+        jsr     SelectWeightedMonsterId         ; 9EE4 20 34 9F                  4.
         sta     $CE                             ; 9EE7 85 CE                    ..
         pla                                     ; 9EE9 68                       h
         tay                                     ; 9EEA A8                       .
@@ -1735,12 +1735,12 @@ MonsterBattleFont_Branch_9EFF:
         ldy     #$00                            ; 9F04 A0 00                    ..
         sty     $08                             ; 9F06 84 08                    ..
 MonsterBattleFont_Branch_9F08:
-        jsr     MonsterBattleFont_Entry_A262    ; 9F08 20 62 A2                  b.
+        jsr     SelectChapterEncounterThresholdRow; 9F08 20 62 A2                b.
         lda     $6E00                           ; 9F0B AD 00 6E                 ..n
         cmp     Bank18_EncounterThresholds,y    ; 9F0E D9 64 A4                 .d.
         bcs     MonsterBattleFont_Branch_9F33   ; 9F11 B0 20                    .
         jsr     NextRandomByte                  ; 9F13 20 91 C8                  ..
-        jsr     MonsterBattleFont_Entry_A262    ; 9F16 20 62 A2                  b.
+        jsr     SelectChapterEncounterThresholdRow; 9F16 20 62 A2                b.
         cmp     $A46C,y                         ; 9F19 D9 6C A4                 .l.
         bcs     MonsterBattleFont_Branch_9F33   ; 9F1C B0 15                    ..
         ldx     $08                             ; 9F1E A6 08                    ..
@@ -1757,7 +1757,7 @@ MonsterBattleFont_Branch_9F28:
 MonsterBattleFont_Branch_9F33:
         rts                                     ; 9F33 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9F34:
+SelectWeightedMonsterId:
         lda     #$00                            ; 9F34 A9 00                    ..
         sta     $D3                             ; 9F36 85 D3                    ..
         lda     $41                             ; 9F38 A5 41                    .A
@@ -1766,7 +1766,7 @@ MonsterBattleFont_Entry_9F34:
         sta     $D2                             ; 9F3E 85 D2                    ..
         bne     MonsterBattleFont_Branch_9F51   ; 9F40 D0 0F                    ..
 MonsterBattleFont_Branch_9F42:
-        jsr     MonsterBattleFont_Entry_A231    ; 9F42 20 31 A2                  1.
+        jsr     CompareBattleTimeToNightThreshold; 9F42 20 31 A2                 1.
         bcs     MonsterBattleFont_Branch_9F4D   ; 9F45 B0 06                    ..
         lda     #$0F                            ; 9F47 A9 0F                    ..
         sta     $D2                             ; 9F49 85 D2                    ..
@@ -1775,9 +1775,9 @@ MonsterBattleFont_Branch_9F4D:
         lda     #$1E                            ; 9F4D A9 1E                    ..
         sta     $D2                             ; 9F4F 85 D2                    ..
 MonsterBattleFont_Branch_9F51:
-        jsr     MonsterBattleFont_Entry_9D9C    ; 9F51 20 9C 9D                  ..
-        jsr     MonsterBattleFont_Entry_9DBB    ; 9F54 20 BB 9D                  ..
-        jsr     MonsterBattleFont_Entry_9DDE    ; 9F57 20 DE 9D                  ..
+        jsr     MaskUnavailableFormationEntries ; 9F51 20 9C 9D                  ..
+        jsr     SumAvailableFormationWeights    ; 9F54 20 BB 9D                  ..
+        jsr     SelectWeightedFormationEntry    ; 9F57 20 DE 9D                  ..
         lda     ($00),y                         ; 9F5A B1 00                    ..
         rts                                     ; 9F5C 60                       `
 ; ----------------------------------------------------------------------------
@@ -1786,7 +1786,7 @@ MonsterBattleFont_Branch_9F5D:
         sta     $6E45                           ; 9F5F 8D 45 6E                 .En
         lda     #$01                            ; 9F62 A9 01                    ..
         sta     $6E49                           ; 9F64 8D 49 6E                 .In
-        jsr     MonsterBattleFont_Entry_9F34    ; 9F67 20 34 9F                  4.
+        jsr     SelectWeightedMonsterId         ; 9F67 20 34 9F                  4.
         sta     $6E46                           ; 9F6A 8D 46 6E                 .Fn
         lda     #$05                            ; 9F6D A9 05                    ..
         brk                                     ; 9F6F 00                       .
@@ -1812,12 +1812,12 @@ MonsterBattleFont_Branch_9F79:
 ; ----------------------------------------------------------------------------
         bcc     MonsterBattleFont_Branch_9FB7   ; 9F8D 90 28                    .(
 MonsterBattleFont_Branch_9F8F:
-        jsr     MonsterBattleFont_Entry_9FB8    ; 9F8F 20 B8 9F                  ..
-        jsr     MonsterBattleFont_Entry_A069    ; 9F92 20 69 A0                  i.
-        jsr     MonsterBattleFont_Entry_9C88    ; 9F95 20 88 9C                  ..
-        jsr     MonsterBattleFont_Entry_9CCC    ; 9F98 20 CC 9C                  ..
+        jsr     ApplyMap33EncounterSuppression  ; 9F8F 20 B8 9F                  ..
+        jsr     LoadMapEncounterRecord          ; 9F92 20 69 A0                  i.
+        jsr     SelectBattleFormationRecord     ; 9F95 20 88 9C                  ..
+        jsr     ComputeEncounterWeightOffset    ; 9F98 20 CC 9C                  ..
         lda     #$0F                            ; 9F9B A9 0F                    ..
-        jsr     MonsterBattleFont_Entry_9CE8    ; 9F9D 20 E8 9C                  ..
+        jsr     ScaleEncounterRateByFourteen    ; 9F9D 20 E8 9C                  ..
         lda     $627D                           ; 9FA0 AD 7D 62                 .}b
         and     #$10                            ; 9FA3 29 10                    ).
         beq     MonsterBattleFont_Branch_9FAF   ; 9FA5 F0 08                    ..
@@ -1827,7 +1827,7 @@ MonsterBattleFont_Branch_9F8F:
         rts                                     ; 9FAE 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9FAF:
-        jsr     MonsterBattleFont_Entry_9CF6    ; 9FAF 20 F6 9C                  ..
+        jsr     RollRandomEncounterThreshold    ; 9FAF 20 F6 9C                  ..
         bcs     MonsterBattleFont_Branch_9FB7   ; 9FB2 B0 03                    ..
 MonsterBattleFont_Branch_9FB4:
         jmp     MonsterBattleFont_Branch_9D0E   ; 9FB4 4C 0E 9D                 L..
@@ -1835,7 +1835,7 @@ MonsterBattleFont_Branch_9FB4:
 MonsterBattleFont_Branch_9FB7:
         rts                                     ; 9FB7 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_9FB8:
+ApplyMap33EncounterSuppression:
         lda     CurrentMapNumber                ; 9FB8 A5 63                    .c
         cmp     #$33                            ; 9FBA C9 33                    .3
         bne     MonsterBattleFont_Branch_9FCF   ; 9FBC D0 11                    ..
@@ -1941,7 +1941,7 @@ MonsterBattleFont_Branch_A060:
         sta     $6E05                           ; A065 8D 05 6E                 ..n
         rts                                     ; A068 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A069:
+LoadMapEncounterRecord:
         lda     SaveCurrentChapterMinus1        ; A069 AD 5A 61                 .Za
         cmp     #$04                            ; A06C C9 04                    ..
         beq     MonsterBattleFont_Branch_A07D   ; A06E F0 0D                    ..
@@ -1989,7 +1989,7 @@ MonsterBattleFont_Branch_A0A5:
         sta     $6E06                           ; A0B6 8D 06 6E                 ..n
         rts                                     ; A0B9 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A0BA:
+ApplyEncounterCooldownAndLevelCheck:
         lda     $6E41                           ; A0BA AD 41 6E                 .An
         and     #$7F                            ; A0BD 29 7F                    ).
         beq     MonsterBattleFont_Branch_A0F8   ; A0BF F0 37                    .7
@@ -2008,7 +2008,7 @@ MonsterBattleFont_Entry_A0BA:
         tax                                     ; A0DC AA                       .
         dex                                     ; A0DD CA                       .
         lda     $A348,x                         ; A0DE BD 48 A3                 .H.
-        jmp     MonsterBattleFont_Entry_9CE8    ; A0E1 4C E8 9C                 L..
+        jmp     ScaleEncounterRateByFourteen    ; A0E1 4C E8 9C                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_A0E4:
         brk                                     ; A0E4 00                       .
@@ -2021,14 +2021,14 @@ MonsterBattleFont_Branch_A0E4:
         iny                                     ; A0F1 C8                       .
 MonsterBattleFont_Branch_A0F2:
         tya                                     ; A0F2 98                       .
-        jsr     UpperFixedEngine_Entry_D1ED     ; A0F3 20 ED D1                  ..
+        jsr     PlayMapCueAndWaitForInput       ; A0F3 20 ED D1                  ..
 MonsterBattleFont_Branch_A0F6:
         pla                                     ; A0F6 68                       h
         pla                                     ; A0F7 68                       h
 MonsterBattleFont_Branch_A0F8:
         rts                                     ; A0F8 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A0F9:
+ClearBattleFormationState:
         lda     #$FF                            ; A0F9 A9 FF                    ..
         sta     $6E45                           ; A0FB 8D 45 6E                 .En
         sta     $6E46                           ; A0FE 8D 46 6E                 .Fn
@@ -2046,8 +2046,8 @@ MonsterBattleFont_Entry_A0F9:
 MonsterBattleFont_Branch_A11A:
         lda     $6E01                           ; A11A AD 01 6E                 ..n
         sta     $7396                           ; A11D 8D 96 73                 ..s
-        jsr     MonsterBattleFont_Entry_A20E    ; A120 20 0E A2                  ..
-MonsterBattleFont_Entry_A123:
+        jsr     SelectEncounterPresentationVariant; A120 20 0E A2                ..
+PresentEncounterAndInitializeBattle:
         lda     $6E45                           ; A123 AD 45 6E                 .En
         cmp     #$BC                            ; A126 C9 BC                    ..
         beq     MonsterBattleFont_Branch_A159   ; A128 F0 2F                    ./
@@ -2142,7 +2142,7 @@ MonsterBattleFont_Branch_A1A7:
         sta     $6E42                           ; A1A9 8D 42 6E                 .Bn
         rts                                     ; A1AC 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A1AD:
+LoadBattleFormationById:
         pha                                     ; A1AD 48                       H
         lda     #$08                            ; A1AE A9 08                    ..
         sta     $04                             ; A1B0 85 04                    ..
@@ -2191,13 +2191,13 @@ MonsterBattleFont_Branch_A1D7:
         ora     #$40                            ; A202 09 40                    .@
         sta     $6E44                           ; A204 8D 44 6E                 .Dn
 MonsterBattleFont_Branch_A207:
-        jsr     MonsterBattleFont_Entry_A123    ; A207 20 23 A1                  #.
+        jsr     PresentEncounterAndInitializeBattle; A207 20 23 A1               #.
         pla                                     ; A20A 68                       h
         pla                                     ; A20B 68                       h
         clc                                     ; A20C 18                       .
         rts                                     ; A20D 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A20E:
+SelectEncounterPresentationVariant:
         lda     $0B                             ; A20E A5 0B                    ..
         and     #$03                            ; A210 29 03                    ).
         asl     a                               ; A212 0A                       .
@@ -2222,7 +2222,7 @@ MonsterBattleFont_Branch_A22C:
         sta     $6E44                           ; A22D 8D 44 6E                 .Dn
         rts                                     ; A230 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A231:
+CompareBattleTimeToNightThreshold:
         lda     SaveTimeOfDay                   ; A231 AD ED 62                 ..b
         cmp     #$78                            ; A234 C9 78                    .x
         rts                                     ; A236 60                       `
@@ -2245,7 +2245,7 @@ MonsterBattleFont_Entry_A231:
         db   $18,$4C,$5A,$50,$66,$FF,$54,$50 ; A248 18 4C 5A 50 66 FF 54 50  .LZPf.TP
         db   $90,$9C,$54,$5C,$54,$6A,$FF     ; A250 90 9C 54 5C 54 6A FF     ..T\Tj.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A257:
+BuildLowBitsClearMask:
         and     #$07                            ; A257 29 07                    ).
         tax                                     ; A259 AA                       .
         lda     #$FF                            ; A25A A9 FF                    ..
@@ -2256,7 +2256,7 @@ MonsterBattleFont_Branch_A25D:
         bpl     MonsterBattleFont_Branch_A25D   ; A25F 10 FC                    ..
         rts                                     ; A261 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A262:
+SelectChapterEncounterThresholdRow:
         pha                                     ; A262 48                       H
         ldy     SaveCurrentChapterMinus1        ; A263 AC 5A 61                 .Za
         cpy     #$04                            ; A266 C0 04                    ..
@@ -2474,7 +2474,7 @@ Bank18_BattleDataPointer:
         db   $AF                             ; A811 AF                       .
         db   $AD                             ; A812 AD                       .
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A813:
+RunMonsterArenaRound:
         lda     #$00                            ; A813 A9 00                    ..
         sta     $6E82                           ; A815 8D 82 6E                 ..n
         brk                                     ; A818 00                       .
@@ -2484,25 +2484,25 @@ MonsterBattleFont_Branch_A81B:
         brk                                     ; A81B 00                       .
         db   $89,$4B                         ; A81C 89 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_AD6A    ; A81E 20 6A AD                  j.
+        jsr     ResetMonsterArenaRoundState     ; A81E 20 6A AD                  j.
 MonsterBattleFont_Branch_A821:
-        jsr     MonsterBattleFont_Entry_A840    ; A821 20 40 A8                  @.
-        jsr     MonsterBattleFont_Entry_A8D4    ; A824 20 D4 A8                  ..
+        jsr     SelectMonsterArenaCombatants    ; A821 20 40 A8                  @.
+        jsr     SelectMonsterArenaWinner        ; A824 20 D4 A8                  ..
         bcc     MonsterBattleFont_Branch_A83A   ; A827 90 11                    ..
-        jsr     MonsterBattleFont_Entry_ABEB    ; A829 20 EB AB                  ..
+        jsr     StartMonsterArenaWagerSelection ; A829 20 EB AB                  ..
         bcc     MonsterBattleFont_Branch_A83A   ; A82C 90 0C                    ..
-        jsr     MonsterBattleFont_Entry_A98A    ; A82E 20 8A A9                  ..
-        jsr     MonsterBattleFont_Entry_AB8D    ; A831 20 8D AB                  ..
-        jsr     MonsterBattleFont_Entry_AA06    ; A834 20 06 AA                  ..
+        jsr     BuildMonsterArenaPayoutPresentation; A82E 20 8A A9               ..
+        jsr     InitializeMonsterArenaDisplay   ; A831 20 8D AB                  ..
+        jsr     ResolveMonsterArenaWager        ; A834 20 06 AA                  ..
         jmp     MonsterBattleFont_Branch_A81B   ; A837 4C 1B A8                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_A83A:
         brk                                     ; A83A 00                       .
         db   $85,$4B                         ; A83B 85 4B                    .K
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_D214     ; A83D 4C 14 D2                 L..
+        jmp     WaitForButtonStateOneTwentyFrames; A83D 4C 14 D2                L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A840:
+SelectMonsterArenaCombatants:
         ldx     SaveCurrentChapterMinus1        ; A840 AE 5A 61                 .Za
         cpx     #$04                            ; A843 E0 04                    ..
         bcc     MonsterBattleFont_Branch_A859   ; A845 90 12                    ..
@@ -2520,7 +2520,7 @@ MonsterBattleFont_Branch_A859:
         lda     $AD9F,x                         ; A859 BD 9F AD                 ...
 MonsterBattleFont_Branch_A85C:
         sta     $0F                             ; A85C 85 0F                    ..
-        jsr     MonsterBattleFont_Entry_ABB8    ; A85E 20 B8 AB                  ..
+        jsr     SelectUniqueMonsterArenaOpponent; A85E 20 B8 AB                  ..
         sta     $2E                             ; A861 85 2E                    ..
         cmp     #$14                            ; A863 C9 14                    ..
         bcc     MonsterBattleFont_Branch_A873   ; A865 90 0C                    ..
@@ -2533,10 +2533,10 @@ MonsterBattleFont_Branch_A85C:
         jmp     MonsterBattleFont_Branch_A893   ; A870 4C 93 A8                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_A873:
-        jsr     MonsterBattleFont_Entry_A8B6    ; A873 20 B6 A8                  ..
+        jsr     ComputeEightByteBattleRecordOffset; A873 20 B6 A8                ..
         ldx     Bank18_BattleDataPointer        ; A876 AE 11 A8                 ...
         ldy     $A812                           ; A879 AC 12 A8                 ...
-        jsr     MonsterBattleFont_Entry_A8C8    ; A87C 20 C8 A8                  ..
+        jsr     AddBaseToBattleRecordPointer    ; A87C 20 C8 A8                  ..
         ldy     #$07                            ; A87F A0 07                    ..
 MonsterBattleFont_Branch_A881:
         lda     ($29),y                         ; A881 B1 29                    .)
@@ -2552,10 +2552,10 @@ MonsterBattleFont_Branch_A88F:
         rts                                     ; A892 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_A893:
-        jsr     MonsterBattleFont_Entry_A8B6    ; A893 20 B6 A8                  ..
+        jsr     ComputeEightByteBattleRecordOffset; A893 20 B6 A8                ..
         ldx     $00                             ; A896 A6 00                    ..
         ldy     $01                             ; A898 A4 01                    ..
-        jsr     MonsterBattleFont_Entry_A8C8    ; A89A 20 C8 A8                  ..
+        jsr     AddBaseToBattleRecordPointer    ; A89A 20 C8 A8                  ..
         ldy     #$07                            ; A89D A0 07                    ..
 MonsterBattleFont_Branch_A89F:
         ldx     #$29                            ; A89F A2 29                    .)
@@ -2572,7 +2572,7 @@ MonsterBattleFont_Branch_A8B2:
         bpl     MonsterBattleFont_Branch_A89F   ; A8B3 10 EA                    ..
         rts                                     ; A8B5 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A8B6:
+ComputeEightByteBattleRecordOffset:
         lda     #$00                            ; A8B6 A9 00                    ..
         sta     $2A                             ; A8B8 85 2A                    .*
         lda     $2E                             ; A8BA A5 2E                    ..
@@ -2585,7 +2585,7 @@ MonsterBattleFont_Entry_A8B6:
         sta     $29                             ; A8C5 85 29                    .)
         rts                                     ; A8C7 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A8C8:
+AddBaseToBattleRecordPointer:
         txa                                     ; A8C8 8A                       .
         clc                                     ; A8C9 18                       .
         adc     $29                             ; A8CA 65 29                    e)
@@ -2595,10 +2595,10 @@ MonsterBattleFont_Entry_A8C8:
         sta     $2A                             ; A8D1 85 2A                    .*
         rts                                     ; A8D3 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A8D4:
-        jsr     MonsterBattleFont_Entry_A906    ; A8D4 20 06 A9                  ..
+SelectMonsterArenaWinner:
+        jsr     RandomizeMonsterArenaStrengths  ; A8D4 20 06 A9                  ..
 MonsterBattleFont_Branch_A8D7:
-        jsr     MonsterBattleFont_Entry_AD90    ; A8D7 20 90 AD                  ..
+        jsr     InitializeMonsterArenaCombatantCounts; A8D7 20 90 AD             ..
         lda     $A900                           ; A8DA AD 00 A9                 ...
         sta     $07B5                           ; A8DD 8D B5 07                 ...
         lda     $A901                           ; A8E0 AD 01 A9                 ...
@@ -2627,7 +2627,7 @@ MonsterBattleFont_Branch_A8FA:
         db   $39                             ; A900 39                       9
         db   $6E,$06,$0B,$1F,$65             ; A901 6E 06 0B 1F 65           n...e
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A906:
+RandomizeMonsterArenaStrengths:
         lda     #$00                            ; A906 A9 00                    ..
         sta     $30                             ; A908 85 30                    .0
 MonsterBattleFont_Branch_A90A:
@@ -2699,7 +2699,7 @@ MonsterBattleFont_Branch_A961:
         db   $CC,$E6                         ; A983 CC E6                    ..
         db   $04,$08,$15,$33,$65             ; A985 04 08 15 33 65           ...3e
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_A98A:
+BuildMonsterArenaPayoutPresentation:
         lda     #$00                            ; A98A A9 00                    ..
         sta     $02                             ; A98C 85 02                    ..
         lda     $6E7F                           ; A98E AD 7F 6E                 ..n
@@ -2771,15 +2771,15 @@ MonsterBattleFont_Branch_A9E8:
         brk                                     ; A9FF 00                       .
         db   $CC,$4B                         ; AA00 CC 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_D218     ; AA02 20 18 D2                  ..
+        jsr     WaitForButtonStateOneEightyFrames; AA02 20 18 D2                 ..
         rts                                     ; AA05 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AA06:
-        jsr     MonsterBattleFont_Entry_AA0D    ; AA06 20 0D AA                  ..
-        jsr     MonsterBattleFont_Entry_AA52    ; AA09 20 52 AA                  R.
+ResolveMonsterArenaWager:
+        jsr     ValidateMonsterArenaResult      ; AA06 20 0D AA                  ..
+        jsr     SettleMonsterArenaWager         ; AA09 20 52 AA                  R.
         rts                                     ; AA0C 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AA0D:
+ValidateMonsterArenaResult:
         lda     $6E7F                           ; AA0D AD 7F 6E                 ..n
         and     #$C0                            ; AA10 29 C0                    ).
         cmp     #$C0                            ; AA12 C9 C0                    ..
@@ -2820,22 +2820,22 @@ MonsterBattleFont_Branch_AA30:
         jmp     MonsterBattleFont_Branch_A821   ; AA37 4C 21 A8                 L!.
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AA3A:
-        jsr     MonsterBattleFont_Entry_AAB9    ; AA3A 20 B9 AA                  ..
+        jsr     ApplyMonsterArenaWagerValue     ; AA3A 20 B9 AA                  ..
         brk                                     ; AA3D 00                       .
         db   $C5,$4B                         ; AA3E C5 4B                    .K
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; AA40 A9 00                    ..
         sta     $6E82                           ; AA42 8D 82 6E                 ..n
-        jsr     MonsterBattleFont_Entry_ABE6    ; AA45 20 E6 AB                  ..
+        jsr     RunMonsterArenaService07_6F_6F  ; AA45 20 E6 AB                  ..
         beq     MonsterBattleFont_Branch_AA30   ; AA48 F0 E6                    ..
         pla                                     ; AA4A 68                       h
         pla                                     ; AA4B 68                       h
         pla                                     ; AA4C 68                       h
         pla                                     ; AA4D 68                       h
-        jsr     UpperFixedEngine_Entry_D214     ; AA4E 20 14 D2                  ..
+        jsr     WaitForButtonStateOneTwentyFrames; AA4E 20 14 D2                 ..
         rts                                     ; AA51 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AA52:
+SettleMonsterArenaWager:
         bcs     MonsterBattleFont_Branch_AA7F   ; AA52 B0 2B                    .+
         brk                                     ; AA54 00                       .
         db   $87,$4B                         ; AA55 87 4B                    .K
@@ -2847,7 +2847,7 @@ MonsterBattleFont_Branch_AA57:
         brk                                     ; AA5F 00                       .
         db   $C5,$4B                         ; AA60 C5 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_ABE6    ; AA62 20 E6 AB                  ..
+        jsr     RunMonsterArenaService07_6F_6F  ; AA62 20 E6 AB                  ..
         bmi     MonsterBattleFont_Branch_AA6B   ; AA65 30 04                    0.
         bne     MonsterBattleFont_Branch_AA6B   ; AA67 D0 02                    ..
         sec                                     ; AA69 38                       8
@@ -2865,24 +2865,24 @@ MonsterBattleFont_Branch_AA6B:
         pla                                     ; AA79 68                       h
         pla                                     ; AA7A 68                       h
         pla                                     ; AA7B 68                       h
-        jmp     UpperFixedEngine_Entry_D214     ; AA7C 4C 14 D2                 L..
+        jmp     WaitForButtonStateOneTwentyFrames; AA7C 4C 14 D2                L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AA7F:
-        jsr     MonsterBattleFont_Entry_AAE0    ; AA7F 20 E0 AA                  ..
+        jsr     ComputeMonsterArenaPayout       ; AA7F 20 E0 AA                  ..
         lda     $00                             ; AA82 A5 00                    ..
         sta     $6E83                           ; AA84 8D 83 6E                 ..n
         lda     $01                             ; AA87 A5 01                    ..
         sta     $6E84                           ; AA89 8D 84 6E                 ..n
         lda     $02                             ; AA8C A5 02                    ..
         sta     $6E85                           ; AA8E 8D 85 6E                 ..n
-        jsr     MonsterBattleFont_Entry_AB42    ; AA91 20 42 AB                  B.
+        jsr     AwardMonsterArenaPayout         ; AA91 20 42 AB                  B.
         brk                                     ; AA94 00                       .
         db   $88,$4B                         ; AA95 88 4B                    .K
 ; ----------------------------------------------------------------------------
         brk                                     ; AA97 00                       .
         db   $29,$4B                         ; AA98 29 4B                    )K
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_ABE6    ; AA9A 20 E6 AB                  ..
+        jsr     RunMonsterArenaService07_6F_6F  ; AA9A 20 E6 AB                  ..
         bmi     MonsterBattleFont_Branch_AAB0   ; AA9D 30 11                    0.
         bne     MonsterBattleFont_Branch_AAB0   ; AA9F D0 0F                    ..
         lda     $6E82                           ; AAA1 AD 82 6E                 ..n
@@ -2895,11 +2895,11 @@ MonsterBattleFont_Branch_AA7F:
         jmp     MonsterBattleFont_Branch_A81B   ; AAAD 4C 1B A8                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AAB0:
-        jsr     MonsterBattleFont_Entry_AAB9    ; AAB0 20 B9 AA                  ..
-        jsr     MonsterBattleFont_Entry_AACC    ; AAB3 20 CC AA                  ..
+        jsr     ApplyMonsterArenaWagerValue     ; AAB0 20 B9 AA                  ..
+        jsr     RefreshMonsterArenaWagerUi      ; AAB3 20 CC AA                  ..
         jmp     MonsterBattleFont_Branch_AA57   ; AAB6 4C 57 AA                 LW.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AAB9:
+ApplyMonsterArenaWagerValue:
         lda     $6E83                           ; AAB9 AD 83 6E                 ..n
         sta     $36                             ; AABC 85 36                    .6
         lda     $6E84                           ; AABE AD 84 6E                 ..n
@@ -2911,11 +2911,11 @@ MonsterBattleFont_Entry_AAB9:
 ; ----------------------------------------------------------------------------
         rts                                     ; AACB 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AACC:
+RefreshMonsterArenaWagerUi:
         brk                                     ; AACC 00                       .
         db   $07,$6F,$6C                     ; AACD 07 6F 6C                 .ol
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_ACE3    ; AAD0 20 E3 AC                  ..
+        jsr     RenderMonsterArenaCoinBalance   ; AAD0 20 E3 AC                  ..
         jsr     RequestPpuUpdateAndWait         ; AAD3 20 2D C6                  -.
         brk                                     ; AAD6 00                       .
         db   $11,$FB                         ; AAD7 11 FB                    ..
@@ -2928,7 +2928,7 @@ MonsterBattleFont_Entry_AACC:
 ; ----------------------------------------------------------------------------
         rts                                     ; AADF 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AAE0:
+ComputeMonsterArenaPayout:
         lda     $6E7F                           ; AAE0 AD 7F 6E                 ..n
         and     #$03                            ; AAE3 29 03                    ).
         tax                                     ; AAE5 AA                       .
@@ -2981,7 +2981,7 @@ MonsterBattleFont_Branch_AB28:
 MonsterBattleFont_Branch_AB41:
         rts                                     ; AB41 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AB42:
+AwardMonsterArenaPayout:
         lda     $6E85                           ; AB42 AD 85 6E                 ..n
         bne     MonsterBattleFont_Branch_AB69   ; AB45 D0 22                    ."
         lda     $6E84                           ; AB47 AD 84 6E                 ..n
@@ -3015,17 +3015,17 @@ MonsterBattleFont_Branch_AB69:
         brk                                     ; AB7B 00                       .
         db   $C7,$4B                         ; AB7C C7 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_AAB9    ; AB7E 20 B9 AA                  ..
-        jsr     MonsterBattleFont_Entry_AACC    ; AB81 20 CC AA                  ..
+        jsr     ApplyMonsterArenaWagerValue     ; AB7E 20 B9 AA                  ..
+        jsr     RefreshMonsterArenaWagerUi      ; AB81 20 CC AA                  ..
         pla                                     ; AB84 68                       h
         pla                                     ; AB85 68                       h
         pla                                     ; AB86 68                       h
         pla                                     ; AB87 68                       h
         pla                                     ; AB88 68                       h
         pla                                     ; AB89 68                       h
-        jmp     UpperFixedEngine_Entry_D218     ; AB8A 4C 18 D2                 L..
+        jmp     WaitForButtonStateOneEightyFrames; AB8A 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AB8D:
+InitializeMonsterArenaDisplay:
         brk                                     ; AB8D 00                       .
         db   $07,$6F,$FF                     ; AB8E 07 6F FF                 .o.
 ; ----------------------------------------------------------------------------
@@ -3040,7 +3040,7 @@ MonsterBattleFont_Entry_AB8D:
         sta     $6E44                           ; AB9B 8D 44 6E                 .Dn
         lda     $C000                           ; AB9E AD 00 C0                 ...
         bne     MonsterBattleFont_Branch_ABA6   ; ABA1 D0 03                    ..
-MonsterBattleFont_Entry_ABA3:
+RunMonsterArenaBattleService:
         brk                                     ; ABA3 00                       .
         db   $14,$1F                         ; ABA4 14 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -3061,14 +3061,14 @@ MonsterBattleFont_Branch_ABA6:
 ; ----------------------------------------------------------------------------
         rts                                     ; ABB7 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ABB8:
+SelectUniqueMonsterArenaOpponent:
         ldy     #$64                            ; ABB8 A0 64                    .d
 MonsterBattleFont_Branch_ABBA:
         lda     $0F                             ; ABBA A5 0F                    ..
         brk                                     ; ABBC 00                       .
         db   $17,$0F                         ; ABBD 17 0F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_ABD8    ; ABBF 20 D8 AB                  ..
+        jsr     TestRecentMonsterArenaOpponent  ; ABBF 20 D8 AB                  ..
         dey                                     ; ABC2 88                       .
         beq     MonsterBattleFont_Branch_ABC7   ; ABC3 F0 02                    ..
         bcc     MonsterBattleFont_Branch_ABBA   ; ABC5 90 F3                    ..
@@ -3084,7 +3084,7 @@ MonsterBattleFont_Branch_ABCA:
         sta     $6E31                           ; ABD4 8D 31 6E                 .1n
         rts                                     ; ABD7 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ABD8:
+TestRecentMonsterArenaOpponent:
         ldx     #$07                            ; ABD8 A2 07                    ..
 MonsterBattleFont_Branch_ABDA:
         cmp     $6E31,x                         ; ABDA DD 31 6E                 .1n
@@ -3098,16 +3098,16 @@ MonsterBattleFont_Branch_ABE4:
         clc                                     ; ABE4 18                       .
         rts                                     ; ABE5 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ABE6:
+RunMonsterArenaService07_6F_6F:
         brk                                     ; ABE6 00                       .
         db   $07,$6F,$6F                     ; ABE7 07 6F 6F                 .oo
 ; ----------------------------------------------------------------------------
         rts                                     ; ABEA 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ABEB:
+StartMonsterArenaWagerSelection:
         lda     $6E82                           ; ABEB AD 82 6E                 ..n
         bmi     MonsterBattleFont_Branch_AC10   ; ABEE 30 20                    0
-        jsr     MonsterBattleFont_Entry_AC1F    ; ABF0 20 1F AC                  ..
+        jsr     TestCasinoCoinBalanceNonzero    ; ABF0 20 1F AC                  ..
         bcc     MonsterBattleFont_Branch_AC12   ; ABF3 90 1D                    ..
         brk                                     ; ABF5 00                       .
         db   $07,$6F,$6C                     ; ABF6 07 6F 6C                 .ol
@@ -3117,11 +3117,11 @@ MonsterBattleFont_Entry_ABEB:
         sta     $6E84                           ; ABFE 8D 84 6E                 ..n
         sta     $6E85                           ; AC01 8D 85 6E                 ..n
         sta     $6E82                           ; AC04 8D 82 6E                 ..n
-        jsr     MonsterBattleFont_Entry_ACD9    ; AC07 20 D9 AC                  ..
+        jsr     RenderMonsterArenaCoinAndWagerValues; AC07 20 D9 AC              ..
         brk                                     ; AC0A 00                       .
         db   $81,$4B                         ; AC0B 81 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     MonsterBattleFont_Entry_AC32    ; AC0D 20 32 AC                  2.
+        jsr     IncrementMonsterArenaWager      ; AC0D 20 32 AC                  2.
 MonsterBattleFont_Branch_AC10:
         sec                                     ; AC10 38                       8
         rts                                     ; AC11 60                       `
@@ -3132,14 +3132,14 @@ MonsterBattleFont_Branch_AC12:
 ; ----------------------------------------------------------------------------
         pla                                     ; AC15 68                       h
         pla                                     ; AC16 68                       h
-        jmp     UpperFixedEngine_Entry_D214     ; AC17 4C 14 D2                 L..
+        jmp     WaitForButtonStateOneTwentyFrames; AC17 4C 14 D2                L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AC1A:
-        jsr     MonsterBattleFont_Entry_AAB9    ; AC1A 20 B9 AA                  ..
+        jsr     ApplyMonsterArenaWagerValue     ; AC1A 20 B9 AA                  ..
         clc                                     ; AC1D 18                       .
         rts                                     ; AC1E 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AC1F:
+TestCasinoCoinBalanceNonzero:
         lda     $62AF                           ; AC1F AD AF 62                 ..b
         bne     MonsterBattleFont_Branch_AC30   ; AC22 D0 0C                    ..
         lda     $62AE                           ; AC24 AD AE 62                 ..b
@@ -3153,23 +3153,23 @@ MonsterBattleFont_Branch_AC30:
         sec                                     ; AC30 38                       8
         rts                                     ; AC31 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AC32:
+IncrementMonsterArenaWager:
         inc     $6E82                           ; AC32 EE 82 6E                 ..n
-        jsr     MonsterBattleFont_Entry_ACBF    ; AC35 20 BF AC                  ..
-        jsr     MonsterBattleFont_Entry_AC44    ; AC38 20 44 AC                  D.
+        jsr     SubtractOneCasinoCoinForArena   ; AC35 20 BF AC                  ..
+        jsr     RunMonsterArenaWagerLoop        ; AC38 20 44 AC                  D.
         lda     $6E82                           ; AC3B AD 82 6E                 ..n
         and     #$7F                            ; AC3E 29 7F                    ).
         sta     $6E83                           ; AC40 8D 83 6E                 ..n
         rts                                     ; AC43 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AC44:
-        jsr     MonsterBattleFont_Entry_ACD9    ; AC44 20 D9 AC                  ..
-        jsr     MonsterBattleFont_Entry_AD49    ; AC47 20 49 AD                  I.
-        jsr     MonsterBattleFont_Entry_AC72    ; AC4A 20 72 AC                  r.
-        jsr     MonsterBattleFont_Entry_AC53    ; AC4D 20 53 AC                  S.
-        jmp     MonsterBattleFont_Entry_AC44    ; AC50 4C 44 AC                 LD.
+RunMonsterArenaWagerLoop:
+        jsr     RenderMonsterArenaCoinAndWagerValues; AC44 20 D9 AC              ..
+        jsr     ApplyMonsterArenaInputRepeat    ; AC47 20 49 AD                  I.
+        jsr     AdjustMonsterArenaWager         ; AC4A 20 72 AC                  r.
+        jsr     HandleMonsterArenaConfirmCancel ; AC4D 20 53 AC                  S.
+        jmp     RunMonsterArenaWagerLoop        ; AC50 4C 44 AC                 LD.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AC53:
+HandleMonsterArenaConfirmCancel:
         lda     ButtonsPressed                  ; AC53 A5 14                    ..
         lsr     a                               ; AC55 4A                       J
         lsr     a                               ; AC56 4A                       J
@@ -3194,7 +3194,7 @@ MonsterBattleFont_Branch_AC61:
         pla                                     ; AC6E 68                       h
         jmp     MonsterBattleFont_Branch_AC1A   ; AC6F 4C 1A AC                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AC72:
+AdjustMonsterArenaWager:
         lda     ButtonsPressed                  ; AC72 A5 14                    ..
         and     #$10                            ; AC74 29 10                    ).
         bne     MonsterBattleFont_Branch_AC7F   ; AC76 D0 07                    ..
@@ -3217,7 +3217,7 @@ MonsterBattleFont_Branch_AC8D:
         cmp     #$32                            ; AC92 C9 32                    .2
         bcs     MonsterBattleFont_Branch_ACBE   ; AC94 B0 28                    .(
         inc     $6E82                           ; AC96 EE 82 6E                 ..n
-        jsr     MonsterBattleFont_Entry_ACBF    ; AC99 20 BF AC                  ..
+        jsr     SubtractOneCasinoCoinForArena   ; AC99 20 BF AC                  ..
         brk                                     ; AC9C 00                       .
         db   $B4,$FB                         ; AC9D B4 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -3242,7 +3242,7 @@ MonsterBattleFont_Branch_ACBB:
 MonsterBattleFont_Branch_ACBE:
         rts                                     ; ACBE 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ACBF:
+SubtractOneCasinoCoinForArena:
         lda     SaveCasinoCoins                 ; ACBF AD AD 62                 ..b
         sec                                     ; ACC2 38                       8
         sbc     #$01                            ; ACC3 E9 01                    ..
@@ -3255,13 +3255,13 @@ MonsterBattleFont_Entry_ACBF:
         sta     $62AF                           ; ACD5 8D AF 62                 ..b
         rts                                     ; ACD8 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ACD9:
-        jsr     MonsterBattleFont_Entry_ACE3    ; ACD9 20 E3 AC                  ..
-        jsr     MonsterBattleFont_Entry_AD1C    ; ACDC 20 1C AD                  ..
+RenderMonsterArenaCoinAndWagerValues:
+        jsr     RenderMonsterArenaCoinBalance   ; ACD9 20 E3 AC                  ..
+        jsr     RenderMonsterArenaWager         ; ACDC 20 1C AD                  ..
         jsr     RequestPpuUpdateAndWait         ; ACDF 20 2D C6                  -.
         rts                                     ; ACE2 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_ACE3:
+RenderMonsterArenaCoinBalance:
         ldx     #$02                            ; ACE3 A2 02                    ..
 MonsterBattleFont_Branch_ACE5:
         lda     SaveCasinoCoins,x               ; ACE5 BD AD 62                 ..b
@@ -3298,7 +3298,7 @@ MonsterBattleFont_Branch_AD0B:
         bcc     MonsterBattleFont_Branch_AD0B   ; AD19 90 F0                    ..
         rts                                     ; AD1B 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AD1C:
+RenderMonsterArenaWager:
         lda     $6E82                           ; AD1C AD 82 6E                 ..n
         and     #$7F                            ; AD1F 29 7F                    ).
         sta     $72                             ; AD21 85 72                    .r
@@ -3325,7 +3325,7 @@ MonsterBattleFont_Branch_AD38:
         bcc     MonsterBattleFont_Branch_AD38   ; AD46 90 F0                    ..
         rts                                     ; AD48 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AD49:
+ApplyMonsterArenaInputRepeat:
         jsr     ReadControllers                 ; AD49 20 EC C8                  ..
         ldy     ButtonsPressed                  ; AD4C A4 14                    ..
         beq     MonsterBattleFont_Branch_AD5D   ; AD4E F0 0D                    ..
@@ -3346,7 +3346,7 @@ MonsterBattleFont_Branch_AD5D:
         sta     ButtonsPressed                  ; AD67 85 14                    ..
         rts                                     ; AD69 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AD6A:
+ResetMonsterArenaRoundState:
         lda     #$00                            ; AD6A A9 00                    ..
         sta     $30                             ; AD6C 85 30                    .0
         sta     $29                             ; AD6E 85 29                    .)
@@ -3364,7 +3364,7 @@ MonsterBattleFont_Branch_AD81:
         sta     $6E4C                           ; AD8C 8D 4C 6E                 .Ln
         rts                                     ; AD8F 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AD90:
+InitializeMonsterArenaCombatantCounts:
         lda     #$01                            ; AD90 A9 01                    ..
         sta     $6E49                           ; AD92 8D 49 6E                 .In
         sta     $6E4A                           ; AD95 8D 4A 6E                 .Jn
@@ -3396,9 +3396,9 @@ MonsterBattleFont_Entry_AD90:
         db   $26,$FF,$04,$03,$04,$00,$36,$33 ; AE41 26 FF 04 03 04 00 36 33  &.....63
         db   $2A,$2C,$0B,$05,$05,$08         ; AE49 2A 2C 0B 05 05 08        *,....
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AE4F:
+RunBattlePresentationAnimation:
         pha                                     ; AE4F 48                       H
-        jsr     MonsterBattleFont_Entry_B226    ; AE50 20 26 B2                  &.
+        jsr     BlinkBattleAnimationNametable   ; AE50 20 26 B2                  &.
         jsr     InitializeOamShadow             ; AE53 20 43 C5                  C.
         jsr     WaitForNmi                      ; AE56 20 74 FF                  t.
         lda     $1F                             ; AE59 A5 1F                    ..
@@ -3407,11 +3407,11 @@ MonsterBattleFont_Entry_AE4F:
         pla                                     ; AE5F 68                       h
         cmp     #$00                            ; AE60 C9 00                    ..
         bne     MonsterBattleFont_Branch_AE6A   ; AE62 D0 06                    ..
-        jsr     MonsterBattleFont_Entry_AEA7    ; AE64 20 A7 AE                  ..
+        jsr     RunBattleAnimationCommandStreams; AE64 20 A7 AE                  ..
         jmp     MonsterBattleFont_Branch_AE6D   ; AE67 4C 6D AE                 Lm.
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AE6A:
-        jsr     MonsterBattleFont_Entry_B1A5    ; AE6A 20 A5 B1                  ..
+        jsr     RunBattleAnimationScreenWipe    ; AE6A 20 A5 B1                  ..
 MonsterBattleFont_Branch_AE6D:
         lda     $0506                           ; AE6D AD 06 05                 ...
         and     #$EF                            ; AE70 29 EF                    ).
@@ -3438,7 +3438,7 @@ MonsterBattleFont_Branch_AE6D:
         sta     $0506                           ; AEA1 8D 06 05                 ...
         jmp     WaitForNmi                      ; AEA4 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AEA7:
+RunBattleAnimationCommandStreams:
         lda     #$1D                            ; AEA7 A9 1D                    ..
         sta     $DA                             ; AEA9 85 DA                    ..
         lda     Bank18_BattleAnimationPointers  ; AEAB AD 3F B2                 .?.
@@ -3453,7 +3453,7 @@ MonsterBattleFont_Entry_AEA7:
         sta     $E0                             ; AEC2 85 E0                    ..
         lda     $B244                           ; AEC4 AD 44 B2                 .D.
         sta     $E1                             ; AEC7 85 E1                    ..
-        jsr     MonsterBattleFont_Entry_B120    ; AEC9 20 20 B1                   .
+        jsr     InitializeBattleAnimationNametableOrigin; AEC9 20 20 B1           .
         jsr     RequestPpuUpdateAndWait         ; AECC 20 2D C6                  -.
         ldy     #$00                            ; AECF A0 00                    ..
 MonsterBattleFont_Branch_AED1:
@@ -3474,7 +3474,7 @@ MonsterBattleFont_Branch_AEDE:
         clc                                     ; AEE7 18                       .
         adc     #$0E                            ; AEE8 69 0E                    i.
         sta     $01                             ; AEEA 85 01                    ..
-        jsr     MonsterBattleFont_Entry_AFD8    ; AEEC 20 D8 AF                  ..
+        jsr     QueueBattleAnimationRegion      ; AEEC 20 D8 AF                  ..
         lda     ($E0),y                         ; AEEF B1 E0                    ..
         sta     $02                             ; AEF1 85 02                    ..
         and     #$3F                            ; AEF3 29 3F                    )?
@@ -3482,12 +3482,12 @@ MonsterBattleFont_Branch_AEDE:
         sbc     #$01                            ; AEF6 E9 01                    ..
         sta     $04                             ; AEF8 85 04                    ..
         lda     ($DC),y                         ; AEFA B1 DC                    ..
-        jsr     MonsterBattleFont_Entry_AFC9    ; AEFC 20 C9 AF                  ..
+        jsr     DecodeSignedBattleAnimationOffset; AEFC 20 C9 AF                 ..
         clc                                     ; AEFF 18                       .
         adc     #$10                            ; AF00 69 10                    i.
         sta     $00                             ; AF02 85 00                    ..
         lda     ($DE),y                         ; AF04 B1 DE                    ..
-        jsr     MonsterBattleFont_Entry_AFC9    ; AF06 20 C9 AF                  ..
+        jsr     DecodeSignedBattleAnimationOffset; AF06 20 C9 AF                 ..
         clc                                     ; AF09 18                       .
         adc     #$0E                            ; AF0A 69 0E                    i.
         sta     $01                             ; AF0C 85 01                    ..
@@ -3523,14 +3523,14 @@ MonsterBattleFont_Branch_AF25:
         lda     #$00                            ; AF40 A9 00                    ..
         sta     $01                             ; AF42 85 01                    ..
 MonsterBattleFont_Branch_AF44:
-        jsr     MonsterBattleFont_Entry_AFD8    ; AF44 20 D8 AF                  ..
+        jsr     QueueBattleAnimationRegion      ; AF44 20 D8 AF                  ..
 MonsterBattleFont_Branch_AF47:
-        jsr     MonsterBattleFont_Entry_AFB9    ; AF47 20 B9 AF                  ..
+        jsr     DecodeMirroredBattleAnimationCommand; AF47 20 B9 AF              ..
         clc                                     ; AF4A 18                       .
         adc     #$0E                            ; AF4B 69 0E                    i.
         sta     $01                             ; AF4D 85 01                    ..
         lda     ($DE),y                         ; AF4F B1 DE                    ..
-        jsr     MonsterBattleFont_Entry_AFC9    ; AF51 20 C9 AF                  ..
+        jsr     DecodeSignedBattleAnimationOffset; AF51 20 C9 AF                 ..
         clc                                     ; AF54 18                       .
         adc     #$10                            ; AF55 69 10                    i.
         sta     $00                             ; AF57 85 00                    ..
@@ -3544,10 +3544,10 @@ MonsterBattleFont_Branch_AF47:
 MonsterBattleFont_Branch_AF66:
         lda     $01                             ; AF66 A5 01                    ..
         bmi     MonsterBattleFont_Branch_AF6D   ; AF68 30 03                    0.
-        jsr     MonsterBattleFont_Entry_AFD8    ; AF6A 20 D8 AF                  ..
+        jsr     QueueBattleAnimationRegion      ; AF6A 20 D8 AF                  ..
 MonsterBattleFont_Branch_AF6D:
-        jsr     MonsterBattleFont_Entry_AFB9    ; AF6D 20 B9 AF                  ..
-        jsr     MonsterBattleFont_Entry_AFC9    ; AF70 20 C9 AF                  ..
+        jsr     DecodeMirroredBattleAnimationCommand; AF6D 20 B9 AF              ..
+        jsr     DecodeSignedBattleAnimationOffset; AF70 20 C9 AF                 ..
         clc                                     ; AF73 18                       .
         adc     #$0E                            ; AF74 69 0E                    i.
         sta     $01                             ; AF76 85 01                    ..
@@ -3578,7 +3578,7 @@ MonsterBattleFont_Branch_AF8C:
         lda     #$00                            ; AFA3 A9 00                    ..
         sta     $01                             ; AFA5 85 01                    ..
 MonsterBattleFont_Branch_AFA7:
-        jsr     MonsterBattleFont_Entry_AFD8    ; AFA7 20 D8 AF                  ..
+        jsr     QueueBattleAnimationRegion      ; AFA7 20 D8 AF                  ..
 MonsterBattleFont_Branch_AFAA:
         iny                                     ; AFAA C8                       .
         jmp     MonsterBattleFont_Branch_AED3   ; AFAB 4C D3 AE                 L..
@@ -3590,7 +3590,7 @@ MonsterBattleFont_Branch_AFAE:
         beq     MonsterBattleFont_Branch_AFD1   ; AFB4 F0 1B                    ..
         jmp     MonsterBattleFont_Branch_AED1   ; AFB6 4C D1 AE                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AFB9:
+DecodeMirroredBattleAnimationCommand:
         lda     ($E0),y                         ; AFB9 B1 E0                    ..
         eor     #$40                            ; AFBB 49 40                    I@
         sta     $02                             ; AFBD 85 02                    ..
@@ -3601,7 +3601,7 @@ MonsterBattleFont_Entry_AFB9:
         lda     ($DC),y                         ; AFC6 B1 DC                    ..
         rts                                     ; AFC8 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AFC9:
+DecodeSignedBattleAnimationOffset:
         tax                                     ; AFC9 AA                       .
         bmi     MonsterBattleFont_Branch_AFD2   ; AFCA 30 06                    0.
         eor     #$FF                            ; AFCC 49 FF                    I.
@@ -3616,7 +3616,7 @@ MonsterBattleFont_Branch_AFD2:
         eor     #$FF                            ; AFD5 49 FF                    I.
         rts                                     ; AFD7 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_AFD8:
+QueueBattleAnimationRegion:
         lda     #$00                            ; AFD8 A9 00                    ..
         sta     $04                             ; AFDA 85 04                    ..
         lda     $02                             ; AFDC A5 02                    ..
@@ -3748,7 +3748,7 @@ MonsterBattleFont_Branch_B0A0:
         lda     $04                             ; B0AF A5 04                    ..
         ora     $09                             ; B0B1 05 09                    ..
         sta     $04                             ; B0B3 85 04                    ..
-        jsr     MonsterBattleFont_Entry_B0FA    ; B0B5 20 FA B0                  ..
+        jsr     AppendBattleAnimationPpuFill    ; B0B5 20 FA B0                  ..
         lda     $07                             ; B0B8 A5 07                    ..
         bne     MonsterBattleFont_Branch_B0BD   ; B0BA D0 01                    ..
         rts                                     ; B0BC 60                       `
@@ -3775,7 +3775,7 @@ MonsterBattleFont_Branch_B0D2:
 MonsterBattleFont_Branch_B0DE:
         lda     $07                             ; B0DE A5 07                    ..
         sta     $03                             ; B0E0 85 03                    ..
-        jmp     MonsterBattleFont_Entry_B0FA    ; B0E2 4C FA B0                 L..
+        jmp     AppendBattleAnimationPpuFill    ; B0E2 4C FA B0                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_B0E5:
         ldx     $050A                           ; B0E5 AE 0A 05                 ...
@@ -3787,7 +3787,7 @@ MonsterBattleFont_Branch_B0E5:
         sta     NextTextCharacter,x             ; B0F4 9D 02 03                 ...
         jmp     MonsterBattleFont_Branch_B116   ; B0F7 4C 16 B1                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B0FA:
+AppendBattleAnimationPpuFill:
         ldx     $050A                           ; B0FA AE 0A 05                 ...
         lda     $03                             ; B0FD A5 03                    ..
         sta     $0301,x                         ; B0FF 9D 01 03                 ...
@@ -3809,7 +3809,7 @@ MonsterBattleFont_Branch_B116:
         inc     $050B                           ; B11C EE 0B 05                 ...
         rts                                     ; B11F 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B120:
+InitializeBattleAnimationNametableOrigin:
         lda     #$00                            ; B120 A9 00                    ..
         sta     $00                             ; B122 85 00                    ..
         sta     $01                             ; B124 85 01                    ..
@@ -3833,7 +3833,7 @@ MonsterBattleFont_Entry_B120:
         sta     $E9                             ; B146 85 E9                    ..
         rts                                     ; B148 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B149:
+QueueBattleAnimationMaskTile:
         pha                                     ; B149 48                       H
         tya                                     ; B14A 98                       .
         pha                                     ; B14B 48                       H
@@ -3892,7 +3892,7 @@ MonsterBattleFont_Branch_B1A1:
         pla                                     ; B1A3 68                       h
         rts                                     ; B1A4 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B1A5:
+RunBattleAnimationScreenWipe:
         lda     #$00                            ; B1A5 A9 00                    ..
         sta     $DB                             ; B1A7 85 DB                    ..
         lda     #$1E                            ; B1A9 A9 1E                    ..
@@ -3905,12 +3905,12 @@ MonsterBattleFont_Branch_B1AF:
         sbc     $DB                             ; B1B2 E5 DB                    ..
         sta     $00                             ; B1B4 85 00                    ..
         sty     $01                             ; B1B6 84 01                    ..
-        jsr     MonsterBattleFont_Entry_B149    ; B1B8 20 49 B1                  I.
+        jsr     QueueBattleAnimationMaskTile    ; B1B8 20 49 B1                  I.
         lda     $DB                             ; B1BB A5 DB                    ..
         sta     $00                             ; B1BD 85 00                    ..
         iny                                     ; B1BF C8                       .
         sty     $01                             ; B1C0 84 01                    ..
-        jsr     MonsterBattleFont_Entry_B149    ; B1C2 20 49 B1                  I.
+        jsr     QueueBattleAnimationMaskTile    ; B1C2 20 49 B1                  I.
         iny                                     ; B1C5 C8                       .
         cpy     #$1E                            ; B1C6 C0 1E                    ..
         bcc     MonsterBattleFont_Branch_B1AF   ; B1C8 90 E5                    ..
@@ -3941,7 +3941,7 @@ MonsterBattleFont_Branch_B1EE:
         lda     $DB                             ; B1EE A5 DB                    ..
 MonsterBattleFont_Branch_B1F0:
         sta     $01                             ; B1F0 85 01                    ..
-        jsr     MonsterBattleFont_Entry_B149    ; B1F2 20 49 B1                  I.
+        jsr     QueueBattleAnimationMaskTile    ; B1F2 20 49 B1                  I.
         iny                                     ; B1F5 C8                       .
         cpy     #$20                            ; B1F6 C0 20                    .
         bcc     MonsterBattleFont_Branch_B1E0   ; B1F8 90 E6                    ..
@@ -3958,7 +3958,7 @@ MonsterBattleFont_Branch_B1F0:
         db   $04,$E9,$12,$21,$04,$89,$12,$01 ; B21A 04 E9 12 21 04 89 12 01  ...!....
         db   $84,$F3,$12,$21                 ; B222 84 F3 12 21              ...!
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B226:
+BlinkBattleAnimationNametable:
         ldx     #$0C                            ; B226 A2 0C                    ..
 MonsterBattleFont_Branch_B228:
         txa                                     ; B228 8A                       .
@@ -4160,7 +4160,7 @@ Bank18_LoadFontTiles:
         ldy     #$8C                            ; B798 A0 8C                    ..
         ldx     #$00                            ; B79A A2 00                    ..
         beq     MonsterBattleFont_Branch_B7A2   ; B79C F0 04                    ..
-MonsterBattleFont_Entry_B79E:
+LoadUppercaseBattleFontTiles:
         ldy     #$24                            ; B79E A0 24                    .$
         ldx     #$02                            ; B7A0 A2 02                    ..
 MonsterBattleFont_Branch_B7A2:
@@ -4174,8 +4174,8 @@ MonsterBattleFont_Branch_B7A2:
         sta     $16                             ; B7B4 85 16                    ..
         lda     $B7E4,x                         ; B7B6 BD E4 B7                 ...
         sta     $17                             ; B7B9 85 17                    ..
-        jsr     MonsterBattleFont_Entry_B7D8    ; B7BB 20 D8 B7                  ..
-        jsr     MonsterBattleFont_Entry_B7D8    ; B7BE 20 D8 B7                  ..
+        jsr     WriteBlankFontBitplane          ; B7BB 20 D8 B7                  ..
+        jsr     WriteBlankFontBitplane          ; B7BE 20 D8 B7                  ..
 MonsterBattleFont_Branch_B7C1:
         ldy     #$08                            ; B7C1 A0 08                    ..
         ldx     #$16                            ; B7C3 A2 16                    ..
@@ -4184,12 +4184,12 @@ MonsterBattleFont_Branch_B7C5:
         sta     PPUDATA                         ; B7C8 8D 07 20                 ..
         dey                                     ; B7CB 88                       .
         bne     MonsterBattleFont_Branch_B7C5   ; B7CC D0 F7                    ..
-        jsr     MonsterBattleFont_Entry_B7D8    ; B7CE 20 D8 B7                  ..
+        jsr     WriteBlankFontBitplane          ; B7CE 20 D8 B7                  ..
         dec     $00                             ; B7D1 C6 00                    ..
         bne     MonsterBattleFont_Branch_B7C1   ; B7D3 D0 EC                    ..
-        jmp     UpperFixedEngine_Entry_C58F     ; B7D5 4C 8F C5                 L..
+        jmp     ResumeRenderingAfterPpuWork     ; B7D5 4C 8F C5                 L..
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B7D8:
+WriteBlankFontBitplane:
         ldx     #$08                            ; B7D8 A2 08                    ..
         lda     #$00                            ; B7DA A9 00                    ..
 MonsterBattleFont_Branch_B7DC:
@@ -4201,7 +4201,7 @@ MonsterBattleFont_Branch_B7DC:
         db   $3D                             ; B7E3 3D                       =
         db   $B8,$9D,$BC                     ; B7E4 B8 9D BC                 ...
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B7E7:
+QueueBattleFontTileBlock:
         lda     #$90                            ; B7E7 A9 90                    ..
         sta     $0300                           ; B7E9 8D 00 03                 ...
         lda     #$40                            ; B7EC A9 40                    .@
@@ -4212,10 +4212,10 @@ MonsterBattleFont_Entry_B7E7:
         sta     $16                             ; B7F8 85 16                    ..
 MonsterBattleFont_Branch_B7FA:
         ldx     #$00                            ; B7FA A2 00                    ..
-        jsr     MonsterBattleFont_Entry_B81C    ; B7FC 20 1C B8                  ..
-        jsr     MonsterBattleFont_Entry_B81C    ; B7FF 20 1C B8                  ..
-        jsr     MonsterBattleFont_Entry_B81C    ; B802 20 1C B8                  ..
-        jsr     MonsterBattleFont_Entry_B81C    ; B805 20 1C B8                  ..
+        jsr     AppendBattleFontTileRow         ; B7FC 20 1C B8                  ..
+        jsr     AppendBattleFontTileRow         ; B7FF 20 1C B8                  ..
+        jsr     AppendBattleFontTileRow         ; B802 20 1C B8                  ..
+        jsr     AppendBattleFontTileRow         ; B805 20 1C B8                  ..
         inc     $050B                           ; B808 EE 0B 05                 ...
         jsr     RequestPpuUpdateAndWait         ; B80B 20 2D C6                  -.
         lda     NextTextCharacter               ; B80E AD 02 03                 ...
@@ -4226,14 +4226,14 @@ MonsterBattleFont_Branch_B7FA:
         bne     MonsterBattleFont_Branch_B7FA   ; B819 D0 DF                    ..
         rts                                     ; B81B 60                       `
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_B81C:
+AppendBattleFontTileRow:
         lda     $B835,y                         ; B81C B9 35 B8                 .5.
         sta     $0303,x                         ; B81F 9D 03 03                 ...
         inx                                     ; B822 E8                       .
         iny                                     ; B823 C8                       .
         txa                                     ; B824 8A                       .
         and     #$07                            ; B825 29 07                    ).
-        bne     MonsterBattleFont_Entry_B81C    ; B827 D0 F3                    ..
+        bne     AppendBattleFontTileRow         ; B827 D0 F3                    ..
 MonsterBattleFont_Branch_B829:
         lda     #$00                            ; B829 A9 00                    ..
         sta     $0303,x                         ; B82B 9D 03 03                 ...
@@ -4448,7 +4448,7 @@ Bank18_PostFontData:
         db   $EE,$50,$60,$98,$10,$17,$18,$17 ; BE6D EE 50 60 98 10 17 18 17  .P`.....
         db   $15,$17,$18,$EE,$E0,$FE,$C6,$BD ; BE75 15 17 18 EE E0 FE C6 BD  ........
 ; ----------------------------------------------------------------------------
-MonsterBattleFont_Entry_BE7D:
+IncrementAudioStateInterruptStub:
         inc     $E1C0                           ; BE7D EE C0 E1                 ...
         rti                                     ; BE80 40                       @
 ; ----------------------------------------------------------------------------

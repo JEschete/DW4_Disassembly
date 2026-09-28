@@ -229,7 +229,7 @@ BattleTurnEngine_Branch_81B5:
         jsr     BattleTurnEngine_PreloadDependentBattleGraphics; 81C3 20 AB 85   ..
         jsr     BattleTurnEngine_RebuildBattleOamFromTurnSlots; 81C6 20 CF 81    ..
         jsr     WaitForNmi                      ; 81C9 20 74 FF                  t.
-        jmp     UpperFixedEngine_Entry_C5BF     ; 81CC 4C BF C5                 L..
+        jmp     FadePaletteToBlack              ; 81CC 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RebuildBattleOamFromTurnSlots:
         ldx     #$00                            ; 81CF A2 00                    ..
@@ -243,7 +243,7 @@ BattleTurnEngine_Branch_81D3:
         bne     BattleTurnEngine_Branch_81D3    ; 81DA D0 F7                    ..
         lda     #$02                            ; 81DC A9 02                    ..
         sta     OAMDMA                          ; 81DE 8D 14 40                 ..@
-        jsr     UpperFixedEngine_Entry_C58F     ; 81E1 20 8F C5                  ..
+        jsr     ResumeRenderingAfterPpuWork     ; 81E1 20 8F C5                  ..
         lda     #$00                            ; 81E4 A9 00                    ..
         sta     $C7                             ; 81E6 85 C7                    ..
 BattleTurnEngine_Branch_81E8:
@@ -317,7 +317,7 @@ BattleTurnEngine_Branch_8237:
 BattleTurnEngine_Branch_8263:
         lda     #$FF                            ; 8263 A9 FF                    ..
         jsr     BattleTurnEngine_FillBattlePatternBuffer; 8265 20 B7 83          ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8268 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8268 20 B9 C5                  ..
         ldy     #$00                            ; 826B A0 00                    ..
         lda     #$3F                            ; 826D A9 3F                    .?
         sta     $04                             ; 826F 85 04                    ..
@@ -394,11 +394,11 @@ BattleTurnEngine_Branch_82F0:
         lda     #$30                            ; 830A A9 30                    .0
         jsr     BattleTurnEngine_FillBattlePatternBufferWithSentinels; 830C 20 A5 83 ..
 BattleTurnEngine_Branch_830F:
-        jsr     UpperFixedEngine_Entry_C5B9     ; 830F 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 830F 20 B9 C5                  ..
         ldx     #$03                            ; 8312 A2 03                    ..
         jsr     WaitFrames                      ; 8314 20 0C C9                  ..
         jsr     BattleTurnEngine_CopyDecodeScratchToPatternBuffer; 8317 20 65 96 e.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 831A 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 831A 20 B9 C5                  ..
         ldx     #$03                            ; 831D A2 03                    ..
         jsr     WaitFrames                      ; 831F 20 0C C9                  ..
         pla                                     ; 8322 68                       h
@@ -471,17 +471,17 @@ BattleTurnEngine_Branch_8373:
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_FlashBattlePatternFill:
         jsr     BattleTurnEngine_FillBattlePatternBufferWithSentinels; 837F 20 A5 83 ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8382 20 B9 C5                  ..
-        jsr     UpperFixedEngine_Entry_EEC6     ; 8385 20 C6 EE                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8382 20 B9 C5                  ..
+        jsr     DecrementAudioGlobalLowNibble   ; 8385 20 C6 EE                  ..
         ldx     #$0E                            ; 8388 A2 0E                    ..
         jsr     WaitFrames                      ; 838A 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_EEC6     ; 838D 20 C6 EE                  ..
+        jsr     DecrementAudioGlobalLowNibble   ; 838D 20 C6 EE                  ..
         ldx     #$0E                            ; 8390 A2 0E                    ..
         jsr     WaitFrames                      ; 8392 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_EEC6     ; 8395 20 C6 EE                  ..
+        jsr     DecrementAudioGlobalLowNibble   ; 8395 20 C6 EE                  ..
         ldx     #$0E                            ; 8398 A2 0E                    ..
         jsr     WaitFrames                      ; 839A 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_EEC6     ; 839D 20 C6 EE                  ..
+        jsr     DecrementAudioGlobalLowNibble   ; 839D 20 C6 EE                  ..
         ldx     #$0E                            ; 83A0 A2 0E                    ..
         jmp     WaitFrames                      ; 83A2 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
@@ -576,11 +576,11 @@ BattleTurnEngine_Branch_842E:
         sta     $05FB,x                         ; 842E 9D FB 05                 ...
         dex                                     ; 8431 CA                       .
         bne     BattleTurnEngine_Branch_842E    ; 8432 D0 FA                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8434 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8434 20 B9 C5                  ..
         ldx     $D6                             ; 8437 A6 D6                    ..
         jsr     WaitFrames                      ; 8439 20 0C C9                  ..
         jsr     BattleTurnEngine_CopyDecodeScratchToPatternBuffer; 843C 20 65 96 e.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 843F 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 843F 20 B9 C5                  ..
         ldx     $D6                             ; 8442 A6 D6                    ..
         jsr     WaitFrames                      ; 8444 20 0C C9                  ..
         pla                                     ; 8447 68                       h
@@ -657,7 +657,7 @@ BattleTurnEngine_Branch_84A6:
 BattleTurnEngine_Branch_84B4:
         cpy     #$0F                            ; 84B4 C0 0F                    ..
         bcc     BattleTurnEngine_Branch_84A6    ; 84B6 90 EE                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 84B8 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 84B8 20 B9 C5                  ..
         ldx     $03                             ; 84BB A6 03                    ..
         jmp     WaitFrames                      ; 84BD 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
@@ -736,7 +736,7 @@ BattleTurnEngine_Branch_854A:
         bcc     BattleTurnEngine_Branch_8572    ; 855E 90 12                    ..
         jsr     BattleTurnEngine_AssignSecondaryPlacementRecord; 8560 20 96 94   ..
         bcc     BattleTurnEngine_Branch_8572    ; 8563 90 0D                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8565 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8565 20 B9 C5                  ..
 BattleTurnEngine_Branch_8568:
         jsr     BattleTurnEngine_FindCenteredQueuedOamX; 8568 20 BA 9C           ..
         bcc     BattleTurnEngine_Branch_8572    ; 856B 90 05                    ..
@@ -892,7 +892,7 @@ BattleTurnEngine_Branch_8666:
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_InsertTransitionSpriteAndRotateQueue:
         jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 8669 20 6E 94     n.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 866C 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 866C 20 B9 C5                  ..
         ldx     $C6                             ; 866F A6 C6                    ..
         lda     #$4D                            ; 8671 A9 4D                    .M
         sta     $0440,x                         ; 8673 9D 40 04                 .@.
@@ -973,7 +973,7 @@ BattleTurnEngine_Branch_86F7:
         jsr     BattleTurnEngine_StorePreviewCoordinatesInPlacementRecord; 86F9 20 7A 87 z.
         lda     #$04                            ; 86FC A9 04                    ..
         jsr     BattleTurnEngine_StorePreviewCoordinatesInPlacementRecord; 86FE 20 7A 87 z.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8701 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8701 20 B9 C5                  ..
 BattleTurnEngine_Branch_8704:
         jsr     BattleTurnEngine_FindUniqueQueuedTurnSlotByte; 8704 20 CC 9D     ..
         sta     $C5                             ; 8707 85 C5                    ..
@@ -1194,7 +1194,7 @@ BattleTurnEngine_Branch_885A:
         ldx     $C6                             ; 889A A6 C6                    ..
         sta     $0440,x                         ; 889C 9D 40 04                 .@.
         jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 889F 20 6E 94     n.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 88A2 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 88A2 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 88A5 20 74 FF                  t.
         jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 88A8 20 22 98     ".
         jsr     BattleTurnEngine_ClearBattleOamMarkerQuad; 88AB 20 C6 89         ..
@@ -1261,7 +1261,7 @@ BattleTurnEngine_RenderBattlePatternTriplet:
         sta     $060A                           ; 8928 8D 0A 06                 ...
         lda     #$2C                            ; 892B A9 2C                    .,
         sta     $060B                           ; 892D 8D 0B 06                 ...
-        jmp     UpperFixedEngine_Entry_C5B9     ; 8930 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; 8930 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RunBattleOamBurstAnimation:
         ldx     $C7                             ; 8933 A6 C7                    ..
@@ -1409,7 +1409,7 @@ BattleTurnEngine_RunBattleFormationTransition:
         sta     $060A                           ; 8A0E 8D 0A 06                 ...
         lda     #$1C                            ; 8A11 A9 1C                    ..
         sta     $060B                           ; 8A13 8D 0B 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8A16 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8A16 20 B9 C5                  ..
         ldx     #$07                            ; 8A19 A2 07                    ..
         lda     #$00                            ; 8A1B A9 00                    ..
         sta     $06                             ; 8A1D 85 06                    ..
@@ -1729,7 +1729,7 @@ BattleTurnEngine_Branch_8C1B:
         sta     $0610                           ; 8C22 8D 10 06                 ...
         lda     #$2C                            ; 8C25 A9 2C                    .,
         sta     $0611                           ; 8C27 8D 11 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; 8C2A 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 8C2A 20 B9 C5                  ..
         jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 8C2D 20 0C 9E    ..
         ldx     $C8                             ; 8C30 A6 C8                    ..
         lda     $045A,x                         ; 8C32 BD 5A 04                 .Z.
@@ -2501,7 +2501,7 @@ BattleTurnEngine_Branch_91EB:
         dex                                     ; 91EE CA                       .
         bpl     BattleTurnEngine_Branch_91EB    ; 91EF 10 FA                    ..
         jsr     WaitForNmi                      ; 91F1 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C5B9     ; 91F4 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; 91F4 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 91F7 20 74 FF                  t.
         lda     $0514                           ; 91FA AD 14 05                 ...
         sta     $05FD                           ; 91FD 8D FD 05                 ...
@@ -5296,7 +5296,7 @@ BattleTurnEngine_Branch_A548:
         sta     $0606,x                         ; A54B 9D 06 06                 ...
         dex                                     ; A54E CA                       .
         bpl     BattleTurnEngine_Branch_A548    ; A54F 10 F7                    ..
-        jsr     UpperFixedEngine_Entry_C5B9     ; A551 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A551 20 B9 C5                  ..
         jsr     WaitForNmi                      ; A554 20 74 FF                  t.
         ldx     #$02                            ; A557 A2 02                    ..
 BattleTurnEngine_Branch_A559:
@@ -5413,7 +5413,7 @@ BattleTurnEngine_QueuePresentationPaletteStep:
         sta     $0601                           ; A610 8D 01 06                 ...
         lda     $A649,x                         ; A613 BD 49 A6                 .I.
         sta     $0602                           ; A616 8D 02 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; A619 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A619 20 B9 C5                  ..
         ldx     #$05                            ; A61C A2 05                    ..
         jmp     WaitFrames                      ; A61E 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
@@ -5566,7 +5566,7 @@ BattleTurnEngine_Branch_A74C:
         jsr     BattleTurnEngine_QueueIndexedNametableBlock; A777 20 43 AA       C.
         lda     $0514                           ; A77A AD 14 05                 ...
         sta     $0609                           ; A77D 8D 09 06                 ...
-        jsr     UpperFixedEngine_Entry_C5B9     ; A780 20 B9 C5                  ..
+        jsr     SubmitPaletteWithoutFade        ; A780 20 B9 C5                  ..
         ldx     #$1A                            ; A783 A2 1A                    ..
         jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A785 20 1A AC          ..
         lda     #$FF                            ; A788 A9 FF                    ..
@@ -5690,7 +5690,7 @@ BattleTurnEngine_Branch_A83F:
         jsr     BattleTurnEngine_HideOamSpriteRange; A87D 20 1D 9C               ..
         lda     #$30                            ; A880 A9 30                    .0
         sta     $0609                           ; A882 8D 09 06                 ...
-        jmp     UpperFixedEngine_Entry_C5B9     ; A885 4C B9 C5                 L..
+        jmp     SubmitPaletteWithoutFade        ; A885 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RunAttributeFlashAssemblyScene:
         brk                                     ; A888 00                       .
@@ -7129,7 +7129,7 @@ BattleTurnEngine_LoadBank8DescriptorPointer:
         lda     #$08                            ; BE1B A9 08                    ..
         sta     $23                             ; BE1D 85 23                    .#
         sty     $24                             ; BE1F 84 24                    .$
-        jsr     UpperFixedEngine_Entry_C3CE     ; BE21 20 CE C3                  ..
+        jsr     ResolveBankedPointerIntoZeroPage; BE21 20 CE C3                  ..
         pla                                     ; BE24 68                       h
         tay                                     ; BE25 A8                       .
         rts                                     ; BE26 60                       `
