@@ -6851,7 +6851,7 @@ BattlePresentation_Branch_B060:
         jsr     UpdateBattleStateFlags          ; B060 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; B063 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-ProcessChapterFourBattleSlots:
+ProcessChapterFiveBattleSlots:
         lda     SaveCurrentChapterMinus1        ; B066 AD 5A 61                 .Za
         cmp     #$04                            ; B069 C9 04                    ..
         bne     BattlePresentation_Branch_B0B3  ; B06B D0 46                    .F

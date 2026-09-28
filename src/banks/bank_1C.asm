@@ -4052,7 +4052,7 @@ RunScriptedFourEntityScene:
         brk                                     ; AEB0 00                       .
         db   $03,$EF                         ; AEB1 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; AEB3 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; AEB3 20 BF C5                  ..
         lda     $627F                           ; AEB6 AD 7F 62                 ..b
         ora     #$80                            ; AEB9 09 80                    ..
         sta     $627F                           ; AEBB 8D 7F 62                 ..b
@@ -4069,7 +4069,7 @@ RunScriptedFourEntityScene:
         sta     PlayerWorldX                    ; AED2 85 42                    .B
         lda     #$39                            ; AED4 A9 39                    .9
         sta     PlayerWorldY                    ; AED6 85 43                    .C
-        jsr     FadePaletteFromBlack            ; AED8 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; AED8 20 C5 C5                  ..
         brk                                     ; AEDB 00                       .
         db   $32,$EF                         ; AEDC 32 EF                    2.
 ; ----------------------------------------------------------------------------
@@ -4148,7 +4148,7 @@ MapEntitySystem_Branch_AF5C:
         brk                                     ; AF5C 00                       .
         db   $03,$EF                         ; AF5D 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; AF5F 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; AF5F 20 BF C5                  ..
         lda     $6287                           ; AF62 AD 87 62                 ..b
         and     #$07                            ; AF65 29 07                    ).
         cmp     #$04                            ; AF67 C9 04                    ..
@@ -4206,7 +4206,7 @@ MapEntitySystem_Branch_AFA5:
         db   $82,$3B                         ; AFAA 82 3B                    .;
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneEightyFrames; AFAC 20 18 D2                 ..
-        jsr     StopMapCue                      ; AFAF 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; AFAF 20 F3 D1                  ..
         lda     #$11                            ; AFB2 A9 11                    ..
         ldx     #$07                            ; AFB4 A2 07                    ..
         sta     $7046,x                         ; AFB6 9D 46 70                 .Fp
@@ -4217,7 +4217,7 @@ MapEntitySystem_Branch_AFBA:
         brk                                     ; AFBD 00                       .
         db   $83,$3B                         ; AFBE 83 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; AFC0 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; AFC0 20 0A D2                  ..
         lda     #$00                            ; AFC3 A9 00                    ..
         ldx     #$0A                            ; AFC5 A2 0A                    ..
         sta     $7046,x                         ; AFC7 9D 46 70                 .Fp
@@ -4280,7 +4280,7 @@ RunEntitySourceSwapScene:
         lda     #$11                            ; B026 A9 11                    ..
         ldx     #$03                            ; B028 A2 03                    ..
         sta     $7046,x                         ; B02A 9D 46 70                 .Fp
-        jmp     FadePaletteToBlack              ; B02D 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; B02D 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 TransferEntityThreeCountersToOne:
         brk                                     ; B030 00                       .
@@ -4289,7 +4289,7 @@ TransferEntityThreeCountersToOne:
         brk                                     ; B033 00                       .
         db   $32,$FB                         ; B034 32 FB                    2.
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; B036 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; B036 20 0A D2                  ..
         brk                                     ; B039 00                       .
         db   $07,$9F                         ; B03A 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -4394,14 +4394,14 @@ MapEntitySystem_Branch_B0DD:
         rts                                     ; B0FB 60                       `
 ; ----------------------------------------------------------------------------
 EnterScriptedSceneDestination:
-        jsr     FadePaletteFromBlack            ; B0FC 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B0FC 20 C5 C5                  ..
         lda     #$80                            ; B0FF A9 80                    ..
         sta     $6BDE                           ; B101 8D DE 6B                 ..k
         jsr     ResetDisplayState               ; B104 20 4E C5                  N.
         jsr     RefreshMapEntityEventState      ; B107 20 46 BF                  F.
         lda     #$30                            ; B10A A9 30                    .0
         sta     $05FD                           ; B10C 8D FD 05                 ...
-        jsr     FadePaletteToBlack              ; B10F 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B10F 20 BF C5                  ..
         lda     #$00                            ; B112 A9 00                    ..
         sta     $6BDE                           ; B114 8D DE 6B                 ..k
         brk                                     ; B117 00                       .
@@ -4411,7 +4411,7 @@ EnterScriptedSceneDestination:
         db   $5B,$3B                         ; B11B 5B 3B                    [;
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneEightyFrames; B11D 20 18 D2                 ..
-        jsr     FadePaletteFromBlack            ; B120 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B120 20 C5 C5                  ..
         lda     #$00                            ; B123 A9 00                    ..
         sta     SaveTimeOfDay                   ; B125 8D ED 62                 ..b
         lda     #$00                            ; B128 A9 00                    ..
@@ -4431,7 +4431,7 @@ EnterScriptedSceneDestination:
         lda     $7006,x                         ; B13E BD 06 70                 ..p
         ora     #$03                            ; B141 09 03                    ..
         sta     $7006,x                         ; B143 9D 06 70                 ..p
-        jsr     FadePaletteToBlack              ; B146 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B146 20 BF C5                  ..
         jsr     RefreshMapEntityEventState      ; B149 20 46 BF                  F.
         brk                                     ; B14C 00                       .
         db   $5C,$3B                         ; B14D 5C 3B                    \;
@@ -4471,7 +4471,7 @@ RunEntitySwapAndVerticalOamScene:
         db   $03,$4F                         ; B180 03 4F                    .O
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateSixtyFrames   ; B182 20 10 D2                  ..
-        jsr     StopMapCue                      ; B185 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B185 20 F3 D1                  ..
         brk                                     ; B188 00                       .
         db   $92,$FB                         ; B189 92 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4698,7 +4698,7 @@ RefreshMapSceneAndResumeRendering:
         brk                                     ; B326 00                       .
         db   $03,$EF                         ; B327 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     FadePaletteToBlack              ; B329 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; B329 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunMapScenePresentation10:
         lda     #$10                            ; B32C A9 10                    ..
@@ -4739,7 +4739,7 @@ RunMapScenePresentation10:
 ; ----------------------------------------------------------------------------
         lda     #$8F                            ; B36A A9 8F                    ..
         jsr     StartMapPresentation            ; B36C 20 14 BF                  ..
-        jmp     FadePaletteToBlack              ; B36F 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; B36F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunMap37SubmapOneCoordinateEffect:
         lda     CurrentMapNumber                ; B372 A5 63                    .c
@@ -4792,7 +4792,7 @@ RunMapScenePresentation0C:
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; B3B1 A9 00                    ..
         sta     $0530                           ; B3B3 8D 30 05                 .0.
-        jsr     FadePaletteToBlack              ; B3B6 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B3B6 20 BF C5                  ..
         rts                                     ; B3B9 60                       `
 ; ----------------------------------------------------------------------------
 ProcessThreeSelectedMapEntities:
@@ -5050,7 +5050,7 @@ MapEntitySystem_Branch_B551:
         brk                                     ; B564 00                       .
         db   $0D,$87                         ; B565 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jmp     WaitThenStopMapCue              ; B567 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; B567 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 TurnMapEntityTowardPlayer:
         lda     $7006,x                         ; B56A BD 06 70                 ..p
@@ -5140,7 +5140,7 @@ RunPresentation0EEntityScene:
         brk                                     ; B60D 00                       .
         db   $16,$CB,$04                     ; B60E 16 CB 04                 ...
 ; ----------------------------------------------------------------------------
-        jmp     FadePaletteToBlack              ; B611 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; B611 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunPresentation84WorldTransition04:
         lda     #$84                            ; B614 A9 84                    ..
@@ -5292,7 +5292,7 @@ PositionPlayer05_08AndRunScene:
         brk                                     ; B726 00                       .
         db   $44,$4B                         ; B727 44 4B                    DK
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; B729 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; B729 20 0A D2                  ..
         lda     #$00                            ; B72C A9 00                    ..
         sta     $F9                             ; B72E 85 F9                    ..
         sta     $FA                             ; B730 85 FA                    ..
@@ -5383,7 +5383,7 @@ RunMap1BTransitionSequence:
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B7AF A2 3C                    .<
         jsr     WaitFrames                      ; B7B1 20 0C C9                  ..
-        jsr     FadePaletteToBlack              ; B7B4 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B7B4 20 BF C5                  ..
         lda     $053A                           ; B7B7 AD 3A 05                 .:.
         sta     $F9                             ; B7BA 85 F9                    ..
         brk                                     ; B7BC 00                       .
@@ -5395,7 +5395,7 @@ RunMap1BTransitionSequence:
         brk                                     ; B7C2 00                       .
         db   $1D,$EB,$01                     ; B7C3 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
-        bne     LoadRosavilleSubmapFourScene    ; B7C6 D0 72                    .r
+        bne     RunRosasDeathScene              ; B7C6 D0 72                    .r
         jsr     SuspendRenderingUpdates         ; B7C8 20 AF C5                  ..
         jsr     ResumeRenderingAfterPpuWork     ; B7CB 20 8F C5                  ..
         brk                                     ; B7CE 00                       .
@@ -5445,12 +5445,12 @@ RunMap1BTransitionSequence:
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B80E A2 3C                    .<
         jsr     WaitFrames                      ; B810 20 0C C9                  ..
-        jsr     FadePaletteToBlack              ; B813 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B813 20 BF C5                  ..
         brk                                     ; B816 00                       .
         db   $38,$4B                         ; B817 38 4B                    8K
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneEightyFrames; B819 20 18 D2                 ..
-        jsr     FadePaletteFromBlack            ; B81C 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B81C 20 C5 C5                  ..
         jsr     PositionPlayerForTravelArrival  ; B81F 20 EC B8                  ..
         brk                                     ; B822 00                       .
         db   $16,$DB,$EF                     ; B823 16 DB EF                 ...
@@ -5469,7 +5469,7 @@ MapEntitySystem_Branch_B830:
         bne     MapEntitySystem_Branch_B830     ; B837 D0 F7                    ..
         rts                                     ; B839 60                       `
 ; ----------------------------------------------------------------------------
-LoadRosavilleSubmapFourScene:
+RunRosasDeathScene:
         lda     #$1B                            ; B83A A9 1B                    ..
         sta     CurrentMapNumber                ; B83C 85 63                    .c
         lda     #$04                            ; B83E A9 04                    ..
@@ -5485,7 +5485,7 @@ LoadRosavilleSubmapFourScene:
         brk                                     ; B850 00                       .
         db   $0A,$6F                         ; B851 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; B853 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B853 20 BF C5                  ..
         brk                                     ; B856 00                       .
         db   $07,$6F,$43                     ; B857 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5540,7 +5540,7 @@ MapEntitySystem_Branch_B8A0:
         db   $9B,$FB                         ; B8AA 9B FB                    ..
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateSixtyFrames   ; B8AC 20 10 D2                  ..
-        jsr     FadePaletteFromBlack            ; B8AF 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B8AF 20 C5 C5                  ..
         ldx     #$00                            ; B8B2 A2 00                    ..
         brk                                     ; B8B4 00                       .
         db   $23,$EF                         ; B8B5 23 EF                    #.
@@ -5662,7 +5662,7 @@ HideTrackedSceneEntityAndRefresh:
         jmp     RefreshMapSceneAndResumeRendering; B951 4C 23 B3                L#.
 ; ----------------------------------------------------------------------------
 AnimateEntityOneSpritesUpward:
-        jsr     StopMapCue                      ; B954 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B954 20 F3 D1                  ..
         brk                                     ; B957 00                       .
         db   $92,$FB                         ; B958 92 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5758,9 +5758,9 @@ HideEntitiesThreeFourSixAndRefresh:
         brk                                     ; B9F4 00                       .
         db   $0A,$6F                         ; B9F5 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     WaitThenStopMapCue              ; B9F7 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; B9F7 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-RunPresentation15EntitySixScene:
+RunFirstBossDeathSpeech:
         lda     #$15                            ; B9FA A9 15                    ..
         brk                                     ; B9FC 00                       .
         db   $01,$8F                         ; B9FD 01 8F                    ..
@@ -5791,9 +5791,9 @@ RunPresentation15EntitySixScene:
         db   $65,$4B                         ; BA27 65 4B                    eK
 ; ----------------------------------------------------------------------------
         jsr     RunThreePulseMapSceneEffect     ; BA29 20 CE BA                  ..
-        jmp     WaitThenStopMapCue              ; BA2C 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; BA2C 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-StartPresentation16EntitySixScene:
+StartSecondBossDeathSpeech:
         lda     #$16                            ; BA2F A9 16                    ..
         brk                                     ; BA31 00                       .
         db   $01,$8F                         ; BA32 01 8F                    ..
@@ -5801,7 +5801,7 @@ StartPresentation16EntitySixScene:
         brk                                     ; BA34 00                       .
         db   $29,$CB,$40                     ; BA35 29 CB 40                 ).@
 ; ----------------------------------------------------------------------------
-RunPresentation16EntitySixContinuation:
+RunSecondBossDeathSpeechContinuation:
         brk                                     ; BA38 00                       .
         db   $1F,$EF                         ; BA39 1F EF                    ..
 ; ----------------------------------------------------------------------------
@@ -5825,9 +5825,9 @@ RunPresentation16EntitySixContinuation:
         db   $67,$4B                         ; BA5C 67 4B                    gK
 ; ----------------------------------------------------------------------------
         jsr     RunThreePulseMapSceneEffect     ; BA5E 20 CE BA                  ..
-        jmp     WaitThenStopMapCue              ; BA61 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; BA61 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-RunPresentation17EntitySixScene:
+RunThirdBossDeathSpeech:
         lda     #$17                            ; BA64 A9 17                    ..
         brk                                     ; BA66 00                       .
         db   $01,$8F                         ; BA67 01 8F                    ..
@@ -5858,9 +5858,9 @@ RunPresentation17EntitySixScene:
         db   $68,$4B                         ; BA91 68 4B                    hK
 ; ----------------------------------------------------------------------------
         jsr     RunThreePulseMapSceneEffect     ; BA93 20 CE BA                  ..
-        jmp     WaitThenStopMapCue              ; BA96 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; BA96 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-RunPresentation18EntitySixScene:
+RunFourthBossDeathSpeech:
         lda     #$18                            ; BA99 A9 18                    ..
         brk                                     ; BA9B 00                       .
         db   $01,$8F                         ; BA9C 01 8F                    ..
@@ -5891,7 +5891,7 @@ RunPresentation18EntitySixScene:
         db   $69,$4B                         ; BAC6 69 4B                    iK
 ; ----------------------------------------------------------------------------
         jsr     RunThreePulseMapSceneEffect     ; BAC8 20 CE BA                  ..
-        jmp     WaitThenStopMapCue              ; BACB 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; BACB 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 RunThreePulseMapSceneEffect:
         brk                                     ; BACE 00                       .
@@ -5960,7 +5960,7 @@ RunFlag20EntityTwoTransition:
         brk                                     ; BB2F 00                       .
         db   $71,$4B                         ; BB30 71 4B                    qK
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; BB32 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; BB32 20 0A D2                  ..
         lda     #$00                            ; BB35 A9 00                    ..
         sta     $0530                           ; BB37 8D 30 05                 .0.
         brk                                     ; BB3A 00                       .
@@ -5969,7 +5969,7 @@ RunFlag20EntityTwoTransition:
 MapEntitySystem_Branch_BB3E:
         rts                                     ; BB3E 60                       `
 ; ----------------------------------------------------------------------------
-TransitionToPosition15_05AtTimeZero:
+RunMasterDragonEndingSpeech:
         jsr     RefreshMapEntityEventState      ; BB3F 20 46 BF                  F.
         brk                                     ; BB42 00                       .
         db   $6A,$4B                         ; BB43 6A 4B                    jK
@@ -6051,7 +6051,7 @@ MapEntitySystem_Branch_BB79:
         brk                                     ; BBCE 00                       .
         db   $0A,$6F                         ; BBCF 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; BBD1 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; BBD1 20 BF C5                  ..
         jsr     RefreshMapEntityEventState      ; BBD4 20 46 BF                  F.
         brk                                     ; BBD7 00                       .
         db   $6B,$4B                         ; BBD8 6B 4B                    kK
@@ -6094,7 +6094,7 @@ MapEntitySystem_Branch_BC09:
         brk                                     ; BC23 00                       .
         db   $83,$4B                         ; BC24 83 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; BC26 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; BC26 20 0A D2                  ..
         brk                                     ; BC29 00                       .
         db   $06,$BF                         ; BC2A 06 BF                    ..
 ; ----------------------------------------------------------------------------
@@ -6179,7 +6179,7 @@ MapEntitySystem_Branch_BC8A:
 ; ----------------------------------------------------------------------------
         lda     #$01                            ; BC9A A9 01                    ..
         sta     CurrentTilesetCandidate         ; BC9C 85 65                    .e
-        jsr     FadePaletteToBlack              ; BC9E 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; BC9E 20 BF C5                  ..
         lda     $1F                             ; BCA1 A5 1F                    ..
         and     #$F7                            ; BCA3 29 F7                    ).
         sta     $1F                             ; BCA5 85 1F                    ..
@@ -6234,7 +6234,7 @@ MapEntitySystem_Branch_BCD3:
         brk                                     ; BCE3 00                       .
         db   $B2,$4B                         ; BCE4 B2 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; BCE6 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; BCE6 20 0A D2                  ..
         lda     #$00                            ; BCE9 A9 00                    ..
         sta     $0530                           ; BCEB 8D 30 05                 .0.
         rts                                     ; BCEE 60                       `
@@ -6351,7 +6351,7 @@ EnterScriptedArrivalScene:
         brk                                     ; BDAF 00                       .
         db   $0A,$6F                         ; BDB0 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; BDB2 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; BDB2 20 BF C5                  ..
         lda     #$01                            ; BDB5 A9 01                    ..
         sta     $0515                           ; BDB7 8D 15 05                 ...
         lda     #$06                            ; BDBA A9 06                    ..
@@ -6422,11 +6422,11 @@ MapEntitySystem_Branch_BDF7:
         tay                                     ; BE12 A8                       .
         dey                                     ; BE13 88                       .
         bne     MapEntitySystem_Branch_BDF3     ; BE14 D0 DD                    ..
-        jsr     WaitThenStopMapCue              ; BE16 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; BE16 20 0A D2                  ..
         brk                                     ; BE19 00                       .
         db   $08,$2F                         ; BE1A 08 2F                    ./
 ; ----------------------------------------------------------------------------
-        jmp     StopMapCue                      ; BE1C 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; BE1C 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 QueueEightByteMapEventPpuBlock:
         lda     #$13                            ; BE1F A9 13                    ..
@@ -6469,7 +6469,7 @@ PulseThenTransitionToMap2C:
         jsr     RunMapPulseAndScrollSixteenSteps; BE63 20 90 BE                  ..
         jsr     RunMapPulseAndScrollSixteenSteps; BE66 20 90 BE                  ..
         jsr     RunMapPulseAndScrollSixteenSteps; BE69 20 90 BE                  ..
-        jsr     FadePaletteFromBlack            ; BE6C 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; BE6C 20 C5 C5                  ..
         lda     #$2C                            ; BE6F A9 2C                    .,
         sta     CurrentMapNumber                ; BE71 85 63                    .c
         lda     #$00                            ; BE73 A9 00                    ..
@@ -6489,7 +6489,7 @@ MapEntitySystem_Branch_BE82:
         brk                                     ; BE8A 00                       .
         db   $0A,$6F                         ; BE8B 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jmp     FadePaletteToBlack              ; BE8D 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; BE8D 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunMapPulseAndScrollSixteenSteps:
         brk                                     ; BE90 00                       .
@@ -6499,7 +6499,7 @@ RunMapPulseAndScrollSixteenSteps:
         jmp     RunRepeatedVerticalScrollPulses ; BE95 4C F2 BE                 L..
 ; ----------------------------------------------------------------------------
 TransitionToShrineOfColossusSubmap:
-        jsr     FadePaletteFromBlack            ; BE98 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; BE98 20 C5 C5                  ..
         lda     #$48                            ; BE9B A9 48                    .H
         sta     CurrentMapNumber                ; BE9D 85 63                    .c
         lda     #$04                            ; BE9F A9 04                    ..
@@ -6512,7 +6512,7 @@ TransitionToShrineOfColossusSubmap:
         brk                                     ; BEAD 00                       .
         db   $31,$EF                         ; BEAE 31 EF                    1.
 ; ----------------------------------------------------------------------------
-        jmp     FadePaletteToBlack              ; BEB0 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; BEB0 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunPresentation1AAndDispatchEvent10:
         lda     #$1A                            ; BEB3 A9 1A                    ..
@@ -6532,7 +6532,7 @@ RunPresentation1AAndDispatchEvent10:
         brk                                     ; BEC8 00                       .
         db   $03,$EF                         ; BEC9 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; BECB 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; BECB 20 BF C5                  ..
         lda     #$10                            ; BECE A9 10                    ..
         jmp     DispatchMapEntityEventById      ; BED0 4C 5F AD                 L_.
 ; ----------------------------------------------------------------------------

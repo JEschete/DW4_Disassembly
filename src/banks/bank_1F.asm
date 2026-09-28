@@ -11,7 +11,7 @@ Bank1F_Start:
 FixedTrampoline00:
         jmp     AdvanceMapScrollStepBanked      ; C001 4C 77 E5                 Lw.
 ; ----------------------------------------------------------------------------
-FixedTrampoline01:
+LoadCurrentMapDataTrampoline:
         jmp     LoadCurrentMapDataBanked        ; C004 4C 4B E5                 LK.
 ; ----------------------------------------------------------------------------
 FixedTrampoline02:
@@ -853,11 +853,11 @@ SubmitPaletteWithoutFade:
         lda     #$00                            ; C5B9 A9 00                    ..
         sta     $16                             ; C5BB 85 16                    ..
         beq     BuildPaletteUpdateCommand       ; C5BD F0 1F                    ..
-FadePaletteToBlack:
+FadePaletteFromBlack:
         lda     #$40                            ; C5BF A9 40                    .@
         ldx     #$F0                            ; C5C1 A2 F0                    ..
         bne     UpperFixedEngine_Branch_C5C8    ; C5C3 D0 03                    ..
-FadePaletteFromBlack:
+FadePaletteToBlack:
         lda     #$10                            ; C5C5 A9 10                    ..
         tax                                     ; C5C7 AA                       .
 UpperFixedEngine_Branch_C5C8:
@@ -1766,14 +1766,14 @@ AdvancePlayerAnimationCounter:
 HandleRightMovementInput:
         lda     ButtonsPressed                  ; CBBE A5 14                    ..
         bpl     UpperFixedEngine_Branch_CBF7    ; CBC0 10 35                    .5
-        jsr     PrepareMovementAudioAndState    ; CBC2 20 85 CD                  ..
+        jsr     ShowBlockedMovementMessagesAndCancelStep; CBC2 20 85 CD          ..
         lda     #$01                            ; CBC5 A9 01                    ..
         jmp     CommitPlayerFacingDirection     ; CBC7 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
 HandleLeftMovementInput:
         bit     ButtonsPressed                  ; CBCA 24 14                    $.
         bvc     UpperFixedEngine_Branch_CBF7    ; CBCC 50 29                    P)
-        jsr     PrepareMovementAudioAndState    ; CBCE 20 85 CD                  ..
+        jsr     ShowBlockedMovementMessagesAndCancelStep; CBCE 20 85 CD          ..
         lda     #$03                            ; CBD1 A9 03                    ..
         jmp     CommitPlayerFacingDirection     ; CBD3 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
@@ -1781,7 +1781,7 @@ HandleUpMovementInput:
         lda     ButtonsPressed                  ; CBD6 A5 14                    ..
         and     #$10                            ; CBD8 29 10                    ).
         beq     UpperFixedEngine_Branch_CBF7    ; CBDA F0 1B                    ..
-        jsr     PrepareMovementAudioAndState    ; CBDC 20 85 CD                  ..
+        jsr     ShowBlockedMovementMessagesAndCancelStep; CBDC 20 85 CD          ..
         lda     #$00                            ; CBDF A9 00                    ..
         jmp     CommitPlayerFacingDirection     ; CBE1 4C EF CB                 L..
 ; ----------------------------------------------------------------------------
@@ -1789,7 +1789,7 @@ HandleDownMovementInput:
         lda     ButtonsPressed                  ; CBE4 A5 14                    ..
         and     #$20                            ; CBE6 29 20                    )
         beq     UpperFixedEngine_Branch_CBF7    ; CBE8 F0 0D                    ..
-        jsr     PrepareMovementAudioAndState    ; CBEA 20 85 CD                  ..
+        jsr     ShowBlockedMovementMessagesAndCancelStep; CBEA 20 85 CD          ..
         lda     #$02                            ; CBED A9 02                    ..
 CommitPlayerFacingDirection:
         sta     $3D                             ; CBEF 85 3D                    .=
@@ -1884,7 +1884,7 @@ UpperFixedEngine_Branch_CC7D:
 UpperFixedEngine_Branch_CC81:
         lda     #$0B                            ; CC81 A9 0B                    ..
         ldx     #$03                            ; CC83 A2 03                    ..
-        jmp     PlayMapCueAndWaitForInput       ; CC85 4C ED D1                 L..
+        jmp     ShowFieldMessageAndWaitForInput ; CC85 4C ED D1                 L..
 ; ----------------------------------------------------------------------------
 BeginPlayerMovement:
         jsr     ResolvePlayerMovementDestination; CC88 20 91 CF                  ..
@@ -2031,7 +2031,7 @@ ApplyFacingToFollowerEntity:
         sta     $7006,y                         ; CD81 99 06 70                 ..p
         rts                                     ; CD84 60                       `
 ; ----------------------------------------------------------------------------
-PrepareMovementAudioAndState:
+ShowBlockedMovementMessagesAndCancelStep:
         lda     $0539                           ; CD85 AD 39 05                 .9.
         bpl     UpperFixedEngine_Branch_CD8E    ; CD88 10 04                    ..
         brk                                     ; CD8A 00                       .
@@ -2066,13 +2066,13 @@ UpperFixedEngine_Branch_CDAF:
 UpperFixedEngine_Branch_CDB6:
         tya                                     ; CDB6 98                       .
         ldx     #$03                            ; CDB7 A2 03                    ..
-        jsr     PlayMapCue                      ; CDB9 20 FD D1                  ..
+        jsr     ShowFieldMessage                ; CDB9 20 FD D1                  ..
         ldx     #$03                            ; CDBC A2 03                    ..
         lda     #$BD                            ; CDBE A9 BD                    ..
         brk                                     ; CDC0 00                       .
         db   $04,$6F                         ; CDC1 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     WaitForInputAndStopMapCue       ; CDC3 20 F0 D1                  ..
+        jsr     WaitForInputAndCloseFieldMessage; CDC3 20 F0 D1                  ..
         pla                                     ; CDC6 68                       h
         pla                                     ; CDC7 68                       h
 UpperFixedEngine_Branch_CDC8:
@@ -2178,7 +2178,7 @@ CompleteActiveEntityPath:
         sta     $0527                           ; CE74 8D 27 05                 .'.
         lda     $0593                           ; CE77 AD 93 05                 ...
         ldx     $0594                           ; CE7A AE 94 05                 ...
-        jmp     PlayMapCueThenStop              ; CE7D 4C 07 D2                 L..
+        jmp     ShowTimedFieldMessage           ; CE7D 4C 07 D2                 L..
 ; ----------------------------------------------------------------------------
 ProcessInteriorMapInput:
         jsr     InvokeStepEventWhenOnWorldMap   ; CE80 20 56 CF                  V.
@@ -2326,7 +2326,7 @@ HandleChapterFourWorldCoordinate:
         bne     UpperFixedEngine_Branch_CF55    ; CF4C D0 07                    ..
         ldx     #$03                            ; CF4E A2 03                    ..
         lda     #$AB                            ; CF50 A9 AB                    ..
-        jsr     PlayMapCueThenStop              ; CF52 20 07 D2                  ..
+        jsr     ShowTimedFieldMessage           ; CF52 20 07 D2                  ..
 UpperFixedEngine_Branch_CF55:
         rts                                     ; CF55 60                       `
 ; ----------------------------------------------------------------------------
@@ -2581,7 +2581,7 @@ UpperFixedEngine_Branch_D0E2:
         brk                                     ; D0E6 00                       .
         db   $C2,$4B                         ; D0E7 C2 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; D0E9 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; D0E9 20 0A D2                  ..
         jmp     UpperFixedEngine_Branch_D010    ; D0EC 4C 10 D0                 L..
 ; ----------------------------------------------------------------------------
 UpperFixedEngine_Branch_D0EF:
@@ -2725,11 +2725,11 @@ WaitForMapTransitionCompletion:
 UpperFixedEngine_Branch_D1EC:
         rts                                     ; D1EC 60                       `
 ; ----------------------------------------------------------------------------
-PlayMapCueAndWaitForInput:
-        jsr     PlayMapCue                      ; D1ED 20 FD D1                  ..
-WaitForInputAndStopMapCue:
+ShowFieldMessageAndWaitForInput:
+        jsr     ShowFieldMessage                ; D1ED 20 FD D1                  ..
+WaitForInputAndCloseFieldMessage:
         jsr     WaitForFreshButtonPress         ; D1F0 20 CC C8                  ..
-StopMapCue:
+CloseFieldMessageWindow:
         lda     #$00                            ; D1F3 A9 00                    ..
         sta     $0539                           ; D1F5 8D 39 05                 .9.
         brk                                     ; D1F8 00                       .
@@ -2737,7 +2737,7 @@ StopMapCue:
 ; ----------------------------------------------------------------------------
         rts                                     ; D1FC 60                       `
 ; ----------------------------------------------------------------------------
-PlayMapCue:
+ShowFieldMessage:
         pha                                     ; D1FD 48                       H
         brk                                     ; D1FE 00                       .
         db   $07,$6F,$43                     ; D1FF 07 6F 43                 .oC
@@ -2748,11 +2748,11 @@ PlayMapCue:
 ; ----------------------------------------------------------------------------
         rts                                     ; D206 60                       `
 ; ----------------------------------------------------------------------------
-PlayMapCueThenStop:
-        jsr     PlayMapCue                      ; D207 20 FD D1                  ..
-WaitThenStopMapCue:
+ShowTimedFieldMessage:
+        jsr     ShowFieldMessage                ; D207 20 FD D1                  ..
+WaitThenCloseFieldMessage:
         jsr     WaitForButtonStateOneEightyFrames; D20A 20 18 D2                 ..
-        jmp     StopMapCue                      ; D20D 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; D20D 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 WaitForButtonStateSixtyFrames:
         lda     #$3C                            ; D210 A9 3C                    .<
@@ -3885,12 +3885,12 @@ TurnEntityCounterclockwiseCommand:
         sbc     #$01                            ; D92C E9 01                    ..
         jmp     SetRotatedEntityFacing          ; D92E 4C 10 D9                 L..
 ; ----------------------------------------------------------------------------
-SetEntityMotionActiveCommand:
-        jsr     MarkEntityMotionActiveAndAdvance; D931 20 AB D9                  ..
+SetMapObjectInactiveCommand:
+        jsr     SetMapObjectInactiveAndAdvanceScript; D931 20 AB D9              ..
         jmp     ReturnFromMapObjectCommand      ; D934 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
 DeactivateEntityCoordinatesCommand:
-        jsr     MarkEntityMotionActiveAndAdvance; D937 20 AB D9                  ..
+        jsr     SetMapObjectInactiveAndAdvanceScript; D937 20 AB D9              ..
         lda     #$81                            ; D93A A9 81                    ..
         sta     $6F60,x                         ; D93C 9D 60 6F                 .`o
         sta     $6F80,x                         ; D93F 9D 80 6F                 ..o
@@ -3949,7 +3949,7 @@ UpperFixedEngine_Branch_D9A0:
         sta     $7020,x                         ; D9A5 9D 20 70                 . p
         jmp     ReturnFromMapObjectCommand      ; D9A8 4C F0 DD                 L..
 ; ----------------------------------------------------------------------------
-MarkEntityMotionActiveAndAdvance:
+SetMapObjectInactiveAndAdvanceScript:
         ldx     $51                             ; D9AB A6 51                    .Q
         lda     $7020,x                         ; D9AD BD 20 70                 . p
         ora     #$80                            ; D9B0 09 80                    ..
@@ -4324,7 +4324,7 @@ DecodeMapFlagOperand:
         dey                                     ; DC49 88                       .
         rts                                     ; DC4A 60                       `
 ; ----------------------------------------------------------------------------
-MoveEntityTowardTargetOrPlayer:
+FaceMapObjectTowardTargetCommand:
         lda     #$00                            ; DC4B A9 00                    ..
         sta     $54                             ; DC4D 85 54                    .T
         lda     $71A0,x                         ; DC4F BD A0 71                 ..q
@@ -4417,7 +4417,7 @@ UpperFixedEngine_Branch_DCF9:
         jsr     AdvanceMapObjectScriptOneByte   ; DCF9 20 E3 DD                  ..
         jmp     DispatchMapObjectCommand        ; DCFC 4C 91 D8                 L..
 ; ----------------------------------------------------------------------------
-MoveEntityTowardTargetWithRandomTie:
+FaceMapObjectAwayFromTargetCommand:
         lda     #$02                            ; DCFF A9 02                    ..
         sta     $54                             ; DD01 85 54                    .T
         jmp     MoveEntityTowardExplicitTarget  ; DD03 4C 9F DC                 L..

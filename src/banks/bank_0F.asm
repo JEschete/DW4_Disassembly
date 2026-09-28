@@ -12,7 +12,7 @@ Bank0F_LowerFixedEngine:
 LowerFixed_TickDirectionalScrollTransition:
         jmp     LowerFixed_AdvanceMapScrollStep ; C001 4C CE E9                 L..
 ; ----------------------------------------------------------------------------
-LowerFixed_DecodePreparedPackedMapLayout:
+LowerFixed_LoadCurrentMapDataTrampoline:
         jmp     LowerFixed_LoadCurrentMapData   ; C004 4C 4B E5                 LK.
 ; ----------------------------------------------------------------------------
 LowerFixed_PropagateLinkedEntityOffsetsAndRender:
@@ -216,9 +216,9 @@ LowerFixed_NmiHandler:
         cmp     #$81                            ; C171 C9 81                    ..
         bcs     LowerFixedEngine_Branch_C181    ; C173 B0 0C                    ..
         lda     PPUSTATUS                       ; C175 AD 02 20                 ..
-        jsr     LowerFixed_FlushPpuUpdateQueue  ; C178 20 22 C2                  ".
-        jsr     LowerFixed_StartOamDma          ; C17B 20 03 C3                  ..
-        jsr     LowerFixed_RestorePpuRegisters  ; C17E 20 EA C2                  ..
+        jsr     LowerFixed_ProcessNmiPpuUpdates ; C178 20 22 C2                  ".
+        jsr     LowerFixed_TransferOamUnlessSuppressed; C17B 20 03 C3            ..
+        jsr     LowerFixed_RestorePpuControlMaskAndScroll; C17E 20 EA C2         ..
 LowerFixedEngine_Branch_C181:
         tsx                                     ; C181 BA                       .
         ldy     $0106,x                         ; C182 BC 06 01                 ...
@@ -310,7 +310,7 @@ LowerFixedEngine_Branch_C219:
 ; ----------------------------------------------------------------------------
         db   $80                             ; C221 80                       .
 ; ----------------------------------------------------------------------------
-LowerFixed_FlushPpuUpdateQueue:
+LowerFixed_ProcessNmiPpuUpdates:
         lda     $1F                             ; C222 A5 1F                    ..
         and     #$20                            ; C224 29 20                    )
         bne     LowerFixedEngine_Branch_C23A    ; C226 D0 12                    ..
@@ -412,7 +412,7 @@ LowerFixedEngine_Branch_C299:
         bne     LowerFixedEngine_Branch_C299    ; C2E5 D0 B2                    ..
         jmp     LowerFixedEngine_Branch_C276    ; C2E7 4C 76 C2                 Lv.
 ; ----------------------------------------------------------------------------
-LowerFixed_RestorePpuRegisters:
+LowerFixed_RestorePpuControlMaskAndScroll:
         lda     $0505                           ; C2EA AD 05 05                 ...
         sta     PPUCTRL                         ; C2ED 8D 00 20                 ..
         lda     $0506                           ; C2F0 AD 06 05                 ...
@@ -423,7 +423,7 @@ LowerFixed_RestorePpuRegisters:
         sta     PPUSCROLL                       ; C2FF 8D 05 20                 ..
         rts                                     ; C302 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_StartOamDma:
+LowerFixed_TransferOamUnlessSuppressed:
         bit     $1F                             ; C303 24 1F                    $.
         bvs     LowerFixedEngine_Branch_C314    ; C305 70 0D                    p.
         lda     $0506                           ; C307 AD 06 05                 ...
@@ -802,8 +802,8 @@ LowerFixedEngine_Branch_C585:
         bne     LowerFixedEngine_Branch_C585    ; C58C D0 F7                    ..
         rts                                     ; C58E 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ResumeRendering:
-        jsr     LowerFixed_ClearRenderingSuspendedFlag; C58F 20 A8 C5            ..
+LowerFixed_ResumeRenderingAfterPpuWork:
+        jsr     LowerFixed_ClearDisplaySuspensionFlag; C58F 20 A8 C5             ..
 LowerFixed_EnableRenderingAfterVBlank:
         ldy     #$18                            ; C592 A0 18                    ..
         bne     LowerFixedEngine_Branch_C598    ; C594 D0 02                    ..
@@ -819,7 +819,7 @@ LowerFixedEngine_Branch_C59B:
         sta     $0506                           ; C5A4 8D 06 05                 ...
         rts                                     ; C5A7 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ClearRenderingSuspendedFlag:
+LowerFixed_ClearDisplaySuspensionFlag:
         lda     $1F                             ; C5A8 A5 1F                    ..
         and     #$7F                            ; C5AA 29 7F                    ).
         sta     $1F                             ; C5AC 85 1F                    ..
@@ -1070,7 +1070,7 @@ LowerFixed_QueueNametableAttributeUpdate:
 LowerFixed_CopySpriteRecordToOam:
         tya                                     ; C73E 98                       .
         pha                                     ; C73F 48                       H
-        jsr     LowerFixed_ComputeEntityOamOffset; C740 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; C740 20 8C C7          ..
         lda     $00,x                           ; C743 B5 00                    ..
         sta     $0200,y                         ; C745 99 00 02                 ...
         lda     $01,x                           ; C748 B5 01                    ..
@@ -1091,7 +1091,7 @@ LowerFixed_AdvanceSpriteRecordPointer:
 LowerFixed_CopySpriteTileAttributesToOam:
         tya                                     ; C75E 98                       .
         pha                                     ; C75F 48                       H
-        jsr     LowerFixed_ComputeEntityOamOffset; C760 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; C760 20 8C C7          ..
         lda     $01,x                           ; C763 B5 01                    ..
         sta     $0201,y                         ; C765 99 01 02                 ...
         lda     $02,x                           ; C768 B5 02                    ..
@@ -1101,7 +1101,7 @@ LowerFixed_CopySpriteTileAttributesToOam:
 LowerFixed_CopyOamSpriteRecord:
         tya                                     ; C770 98                       .
         pha                                     ; C771 48                       H
-        jsr     LowerFixed_ComputeEntityOamOffset; C772 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; C772 20 8C C7          ..
         lda     $0200,y                         ; C775 B9 00 02                 ...
         sta     $00,x                           ; C778 95 00                    ..
         lda     $0201,y                         ; C77A B9 01 02                 ...
@@ -1112,7 +1112,7 @@ LowerFixed_CopyOamSpriteRecord:
         sta     $03,x                           ; C787 95 03                    ..
         jmp     LowerFixed_AdvanceSpriteRecordPointer; C789 4C 57 C7            LW.
 ; ----------------------------------------------------------------------------
-LowerFixed_ComputeEntityOamOffset:
+LowerFixed_ConvertSpriteIndexToOamOffset:
         tay                                     ; C78C A8                       .
         txa                                     ; C78D 8A                       .
         pha                                     ; C78E 48                       H
@@ -1192,7 +1192,7 @@ LowerFixedEngine_Branch_C7EC:
         pla                                     ; C7F6 68                       h
         jmp     LowerFixed_SelectPrgBank        ; C7F7 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-LowerFixed_SubtractByteFromPointerAlternate:
+LowerFixed_SubtractByteFromPointerEntry:
         nop                                     ; C7FA EA                       .
 LowerFixed_SubtractByteFromPointer:
         eor     #$FF                            ; C7FB 49 FF                    I.
@@ -1389,19 +1389,19 @@ LowerFixed_WaitFrames:
         bne     LowerFixed_WaitFrames           ; C910 D0 FA                    ..
         rts                                     ; C912 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_PreserveRegistersAndRotateOamPriority:
+LowerFixed_PreserveRegistersAndRotateOam:
         txa                                     ; C913 8A                       .
         pha                                     ; C914 48                       H
         tya                                     ; C915 98                       .
         pha                                     ; C916 48                       H
-        jsr     LowerFixed_RotateOamPriority    ; C917 20 1F C9                  ..
+        jsr     LowerFixed_RotateAnimatedOamBlocks; C917 20 1F C9                ..
         pla                                     ; C91A 68                       h
         tay                                     ; C91B A8                       .
         pla                                     ; C91C 68                       h
         tax                                     ; C91D AA                       .
         rts                                     ; C91E 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RotateOamPriority:
+LowerFixed_RotateAnimatedOamBlocks:
         lda     $1F                             ; C91F A5 1F                    ..
         and     #$C8                            ; C921 29 C8                    ).
         bne     LowerFixedEngine_Branch_C94A    ; C923 D0 25                    .%
@@ -1465,7 +1465,7 @@ LowerFixedEngine_Branch_C968:
         db   $22,$EF                         ; C97B 22 EF                    ".
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_C97D:
-        jsr     LowerFixed_RunFieldFrame        ; C97D 20 ED C9                  ..
+        jsr     LowerFixed_UpdateMapFrameSystems; C97D 20 ED C9                  ..
         jmp     LowerFixedEngine_Branch_C97D    ; C980 4C 7D C9                 L}.
 ; ----------------------------------------------------------------------------
 LowerFixed_InstallRamBankSwitchCode:
@@ -1490,54 +1490,54 @@ LowerFixedEngine_Branch_C985:
         db   $BF,$EA,$EA,$AD,$CC,$07,$20,$91 ; C9DF BF EA EA AD CC 07 20 91  ...... .
         db   $FF,$AD,$CA,$07,$28,$60         ; C9E7 FF AD CA 07 28 60        ....(`
 ; ----------------------------------------------------------------------------
-LowerFixed_RunFieldFrame:
-        jsr     LowerFixed_AdvanceEntityAnimationPhase; C9ED 20 B4 CB            ..
-        jsr     LowerFixed_UpdateButtonRepeatState; C9F0 20 98 CB                ..
-        jsr     LowerFixed_ProcessScheduledFieldInput; C9F3 20 21 CA             !.
+LowerFixed_UpdateMapFrameSystems:
+        jsr     LowerFixed_AdvancePlayerAnimationCounter; C9ED 20 B4 CB          ..
+        jsr     LowerFixed_PollPrimaryButtonWithDelay; C9F0 20 98 CB             ..
+        jsr     LowerFixed_UpdatePlayerMapInput ; C9F3 20 21 CA                  !.
         jsr     LowerFixed_UpdateMapObjects     ; C9F6 20 42 D5                  B.
-        jsr     LowerFixed_ApplyFieldMovementToEntities; C9F9 20 6E E0           n.
+        jsr     LowerFixed_UpdateMapEntityRendering; C9F9 20 6E E0               n.
         brk                                     ; C9FC 00                       .
         db   $00,$DF                         ; C9FD 00 DF                    ..
 ; ----------------------------------------------------------------------------
         jsr     LowerFixed_TickDirectionalScrollTransition; C9FF 20 01 C0        ..
-        jsr     LowerFixed_UpdateFieldMovementState; CA02 20 09 CE               ..
+        jsr     LowerFixed_ProcessMapInputAndEvents; CA02 20 09 CE               ..
         jsr     LowerFixed_RenderPartyMapEntities; CA05 20 D5 D7                 ..
         ldx     $052F                           ; CA08 AE 2F 05                 ./.
         jsr     LowerFixed_WaitFrames           ; CA0B 20 0C C9                  ..
-        jsr     LowerFixed_WaitForSelectRelease ; CA0E 20 17 CA                  ..
-        jsr     LowerFixed_WaitForPendingFieldUpdate; CA11 20 E1 D1              ..
+        jsr     LowerFixed_WaitForButton04Release; CA0E 20 17 CA                 ..
+        jsr     LowerFixed_WaitForMapTransitionCompletion; CA11 20 E1 D1         ..
         inc     $3C                             ; CA14 E6 3C                    .<
         rts                                     ; CA16 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_WaitForSelectRelease:
+LowerFixed_WaitForButton04Release:
         jsr     LowerFixed_ReadButtonsUnlessInputSuppressed; CA17 20 41 D2       A.
         lda     ButtonsPressed                  ; CA1A A5 14                    ..
         and     #$04                            ; CA1C 29 04                    ).
-        bne     LowerFixed_WaitForSelectRelease ; CA1E D0 F7                    ..
+        bne     LowerFixed_WaitForButton04Release; CA1E D0 F7                   ..
         rts                                     ; CA20 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ProcessScheduledFieldInput:
+LowerFixed_UpdatePlayerMapInput:
         ldx     $058E                           ; CA21 AE 8E 05                 ...
         lda     LowerFixedEngine_Branch_CA3C,x  ; CA24 BD 3C CA                 .<.
         and     $3C                             ; CA27 25 3C                    %<
         bne     LowerFixedEngine_Branch_CA3C    ; CA29 D0 11                    ..
         lda     #$01                            ; CA2B A9 01                    ..
         sta     $052F                           ; CA2D 8D 2F 05                 ./.
-        jsr     LowerFixed_ResolveFieldInput    ; CA30 20 41 CA                  A.
-        jsr     LowerFixed_ProcessDirectionalInput; CA33 20 1E CB                ..
-        jsr     LowerFixed_HandleActionButton   ; CA36 20 F8 CB                  ..
-        jsr     LowerFixed_UpdateFieldInteractionTimer; CA39 20 71 CB            q.
+        jsr     LowerFixed_ResolveMapMovementInput; CA30 20 41 CA                A.
+        jsr     LowerFixed_ApplyDirectionalMapInput; CA33 20 1E CB               ..
+        jsr     LowerFixed_HandlePlayerActionInput; CA36 20 F8 CB                ..
+        jsr     LowerFixed_UpdateMapInteractionTimer; CA39 20 71 CB              q.
 LowerFixedEngine_Branch_CA3C:
         rts                                     ; CA3C 60                       `
 ; ----------------------------------------------------------------------------
         db   $0F,$07,$0F,$03                 ; CA3D 0F 07 0F 03              ....
 ; ----------------------------------------------------------------------------
-LowerFixed_ResolveFieldInput:
+LowerFixed_ResolveMapMovementInput:
         lda     $0530                           ; CA41 AD 30 05                 .0.
         bpl     LowerFixedEngine_Branch_CA55    ; CA44 10 0F                    ..
         lda     #$FF                            ; CA46 A9 FF                    ..
         sta     $56                             ; CA48 85 56                    .V
-        jsr     LowerFixed_AdvanceMapPresentationSequence; CA4A 20 18 DB         ..
+        jsr     LowerFixed_AdvanceBank1CMapObjectPresentation; CA4A 20 18 DB     ..
         sta     ButtonsPressed                  ; CA4D 85 14                    ..
         lda     $0530                           ; CA4F AD 30 05                 .0.
         bpl     LowerFixedEngine_Branch_CA55    ; CA52 10 01                    ..
@@ -1597,9 +1597,9 @@ LowerFixedEngine_Branch_CAA0:
         ora     #$08                            ; CAB4 09 08                    ..
         sta     $3C                             ; CAB6 85 3C                    .<
         ldx     #$00                            ; CAB8 A2 00                    ..
-        jsr     LowerFixed_ResetPartyMovementSlot; CABA 20 BE CA                 ..
+        jsr     LowerFixed_ResetPartyFollowerMotionSlot; CABA 20 BE CA           ..
         inx                                     ; CABD E8                       .
-LowerFixed_ResetPartyMovementSlot:
+LowerFixed_ResetPartyFollowerMotionSlot:
         lda     $7004,x                         ; CABE BD 04 70                 ..p
         and     #$7F                            ; CAC1 29 7F                    ).
         sta     $7004,x                         ; CAC3 9D 04 70                 ..p
@@ -1616,7 +1616,7 @@ LowerFixedEngine_Branch_CAD8:
         and     #$03                            ; CADA 29 03                    ).
         jmp     LowerFixedEngine_Branch_CAEA    ; CADC 4C EA CA                 L..
 ; ----------------------------------------------------------------------------
-LowerFixed_SetFieldInputMode:
+LowerFixed_SetInputModeAndReadControllers:
         sta     $058E                           ; CADF 8D 8E 05                 ...
         lda     #$20                            ; CAE2 A9 20                    .
         sta     $058F                           ; CAE4 8D 8F 05                 ...
@@ -1649,7 +1649,7 @@ LowerFixedEngine_Branch_CB17:
 ; ----------------------------------------------------------------------------
         db   $10,$80,$20,$40                 ; CB1A 10 80 20 40              .. @
 ; ----------------------------------------------------------------------------
-LowerFixed_ProcessDirectionalInput:
+LowerFixed_ApplyDirectionalMapInput:
         lda     $0515                           ; CB1E AD 15 05                 ...
         cmp     #$02                            ; CB21 C9 02                    ..
         bne     LowerFixedEngine_Branch_CB33    ; CB23 D0 0E                    ..
@@ -1668,34 +1668,34 @@ LowerFixedEngine_Branch_CB33:
         beq     LowerFixedEngine_Branch_CB64    ; CB38 F0 2A                    .*
         dex                                     ; CB3A CA                       .
         beq     LowerFixedEngine_Branch_CB57    ; CB3B F0 1A                    ..
-        jsr     LowerFixed_HandleMoveLeft       ; CB3D 20 CA CB                  ..
-        jsr     LowerFixed_HandleMoveUp         ; CB40 20 D6 CB                  ..
-        jsr     LowerFixed_HandleMoveDown       ; CB43 20 E4 CB                  ..
-        jsr     LowerFixed_HandleMoveRight      ; CB46 20 BE CB                  ..
+        jsr     LowerFixed_HandleLeftMovementInput; CB3D 20 CA CB                ..
+        jsr     LowerFixed_HandleUpMovementInput; CB40 20 D6 CB                  ..
+        jsr     LowerFixed_HandleDownMovementInput; CB43 20 E4 CB                ..
+        jsr     LowerFixed_HandleRightMovementInput; CB46 20 BE CB               ..
         rts                                     ; CB49 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CB4A:
-        jsr     LowerFixed_HandleMoveUp         ; CB4A 20 D6 CB                  ..
-        jsr     LowerFixed_HandleMoveRight      ; CB4D 20 BE CB                  ..
-        jsr     LowerFixed_HandleMoveLeft       ; CB50 20 CA CB                  ..
-        jsr     LowerFixed_HandleMoveDown       ; CB53 20 E4 CB                  ..
+        jsr     LowerFixed_HandleUpMovementInput; CB4A 20 D6 CB                  ..
+        jsr     LowerFixed_HandleRightMovementInput; CB4D 20 BE CB               ..
+        jsr     LowerFixed_HandleLeftMovementInput; CB50 20 CA CB                ..
+        jsr     LowerFixed_HandleDownMovementInput; CB53 20 E4 CB                ..
         rts                                     ; CB56 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CB57:
-        jsr     LowerFixed_HandleMoveDown       ; CB57 20 E4 CB                  ..
-        jsr     LowerFixed_HandleMoveLeft       ; CB5A 20 CA CB                  ..
-        jsr     LowerFixed_HandleMoveRight      ; CB5D 20 BE CB                  ..
-        jsr     LowerFixed_HandleMoveUp         ; CB60 20 D6 CB                  ..
+        jsr     LowerFixed_HandleDownMovementInput; CB57 20 E4 CB                ..
+        jsr     LowerFixed_HandleLeftMovementInput; CB5A 20 CA CB                ..
+        jsr     LowerFixed_HandleRightMovementInput; CB5D 20 BE CB               ..
+        jsr     LowerFixed_HandleUpMovementInput; CB60 20 D6 CB                  ..
         rts                                     ; CB63 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CB64:
-        jsr     LowerFixed_HandleMoveRight      ; CB64 20 BE CB                  ..
-        jsr     LowerFixed_HandleMoveDown       ; CB67 20 E4 CB                  ..
-        jsr     LowerFixed_HandleMoveUp         ; CB6A 20 D6 CB                  ..
-        jsr     LowerFixed_HandleMoveLeft       ; CB6D 20 CA CB                  ..
+        jsr     LowerFixed_HandleRightMovementInput; CB64 20 BE CB               ..
+        jsr     LowerFixed_HandleDownMovementInput; CB67 20 E4 CB                ..
+        jsr     LowerFixed_HandleUpMovementInput; CB6A 20 D6 CB                  ..
+        jsr     LowerFixed_HandleLeftMovementInput; CB6D 20 CA CB                ..
         rts                                     ; CB70 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateFieldInteractionTimer:
+LowerFixed_UpdateMapInteractionTimer:
         lda     $0530                           ; CB71 AD 30 05                 .0.
         bmi     LowerFixedEngine_Branch_CB97    ; CB74 30 21                    0!
         lda     $0599                           ; CB76 AD 99 05                 ...
@@ -1721,7 +1721,7 @@ LowerFixedEngine_Branch_CB93:
 LowerFixedEngine_Branch_CB97:
         rts                                     ; CB97 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateButtonRepeatState:
+LowerFixed_PollPrimaryButtonWithDelay:
         lda     $052E                           ; CB98 AD 2E 05                 ...
         beq     LowerFixedEngine_Branch_CBA1    ; CB9B F0 04                    ..
         dec     $052E                           ; CB9D CE 2E 05                 ...
@@ -1737,50 +1737,50 @@ LowerFixedEngine_Branch_CBA1:
         sta     $0529                           ; CBB0 8D 29 05                 .).
         rts                                     ; CBB3 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceEntityAnimationPhase:
+LowerFixed_AdvancePlayerAnimationCounter:
         lda     $0526                           ; CBB4 AD 26 05                 .&.
         clc                                     ; CBB7 18                       .
         adc     #$08                            ; CBB8 69 08                    i.
         sta     $0526                           ; CBBA 8D 26 05                 .&.
         rts                                     ; CBBD 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMoveRight:
+LowerFixed_HandleRightMovementInput:
         lda     ButtonsPressed                  ; CBBE A5 14                    ..
         bpl     LowerFixedEngine_Branch_CBF7    ; CBC0 10 35                    .5
-        jsr     LowerFixed_PrepareDirectionalMovement; CBC2 20 85 CD             ..
+        jsr     LowerFixed_ShowBlockedMovementMessagesAndCancelStep; CBC2 20 85 CD ..
         lda     #$01                            ; CBC5 A9 01                    ..
         jmp     LowerFixed_CommitPlayerFacingDirection; CBC7 4C EF CB           L..
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMoveLeft:
+LowerFixed_HandleLeftMovementInput:
         bit     ButtonsPressed                  ; CBCA 24 14                    $.
         bvc     LowerFixedEngine_Branch_CBF7    ; CBCC 50 29                    P)
-        jsr     LowerFixed_PrepareDirectionalMovement; CBCE 20 85 CD             ..
+        jsr     LowerFixed_ShowBlockedMovementMessagesAndCancelStep; CBCE 20 85 CD ..
         lda     #$03                            ; CBD1 A9 03                    ..
         jmp     LowerFixed_CommitPlayerFacingDirection; CBD3 4C EF CB           L..
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMoveUp:
+LowerFixed_HandleUpMovementInput:
         lda     ButtonsPressed                  ; CBD6 A5 14                    ..
         and     #$10                            ; CBD8 29 10                    ).
         beq     LowerFixedEngine_Branch_CBF7    ; CBDA F0 1B                    ..
-        jsr     LowerFixed_PrepareDirectionalMovement; CBDC 20 85 CD             ..
+        jsr     LowerFixed_ShowBlockedMovementMessagesAndCancelStep; CBDC 20 85 CD ..
         lda     #$00                            ; CBDF A9 00                    ..
         jmp     LowerFixed_CommitPlayerFacingDirection; CBE1 4C EF CB           L..
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMoveDown:
+LowerFixed_HandleDownMovementInput:
         lda     ButtonsPressed                  ; CBE4 A5 14                    ..
         and     #$20                            ; CBE6 29 20                    )
         beq     LowerFixedEngine_Branch_CBF7    ; CBE8 F0 0D                    ..
-        jsr     LowerFixed_PrepareDirectionalMovement; CBEA 20 85 CD             ..
+        jsr     LowerFixed_ShowBlockedMovementMessagesAndCancelStep; CBEA 20 85 CD ..
         lda     #$02                            ; CBED A9 02                    ..
 LowerFixed_CommitPlayerFacingDirection:
         sta     $3D                             ; CBEF 85 3D                    .=
-        jsr     LowerFixed_CommitPlayerMovement ; CBF1 20 88 CC                  ..
+        jsr     LowerFixed_BeginPlayerMovement  ; CBF1 20 88 CC                  ..
         jmp     LowerFixedEngine_Branch_D0C4    ; CBF4 4C C4 D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CBF7:
         rts                                     ; CBF7 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleActionButton:
+LowerFixed_HandlePlayerActionInput:
         lda     $0530                           ; CBF8 AD 30 05                 .0.
         bmi     LowerFixedEngine_Branch_CC64    ; CBFB 30 67                    0g
         lda     ButtonsPressed                  ; CBFD A5 14                    ..
@@ -1831,7 +1831,7 @@ LowerFixedEngine_Branch_CC33:
         brk                                     ; CC52 00                       .
         db   $0E,$EF                         ; CC53 0E EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_RenderAllMapEntities ; CC55 20 F1 DF                  ..
+        jsr     LowerFixed_InitializeMapEntityRendering; CC55 20 F1 DF           ..
         brk                                     ; CC58 00                       .
         db   $09,$9F                         ; CC59 09 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -1865,15 +1865,15 @@ LowerFixedEngine_Branch_CC7D:
 LowerFixedEngine_Branch_CC81:
         lda     #$0B                            ; CC81 A9 0B                    ..
         ldx     #$03                            ; CC83 A2 03                    ..
-        jmp     LowerFixed_PlayMapCueAndWaitForInput; CC85 4C ED D1             L..
+        jmp     LowerFixed_ShowFieldMessageAndWaitForInput; CC85 4C ED D1       L..
 ; ----------------------------------------------------------------------------
-LowerFixed_CommitPlayerMovement:
-        jsr     LowerFixed_BeginPlayerMovement  ; CC88 20 91 CF                  ..
+LowerFixed_BeginPlayerMovement:
+        jsr     LowerFixed_ResolvePlayerMovementDestination; CC88 20 91 CF       ..
         jsr     LowerFixed_UpdatePlayerAndPartyCoordinates; CC8B 20 91 CC        ..
         jmp     LowerFixed_FinalizePlayerMovement; CC8E 4C C9 CD                L..
 ; ----------------------------------------------------------------------------
 LowerFixed_UpdatePlayerAndPartyCoordinates:
-        jsr     LowerFixed_ComputeMovementDestination; CC91 20 6F D1             o.
+        jsr     LowerFixed_GetPlayerFacingDestination; CC91 20 6F D1             o.
         sta     PlayerWorldY,x                  ; CC94 95 43                    .C
         sta     $6F80                           ; CC96 8D 80 6F                 ..o
         lda     $52                           ; CC99 A5 52                    .R
@@ -1904,16 +1904,16 @@ LowerFixed_UpdatePlayerAndPartyCoordinates:
         sbc     #$01                            ; CCD0 E9 01                    ..
         sta     $6F87,y                         ; CCD2 99 87 6F                 ..o
 LowerFixedEngine_Branch_CCD5:
-        jsr     LowerFixed_ActivateFollowerEntity; CCD5 20 78 CD                 x.
+        jsr     LowerFixed_ApplyFacingToFollowerEntity; CCD5 20 78 CD            x.
         cpx     #$00                            ; CCD8 E0 00                    ..
         beq     LowerFixedEngine_Branch_CD3B    ; CCDA F0 5F                    ._
         iny                                     ; CCDC C8                       .
-        jsr     LowerFixed_ActivateFollowerEntity; CCDD 20 78 CD                 x.
+        jsr     LowerFixed_ApplyFacingToFollowerEntity; CCDD 20 78 CD            x.
         iny                                     ; CCE0 C8                       .
-        jsr     LowerFixed_ActivateFollowerEntity; CCE1 20 78 CD                 x.
+        jsr     LowerFixed_ApplyFacingToFollowerEntity; CCE1 20 78 CD            x.
         dey                                     ; CCE4 88                       .
         dey                                     ; CCE5 88                       .
-        jsr     LowerFixed_OffsetFollowerCoordinates; CCE6 20 0F CD              ..
+        jsr     LowerFixed_OffsetFollowerSpriteFormation; CCE6 20 0F CD          ..
 LowerFixedEngine_Branch_CCE9:
         rts                                     ; CCE9 60                       `
 ; ----------------------------------------------------------------------------
@@ -1934,7 +1934,7 @@ LowerFixedEngine_Branch_CCEA:
         sta     $7000,x                         ; CD09 9D 00 70                 ..p
         jmp     LowerFixed_RenderVisibleMapEntity; CD0C 4C FC D7                L..
 ; ----------------------------------------------------------------------------
-LowerFixed_OffsetFollowerCoordinates:
+LowerFixed_OffsetFollowerSpriteFormation:
         lda     $57                             ; CD0F A5 57                    .W
         beq     LowerFixedEngine_Branch_CD3B    ; CD11 F0 28                    .(
         txa                                     ; CD13 8A                       .
@@ -1979,10 +1979,10 @@ LowerFixedEngine_Branch_CD3E:
         beq     LowerFixedEngine_Branch_CCE9    ; CD47 F0 A0                    ..
         ldx     #$08                            ; CD49 A2 08                    ..
         jsr     LowerFixed_RenderVisibleMapEntity; CD4B 20 FC D7                 ..
-        jsr     LowerFixed_SelectFollowerSprite ; CD4E 20 52 CD                  R.
+        jsr     LowerFixed_SelectVehicleSpriteSlot; CD4E 20 52 CD                R.
         rts                                     ; CD51 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_SelectFollowerSprite:
+LowerFixed_SelectVehicleSpriteSlot:
         ldx     #$0B                            ; CD52 A2 0B                    ..
         lda     $7140                           ; CD54 AD 40 71                 .@q
         beq     LowerFixedEngine_Branch_CD6A    ; CD57 F0 11                    ..
@@ -2004,7 +2004,7 @@ LowerFixedEngine_Branch_CD6A:
 ; ----------------------------------------------------------------------------
         db   $01,$06,$0D,$0E,$0F,$11,$12,$13 ; CD70 01 06 0D 0E 0F 11 12 13  ........
 ; ----------------------------------------------------------------------------
-LowerFixed_ActivateFollowerEntity:
+LowerFixed_ApplyFacingToFollowerEntity:
         lda     $7006,y                         ; CD78 B9 06 70                 ..p
         and     #$FC                            ; CD7B 29 FC                    ).
         ora     $3D                             ; CD7D 05 3D                    .=
@@ -2012,7 +2012,7 @@ LowerFixed_ActivateFollowerEntity:
         sta     $7006,y                         ; CD81 99 06 70                 ..p
         rts                                     ; CD84 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_PrepareDirectionalMovement:
+LowerFixed_ShowBlockedMovementMessagesAndCancelStep:
         lda     $0539                           ; CD85 AD 39 05                 .9.
         bpl     LowerFixedEngine_Branch_CD8E    ; CD88 10 04                    ..
         brk                                     ; CD8A 00                       .
@@ -2047,13 +2047,13 @@ LowerFixedEngine_Branch_CDAF:
 LowerFixedEngine_Branch_CDB6:
         tya                                     ; CDB6 98                       .
         ldx     #$03                            ; CDB7 A2 03                    ..
-        jsr     LowerFixed_RunFieldPrompt       ; CDB9 20 FD D1                  ..
+        jsr     LowerFixed_ShowFieldMessage     ; CDB9 20 FD D1                  ..
         ldx     #$03                            ; CDBC A2 03                    ..
         lda     #$BD                            ; CDBE A9 BD                    ..
         brk                                     ; CDC0 00                       .
         db   $04,$6F                         ; CDC1 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_WaitForInputThenResetInteraction; CDC3 20 F0 D1       ..
+        jsr     LowerFixed_WaitForInputAndCloseFieldMessage; CDC3 20 F0 D1       ..
         pla                                     ; CDC6 68                       h
         pla                                     ; CDC7 68                       h
 LowerFixedEngine_Branch_CDC8:
@@ -2066,10 +2066,10 @@ LowerFixed_FinalizePlayerMovement:
         lda     #$10                            ; CDD1 A9 10                    ..
         sta     $3E                             ; CDD3 85 3E                    .>
         jsr     LowerFixed_PropagateLinkedEntityOffsetsAndRender; CDD5 20 07 C0  ..
-        jsr     LowerFixed_AdvanceTimeOfDay     ; CDD8 20 DC CD                  ..
+        jsr     LowerFixed_AdvanceTimeOfDayClock; CDD8 20 DC CD                  ..
         rts                                     ; CDDB 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceTimeOfDay:
+LowerFixed_AdvanceTimeOfDayClock:
         lda     $41                             ; CDDC A5 41                    .A
         bmi     LowerFixedEngine_Branch_CE08    ; CDDE 30 28                    0(
         lda     $6288                           ; CDE0 AD 88 62                 ..b
@@ -2091,7 +2091,7 @@ LowerFixed_AdvanceTimeOfDay:
 LowerFixedEngine_Branch_CE08:
         rts                                     ; CE08 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateFieldMovementState:
+LowerFixed_ProcessMapInputAndEvents:
         cmp     #$00                            ; CE09 C9 00                    ..
         bne     LowerFixedEngine_Branch_CE50    ; CE0B D0 43                    .C
         lda     $41                             ; CE0D A5 41                    .A
@@ -2115,21 +2115,21 @@ LowerFixed_UpdateFieldMovementState:
 LowerFixedEngine_Branch_CE2E:
         jsr     LowerFixed_FinishScriptedMovement; CE2E 20 72 CE                 r.
 LowerFixedEngine_Branch_CE31:
-        jsr     LowerFixed_RefreshMapAudio      ; CE31 20 56 CF                  V.
+        jsr     LowerFixed_InvokeStepEventWhenOnWorldMap; CE31 20 56 CF          V.
         brk                                     ; CE34 00                       .
         db   $00,$BF                         ; CE35 00 BF                    ..
 ; ----------------------------------------------------------------------------
         bcs     LowerFixedEngine_Branch_CE47    ; CE37 B0 0E                    ..
-        jsr     LowerFixed_UpdateTerrainTransitionFlag; CE39 20 5F CF            _.
-        jsr     LowerFixed_DispatchTerrainInteraction; CE3C 20 BE CE             ..
+        jsr     LowerFixed_UpdateWorldTerrainStateFlag; CE39 20 5F CF            _.
+        jsr     LowerFixed_DispatchTerrainEvent ; CE3C 20 BE CE                  ..
         bcs     LowerFixedEngine_Branch_CE4A    ; CE3F B0 09                    ..
-        jsr     LowerFixed_RefreshFieldGraphics ; CE41 20 8D CF                  ..
+        jsr     LowerFixed_InvokeTerrainEffectService; CE41 20 8D CF             ..
         jmp     LowerFixedEngine_Branch_CE4A    ; CE44 4C 4A CE                 LJ.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE47:
-        jsr     LowerFixed_RefreshMapAudio      ; CE47 20 56 CF                  V.
+        jsr     LowerFixed_InvokeStepEventWhenOnWorldMap; CE47 20 56 CF          V.
 LowerFixedEngine_Branch_CE4A:
-        jsr     LowerFixed_OpenFieldMenuOnStart ; CE4A 20 A9 CE                  ..
+        jsr     LowerFixed_HandleMapLoopExitInput; CE4A 20 A9 CE                 ..
         jmp     LowerFixed_SynchronizeLinkedEntityFacingFlags; CE4D 4C 10 C0    L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE50:
@@ -2159,10 +2159,10 @@ LowerFixed_FinishScriptedMovement:
         sta     $0527                           ; CE74 8D 27 05                 .'.
         lda     $0593                           ; CE77 AD 93 05                 ...
         ldx     $0594                           ; CE7A AE 94 05                 ...
-        jmp     LowerFixed_RunFieldPromptAndWait; CE7D 4C 07 D2                 L..
+        jmp     LowerFixed_ShowTimedFieldMessage; CE7D 4C 07 D2                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE80:
-        jsr     LowerFixed_RefreshMapAudio      ; CE80 20 56 CF                  V.
+        jsr     LowerFixed_InvokeStepEventWhenOnWorldMap; CE80 20 56 CF          V.
         lda     $0527                           ; CE83 AD 27 05                 .'.
         beq     LowerFixedEngine_Branch_CE9A    ; CE86 F0 12                    ..
         sta     $0515                           ; CE88 8D 15 05                 ...
@@ -2180,13 +2180,13 @@ LowerFixedEngine_Branch_CE80:
         rts                                     ; CE99 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE9A:
-        jsr     LowerFixed_HandleMapExitTerrain ; CE9A 20 03 CF                  ..
-        jsr     LowerFixed_CheckFieldEncounter  ; CE9D 20 38 CF                  8.
-        jsr     LowerFixed_ApplyChapterThreeWorldEvent; CEA0 20 41 CF            A.
-        jsr     LowerFixed_OpenFieldMenuOnStart ; CEA3 20 A9 CE                  ..
+        jsr     LowerFixed_HandleSpecialWorldTerrainPair; CE9A 20 03 CF          ..
+        jsr     LowerFixed_TryStartRandomEncounter; CE9D 20 38 CF                8.
+        jsr     LowerFixed_HandleChapterFourWorldCoordinate; CEA0 20 41 CF       A.
+        jsr     LowerFixed_HandleMapLoopExitInput; CEA3 20 A9 CE                 ..
         jmp     LowerFixed_SynchronizeLinkedEntityFacingFlags; CEA6 4C 10 C0    L..
 ; ----------------------------------------------------------------------------
-LowerFixed_OpenFieldMenuOnStart:
+LowerFixed_HandleMapLoopExitInput:
         lda     Bank0F_LowerFixedEngine         ; CEA9 AD 00 C0                 ...
         and     #$40                            ; CEAC 29 40                    )@
         bne     LowerFixedEngine_Branch_CEB6    ; CEAE D0 06                    ..
@@ -2202,7 +2202,7 @@ LowerFixedEngine_Branch_CEB6:
 LowerFixedEngine_Branch_CEBD:
         rts                                     ; CEBD 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_DispatchTerrainInteraction:
+LowerFixed_DispatchTerrainEvent:
         lda     $059E                           ; CEBE AD 9E 05                 ...
         ldx     #$00                            ; CEC1 A2 00                    ..
         and     #$7F                            ; CEC3 29 7F                    ).
@@ -2234,7 +2234,7 @@ LowerFixedEngine_Branch_CEE6:
         brk                                     ; CEE6 00                       .
         db   $1B,$EF                         ; CEE7 1B EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_DispatchTerrainInteraction; CEE9 20 BE CE             ..
+        jsr     LowerFixed_DispatchTerrainEvent ; CEE9 20 BE CE                  ..
         sec                                     ; CEEC 38                       8
         rts                                     ; CEED 60                       `
 ; ----------------------------------------------------------------------------
@@ -2255,7 +2255,7 @@ LowerFixedEngine_Branch_CEF3:
         db   $06,$07,$08,$09,$25,$26,$0A,$0C ; CEF8 06 07 08 09 25 26 0A 0C  ....%&..
         db   $05,$0B,$0F                     ; CF00 05 0B 0F                 ...
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMapExitTerrain:
+LowerFixed_HandleSpecialWorldTerrainPair:
         lda     $0515                           ; CF03 AD 15 05                 ...
         cmp     #$02                            ; CF06 C9 02                    ..
         beq     LowerFixedEngine_Branch_CF37    ; CF08 F0 2D                    .-
@@ -2286,7 +2286,7 @@ LowerFixedEngine_Branch_CF34:
 LowerFixedEngine_Branch_CF37:
         rts                                     ; CF37 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_CheckFieldEncounter:
+LowerFixed_TryStartRandomEncounter:
         brk                                     ; CF38 00                       .
         db   $10,$87                         ; CF39 10 87                    ..
 ; ----------------------------------------------------------------------------
@@ -2297,7 +2297,7 @@ LowerFixed_CheckFieldEncounter:
 LowerFixedEngine_Branch_CF40:
         rts                                     ; CF40 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ApplyChapterThreeWorldEvent:
+LowerFixed_HandleChapterFourWorldCoordinate:
         lda     SaveCurrentChapterMinus1        ; CF41 AD 5A 61                 .Za
         cmp     #$03                            ; CF44 C9 03                    ..
         bne     LowerFixedEngine_Branch_CF55    ; CF46 D0 0D                    ..
@@ -2306,11 +2306,11 @@ LowerFixed_ApplyChapterThreeWorldEvent:
         bne     LowerFixedEngine_Branch_CF55    ; CF4C D0 07                    ..
         ldx     #$03                            ; CF4E A2 03                    ..
         lda     #$AB                            ; CF50 A9 AB                    ..
-        jsr     LowerFixed_RunFieldPromptAndWait; CF52 20 07 D2                  ..
+        jsr     LowerFixed_ShowTimedFieldMessage; CF52 20 07 D2                  ..
 LowerFixedEngine_Branch_CF55:
         rts                                     ; CF55 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RefreshMapAudio:
+LowerFixed_InvokeStepEventWhenOnWorldMap:
         lda     $0515                           ; CF56 AD 15 05                 ...
         bne     LowerFixedEngine_Branch_CF5E    ; CF59 D0 03                    ..
         brk                                     ; CF5B 00                       .
@@ -2319,7 +2319,7 @@ LowerFixed_RefreshMapAudio:
 LowerFixedEngine_Branch_CF5E:
         rts                                     ; CF5E 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateTerrainTransitionFlag:
+LowerFixed_UpdateWorldTerrainStateFlag:
         lda     $46                             ; CF5F A5 46                    .F
         sta     $47                             ; CF61 85 47                    .G
         lda     $7140                           ; CF63 AD 40 71                 .@q
@@ -2349,13 +2349,13 @@ LowerFixedEngine_Branch_CF7D:
         sta     $627D                           ; CF89 8D 7D 62                 .}b
         rts                                     ; CF8C 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RefreshFieldGraphics:
+LowerFixed_InvokeTerrainEffectService:
         brk                                     ; CF8D 00                       .
         db   $02,$EF                         ; CF8E 02 EF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; CF90 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_BeginPlayerMovement:
+LowerFixed_ResolvePlayerMovementDestination:
         lda     $7000                           ; CF91 AD 00 70                 ..p
         and     #$FC                            ; CF94 29 FC                    ).
         ora     $3D                             ; CF96 05 3D                    .=
@@ -2364,7 +2364,7 @@ LowerFixed_BeginPlayerMovement:
         ldx     #$00                            ; CF9D A2 00                    ..
         stx     $0527                           ; CF9F 8E 27 05                 .'.
         jsr     LowerFixed_RenderVisibleMapEntity; CFA2 20 FC D7                 ..
-        jsr     LowerFixed_ComputeMovementDestination; CFA5 20 6F D1             o.
+        jsr     LowerFixed_GetPlayerFacingDestination; CFA5 20 6F D1             o.
         bit     $41                             ; CFA8 24 41                    $A
         bpl     LowerFixedEngine_Branch_CFAF    ; CFAA 10 03                    ..
         jmp     LowerFixedEngine_Branch_D050    ; CFAC 4C 50 D0                 LP.
@@ -2421,7 +2421,7 @@ LowerFixedEngine_Branch_D007:
         bpl     LowerFixedEngine_Branch_CFF3    ; D008 10 E9                    ..
 LowerFixed_RecordPlayerTerrainStep:
         lda     $54                             ; D00A A5 54                    .T
-        jsr     LowerFixed_PushRecentTerrainTile; D00C 20 C9 D1                  ..
+        jsr     LowerFixed_PushRecentMapTile    ; D00C 20 C9 D1                  ..
         rts                                     ; D00F 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D010:
@@ -2458,7 +2458,7 @@ LowerFixedEngine_Branch_D03F:
         brk                                     ; D03F 00                       .
         db   $0E,$EF                         ; D040 0E EF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_RenderAllMapEntities ; D042 20 F1 DF                  ..
+        jsr     LowerFixed_InitializeMapEntityRendering; D042 20 F1 DF           ..
         lda     $7000                           ; D045 AD 00 70                 ..p
         ora     #$40                            ; D048 09 40                    .@
 LowerFixed_StorePlayerEntityStateAndResolveTile:
@@ -2524,7 +2524,7 @@ LowerFixedEngine_Branch_D0B5:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D0B8:
         tya                                     ; D0B8 98                       .
-        jsr     LowerFixed_PushRecentTerrainTile; D0B9 20 C9 D1                  ..
+        jsr     LowerFixed_PushRecentMapTile    ; D0B9 20 C9 D1                  ..
         rts                                     ; D0BC 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D0BD:
@@ -2562,7 +2562,7 @@ LowerFixedEngine_Branch_D0E2:
         brk                                     ; D0E6 00                       .
         db   $C2,$4B                         ; D0E7 C2 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_WaitLongThenResetInteraction; D0E9 20 0A D2           ..
+        jsr     LowerFixed_WaitThenCloseFieldMessage; D0E9 20 0A D2              ..
         jmp     LowerFixedEngine_Branch_D010    ; D0EC 4C 10 D0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D0EF:
@@ -2583,7 +2583,7 @@ LowerFixedEngine_Branch_D0FC:
         sta     $70E0,x                         ; D10D 9D E0 70                 ..p
         txa                                     ; D110 8A                       .
         pha                                     ; D111 48                       H
-        jsr     LowerFixed_UpdateMapObjectsForCollision; D112 20 3B D5           ;.
+        jsr     LowerFixed_UpdateMapObjectsForced; D112 20 3B D5                 ;.
         pla                                     ; D115 68                       h
         tax                                     ; D116 AA                       .
         lda     $7000,x                         ; D117 BD 00 70                 ..p
@@ -2638,7 +2638,7 @@ LowerFixedEngine_Branch_D14A:
 LowerFixedEngine_Branch_D16C:
         jmp     LowerFixedEngine_Branch_D0C2    ; D16C 4C C2 D0                 L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ComputeMovementDestination:
+LowerFixed_GetPlayerFacingDestination:
         lda     $41                             ; D16F A5 41                    .A
         rol     a                               ; D171 2A                       *
         rol     a                               ; D172 2A                       *
@@ -2686,7 +2686,7 @@ LowerFixedEngine_Branch_D1B4:
         db   $00                             ; D1C1 00                       .
         db   $08,$01,$F8,$00,$F8,$01,$08     ; D1C2 08 01 F8 00 F8 01 08     .......
 ; ----------------------------------------------------------------------------
-LowerFixed_PushRecentTerrainTile:
+LowerFixed_PushRecentMapTile:
         pha                                     ; D1C9 48                       H
         lda     $7142                           ; D1CA AD 42 71                 .Bq
         sta     $7143                           ; D1CD 8D 43 71                 .Cq
@@ -2698,19 +2698,19 @@ LowerFixed_PushRecentTerrainTile:
         sta     $7140                           ; D1DD 8D 40 71                 .@q
         rts                                     ; D1E0 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_WaitForPendingFieldUpdate:
+LowerFixed_WaitForMapTransitionCompletion:
         lda     $07BB                           ; D1E1 AD BB 07                 ...
         bpl     LowerFixedEngine_Branch_D1EC    ; D1E4 10 06                    ..
-        jsr     LowerFixed_ReconcileQueuedEntityMatches; D1E6 20 E2 E3           ..
+        jsr     LowerFixed_ResolveEntitySpriteConflicts; D1E6 20 E2 E3           ..
         jsr     LowerFixed_WaitForNmi           ; D1E9 20 74 FF                  t.
 LowerFixedEngine_Branch_D1EC:
         rts                                     ; D1EC 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_PlayMapCueAndWaitForInput:
-        jsr     LowerFixed_RunFieldPrompt       ; D1ED 20 FD D1                  ..
-LowerFixed_WaitForInputThenResetInteraction:
+LowerFixed_ShowFieldMessageAndWaitForInput:
+        jsr     LowerFixed_ShowFieldMessage     ; D1ED 20 FD D1                  ..
+LowerFixed_WaitForInputAndCloseFieldMessage:
         jsr     LowerFixed_WaitForFreshButtonPress; D1F0 20 CC C8                ..
-LowerFixed_ResetFieldInteractionState:
+LowerFixed_CloseFieldMessageWindow:
         lda     #$00                            ; D1F3 A9 00                    ..
         sta     $0539                           ; D1F5 8D 39 05                 .9.
         brk                                     ; D1F8 00                       .
@@ -2718,7 +2718,7 @@ LowerFixed_ResetFieldInteractionState:
 ; ----------------------------------------------------------------------------
         rts                                     ; D1FC 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RunFieldPrompt:
+LowerFixed_ShowFieldMessage:
         pha                                     ; D1FD 48                       H
         brk                                     ; D1FE 00                       .
         db   $07,$6F,$43                     ; D1FF 07 6F 43                 .oC
@@ -2729,19 +2729,19 @@ LowerFixed_RunFieldPrompt:
 ; ----------------------------------------------------------------------------
         rts                                     ; D206 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RunFieldPromptAndWait:
-        jsr     LowerFixed_RunFieldPrompt       ; D207 20 FD D1                  ..
-LowerFixed_WaitLongThenResetInteraction:
-        jsr     LowerFixed_WaitForInputTransition180Frames; D20A 20 18 D2        ..
-        jmp     LowerFixed_ResetFieldInteractionState; D20D 4C F3 D1            L..
+LowerFixed_ShowTimedFieldMessage:
+        jsr     LowerFixed_ShowFieldMessage     ; D207 20 FD D1                  ..
+LowerFixed_WaitThenCloseFieldMessage:
+        jsr     LowerFixed_WaitForButtonStateOneEightyFrames; D20A 20 18 D2      ..
+        jmp     LowerFixed_CloseFieldMessageWindow; D20D 4C F3 D1               L..
 ; ----------------------------------------------------------------------------
-LowerFixed_WaitForInputTransition60Frames:
+LowerFixed_WaitForButtonStateSixtyFrames:
         lda     #$3C                            ; D210 A9 3C                    .<
         bne     LowerFixedEngine_Branch_D21A    ; D212 D0 06                    ..
-LowerFixed_WaitForInputTransition120Frames:
+LowerFixed_WaitForButtonStateOneTwentyFrames:
         lda     #$78                            ; D214 A9 78                    .x
         bne     LowerFixedEngine_Branch_D21A    ; D216 D0 02                    ..
-LowerFixed_WaitForInputTransition180Frames:
+LowerFixed_WaitForButtonStateOneEightyFrames:
         lda     #$B4                            ; D218 A9 B4                    ..
 LowerFixedEngine_Branch_D21A:
         sta     $00                             ; D21A 85 00                    ..
@@ -2823,12 +2823,12 @@ LowerFixed_ReadWorldMapTileTripletBanked:
         pha                                     ; D29C 48                       H
         inc     $00                             ; D29D E6 00                    ..
         lda     $02                             ; D29F A5 02                    ..
-        jsr     LowerFixed_ContinueWorldMapRunDecode; D2A1 20 5F D3              _.
+        jsr     LowerFixed_FinishForwardWorldMapRunDecode; D2A1 20 5F D3         _.
         jsr     LowerFixed_ApplyWorldMapTileOverride; D2A4 20 23 D5              #.
         pha                                     ; D2A7 48                       H
         inc     $00                             ; D2A8 E6 00                    ..
         lda     $02                             ; D2AA A5 02                    ..
-        jsr     LowerFixed_ContinueWorldMapRunDecode; D2AC 20 5F D3              _.
+        jsr     LowerFixed_FinishForwardWorldMapRunDecode; D2AC 20 5F D3         _.
         jsr     LowerFixed_ApplyWorldMapTileOverride; D2AF 20 23 D5              #.
         tay                                     ; D2B2 A8                       .
         pla                                     ; D2B3 68                       h
@@ -2948,7 +2948,7 @@ LowerFixedEngine_Branch_D358:
         and     #$1F                            ; D35A 29 1F                    ).
         sec                                     ; D35C 38                       8
         adc     $02                             ; D35D 65 02                    e.
-LowerFixed_ContinueWorldMapRunDecode:
+LowerFixed_FinishForwardWorldMapRunDecode:
         sta     $02                             ; D35F 85 02                    ..
         cmp     $00                             ; D361 C5 00                    ..
         bcc     LowerFixedEngine_Branch_D342    ; D363 90 DD                    ..
@@ -3210,7 +3210,7 @@ LowerFixedEngine_Branch_D4F0:
         asl     $59                             ; D4F0 06 59                    .Y
         rts                                     ; D4F2 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_LookUpMapTileAttributes:
+LowerFixed_ResolveMapTileGraphicsRecord:
         pha                                     ; D4F3 48                       H
         and     #$E0                            ; D4F4 29 E0                    ).
         cmp     $46                             ; D4F6 C5 46                    .F
@@ -3262,7 +3262,7 @@ LowerFixedEngine_Branch_D539:
         pla                                     ; D539 68                       h
         rts                                     ; D53A 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateMapObjectsForCollision:
+LowerFixed_UpdateMapObjectsForced:
         lda     #$FF                            ; D53B A9 FF                    ..
         sta     $56                             ; D53D 85 56                    .V
         jmp     LowerFixed_UpdateMapObjectsCore ; D53F 4C 46 D5                 LF.
@@ -3293,30 +3293,30 @@ LowerFixed_UpdateMapObjectsCore:
 LowerFixedEngine_Branch_D56C:
         lda     $67                             ; D56C A5 67                    .g
         jsr     LowerFixed_SelectPrgBank        ; D56E 20 91 FF                  ..
-        jsr     LowerFixed_ProcessMapObjectsUntilComplete; D571 20 7F D5         ..
+        jsr     LowerFixed_RunForcedMapObjectUpdateLoop; D571 20 7F D5           ..
         lda     $7024                           ; D574 AD 24 70                 .$p
         and     $7025                           ; D577 2D 25 70                 -%p
         bmi     LowerFixedEngine_Branch_D5AC    ; D57A 30 30                    00
         jmp     LowerFixed_ReconcilePartyEntityMatchSlots; D57C 4C 13 C0        L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ProcessMapObjectsUntilComplete:
-        jsr     LowerFixed_ProcessCurrentMapObject; D57F 20 07 D6                ..
-        jsr     LowerFixed_AdvanceMapObjectIndexOrFinish; D582 20 EE D5          ..
-        jmp     LowerFixed_ProcessMapObjectsUntilComplete; D585 4C 7F D5        L..
+LowerFixed_RunForcedMapObjectUpdateLoop:
+        jsr     LowerFixed_ProcessCurrentMapObjectSlot; D57F 20 07 D6            ..
+        jsr     LowerFixed_AdvanceMapObjectIndexOrExit; D582 20 EE D5            ..
+        jmp     LowerFixed_RunForcedMapObjectUpdateLoop; D585 4C 7F D5          L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D588:
         pha                                     ; D588 48                       H
-        jsr     LowerFixed_AdvanceMapObjectScan ; D589 20 C0 D5                  ..
+        jsr     LowerFixed_ProcessNextAnimatedMapObject; D589 20 C0 D5           ..
         pla                                     ; D58C 68                       h
         and     #$07                            ; D58D 29 07                    ).
         bne     LowerFixedEngine_Branch_D5AC    ; D58F D0 1B                    ..
         lda     $41                             ; D591 A5 41                    .A
         bpl     LowerFixedEngine_Branch_D598    ; D593 10 03                    ..
-        jsr     LowerFixed_ProcessBankedMapObjectsUntilComplete; D595 20 AD D5   ..
+        jsr     LowerFixed_RunMapObjectAnimationLoop; D595 20 AD D5              ..
 LowerFixedEngine_Branch_D598:
         ldx     #$00                            ; D598 A2 00                    ..
-        jsr     LowerFixed_ApplyMapObjectVisibility; D59A 20 9D D5               ..
-LowerFixed_ApplyMapObjectVisibility:
+        jsr     LowerFixed_ApplyMapObjectMotionFlag; D59A 20 9D D5               ..
+LowerFixed_ApplyMapObjectMotionFlag:
         lda     $052A,x                         ; D59D BD 2A 05                 .*.
         and     #$40                            ; D5A0 29 40                    )@
         beq     LowerFixedEngine_Branch_D5AB    ; D5A2 F0 07                    ..
@@ -3328,19 +3328,19 @@ LowerFixedEngine_Branch_D5AB:
 LowerFixedEngine_Branch_D5AC:
         rts                                     ; D5AC 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ProcessBankedMapObjectsUntilComplete:
+LowerFixed_RunMapObjectAnimationLoop:
         lda     $67                             ; D5AD A5 67                    .g
         jsr     LowerFixed_SelectPrgBank        ; D5AF 20 91 FF                  ..
 LowerFixed_RunMapObjectAnimationPass:
-        jsr     LowerFixed_ProcessEnabledMapObject; D5B2 20 FE D5                ..
-        jsr     LowerFixed_AdvanceMapObjectIndexOrFinish; D5B5 20 EE D5          ..
+        jsr     LowerFixed_ProcessNextForcedMapObject; D5B2 20 FE D5             ..
+        jsr     LowerFixed_AdvanceMapObjectIndexOrExit; D5B5 20 EE D5            ..
         jmp     LowerFixed_RunMapObjectAnimationPass; D5B8 4C B2 D5             L..
 ; ----------------------------------------------------------------------------
-LowerFixed_RestoreMapObjectDataBank:
+LowerFixed_RestoreMapObjectCallerBank:
         lda     $58                             ; D5BB A5 58                    .X
         jmp     LowerFixed_SelectPrgBank        ; D5BD 4C 91 FF                 L..
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceMapObjectScan:
+LowerFixed_ProcessNextAnimatedMapObject:
         ldx     $51                             ; D5C0 A6 51                    .Q
         lda     $7020,x                         ; D5C2 BD 20 70                 . p
         cmp     #$FF                            ; D5C5 C9 FF                    ..
@@ -3350,26 +3350,26 @@ LowerFixed_AdvanceMapObjectScan:
         bmi     LowerFixedEngine_Branch_D5DA    ; D5CE 30 0A                    0.
         lda     #$09                            ; D5D0 A9 09                    ..
         sta     $57                             ; D5D2 85 57                    .W
-        jsr     LowerFixed_InitializeMapObject  ; D5D4 20 EA D5                  ..
+        jsr     LowerFixed_UpdateCurrentMapObjectAnimation; D5D4 20 EA D5        ..
         jmp     LowerFixedEngine_Branch_D5DD    ; D5D7 4C DD D5                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D5DA:
-        jsr     LowerFixed_AnimateMapObjectAppearance; D5DA 20 CB D9             ..
+        jsr     LowerFixed_AnimateEntityMotionCountup; D5DA 20 CB D9             ..
 LowerFixedEngine_Branch_D5DD:
         inc     $51                             ; D5DD E6 51                    .Q
         lda     $51                             ; D5DF A5 51                    .Q
         cmp     #$1E                            ; D5E1 C9 1E                    ..
-        bcc     LowerFixed_AdvanceMapObjectScan ; D5E3 90 DB                    ..
+        bcc     LowerFixed_ProcessNextAnimatedMapObject; D5E3 90 DB             ..
 LowerFixedEngine_Branch_D5E5:
         lda     #$06                            ; D5E5 A9 06                    ..
         sta     $51                             ; D5E7 85 51                    .Q
         rts                                     ; D5E9 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_InitializeMapObject:
-        jsr     LowerFixed_AnimateMapObjectRemoval; D5EA 20 4B D9                K.
+LowerFixed_UpdateCurrentMapObjectAnimation:
+        jsr     LowerFixed_AnimateEntityMotionCountdown; D5EA 20 4B D9           K.
         rts                                     ; D5ED 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceMapObjectIndexOrFinish:
+LowerFixed_AdvanceMapObjectIndexOrExit:
         inc     $51                             ; D5EE E6 51                    .Q
         lda     $51                             ; D5F0 A5 51                    .Q
         cmp     #$1E                            ; D5F2 C9 1E                    ..
@@ -3383,30 +3383,30 @@ LowerFixedEngine_Branch_D5FB:
 LowerFixedEngine_Branch_D5FD:
         rts                                     ; D5FD 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ProcessEnabledMapObject:
+LowerFixed_ProcessNextForcedMapObject:
         ldx     $51                             ; D5FE A6 51                    .Q
         lda     $70E0,x                         ; D600 BD E0 70                 ..p
         and     #$40                            ; D603 29 40                    )@
         beq     LowerFixedEngine_Branch_D5FD    ; D605 F0 F6                    ..
-LowerFixed_ProcessCurrentMapObject:
+LowerFixed_ProcessCurrentMapObjectSlot:
         ldx     $51                             ; D607 A6 51                    .Q
         lda     $7020,x                         ; D609 BD 20 70                 . p
         cmp     #$FF                            ; D60C C9 FF                    ..
         beq     LowerFixedEngine_Branch_D5F6    ; D60E F0 E6                    ..
-        jsr     LowerFixed_TickMapObjectDelay   ; D610 20 3B D6                  ;.
+        jsr     LowerFixed_TestMapObjectCommandReady; D610 20 3B D6              ;.
         bcc     LowerFixedEngine_Branch_D61B    ; D613 90 06                    ..
-        jsr     LowerFixed_DispatchMapObjectMovement; D615 20 21 D6              !.
+        jsr     LowerFixed_RefreshMapObjectViewportFlag; D615 20 21 D6           !.
         jsr     LowerFixed_DispatchMapObjectCommand; D618 20 91 D8               ..
 LowerFixedEngine_Branch_D61B:
-        jsr     LowerFixed_ResolveMapObjectMovement; D61B 20 84 D6               ..
+        jsr     LowerFixed_UpdateMapObjectTerrainAndCollision; D61B 20 84 D6     ..
         jmp     LowerFixed_MoveAndRenderMapObject; D61E 4C 6E D7                Ln.
 ; ----------------------------------------------------------------------------
-LowerFixed_DispatchMapObjectMovement:
+LowerFixed_RefreshMapObjectViewportFlag:
         lda     $6F60,x                         ; D621 BD 60 6F                 .`o
         sta     $52                           ; D624 85 52                    .R
         lda     $6F80,x                         ; D626 BD 80 6F                 ..o
         sta     $53                             ; D629 85 53                    .S
-        jsr     LowerFixed_CheckMapObjectPlayerCollision; D62B 20 F4 D6          ..
+        jsr     LowerFixed_UpdateMapObjectViewportInteraction; D62B 20 F4 D6     ..
         bcs     LowerFixedEngine_Branch_D63A    ; D62E B0 0A                    ..
         ldx     $51                             ; D630 A6 51                    .Q
         lda     $7020,x                         ; D632 BD 20 70                 . p
@@ -3415,7 +3415,7 @@ LowerFixed_DispatchMapObjectMovement:
 LowerFixedEngine_Branch_D63A:
         rts                                     ; D63A 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_TickMapObjectDelay:
+LowerFixed_TestMapObjectCommandReady:
         lda     $56                             ; D63B A5 56                    .V
         beq     LowerFixedEngine_Branch_D646    ; D63D F0 07                    ..
         lda     $70E0,x                         ; D63F BD E0 70                 ..p
@@ -3454,7 +3454,7 @@ LowerFixedEngine_Branch_D673:
         clc                                     ; D682 18                       .
         rts                                     ; D683 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ResolveMapObjectMovement:
+LowerFixed_UpdateMapObjectTerrainAndCollision:
         php                                     ; D684 08                       .
         jsr     LowerFixed_GetEntityFacingCoordinates; D685 20 52 D7             R.
         plp                                     ; D688 28                       (
@@ -3471,16 +3471,16 @@ LowerFixedEngine_Branch_D695:
         sta     $55                             ; D69C 85 55                    .U
         and     #$E0                            ; D69E 29 E0                    ).
         sta     $54                             ; D6A0 85 54                    .T
-        jsr     LowerFixed_ValidateMapObjectTerrain; D6A2 20 B6 D6               ..
-        jsr     LowerFixed_ValidateMapObjectBounds; D6A5 20 DB D6                ..
-        jsr     LowerFixed_ValidateMapObjectTerrainGroup; D6A8 20 E8 D6          ..
-        jsr     LowerFixed_CheckMapObjectPlayerCollision; D6AB 20 F4 D6          ..
+        jsr     LowerFixed_ValidateMapObjectTerrainType; D6A2 20 B6 D6           ..
+        jsr     LowerFixed_ValidateMapObjectCoordinates; D6A5 20 DB D6           ..
+        jsr     LowerFixed_ValidateMapObjectTerrainClass; D6A8 20 E8 D6          ..
+        jsr     LowerFixed_UpdateMapObjectViewportInteraction; D6AB 20 F4 D6     ..
         ldx     $51                             ; D6AE A6 51                    .Q
         lda     $55                             ; D6B0 A5 55                    .U
         sta     $7140,x                         ; D6B2 9D 40 71                 .@q
         rts                                     ; D6B5 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ValidateMapObjectTerrain:
+LowerFixed_ValidateMapObjectTerrainType:
         lda     $55                             ; D6B6 A5 55                    .U
         and     #$1F                            ; D6B8 29 1F                    ).
         tax                                     ; D6BA AA                       .
@@ -3509,7 +3509,7 @@ LowerFixedEngine_Branch_D6D8:
         pla                                     ; D6D9 68                       h
         rts                                     ; D6DA 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ValidateMapObjectBounds:
+LowerFixed_ValidateMapObjectCoordinates:
         lda     $52                           ; D6DB A5 52                    .R
         cmp     $3F                             ; D6DD C5 3F                    .?
         bcs     LowerFixedEngine_Branch_D6D6    ; D6DF B0 F5                    ..
@@ -3518,7 +3518,7 @@ LowerFixed_ValidateMapObjectBounds:
         bcs     LowerFixedEngine_Branch_D6D6    ; D6E5 B0 EF                    ..
         rts                                     ; D6E7 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ValidateMapObjectTerrainGroup:
+LowerFixed_ValidateMapObjectTerrainClass:
         ldx     $51                             ; D6E8 A6 51                    .Q
         lda     $7140,x                         ; D6EA BD 40 71                 .@q
         and     #$E0                            ; D6ED 29 E0                    ).
@@ -3526,7 +3526,7 @@ LowerFixed_ValidateMapObjectTerrainGroup:
         bne     LowerFixedEngine_Branch_D6D6    ; D6F1 D0 E3                    ..
         rts                                     ; D6F3 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_CheckMapObjectPlayerCollision:
+LowerFixed_UpdateMapObjectViewportInteraction:
         lda     $0539                           ; D6F4 AD 39 05                 .9.
         bpl     LowerFixedEngine_Branch_D720    ; D6F7 10 27                    .'
         lda     $52                           ; D6F9 A5 52                    .R
@@ -3693,7 +3693,7 @@ LowerFixed_RenderVisibleMapEntity:
         cpx     #$00                            ; D80E E0 00                    ..
         bne     LowerFixedEngine_Branch_D85D    ; D810 D0 4B                    .K
 LowerFixedEngine_Branch_D812:
-        jsr     LowerFixed_ComputeEntityOamOffset; D812 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; D812 20 8C C7          ..
         lda     $6FE0,x                         ; D815 BD E0 6F                 ..o
         and     #$0F                            ; D818 29 0F                    ).
         jsr     LowerFixed_SelectEntitySpriteDefinition; D81A 20 64 D8           d.
@@ -3871,7 +3871,7 @@ LowerFixed_SetMapObjectInactiveCommand:
         jsr     LowerFixed_SetMapObjectInactiveAndAdvanceScript; D931 20 AB D9   ..
         jmp     LowerFixed_ReturnFromMapObjectCommand; D934 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_RemoveMapObjectCommand:
+LowerFixed_DeactivateEntityCoordinatesCommand:
         jsr     LowerFixed_SetMapObjectInactiveAndAdvanceScript; D937 20 AB D9   ..
         lda     #$81                            ; D93A A9 81                    ..
         sta     $6F60,x                         ; D93C 9D 60 6F                 .`o
@@ -3880,7 +3880,7 @@ LowerFixed_RemoveMapObjectCommand:
         sta     $6FC0,x                         ; D945 9D C0 6F                 ..o
         jmp     LowerFixed_ReturnFromMapObjectCommand; D948 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_AnimateMapObjectRemoval:
+LowerFixed_AnimateEntityMotionCountdown:
         ldx     $51                             ; D94B A6 51                    .Q
         lda     $7160,x                         ; D94D BD 60 71                 .`q
         beq     LowerFixedEngine_Branch_D99B    ; D950 F0 49                    .I
@@ -3938,7 +3938,7 @@ LowerFixed_SetMapObjectInactiveAndAdvanceScript:
         sta     $7020,x                         ; D9B2 9D 20 70                 . p
         jmp     LowerFixed_AdvanceMapObjectScriptOneByte; D9B5 4C E3 DD         L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ActivateMapObjectCommand:
+LowerFixed_ClearEntityMotionAndSavePosition:
         ldx     $51                             ; D9B8 A6 51                    .Q
         lda     $7020,x                         ; D9BA BD 20 70                 . p
         and     #$7F                            ; D9BD 29 7F                    ).
@@ -3947,7 +3947,7 @@ LowerFixed_ActivateMapObjectCommand:
         jsr     LowerFixed_AdvanceMapObjectScriptOneByte; D9C5 20 E3 DD          ..
         jmp     LowerFixed_ReturnFromMapObjectCommand; D9C8 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_AnimateMapObjectAppearance:
+LowerFixed_AnimateEntityMotionCountup:
         ldx     $51                             ; D9CB A6 51                    .Q
         lda     $7160,x                         ; D9CD BD 60 71                 .`q
         beq     LowerFixedEngine_Branch_DA06    ; D9D0 F0 34                    .4
@@ -3990,7 +3990,7 @@ LowerFixed_SaveEntityCoordinates:
         sta     $6FC0,x                         ; DA1A 9D C0 6F                 ..o
         rts                                     ; DA1D 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_SetMapObjectFacingFromMovement:
+LowerFixed_ApplyPlayerFacingToMovingEntity:
         lda     $3E                             ; DA1E A5 3E                    .>
         beq     LowerFixedEngine_Branch_DA2B    ; DA20 F0 09                    ..
         ldx     $51                             ; DA22 A6 51                    .Q
@@ -4070,7 +4070,7 @@ LowerFixed_StartMapPresentationCommand:
 ; ----------------------------------------------------------------------------
         jmp     LowerFixed_ReturnFromMapObjectCommand; DAA1 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_LoadMapPresentationSequenceCommand:
+LowerFixed_RunBank1CMapObjectPresentationCommand:
         lda     $0507                           ; DAA4 AD 07 05                 ...
         pha                                     ; DAA7 48                       H
         cmp     #$1C                            ; DAA8 C9 1C                    ..
@@ -4081,7 +4081,7 @@ LowerFixed_LoadMapPresentationSequenceCommand:
         sec                                     ; DAB2 38                       8
 LowerFixedEngine_Branch_DAB3:
         php                                     ; DAB3 08                       .
-        jsr     LowerFixed_ResolveMapPresentationSequence; DAB4 20 C6 DA         ..
+        jsr     LowerFixed_InitializeBank1CMapObjectPresentation; DAB4 20 C6 DA  ..
         ldx     $51                             ; DAB7 A6 51                    .Q
         jsr     LowerFixed_AdvanceMapObjectScriptTwoBytes; DAB9 20 E0 DD         ..
         plp                                     ; DABC 28                       (
@@ -4091,7 +4091,7 @@ LowerFixedEngine_Branch_DAB3:
 LowerFixedEngine_Branch_DAC3:
         jmp     LowerFixed_ReturnFromMapObjectCommand; DAC3 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ResolveMapPresentationSequence:
+LowerFixed_InitializeBank1CMapObjectPresentation:
         lda     $8014                           ; DAC6 AD 14 80                 ...
         sta     $55                             ; DAC9 85 55                    .U
         lda     $8015                           ; DACB AD 15 80                 ...
@@ -4128,14 +4128,14 @@ LowerFixedEngine_Branch_DB03:
         sta     $0532                           ; DB05 8D 32 05                 .2.
         lda     $56                             ; DB08 A5 56                    .V
         sta     $0533                           ; DB0A 8D 33 05                 .3.
-        jsr     LowerFixed_ReadMapPresentationSequenceByte; DB0D 20 6A DB        j.
+        jsr     LowerFixed_ReadBank1CMapObjectPresentationByte; DB0D 20 6A DB    j.
         and     #$0F                            ; DB10 29 0F                    ).
         ora     #$80                            ; DB12 09 80                    ..
         sta     $0530                           ; DB14 8D 30 05                 .0.
         rts                                     ; DB17 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceMapPresentationSequence:
-        jsr     LowerFixed_ReadMapPresentationSequenceByte; DB18 20 6A DB        j.
+LowerFixed_AdvanceBank1CMapObjectPresentation:
+        jsr     LowerFixed_ReadBank1CMapObjectPresentationByte; DB18 20 6A DB    j.
         and     #$F0                            ; DB1B 29 F0                    ).
         pha                                     ; DB1D 48                       H
         dec     $0530                           ; DB1E CE 30 05                 .0.
@@ -4181,7 +4181,7 @@ LowerFixedEngine_Branch_DB66:
         and     #$F0                            ; DB67 29 F0                    ).
         rts                                     ; DB69 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ReadMapPresentationSequenceByte:
+LowerFixed_ReadBank1CMapObjectPresentationByte:
         ldy     #$00                            ; DB6A A0 00                    ..
         lda     $0532                           ; DB6C AD 32 05                 .2.
         sta     $00                             ; DB6F 85 00                    ..
@@ -4404,7 +4404,7 @@ LowerFixed_FaceMapObjectAwayFromTargetCommand:
         sta     $54                             ; DD01 85 54                    .T
         jmp     LowerFixed_MoveEntityTowardExplicitTarget; DD03 4C 9F DC        L..
 ; ----------------------------------------------------------------------------
-LowerFixed_InvokeThreeArgumentMapServiceCommand:
+LowerFixed_InvokeMapEventWithThreeOperands:
         ldy     #$01                            ; DD06 A0 01                    ..
         lda     ($4D),y                         ; DD08 B1 4D                    .M
         tax                                     ; DD0A AA                       .
@@ -4422,7 +4422,7 @@ LowerFixed_InvokeThreeArgumentMapServiceCommand:
         jsr     LowerFixed_AdvanceMapObjectScriptFourBytes; DD19 20 DA DD        ..
         jmp     LowerFixed_DispatchMapObjectCommand; DD1C 4C 91 D8              L..
 ; ----------------------------------------------------------------------------
-LowerFixed_SelectRandomAllowedObjectFacingCommand:
+LowerFixed_SelectRandomAllowedEntityDirection:
         ldy     #$01                            ; DD1F A0 01                    ..
         lda     #$0F                            ; DD21 A9 0F                    ..
         sta     $54                             ; DD23 85 54                    .T
@@ -4510,7 +4510,7 @@ LowerFixedEngine_Branch_DD9F:
         clc                                     ; DDAD 18                       .
         rts                                     ; DDAE 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_BranchUnlessPlayerAtCoordinatesCommand:
+LowerFixed_BranchOnPlayerLocalCoordinates:
         ldy     #$01                            ; DDAF A0 01                    ..
         lda     ($4D),y                         ; DDB1 B1 4D                    .M
         cmp     PlayerLocalX                    ; DDB3 C5 44                    .D
@@ -4527,7 +4527,7 @@ LowerFixedEngine_Branch_DDC4:
         lda     ($4D),y                         ; DDC6 B1 4D                    .M
         jmp     LowerFixed_DispatchStandardMapObjectCommand; DDC8 4C AB D8      L..
 ; ----------------------------------------------------------------------------
-LowerFixed_InvokeMapScriptServiceCommand:
+LowerFixed_PlayScriptedMapAudioTrack:
         ldy     #$01                            ; DDCB A0 01                    ..
         lda     ($4D),y                         ; DDCD B1 4D                    .M
         brk                                     ; DDCF 00                       .
@@ -4570,7 +4570,7 @@ LowerFixed_SetEntityFacingDirection:
         sta     $7000,x                         ; DE02 9D 00 70                 ..p
         rts                                     ; DE05 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RestartMapObjectLoopCommand:
+LowerFixed_RestoreMapObjectLoopPointer:
         ldx     $51                             ; DE06 A6 51                    .Q
         jmp     LowerFixed_RestoreMapObjectLoopPointerBody; DE08 4C 12 DE       L..
 ; ----------------------------------------------------------------------------
@@ -4657,7 +4657,7 @@ LowerFixed_DispatchMapObjectOperationCommand:
         db   $A9                             ; DEA5 A9                       .
         db   $DE,$CE,$DE                     ; DEA6 DE CE DE                 ...
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceMapObjectScriptAtLocalTrigger:
+LowerFixed_AdvanceScriptPointerAtLocalCoordinate:
         lda     PlayerLocalX                    ; DEA9 A5 44                    .D
         cmp     #$0A                            ; DEAB C9 0A                    ..
         bne     LowerFixedEngine_Branch_DECB    ; DEAD D0 1C                    ..
@@ -4736,7 +4736,7 @@ LowerFixedEngine_Branch_DEFC:
         db   $DE,$6D,$DE,$92,$DE,$CF,$DE,$E5 ; DF6D DE 6D DE 92 DE CF DE E5  .m......
         db   $DE,$E5,$DE,$E5,$DE             ; DF75 DE E5 DE E5 DE           .....
 ; ----------------------------------------------------------------------------
-LowerFixed_LoadBankedMapObjectRecord:
+LowerFixed_ReadThreeBankedMapDataBytes:
         lda     $0507                           ; DF7A AD 07 05                 ...
         pha                                     ; DF7D 48                       H
         lda     $51                             ; DF7E A5 51                    .Q
@@ -4744,18 +4744,18 @@ LowerFixed_LoadBankedMapObjectRecord:
         ldy     #$00                            ; DF83 A0 00                    ..
         lda     ($49),y                         ; DF85 B1 49                    .I
         sta     $98                             ; DF87 85 98                    ..
-        jsr     LowerFixed_AdvanceBankedMapObjectRecordPointer; DF89 20 9F DF    ..
+        jsr     LowerFixed_AdvanceBankedMapDataPointer; DF89 20 9F DF            ..
         lda     ($49),y                         ; DF8C B1 49                    .I
         sta     $99                             ; DF8E 85 99                    ..
-        jsr     LowerFixed_AdvanceBankedMapObjectRecordPointer; DF90 20 9F DF    ..
+        jsr     LowerFixed_AdvanceBankedMapDataPointer; DF90 20 9F DF            ..
         lda     ($49),y                         ; DF93 B1 49                    .I
         sta     $9A                             ; DF95 85 9A                    ..
-        jsr     LowerFixed_AdvanceBankedMapObjectRecordPointer; DF97 20 9F DF    ..
+        jsr     LowerFixed_AdvanceBankedMapDataPointer; DF97 20 9F DF            ..
         pla                                     ; DF9A 68                       h
         jsr     LowerFixed_SelectPrgBank        ; DF9B 20 91 FF                  ..
         rts                                     ; DF9E 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AdvanceBankedMapObjectRecordPointer:
+LowerFixed_AdvanceBankedMapDataPointer:
         pha                                     ; DF9F 48                       H
         inc     $49                             ; DFA0 E6 49                    .I
         bne     LowerFixedEngine_Branch_DFA6    ; DFA2 D0 02                    ..
@@ -4803,14 +4803,14 @@ LowerFixedEngine_Branch_DFED:
 ; ----------------------------------------------------------------------------
         db   $0A,$BF                         ; DFEF 0A BF                    ..
 ; ----------------------------------------------------------------------------
-LowerFixed_RenderAllMapEntities:
+LowerFixed_InitializeMapEntityRendering:
         lda     #$00                            ; DFF1 A9 00                    ..
         sta     $07BB                           ; DFF3 8D BB 07                 ...
         sta     $EA                             ; DFF6 85 EA                    ..
         sta     $EB                             ; DFF8 85 EB                    ..
         jsr     LowerFixed_HideAllOamSprites    ; DFFA 20 F6 E4                  ..
 LDFFF = $+ 2
-        jsr     LowerFixed_ClearEntityMatchFlags; DFFD 20 02 E4                  ..
+        jsr     LowerFixed_ClearEntitySpriteConflictFlags; DFFD 20 02 E4         ..
         lda     $41                             ; E000 A5 41                    .A
         bpl     LowerFixedEngine_Branch_E015    ; E002 10 11                    ..
         lda     PlayerLocalY                    ; E004 A5 45                    .E
@@ -4836,7 +4836,7 @@ LowerFixedEngine_Branch_E023:
         lda     $61                             ; E023 A5 61                    .a
         ora     #$01                            ; E025 09 01                    ..
         sta     $61                             ; E027 85 61                    .a
-        jsr     LowerFixed_RenderEntitySpriteBlockOrHide; E029 20 47 E1          G.
+        jsr     LowerFixed_InitializePlayerOamPosition; E029 20 47 E1            G.
         lda     #$00                            ; E02C A9 00                    ..
         sta     $16                             ; E02E 85 16                    ..
         jsr     LowerFixed_RenderMapEntityFromCachedSprites; E030 20 68 E3       h.
@@ -4853,7 +4853,7 @@ LowerFixedEngine_Branch_E035:
         lda     $7020,x                         ; E049 BD 20 70                 . p
         and     #$90                            ; E04C 29 90                    ).
         bne     LowerFixedEngine_Branch_E060    ; E04E D0 10                    ..
-        jsr     LowerFixed_LatchEntityStateAndValidateTerrainGroup; E050 20 69 E1 i.
+        jsr     LowerFixed_RenderEntityWithinViewport; E050 20 69 E1             i.
         lda     $E4                             ; E053 A5 E4                    ..
         sta     $7000,x                         ; E055 9D 00 70                 ..p
         bcc     LowerFixedEngine_Branch_E068    ; E058 90 0E                    ..
@@ -4861,7 +4861,7 @@ LowerFixedEngine_Branch_E035:
         jmp     LowerFixedEngine_Branch_E068    ; E05D 4C 68 E0                 Lh.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E060:
-        jsr     LowerFixed_LatchEntityStateBits ; E060 20 60 E1                  `.
+        jsr     LowerFixed_HideEntityWithoutSpriteDefinition; E060 20 60 E1      `.
         lda     $E4                             ; E063 A5 E4                    ..
         sta     $7000,x                         ; E065 9D 00 70                 ..p
 LowerFixedEngine_Branch_E068:
@@ -4871,8 +4871,8 @@ LowerFixedEngine_Branch_E068:
 LowerFixedEngine_Branch_E06D:
         rts                                     ; E06D 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ApplyFieldMovementToEntities:
-        jsr     LowerFixed_RenderEntitySpriteBlockOrHide; E06E 20 47 E1          G.
+LowerFixed_UpdateMapEntityRendering:
+        jsr     LowerFixed_InitializePlayerOamPosition; E06E 20 47 E1            G.
         lda     $3E                             ; E071 A5 3E                    .>
         beq     LowerFixedEngine_Branch_E0BE    ; E073 F0 49                    .I
         lda     $7000                           ; E075 AD 00 70                 ..p
@@ -4933,11 +4933,11 @@ LowerFixedEngine_Branch_E0C8:
         lda     $7020,x                         ; E0CF BD 20 70                 . p
         and     #$90                            ; E0D2 29 90                    ).
         beq     LowerFixedEngine_Branch_E0DC    ; E0D4 F0 06                    ..
-        jsr     LowerFixed_LatchEntityStateBits ; E0D6 20 60 E1                  `.
+        jsr     LowerFixed_HideEntityWithoutSpriteDefinition; E0D6 20 60 E1      `.
         jmp     LowerFixedEngine_Branch_E0DF    ; E0D9 4C DF E0                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E0DC:
-        jsr     LowerFixed_LatchEntityStateAndValidateTerrainGroup; E0DC 20 69 E1 i.
+        jsr     LowerFixed_RenderEntityWithinViewport; E0DC 20 69 E1             i.
 LowerFixedEngine_Branch_E0DF:
         lda     $E4                             ; E0DF A5 E4                    ..
         sta     $7000,x                         ; E0E1 9D 00 70                 ..p
@@ -4961,12 +4961,12 @@ LowerFixedEngine_Branch_E0FB:
         sta     $E5                             ; E100 85 E5                    ..
         and     #$90                            ; E102 29 90                    ).
         beq     LowerFixedEngine_Branch_E10C    ; E104 F0 06                    ..
-        jsr     LowerFixed_LatchEntityStateBits ; E106 20 60 E1                  `.
+        jsr     LowerFixed_HideEntityWithoutSpriteDefinition; E106 20 60 E1      `.
         jmp     LowerFixedEngine_Branch_E12B    ; E109 4C 2B E1                 L+.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E10C:
         lda     $E4                             ; E10C A5 E4                    ..
-        jsr     LowerFixed_ApplyDirectionalStepToEntityCoordinates; E10E 20 EE E2 ..
+        jsr     LowerFixed_AdvanceEntitySubtilePosition; E10E 20 EE E2           ..
         lda     $E5                             ; E111 A5 E5                    ..
         and     #$40                            ; E113 29 40                    )@
         beq     LowerFixedEngine_Branch_E128    ; E115 F0 11                    ..
@@ -4978,9 +4978,9 @@ LowerFixedEngine_Branch_E10C:
         asl     $E2                             ; E121 06 E2                    ..
 LowerFixedEngine_Branch_E123:
         lda     $E5                             ; E123 A5 E5                    ..
-        jsr     LowerFixed_ApplyDirectionalStepToEntityCoordinates; E125 20 EE E2 ..
+        jsr     LowerFixed_AdvanceEntitySubtilePosition; E125 20 EE E2           ..
 LowerFixedEngine_Branch_E128:
-        jsr     LowerFixed_LatchEntityStateAndValidateTerrainGroup; E128 20 69 E1 i.
+        jsr     LowerFixed_RenderEntityWithinViewport; E128 20 69 E1             i.
 LowerFixedEngine_Branch_E12B:
         lda     $3C                             ; E12B A5 3C                    .<
         and     $E3                             ; E12D 25 E3                    %.
@@ -5000,7 +5000,7 @@ LowerFixedEngine_Branch_E139:
 LowerFixedEngine_Branch_E146:
         rts                                     ; E146 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_RenderEntitySpriteBlockOrHide:
+LowerFixed_InitializePlayerOamPosition:
         lda     $7020                           ; E147 AD 20 70                 . p
         and     #$90                            ; E14A 29 90                    ).
         beq     LowerFixedEngine_Branch_E152    ; E14C F0 04                    ..
@@ -5015,14 +5015,14 @@ LowerFixedEngine_Branch_E152:
         tax                                     ; E15C AA                       .
         jmp     LowerFixed_InitializePlayerOamCoordinates; E15D 4C 36 E3        L6.
 ; ----------------------------------------------------------------------------
-LowerFixed_LatchEntityStateBits:
+LowerFixed_HideEntityWithoutSpriteDefinition:
         lda     $E4                             ; E160 A5 E4                    ..
         and     #$3C                            ; E162 29 3C                    )<
         sta     $E2                             ; E164 85 E2                    ..
         bne     LowerFixedEngine_Branch_E1A9    ; E166 D0 41                    .A
         rts                                     ; E168 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_LatchEntityStateAndValidateTerrainGroup:
+LowerFixed_RenderEntityWithinViewport:
         lda     $E4                             ; E169 A5 E4                    ..
         and     #$3C                            ; E16B 29 3C                    )<
         sta     $E2                             ; E16D 85 E2                    ..
@@ -5030,7 +5030,7 @@ LowerFixed_LatchEntityStateAndValidateTerrainGroup:
         and     #$E0                            ; E172 29 E0                    ).
         cmp     $46                             ; E174 C5 46                    .F
         bne     LowerFixedEngine_Branch_E1A5    ; E176 D0 2D                    .-
-LowerFixed_ComputeEntityOffsetFromCameraOrigin:
+LowerFixed_ComputeAndClipEntityScreenPosition:
         lda     $7120,x                         ; E178 BD 20 71                 . q
         sec                                     ; E17B 38                       8
         sbc     $EB                             ; E17C E5 EB                    ..
@@ -5058,9 +5058,9 @@ LowerFixedEngine_Branch_E1A5:
         lda     $E2                             ; E1A5 A5 E2                    ..
         beq     LowerFixedEngine_Branch_E1D1    ; E1A7 F0 28                    .(
 LowerFixedEngine_Branch_E1A9:
-        jsr     LowerFixed_ComputeEntityOamOffset; E1A9 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E1A9 20 8C C7          ..
         lda     $E2                             ; E1AC A5 E2                    ..
-        jsr     LowerFixed_ReleasePackedEntityStateCode; E1AE 20 BB E4           ..
+        jsr     LowerFixed_ReleaseEntityOamBlock; E1AE 20 BB E4                  ..
         lda     $E4                             ; E1B1 A5 E4                    ..
         and     #$C3                            ; E1B3 29 C3                    ).
         sta     $E4                             ; E1B5 85 E4                    ..
@@ -5096,19 +5096,19 @@ LowerFixedEngine_Branch_E1D3:
         sta     $E6                             ; E1F0 85 E6                    ..
         lda     $E2                             ; E1F2 A5 E2                    ..
         bne     LowerFixedEngine_Branch_E20E    ; E1F4 D0 18                    ..
-        jsr     LowerFixed_AllocatePackedEntityStateCode; E1F6 20 5C E4          \.
+        jsr     LowerFixed_AllocateEntityOamBlock; E1F6 20 5C E4                 \.
         sta     $E2                             ; E1F9 85 E2                    ..
         lda     $E4                             ; E1FB A5 E4                    ..
         and     #$C3                            ; E1FD 29 C3                    ).
         ora     $E2                             ; E1FF 05 E2                    ..
         sta     $E4                             ; E201 85 E4                    ..
         lda     $E2                             ; E203 A5 E2                    ..
-        jsr     LowerFixed_ComputeEntityOamOffset; E205 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E205 20 8C C7          ..
         jsr     LowerFixed_RenderMapEntityFromCachedSprites; E208 20 68 E3       h.
         jmp     LowerFixedEngine_Branch_E211    ; E20B 4C 11 E2                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E20E:
-        jsr     LowerFixed_ComputeEntityOamOffset; E20E 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E20E 20 8C C7          ..
 LowerFixedEngine_Branch_E211:
         lda     $E6                             ; E211 A5 E6                    ..
         lsr     a                               ; E213 4A                       J
@@ -5146,19 +5146,19 @@ LowerFixedEngine_Branch_E211:
 LowerFixedEngine_Branch_E24D:
         lda     $E2                             ; E24D A5 E2                    ..
         bne     LowerFixedEngine_Branch_E269    ; E24F D0 18                    ..
-        jsr     LowerFixed_AllocatePackedEntityStateCode; E251 20 5C E4          \.
+        jsr     LowerFixed_AllocateEntityOamBlock; E251 20 5C E4                 \.
         sta     $E2                             ; E254 85 E2                    ..
         lda     $E4                             ; E256 A5 E4                    ..
         and     #$C3                            ; E258 29 C3                    ).
         ora     $E2                             ; E25A 05 E2                    ..
         sta     $E4                             ; E25C 85 E4                    ..
         lda     $E2                             ; E25E A5 E2                    ..
-        jsr     LowerFixed_ComputeEntityOamOffset; E260 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E260 20 8C C7          ..
         jsr     LowerFixed_RenderMapEntityFromCachedSprites; E263 20 68 E3       h.
         jmp     LowerFixedEngine_Branch_E26C    ; E266 4C 6C E2                 Ll.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E269:
-        jsr     LowerFixed_ComputeEntityOamOffset; E269 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E269 20 8C C7          ..
 LowerFixedEngine_Branch_E26C:
         lda     $DF                             ; E26C A5 DF                    ..
         cmp     #$0F                            ; E26E C9 0F                    ..
@@ -5232,7 +5232,7 @@ LowerFixedEngine_Branch_E2AE:
         sec                                     ; E2EC 38                       8
         rts                                     ; E2ED 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ApplyDirectionalStepToEntityCoordinates:
+LowerFixed_AdvanceEntitySubtilePosition:
         and     #$03                            ; E2EE 29 03                    ).
         bne     LowerFixedEngine_Branch_E301    ; E2F0 D0 0F                    ..
         lda     $7120,x                         ; E2F2 BD 20 71                 . q
@@ -5279,7 +5279,7 @@ LowerFixedEngine_Branch_E335:
         rts                                     ; E335 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixed_InitializePlayerOamCoordinates:
-        jsr     LowerFixed_ComputeEntityOamOffset; E336 20 8C C7                 ..
+        jsr     LowerFixed_ConvertSpriteIndexToOamOffset; E336 20 8C C7          ..
         lda     $00                             ; E339 A5 00                    ..
         asl     a                               ; E33B 0A                       .
         asl     a                               ; E33C 0A                       .
@@ -5377,7 +5377,7 @@ LowerFixed_RenderMapEntityFromCachedSprites:
         db   $00                             ; E3E0 00                       .
         db   $72                             ; E3E1 72                       r
 ; ----------------------------------------------------------------------------
-LowerFixed_ReconcileQueuedEntityMatches:
+LowerFixed_ResolveEntitySpriteConflicts:
         lda     $07BB                           ; E3E2 AD BB 07                 ...
         and     #$7F                            ; E3E5 29 7F                    ).
         sta     $07BB                           ; E3E7 8D BB 07                 ...
@@ -5385,16 +5385,16 @@ LowerFixed_ReconcileQueuedEntityMatches:
 LowerFixedEngine_Branch_E3EC:
         lda     $7020,x                         ; E3EC BD 20 70                 . p
         cmp     #$FF                            ; E3EF C9 FF                    ..
-        beq     LowerFixed_ClearEntityMatchFlags; E3F1 F0 0F                    ..
+        beq     LowerFixed_ClearEntitySpriteConflictFlags; E3F1 F0 0F           ..
         lda     $70E0,x                         ; E3F3 BD E0 70                 ..p
         and     #$20                            ; E3F6 29 20                    )
         beq     LowerFixedEngine_Branch_E3FD    ; E3F8 F0 03                    ..
-        jsr     LowerFixed_MatchQueuedEntityToIdleSlot; E3FA 20 19 E4            ..
+        jsr     LowerFixed_ResolveOneEntitySpriteConflict; E3FA 20 19 E4         ..
 LowerFixedEngine_Branch_E3FD:
         inx                                     ; E3FD E8                       .
         cpx     #$1E                            ; E3FE E0 1E                    ..
         bcc     LowerFixedEngine_Branch_E3EC    ; E400 90 EA                    ..
-LowerFixed_ClearEntityMatchFlags:
+LowerFixed_ClearEntitySpriteConflictFlags:
         ldx     #$01                            ; E402 A2 01                    ..
 LowerFixedEngine_Branch_E404:
         lda     $7020,x                         ; E404 BD 20 70                 . p
@@ -5409,7 +5409,7 @@ LowerFixedEngine_Branch_E404:
 LowerFixedEngine_Branch_E418:
         rts                                     ; E418 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_MatchQueuedEntityToIdleSlot:
+LowerFixed_ResolveOneEntitySpriteConflict:
         ldy     #$01                            ; E419 A0 01                    ..
 LowerFixedEngine_Branch_E41B:
         lda     $7020,y                         ; E41B B9 20 70                 . p
@@ -5428,10 +5428,10 @@ LowerFixedEngine_Branch_E430:
 LowerFixedEngine_Branch_E435:
         pla                                     ; E435 68                       h
         pla                                     ; E436 68                       h
-        jmp     LowerFixed_ClearEntityMatchFlags; E437 4C 02 E4                 L..
+        jmp     LowerFixed_ClearEntitySpriteConflictFlags; E437 4C 02 E4        L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_E43A:
-        jsr     LowerFixed_ReleasePackedEntityStateCode; E43A 20 BB E4           ..
+        jsr     LowerFixed_ReleaseEntityOamBlock; E43A 20 BB E4                  ..
         lda     $7000,y                         ; E43D B9 00 70                 ..p
         and     #$C3                            ; E440 29 C3                    ).
         sta     $7000,y                         ; E442 99 00 70                 ..p
@@ -5439,7 +5439,7 @@ LowerFixedEngine_Branch_E43A:
         sta     $E4                             ; E448 85 E4                    ..
         lda     #$00                            ; E44A A9 00                    ..
         sta     $E2                             ; E44C 85 E2                    ..
-        jsr     LowerFixed_ComputeEntityOffsetFromCameraOrigin; E44E 20 78 E1    x.
+        jsr     LowerFixed_ComputeAndClipEntityScreenPosition; E44E 20 78 E1     x.
         bcc     LowerFixedEngine_Branch_E456    ; E451 90 03                    ..
         jsr     LowerFixed_RenderMapEntityFromCachedSprites; E453 20 68 E3       h.
 LowerFixedEngine_Branch_E456:
@@ -5447,7 +5447,7 @@ LowerFixedEngine_Branch_E456:
         sta     $7000,x                         ; E458 9D 00 70                 ..p
         rts                                     ; E45B 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_AllocatePackedEntityStateCode:
+LowerFixed_AllocateEntityOamBlock:
         lda     $61                             ; E45C A5 61                    .a
         cmp     #$FF                            ; E45E C9 FF                    ..
         beq     LowerFixedEngine_Branch_E481    ; E460 F0 1F                    ..
@@ -5509,7 +5509,7 @@ LowerFixedEngine_Branch_E4A8:
         pla                                     ; E4B9 68                       h
         rts                                     ; E4BA 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ReleasePackedEntityStateCode:
+LowerFixed_ReleaseEntityOamBlock:
         sta     $00                             ; E4BB 85 00                    ..
         cmp     #$20                            ; E4BD C9 20                    .
         bcs     LowerFixedEngine_Branch_E4DC    ; E4BF B0 1B                    ..
@@ -5585,7 +5585,7 @@ LowerFixedEngine_Branch_E517:
 LowerFixedEngine_Branch_E52B:
         rts                                     ; E52B 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ClampFieldPointerCeiling:
+LowerFixed_ClampPartyGoldTo9999999:
         lda     $1A                             ; E52C A5 1A                    ..
         bne     LowerFixedEngine_Branch_E53E    ; E52E D0 0E                    ..
         lda     $FD                             ; E530 A5 FD                    ..
@@ -6535,7 +6535,7 @@ LowerFixedEngine_Branch_EAD8:
         ldx     $03                             ; EAE1 A6 03                    ..
         ldy     $04                             ; EAE3 A4 04                    ..
         jsr     LowerFixed_GetMapTileAtCoordinates; EAE5 20 E6 D3                ..
-        jsr     LowerFixed_LookUpMapTileAttributes; EAE8 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; EAE8 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; EAEB 20 25 EB  %.
         jsr     LowerFixed_AdvanceMapPointerOneByte; EAEE 20 26 D4               &.
         jsr     LowerFixed_AdvanceDecodedTileOutputCoordinates; EAF1 20 20 EB     .
@@ -6547,14 +6547,14 @@ LowerFixedEngine_Branch_EAF4:
         cmp     #$FF                            ; EAFC C9 FF                    ..
         bne     LowerFixedEngine_Branch_EB0F    ; EAFE D0 0F                    ..
         jsr     LowerFixed_GetMapTileAtCoordinates; EB00 20 E6 D3                ..
-        jsr     LowerFixed_LookUpMapTileAttributes; EB03 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; EB03 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; EB06 20 25 EB  %.
         jsr     LowerFixed_AdvanceMapPointerOneByte; EB09 20 26 D4               &.
         jmp     LowerFixedEngine_Branch_EB18    ; EB0C 4C 18 EB                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_EB0F:
         jsr     LowerFixed_ReadMapTileAndAdvanceColumn; EB0F 20 1A D4            ..
-        jsr     LowerFixed_LookUpMapTileAttributes; EB12 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; EB12 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; EB15 20 25 EB  %.
 LowerFixedEngine_Branch_EB18:
         jsr     LowerFixed_AdvanceDecodedTileOutputCoordinates; EB18 20 20 EB     .
@@ -6762,7 +6762,7 @@ LowerFixedEngine_Branch_EC6C:
         ldx     $03                             ; EC75 A6 03                    ..
         ldy     $04                             ; EC77 A4 04                    ..
         jsr     LowerFixed_GetMapTileAtCoordinates; EC79 20 E6 D3                ..
-        jsr     LowerFixed_LookUpMapTileAttributes; EC7C 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; EC7C 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; EC7F 20 25 EB  %.
         jsr     LowerFixed_AdvanceMapPointerOneRow; EC82 20 43 D4                C.
         jsr     LowerFixed_AdvanceTileMaskCoordinates; EC85 20 B4 EC             ..
@@ -6774,14 +6774,14 @@ LowerFixedEngine_Branch_EC88:
         cmp     #$FF                            ; EC90 C9 FF                    ..
         bne     LowerFixedEngine_Branch_ECA3    ; EC92 D0 0F                    ..
         jsr     LowerFixed_GetMapTileAtCoordinates; EC94 20 E6 D3                ..
-        jsr     LowerFixed_LookUpMapTileAttributes; EC97 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; EC97 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; EC9A 20 25 EB  %.
         jsr     LowerFixed_AdvanceMapPointerOneRow; EC9D 20 43 D4                C.
         jmp     LowerFixedEngine_Branch_ECAC    ; ECA0 4C AC EC                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_ECA3:
         jsr     LowerFixed_ReadMapTileAndAdvanceRow; ECA3 20 37 D4               7.
-        jsr     LowerFixed_LookUpMapTileAttributes; ECA6 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; ECA6 20 F3 D4           ..
         jsr     LowerFixed_StoreTilePatternQuadIntoOutputBuffers; ECA9 20 25 EB  %.
 LowerFixedEngine_Branch_ECAC:
         jsr     LowerFixed_AdvanceTileMaskCoordinates; ECAC 20 B4 EC             ..
@@ -7249,7 +7249,7 @@ LowerFixedEngine_Branch_EFE4:
         jsr     LowerFixed_ClearMapObjectScratchFlags; EFEA 20 94 F1             ..
         bit     $29                             ; EFED 24 29                    $)
         bmi     LowerFixedEngine_Branch_EFF4    ; EFEF 30 03                    0.
-        jsr     LowerFixed_ResumeRendering      ; EFF1 20 8F C5                  ..
+        jsr     LowerFixed_ResumeRenderingAfterPpuWork; EFF1 20 8F C5            ..
 LowerFixedEngine_Branch_EFF4:
         rts                                     ; EFF4 60                       `
 ; ----------------------------------------------------------------------------
@@ -7292,7 +7292,7 @@ LowerFixedEngine_Branch_F037:
         ldx     $53                             ; F037 A6 53                    .S
         ldy     $54                             ; F039 A4 54                    .T
         jsr     LowerFixed_ReadMapTileAndAdvanceRow; F03B 20 37 D4               7.
-        jsr     LowerFixed_LookUpMapTileAttributes; F03E 20 F3 D4                ..
+        jsr     LowerFixed_ResolveMapTileGraphicsRecord; F03E 20 F3 D4           ..
         jsr     LowerFixed_StreamMetatileToPpuOrQueue; F041 20 9E F0             ..
 LowerFixedEngine_Branch_F044:
         jsr     LowerFixed_AdvanceViewportTileStreamCursor; F044 20 6D F0        m.
@@ -7450,7 +7450,7 @@ LowerFixed_ReadCurrentMapTileAndAttributes:
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_F155:
         jsr     LowerFixed_GetMapTileAtCoordinates; F155 20 E6 D3                ..
-        jmp     LowerFixed_LookUpMapTileAttributes; F158 4C F3 D4               L..
+        jmp     LowerFixed_ResolveMapTileGraphicsRecord; F158 4C F3 D4          L..
 ; ----------------------------------------------------------------------------
 LowerFixed_ResetViewportStreamState:
         lda     #$00                            ; F15B A9 00                    ..
@@ -8332,7 +8332,7 @@ LowerFixedEngine_Branch_FB60:
         sta     PPUDATA                         ; FB62 8D 07 20                 ..
         dey                                     ; FB65 88                       .
         bne     LowerFixedEngine_Branch_FB60    ; FB66 D0 F8                    ..
-        jsr     LowerFixed_ResumeRendering      ; FB68 20 8F C5                  ..
+        jsr     LowerFixed_ResumeRenderingAfterPpuWork; FB68 20 8F C5            ..
         rts                                     ; FB6B 60                       `
 ; ----------------------------------------------------------------------------
 Bank0F_PpuUploadPointers:
@@ -8485,7 +8485,7 @@ LowerFixedEngine_Branch_FF77:
         beq     LowerFixedEngine_Branch_FF77    ; FF7E F0 F7                    ..
         nop                                     ; FF80 EA                       .
         nop                                     ; FF81 EA                       .
-        jsr     LowerFixed_PreserveRegistersAndRotateOamPriority; FF82 20 13 C9  ..
+        jsr     LowerFixed_PreserveRegistersAndRotateOam; FF82 20 13 C9          ..
         rts                                     ; FF85 60                       `
 ; ----------------------------------------------------------------------------
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; FF86 FF FF FF FF FF FF FF FF  ........

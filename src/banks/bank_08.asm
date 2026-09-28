@@ -4193,8 +4193,8 @@ MapTileSystem_Branch_B79B:
         brk                                     ; B7A3 00                       .
         db   $D4,$4B                         ; B7A4 D4 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     LowerFixed_WaitForInputTransition180Frames; B7A6 20 18 D2        ..
-        jsr     LowerFixed_ResetFieldInteractionState; B7A9 20 F3 D1             ..
+        jsr     LowerFixed_WaitForButtonStateOneEightyFrames; B7A6 20 18 D2      ..
+        jsr     LowerFixed_CloseFieldMessageWindow; B7A9 20 F3 D1                ..
         clc                                     ; B7AC 18                       .
         rts                                     ; B7AD 60                       `
 ; ----------------------------------------------------------------------------

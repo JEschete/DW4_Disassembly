@@ -22,7 +22,7 @@ RunPokerGame:
         lda     $1F                             ; 804C A5 1F                    ..
         ora     #$08                            ; 804E 09 08                    ..
         sta     $1F                             ; 8050 85 1F                    ..
-        jsr     FadePaletteFromBlack            ; 8052 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 8052 20 C5 C5                  ..
         jsr     ResetDisplayState               ; 8055 20 4E C5                  N.
         lda     #$00                            ; 8058 A9 00                    ..
         sta     $0508                           ; 805A 8D 08 05                 ...
@@ -41,7 +41,7 @@ InitializePokerGame:
         jsr     RenderCasinoCoinBalance         ; 8078 20 04 8C                  ..
         jsr     RequestPpuUpdateAndWait         ; 807B 20 2D C6                  -.
         jsr     RenderAllFivePokerCardBacks     ; 807E 20 83 8C                  ..
-        jsr     FadePaletteToBlack              ; 8081 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 8081 20 BF C5                  ..
 StartNextPokerHand:
         jsr     ShufflePokerDeck                ; 8084 20 64 8F                  d.
         jsr     InitializePokerWager            ; 8087 20 AC 8A                  ..
@@ -1529,9 +1529,9 @@ ExitPokerWagerChoice:
         cmp     #$50                            ; 8A59 C9 50                    .P
         beq     MapSystem_Branch_8A68           ; 8A5B F0 0B                    ..
 MapSystem_Branch_8A5D:
-        jsr     FadePaletteFromBlack            ; 8A5D 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 8A5D 20 C5 C5                  ..
         jsr     Bank17_CasinoSetupServices      ; 8A60 20 69 8A                  i.
-        jsr     FadePaletteToBlack              ; 8A63 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 8A63 20 BF C5                  ..
         pla                                     ; 8A66 68                       h
         pla                                     ; 8A67 68                       h
 MapSystem_Branch_8A68:
@@ -3204,7 +3204,7 @@ StartFiveSlotCasinoInterface:
         lda     $1F                             ; 9BFA A5 1F                    ..
         ora     #$08                            ; 9BFC 09 08                    ..
         sta     $1F                             ; 9BFE 85 1F                    ..
-        jsr     FadePaletteFromBlack            ; 9C00 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 9C00 20 C5 C5                  ..
         brk                                     ; 9C03 00                       .
         db   $07,$6F,$3D                     ; 9C04 07 6F 3D                 .o=
 ; ----------------------------------------------------------------------------
@@ -3219,7 +3219,7 @@ Bank17_MapUiEntry:
         jsr     InitializeFiveSlotCasinoState   ; 9C1C 20 5F 9C                  _.
         jsr     ResumeRenderingAfterPpuWork     ; 9C1F 20 8F C5                  ..
         jsr     RunFiveSlotCasinoGameLoop       ; 9C22 20 35 9C                  5.
-        jsr     FadePaletteFromBlack            ; 9C25 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 9C25 20 C5 C5                  ..
         jsr     DisableRenderingAfterVBlank     ; 9C28 20 96 C5                  ..
         brk                                     ; 9C2B 00                       .
         db   $15,$EF                         ; 9C2C 15 EF                    ..
@@ -3235,7 +3235,7 @@ RunFiveSlotCasinoGameLoop:
         jsr     RenderCasinoCoinSpritesAtOamD0  ; 9C38 20 26 A0                  &.
         jsr     InitializeFiveCasinoResultMarkerSprites; 9C3B 20 E4 9F           ..
         jsr     RenderAllCasinoReels            ; 9C3E 20 3C A3                  <.
-        jsr     FadePaletteToBlack              ; 9C41 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 9C41 20 BF C5                  ..
 RunFiveSlotCasinoRoundLoop:
         jsr     RenderAllCasinoReels            ; 9C44 20 3C A3                  <.
         jsr     RequireCasinoCoinsForFiveSlotGame; 9C47 20 E6 9E                 ..

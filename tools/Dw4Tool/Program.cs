@@ -2107,6 +2107,52 @@ internal static class Program
                 .Append(name).Append('\t')
                 .AppendLine(string.Join(',', reasons));
         }
+        int[] lowerFixedAddresses = routineTargets.Keys
+            .Where(location => location.Bank == 0x0F)
+            .Select(location => location.Address)
+            .Order()
+            .ToArray();
+        int[] upperFixedAddresses = routineTargets.Keys
+            .Where(location => location.Bank == 0x1F)
+            .Select(location => location.Address)
+            .Order()
+            .ToArray();
+        foreach (int address in lowerFixedAddresses.Intersect(upperFixedAddresses))
+        {
+            int lowerEnd = lowerFixedAddresses.FirstOrDefault(
+                candidate => candidate > address,
+                CodeAnalyzer.CpuBase(0x0F) + PrgBankSize);
+            int upperEnd = upperFixedAddresses.FirstOrDefault(
+                candidate => candidate > address,
+                CodeAnalyzer.CpuBase(0x1F) + PrgBankSize);
+            if (lowerEnd != upperEnd)
+            {
+                continue;
+            }
+
+            int length = lowerEnd - address;
+            int lowerOffset = HeaderSize + (0x0F * PrgBankSize) + address - CodeAnalyzer.CpuBase(0x0F);
+            int upperOffset = HeaderSize + (0x1F * PrgBankSize) + address - CodeAnalyzer.CpuBase(0x1F);
+            if (!rom.AsSpan(lowerOffset, length).SequenceEqual(rom.AsSpan(upperOffset, length)))
+            {
+                continue;
+            }
+
+            string lowerName = labels[0x0F].First(label => label.Address == address).Name;
+            string upperName = labels[0x1F].First(label => label.Address == address).Name;
+            string normalizedLowerName = lowerName.StartsWith("LowerFixed_", StringComparison.Ordinal)
+                ? lowerName["LowerFixed_".Length..]
+                : lowerName;
+            if (string.Equals(normalizedLowerName, upperName, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            report.Append("0F\t")
+                .Append(address.ToString("X4", CultureInfo.InvariantCulture)).Append('\t')
+                .Append(lowerName).Append(" <> ").Append(upperName).Append('\t')
+                .AppendLine("fixed-bank-identical-body-name-mismatch");
+        }
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
 
         bool RoutineUsesOnlyAudioBrks(int bank, int entryAddress)

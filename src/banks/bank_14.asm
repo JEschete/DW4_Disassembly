@@ -229,7 +229,7 @@ BattleTurnEngine_Branch_81B5:
         jsr     BattleTurnEngine_PreloadDependentBattleGraphics; 81C3 20 AB 85   ..
         jsr     BattleTurnEngine_RebuildBattleOamFromTurnSlots; 81C6 20 CF 81    ..
         jsr     WaitForNmi                      ; 81C9 20 74 FF                  t.
-        jmp     FadePaletteToBlack              ; 81CC 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; 81CC 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 BattleTurnEngine_RebuildBattleOamFromTurnSlots:
         ldx     #$00                            ; 81CF A2 00                    ..

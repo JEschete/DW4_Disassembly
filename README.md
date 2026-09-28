@@ -36,12 +36,17 @@ The 2026-09-28 audit checked all 2,354 routine interfaces in banks `$00-$15` aga
 evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call targets, increasing the
 all-bank inventory from 4,315 to 4,562 routines. The strengthened semantic-name review reports zero generated,
 numeric-operand, stacked-jargon, broad-prefix, audio-only display-name, Dormant-with-callers, duplicate-address,
-or duplicate-global-name findings.
+duplicate-global-name, or byte-identical fixed-bank semantic-mismatch findings.
 
 The corrective audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
 flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. Battle,
 casino, poker, item-effect, and map-event callers now use sound, jingle, narration, or map-music names instead of
 presentation, marker, glyph, palette, setup-hook, or raw-BRK terminology.
+
+The follow-up field/story audit identified selector `$D3` as the battle-message ABI, reclassified bank `$12`
+`$9300-$B5FF` as field ITEM, SPELL, Adventure Log, and story-item commands, and named the bank `$15` shop and
+service roots. Story scenes in banks `$1C-$1E` now use their in-game events, chapter names use displayed values
+1-5, and byte-identical `$0F/$1F` routines share one semantic stem.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

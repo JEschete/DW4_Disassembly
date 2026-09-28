@@ -2021,7 +2021,7 @@ MonsterBattleFont_Branch_A0E4:
         iny                                     ; A0F1 C8                       .
 MonsterBattleFont_Branch_A0F2:
         tya                                     ; A0F2 98                       .
-        jsr     PlayMapCueAndWaitForInput       ; A0F3 20 ED D1                  ..
+        jsr     ShowFieldMessageAndWaitForInput ; A0F3 20 ED D1                  ..
 MonsterBattleFont_Branch_A0F6:
         pla                                     ; A0F6 68                       h
         pla                                     ; A0F7 68                       h

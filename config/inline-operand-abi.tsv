@@ -16,8 +16,8 @@ BrkSelector	93	3	10:812B	Bank $10 entry $09 shares $812B: CMP #$93 matches, $814
 BrkSelector	A3	2	10:AB74	$C50C-$C516 route high nibble $A to bank $10 entry $22; $AB4F sets $84/$85=BRK+1 and Y=0, one INY, and $AB62 stores $84+Y; RTS resumes at BRK+3
 BrkSelector	B3	2	10:AB88	Bank $10 entry $23: one INY before $AB62 stores the return; RTS resumes at BRK+3
 BrkSelector	C3	3	10:AB9C	Bank $10 entry $24: two INY and a read of BRK+3 through ($84),Y into $7C before $AB62 stores the return; RTS resumes at BRK+4
-BrkSelector	D3	3	12:8157	$C527 routes high nibble $D to bank $12 entry $01; $8177 calls $8199, whose INC $010B,x advances the stacked BRK return and reads BRK+3 into $8D; RTS resumes at BRK+4
-BrkSelector	E3	2	12:8165	Bank $12 entry $02 calls $817D, which skips $8199; bank $12's only TSX is $8199, so the stacked return is unchanged and RTS resumes at BRK+3
+BrkSelector	D3	3	12:8157	$C527 routes high nibble $D to bank $12 battle-message entry $01; low two bits of the first byte select the message group and BRK+3 is the message number read by $8199 after advancing the stacked return, so RTS resumes at BRK+4
+BrkSelector	E3	2	12:8165	Bank $12 battle-message entry $02 preserves registers and prints the message number already in A using the first byte's low two bits as the group; the stacked return is unchanged and RTS resumes at BRK+3
 BrkSelector	F3	2	12:84B2	Bank $12 entry $03 contains no stack access (bank $12's only TSX is $8199), so the stacked return is unchanged and RTS resumes at BRK+3
 BrkSelector	0B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3
 BrkSelector	1B	2	1F:C484	Selectors below $CB take $C484 to bank $16 entry $04 through $C38B without touching the stacked return; RTS resumes at BRK+3

@@ -71,7 +71,7 @@ MapEventText_Branch_8079:
         db   $93,$FB                         ; 8080 93 FB                    ..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_8082:
-        jsr     FadePaletteFromBlack            ; 8082 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 8082 20 C5 C5                  ..
         pla                                     ; 8085 68                       h
         brk                                     ; 8086 00                       .
         db   $1E,$EF                         ; 8087 1E EF                    ..
@@ -2795,12 +2795,12 @@ RunChapterTitleOpeningSequence:
         jsr     ResumeRenderingAfterPpuWork     ; A53F 20 8F C5                  ..
         ldx     #$78                            ; A542 A2 78                    .x
         jsr     WaitFrames                      ; A544 20 0C C9                  ..
-        jsr     FadePaletteFromBlack            ; A547 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A547 20 C5 C5                  ..
         jsr     ResetDisplayState               ; A54A 20 4E C5                  N.
         jsr     SuspendRenderingUpdates         ; A54D 20 AF C5                  ..
         lda     #$09                            ; A550 A9 09                    ..
         jsr     WriteChapterTitlePpuStreamOffset; A552 20 80 A5                  ..
-        jsr     FadePaletteToBlack              ; A555 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; A555 20 BF C5                  ..
         jsr     ResumeRenderingAfterPpuWork     ; A558 20 8F C5                  ..
         lda     #$98                            ; A55B A9 98                    ..
         sta     $0505                           ; A55D 8D 05 05                 ...
@@ -2984,7 +2984,7 @@ MapEventText_Branch_A74C:
         beq     MapEventText_Branch_A74C        ; A74F F0 FB                    ..
         jsr     WaitForButtonPress              ; A751 20 E1 C8                  ..
 MapEventText_Branch_A754:
-        jsr     FadePaletteFromBlack            ; A754 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A754 20 C5 C5                  ..
         brk                                     ; A757 00                       .
         db   $08,$8F                         ; A758 08 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -3007,7 +3007,7 @@ Bank1B_PpuSetupValues:
         db   $21,$24,$2A,$23,$2C             ; A776 21 24 2A 23 2C           !$*#,
 ; ----------------------------------------------------------------------------
 BuildChapterTitleNametable:
-        jsr     FadePaletteFromBlack            ; A77B 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A77B 20 C5 C5                  ..
         jsr     ResetDisplayState               ; A77E 20 4E C5                  N.
         jsr     SuspendRenderingUpdates         ; A781 20 AF C5                  ..
         lda     #$00                            ; A784 A9 00                    ..
@@ -3515,7 +3515,7 @@ HandleChapterThreeMapEvent:
 ; ----------------------------------------------------------------------------
         ldx     #$C8                            ; AB65 A2 C8                    ..
         jsr     WaitFrames                      ; AB67 20 0C C9                  ..
-        jsr     FadePaletteFromBlack            ; AB6A 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; AB6A 20 C5 C5                  ..
         lda     #$7C                            ; AB6D A9 7C                    .|
         ldx     #$03                            ; AB6F A2 03                    ..
         jmp     MapEventText_Branch_ABB6        ; AB71 4C B6 AB                 L..
@@ -3582,7 +3582,7 @@ MapEventText_Branch_ABB6:
         brk                                     ; ABCE 00                       .
         db   $07,$6F,$43                     ; ABCF 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; ABD2 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; ABD2 20 BF C5                  ..
         lda     #$00                            ; ABD5 A9 00                    ..
         sta     $6BDE                           ; ABD7 8D DE 6B                 ..k
         pla                                     ; ABDA 68                       h
@@ -3607,7 +3607,7 @@ MapEventText_Branch_ABB6:
         brk                                     ; ABFB 00                       .
         db   $07,$6F,$43                     ; ABFC 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; ABFF 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; ABFF 20 BF C5                  ..
         inc     SaveCurrentChapterMinus1        ; AC02 EE 5A 61                 .Za
         lda     SaveCurrentChapterMinus1        ; AC05 AD 5A 61                 .Za
         sta     $FD                             ; AC08 85 FD                    ..
@@ -3684,7 +3684,7 @@ MapEventText_Branch_AC65:
         jmp     MapEventText_Branch_AC7C        ; AC76 4C 7C AC                 L|.
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AC79:
-        jsr     FadePaletteFromBlack            ; AC79 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; AC79 20 C5 C5                  ..
 MapEventText_Branch_AC7C:
         jsr     DecodeNextMapEventStreamRecord  ; AC7C 20 80 AE                  ..
         brk                                     ; AC7F 00                       .
@@ -3774,7 +3774,7 @@ MapEventText_Branch_AD0A:
         dex                                     ; AD10 CA                       .
         bpl     MapEventText_Branch_AD0A        ; AD11 10 F7                    ..
         jsr     ResumeRenderingAfterPpuWork     ; AD13 20 8F C5                  ..
-        jmp     FadePaletteToBlack              ; AD16 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; AD16 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AD19:
         lda     #$1E                            ; AD19 A9 1E                    ..
@@ -3789,7 +3789,7 @@ Bank1B_DormantMapHandlerRti:
         beq     MapEventText_Branch_AD2F        ; AD25 F0 08                    ..
         lda     #$0F                            ; AD27 A9 0F                    ..
         sta     $060A                           ; AD29 8D 0A 06                 ...
-        jsr     FadePaletteToBlack              ; AD2C 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; AD2C 20 BF C5                  ..
 MapEventText_Branch_AD2F:
         lda     #$00                            ; AD2F A9 00                    ..
         sta     $3C                             ; AD31 85 3C                    .<
@@ -3803,7 +3803,7 @@ Bank1B_DormantMapHandlerRts:
         bne     MapEventText_Branch_AD48        ; AD3A D0 0C                    ..
         lda     #$0F                            ; AD3C A9 0F                    ..
         sta     $060A                           ; AD3E 8D 0A 06                 ...
-        jsr     FadePaletteToBlack              ; AD41 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; AD41 20 BF C5                  ..
         brk                                     ; AD44 00                       .
         db   $2A,$CB,$40                     ; AD45 2A CB 40                 *.@
 ; ----------------------------------------------------------------------------
@@ -4061,7 +4061,7 @@ Bank1B_RamInitializationData:
         db   $00,$FF,$00,$FF                 ; AFF3 00 FF 00 FF              ....
 ; ----------------------------------------------------------------------------
 RunDayNightTransitionPresentation:
-        jsr     StopMapCue                      ; AFF7 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; AFF7 20 F3 D1                  ..
         ldx     #$1E                            ; AFFA A2 1E                    ..
         jsr     WaitFrames                      ; AFFC 20 0C C9                  ..
         jsr     InitializeOamShadow             ; AFFF 20 43 C5                  C.
@@ -4937,7 +4937,7 @@ MapEventText_Branch_B542:
         rts                                     ; B54B 60                       `
 ; ----------------------------------------------------------------------------
 BeginScrollingMapEventFinale:
-        jsr     FadePaletteFromBlack            ; B54C 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B54C 20 C5 C5                  ..
         jsr     SuspendRenderingUpdates         ; B54F 20 AF C5                  ..
         ldx     #$01                            ; B552 A2 01                    ..
         jsr     UploadFixedGraphicsPages        ; B554 20 FB F3                  ..
@@ -4952,7 +4952,7 @@ RunScrollingMapEventFinale:
         lda     #$32                            ; B56A A9 32                    .2
         sta     $05FF                           ; B56C 8D FF 05                 ...
         jsr     ResumeRenderingAfterPpuWork     ; B56F 20 8F C5                  ..
-        jsr     FadePaletteToBlack              ; B572 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; B572 20 BF C5                  ..
         lda     $1F                             ; B575 A5 1F                    ..
         ora     #$40                            ; B577 09 40                    .@
         sta     $1F                             ; B579 85 1F                    ..

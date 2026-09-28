@@ -46,7 +46,7 @@ Bank1E_MapInteractionServices:
         rts                                     ; 80A6 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_80A7:
-        jmp     StopMapCue                      ; 80A7 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 80A7 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
         db   $B9                             ; 80AA B9                       .
         db   $80,$CC,$81,$D0,$81,$60,$82,$64 ; 80AB 80 CC 81 D0 81 60 82 64  .....`.d
@@ -86,7 +86,7 @@ MapInteractionSystem_Branch_80EA:
 MapInteractionSystem_Branch_80F2:
         lda     #$F0                            ; 80F2 A9 F0                    ..
         ldx     #$02                            ; 80F4 A2 02                    ..
-        jmp     PlayMapCueAndWaitForInput       ; 80F6 4C ED D1                 L..
+        jmp     ShowFieldMessageAndWaitForInput ; 80F6 4C ED D1                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_80F9:
         stx     $059C                           ; 80F9 8E 9C 05                 ...
@@ -305,7 +305,7 @@ MapInteractionSystem_Branch_823A:
         jmp     WaitForMapInteractionInputAndExit; 823A 4C B6 84                L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_823D:
-        jmp     StopMapCue                      ; 823D 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 823D 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8240:
         brk                                     ; 8240 00                       .
@@ -327,7 +327,7 @@ MapInteractionSystem_Branch_8253:
         jmp     WaitForMapInteractionInputAndExit; 8257 4C B6 84                L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_825A:
-        jmp     StopMapCue                      ; 825A 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 825A 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
         db   $43,$06,$12,$00                 ; 825D 43 06 12 00              C...
 ; ----------------------------------------------------------------------------
@@ -372,7 +372,7 @@ MapInteractionSystem_Branch_8286:
         cmp     #$FF                            ; 828E C9 FF                    ..
         bne     MapInteractionSystem_Branch_8295; 8290 D0 03                    ..
 MapInteractionSystem_Branch_8292:
-        jmp     StopMapCue                      ; 8292 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 8292 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8295:
         ldx     $07B9                           ; 8295 AE B9 07                 ...
@@ -443,7 +443,7 @@ MapInteractionSystem_Branch_82E6:
         jmp     MapInteractionSystem_Branch_82E6; 8302 4C E6 82                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8305:
-        jmp     StopMapCue                      ; 8305 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 8305 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 PlayInteractionJingleAndShowResult:
         php                                     ; 8308 08                       .
@@ -504,7 +504,7 @@ TryInstallFacingTileOverride:
         cmp     #$24                            ; 834D C9 24                    .$
         bcs     MapInteractionSystem_Branch_835B; 834F B0 0A                    ..
         pha                                     ; 8351 48                       H
-        jsr     StopMapCue                      ; 8352 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; 8352 20 F3 D1                  ..
         pla                                     ; 8355 68                       h
         jsr     InstallMapOverrideRecord        ; 8356 20 5D 83                  ].
         sec                                     ; 8359 38                       8
@@ -734,7 +734,7 @@ MapInteractionSystem_Branch_84A3:
 WaitForMapInteractionInputAndExit:
         jsr     WaitForFreshButtonPress         ; 84B6 20 CC C8                  ..
 MapInteractionSystem_Branch_84B9:
-        jmp     StopMapCue                      ; 84B9 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 84B9 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 StartMapPresentationState:
         sta     $0530                           ; 84BC 8D 30 05                 .0.
@@ -1030,7 +1030,7 @@ DispatchMapTransition:
         brk                                     ; 86B3 00                       .
         db   $01,$87                         ; 86B4 01 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; 86B6 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 86B6 20 C5 C5                  ..
         lda     CurrentMapNumber                ; 86B9 A5 63                    .c
         cmp     #$48                            ; 86BB C9 48                    .H
         bne     MapInteractionSystem_Branch_86CE; 86BD D0 0F                    ..
@@ -1040,7 +1040,7 @@ DispatchMapTransition:
         pla                                     ; 86C5 68                       h
         ora     #$80                            ; 86C6 09 80                    ..
         jsr     RunMapSceneTransition           ; 86C8 20 EA 8E                  ..
-        jmp     FadePaletteToBlack              ; 86CB 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; 86CB 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_86CE:
         pla                                     ; 86CE 68                       h
@@ -1049,7 +1049,7 @@ MapInteractionSystem_Branch_86CE:
         jmp     AnimateMapEntityOamSweepFromF3To6B; 86D4 4C 48 8C               LH.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_86D7:
-        jsr     FadePaletteFromBlack            ; 86D7 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 86D7 20 C5 C5                  ..
         jmp     InitializeMapAfterTransition    ; 86DA 4C E3 92                 L..
 ; ----------------------------------------------------------------------------
 RefreshAndRenderMapEntities:
@@ -1104,7 +1104,7 @@ RunMapTransitionWithTrampoline07:
         jsr     FixedTrampoline07               ; 872C 20 16 C0                  ..
         clc                                     ; 872F 18                       .
 RunMapTransitionRefreshSequence:
-        jsr     FixedTrampoline01               ; 8730 20 04 C0                  ..
+        jsr     LoadCurrentMapDataTrampoline    ; 8730 20 04 C0                  ..
         jsr     CopyPlayerCoordinatesToPrimaryEntity; 8733 20 EF 90              ..
         lda     $7000                           ; 8736 AD 00 70                 ..p
         and     #$BC                            ; 8739 29 BC                    ).
@@ -1820,7 +1820,7 @@ MapInteractionSystem_Branch_8C57:
         php                                     ; 8C57 08                       .
         sta     $55                             ; 8C58 85 55                    .U
         jsr     FillVisibleEntityOamWithSweepValue; 8C5A 20 E9 8C                ..
-        jsr     FadePaletteToBlack              ; 8C5D 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 8C5D 20 BF C5                  ..
         lda     $41                             ; 8C60 A5 41                    .A
         bmi     MapInteractionSystem_Branch_8C6F; 8C62 30 0B                    0.
         lda     CurrentMapNumber                ; 8C64 A5 63                    .c
@@ -2153,7 +2153,7 @@ RunMapSceneTransitionForValue:
         pla                                     ; 8EDB 68                       h
         jsr     RunAlternateMapSceneTransition  ; 8EDC 20 E5 8E                  ..
         jsr     ApplyRandomTransformUpdatesToPartyEntities; 8EDF 20 25 98        %.
-        jmp     FadePaletteToBlack              ; 8EE2 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; 8EE2 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunAlternateMapSceneTransition:
         pha                                     ; 8EE5 48                       H
@@ -2185,7 +2185,7 @@ MapInteractionSystem_Branch_8F02:
         jsr     LoadTileBehaviorAtCoordinates   ; 8F0C 20 63 8F                  c.
         bcs     MapInteractionSystem_Branch_8F53; 8F0F B0 42                    .B
         jsr     HideFirstSixMapEntitySprites    ; 8F11 20 7A 8F                  z.
-        jsr     FadePaletteToBlack              ; 8F14 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 8F14 20 BF C5                  ..
         ldx     PlayerLocalX                    ; 8F17 A6 44                    .D
         inx                                     ; 8F19 E8                       .
         ldy     PlayerLocalY                    ; 8F1A A4 45                    .E
@@ -2431,7 +2431,7 @@ PrepareMapSceneWithTrampoline07:
         jsr     SuspendRenderingUpdates         ; 9093 20 AF C5                  ..
         sec                                     ; 9096 38                       8
 PrepareMapSceneWithTrampoline01:
-        jsr     FixedTrampoline01               ; 9097 20 04 C0                  ..
+        jsr     LoadCurrentMapDataTrampoline    ; 9097 20 04 C0                  ..
         bcc     MapInteractionSystem_Branch_90A2; 909A 90 06                    ..
         lda     $0572                           ; 909C AD 72 05                 .r.
         brk                                     ; 909F 00                       .
@@ -2447,7 +2447,7 @@ LoadCurrentMapTileClassWithTrampoline07:
         jsr     FixedTrampoline07               ; 90AB 20 16 C0                  ..
         clc                                     ; 90AE 18                       .
 LoadCurrentMapTileClass:
-        jsr     FixedTrampoline01               ; 90AF 20 04 C0                  ..
+        jsr     LoadCurrentMapDataTrampoline    ; 90AF 20 04 C0                  ..
         jsr     ApplyBehavior4MapTileOverrides  ; 90B2 20 6B A1                  k.
         jsr     CopyPlayerCoordinatesToPrimaryEntity; 90B5 20 EF 90              ..
         lda     #$00                            ; 90B8 A9 00                    ..
@@ -2503,7 +2503,7 @@ InitializeMapScene:
         brk                                     ; 9105 00                       .
         db   $82,$FB                         ; 9106 82 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; 9108 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 9108 20 C5 C5                  ..
         brk                                     ; 910B 00                       .
         db   $0A,$87                         ; 910C 0A 87                    ..
 ; ----------------------------------------------------------------------------
@@ -2542,7 +2542,7 @@ MapInteractionSystem_Branch_9140:
         jsr     MatchAlternateMapEventTrigger   ; 9143 20 6C 90                  l.
         pla                                     ; 9146 68                       h
         jsr     ApplyMapScenePathForSignedValue ; 9147 20 C8 90                  ..
-        jmp     FadePaletteToBlack              ; 914A 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; 914A 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_914D:
         pha                                     ; 914D 48                       H
@@ -2587,7 +2587,7 @@ MapInteractionSystem_Branch_9184:
         brk                                     ; 918C 00                       .
         db   $82,$FB                         ; 918D 82 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; 918F 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 918F 20 C5 C5                  ..
         pla                                     ; 9192 68                       h
         jmp     RunMapSceneTransitionForValue   ; 9193 4C D6 8E                 L..
 ; ----------------------------------------------------------------------------
@@ -2729,7 +2729,7 @@ ResolveMapBoundaryTransition:
         db   $82,$FB                         ; 9298 82 FB                    ..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_929A:
-        jsr     FadePaletteFromBlack            ; 929A 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 929A 20 C5 C5                  ..
         brk                                     ; 929D 00                       .
         db   $09,$87                         ; 929E 09 87                    ..
 ; ----------------------------------------------------------------------------
@@ -2775,7 +2775,7 @@ MapInteractionSystem_Branch_92DF:
         sta     $3D                             ; 92E1 85 3D                    .=
 InitializeMapAfterTransition:
         jsr     ResetMapStateAfterTransition    ; 92E3 20 EC 92                  ..
-        jsr     FadePaletteToBlack              ; 92E6 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; 92E6 20 BF C5                  ..
         jmp     RunChapterSpecificMapEvents     ; 92E9 4C 85 94                 L..
 ; ----------------------------------------------------------------------------
 ResetMapStateAfterTransition:
@@ -2968,17 +2968,17 @@ RunChapterSpecificMapEvents:
         beq     MapInteractionSystem_Branch_949D; 948E F0 0D                    ..
         cmp     #$04                            ; 9490 C9 04                    ..
         bne     MapInteractionSystem_Branch_94A3; 9492 D0 0F                    ..
-        jsr     RunChapter4EventWhen6299Set     ; 9494 20 1C 95                  ..
-        jsr     RunChapter4EventWhen629BSet     ; 9497 20 FC 94                  ..
+        jsr     RunChapter5HectorDeparture      ; 9494 20 1C 95                  ..
+        jsr     RunChapter5PanonDeparture       ; 9497 20 FC 94                  ..
         jmp     MapInteractionSystem_Branch_9540; 949A 4C 40 95                 L@.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_949D:
-        jsr     RunChapter2EventFor628DAtLeast5 ; 949D 20 A4 94                  ..
-        jsr     RunChapter2VehicleEventFor628CAtLeast5; 94A0 20 D7 94            ..
+        jsr     RunChapter3LaurentDeparture     ; 949D 20 A4 94                  ..
+        jsr     RunChapter3VehicleDepartureEvent; 94A0 20 D7 94                  ..
 MapInteractionSystem_Branch_94A3:
         rts                                     ; 94A3 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter2EventFor628DAtLeast5:
+RunChapter3LaurentDeparture:
         brk                                     ; 94A4 00                       .
         db   $13,$EB,$40                     ; 94A5 13 EB 40                 ..@
 ; ----------------------------------------------------------------------------
@@ -3010,11 +3010,11 @@ RunChapter2EventFor628DAtLeast5:
         db   $0D,$87                         ; 94D1 0D 87                    ..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_94D3:
-        jsr     WaitThenStopMapCue              ; 94D3 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; 94D3 20 0A D2                  ..
 MapInteractionSystem_Branch_94D6:
         rts                                     ; 94D6 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter2VehicleEventFor628CAtLeast5:
+RunChapter3VehicleDepartureEvent:
         lda     SaveVehicleFlags                ; 94D7 AD 8E 62                 ..b
         bpl     MapInteractionSystem_Branch_94FB; 94DA 10 1F                    ..
         lda     $628C                           ; 94DC AD 8C 62                 ..b
@@ -3034,11 +3034,11 @@ RunChapter2VehicleEventFor628CAtLeast5:
         db   $78,$3B                         ; 94F3 78 3B                    x;
 ; ----------------------------------------------------------------------------
         jsr     RunMapEventSelector0B           ; 94F5 20 67 95                  g.
-        jsr     WaitThenStopMapCue              ; 94F8 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; 94F8 20 0A D2                  ..
 MapInteractionSystem_Branch_94FB:
         rts                                     ; 94FB 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter4EventWhen629BSet:
+RunChapter5PanonDeparture:
         lda     $629B                           ; 94FC AD 9B 62                 ..b
         bpl     MapInteractionSystem_Branch_951B; 94FF 10 1A                    ..
         brk                                     ; 9501 00                       .
@@ -3055,11 +3055,11 @@ RunChapter4EventWhen629BSet:
         db   $22,$4B                         ; 9513 22 4B                    "K
 ; ----------------------------------------------------------------------------
         jsr     RunMapEventSelector0D           ; 9515 20 6F 95                  o.
-        jsr     WaitThenStopMapCue              ; 9518 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; 9518 20 0A D2                  ..
 MapInteractionSystem_Branch_951B:
         rts                                     ; 951B 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter4EventWhen6299Set:
+RunChapter5HectorDeparture:
         brk                                     ; 951C 00                       .
         db   $1D,$EB,$20                     ; 951D 1D EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -3108,7 +3108,7 @@ MapInteractionSystem_Branch_9540:
         db   $AF,$4B                         ; 9556 AF 4B                    .K
 ; ----------------------------------------------------------------------------
         jsr     RunMapEventSelector0C           ; 9558 20 82 95                  ..
-        jsr     WaitThenStopMapCue              ; 955B 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; 955B 20 0A D2                  ..
 MapInteractionSystem_Branch_955E:
         rts                                     ; 955E 60                       `
 ; ----------------------------------------------------------------------------
@@ -3165,7 +3165,7 @@ EnsureMapSceneInitialized:
         db   $04,$9F                         ; 95A4 04 9F                    ..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_95A6:
-        jmp     FadePaletteFromBlack            ; 95A6 4C C5 C5                 L..
+        jmp     FadePaletteToBlack              ; 95A6 4C C5 C5                 L..
 ; ----------------------------------------------------------------------------
 InitializeMapPartyEntityLayout:
         jsr     RefreshFourMapPartyEntities     ; 95A9 20 48 96                  H.
@@ -4069,7 +4069,7 @@ MapInteractionSystem_Branch_9B99:
         cpx     #$04                            ; 9BA9 E0 04                    ..
         bcc     MapInteractionSystem_Branch_9B99; 9BAB 90 EC                    ..
 MapInteractionSystem_Branch_9BAD:
-        jmp     WaitThenStopMapCue              ; 9BAD 4C 0A D2                 L..
+        jmp     WaitThenCloseFieldMessage       ; 9BAD 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_9BB0:
         rts                                     ; 9BB0 60                       `
@@ -4140,7 +4140,7 @@ MapInteractionSystem_Branch_9C01:
         db   $0E,$FB                         ; 9C05 0E FB                    ..
 ; ----------------------------------------------------------------------------
         jsr     WaitForMapInteractionInputAndExit; 9C07 20 B6 84                 ..
-        jsr     FadePaletteFromBlack            ; 9C0A 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 9C0A 20 C5 C5                  ..
         ldx     #$FF                            ; 9C0D A2 FF                    ..
         txs                                     ; 9C0F 9A                       .
         jmp     UpperFixedEngine_Branch_C977    ; 9C10 4C 77 C9                 Lw.
@@ -4240,11 +4240,11 @@ MapInteractionSystem_Branch_9C69:
         lda     $6196                           ; 9CE5 AD 96 61                 ..a
         sta     $6F86                           ; 9CE8 8D 86 6F                 ..o
         sta     $6FC6                           ; 9CEB 8D C6 6F                 ..o
-        jsr     FadePaletteFromBlack            ; 9CEE 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; 9CEE 20 C5 C5                  ..
         brk                                     ; 9CF1 00                       .
         db   $03,$EF                         ; 9CF2 03 EF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     FadePaletteToBlack              ; 9CF4 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; 9CF4 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
         db   $03,$0D,$17,$21,$2B,$35,$3F,$03 ; 9CF7 03 0D 17 21 2B 35 3F 03  ...!+5?.
         db   $0D,$17                         ; 9CFF 0D 17                    ..
@@ -4316,7 +4316,7 @@ MapInteractionSystem_Branch_9D0D:
         lda     $7000                           ; 9D7F AD 00 70                 ..p
         eor     #$02                            ; 9D82 49 02                    I.
         sta     $7000                           ; 9D84 8D 00 70                 ..p
-        jmp     StopMapCue                      ; 9D87 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; 9D87 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 LoopMapEntityTargetAnimation:
         jsr     AdvanceMapEntityTargets0AAnd0B  ; 9D8A 20 A2 9D                  ..
@@ -4369,7 +4369,7 @@ MapInteractionSystem_Branch_9DD1:
         lda     $3C                             ; 9DD1 A5 3C                    .<
         and     #$0F                            ; 9DD3 29 0F                    ).
         bne     MapInteractionSystem_Branch_9DFE; 9DD5 D0 27                    .'
-        jsr     MoveEntityTowardTargetOrPlayer  ; 9DD7 20 4B DC                  K.
+        jsr     FaceMapObjectTowardTargetCommand; 9DD7 20 4B DC                  K.
         ldx     $51                             ; 9DDA A6 51                    .Q
         lda     $7000,x                         ; 9DDC BD 00 70                 ..p
         ora     #$80                            ; 9DDF 09 80                    ..
@@ -4995,10 +4995,10 @@ MapInteractionSystem_Branch_A1B2:
 ReinitializeMapDisplayState:
         jsr     RebuildMapDisplayAndPartyEntities; A1C9 20 D2 A1                 ..
         jsr     ResetMapDisplayAndMotionState   ; A1CC 20 8A 95                  ..
-        jmp     FadePaletteToBlack              ; A1CF 4C BF C5                 L..
+        jmp     FadePaletteFromBlack            ; A1CF 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RebuildMapDisplayAndPartyEntities:
-        jsr     FadePaletteFromBlack            ; A1D2 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A1D2 20 C5 C5                  ..
         jsr     ResetDisplayState               ; A1D5 20 4E C5                  N.
         jsr     SuspendRenderingUpdates         ; A1D8 20 AF C5                  ..
         lda     #$00                            ; A1DB A9 00                    ..
@@ -5195,7 +5195,7 @@ InitializeChapterMapState:
         brk                                     ; A362 00                       .
         db   $08,$8F                         ; A363 08 8F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; A365 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; A365 20 BF C5                  ..
         jsr     InitializeChapterSelectionMenu  ; A368 20 04 F1                  ..
         sta     SaveCurrentChapterMinus1        ; A36B 8D 5A 61                 .Za
         cmp     #$04                            ; A36E C9 04                    ..
@@ -5270,7 +5270,7 @@ RunChapterMapInteractionSetup:
         brk                                     ; A3CF 00                       .
         db   $09,$9F                         ; A3D0 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; A3D2 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; A3D2 20 BF C5                  ..
         jsr     WaitForNmi                      ; A3D5 20 74 FF                  t.
         brk                                     ; A3D8 00                       .
         db   $10,$DB,$00                     ; A3D9 10 DB 00                 ...
@@ -5358,7 +5358,7 @@ MapInteractionSystem_Branch_A43C:
         db   $10,$3B                         ; A442 10 3B                    .;
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_A444:
-        jmp     StopMapCue                      ; A444 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; A444 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 TestPrimaryMapStateBits:
         lda     $6BE9                           ; A447 AD E9 6B                 ..k
@@ -5414,7 +5414,7 @@ Bank1E_ChapterMapHandlerPointers:
         db   $A4,$B3,$A4,$C4,$A4,$D5,$A4,$36 ; A49A A4 B3 A4 C4 A4 D5 A4 36  .......6
         db   $A5                             ; A4A2 A5                       .
 ; ----------------------------------------------------------------------------
-InitializeChapter0MapPresentation:
+InitializeChapter1MapPresentation:
         ldx     #$03                            ; A4A3 A2 03                    ..
         ldy     #$00                            ; A4A5 A0 00                    ..
         lda     #$8F                            ; A4A7 A9 8F                    ..
@@ -5425,7 +5425,7 @@ InitializeChapter0MapPresentation:
         ldx     #$FF                            ; A4B0 A2 FF                    ..
         rts                                     ; A4B2 60                       `
 ; ----------------------------------------------------------------------------
-InitializeChapter1MapPresentation:
+InitializeChapter2MapPresentation:
         ldx     #$03                            ; A4B3 A2 03                    ..
         ldy     #$05                            ; A4B5 A0 05                    ..
         lda     #$82                            ; A4B7 A9 82                    ..
@@ -5435,7 +5435,7 @@ InitializeChapter1MapPresentation:
         ldx     #$FF                            ; A4C1 A2 FF                    ..
         rts                                     ; A4C3 60                       `
 ; ----------------------------------------------------------------------------
-InitializeChapter2MapPresentation:
+InitializeChapter3MapPresentation:
         ldx     #$03                            ; A4C4 A2 03                    ..
         ldy     #$1C                            ; A4C6 A0 1C                    ..
         lda     #$8F                            ; A4C8 A9 8F                    ..
@@ -5445,18 +5445,18 @@ InitializeChapter2MapPresentation:
         ldx     #$FF                            ; A4D2 A2 FF                    ..
         rts                                     ; A4D4 60                       `
 ; ----------------------------------------------------------------------------
-InitializeChapter3MapPresentation:
+InitializeChapter4MapPresentation:
         jsr     ResetDisplayState               ; A4D5 20 4E C5                  N.
         brk                                     ; A4D8 00                       .
         db   $07,$6F,$43                     ; A4D9 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; A4DC 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; A4DC 20 BF C5                  ..
         lda     #$00                            ; A4DF A9 00                    ..
         sta     $6BDE                           ; A4E1 8D DE 6B                 ..k
         brk                                     ; A4E4 00                       .
         db   $11,$3B                         ; A4E5 11 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; A4E7 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A4E7 20 C5 C5                  ..
         lda     #$E0                            ; A4EA A9 E0                    ..
         sta     $6282                           ; A4EC 8D 82 62                 ..b
         ldx     #$FF                            ; A4EF A2 FF                    ..
@@ -5501,7 +5501,7 @@ InitializeSpecialMapEntitiesWhenTimeUnset:
 MapInteractionSystem_Branch_A535:
         rts                                     ; A535 60                       `
 ; ----------------------------------------------------------------------------
-InitializeChapter4MapPresentation:
+InitializeChapter5MapPresentation:
         ldx     #$03                            ; A536 A2 03                    ..
         ldy     #$94                            ; A538 A0 94                    ..
         lda     #$8F                            ; A53A A9 8F                    ..
@@ -5521,7 +5521,7 @@ InitializeChapterMapPresentation:
         brk                                     ; A54F 00                       .
         db   $07,$6F,$43                     ; A550 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteToBlack              ; A553 20 BF C5                  ..
+        jsr     FadePaletteFromBlack            ; A553 20 BF C5                  ..
         lda     #$00                            ; A556 A9 00                    ..
         sta     $6BDE                           ; A558 8D DE 6B                 ..k
         pla                                     ; A55B 68                       h
@@ -5532,7 +5532,7 @@ InitializeChapterMapPresentation:
         brk                                     ; A560 00                       .
         db   $04,$6F                         ; A561 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; A563 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; A563 20 C5 C5                  ..
         pla                                     ; A566 68                       h
 SetMapPresentationState:
         sta     $0530                           ; A567 8D 30 05                 .0.
@@ -6692,7 +6692,7 @@ HandleMapEntityTransitionSelection:
         pha                                     ; AD88 48                       H
         cmp     #$FE                            ; AD89 C9 FE                    ..
         beq     MapInteractionSystem_Branch_AD90; AD8B F0 03                    ..
-        jsr     StopMapCue                      ; AD8D 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; AD8D 20 F3 D1                  ..
 MapInteractionSystem_Branch_AD90:
         pla                                     ; AD90 68                       h
         pha                                     ; AD91 48                       H
@@ -6709,7 +6709,7 @@ MapInteractionSystem_Branch_AD90:
         rts                                     ; ADA3 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_ADA4:
-        jsr     StopMapCue                      ; ADA4 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; ADA4 20 F3 D1                  ..
         jsr     RunMapEntityWaveAnimation       ; ADA7 20 15 8B                  ..
         clc                                     ; ADAA 18                       .
         rts                                     ; ADAB 60                       `
@@ -6722,7 +6722,7 @@ MapInteractionSystem_Branch_ADAC:
 ; ----------------------------------------------------------------------------
         jsr     AnimateMapEntityOamFade         ; ADB3 20 BC 8A                  ..
 MapInteractionSystem_Branch_ADB6:
-        jsr     FadePaletteFromBlack            ; ADB6 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; ADB6 20 C5 C5                  ..
 MapInteractionSystem_Branch_ADB9:
         lda     #$00                            ; ADB9 A9 00                    ..
         sta     $0515                           ; ADBB 8D 15 05                 ...
@@ -6909,7 +6909,7 @@ FadeMapEntitiesAndRefresh:
         db   $92,$FB                         ; AEE6 92 FB                    ..
 ; ----------------------------------------------------------------------------
         jsr     AnimateMapEntityOamFade         ; AEE8 20 BC 8A                  ..
-        jmp     FadePaletteFromBlack            ; AEEB 4C C5 C5                 L..
+        jmp     FadePaletteToBlack              ; AEEB 4C C5 C5                 L..
 ; ----------------------------------------------------------------------------
 TestMapTransitionAllowed:
         bit     $41                             ; AEEE 24 41                    $A
@@ -6986,12 +6986,12 @@ MapInteractionSystem_Branch_B009:
         rts                                     ; B00A 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B00B:
-        jsr     StopMapCue                      ; B00B 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B00B 20 F3 D1                  ..
         jsr     AnimateMapEntityOamFade         ; B00E 20 BC 8A                  ..
         brk                                     ; B011 00                       .
         db   $82,$FB                         ; B012 82 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FadePaletteFromBlack            ; B014 20 C5 C5                  ..
+        jsr     FadePaletteToBlack              ; B014 20 C5 C5                  ..
         lda     #$02                            ; B017 A9 02                    ..
         sta     $3D                             ; B019 85 3D                    .=
         ldx     #$00                            ; B01B A2 00                    ..
@@ -7064,7 +7064,7 @@ MapInteractionSystem_Branch_B069:
         db   $43,$44,$45,$46                 ; B0A9 43 44 45 46              CDEF
 ; ----------------------------------------------------------------------------
 RunMapPartySlotSixEvent:
-        jsr     StopMapCue                      ; B0AD 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B0AD 20 F3 D1                  ..
         brk                                     ; B0B0 00                       .
         db   $07,$6F,$43                     ; B0B1 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -7143,7 +7143,7 @@ MapInteractionSystem_Branch_B0E5:
         brk                                     ; B11D 00                       .
         db   $16,$CB,$08                     ; B11E 16 CB 08                 ...
 ; ----------------------------------------------------------------------------
-        jsr     WaitThenStopMapCue              ; B121 20 0A D2                  ..
+        jsr     WaitThenCloseFieldMessage       ; B121 20 0A D2                  ..
         sec                                     ; B124 38                       8
         rts                                     ; B125 60                       `
 ; ----------------------------------------------------------------------------
@@ -7433,7 +7433,7 @@ MapInteractionSystem_Branch_B2C2:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B2D6:
         jsr     WaitForButtonPress              ; B2D6 20 E1 C8                  ..
-        jsr     StopMapCue                      ; B2D9 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B2D9 20 F3 D1                  ..
         sec                                     ; B2DC 38                       8
         rts                                     ; B2DD 60                       `
 ; ----------------------------------------------------------------------------
@@ -7495,7 +7495,7 @@ CompleteMapInteractionWithCarry:
 MapInteractionSystem_Branch_B32A:
         lda     $00                           ; B32A A5 00                    ..
         pha                                     ; B32C 48                       H
-        jsr     StopMapCue                      ; B32D 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; B32D 20 F3 D1                  ..
         pla                                     ; B330 68                       h
         jsr     InstallMapOverrideRecord        ; B331 20 5D 83                  ].
         lda     #$00                            ; B334 A9 00                    ..
@@ -7632,7 +7632,7 @@ HandleFacingTileActionAndWait:
         bcs     MapInteractionSystem_Branch_B3FB; B3F6 B0 03                    ..
         jsr     WaitForFreshButtonPress         ; B3F8 20 CC C8                  ..
 MapInteractionSystem_Branch_B3FB:
-        jmp     StopMapCue                      ; B3FB 4C F3 D1                 L..
+        jmp     CloseFieldMessageWindow         ; B3FB 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
 HandleFacingTileAction:
         brk                                     ; B3FE 00                       .
@@ -8414,13 +8414,13 @@ CompleteMapInteractionId6B:
         clc                                     ; B866 18                       .
         rts                                     ; B867 60                       `
 ; ----------------------------------------------------------------------------
-ReinitializeMapDisplayWithModeZero:
+RevealMimicChest:
         brk                                     ; B868 00                       .
         db   $99,$2B                         ; B869 99 2B                    .+
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; B86B A9 00                    ..
         beq     MapInteractionSystem_Branch_B874; B86D F0 05                    ..
-ReinitializeMapDisplayWithMode1B:
+RevealManEaterChest:
         brk                                     ; B86F 00                       .
         db   $9A,$2B                         ; B870 9A 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -8713,7 +8713,7 @@ MapInteractionSystem_Branch_BA0E:
         db   $07,$6F,$48                     ; BA12 07 6F 48                 .oH
 ; ----------------------------------------------------------------------------
         bne     MapInteractionSystem_Branch_BA3F; BA15 D0 28                    .(
-        jsr     StopMapCue                      ; BA17 20 F3 D1                  ..
+        jsr     CloseFieldMessageWindow         ; BA17 20 F3 D1                  ..
         ldx     #$0B                            ; BA1A A2 0B                    ..
         ldy     #$12                            ; BA1C A0 12                    ..
         jsr     GetMapTileAtCoordinates         ; BA1E 20 E6 D3                  ..
