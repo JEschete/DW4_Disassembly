@@ -25,8 +25,8 @@ Bank12_BattleSetupServices:
         lda     $6BDE                           ; 8064 AD DE 6B                 ..k
         ora     #$80                            ; 8067 09 80                    ..
         sta     $6BDE                           ; 8069 8D DE 6B                 ..k
-        jsr     BattleSetupServices_Entry_810E  ; 806C 20 0E 81                  ..
-        jsr     BattleSetupServices_Entry_80B4  ; 806F 20 B4 80                  ..
+        jsr     BattleSetup_CopySetupHeader     ; 806C 20 0E 81                  ..
+        jsr     BattleSetup_InitializeSlotRecords; 806F 20 B4 80                 ..
         brk                                     ; 8072 00                       .
         db   $30,$B3                         ; 8073 30 B3                    0.
 ; ----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ Bank12_BattleSetupServices:
         lda     #$FF                            ; 8095 A9 FF                    ..
         sta     $7200                           ; 8097 8D 00 72                 ..r
         sta     $72E8                           ; 809A 8D E8 72                 ..r
-        jsr     BattleSetupServices_Entry_811A  ; 809D 20 1A 81                  ..
+        jsr     BattleSetup_FlagDuplicateHeaderEntries; 809D 20 1A 81            ..
         ldx     #$05                            ; 80A0 A2 05                    ..
         lda     #$00                            ; 80A2 A9 00                    ..
 BattleSetupServices_Branch_80A4:
@@ -53,13 +53,13 @@ BattleSetupServices_Branch_80A4:
         bpl     BattleSetupServices_Branch_80A4 ; 80A8 10 FA                    ..
         rts                                     ; 80AA 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_80AB:
+BattleSetup_ClearStatusMask:
         lda     $72E7                           ; 80AB AD E7 72                 ..r
         and     #$9B                            ; 80AE 29 9B                    ).
         sta     $72E7                           ; 80B0 8D E7 72                 ..r
         rts                                     ; 80B3 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_80B4:
+BattleSetup_InitializeSlotRecords:
         lda     #$00                            ; 80B4 A9 00                    ..
         sta     $96                             ; 80B6 85 96                    ..
         ldx     #$6F                            ; 80B8 A2 6F                    .o
@@ -77,13 +77,13 @@ BattleSetupServices_Branch_80C0:
         ora     #$80                            ; 80CB 09 80                    ..
         ldx     $96                             ; 80CD A6 96                    ..
         sta     $72EA,x                         ; 80CF 9D EA 72                 ..r
-        jsr     BattleSetupServices_Entry_8148  ; 80D2 20 48 81                  H.
+        jsr     BattleSetup_ComputeSlotRecordOffset; 80D2 20 48 81               H.
         sta     $7210,x                         ; 80D5 9D 10 72                 ..r
         ldx     $96                             ; 80D8 A6 96                    ..
         brk                                     ; 80DA 00                       .
         db   $17,$33                         ; 80DB 17 33                    .3
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_8148  ; 80DD 20 48 81                  H.
+        jsr     BattleSetup_ComputeSlotRecordOffset; 80DD 20 48 81               H.
         sta     $7211,x                         ; 80E0 9D 11 72                 ..r
         tya                                     ; 80E3 98                       .
         sta     $7212,x                         ; 80E4 9D 12 72                 ..r
@@ -91,7 +91,7 @@ BattleSetupServices_Branch_80C0:
         brk                                     ; 80E9 00                       .
         db   $1B,$33                         ; 80EA 1B 33                    .3
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_8148  ; 80EC 20 48 81                  H.
+        jsr     BattleSetup_ComputeSlotRecordOffset; 80EC 20 48 81               H.
         sta     $7213,x                         ; 80EF 9D 13 72                 ..r
         tya                                     ; 80F2 98                       .
         sta     $7214,x                         ; 80F3 9D 14 72                 ..r
@@ -108,7 +108,7 @@ BattleSetupServices_Branch_80C0:
         bne     BattleSetupServices_Branch_80C0 ; 810B D0 B3                    ..
         rts                                     ; 810D 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_810E:
+BattleSetup_CopySetupHeader:
         ldx     #$03                            ; 810E A2 03                    ..
 BattleSetupServices_Branch_8110:
         lda     $6E45,x                         ; 8110 BD 45 6E                 .En
@@ -117,7 +117,7 @@ BattleSetupServices_Branch_8110:
         bpl     BattleSetupServices_Branch_8110 ; 8117 10 F7                    ..
         rts                                     ; 8119 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_811A:
+BattleSetup_FlagDuplicateHeaderEntries:
         lda     #$00                            ; 811A A9 00                    ..
         sta     $00                           ; 811C 85 00                    ..
         ldx     #$03                            ; 811E A2 03                    ..
@@ -145,7 +145,7 @@ BattleSetupServices_Branch_813C:
         sta     $72E4                           ; 8144 8D E4 72                 ..r
         rts                                     ; 8147 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8148:
+BattleSetup_ComputeSlotRecordOffset:
         lda     $96                             ; 8148 A5 96                    ..
         asl     a                               ; 814A 0A                       .
         sta     $00                           ; 814B 85 00                    ..
@@ -157,13 +157,13 @@ BattleSetupServices_Entry_8148:
         ldy     $73                             ; 8154 A4 73                    .s
         rts                                     ; 8156 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8157:
+BattleSetup_CallPipelinePreservingRegisters:
         pha                                     ; 8157 48                       H
         txa                                     ; 8158 8A                       .
         pha                                     ; 8159 48                       H
         tya                                     ; 815A 98                       .
         pha                                     ; 815B 48                       H
-        jsr     BattleSetupServices_Entry_8177  ; 815C 20 77 81                  w.
+        jsr     BattleSetup_PrimePipelineFromInlineByte; 815C 20 77 81           w.
         pla                                     ; 815F 68                       h
         tay                                     ; 8160 A8                       .
         pla                                     ; 8161 68                       h
@@ -171,7 +171,7 @@ BattleSetupServices_Entry_8157:
         pla                                     ; 8163 68                       h
         rts                                     ; 8164 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8165:
+BattleSetup_CallPipelineFromAccumulator:
         sta     $00                           ; 8165 85 00                    ..
         pha                                     ; 8167 48                       H
         txa                                     ; 8168 8A                       .
@@ -179,7 +179,7 @@ BattleSetupServices_Entry_8165:
         tya                                     ; 816A 98                       .
         pha                                     ; 816B 48                       H
         lda     $00                           ; 816C A5 00                    ..
-        jsr     BattleSetupServices_Entry_817D  ; 816E 20 7D 81                  }.
+        jsr     BattleSetup_PrimePipelineFromLatchedByte; 816E 20 7D 81          }.
         pla                                     ; 8171 68                       h
         tay                                     ; 8172 A8                       .
         pla                                     ; 8173 68                       h
@@ -187,24 +187,24 @@ BattleSetupServices_Entry_8165:
         pla                                     ; 8175 68                       h
         rts                                     ; 8176 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8177:
-        jsr     BattleSetupServices_Entry_8199  ; 8177 20 99 81                  ..
+BattleSetup_PrimePipelineFromInlineByte:
+        jsr     BattleSetup_ReadInlineByteAtReturnSite; 8177 20 99 81            ..
         jmp     BattleSetupServices_Branch_8180 ; 817A 4C 80 81                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_817D:
-        jsr     BattleSetupServices_Entry_81B6  ; 817D 20 B6 81                  ..
+BattleSetup_PrimePipelineFromLatchedByte:
+        jsr     BattleSetup_LatchModeAndStatus  ; 817D 20 B6 81                  ..
 BattleSetupServices_Branch_8180:
-        jsr     BattleSetupServices_Entry_81BD  ; 8180 20 BD 81                  ..
-        jsr     BattleSetupServices_Entry_81DA  ; 8183 20 DA 81                  ..
-        jsr     BattleSetupServices_Entry_82B9  ; 8186 20 B9 82                  ..
-        jsr     BattleSetupServices_Entry_85E7  ; 8189 20 E7 85                  ..
-        jsr     BattleSetupServices_Entry_826A  ; 818C 20 6A 82                  j.
-        jsr     BattleSetupServices_Entry_82B0  ; 818F 20 B0 82                  ..
-        jsr     BattleSetupServices_Entry_82C3  ; 8192 20 C3 82                  ..
-        jsr     BattleSetupServices_Entry_82E9  ; 8195 20 E9 82                  ..
+        jsr     BattleSetup_DecodeModeByte      ; 8180 20 BD 81                  ..
+        jsr     BattleSetup_RemapSelectionByLookup; 8183 20 DA 81                ..
+        jsr     BattleSetup_RefreshSelectionDecode; 8186 20 B9 82                ..
+        jsr     BattleSetup_WaitForDelayWindow  ; 8189 20 E7 85                  ..
+        jsr     BattleSetup_UpdateSelectionState; 818C 20 6A 82                  j.
+        jsr     BattleSetup_WaitThreeFramesIfBusy; 818F 20 B0 82                 ..
+        jsr     BattleSetup_CommitSelectionState; 8192 20 C3 82                  ..
+        jsr     BattleSetup_LatchDelayState     ; 8195 20 E9 82                  ..
         rts                                     ; 8198 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8199:
+BattleSetup_ReadInlineByteAtReturnSite:
         tsx                                     ; 8199 BA                       .
         inc     $010B,x                         ; 819A FE 0B 01                 ...
         bne     BattleSetupServices_Branch_81A2 ; 819D D0 03                    ..
@@ -217,14 +217,14 @@ BattleSetupServices_Branch_81A2:
         ldx     #$00                            ; 81AC A2 00                    ..
         lda     $0517                           ; 81AE AD 17 05                 ...
         ldy     #$00                            ; 81B1 A0 00                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 81B3 20 EA C3                  ..
-BattleSetupServices_Entry_81B6:
+        jsr     ReadBankedByteThroughPointer    ; 81B3 20 EA C3                  ..
+BattleSetup_LatchModeAndStatus:
         sta     $8D                             ; 81B6 85 8D                    ..
         lda     $76                             ; 81B8 A5 76                    .v
         sta     $8C                             ; 81BA 85 8C                    ..
         rts                                     ; 81BC 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_81BD:
+BattleSetup_DecodeModeByte:
         lda     $8C                             ; 81BD A5 8C                    ..
         and     #$03                            ; 81BF 29 03                    ).
         cmp     #$02                            ; 81C1 C9 02                    ..
@@ -236,7 +236,7 @@ BattleSetupServices_Entry_81BD:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_81CC:
         lda     $8D                             ; 81CC A5 8D                    ..
-        jsr     BattleSetupServices_Entry_82FC  ; 81CE 20 FC 82                  ..
+        jsr     BattleSetup_ParseRecordStream   ; 81CE 20 FC 82                  ..
         sta     $8A                             ; 81D1 85 8A                    ..
         stx     $8B                             ; 81D3 86 8B                    ..
         bcs     BattleSetupServices_Branch_81D9 ; 81D5 B0 02                    ..
@@ -245,7 +245,7 @@ BattleSetupServices_Branch_81CC:
 BattleSetupServices_Branch_81D9:
         rts                                     ; 81D9 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_81DA:
+BattleSetup_RemapSelectionByLookup:
         lda     $72E9                           ; 81DA AD E9 72                 ..r
         and     #$C0                            ; 81DD 29 C0                    ).
         beq     BattleSetupServices_Branch_8220 ; 81DF F0 3F                    .?
@@ -278,7 +278,7 @@ BattleSetupServices_Branch_8206:
         db   $07,$1F                         ; 8207 07 1F                    ..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_8209:
-        jsr     BattleSetupServices_Entry_8235  ; 8209 20 35 82                  5.
+        jsr     BattleSetup_CheckSelectionMatch ; 8209 20 35 82                  5.
         bcc     BattleSetupServices_Branch_8220 ; 820C 90 12                    ..
         lda     $8252,y                         ; 820E B9 52 82                 .R.
         and     #$03                            ; 8211 29 03                    ).
@@ -306,7 +306,7 @@ BattleSetupServices_Branch_8221:
 BattleSetupServices_Branch_8234:
         rts                                     ; 8234 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8235:
+BattleSetup_CheckSelectionMatch:
         bcc     BattleSetupServices_Branch_8251 ; 8235 90 1A                    ..
         lda     $7E                             ; 8237 A5 7E                    .~
         pha                                     ; 8239 48                       H
@@ -333,7 +333,7 @@ BattleSetupServices_Branch_8251:
         db   $08,$16,$4E,$65,$67,$68,$6F,$78 ; 825A 08 16 4E 65 67 68 6F 78  ..Neghox
         db   $6B,$16,$4D,$66,$6C,$69,$70,$79 ; 8262 6B 16 4D 66 6C 69 70 79  k.Mflipy
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_826A:
+BattleSetup_UpdateSelectionState:
         lda     $8C                             ; 826A A5 8C                    ..
         and     #$1C                            ; 826C 29 1C                    ).
         beq     BattleSetupServices_Branch_8292 ; 826E F0 22                    ."
@@ -346,7 +346,7 @@ BattleSetupServices_Entry_826A:
 BattleSetupServices_Branch_827C:
         lda     $735F                           ; 827C AD 5F 73                 ._s
         asl     a                               ; 827F 0A                       .
-        jsr     BattleSetupServices_Entry_829F  ; 8280 20 9F 82                  ..
+        jsr     BattleSetup_ComputeBoundedSelectionIndex; 8280 20 9F 82          ..
         bcc     BattleSetupServices_Branch_828B ; 8283 90 06                    ..
         lda     $7360                           ; 8285 AD 60 73                 .`s
         sta     $735F                           ; 8288 8D 5F 73                 ._s
@@ -363,12 +363,12 @@ BattleSetupServices_Branch_8292:
         beq     BattleSetupServices_Branch_828E ; 8294 F0 F8                    ..
 BattleSetupServices_Branch_8296:
         lda     TextOutputY                     ; 8296 AD 52 05                 .R.
-        jsr     BattleSetupServices_Entry_829F  ; 8299 20 9F 82                  ..
+        jsr     BattleSetup_ComputeBoundedSelectionIndex; 8299 20 9F 82          ..
         bcs     BattleSetupServices_Branch_827C ; 829C B0 DE                    ..
 BattleSetupServices_Branch_829E:
         rts                                     ; 829E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_829F:
+BattleSetup_ComputeBoundedSelectionIndex:
         pha                                     ; 829F 48                       H
         lda     $8B                             ; 82A0 A5 8B                    ..
         ldx     $8A                             ; 82A2 A6 8A                    ..
@@ -382,21 +382,21 @@ BattleSetupServices_Entry_829F:
         cmp     #$0A                            ; 82AD C9 0A                    ..
         rts                                     ; 82AF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_82B0:
+BattleSetup_WaitThreeFramesIfBusy:
         bit     $8C                             ; 82B0 24 8C                    $.
         bvc     BattleSetupServices_Branch_829E ; 82B2 50 EA                    P.
         ldx     #$03                            ; 82B4 A2 03                    ..
-        jmp     UpperFixedEngine_Entry_C90C     ; 82B6 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 82B6 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_82B9:
+BattleSetup_RefreshSelectionDecode:
         lda     $8C                             ; 82B9 A5 8C                    ..
         and     #$20                            ; 82BB 29 20                    )
         beq     BattleSetupServices_Branch_82C2 ; 82BD F0 03                    ..
-        jsr     BattleSetupServices_Entry_8370  ; 82BF 20 70 83                  p.
+        jsr     BattleSetup_DecodeSelectorMap   ; 82BF 20 70 83                  p.
 BattleSetupServices_Branch_82C2:
         rts                                     ; 82C2 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_82C3:
+BattleSetup_CommitSelectionState:
         lda     $0553                           ; 82C3 AD 53 05                 .S.
         ora     #$80                            ; 82C6 09 80                    ..
         sta     $0553                           ; 82C8 8D 53 05                 .S.
@@ -418,18 +418,18 @@ BattleSetupServices_Entry_82C3:
 BattleSetupServices_Branch_82E8:
         rts                                     ; 82E8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_82E9:
+BattleSetup_LatchDelayState:
         lda     $050C                           ; 82E9 AD 0C 05                 ...
         sta     $6E5C                           ; 82EC 8D 5C 6E                 .\n
         lda     #$00                            ; 82EF A9 00                    ..
         sta     $6E5D                           ; 82F1 8D 5D 6E                 .]n
         lda     $8C                             ; 82F4 A5 8C                    ..
         bpl     BattleSetupServices_Branch_82FB ; 82F6 10 03                    ..
-        jsr     BattleSetupServices_Entry_85CA  ; 82F8 20 CA 85                  ..
+        jsr     BattleSetup_StartDelayWindow    ; 82F8 20 CA 85                  ..
 BattleSetupServices_Branch_82FB:
         rts                                     ; 82FB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_82FC:
+BattleSetup_ParseRecordStream:
         sta     $00                           ; 82FC 85 00                    ..
         lda     Bank12_BattleSetupDataPointers  ; 82FE AD 8D 84                 ...
         sta     $02                           ; 8301 85 02                    ..
@@ -516,7 +516,7 @@ BattleSetupServices_Branch_836A:
         sec                                     ; 836E 38                       8
         rts                                     ; 836F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8370:
+BattleSetup_DecodeSelectorMap:
         lda     $8A                             ; 8370 A5 8A                    ..
         and     #$01                            ; 8372 29 01                    ).
         asl     a                               ; 8374 0A                       .
@@ -533,7 +533,7 @@ BattleSetupServices_Entry_8370:
         pha                                     ; 838B 48                       H
         and     #$07                            ; 838C 29 07                    ).
         beq     BattleSetupServices_Branch_8395 ; 838E F0 05                    ..
-        jsr     BattleSetupServices_Entry_83D3  ; 8390 20 D3 83                  ..
+        jsr     BattleSetup_DispatchHandlerByIndex; 8390 20 D3 83                ..
         sta     $F9                             ; 8393 85 F9                    ..
 BattleSetupServices_Branch_8395:
         pla                                     ; 8395 68                       h
@@ -543,7 +543,7 @@ BattleSetupServices_Branch_8395:
         lsr     a                               ; 8399 4A                       J
         and     #$07                            ; 839A 29 07                    ).
         beq     BattleSetupServices_Branch_83A3 ; 839C F0 05                    ..
-        jsr     BattleSetupServices_Entry_83D3  ; 839E 20 D3 83                  ..
+        jsr     BattleSetup_DispatchHandlerByIndex; 839E 20 D3 83                ..
         sta     $FA                             ; 83A1 85 FA                    ..
 BattleSetupServices_Branch_83A3:
         pla                                     ; 83A3 68                       h
@@ -578,7 +578,7 @@ BattleSetupServices_Branch_83CE:
         stx     $FE                             ; 83D0 86 FE                    ..
         rts                                     ; 83D2 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_83D3:
+BattleSetup_DispatchHandlerByIndex:
         asl     a                               ; 83D3 0A                       .
         tax                                     ; 83D4 AA                       .
         lda     $8491,x                         ; 83D5 BD 91 84                 ...
@@ -587,18 +587,18 @@ BattleSetupServices_Entry_83D3:
         sta     $03                             ; 83DD 85 03                    ..
         jmp     ($0002)                         ; 83DF 6C 02 00                 l..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_83E2:
-        jsr     BattleSetupServices_Entry_83E8  ; 83E2 20 E8 83                  ..
+BattleSetup_NormalizeHandlerField:
+        jsr     BattleSetup_LoadHandlerFieldFromService; 83E2 20 E8 83           ..
         jmp     BattleSetupServices_Branch_83F1 ; 83E5 4C F1 83                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_83E8:
+BattleSetup_LoadHandlerFieldFromService:
         brk                                     ; 83E8 00                       .
         db   $01,$1F                         ; 83E9 01 1F                    ..
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_8408 ; 83EB 4C 08 84                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_83EE:
-        jsr     BattleSetupServices_Entry_8405  ; 83EE 20 05 84                  ..
+BattleSetup_LoadHandlerFieldFromSelectionState:
+        jsr     BattleSetup_LoadSelectionSourceField; 83EE 20 05 84              ..
 BattleSetupServices_Branch_83F1:
         lda     $02                           ; 83F1 A5 02                    ..
         bpl     BattleSetupServices_Branch_8404 ; 83F3 10 0F                    ..
@@ -606,7 +606,7 @@ BattleSetupServices_Branch_83F1:
         sta     $02                           ; 83F7 85 02                    ..
         and     #$07                            ; 83F9 29 07                    ).
         tax                                     ; 83FB AA                       .
-        jsr     BattleSetupServices_Entry_842C  ; 83FC 20 2C 84                  ,.
+        jsr     BattleSetup_FindMaskedHeaderEntry; 83FC 20 2C 84                 ,.
         asl     a                               ; 83FF 0A                       .
         asl     a                               ; 8400 0A                       .
         asl     a                               ; 8401 0A                       .
@@ -614,7 +614,7 @@ BattleSetupServices_Branch_83F1:
 BattleSetupServices_Branch_8404:
         rts                                     ; 8404 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8405:
+BattleSetup_LoadSelectionSourceField:
         lda     $7363                           ; 8405 AD 63 73                 .cs
 BattleSetupServices_Branch_8408:
         pha                                     ; 8408 48                       H
@@ -640,17 +640,17 @@ BattleSetupServices_Branch_841F:
         sta     $02                           ; 8421 85 02                    ..
         rts                                     ; 8423 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8424:
+BattleSetup_ReadCachedStatusByte:
         lda     $7355                           ; 8424 AD 55 73                 .Us
         rts                                     ; 8427 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8428:
+BattleSetup_ReturnServiceStub:
         brk                                     ; 8428 00                       .
         db   $03,$1F                         ; 8429 03 1F                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; 842B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_842C:
+BattleSetup_FindMaskedHeaderEntry:
         lda     $7E                             ; 842C A5 7E                    .~
         pha                                     ; 842E 48                       H
         lda     $7F                             ; 842F A5 7F                    ..
@@ -748,7 +748,7 @@ BattleSetupServices_Branch_84A9:
         pla                                     ; 84B0 68                       h
         rts                                     ; 84B1 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_84B2:
+BattleSetup_BuildEntrySelectionState:
         lda     $6E45                           ; 84B2 AD 45 6E                 .En
         cmp     #$AD                            ; 84B5 C9 AD                    ..
         beq     BattleSetupServices_Branch_84A9 ; 84B7 F0 F0                    ..
@@ -766,7 +766,7 @@ BattleSetupServices_Branch_84C7:
         lda     $6E45,x                         ; 84C9 BD 45 6E                 .En
         cmp     #$FF                            ; 84CC C9 FF                    ..
         beq     BattleSetupServices_Branch_84DC ; 84CE F0 0C                    ..
-        jsr     BattleSetupServices_Entry_85AB  ; 84D0 20 AB 85                  ..
+        jsr     BattleSetup_FindLowestSetBitIndex; 84D0 20 AB 85                 ..
         txa                                     ; 84D3 8A                       .
         ora     #$C0                            ; 84D4 09 C0                    ..
         sta     $F9                             ; 84D6 85 F9                    ..
@@ -813,7 +813,7 @@ BattleSetupServices_Branch_8513:
         brk                                     ; 8513 00                       .
         db   $13,$2F                         ; 8514 13 2F                    ./
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_8536  ; 8516 20 36 85                  6.
+        jsr     BattleSetup_BuildThresholdSelectionState; 8516 20 36 85          6.
         brk                                     ; 8519 00                       .
         db   $10,$1F                         ; 851A 10 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -837,7 +837,7 @@ BattleSetupServices_Branch_8524:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_92CD ; 8533 4C CD 92                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8536:
+BattleSetup_BuildThresholdSelectionState:
         brk                                     ; 8536 00                       .
         db   $07,$6F,$3D                     ; 8537 07 6F 3D                 .o=
 ; ----------------------------------------------------------------------------
@@ -855,7 +855,7 @@ BattleSetupServices_Branch_8543:
 ; ----------------------------------------------------------------------------
         bcc     BattleSetupServices_Branch_85A3 ; 8549 90 58                    .X
         stx     $F9                             ; 854B 86 F9                    ..
-        jsr     BattleSetupServices_Entry_842C  ; 854D 20 2C 84                  ,.
+        jsr     BattleSetup_FindMaskedHeaderEntry; 854D 20 2C 84                 ,.
         asl     a                               ; 8550 0A                       .
         asl     a                               ; 8551 0A                       .
         asl     a                               ; 8552 0A                       .
@@ -921,7 +921,7 @@ BattleSetupServices_Branch_85A3:
         bcc     BattleSetupServices_Branch_8543 ; 85A8 90 99                    ..
         rts                                     ; 85AA 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_85AB:
+BattleSetup_FindLowestSetBitIndex:
         pha                                     ; 85AB 48                       H
         txa                                     ; 85AC 8A                       .
         ldx     #$FF                            ; 85AD A2 FF                    ..
@@ -941,25 +941,25 @@ BattleSetupServices_Branch_85B6:
         db   $01,$01,$02                     ; 85C3 01 01 02                 ...
         db   $00,$0D,$02,$06                 ; 85C6 00 0D 02 06              ....
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_85CA:
+BattleSetup_StartDelayWindow:
         lda     $62EE                           ; 85CA AD EE 62                 ..b
         cmp     #$07                            ; 85CD C9 07                    ..
         beq     BattleSetupServices_Branch_861B ; 85CF F0 4A                    .J
 BattleSetupServices_Branch_85D1:
-        jsr     BattleSetupServices_Entry_860D  ; 85D1 20 0D 86                  ..
+        jsr     BattleSetup_GetDelayBySpeed     ; 85D1 20 0D 86                  ..
         sta     $6E5D                           ; 85D4 8D 5D 6E                 .]n
         clc                                     ; 85D7 18                       .
         adc     $050C                           ; 85D8 6D 0C 05                 m..
         sta     $6E5C                           ; 85DB 8D 5C 6E                 .\n
         rts                                     ; 85DE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_85DF:
+BattleSetup_StartDelayWindowIfNeeded:
         lda     $62EE                           ; 85DF AD EE 62                 ..b
         cmp     #$07                            ; 85E2 C9 07                    ..
         bne     BattleSetupServices_Branch_85D1 ; 85E4 D0 EB                    ..
         rts                                     ; 85E6 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_85E7:
+BattleSetup_WaitForDelayWindow:
         txa                                     ; 85E7 8A                       .
         pha                                     ; 85E8 48                       H
         lda     $62EE                           ; 85E9 AD EE 62                 ..b
@@ -974,17 +974,17 @@ BattleSetupServices_Entry_85E7:
 BattleSetupServices_Branch_85FE:
         tax                                     ; 85FE AA                       .
         beq     BattleSetupServices_Branch_8604 ; 85FF F0 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 8601 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8601 20 0C C9                  ..
 BattleSetupServices_Branch_8604:
         pla                                     ; 8604 68                       h
         tax                                     ; 8605 AA                       .
         rts                                     ; 8606 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8607:
-        jsr     BattleSetupServices_Entry_85E7  ; 8607 20 E7 85                  ..
-        jmp     BattleSetupServices_Entry_85DF  ; 860A 4C DF 85                 L..
+BattleSetup_WaitAndGateDelay:
+        jsr     BattleSetup_WaitForDelayWindow  ; 8607 20 E7 85                  ..
+        jmp     BattleSetup_StartDelayWindowIfNeeded; 860A 4C DF 85             L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_860D:
+BattleSetup_GetDelayBySpeed:
         ldx     $62EE                           ; 860D AE EE 62                 ..b
         lda     $8614,x                         ; 8610 BD 14 86                 ...
         rts                                     ; 8613 60                       `
@@ -995,40 +995,40 @@ BattleSetupServices_Branch_861B:
         lda     #$00                            ; 861B A9 00                    ..
         sta     $02                           ; 861D 85 02                    ..
 BattleSetupServices_Branch_861F:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 861F 20 EC C8                  ..
+        jsr     ReadControllers                 ; 861F 20 EC C8                  ..
         lda     #$80                            ; 8622 A9 80                    ..
-        jsr     BattleSetupServices_Entry_8637  ; 8624 20 37 86                  7.
-        jsr     BattleSetupServices_Entry_8644  ; 8627 20 44 86                  D.
+        jsr     BattleSetup_QueuePromptTileUpdate; 8624 20 37 86                 7.
+        jsr     BattleSetup_PollConfirmInput    ; 8627 20 44 86                  D.
         bne     BattleSetupServices_Branch_8636 ; 862A D0 0A                    ..
         lda     #$00                            ; 862C A9 00                    ..
-        jsr     BattleSetupServices_Entry_8637  ; 862E 20 37 86                  7.
-        jsr     BattleSetupServices_Entry_8644  ; 8631 20 44 86                  D.
+        jsr     BattleSetup_QueuePromptTileUpdate; 862E 20 37 86                 7.
+        jsr     BattleSetup_PollConfirmInput    ; 8631 20 44 86                  D.
         beq     BattleSetupServices_Branch_861F ; 8634 F0 E9                    ..
 BattleSetupServices_Branch_8636:
         rts                                     ; 8636 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8637:
+BattleSetup_QueuePromptTileUpdate:
         ldx     #$1B                            ; 8637 A2 1B                    ..
         stx     $00                           ; 8639 86 00                    ..
         dex                                     ; 863B CA                       .
         stx     $01                             ; 863C 86 01                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 863E 20 5A C6                  Z.
-        jmp     UpperFixedEngine_Entry_C626     ; 8641 4C 26 C6                 L&.
+        jsr     QueueNametableTileUpdate        ; 863E 20 5A C6                  Z.
+        jmp     RequestPpuUpdate                ; 8641 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8644:
+BattleSetup_PollConfirmInput:
         ldx     #$0F                            ; 8644 A2 0F                    ..
 BattleSetupServices_Branch_8646:
         txa                                     ; 8646 8A                       .
         pha                                     ; 8647 48                       H
         jsr     WaitForNmi                      ; 8648 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C8EC     ; 864B 20 EC C8                  ..
+        jsr     ReadControllers                 ; 864B 20 EC C8                  ..
         lda     $7384                           ; 864E AD 84 73                 ..s
         bne     BattleSetupServices_Branch_865A ; 8651 D0 07                    ..
-        jsr     BattleSetupServices_Entry_8671  ; 8653 20 71 86                  q.
+        jsr     BattleSetup_LatchButtonsPressed ; 8653 20 71 86                  q.
         bne     BattleSetupServices_Branch_866D ; 8656 D0 15                    ..
         beq     BattleSetupServices_Branch_865F ; 8658 F0 05                    ..
 BattleSetupServices_Branch_865A:
-        jsr     BattleSetupServices_Entry_8671  ; 865A 20 71 86                  q.
+        jsr     BattleSetup_LatchButtonsPressed ; 865A 20 71 86                  q.
         inc     $02                           ; 865D E6 02                    ..
 BattleSetupServices_Branch_865F:
         pla                                     ; 865F 68                       h
@@ -1047,12 +1047,12 @@ BattleSetupServices_Branch_866E:
         lda     #$FF                            ; 866E A9 FF                    ..
         rts                                     ; 8670 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8671:
+BattleSetup_LatchButtonsPressed:
         lda     ButtonsPressed                  ; 8671 A5 14                    ..
         sta     $7384                           ; 8673 8D 84 73                 ..s
         rts                                     ; 8676 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8677:
+BattleSetup_SelectStageValue:
         ldx     $6E7E                           ; 8677 AE 7E 6E                 .~n
         cpx     #$07                            ; 867A E0 07                    ..
         beq     BattleSetupServices_Branch_8689 ; 867C F0 0B                    ..
@@ -1066,7 +1066,7 @@ BattleSetupServices_Branch_8688:
         rts                                     ; 8688 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_8689:
-        jsr     BattleSetupServices_Entry_85E7  ; 8689 20 E7 85                  ..
+        jsr     BattleSetup_WaitForDelayWindow  ; 8689 20 E7 85                  ..
         brk                                     ; 868C 00                       .
         db   $8E,$FB                         ; 868D 8E FB                    ..
 ; ----------------------------------------------------------------------------
@@ -1088,7 +1088,7 @@ BattleSetupServices_Branch_8689:
 ; ----------------------------------------------------------------------------
         db   $86,$86,$87                     ; 86A1 86 86 87                 ...
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_86A4:
+BattleSetup_CheckAEStageAndSlot:
         lda     $6E45                           ; 86A4 AD 45 6E                 .En
         cmp     #$AE                            ; 86A7 C9 AE                    ..
         bne     BattleSetupServices_Branch_86B4 ; 86A9 D0 09                    ..
@@ -1102,11 +1102,11 @@ BattleSetupServices_Branch_86B4:
         clc                                     ; 86B4 18                       .
         rts                                     ; 86B5 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_86B6:
+BattleSetup_DispatchModeTransition:
         brk                                     ; 86B6 00                       .
         db   $10,$1F                         ; 86B7 10 1F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_811A  ; 86B9 20 1A 81                  ..
+        jsr     BattleSetup_FlagDuplicateHeaderEntries; 86B9 20 1A 81            ..
         lda     $0553                           ; 86BC AD 53 05                 .S.
         and     #$7F                            ; 86BF 29 7F                    ).
         sta     $0553                           ; 86C1 8D 53 05                 .S.
@@ -1190,7 +1190,7 @@ BattleSetupServices_Branch_872C:
         db   $BF,$1B                         ; 872D BF 1B                    ..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_872F:
-        jsr     UpperFixedEngine_Entry_C8CC     ; 872F 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 872F 20 CC C8                  ..
         jsr     UpperFixedEngine_Entry_C5C5     ; 8732 20 C5 C5                  ..
         lda     $1F                             ; 8735 A5 1F                    ..
         and     #$F7                            ; 8737 29 F7                    ).
@@ -1206,7 +1206,7 @@ BattleSetupServices_Branch_8745:
         and     #$03                            ; 8748 29 03                    ).
         sta     $F9                             ; 874A 85 F9                    ..
         tax                                     ; 874C AA                       .
-        jsr     BattleSetupServices_Entry_842C  ; 874D 20 2C 84                  ,.
+        jsr     BattleSetup_FindMaskedHeaderEntry; 874D 20 2C 84                 ,.
         asl     a                               ; 8750 0A                       .
         asl     a                               ; 8751 0A                       .
         asl     a                               ; 8752 0A                       .
@@ -1217,7 +1217,7 @@ BattleSetupServices_Branch_8745:
         and     #$C0                            ; 875C 29 C0                    ).
         cmp     #$40                            ; 875E C9 40                    .@
         bne     BattleSetupServices_Branch_8772 ; 8760 D0 10                    ..
-        jsr     BattleSetupServices_Entry_8783  ; 8762 20 83 87                  ..
+        jsr     BattleSetup_CheckTransitionBounds; 8762 20 83 87                 ..
         brk                                     ; 8765 00                       .
         db   $07,$6F,$5F                     ; 8766 07 6F 5F                 .o_
 ; ----------------------------------------------------------------------------
@@ -1244,7 +1244,7 @@ BattleSetupServices_Branch_877D:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_D214     ; 8780 4C 14 D2                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8783:
+BattleSetup_CheckTransitionBounds:
         brk                                     ; 8783 00                       .
         db   $19,$8F                         ; 8784 19 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -1294,7 +1294,7 @@ BattleSetupServices_Branch_87AB:
         beq     BattleSetupServices_Branch_87D6 ; 87C0 F0 14                    ..
         bit     $72E4                           ; 87C2 2C E4 72                 ,.r
         bvs     BattleSetupServices_Branch_87D0 ; 87C5 70 09                    p.
-        jsr     BattleSetupServices_Entry_889C  ; 87C7 20 9C 88                  ..
+        jsr     BattleSetup_EncodeSelectionMask ; 87C7 20 9C 88                  ..
         brk                                     ; 87CA 00                       .
         db   $08,$0B                         ; 87CB 08 0B                    ..
 ; ----------------------------------------------------------------------------
@@ -1309,7 +1309,7 @@ BattleSetupServices_Branch_87D0:
 BattleSetupServices_Branch_87D6:
         bit     $72E4                           ; 87D6 2C E4 72                 ,.r
         bvs     BattleSetupServices_Branch_87E4 ; 87D9 70 09                    p.
-        jsr     BattleSetupServices_Entry_889C  ; 87DB 20 9C 88                  ..
+        jsr     BattleSetup_EncodeSelectionMask ; 87DB 20 9C 88                  ..
         brk                                     ; 87DE 00                       .
         db   $0A,$0B                         ; 87DF 0A 0B                    ..
 ; ----------------------------------------------------------------------------
@@ -1320,7 +1320,7 @@ BattleSetupServices_Branch_87E4:
         db   $0B,$0B                         ; 87E5 0B 0B                    ..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_87E7:
-        jsr     BattleSetupServices_Entry_888E  ; 87E7 20 8E 88                  ..
+        jsr     BattleSetup_RequireAEHeader     ; 87E7 20 8E 88                  ..
         lda     $72E5                           ; 87EA AD E5 72                 ..r
         lsr     a                               ; 87ED 4A                       J
         bcc     BattleSetupServices_Branch_87F9 ; 87EE 90 09                    ..
@@ -1383,7 +1383,7 @@ BattleSetupServices_Branch_8847:
         lda     $72E5                           ; 884D AD E5 72                 ..r
         and     #$02                            ; 8850 29 02                    ).
         bne     BattleSetupServices_Branch_8857 ; 8852 D0 03                    ..
-        jsr     BattleSetupServices_Entry_91DD  ; 8854 20 DD 91                  ..
+        jsr     BattleSetup_ResolveChapterTwoSetupCandidate; 8854 20 DD 91       ..
 BattleSetupServices_Branch_8857:
         lda     $72E5                           ; 8857 AD E5 72                 ..r
         lsr     a                               ; 885A 4A                       J
@@ -1417,7 +1417,7 @@ BattleSetupServices_Branch_8888:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_D218     ; 888B 4C 18 D2                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_888E:
+BattleSetup_RequireAEHeader:
         brk                                     ; 888E 00                       .
         db   $07,$9F                         ; 888F 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -1430,7 +1430,7 @@ BattleSetupServices_Entry_888E:
 BattleSetupServices_Branch_889B:
         rts                                     ; 889B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_889C:
+BattleSetup_EncodeSelectionMask:
         ldx     #$FF                            ; 889C A2 FF                    ..
         brk                                     ; 889E 00                       .
         db   $29,$B3                         ; 889F 29 B3                    ).
@@ -1448,7 +1448,7 @@ BattleSetupServices_Branch_88AA:
         sta     $F9                             ; 88AD 85 F9                    ..
         rts                                     ; 88AF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_88B0:
+BattleSetup_HandleSelectionConfirmInput:
         lda     $72E9                           ; 88B0 AD E9 72                 ..r
         bpl     BattleSetupServices_Branch_88E5 ; 88B3 10 30                    .0
         lda     $0553                           ; 88B5 AD 53 05                 .S.
@@ -1457,7 +1457,7 @@ BattleSetupServices_Entry_88B0:
         lda     $6E81                           ; 88BD AD 81 6E                 ..n
         cmp     #$0A                            ; 88C0 C9 0A                    ..
         bcc     BattleSetupServices_Branch_88D3 ; 88C2 90 0F                    ..
-        jsr     BattleSetupServices_Entry_892B  ; 88C4 20 2B 89                  +.
+        jsr     BattleSetup_SetSelectionMode    ; 88C4 20 2B 89                  +.
         brk                                     ; 88C7 00                       .
         db   $82,$0B                         ; 88C8 82 0B                    ..
 ; ----------------------------------------------------------------------------
@@ -1471,7 +1471,7 @@ BattleSetupServices_Branch_88D3:
 BattleSetupServices_Branch_88D5:
         txa                                     ; 88D5 8A                       .
         pha                                     ; 88D6 48                       H
-        jsr     UpperFixedEngine_Entry_C8EC     ; 88D7 20 EC C8                  ..
+        jsr     ReadControllers                 ; 88D7 20 EC C8                  ..
         pla                                     ; 88DA 68                       h
         tax                                     ; 88DB AA                       .
         lda     ButtonsPressed                  ; 88DC A5 14                    ..
@@ -1503,7 +1503,7 @@ BattleSetupServices_Branch_88E6:
         db   $07,$6F,$6E                     ; 88FE 07 6F 6E                 .on
 ; ----------------------------------------------------------------------------
         bne     BattleSetupServices_Branch_8925 ; 8901 D0 22                    ."
-        jsr     BattleSetupServices_Entry_892B  ; 8903 20 2B 89                  +.
+        jsr     BattleSetup_SetSelectionMode    ; 8903 20 2B 89                  +.
         brk                                     ; 8906 00                       .
         db   $7F,$0B                         ; 8907 7F 0B                    ..
 ; ----------------------------------------------------------------------------
@@ -1516,13 +1516,13 @@ BattleSetupServices_Branch_8912:
         brk                                     ; 8912 00                       .
         db   $81,$0B                         ; 8913 81 0B                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_892B  ; 8915 20 2B 89                  +.
+        jsr     BattleSetup_SetSelectionMode    ; 8915 20 2B 89                  +.
         lda     $6E7F                           ; 8918 AD 7F 6E                 ..n
         ora     #$80                            ; 891B 09 80                    ..
         sta     $6E7F                           ; 891D 8D 7F 6E                 ..n
 BattleSetupServices_Branch_8920:
         ldx     #$64                            ; 8920 A2 64                    .d
-        jmp     UpperFixedEngine_Entry_C90C     ; 8922 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 8922 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_8925:
         brk                                     ; 8925 00                       .
@@ -1530,24 +1530,24 @@ BattleSetupServices_Branch_8925:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_8920 ; 8928 4C 20 89                 L .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_892B:
+BattleSetup_SetSelectionMode:
         lda     $72E7                           ; 892B AD E7 72                 ..r
         and     #$9F                            ; 892E 29 9F                    ).
         ora     #$20                            ; 8930 09 20                    .
         sta     $72E7                           ; 8932 8D E7 72                 ..r
         rts                                     ; 8935 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8936:
+BattleSetup_RunTransitionOpen:
         lda     $1F                             ; 8936 A5 1F                    ..
         ora     #$08                            ; 8938 09 08                    ..
         sta     $1F                             ; 893A 85 1F                    ..
-        jsr     BattleSetupServices_Entry_8A02  ; 893C 20 02 8A                  ..
+        jsr     BattleSetup_EnterTransitionMmc1Mode; 893C 20 02 8A               ..
         ldx     #$01                            ; 893F A2 01                    ..
         stx     $29                             ; 8941 86 29                    .)
 BattleSetupServices_Branch_8943:
-        jsr     BattleSetupServices_Entry_8990  ; 8943 20 90 89                  ..
-        jsr     BattleSetupServices_Entry_89C0  ; 8946 20 C0 89                  ..
-        jsr     BattleSetupServices_Entry_8A22  ; 8949 20 22 8A                  ".
+        jsr     BattleSetup_SaveAndShiftSpriteOam; 8943 20 90 89                 ..
+        jsr     BattleSetup_SelectOpenTransitionPalette; 8946 20 C0 89           ..
+        jsr     BattleSetup_RestoreSpriteOamFromBackup; 8949 20 22 8A            ".
         inc     $29                             ; 894C E6 29                    .)
         lda     $29                             ; 894E A5 29                    .)
         cmp     #$F0                            ; 8950 C9 F0                    ..
@@ -1555,33 +1555,33 @@ BattleSetupServices_Branch_8943:
         lda     $0508                           ; 8954 AD 08 05                 ...
         sta     $7600                           ; 8957 8D 00 76                 ..v
         bcs     BattleSetupServices_Branch_897D ; 895A B0 21                    .!
-BattleSetupServices_Entry_895C:
+BattleSetup_RunTransitionClose:
         lda     $1F                             ; 895C A5 1F                    ..
         ora     #$08                            ; 895E 09 08                    ..
         sta     $1F                             ; 8960 85 1F                    ..
-        jsr     BattleSetupServices_Entry_8A02  ; 8962 20 02 8A                  ..
+        jsr     BattleSetup_EnterTransitionMmc1Mode; 8962 20 02 8A               ..
         lda     #$F0                            ; 8965 A9 F0                    ..
         sta     $29                             ; 8967 85 29                    .)
 BattleSetupServices_Branch_8969:
-        jsr     BattleSetupServices_Entry_8990  ; 8969 20 90 89                  ..
-        jsr     BattleSetupServices_Entry_89E9  ; 896C 20 E9 89                  ..
-        jsr     BattleSetupServices_Entry_8A22  ; 896F 20 22 8A                  ".
+        jsr     BattleSetup_SaveAndShiftSpriteOam; 8969 20 90 89                 ..
+        jsr     BattleSetup_SelectCloseTransitionPalette; 896C 20 E9 89          ..
+        jsr     BattleSetup_RestoreSpriteOamFromBackup; 896F 20 22 8A            ".
         dec     $29                             ; 8972 C6 29                    .)
         bne     BattleSetupServices_Branch_8969 ; 8974 D0 F3                    ..
         lda     #$00                            ; 8976 A9 00                    ..
         ldx     #$F0                            ; 8978 A2 F0                    ..
-        jsr     BattleSetupServices_Entry_8A1A  ; 897A 20 1A 8A                  ..
+        jsr     BattleSetup_QueuePaletteUpdateAndWait; 897A 20 1A 8A             ..
 BattleSetupServices_Branch_897D:
         lda     #$00                            ; 897D A9 00                    ..
         sta     $0508                           ; 897F 8D 08 05                 ...
-        jsr     BattleSetupServices_Entry_8A0A  ; 8982 20 0A 8A                  ..
+        jsr     BattleSetup_ExitTransitionMmc1Mode; 8982 20 0A 8A                ..
         lda     $1F                             ; 8985 A5 1F                    ..
         and     #$F7                            ; 8987 29 F7                    ).
         sta     $1F                             ; 8989 85 1F                    ..
         ldx     #$32                            ; 898B A2 32                    .2
-        jmp     UpperFixedEngine_Entry_C90C     ; 898D 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 898D 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8990:
+BattleSetup_SaveAndShiftSpriteOam:
         lda     #$00                            ; 8990 A9 00                    ..
         sta     $01                             ; 8992 85 01                    ..
         lda     $29                             ; 8994 A5 29                    .)
@@ -1589,7 +1589,7 @@ BattleSetupServices_Entry_8990:
         ldx     #$00                            ; 8998 A2 00                    ..
         jsr     MultiplyPointerWord             ; 899A 20 27 C8                  '.
         lda     #$08                            ; 899D A9 08                    ..
-        jsr     UpperFixedEngine_Entry_C851     ; 899F 20 51 C8                  Q.
+        jsr     DividePointerWord               ; 899F 20 51 C8                  Q.
         lda     $0508                           ; 89A2 AD 08 05                 ...
         clc                                     ; 89A5 18                       .
         adc     $00                           ; 89A6 65 00                    e.
@@ -1608,7 +1608,7 @@ BattleSetupServices_Branch_89AD:
         bne     BattleSetupServices_Branch_89AD ; 89BD D0 EE                    ..
         rts                                     ; 89BF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_89C0:
+BattleSetup_SelectOpenTransitionPalette:
         lda     #$F0                            ; 89C0 A9 F0                    ..
         sec                                     ; 89C2 38                       8
         sbc     $29                             ; 89C3 E5 29                    .)
@@ -1622,20 +1622,20 @@ BattleSetupServices_Entry_89C0:
         bne     BattleSetupServices_Branch_89FF ; 89D3 D0 2A                    .*
 BattleSetupServices_Branch_89D5:
         lda     #$40                            ; 89D5 A9 40                    .@
-        bne     BattleSetupServices_Entry_8A1A  ; 89D7 D0 41                    .A
+        bne     BattleSetup_QueuePaletteUpdateAndWait; 89D7 D0 41               .A
 BattleSetupServices_Branch_89D9:
         lda     #$10                            ; 89D9 A9 10                    ..
-        bne     BattleSetupServices_Entry_8A1A  ; 89DB D0 3D                    .=
+        bne     BattleSetup_QueuePaletteUpdateAndWait; 89DB D0 3D               .=
 BattleSetupServices_Branch_89DD:
         lda     #$20                            ; 89DD A9 20                    .
-        bne     BattleSetupServices_Entry_8A1A  ; 89DF D0 39                    .9
+        bne     BattleSetup_QueuePaletteUpdateAndWait; 89DF D0 39               .9
 BattleSetupServices_Branch_89E1:
         lda     #$30                            ; 89E1 A9 30                    .0
-        bne     BattleSetupServices_Entry_8A1A  ; 89E3 D0 35                    .5
+        bne     BattleSetup_QueuePaletteUpdateAndWait; 89E3 D0 35               .5
 BattleSetupServices_Branch_89E5:
         lda     #$00                            ; 89E5 A9 00                    ..
-        beq     BattleSetupServices_Entry_8A1A  ; 89E7 F0 31                    .1
-BattleSetupServices_Entry_89E9:
+        beq     BattleSetup_QueuePaletteUpdateAndWait; 89E7 F0 31               .1
+BattleSetup_SelectCloseTransitionPalette:
         lda     $29                             ; 89E9 A5 29                    .)
         cmp     #$F0                            ; 89EB C9 F0                    ..
         beq     BattleSetupServices_Branch_89D5 ; 89ED F0 E6                    ..
@@ -1650,12 +1650,12 @@ BattleSetupServices_Entry_89E9:
 BattleSetupServices_Branch_89FF:
         jmp     WaitForNmi                      ; 89FF 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8A02:
+BattleSetup_EnterTransitionMmc1Mode:
         lda     #$0F                            ; 8A02 A9 0F                    ..
         sta     $0500                           ; 8A04 8D 00 05                 ...
         jmp     WriteMmc1Control                ; 8A07 4C 18 C1                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8A0A:
+BattleSetup_ExitTransitionMmc1Mode:
         lda     $0505                           ; 8A0A AD 05 05                 ...
         and     #$FD                            ; 8A0D 29 FD                    ).
         sta     $0505                           ; 8A0F 8D 05 05                 ...
@@ -1663,12 +1663,12 @@ BattleSetupServices_Entry_8A0A:
         sta     $0500                           ; 8A14 8D 00 05                 ...
         jmp     WriteMmc1Control                ; 8A17 4C 18 C1                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8A1A:
+BattleSetup_QueuePaletteUpdateAndWait:
         sta     $16                             ; 8A1A 85 16                    ..
-        jsr     UpperFixedEngine_Entry_C5DE     ; 8A1C 20 DE C5                  ..
+        jsr     BuildPaletteUpdateCommand       ; 8A1C 20 DE C5                  ..
         jmp     WaitForNmi                      ; 8A1F 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_8A22:
+BattleSetup_RestoreSpriteOamFromBackup:
         ldx     #$00                            ; 8A22 A2 00                    ..
 BattleSetupServices_Branch_8A24:
         lda     $7600,x                         ; 8A24 BD 00 76                 ..v
@@ -2154,7 +2154,7 @@ BattleSetupServices_Branch_90DC:
 ; ----------------------------------------------------------------------------
         rts                                     ; 90EB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_90EC:
+BattleSetup_ResolveChapterOneTriplet:
         lda     SaveCurrentChapterMinus1        ; 90EC AD 5A 61                 .Za
         cmp     #$01                            ; 90EF C9 01                    ..
         bne     BattleSetupServices_Branch_9134 ; 90F1 D0 41                    .A
@@ -2241,7 +2241,7 @@ BattleSetupServices_Branch_9134:
         db   $40,$10,$10,$40,$20,$80,$40     ; 91D1 40 10 10 40 20 80 40     @..@ .@
         db   $32,$64,$00,$64,$00             ; 91D8 32 64 00 64 00           2d.d.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_91DD:
+BattleSetup_ResolveChapterTwoSetupCandidate:
         lda     SaveCurrentChapterMinus1        ; 91DD AD 5A 61                 .Za
         cmp     #$02                            ; 91E0 C9 02                    ..
         bne     BattleSetupServices_Branch_9216 ; 91E2 D0 32                    .2
@@ -2264,7 +2264,7 @@ BattleSetupServices_Branch_91EC:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_91FB:
         sta     $01                             ; 91FB 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 91FD 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 91FD 20 91 C8                  ..
         cmp     $01                             ; 9200 C5 01                    ..
         bcs     BattleSetupServices_Branch_920B ; 9202 B0 07                    ..
         lda     $929D,x                         ; 9204 BD 9D 92                 ...
@@ -2302,12 +2302,12 @@ BattleSetupServices_Branch_922C:
 ; ----------------------------------------------------------------------------
         beq     BattleSetupServices_Branch_9245 ; 922F F0 14                    ..
         tax                                     ; 9231 AA                       .
-        jsr     UpperFixedEngine_Entry_C891     ; 9232 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9232 20 91 C8                  ..
         cmp     $9285,x                         ; 9235 DD 85 92                 ...
         bcs     BattleSetupServices_Branch_9284 ; 9238 B0 4A                    .J
         cpx     #$07                            ; 923A E0 07                    ..
         bne     BattleSetupServices_Branch_9245 ; 923C D0 07                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 923E 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 923E 20 91 C8                  ..
         cmp     #$10                            ; 9241 C9 10                    ..
         bcs     BattleSetupServices_Branch_9284 ; 9243 B0 3F                    .?
 BattleSetupServices_Branch_9245:
@@ -2364,7 +2364,7 @@ BattleSetupServices_Branch_9284:
         db   $01,$02,$04,$05,$06,$25,$26,$27 ; 929D 01 02 04 05 06 25 26 27  .....%&'
         db   $28,$3D,$3E,$46,$47,$53,$54,$56 ; 92A5 28 3D 3E 46 47 53 54 56  (=>FGSTV
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_92AD:
+BattleSetup_PickSetupCandidateByThreshold:
         brk                                     ; 92AD 00                       .
         db   $12,$1F                         ; 92AE 12 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -2400,7 +2400,7 @@ BattleSetupServices_Branch_92D0:
 ; ----------------------------------------------------------------------------
         dex                                     ; 92D4 CA                       .
         bpl     BattleSetupServices_Branch_92D0 ; 92D5 10 F9                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 92D7 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 92D7 20 91 C8                  ..
         and     #$03                            ; 92DA 29 03                    ).
         tax                                     ; 92DC AA                       .
         brk                                     ; 92DD 00                       .
@@ -2419,7 +2419,7 @@ BattleSetupServices_Branch_92D0:
 BattleSetupServices_Branch_92EE:
         rts                                     ; 92EE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_92EF:
+BattleSetup_ResolveSelectionIndex:
         ldx     #$00                            ; 92EF A2 00                    ..
 BattleSetupServices_Branch_92F1:
         txa                                     ; 92F1 8A                       .
@@ -2443,7 +2443,7 @@ BattleSetupServices_Branch_92FE:
         sta     $C7                             ; 9309 85 C7                    ..
         rts                                     ; 930B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_930C:
+BattleSetup_NormalizeSelectionState:
         brk                                     ; 930C 00                       .
         db   $62,$23,$08                     ; 930D 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
@@ -2513,7 +2513,7 @@ BattleSetupServices_Branch_9362:
 ; ----------------------------------------------------------------------------
         tay                                     ; 9369 A8                       .
         bne     BattleSetupServices_Branch_936F ; 936A D0 03                    ..
-        jmp     BattleSetupServices_Branch_9720 ; 936C 4C 20 97                 L .
+        jmp     BattleSetup_ReadIndexedByte     ; 936C 4C 20 97                 L .
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_936F:
         lda     $627A                           ; 936F AD 7A 62                 .zb
@@ -2521,13 +2521,13 @@ BattleSetupServices_Branch_936F:
         bne     BattleSetupServices_Branch_937F ; 9374 D0 09                    ..
         dey                                     ; 9376 88                       .
         bne     BattleSetupServices_Branch_937F ; 9377 D0 06                    ..
-        jsr     BattleSetupServices_Entry_955E  ; 9379 20 5E 95                  ^.
+        jsr     BattleSetup_RefreshSelectionState; 9379 20 5E 95                 ^.
         jmp     BattleSetupServices_Branch_9418 ; 937C 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_937F:
         dey                                     ; 937F 88                       .
         bne     BattleSetupServices_Branch_93A5 ; 9380 D0 23                    .#
-        jsr     BattleSetupServices_Entry_974A  ; 9382 20 4A 97                  J.
+        jsr     BattleSetup_ValidatePrimaryAndSecondarySelection; 9382 20 4A 97  J.
         bcs     BattleSetupServices_Branch_93CD ; 9385 B0 46                    .F
         brk                                     ; 9387 00                       .
         db   $62,$23,$08                     ; 9388 62 23 08                 b#.
@@ -2588,7 +2588,7 @@ BattleSetupServices_Branch_93D0:
         bcc     BattleSetupServices_Branch_93DF ; 93D3 90 0A                    ..
         lda     $73                             ; 93D5 A5 73                    .s
         bpl     BattleSetupServices_Branch_93DF ; 93D7 10 06                    ..
-        jsr     BattleSetupServices_Entry_9767  ; 93D9 20 67 97                  g.
+        jsr     BattleSetup_ApplySelectionSideEffects; 93D9 20 67 97             g.
         jmp     BattleSetupServices_Branch_9418 ; 93DC 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_93DF:
@@ -2621,7 +2621,7 @@ BattleSetupServices_Branch_93FD:
         db   $46,$73                         ; 9400 46 73                    Fs
 ; ----------------------------------------------------------------------------
         bcs     BattleSetupServices_Branch_941E ; 9402 B0 1A                    ..
-        jsr     BattleSetupServices_Entry_952A  ; 9404 20 2A 95                  *.
+        jsr     BattleSetup_SwapSelectionBytes  ; 9404 20 2A 95                  *.
         lda     $73                             ; 9407 A5 73                    .s
         brk                                     ; 9409 00                       .
         db   $2E,$73                         ; 940A 2E 73                    .s
@@ -2635,7 +2635,7 @@ BattleSetupServices_Branch_93FD:
         db   $BB,$2B                         ; 9416 BB 2B                    .+
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9418:
-        jsr     UpperFixedEngine_Entry_C8CC     ; 9418 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 9418 20 CC C8                  ..
 BattleSetupServices_Branch_941B:
         jmp     UpperFixedEngine_Entry_D1F3     ; 941B 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
@@ -2668,7 +2668,7 @@ BattleSetupServices_Branch_942D:
         jmp     BattleSetupServices_Branch_9418 ; 9442 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9445:
-        jsr     BattleSetupServices_Entry_952A  ; 9445 20 2A 95                  *.
+        jsr     BattleSetup_SwapSelectionBytes  ; 9445 20 2A 95                  *.
         bcc     BattleSetupServices_Branch_9418 ; 9448 90 CE                    ..
         ldx     $627A                           ; 944A AE 7A 62                 .zb
         cpx     $6278                           ; 944D EC 78 62                 .xb
@@ -2681,11 +2681,11 @@ BattleSetupServices_Branch_9454:
         brk                                     ; 9457 00                       .
         db   $07,$6F,$43                     ; 9458 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_9461  ; 945B 20 61 94                  a.
+        jsr     BattleSetup_CompareSelectionState; 945B 20 61 94                 a.
         jmp     BattleSetupServices_Branch_9418 ; 945E 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9461:
-        jsr     BattleSetupServices_Entry_953E  ; 9461 20 3E 95                  >.
+BattleSetup_CompareSelectionState:
+        jsr     BattleSetup_ClearModeByte       ; 9461 20 3E 95                  >.
         sta     $F9                             ; 9464 85 F9                    ..
         ldx     $6278                           ; 9466 AE 78 62                 .xb
         lda     #$07                            ; 9469 A9 07                    ..
@@ -2817,9 +2817,9 @@ BattleSetupServices_Branch_94F2:
         rts                                     ; 94F5 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_94F6:
-        jsr     BattleSetupServices_Entry_952A  ; 94F6 20 2A 95                  *.
+        jsr     BattleSetup_SwapSelectionBytes  ; 94F6 20 2A 95                  *.
         bcc     BattleSetupServices_Branch_9501 ; 94F9 90 06                    ..
-        jsr     BattleSetupServices_Entry_9507  ; 94FB 20 07 95                  ..
+        jsr     BattleSetup_CompareSelectionStateWithFallback; 94FB 20 07 95     ..
         jmp     BattleSetupServices_Branch_9418 ; 94FE 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9501:
@@ -2828,8 +2828,8 @@ BattleSetupServices_Branch_9501:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_9418 ; 9504 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9507:
-        jsr     BattleSetupServices_Entry_953E  ; 9507 20 3E 95                  >.
+BattleSetup_CompareSelectionStateWithFallback:
+        jsr     BattleSetup_ClearModeByte       ; 9507 20 3E 95                  >.
         sta     $F9                             ; 950A 85 F9                    ..
         stx     $FB                             ; 950C 86 FB                    ..
         lda     #$07                            ; 950E A9 07                    ..
@@ -2860,7 +2860,7 @@ BattleSetupServices_Branch_9526:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9529 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_952A:
+BattleSetup_SwapSelectionBytes:
         ldx     $6278                           ; 952A AE 78 62                 .xb
         lda     $6279                           ; 952D AD 79 62                 .yb
         tay                                     ; 9530 A8                       .
@@ -2875,7 +2875,7 @@ BattleSetupServices_Entry_952A:
 ; ----------------------------------------------------------------------------
         rts                                     ; 953D 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_953E:
+BattleSetup_ClearModeByte:
         lda     #$00                            ; 953E A9 00                    ..
         sta     $6E                             ; 9540 85 6E                    .n
         lda     #$01                            ; 9542 A9 01                    ..
@@ -2884,7 +2884,7 @@ BattleSetupServices_Entry_953E:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9547 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9548:
+BattleSetup_LoadModeByteFromSelector8:
         lda     #$00                            ; 9548 A9 00                    ..
         sta     $6E                             ; 954A 85 6E                    .n
         lda     #$08                            ; 954C A9 08                    ..
@@ -2907,7 +2907,7 @@ BattleSetupServices_Branch_955A:
 ; ----------------------------------------------------------------------------
         rts                                     ; 955D 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_955E:
+BattleSetup_RefreshSelectionState:
         brk                                     ; 955E 00                       .
         db   $07,$6F,$43                     ; 955F 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -2982,7 +2982,7 @@ BattleSetupServices_Branch_95BD:
         lda     $627A                           ; 95BD AD 7A 62                 .zb
         and     #$08                            ; 95C0 29 08                    ).
         beq     BattleSetupServices_Branch_95C7 ; 95C2 F0 03                    ..
-        jsr     BattleSetupServices_Entry_9788  ; 95C4 20 88 97                  ..
+        jsr     BattleSetup_DispatchBankedSelectionByteToSetupServices; 95C4 20 88 97 ..
 BattleSetupServices_Branch_95C7:
         lda     $627A                           ; 95C7 AD 7A 62                 .zb
         and     #$04                            ; 95CA 29 04                    ).
@@ -3005,7 +3005,7 @@ BattleSetupServices_Branch_95DF:
         lda     $627A                           ; 95DF AD 7A 62                 .zb
         and     #$02                            ; 95E2 29 02                    ).
         beq     BattleSetupServices_Branch_95E9 ; 95E4 F0 03                    ..
-        jsr     BattleSetupServices_Entry_964F  ; 95E6 20 4F 96                  O.
+        jsr     BattleSetup_ValidateSelectionState; 95E6 20 4F 96                O.
 BattleSetupServices_Branch_95E9:
         lda     $627A                           ; 95E9 AD 7A 62                 .zb
         and     #$01                            ; 95EC 29 01                    ).
@@ -3041,7 +3041,7 @@ BattleSetupServices_Branch_9601:
 BattleSetupServices_Branch_9618:
         rts                                     ; 9618 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9619:
+BattleSetup_TestSelectionCode:
         lda     $6279                           ; 9619 AD 79 62                 .yb
         cmp     #$0C                            ; 961C C9 0C                    ..
         beq     BattleSetupServices_Branch_9638 ; 961E F0 18                    ..
@@ -3072,7 +3072,7 @@ BattleSetupServices_Branch_9638:
         sec                                     ; 963B 38                       8
         rts                                     ; 963C 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_963D:
+BattleSetup_TestSelectionThreshold:
         ldx     #$05                            ; 963D A2 05                    ..
         lda     $6279                           ; 963F AD 79 62                 .yb
         brk                                     ; 9642 00                       .
@@ -3090,18 +3090,18 @@ BattleSetupServices_Branch_964B:
 ; ----------------------------------------------------------------------------
         rts                                     ; 964E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_964F:
+BattleSetup_ValidateSelectionState:
         lda     SaveCurrentChapterMinus1        ; 964F AD 5A 61                 .Za
         cmp     #$02                            ; 9652 C9 02                    ..
         beq     BattleSetupServices_Branch_965E ; 9654 F0 08                    ..
-        jsr     BattleSetupServices_Entry_9619  ; 9656 20 19 96                  ..
+        jsr     BattleSetup_TestSelectionCode   ; 9656 20 19 96                  ..
         bcs     BattleSetupServices_Branch_9690 ; 9659 B0 35                    .5
-        jsr     BattleSetupServices_Entry_9662  ; 965B 20 62 96                  b.
+        jsr     BattleSetup_CountSelectionBits  ; 965B 20 62 96                  b.
 BattleSetupServices_Branch_965E:
-        jsr     BattleSetupServices_Entry_963D  ; 965E 20 3D 96                  =.
+        jsr     BattleSetup_TestSelectionThreshold; 965E 20 3D 96                =.
         rts                                     ; 9661 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9662:
+BattleSetup_CountSelectionBits:
         lda     #$00                            ; 9662 A9 00                    ..
         sta     $00                           ; 9664 85 00                    ..
         sta     $01                             ; 9666 85 01                    ..
@@ -3241,7 +3241,7 @@ BattleSetupServices_Branch_971C:
 ; ----------------------------------------------------------------------------
         rts                                     ; 971F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Branch_9720:
+BattleSetup_ReadIndexedByte:
         ldx     $6278                           ; 9720 AE 78 62                 .xb
         stx     $F9                             ; 9723 86 F9                    ..
         lda     #$07                            ; 9725 A9 07                    ..
@@ -3274,7 +3274,7 @@ BattleSetupServices_Branch_9740:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_9418 ; 9747 4C 18 94                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_974A:
+BattleSetup_ValidatePrimaryAndSecondarySelection:
         ldx     $6278                           ; 974A AE 78 62                 .xb
         lda     $6279                           ; 974D AD 79 62                 .yb
         brk                                     ; 9750 00                       .
@@ -3289,7 +3289,7 @@ BattleSetupServices_Entry_974A:
         brk                                     ; 975C 00                       .
         db   $07,$6F,$43                     ; 975D 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_9767  ; 9760 20 67 97                  g.
+        jsr     BattleSetup_ApplySelectionSideEffects; 9760 20 67 97             g.
         sec                                     ; 9763 38                       8
         rts                                     ; 9764 60                       `
 ; ----------------------------------------------------------------------------
@@ -3297,7 +3297,7 @@ BattleSetupServices_Branch_9765:
         clc                                     ; 9765 18                       .
         rts                                     ; 9766 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9767:
+BattleSetup_ApplySelectionSideEffects:
         brk                                     ; 9767 00                       .
         db   $12,$FB                         ; 9768 12 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -3312,7 +3312,7 @@ BattleSetupServices_Entry_9767:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9773 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9774:
+BattleSetup_ReadBankedSelectionByte:
         lda     #$21                            ; 9774 A9 21                    .!
         sta     $24                             ; 9776 85 24                    .$
         lda     #$10                            ; 9778 A9 10                    ..
@@ -3320,11 +3320,11 @@ BattleSetupServices_Entry_9774:
         ldx     #$00                            ; 977C A2 00                    ..
         jsr     UpperFixedEngine_Entry_C3CE     ; 977E 20 CE C3                  ..
         ldy     $6279                           ; 9781 AC 79 62                 .yb
-        jsr     UpperFixedEngine_Entry_C3EA     ; 9784 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 9784 20 EA C3                  ..
         rts                                     ; 9787 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9788:
-        jsr     BattleSetupServices_Entry_9774  ; 9788 20 74 97                  t.
+BattleSetup_DispatchBankedSelectionByteToSetupServices:
+        jsr     BattleSetup_ReadBankedSelectionByte; 9788 20 74 97               t.
         tax                                     ; 978B AA                       .
         beq     BattleSetupServices_Branch_97A8 ; 978C F0 1A                    ..
         dex                                     ; 978E CA                       .
@@ -3358,13 +3358,13 @@ BattleSetupServices_Branch_97A1:
 BattleSetupServices_Branch_97A8:
         rts                                     ; 97A8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_97A9:
+BattleSetup_RunEncounterIntroSequence:
         jsr     UpperFixedEngine_Entry_D1F3     ; 97A9 20 F3 D1                  ..
         brk                                     ; 97AC 00                       .
         db   $2A,$FB                         ; 97AD 2A FB                    *.
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_9AF7  ; 97AF 20 F7 9A                  ..
-        jsr     BattleSetupServices_Entry_97BC  ; 97B2 20 BC 97                  ..
+        jsr     BattleSetup_RunEncounterSpritePlacementLoop; 97AF 20 F7 9A       ..
+        jsr     BattleSetup_AnimateEncounterScene; 97B2 20 BC 97                 ..
         brk                                     ; 97B5 00                       .
         db   $07,$9F                         ; 97B6 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -3373,7 +3373,7 @@ BattleSetupServices_Entry_97A9:
 ; ----------------------------------------------------------------------------
         rts                                     ; 97BB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_97BC:
+BattleSetup_AnimateEncounterScene:
         lda     PlayerLocalX                    ; 97BC A5 44                    .D
         sec                                     ; 97BE 38                       8
         sbc     #$0B                            ; 97BF E9 0B                    ..
@@ -3382,10 +3382,10 @@ BattleSetupServices_Entry_97BC:
         sec                                     ; 97C5 38                       8
         sbc     #$0B                            ; 97C6 E9 0B                    ..
         sta     $08                             ; 97C8 85 08                    ..
-        jsr     BattleSetupServices_Entry_985A  ; 97CA 20 5A 98                  Z.
-        jsr     BattleSetupServices_Entry_9887  ; 97CD 20 87 98                  ..
+        jsr     BattleSetup_PrimeEncounterSpriteBuffer; 97CA 20 5A 98            Z.
+        jsr     BattleSetup_RunEncounterIntroRevealLoop; 97CD 20 87 98           ..
         ldx     #$06                            ; 97D0 A2 06                    ..
-        jsr     BattleSetupServices_Entry_98F6  ; 97D2 20 F6 98                  ..
+        jsr     BattleSetup_LoadEncounterSpriteFrame; 97D2 20 F6 98              ..
         jsr     UpperFixedEngine_Entry_C5C5     ; 97D5 20 C5 C5                  ..
         lda     #$3C                            ; 97D8 A9 3C                    .<
         jsr     UpperFixedEngine_Entry_C78C     ; 97DA 20 8C C7                  ..
@@ -3393,41 +3393,41 @@ BattleSetupServices_Entry_97BC:
         sta     $0200,y                         ; 97DF 99 00 02                 ...
         sta     $0203,y                         ; 97E2 99 03 02                 ...
         ldx     #$06                            ; 97E5 A2 06                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 97E7 20 0C C9                  ..
-        jsr     BattleSetupServices_Entry_991A  ; 97EA 20 1A 99                  ..
+        jsr     WaitFrames                      ; 97E7 20 0C C9                  ..
+        jsr     BattleSetup_CopyEncounterSpriteOamTemplate; 97EA 20 1A 99        ..
         jsr     UpperFixedEngine_Entry_C5BF     ; 97ED 20 BF C5                  ..
         lda     #$03                            ; 97F0 A9 03                    ..
         sta     $05                             ; 97F2 85 05                    ..
         ldx     #$00                            ; 97F4 A2 00                    ..
-        jsr     BattleSetupServices_Entry_993E  ; 97F6 20 3E 99                  >.
-        jsr     UpperFixedEngine_Entry_C626     ; 97F9 20 26 C6                  &.
+        jsr     BattleSetup_QueueEncounterAttributeDiffs; 97F6 20 3E 99          >.
+        jsr     RequestPpuUpdate                ; 97F9 20 26 C6                  &.
         ldx     #$06                            ; 97FC A2 06                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 97FE 20 0C C9                  ..
-        jsr     BattleSetupServices_Entry_98AD  ; 9801 20 AD 98                  ..
+        jsr     WaitFrames                      ; 97FE 20 0C C9                  ..
+        jsr     BattleSetup_AnimateEncounterFrameSequence; 9801 20 AD 98         ..
         ldx     #$01                            ; 9804 A2 01                    ..
         stx     $05                             ; 9806 86 05                    ..
         inx                                     ; 9808 E8                       .
         inx                                     ; 9809 E8                       .
         stx     $06                             ; 980A 86 06                    ..
 BattleSetupServices_Branch_980C:
-        jsr     BattleSetupServices_Entry_993E  ; 980C 20 3E 99                  >.
+        jsr     BattleSetup_QueueEncounterAttributeDiffs; 980C 20 3E 99          >.
         lda     $06                             ; 980F A5 06                    ..
         cmp     #$08                            ; 9811 C9 08                    ..
         bne     BattleSetupServices_Branch_981E ; 9813 D0 09                    ..
-        jsr     UpperFixedEngine_Entry_C626     ; 9815 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 9815 20 26 C6                  &.
         jsr     WaitForNmi                      ; 9818 20 74 FF                  t.
-        jsr     BattleSetupServices_Entry_982F  ; 981B 20 2F 98                  /.
+        jsr     BattleSetup_QueueEncounterAttributeSweep; 981B 20 2F 98          /.
 BattleSetupServices_Branch_981E:
-        jsr     UpperFixedEngine_Entry_C626     ; 981E 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 981E 20 26 C6                  &.
         ldx     #$05                            ; 9821 A2 05                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9823 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9823 20 0C C9                  ..
         inc     $06                             ; 9826 E6 06                    ..
         ldx     $06                             ; 9828 A6 06                    ..
         cpx     #$09                            ; 982A E0 09                    ..
         bne     BattleSetupServices_Branch_980C ; 982C D0 DE                    ..
         rts                                     ; 982E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_982F:
+BattleSetup_QueueEncounterAttributeSweep:
         lda     $08                             ; 982F A5 08                    ..
         bne     BattleSetupServices_Branch_9844 ; 9831 D0 11                    ..
         sta     $01                             ; 9833 85 01                    ..
@@ -3435,7 +3435,7 @@ BattleSetupServices_Entry_982F:
         sta     $00                           ; 9837 85 00                    ..
 BattleSetupServices_Branch_9839:
         lda     $05                             ; 9839 A5 05                    ..
-        jsr     UpperFixedEngine_Entry_C727     ; 983B 20 27 C7                  '.
+        jsr     QueueNametableAttributeUpdate   ; 983B 20 27 C7                  '.
         dec     $00                           ; 983E C6 00                    ..
         dec     $00                           ; 9840 C6 00                    ..
         bpl     BattleSetupServices_Branch_9839 ; 9842 10 F5                    ..
@@ -3447,14 +3447,14 @@ BattleSetupServices_Branch_9844:
         sta     $01                             ; 984C 85 01                    ..
 BattleSetupServices_Branch_984E:
         lda     $05                             ; 984E A5 05                    ..
-        jsr     UpperFixedEngine_Entry_C727     ; 9850 20 27 C7                  '.
+        jsr     QueueNametableAttributeUpdate   ; 9850 20 27 C7                  '.
         dec     $01                             ; 9853 C6 01                    ..
         dec     $01                             ; 9855 C6 01                    ..
         bpl     BattleSetupServices_Branch_984E ; 9857 10 F5                    ..
 BattleSetupServices_Branch_9859:
         rts                                     ; 9859 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_985A:
+BattleSetup_PrimeEncounterSpriteBuffer:
         lda     #$0F                            ; 985A A9 0F                    ..
         ldx     #$03                            ; 985C A2 03                    ..
 BattleSetupServices_Branch_985E:
@@ -3465,7 +3465,7 @@ BattleSetupServices_Branch_985E:
         jsr     WaitForNmi                      ; 9867 20 74 FF                  t.
         rts                                     ; 986A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_986B:
+BattleSetup_QueueFullEncounterAttributeRefresh:
         ldx     #$1F                            ; 986B A2 1F                    ..
         stx     $00                           ; 986D 86 00                    ..
 BattleSetupServices_Branch_986F:
@@ -3473,49 +3473,49 @@ BattleSetupServices_Branch_986F:
         stx     $01                             ; 9871 86 01                    ..
 BattleSetupServices_Branch_9873:
         lda     #$02                            ; 9873 A9 02                    ..
-        jsr     UpperFixedEngine_Entry_C727     ; 9875 20 27 C7                  '.
+        jsr     QueueNametableAttributeUpdate   ; 9875 20 27 C7                  '.
         dec     $01                             ; 9878 C6 01                    ..
         bpl     BattleSetupServices_Branch_9873 ; 987A 10 F7                    ..
-        jsr     UpperFixedEngine_Entry_C626     ; 987C 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 987C 20 26 C6                  &.
         jsr     WaitForNmi                      ; 987F 20 74 FF                  t.
         dec     $00                           ; 9882 C6 00                    ..
         bpl     BattleSetupServices_Branch_986F ; 9884 10 E9                    ..
         rts                                     ; 9886 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9887:
+BattleSetup_RunEncounterIntroRevealLoop:
         lda     #$02                            ; 9887 A9 02                    ..
         sta     $05                             ; 9889 85 05                    ..
         ldx     #$09                            ; 988B A2 09                    ..
         stx     $06                             ; 988D 86 06                    ..
-        jsr     BattleSetupServices_Entry_982F  ; 988F 20 2F 98                  /.
-        jsr     UpperFixedEngine_Entry_C626     ; 9892 20 26 C6                  &.
-        jsr     BattleSetupServices_Entry_9B26  ; 9895 20 26 9B                  &.
+        jsr     BattleSetup_QueueEncounterAttributeSweep; 988F 20 2F 98          /.
+        jsr     RequestPpuUpdate                ; 9892 20 26 C6                  &.
+        jsr     BattleSetup_AdvanceEncounterSpriteTileFrame; 9895 20 26 9B       &.
 BattleSetupServices_Branch_9898:
         dec     $06                             ; 9898 C6 06                    ..
         beq     BattleSetupServices_Branch_98AC ; 989A F0 10                    ..
         ldx     $06                             ; 989C A6 06                    ..
-        jsr     BattleSetupServices_Entry_993E  ; 989E 20 3E 99                  >.
-        jsr     UpperFixedEngine_Entry_C626     ; 98A1 20 26 C6                  &.
+        jsr     BattleSetup_QueueEncounterAttributeDiffs; 989E 20 3E 99          >.
+        jsr     RequestPpuUpdate                ; 98A1 20 26 C6                  &.
         ldx     #$05                            ; 98A4 A2 05                    ..
-        jsr     BattleSetupServices_Entry_9B1C  ; 98A6 20 1C 9B                  ..
+        jsr     BattleSetup_RunEncounterSpritePulse; 98A6 20 1C 9B               ..
         jmp     BattleSetupServices_Branch_9898 ; 98A9 4C 98 98                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_98AC:
         rts                                     ; 98AC 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_98AD:
+BattleSetup_AnimateEncounterFrameSequence:
         ldy     #$00                            ; 98AD A0 00                    ..
 BattleSetupServices_Branch_98AF:
         sty     $0A                             ; 98AF 84 0A                    ..
         lda     $98EA,y                         ; 98B1 B9 EA 98                 ...
         sta     $05                             ; 98B4 85 05                    ..
         ldx     $98DE,y                         ; 98B6 BE DE 98                 ...
-        jsr     BattleSetupServices_Entry_993E  ; 98B9 20 3E 99                  >.
-        jsr     UpperFixedEngine_Entry_C626     ; 98BC 20 26 C6                  &.
+        jsr     BattleSetup_QueueEncounterAttributeDiffs; 98B9 20 3E 99          >.
+        jsr     RequestPpuUpdate                ; 98BC 20 26 C6                  &.
         jsr     WaitForNmi                      ; 98BF 20 74 FF                  t.
         ldy     $0A                             ; 98C2 A4 0A                    ..
         ldx     $98D2,y                         ; 98C4 BE D2 98                 ...
-        jsr     BattleSetupServices_Entry_98F6  ; 98C7 20 F6 98                  ..
+        jsr     BattleSetup_LoadEncounterSpriteFrame; 98C7 20 F6 98              ..
         ldy     $0A                             ; 98CA A4 0A                    ..
         iny                                     ; 98CC C8                       .
         cpy     #$0C                            ; 98CD C0 0C                    ..
@@ -3529,7 +3529,7 @@ BattleSetupServices_Branch_98AF:
         db   $01,$01,$02,$02,$01,$01,$01,$02 ; 98EA 01 01 02 02 01 01 01 02  ........
         db   $02,$02,$01,$01                 ; 98F2 02 02 01 01              ....
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_98F6:
+BattleSetup_LoadEncounterSpriteFrame:
         ldy     #$02                            ; 98F6 A0 02                    ..
 BattleSetupServices_Branch_98F8:
         lda     $9911,x                         ; 98F8 BD 11 99                 ...
@@ -3542,13 +3542,13 @@ BattleSetupServices_Branch_98F8:
         jsr     UpperFixedEngine_Entry_C5B9     ; 9908 20 B9 C5                  ..
         ldx     #$06                            ; 990B A2 06                    ..
 L990E = $+ 1
-        jsr     UpperFixedEngine_Entry_C90C     ; 990D 20 0C C9                  ..
+        jsr     WaitFrames                      ; 990D 20 0C C9                  ..
         rts                                     ; 9910 60                       `
 ; ----------------------------------------------------------------------------
         db   $05,$28,$17,$15,$38,$27,$04,$18 ; 9911 05 28 17 15 38 27 04 18  .(..8'..
         db   $07                             ; 9919 07                       .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_991A:
+BattleSetup_CopyEncounterSpriteOamTemplate:
         ldy     #$18                            ; 991A A0 18                    ..
 BattleSetupServices_Branch_991C:
         lda     $9925,y                         ; 991C B9 25 99                 .%.
@@ -3561,7 +3561,7 @@ BattleSetupServices_Branch_991C:
         db   $0F,$07,$18,$04,$30,$12,$19,$30 ; 992E 0F 07 18 04 30 12 19 30  ....0..0
         db   $17,$26,$30,$24,$13,$30,$26,$04 ; 9936 17 26 30 24 13 30 26 04  .&0$.0&.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_993E:
+BattleSetup_QueueEncounterAttributeDiffs:
         lda     $99B6,x                         ; 993E BD B6 99                 ...
         sta     $02                           ; 9941 85 02                    ..
         txa                                     ; 9943 8A                       .
@@ -3606,10 +3606,10 @@ BattleSetupServices_Branch_9968:
         ora     $08                             ; 9984 05 08                    ..
         beq     BattleSetupServices_Branch_999B ; 9986 F0 13                    ..
         lda     $05                             ; 9988 A5 05                    ..
-        jsr     UpperFixedEngine_Entry_C727     ; 998A 20 27 C7                  '.
+        jsr     QueueNametableAttributeUpdate   ; 998A 20 27 C7                  '.
         dec     $09                             ; 998D C6 09                    ..
         bne     BattleSetupServices_Branch_999B ; 998F D0 0A                    ..
-        jsr     UpperFixedEngine_Entry_C626     ; 9991 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 9991 20 26 C6                  &.
         jsr     WaitForNmi                      ; 9994 20 74 FF                  t.
         lda     #$1E                            ; 9997 A9 1E                    ..
         sta     $09                             ; 9999 85 09                    ..
@@ -3665,17 +3665,17 @@ BattleSetupServices_Branch_999B:
         db   $E7,$E6,$E5,$E4,$E3,$E2,$F2,$F1 ; 9AEE E7 E6 E5 E4 E3 E2 F2 F1  ........
         db   $01                             ; 9AF6 01                       .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9AF7:
-        jsr     BattleSetupServices_Entry_9B41  ; 9AF7 20 41 9B                  A.
-        jsr     BattleSetupServices_Entry_9B88  ; 9AFA 20 88 9B                  ..
+BattleSetup_RunEncounterSpritePlacementLoop:
+        jsr     BattleSetup_ComputeEncounterOffsetMask; 9AF7 20 41 9B            A.
+        jsr     BattleSetup_CopyEncounterSpriteToOam; 9AFA 20 88 9B              ..
 BattleSetupServices_Branch_9AFD:
         ldx     $02                           ; 9AFD A6 02                    ..
         lda     $9BDD,x                         ; 9AFF BD DD 9B                 ...
         beq     BattleSetupServices_Branch_9B1B ; 9B02 F0 17                    ..
-        jsr     BattleSetupServices_Entry_9BB3  ; 9B04 20 B3 9B                  ..
+        jsr     BattleSetup_AdjustEncounterSpritePosition; 9B04 20 B3 9B         ..
         jsr     WaitForNmi                      ; 9B07 20 74 FF                  t.
         ldx     #$03                            ; 9B0A A2 03                    ..
-        jsr     BattleSetupServices_Entry_9B1C  ; 9B0C 20 1C 9B                  ..
+        jsr     BattleSetup_RunEncounterSpritePulse; 9B0C 20 1C 9B               ..
         bit     $03                             ; 9B0F 24 03                    $.
         bmi     BattleSetupServices_Branch_9B17 ; 9B11 30 04                    0.
         inc     $02                           ; 9B13 E6 02                    ..
@@ -3686,15 +3686,15 @@ BattleSetupServices_Branch_9B17:
 BattleSetupServices_Branch_9B1B:
         rts                                     ; 9B1B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9B1C:
+BattleSetup_RunEncounterSpritePulse:
         stx     $0A                             ; 9B1C 86 0A                    ..
 BattleSetupServices_Branch_9B1E:
-        jsr     BattleSetupServices_Entry_9B26  ; 9B1E 20 26 9B                  &.
+        jsr     BattleSetup_AdvanceEncounterSpriteTileFrame; 9B1E 20 26 9B       &.
         dec     $0A                             ; 9B21 C6 0A                    ..
         bne     BattleSetupServices_Branch_9B1E ; 9B23 D0 F9                    ..
         rts                                     ; 9B25 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9B26:
+BattleSetup_AdvanceEncounterSpriteTileFrame:
         lda     #$3C                            ; 9B26 A9 3C                    .<
         jsr     UpperFixedEngine_Entry_C78C     ; 9B28 20 8C C7                  ..
         tya                                     ; 9B2B 98                       .
@@ -3710,7 +3710,7 @@ BattleSetupServices_Branch_9B3D:
         jsr     WaitForNmi                      ; 9B3D 20 74 FF                  t.
         rts                                     ; 9B40 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9B41:
+BattleSetup_ComputeEncounterOffsetMask:
         ldx     #$00                            ; 9B41 A2 00                    ..
         stx     $00                           ; 9B43 86 00                    ..
         stx     $01                             ; 9B45 86 01                    ..
@@ -3756,10 +3756,10 @@ BattleSetupServices_Branch_9B7D:
 ; ----------------------------------------------------------------------------
         db   $66,$67,$B6,$B7,$70,$71,$08,$09 ; 9B80 66 67 B6 B7 70 71 08 09  fg..pq..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9B88:
+BattleSetup_CopyEncounterSpriteToOam:
         ldx     #$07                            ; 9B88 A2 07                    ..
         lda     $6FE6,x                         ; 9B8A BD E6 6F                 ..o
-        jsr     UpperFixedEngine_Entry_D864     ; 9B8D 20 64 D8                  d.
+        jsr     SelectEntitySpriteDefinition    ; 9B8D 20 64 D8                  d.
         ldy     #$00                            ; 9B90 A0 00                    ..
         lda     ($4F),y                         ; 9B92 B1 4F                    .O
         sta     $0E                             ; 9B94 85 0E                    ..
@@ -3779,7 +3779,7 @@ BattleSetupServices_Entry_9B88:
         sta     $0201,y                         ; 9BAF 99 01 02                 ...
         rts                                     ; 9BB2 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9BB3:
+BattleSetup_AdjustEncounterSpritePosition:
         pha                                     ; 9BB3 48                       H
         pha                                     ; 9BB4 48                       H
         lda     #$3C                            ; 9BB5 A9 3C                    .<
@@ -3810,7 +3810,7 @@ BattleSetupServices_Entry_9BB3:
         db   $37,$36,$35,$24,$21,$22,$23,$00 ; 9BED 37 36 35 24 21 22 23 00  765$!"#.
         db   $00,$01,$02,$04,$00,$FF,$FE,$FC ; 9BF5 00 01 02 04 00 FF FE FC  ........
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9BFD:
+BattleSetup_BuildCombatantPositionTable:
         brk                                     ; 9BFD 00                       .
         db   $62,$23,$08                     ; 9BFE 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
@@ -3827,13 +3827,13 @@ BattleSetupServices_Branch_9C08:
         bvc     BattleSetupServices_Branch_9C17 ; 9C13 50 02                    P.
         lda     #$08                            ; 9C15 A9 08                    ..
 BattleSetupServices_Branch_9C17:
-        jsr     BattleSetupServices_Entry_9D41  ; 9C17 20 41 9D                  A.
+        jsr     BattleSetup_WriteCombatantPositionTriplet; 9C17 20 41 9D         A.
         inc     $6E                             ; 9C1A E6 6E                    .n
         dec     $6E3C                           ; 9C1C CE 3C 6E                 .<n
         bne     BattleSetupServices_Branch_9C08 ; 9C1F D0 E7                    ..
         rts                                     ; 9C21 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9C22:
+BattleSetup_ResolveCombatantPositionDelta:
         brk                                     ; 9C22 00                       .
         db   $0F,$43,$08                     ; 9C23 0F 43 08                 .C.
 ; ----------------------------------------------------------------------------
@@ -3863,7 +3863,7 @@ BattleSetupServices_Entry_9C22:
 BattleSetupServices_Branch_9C4F:
         rts                                     ; 9C4F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9C50:
+BattleSetup_ScanCombatantsForPositionMatches:
         brk                                     ; 9C50 00                       .
         db   $62,$23,$08                     ; 9C51 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
@@ -3878,7 +3878,7 @@ BattleSetupServices_Branch_9C5D:
         cmp     #$63                            ; 9C61 C9 63                    .c
         beq     BattleSetupServices_Branch_9C6A ; 9C63 F0 05                    ..
         sta     $0A                             ; 9C65 85 0A                    ..
-        jsr     BattleSetupServices_Entry_9D29  ; 9C67 20 29 9D                  ).
+        jsr     BattleSetup_ScanPartyCombatantSlots; 9C67 20 29 9D               ).
 BattleSetupServices_Branch_9C6A:
         inc     $6E                             ; 9C6A E6 6E                    .n
         dec     $6E3C                           ; 9C6C CE 3C 6E                 .<n
@@ -3886,12 +3886,12 @@ BattleSetupServices_Branch_9C6A:
 BattleSetupServices_Branch_9C71:
         rts                                     ; 9C71 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9C72:
+BattleSetup_FilterCombatantsByPosition:
         lda     #$00                            ; 9C72 A9 00                    ..
         sta     $6E03                           ; 9C74 8D 03 6E                 ..n
         lda     $6BDE                           ; 9C77 AD DE 6B                 ..k
         bpl     BattleSetupServices_Branch_9C7F ; 9C7A 10 03                    ..
-        jsr     BattleSetupServices_Entry_9D29  ; 9C7C 20 29 9D                  ).
+        jsr     BattleSetup_ScanPartyCombatantSlots; 9C7C 20 29 9D               ).
 BattleSetupServices_Branch_9C7F:
         brk                                     ; 9C7F 00                       .
         db   $62,$23,$09                     ; 9C80 62 23 09                 b#.
@@ -3922,14 +3922,14 @@ BattleSetupServices_Branch_9C8C:
         lda     $74                             ; 9CA8 A5 74                    .t
         cmp     $6E1B,x                         ; 9CAA DD 1B 6E                 ..n
         bcc     BattleSetupServices_Branch_9CC1 ; 9CAD 90 12                    ..
-        bne     BattleSetupServices_Entry_9CE5  ; 9CAF D0 34                    .4
+        bne     BattleSetup_CommitCombatantMatchState; 9CAF D0 34               .4
         lda     $73                             ; 9CB1 A5 73                    .s
         cmp     $6E1A,x                         ; 9CB3 DD 1A 6E                 ..n
         bcc     BattleSetupServices_Branch_9CC1 ; 9CB6 90 09                    ..
-        bne     BattleSetupServices_Entry_9CE5  ; 9CB8 D0 2B                    .+
+        bne     BattleSetup_CommitCombatantMatchState; 9CB8 D0 2B               .+
         lda     $72                             ; 9CBA A5 72                    .r
         cmp     $6E19,x                         ; 9CBC DD 19 6E                 ..n
-        bcs     BattleSetupServices_Entry_9CE5  ; 9CBF B0 24                    .$
+        bcs     BattleSetup_CommitCombatantMatchState; 9CBF B0 24               .$
 BattleSetupServices_Branch_9CC1:
         inc     $6E                             ; 9CC1 E6 6E                    .n
         dec     $6E3C                           ; 9CC3 CE 3C 6E                 .<n
@@ -3955,7 +3955,7 @@ BattleSetupServices_Branch_9CE3:
         clc                                     ; 9CE3 18                       .
         rts                                     ; 9CE4 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9CE5:
+BattleSetup_CommitCombatantMatchState:
         lda     $6BDE                           ; 9CE5 AD DE 6B                 ..k
         bmi     BattleSetupServices_Branch_9D0B ; 9CE8 30 21                    0!
         lda     $6E03                           ; 9CEA AD 03 6E                 ..n
@@ -3987,15 +3987,15 @@ BattleSetupServices_Branch_9D0B:
         brk                                     ; 9D11 00                       .
         db   $6C,$23,$09                     ; 9D12 6C 23 09                 l#.
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_9D6D  ; 9D15 20 6D 9D                  m.
+        jsr     BattleSetup_PrepareCombatantMatchSelection; 9D15 20 6D 9D        m.
         ldy     $6E0C                           ; 9D18 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; 9D1B B9 6A 61                 .ja
         and     #$7F                            ; 9D1E 29 7F                    ).
-        jsr     BattleSetupServices_Entry_9D41  ; 9D20 20 41 9D                  A.
+        jsr     BattleSetup_WriteCombatantPositionTriplet; 9D20 20 41 9D         A.
         inc     $6E03                           ; 9D23 EE 03 6E                 ..n
         jmp     BattleSetupServices_Branch_9C8C ; 9D26 4C 8C 9C                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9D29:
+BattleSetup_ScanPartyCombatantSlots:
         ldx     #$07                            ; 9D29 A2 07                    ..
 BattleSetupServices_Branch_9D2B:
         txa                                     ; 9D2B 8A                       .
@@ -4006,14 +4006,14 @@ BattleSetupServices_Branch_9D2B:
         bvc     BattleSetupServices_Branch_9D38 ; 9D34 50 02                    P.
         lda     #$08                            ; 9D36 A9 08                    ..
 BattleSetupServices_Branch_9D38:
-        jsr     BattleSetupServices_Entry_9D41  ; 9D38 20 41 9D                  A.
+        jsr     BattleSetup_WriteCombatantPositionTriplet; 9D38 20 41 9D         A.
         pla                                     ; 9D3B 68                       h
         tax                                     ; 9D3C AA                       .
         dex                                     ; 9D3D CA                       .
         bpl     BattleSetupServices_Branch_9D2B ; 9D3E 10 EB                    ..
         rts                                     ; 9D40 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9D41:
+BattleSetup_WriteCombatantPositionTriplet:
         brk                                     ; 9D41 00                       .
         db   $11,$3F                         ; 9D42 11 3F                    .?
 ; ----------------------------------------------------------------------------
@@ -4025,7 +4025,7 @@ BattleSetupServices_Entry_9D41:
         inc     $0A                             ; 9D4E E6 0A                    ..
         lda     #$00                            ; 9D50 A9 00                    ..
         sta     $0B                             ; 9D52 85 0B                    ..
-        jsr     BattleSetupServices_Entry_9F7C  ; 9D54 20 7C 9F                  |.
+        jsr     BattleSetup_LoadScaledSelectionDescriptor; 9D54 20 7C 9F         |.
         lda     $09                             ; 9D57 A5 09                    ..
         asl     a                               ; 9D59 0A                       .
         adc     $09                             ; 9D5A 65 09                    e.
@@ -4039,7 +4039,7 @@ BattleSetupServices_Entry_9D41:
 BattleSetupServices_Branch_9D6C:
         rts                                     ; 9D6C 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9D6D:
+BattleSetup_PrepareCombatantMatchSelection:
         brk                                     ; 9D6D 00                       .
         db   $01,$FB                         ; 9D6E 01 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4049,22 +4049,22 @@ BattleSetupServices_Entry_9D6D:
         brk                                     ; 9D73 00                       .
         db   $09,$9F                         ; 9D74 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_9D7A  ; 9D76 20 7A 9D                  z.
+        jsr     BattleSetup_RunCombatantMatchSelection; 9D76 20 7A 9D            z.
         rts                                     ; 9D79 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9D7A:
-        jsr     BattleSetupServices_Entry_9D83  ; 9D7A 20 83 9D                  ..
-        jsr     BattleSetupServices_Entry_9DA6  ; 9D7D 20 A6 9D                  ..
+BattleSetup_RunCombatantMatchSelection:
+        jsr     BattleSetup_SaveCombatantSelectionContext; 9D7A 20 83 9D         ..
+        jsr     BattleSetup_FilterCombatantsByCoordinateBounds; 9D7D 20 A6 9D    ..
         jmp     BattleSetupServices_Branch_9E76 ; 9D80 4C 76 9E                 Lv.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9D83:
+BattleSetup_SaveCombatantSelectionContext:
         brk                                     ; 9D83 00                       .
         db   $2E,$0F                         ; 9D84 2E 0F                    ..
 ; ----------------------------------------------------------------------------
         lda     $72                             ; 9D86 A5 72                    .r
         sta     $F9                             ; 9D88 85 F9                    ..
         ldx     #$00                            ; 9D8A A2 00                    ..
-        jsr     BattleSetupServices_Entry_9E40  ; 9D8C 20 40 9E                  @.
+        jsr     BattleSetup_InvokeIndexedSelectionService; 9D8C 20 40 9E         @.
         lda     $09                             ; 9D8F A5 09                    ..
         pha                                     ; 9D91 48                       H
         lda     $0A                             ; 9D92 A5 0A                    ..
@@ -4082,7 +4082,7 @@ BattleSetupServices_Entry_9D83:
         sta     $09                             ; 9DA3 85 09                    ..
         rts                                     ; 9DA5 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9DA6:
+BattleSetup_FilterCombatantsByCoordinateBounds:
         ldx     #$01                            ; 9DA6 A2 01                    ..
         stx     $6E3D                           ; 9DA8 8E 3D 6E                 .=n
         dex                                     ; 9DAB CA                       .
@@ -4096,7 +4096,7 @@ BattleSetupServices_Branch_9DAF:
         bcs     BattleSetupServices_Branch_9E2F ; 9DBA B0 73                    .s
 BattleSetupServices_Branch_9DBC:
         sta     $0B                             ; 9DBC 85 0B                    ..
-        jsr     BattleSetupServices_Entry_9F7C  ; 9DBE 20 7C 9F                  |.
+        jsr     BattleSetup_LoadScaledSelectionDescriptor; 9DBE 20 7C 9F         |.
         lda     $6E3E                           ; 9DC1 AD 3E 6E                 .>n
         asl     a                               ; 9DC4 0A                       .
         tax                                     ; 9DC5 AA                       .
@@ -4139,7 +4139,7 @@ BattleSetupServices_Branch_9DF9:
         lda     $8A                             ; 9DFE A5 8A                    ..
         jsr     MultiplyPointerWord             ; 9E00 20 27 C8                  '.
         lda     #$79                            ; 9E03 A9 79                    .y
-        jsr     UpperFixedEngine_Entry_C851     ; 9E05 20 51 C8                  Q.
+        jsr     DividePointerWord               ; 9E05 20 51 C8                  Q.
         lda     $04                             ; 9E08 A5 04                    ..
 BattleSetupServices_Branch_9E0A:
         ldx     $0B                             ; 9E0A A6 0B                    ..
@@ -4163,7 +4163,7 @@ BattleSetupServices_Branch_9E16:
         db   $09,$03                         ; 9E27 09 03                    ..
 ; ----------------------------------------------------------------------------
         ldx     $6E3D                           ; 9E29 AE 3D 6E                 .=n
-        jsr     BattleSetupServices_Entry_9E40  ; 9E2C 20 40 9E                  @.
+        jsr     BattleSetup_InvokeIndexedSelectionService; 9E2C 20 40 9E         @.
 BattleSetupServices_Branch_9E2F:
         inc     $6E3D                           ; 9E2F EE 3D 6E                 .=n
         inc     $6E3E                           ; 9E32 EE 3E 6E                 .>n
@@ -4175,7 +4175,7 @@ BattleSetupServices_Branch_9E2F:
 BattleSetupServices_Branch_9E3F:
         rts                                     ; 9E3F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9E40:
+BattleSetup_InvokeIndexedSelectionService:
         lda     $09                             ; 9E40 A5 09                    ..
         pha                                     ; 9E42 48                       H
         lda     $0A                             ; 9E43 A5 0A                    ..
@@ -4212,13 +4212,13 @@ BattleSetupServices_Branch_9E76:
         lda     $09                             ; 9E76 A5 09                    ..
         cmp     #$05                            ; 9E78 C9 05                    ..
         bcs     BattleSetupServices_Branch_9E85 ; 9E7A B0 09                    ..
-        jsr     BattleSetupServices_Entry_9F4C  ; 9E7C 20 4C 9F                  L.
-        jsr     BattleSetupServices_Entry_9F33  ; 9E7F 20 33 9F                  3.
-        jsr     BattleSetupServices_Entry_9E86  ; 9E82 20 86 9E                  ..
+        jsr     BattleSetup_CountSelectionBoundHits; 9E7C 20 4C 9F               L.
+        jsr     BattleSetup_LoadSelectionTablePointers; 9E7F 20 33 9F            3.
+        jsr     BattleSetup_ScanCombatantMaskForMatches; 9E82 20 86 9E           ..
 BattleSetupServices_Branch_9E85:
         rts                                     ; 9E85 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9E86:
+BattleSetup_ScanCombatantMaskForMatches:
         lda     #$00                            ; 9E86 A9 00                    ..
         sta     $7B                             ; 9E88 85 7B                    .{
         sta     $8C                             ; 9E8A 85 8C                    ..
@@ -4240,7 +4240,7 @@ BattleSetupServices_Branch_9E98:
         db   $6D,$23,$09                     ; 9EA5 6D 23 09                 m#.
 ; ----------------------------------------------------------------------------
         bcs     BattleSetupServices_Branch_9EAD ; 9EA8 B0 03                    ..
-        jsr     BattleSetupServices_Entry_9EC5  ; 9EAA 20 C5 9E                  ..
+        jsr     BattleSetup_EvaluatePackedSelectionCandidate; 9EAA 20 C5 9E      ..
 BattleSetupServices_Branch_9EAD:
         inc     $7B                             ; 9EAD E6 7B                    .{
 BattleSetupServices_Branch_9EAF:
@@ -4258,7 +4258,7 @@ BattleSetupServices_Branch_9EAF:
 BattleSetupServices_Branch_9EC4:
         rts                                     ; 9EC4 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9EC5:
+BattleSetup_EvaluatePackedSelectionCandidate:
         ldy     $7B                             ; 9EC5 A4 7B                    .{
         lda     ($02),y                       ; 9EC7 B1 02                    ..
         and     #$7F                            ; 9EC9 29 7F                    ).
@@ -4287,7 +4287,7 @@ BattleSetupServices_Branch_9EF2:
         rts                                     ; 9EF2 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9EF3:
-        jsr     UpperFixedEngine_Entry_C891     ; 9EF3 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9EF3 20 91 C8                  ..
         tay                                     ; 9EF6 A8                       .
         bmi     BattleSetupServices_Branch_9EF2 ; 9EF7 30 F9                    0.
 BattleSetupServices_Branch_9EF9:
@@ -4312,7 +4312,7 @@ BattleSetupServices_Branch_9EF9:
         pha                                     ; 9F16 48                       H
         lda     $0A                             ; 9F17 A5 0A                    ..
         pha                                     ; 9F19 48                       H
-        jsr     BattleSetupServices_Entry_9E40  ; 9F1A 20 40 9E                  @.
+        jsr     BattleSetup_InvokeIndexedSelectionService; 9F1A 20 40 9E         @.
         pla                                     ; 9F1D 68                       h
         sta     $0A                             ; 9F1E 85 0A                    ..
         pla                                     ; 9F20 68                       h
@@ -4329,7 +4329,7 @@ BattleSetupServices_Branch_9EF9:
         sta     $7B                             ; 9F30 85 7B                    .{
         rts                                     ; 9F32 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9F33:
+BattleSetup_LoadSelectionTablePointers:
         lda     $09                             ; 9F33 A5 09                    ..
         asl     a                               ; 9F35 0A                       .
         tax                                     ; 9F36 AA                       .
@@ -4343,12 +4343,12 @@ BattleSetupServices_Entry_9F33:
         sta     $03                             ; 9F49 85 03                    ..
         rts                                     ; 9F4B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9F4C:
+BattleSetup_CountSelectionBoundHits:
         lda     #$00                            ; 9F4C A9 00                    ..
         sta     $6DFF                           ; 9F4E 8D FF 6D                 ..m
         lda     #$04                            ; 9F51 A9 04                    ..
         sta     $0B                             ; 9F53 85 0B                    ..
-        jsr     BattleSetupServices_Entry_9F7C  ; 9F55 20 7C 9F                  |.
+        jsr     BattleSetup_LoadScaledSelectionDescriptor; 9F55 20 7C 9F         |.
         brk                                     ; 9F58 00                       .
         db   $21,$23,$09                     ; 9F59 21 23 09                 !#.
 ; ----------------------------------------------------------------------------
@@ -4373,19 +4373,19 @@ BattleSetupServices_Branch_9F74:
         bcs     BattleSetupServices_Branch_9F70 ; 9F79 B0 F5                    ..
         rts                                     ; 9F7B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9F7C:
+BattleSetup_LoadScaledSelectionDescriptor:
         lda     $0B                             ; 9F7C A5 0B                    ..
         cmp     #$06                            ; 9F7E C9 06                    ..
         beq     BattleSetupServices_Branch_9F88 ; 9F80 F0 06                    ..
-BattleSetupServices_Entry_9F82:
-        jsr     BattleSetupServices_Entry_9F9C  ; 9F82 20 9C 9F                  ..
+BattleSetup_LoadSelectionDescriptor:
+        jsr     BattleSetup_ResolveSelectionDescriptorPointer; 9F82 20 9C 9F     ..
         jmp     BattleSetupServices_Branch_9FB9 ; 9F85 4C B9 9F                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9F88:
         pha                                     ; 9F88 48                       H
         lda     #$03                            ; 9F89 A9 03                    ..
         sta     $0B                             ; 9F8B 85 0B                    ..
-        jsr     BattleSetupServices_Entry_9F82  ; 9F8D 20 82 9F                  ..
+        jsr     BattleSetup_LoadSelectionDescriptor; 9F8D 20 82 9F               ..
         asl     $00                           ; 9F90 06 00                    ..
         rol     $01                             ; 9F92 26 01                    &.
         asl     $04                             ; 9F94 06 04                    ..
@@ -4394,7 +4394,7 @@ BattleSetupServices_Branch_9F88:
         sta     $0B                             ; 9F99 85 0B                    ..
         rts                                     ; 9F9B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_9F9C:
+BattleSetup_ResolveSelectionDescriptorPointer:
         asl     a                               ; 9F9C 0A                       .
         tax                                     ; 9F9D AA                       .
         lda     $A0FB,x                         ; 9F9E BD FB A0                 ...
@@ -4402,7 +4402,7 @@ BattleSetupServices_Entry_9F9C:
         lda     $A0FC,x                         ; 9FA3 BD FC A0                 ...
         sta     $0D                             ; 9FA6 85 0D                    ..
         lda     $09                             ; 9FA8 A5 09                    ..
-        jsr     BattleSetupServices_Entry_A06E  ; 9FAA 20 6E A0                  n.
+        jsr     BattleSetup_ScaleSetupByteByFiveOrSix; 9FAA 20 6E A0             n.
         clc                                     ; 9FAD 18                       .
         adc     $0C                             ; 9FAE 65 0C                    e.
         sta     $0C                             ; 9FB0 85 0C                    ..
@@ -4412,7 +4412,7 @@ BattleSetupServices_Entry_9F9C:
         rts                                     ; 9FB8 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9FB9:
-        jsr     BattleSetupServices_Entry_A038  ; 9FB9 20 38 A0                  8.
+        jsr     BattleSetup_DecodeSelectionDescriptorHeader; 9FB9 20 38 A0       8.
         lda     #$00                            ; 9FBC A9 00                    ..
         sta     $6E3B                           ; 9FBE 8D 3B 6E                 .;n
         sta     $0E                             ; 9FC1 85 0E                    ..
@@ -4468,9 +4468,9 @@ BattleSetupServices_Branch_A01C:
         ldx     $6E3A                           ; A01C AE 3A 6E                 .:n
         lda     $A259,x                         ; A01F BD 59 A2                 .Y.
         ldx     #$04                            ; A022 A2 04                    ..
-        jsr     BattleSetupServices_Entry_A07D  ; A024 20 7D A0                  }.
+        jsr     BattleSetup_MultiplyTripletByScalar; A024 20 7D A0               }.
         ldy     #$00                            ; A027 A0 00                    ..
-        jsr     BattleSetupServices_Entry_A0DF  ; A029 20 DF A0                  ..
+        jsr     BattleSetup_AddTripletToZeroPageTriplet; A029 20 DF A0           ..
         lda     $0E                             ; A02C A5 0E                    ..
         cmp     $0A                             ; A02E C5 0A                    ..
         beq     BattleSetupServices_Branch_A037 ; A030 F0 05                    ..
@@ -4480,7 +4480,7 @@ BattleSetupServices_Branch_A01C:
 BattleSetupServices_Branch_A037:
         rts                                     ; A037 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A038:
+BattleSetup_DecodeSelectionDescriptorHeader:
         ldy     #$00                            ; A038 A0 00                    ..
         lda     ($0C),y                         ; A03A B1 0C                    ..
         pha                                     ; A03C 48                       H
@@ -4515,7 +4515,7 @@ BattleSetupServices_Branch_A06A:
         sta     $6E3A                           ; A06A 8D 3A 6E                 .:n
         rts                                     ; A06D 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A06E:
+BattleSetup_ScaleSetupByteByFiveOrSix:
         sta     $0F                             ; A06E 85 0F                    ..
         asl     a                               ; A070 0A                       .
         asl     a                               ; A071 0A                       .
@@ -4528,7 +4528,7 @@ BattleSetupServices_Entry_A06E:
 BattleSetupServices_Branch_A07C:
         rts                                     ; A07C 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A07D:
+BattleSetup_MultiplyTripletByScalar:
         sta     $0F                             ; A07D 85 0F                    ..
         lda     #$00                            ; A07F A9 00                    ..
         sta     $8A                             ; A081 85 8A                    ..
@@ -4585,7 +4585,7 @@ BattleSetupServices_Branch_A0C7:
         sta     $02,x                         ; A0DC 95 02                    ..
         rts                                     ; A0DE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A0DF:
+BattleSetup_AddTripletToZeroPageTriplet:
         pha                                     ; A0DF 48                       H
         lda     $0000,y                         ; A0E0 B9 00 00                 ...
         clc                                     ; A0E3 18                       .
@@ -4674,11 +4674,11 @@ BattleSetupServices_Entry_A0DF:
         db   $0B,$9B,$20,$9E,$99,$88,$03,$95 ; A2F6 0B 9B 20 9E 99 88 03 95  .. .....
         db   $8E,$13,$09,$87,$97,$91         ; A2FE 8E 13 09 87 97 91        ......
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A304:
+BattleSetup_RunTransitionFrameLoop:
         lda     $1F                             ; A304 A5 1F                    ..
         ora     #$08                            ; A306 09 08                    ..
         sta     $1F                             ; A308 85 1F                    ..
-        jsr     BattleSetupServices_Entry_A475  ; A30A 20 75 A4                  u.
+        jsr     BattleSetup_SnapshotTransitionOam; A30A 20 75 A4                 u.
         brk                                     ; A30D 00                       .
         db   $92,$FB                         ; A30E 92 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4701,7 +4701,7 @@ BattleSetupServices_Branch_A322:
 BattleSetupServices_Branch_A327:
         txa                                     ; A327 8A                       .
         pha                                     ; A328 48                       H
-        jsr     BattleSetupServices_Entry_A3A0  ; A329 20 A0 A3                  ..
+        jsr     BattleSetup_AdvanceTransitionSpriteOffsets; A329 20 A0 A3        ..
         jsr     WaitForNmi                      ; A32C 20 74 FF                  t.
         pla                                     ; A32F 68                       h
         tax                                     ; A330 AA                       .
@@ -4715,7 +4715,7 @@ BattleSetupServices_Branch_A327:
         lda     $8A                             ; A340 A5 8A                    ..
         cmp     #$00                            ; A342 C9 00                    ..
         bne     BattleSetupServices_Branch_A357 ; A344 D0 11                    ..
-        jsr     BattleSetupServices_Entry_A489  ; A346 20 89 A4                  ..
+        jsr     BattleSetup_PulseTransitionPalette; A346 20 89 A4                ..
         jsr     UpperFixedEngine_Entry_C5C5     ; A349 20 C5 C5                  ..
         lda     #$FF                            ; A34C A9 FF                    ..
         sta     $05FC                           ; A34E 8D FC 05                 ...
@@ -4742,13 +4742,13 @@ BattleSetupServices_Branch_A365:
         db   $03,$4F                         ; A36B 03 4F                    .O
 ; ----------------------------------------------------------------------------
         ldx     #$14                            ; A36D A2 14                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A36F 20 0C C9                  ..
+        jsr     WaitFrames                      ; A36F 20 0C C9                  ..
 BattleSetupServices_Branch_A372:
         ldx     #$00                            ; A372 A2 00                    ..
 BattleSetupServices_Branch_A374:
         txa                                     ; A374 8A                       .
         pha                                     ; A375 48                       H
-        jsr     BattleSetupServices_Entry_A42B  ; A376 20 2B A4                  +.
+        jsr     BattleSetup_ApplyTransitionShiftFrame; A376 20 2B A4             +.
         jsr     WaitForNmi                      ; A379 20 74 FF                  t.
         pla                                     ; A37C 68                       h
         tax                                     ; A37D AA                       .
@@ -4764,7 +4764,7 @@ BattleSetupServices_Branch_A374:
         jmp     BattleSetupServices_Branch_A394 ; A38E 4C 94 A3                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A391:
-        jsr     UpperFixedEngine_Entry_C54E     ; A391 20 4E C5                  N.
+        jsr     ResetDisplayState               ; A391 20 4E C5                  N.
 BattleSetupServices_Branch_A394:
         brk                                     ; A394 00                       .
         db   $1F,$2F                         ; A395 1F 2F                    ./
@@ -4774,10 +4774,10 @@ BattleSetupServices_Branch_A394:
         sta     $1F                             ; A39B 85 1F                    ..
         jmp     WaitForNmi                      ; A39D 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A3A0:
-        jsr     BattleSetupServices_Entry_A410  ; A3A0 20 10 A4                  ..
+BattleSetup_AdvanceTransitionSpriteOffsets:
+        jsr     BattleSetup_ComputeTransitionStep; A3A0 20 10 A4                 ..
         lda     $0509                           ; A3A3 AD 09 05                 ...
-        jsr     BattleSetupServices_Entry_A3DD  ; A3A6 20 DD A3                  ..
+        jsr     BattleSetup_AdjustTransitionShift; A3A6 20 DD A3                 ..
         sta     $0509                           ; A3A9 8D 09 05                 ...
         ldx     #$00                            ; A3AC A2 00                    ..
 BattleSetupServices_Branch_A3AE:
@@ -4808,7 +4808,7 @@ BattleSetupServices_Branch_A3C2:
         bne     BattleSetupServices_Branch_A3AE ; A3DA D0 D2                    ..
         rts                                     ; A3DC 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A3DD:
+BattleSetup_AdjustTransitionShift:
         sta     $01                             ; A3DD 85 01                    ..
         lda     $0505                           ; A3DF AD 05 05                 ...
         and     #$02                            ; A3E2 29 02                    ).
@@ -4839,7 +4839,7 @@ BattleSetupServices_Branch_A3FE:
         sta     $0509                           ; A40C 8D 09 05                 ...
         rts                                     ; A40F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A410:
+BattleSetup_ComputeTransitionStep:
         sta     $00                           ; A410 85 00                    ..
         lda     #$00                            ; A412 A9 00                    ..
         sta     $01                             ; A414 85 01                    ..
@@ -4847,7 +4847,7 @@ BattleSetupServices_Entry_A410:
         ldx     #$00                            ; A418 A2 00                    ..
         jsr     MultiplyPointerWord             ; A41A 20 27 C8                  '.
         lda     #$C4                            ; A41D A9 C4                    ..
-        jsr     UpperFixedEngine_Entry_C851     ; A41F 20 51 C8                  Q.
+        jsr     DividePointerWord               ; A41F 20 51 C8                  Q.
         lda     $01                             ; A422 A5 01                    ..
         beq     BattleSetupServices_Branch_A42A ; A424 F0 04                    ..
         lda     #$F8                            ; A426 A9 F8                    ..
@@ -4855,8 +4855,8 @@ BattleSetupServices_Entry_A410:
 BattleSetupServices_Branch_A42A:
         rts                                     ; A42A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A42B:
-        jsr     BattleSetupServices_Entry_A410  ; A42B 20 10 A4                  ..
+BattleSetup_ApplyTransitionShiftFrame:
+        jsr     BattleSetup_ComputeTransitionStep; A42B 20 10 A4                 ..
         lda     $0509                           ; A42E AD 09 05                 ...
         clc                                     ; A431 18                       .
         adc     $00                           ; A432 65 00                    e.
@@ -4896,7 +4896,7 @@ BattleSetupServices_Branch_A46E:
         bne     BattleSetupServices_Branch_A451 ; A472 D0 DD                    ..
         rts                                     ; A474 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A475:
+BattleSetup_SnapshotTransitionOam:
         ldx     #$00                            ; A475 A2 00                    ..
 BattleSetupServices_Branch_A477:
         lda     #$00                            ; A477 A9 00                    ..
@@ -4910,7 +4910,7 @@ BattleSetupServices_Branch_A477:
         bne     BattleSetupServices_Branch_A477 ; A486 D0 EF                    ..
         rts                                     ; A488 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A489:
+BattleSetup_PulseTransitionPalette:
         ldx     #$03                            ; A489 A2 03                    ..
 BattleSetupServices_Branch_A48B:
         txa                                     ; A48B 8A                       .
@@ -4919,7 +4919,7 @@ BattleSetupServices_Branch_A48B:
         sta     $05FC                           ; A490 8D FC 05                 ...
         jsr     UpperFixedEngine_Entry_C5B9     ; A493 20 B9 C5                  ..
         ldx     #$03                            ; A496 A2 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A498 20 0C C9                  ..
+        jsr     WaitFrames                      ; A498 20 0C C9                  ..
         pla                                     ; A49B 68                       h
         tax                                     ; A49C AA                       .
         dex                                     ; A49D CA                       .
@@ -4928,7 +4928,7 @@ BattleSetupServices_Branch_A48B:
 ; ----------------------------------------------------------------------------
         db   $31,$21,$11,$01                 ; A4A1 31 21 11 01              1!..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4A5:
+BattleSetup_DispatchSetupOperation:
         asl     a                               ; A4A5 0A                       .
         tay                                     ; A4A6 A8                       .
         lda     Bank12_BattleSetupOperationPointers,y; A4A7 B9 41 A5            .A.
@@ -4937,109 +4937,109 @@ BattleSetupServices_Entry_A4A5:
         sta     $01                             ; A4AF 85 01                    ..
         jmp     ($0000)                         ; A4B1 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4B4:
-        jsr     BattleSetupServices_Entry_A520  ; A4B4 20 20 A5                   .
-        jsr     BattleSetupServices_Entry_A52A  ; A4B7 20 2A A5                  *.
+BattleSetup_WriteSetupFieldGroup:
+        jsr     BattleSetup_WriteOperationField06; A4B4 20 20 A5                  .
+        jsr     BattleSetup_WriteOperationField05; A4B7 20 2A A5                 *.
 BattleSetupServices_Branch_A4BA:
-        jsr     BattleSetupServices_Entry_A525  ; A4BA 20 25 A5                  %.
-        jmp     BattleSetupServices_Entry_A53A  ; A4BD 4C 3A A5                 L:.
+        jsr     BattleSetup_WriteOperationField07; A4BA 20 25 A5                 %.
+        jmp     BattleSetup_FinalizeOperationWrite; A4BD 4C 3A A5               L:.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4C0:
-        jsr     BattleSetupServices_Entry_A52F  ; A4C0 20 2F A5                  /.
+BattleSetup_WriteConditionalFieldGroup:
+        jsr     BattleSetup_TestOperationEqualsOne; A4C0 20 2F A5                /.
         bcs     BattleSetupServices_Branch_A4C8 ; A4C3 B0 03                    ..
-        jsr     BattleSetupServices_Entry_A4B4  ; A4C5 20 B4 A4                  ..
+        jsr     BattleSetup_WriteSetupFieldGroup; A4C5 20 B4 A4                  ..
 BattleSetupServices_Branch_A4C8:
         rts                                     ; A4C8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4C9:
+BattleSetup_WriteSetupFieldTail:
         jmp     BattleSetupServices_Branch_A4BA ; A4C9 4C BA A4                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4CC:
-        jsr     BattleSetupServices_Entry_A52F  ; A4CC 20 2F A5                  /.
+BattleSetup_WriteConditionalFieldTail:
+        jsr     BattleSetup_TestOperationEqualsOne; A4CC 20 2F A5                /.
         bcs     BattleSetupServices_Branch_A4D4 ; A4CF B0 03                    ..
-        jsr     BattleSetupServices_Entry_A53A  ; A4D1 20 3A A5                  :.
+        jsr     BattleSetup_FinalizeOperationWrite; A4D1 20 3A A5                :.
 BattleSetupServices_Branch_A4D4:
         rts                                     ; A4D4 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4D5:
-        jsr     BattleSetupServices_Entry_A51B  ; A4D5 20 1B A5                  ..
+BattleSetup_RepeatSetupFieldGroup:
+        jsr     BattleSetup_LoadOperationRepeatCount; A4D5 20 1B A5              ..
         ldx     #$00                            ; A4D8 A2 00                    ..
 BattleSetupServices_Branch_A4DA:
-        jsr     BattleSetupServices_Entry_A4B4  ; A4DA 20 B4 A4                  ..
+        jsr     BattleSetup_WriteSetupFieldGroup; A4DA 20 B4 A4                  ..
         inx                                     ; A4DD E8                       .
         dey                                     ; A4DE 88                       .
         bne     BattleSetupServices_Branch_A4DA ; A4DF D0 F9                    ..
         rts                                     ; A4E1 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4E2:
-        jsr     BattleSetupServices_Entry_A51B  ; A4E2 20 1B A5                  ..
+BattleSetup_RepeatConditionalFieldGroup:
+        jsr     BattleSetup_LoadOperationRepeatCount; A4E2 20 1B A5              ..
         ldx     #$00                            ; A4E5 A2 00                    ..
 BattleSetupServices_Branch_A4E7:
-        jsr     BattleSetupServices_Entry_A4C0  ; A4E7 20 C0 A4                  ..
+        jsr     BattleSetup_WriteConditionalFieldGroup; A4E7 20 C0 A4            ..
         inx                                     ; A4EA E8                       .
         dey                                     ; A4EB 88                       .
         bne     BattleSetupServices_Branch_A4E7 ; A4EC D0 F9                    ..
         rts                                     ; A4EE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4EF:
-        jsr     BattleSetupServices_Entry_A51B  ; A4EF 20 1B A5                  ..
+BattleSetup_RepeatSetupFieldTail:
+        jsr     BattleSetup_LoadOperationRepeatCount; A4EF 20 1B A5              ..
         ldx     #$00                            ; A4F2 A2 00                    ..
 BattleSetupServices_Branch_A4F4:
-        jsr     BattleSetupServices_Entry_A4C9  ; A4F4 20 C9 A4                  ..
+        jsr     BattleSetup_WriteSetupFieldTail ; A4F4 20 C9 A4                  ..
         inx                                     ; A4F7 E8                       .
         dey                                     ; A4F8 88                       .
         bne     BattleSetupServices_Branch_A4F4 ; A4F9 D0 F9                    ..
         rts                                     ; A4FB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A4FC:
-        jsr     BattleSetupServices_Entry_A51B  ; A4FC 20 1B A5                  ..
+BattleSetup_RepeatConditionalFieldTail:
+        jsr     BattleSetup_LoadOperationRepeatCount; A4FC 20 1B A5              ..
         ldx     #$00                            ; A4FF A2 00                    ..
 BattleSetupServices_Branch_A501:
-        jsr     BattleSetupServices_Entry_A4CC  ; A501 20 CC A4                  ..
+        jsr     BattleSetup_WriteConditionalFieldTail; A501 20 CC A4             ..
         inx                                     ; A504 E8                       .
         dey                                     ; A505 88                       .
         bne     BattleSetupServices_Branch_A501 ; A506 D0 F9                    ..
         rts                                     ; A508 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A509:
-        jsr     BattleSetupServices_Entry_A51B  ; A509 20 1B A5                  ..
+BattleSetup_RepeatSetupGateAndWrite:
+        jsr     BattleSetup_LoadOperationRepeatCount; A509 20 1B A5              ..
         ldx     #$00                            ; A50C A2 00                    ..
 BattleSetupServices_Branch_A50E:
-        jsr     BattleSetupServices_Entry_A52F  ; A50E 20 2F A5                  /.
+        jsr     BattleSetup_TestOperationEqualsOne; A50E 20 2F A5                /.
         bcs     BattleSetupServices_Branch_A516 ; A511 B0 03                    ..
-        jsr     BattleSetupServices_Entry_A52A  ; A513 20 2A A5                  *.
+        jsr     BattleSetup_WriteOperationField05; A513 20 2A A5                 *.
 BattleSetupServices_Branch_A516:
         inx                                     ; A516 E8                       .
         dey                                     ; A517 88                       .
         bne     BattleSetupServices_Branch_A50E ; A518 D0 F4                    ..
         rts                                     ; A51A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A51B:
+BattleSetup_LoadOperationRepeatCount:
         brk                                     ; A51B 00                       .
         db   $62,$33                         ; A51C 62 33                    b3
 ; ----------------------------------------------------------------------------
         tay                                     ; A51E A8                       .
         rts                                     ; A51F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A520:
+BattleSetup_WriteOperationField06:
         brk                                     ; A520 00                       .
         db   $45,$93,$06                     ; A521 45 93 06                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A524 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A525:
+BattleSetup_WriteOperationField07:
         brk                                     ; A525 00                       .
         db   $44,$93,$07                     ; A526 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         rts                                     ; A529 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A52A:
+BattleSetup_WriteOperationField05:
         brk                                     ; A52A 00                       .
         db   $45,$93,$05                     ; A52B 45 93 05                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A52E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A52F:
+BattleSetup_TestOperationEqualsOne:
         brk                                     ; A52F 00                       .
         db   $42,$53                         ; A530 42 53                    BS
 ; ----------------------------------------------------------------------------
@@ -5052,7 +5052,7 @@ BattleSetupServices_Branch_A538:
         sec                                     ; A538 38                       8
         rts                                     ; A539 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A53A:
+BattleSetup_FinalizeOperationWrite:
         brk                                     ; A53A 00                       .
         db   $05,$53                         ; A53B 05 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5067,7 +5067,7 @@ Bank12_BattleSetupOperationPointers:
         db   $A4,$E2,$A4,$EF,$A4,$FC,$A4,$09 ; A54A A4 E2 A4 EF A4 FC A4 09  ........
         db   $A5                             ; A552 A5                       .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A553:
+BattleSetup_ProcessSetupCommand:
         brk                                     ; A553 00                       .
         db   $07,$6F,$04                     ; A554 07 6F 04                 .o.
 ; ----------------------------------------------------------------------------
@@ -5075,10 +5075,10 @@ BattleSetupServices_Entry_A553:
         beq     BattleSetupServices_Branch_A58E ; A559 F0 33                    .3
         sta     $0590                           ; A55B 8D 90 05                 ...
         sta     $F9                             ; A55E 85 F9                    ..
-        jsr     BattleSetupServices_Entry_A5B7  ; A560 20 B7 A5                  ..
+        jsr     BattleSetup_CheckModeGate       ; A560 20 B7 A5                  ..
         bcs     BattleSetupServices_Branch_A58E ; A563 B0 29                    .)
         lda     $0590                           ; A565 AD 90 05                 ...
-        jsr     BattleSetupServices_Entry_A5B2  ; A568 20 B2 A5                  ..
+        jsr     BattleSetup_QueryModeSelector   ; A568 20 B2 A5                  ..
         cmp     #$01                            ; A56B C9 01                    ..
         beq     BattleSetupServices_Branch_A59B ; A56D F0 2C                    .,
         cmp     #$02                            ; A56F C9 02                    ..
@@ -5089,12 +5089,12 @@ BattleSetupServices_Entry_A553:
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; A57A C9 FF                    ..
         beq     BattleSetupServices_Branch_A58E ; A57C F0 10                    ..
-        jsr     BattleSetupServices_Entry_A5DA  ; A57E 20 DA A5                  ..
-        jsr     BattleSetupServices_Entry_A5E4  ; A581 20 E4 A5                  ..
+        jsr     BattleSetup_StoreSelectedMode   ; A57E 20 DA A5                  ..
+        jsr     BattleSetup_CheckStoredModeRange; A581 20 E4 A5                  ..
         bcs     BattleSetupServices_Branch_A58E ; A584 B0 08                    ..
-        jsr     BattleSetupServices_Entry_A5FE  ; A586 20 FE A5                  ..
+        jsr     BattleSetup_StoreSecondaryMode  ; A586 20 FE A5                  ..
         bcs     BattleSetupServices_Branch_A58E ; A589 B0 03                    ..
-        jsr     BattleSetupServices_Entry_A61E  ; A58B 20 1E A6                  ..
+        jsr     BattleSetup_DispatchEventById   ; A58B 20 1E A6                  ..
 BattleSetupServices_Branch_A58E:
         brk                                     ; A58E 00                       .
         db   $07,$6F,$FF                     ; A58F 07 6F FF                 .o.
@@ -5126,14 +5126,14 @@ BattleSetupServices_Branch_A5AC:
         jsr     UpperFixedEngine_Entry_C8E1     ; A5AC 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_A58E ; A5AF 4C 8E A5                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A5B2:
+BattleSetup_QueryModeSelector:
         tax                                     ; A5B2 AA                       .
         brk                                     ; A5B3 00                       .
         db   $42,$53                         ; A5B4 42 53                    BS
 ; ----------------------------------------------------------------------------
         rts                                     ; A5B6 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A5B7:
+BattleSetup_CheckModeGate:
         tax                                     ; A5B7 AA                       .
         brk                                     ; A5B8 00                       .
         db   $3E,$53                         ; A5B9 3E 53                    >S
@@ -5167,7 +5167,7 @@ BattleSetupServices_Branch_A5D5:
         sec                                     ; A5D8 38                       8
         rts                                     ; A5D9 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A5DA:
+BattleSetup_StoreSelectedMode:
         ldx     $0590                           ; A5DA AE 90 05                 ...
         brk                                     ; A5DD 00                       .
         db   $40,$73                         ; A5DE 40 73                    @s
@@ -5175,7 +5175,7 @@ BattleSetupServices_Entry_A5DA:
         sta     $0592                           ; A5E0 8D 92 05                 ...
         rts                                     ; A5E3 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A5E4:
+BattleSetup_CheckStoredModeRange:
         lda     $0592                           ; A5E4 AD 92 05                 ...
         brk                                     ; A5E7 00                       .
         db   $0A,$3F                         ; A5E8 0A 3F                    .?
@@ -5197,7 +5197,7 @@ BattleSetupServices_Branch_A5F4:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_A5D5 ; A5FB 4C D5 A5                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A5FE:
+BattleSetup_StoreSecondaryMode:
         lda     $0592                           ; A5FE AD 92 05                 ...
         brk                                     ; A601 00                       .
         db   $0D,$3F                         ; A602 0D 3F                    .?
@@ -5217,24 +5217,24 @@ BattleSetupServices_Branch_A613:
         sec                                     ; A613 38                       8
         rts                                     ; A614 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A615:
+BattleSetup_QueryModeSelectorViaService4253:
         tax                                     ; A615 AA                       .
         brk                                     ; A616 00                       .
         db   $42,$53                         ; A617 42 53                    BS
 ; ----------------------------------------------------------------------------
         rts                                     ; A619 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A61A:
+BattleSetup_DispatchDormantService8EFB:
         brk                                     ; A61A 00                       .
         db   $8E,$FB                         ; A61B 8E FB                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; A61D 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A61E:
+BattleSetup_DispatchEventById:
         lda     $0592                           ; A61E AD 92 05                 ...
         cmp     #$33                            ; A621 C9 33                    .3
         beq     BattleSetupServices_Branch_A628 ; A623 F0 03                    ..
-        jsr     BattleSetupServices_Entry_A957  ; A625 20 57 A9                  W.
+        jsr     BattleSetup_DisplayPromptAndCommitOperands; A625 20 57 A9        W.
 BattleSetupServices_Branch_A628:
         lda     $0592                           ; A628 AD 92 05                 ...
         ldx     #$FF                            ; A62B A2 FF                    ..
@@ -5252,8 +5252,8 @@ BattleSetupServices_Branch_A62D:
         lda     $0591                           ; A640 AD 91 05                 ...
         jmp     ($0000)                         ; A643 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A646:
-        jsr     BattleSetupServices_Entry_A93B  ; A646 20 3B A9                  ;.
+BattleSetup_LoadMapSpecificBackdrop:
+        jsr     BattleSetup_LatchSetupOperands  ; A646 20 3B A9                  ;.
         ldx     $41                             ; A649 A6 41                    .A
         bpl     BattleSetupServices_Branch_A66B ; A64B 10 1E                    ..
         ldx     CurrentMapNumber                ; A64D A6 63                    .c
@@ -5277,7 +5277,7 @@ BattleSetupServices_Branch_A66B:
         db   $28,$EF                         ; A66C 28 EF                    (.
 ; ----------------------------------------------------------------------------
         bcs     BattleSetupServices_Branch_A673 ; A66E B0 03                    ..
-        jsr     BattleSetupServices_Entry_A852  ; A670 20 52 A8                  R.
+        jsr     BattleSetup_ReturnToUpperEngine ; A670 20 52 A8                  R.
 BattleSetupServices_Branch_A673:
         rts                                     ; A673 60                       `
 ; ----------------------------------------------------------------------------
@@ -5297,18 +5297,18 @@ BattleSetupServices_Branch_A676:
         db   $60                             ; A687 60                       `
         db   $33,$1F,$1E,$1D,$13,$0E,$0F,$40 ; A688 33 1F 1E 1D 13 0E 0F 40  3......@
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A690:
+BattleSetup_LoadValidatedEncounterBackdrop:
         brk                                     ; A690 00                       .
         db   $07,$6F,$16                     ; A691 07 6F 16                 .o.
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; A694 C9 FF                    ..
         beq     BattleSetupServices_Branch_A6CD ; A696 F0 35                    .5
         pha                                     ; A698 48                       H
-        jsr     BattleSetupServices_Entry_A93B  ; A699 20 3B A9                  ;.
+        jsr     BattleSetup_LatchSetupOperands  ; A699 20 3B A9                  ;.
         brk                                     ; A69C 00                       .
         db   $07,$6F,$43                     ; A69D 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_A61A  ; A6A0 20 1A A6                  ..
+        jsr     BattleSetup_DispatchDormantService8EFB; A6A0 20 1A A6            ..
         ldy     #$10                            ; A6A3 A0 10                    ..
         brk                                     ; A6A5 00                       .
         db   $03,$4F                         ; A6A6 03 4F                    .O
@@ -5320,9 +5320,9 @@ BattleSetupServices_Entry_A690:
         brk                                     ; A6B2 00                       .
         db   $C3,$2B                         ; A6B3 C3 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; A6B5 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; A6B5 20 EF B5                  ..
         pla                                     ; A6B8 68                       h
-        jsr     BattleSetupServices_Entry_A974  ; A6B9 20 74 A9                  t.
+        jsr     BattleSetup_CheckEligibilityByMap; A6B9 20 74 A9                 t.
         bcs     BattleSetupServices_Branch_A6CE ; A6BC B0 10                    ..
         brk                                     ; A6BE 00                       .
         db   $24,$EF                         ; A6BF 24 EF                    $.
@@ -5354,13 +5354,13 @@ BattleSetupServices_Branch_A6DE:
 ; ----------------------------------------------------------------------------
         db   $36,$0F,$1E,$1F,$1C,$18,$40     ; A6E1 36 0F 1E 1F 1C 18 40     6.....@
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A6E8:
-        jsr     BattleSetupServices_Entry_A93B  ; A6E8 20 3B A9                  ;.
+BattleSetup_ForceBattleStateFF:
+        jsr     BattleSetup_LatchSetupOperands  ; A6E8 20 3B A9                  ;.
         lda     #$FF                            ; A6EB A9 FF                    ..
         sta     $6E41                           ; A6ED 8D 41 6E                 .An
         bne     BattleSetupServices_Branch_A6DE ; A6F0 D0 EC                    ..
-BattleSetupServices_Entry_A6F2:
-        jsr     BattleSetupServices_Entry_A93B  ; A6F2 20 3B A9                  ;.
+BattleSetup_SelectTransitionServiceCode:
+        jsr     BattleSetup_LatchSetupOperands  ; A6F2 20 3B A9                  ;.
         brk                                     ; A6F5 00                       .
         db   $40,$EF                         ; A6F6 40 EF                    @.
 ; ----------------------------------------------------------------------------
@@ -5386,13 +5386,13 @@ BattleSetupServices_Branch_A70B:
 BattleSetupServices_Branch_A711:
         jmp     UpperFixedEngine_Entry_C8E1     ; A711 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A714:
-        jsr     BattleSetupServices_Entry_A93B  ; A714 20 3B A9                  ;.
+BattleSetup_SetTransitionFlags60:
+        jsr     BattleSetup_LatchSetupOperands  ; A714 20 3B A9                  ;.
         lda     #$60                            ; A717 A9 60                    .`
         ora     $627F                           ; A719 0D 7F 62                 ..b
         sta     $627F                           ; A71C 8D 7F 62                 ..b
         bne     BattleSetupServices_Branch_A711 ; A71F D0 F0                    ..
-BattleSetupServices_Entry_A721:
+BattleSetup_ShouldBlockBattleStart:
         lda     CurrentTilesetCandidate         ; A721 A5 65                    .e
         cmp     #$03                            ; A723 C9 03                    ..
         beq     BattleSetupServices_Branch_A753 ; A725 F0 2C                    .,
@@ -5424,21 +5424,21 @@ BattleSetupServices_Branch_A753:
         sec                                     ; A753 38                       8
         rts                                     ; A754 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A755:
-        jsr     BattleSetupServices_Entry_A93B  ; A755 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A974  ; A758 20 74 A9                  t.
+BattleSetup_RunBattleEntryGate:
+        jsr     BattleSetup_LatchSetupOperands  ; A755 20 3B A9                  ;.
+        jsr     BattleSetup_CheckEligibilityByMap; A758 20 74 A9                 t.
         bcs     BattleSetupServices_Branch_A777 ; A75B B0 1A                    ..
-        jsr     BattleSetupServices_Entry_A721  ; A75D 20 21 A7                  !.
+        jsr     BattleSetup_ShouldBlockBattleStart; A75D 20 21 A7                !.
         bcs     BattleSetupServices_Branch_A777 ; A760 B0 15                    ..
         lda     $41                             ; A762 A5 41                    .A
-        bpl     BattleSetupServices_Entry_A773  ; A764 10 0D                    ..
+        bpl     BattleSetup_ShowBattleEntryBlockedPrompt; A764 10 0D            ..
         lda     $07BA                           ; A766 AD BA 07                 ...
         and     #$7F                            ; A769 29 7F                    ).
         cmp     #$04                            ; A76B C9 04                    ..
         beq     BattleSetupServices_Branch_A77D ; A76D F0 0E                    ..
         cmp     #$05                            ; A76F C9 05                    ..
         beq     BattleSetupServices_Branch_A77D ; A771 F0 0A                    ..
-BattleSetupServices_Entry_A773:
+BattleSetup_ShowBattleEntryBlockedPrompt:
         brk                                     ; A773 00                       .
         db   $0F,$BF                         ; A774 0F BF                    ..
 ; ----------------------------------------------------------------------------
@@ -5456,17 +5456,17 @@ BattleSetupServices_Branch_A77D:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A780 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A783:
-        jsr     BattleSetupServices_Entry_A93B  ; A783 20 3B A9                  ;.
+BattleSetup_CheckBattleEntryGate:
+        jsr     BattleSetup_LatchSetupOperands  ; A783 20 3B A9                  ;.
         brk                                     ; A786 00                       .
         db   $35,$EF                         ; A787 35 EF                    5.
 ; ----------------------------------------------------------------------------
         bcc     BattleSetupServices_Branch_A777 ; A789 90 EC                    ..
         rts                                     ; A78B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A78C:
-        jsr     BattleSetupServices_Entry_A93B  ; A78C 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A78F 20 B2 A5                  ..
+BattleSetup_RunBattleEntryChoice:
+        jsr     BattleSetup_LatchSetupOperands  ; A78C 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A78F 20 B2 A5                  ..
         cmp     #$01                            ; A792 C9 01                    ..
         bne     BattleSetupServices_Branch_A79A ; A794 D0 04                    ..
         brk                                     ; A796 00                       .
@@ -5475,13 +5475,13 @@ BattleSetupServices_Entry_A78C:
         rts                                     ; A799 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A79A:
-        jsr     BattleSetupServices_Entry_A94A  ; A79A 20 4A A9                  J.
+        jsr     BattleSetup_ClearSetupOperandIndex; A79A 20 4A A9                J.
         ldy     #$00                            ; A79D A0 00                    ..
 BattleSetupServices_Branch_A79F:
-        jsr     BattleSetupServices_Entry_A950  ; A79F 20 50 A9                  P.
+        jsr     BattleSetup_ReadSetupByteFromScript; A79F 20 50 A9               P.
         pha                                     ; A7A2 48                       H
         iny                                     ; A7A3 C8                       .
-        jsr     BattleSetupServices_Entry_A950  ; A7A4 20 50 A9                  P.
+        jsr     BattleSetup_ReadSetupByteFromScript; A7A4 20 50 A9               P.
         brk                                     ; A7A7 00                       .
         db   $17,$0F                         ; A7A8 17 0F                    ..
 ; ----------------------------------------------------------------------------
@@ -5505,26 +5505,26 @@ BattleSetupServices_Branch_A7BD:
         db   $27,$0F                         ; A7C3 27 0F                    '.
 ; ----------------------------------------------------------------------------
         ldx     #$14                            ; A7C5 A2 14                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A7C7 20 0C C9                  ..
+        jsr     WaitFrames                      ; A7C7 20 0C C9                  ..
         brk                                     ; A7CA 00                       .
         db   $07,$6F,$10                     ; A7CB 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A7CE 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A7D1:
-        jsr     BattleSetupServices_Entry_A93B  ; A7D1 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A7D4 20 B2 A5                  ..
+BattleSetup_RunBattleEntryChoiceFromScriptOffset2:
+        jsr     BattleSetup_LatchSetupOperands  ; A7D1 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A7D4 20 B2 A5                  ..
         cmp     #$01                            ; A7D7 C9 01                    ..
-        beq     BattleSetupServices_Entry_A852  ; A7D9 F0 77                    .w
-        jsr     BattleSetupServices_Entry_A94A  ; A7DB 20 4A A9                  J.
+        beq     BattleSetup_ReturnToUpperEngine ; A7D9 F0 77                    .w
+        jsr     BattleSetup_ClearSetupOperandIndex; A7DB 20 4A A9                J.
         ldy     #$02                            ; A7DE A0 02                    ..
         jmp     BattleSetupServices_Branch_A79F ; A7E0 4C 9F A7                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A7E3:
-        jsr     BattleSetupServices_Entry_A93B  ; A7E3 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A7E6 20 B2 A5                  ..
+BattleSetup_RunBattleEntryChoiceLatch:
+        jsr     BattleSetup_LatchSetupOperands  ; A7E3 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A7E6 20 B2 A5                  ..
         cmp     #$01                            ; A7E9 C9 01                    ..
-        beq     BattleSetupServices_Entry_A852  ; A7EB F0 65                    .e
+        beq     BattleSetup_ReturnToUpperEngine ; A7EB F0 65                    .e
         ldx     $0591                           ; A7ED AE 91 05                 ...
         brk                                     ; A7F0 00                       .
         db   $05,$53                         ; A7F1 05 53                    .S
@@ -5532,8 +5532,8 @@ BattleSetupServices_Entry_A7E3:
         lda     $0591                           ; A7F3 AD 91 05                 ...
         jmp     BattleSetupServices_Branch_A7BD ; A7F6 4C BD A7                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A7F9:
-        jsr     BattleSetupServices_Entry_A93B  ; A7F9 20 3B A9                  ;.
+BattleSetup_AccumulateBattleEntryData:
+        jsr     BattleSetup_LatchSetupOperands  ; A7F9 20 3B A9                  ;.
         brk                                     ; A7FC 00                       .
         db   $62,$33                         ; A7FD 62 33                    b3
 ; ----------------------------------------------------------------------------
@@ -5542,15 +5542,15 @@ BattleSetupServices_Entry_A7F9:
         sta     $6E                             ; A803 85 6E                    .n
 BattleSetupServices_Branch_A805:
         lda     $6E                             ; A805 A5 6E                    .n
-        jsr     BattleSetupServices_Entry_A5B2  ; A807 20 B2 A5                  ..
+        jsr     BattleSetup_QueryModeSelector   ; A807 20 B2 A5                  ..
         cmp     #$01                            ; A80A C9 01                    ..
         beq     BattleSetupServices_Branch_A829 ; A80C F0 1B                    ..
-        jsr     BattleSetupServices_Entry_A94A  ; A80E 20 4A A9                  J.
+        jsr     BattleSetup_ClearSetupOperandIndex; A80E 20 4A A9                J.
         ldy     #$02                            ; A811 A0 02                    ..
-        jsr     BattleSetupServices_Entry_A950  ; A813 20 50 A9                  P.
+        jsr     BattleSetup_ReadSetupByteFromScript; A813 20 50 A9               P.
         pha                                     ; A816 48                       H
         iny                                     ; A817 C8                       .
-        jsr     BattleSetupServices_Entry_A950  ; A818 20 50 A9                  P.
+        jsr     BattleSetup_ReadSetupByteFromScript; A818 20 50 A9               P.
         brk                                     ; A81B 00                       .
         db   $17,$0F                         ; A81C 17 0F                    ..
 ; ----------------------------------------------------------------------------
@@ -5583,20 +5583,20 @@ BattleSetupServices_Branch_A829:
         db   $F6,$2B                         ; A844 F6 2B                    .+
 ; ----------------------------------------------------------------------------
         ldx     #$1E                            ; A846 A2 1E                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A848 20 0C C9                  ..
+        jsr     WaitFrames                      ; A848 20 0C C9                  ..
         brk                                     ; A84B 00                       .
         db   $07,$6F,$10                     ; A84C 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A84F 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A852:
+BattleSetup_ReturnToUpperEngine:
         brk                                     ; A852 00                       .
         db   $C5,$2B                         ; A853 C5 2B                    .+
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A855 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A858:
-        jsr     BattleSetupServices_Entry_A93B  ; A858 20 3B A9                  ;.
+BattleSetup_CompareOperandAcrossWindow:
+        jsr     BattleSetup_LatchSetupOperands  ; A858 20 3B A9                  ;.
         brk                                     ; A85B 00                       .
         db   $62,$33                         ; A85C 62 33                    b3
 ; ----------------------------------------------------------------------------
@@ -5605,7 +5605,7 @@ BattleSetupServices_Entry_A858:
         db   $62,$23,$02                     ; A861 62 23 02                 b#.
 ; ----------------------------------------------------------------------------
         cmp     $00                           ; A864 C5 00                    ..
-        beq     BattleSetupServices_Entry_A852  ; A866 F0 EA                    ..
+        beq     BattleSetup_ReturnToUpperEngine ; A866 F0 EA                    ..
         lda     $00                           ; A868 A5 00                    ..
         sec                                     ; A86A 38                       8
         sbc     $72                             ; A86B E5 72                    .r
@@ -5667,11 +5667,11 @@ BattleSetupServices_Branch_A8AF:
         bne     BattleSetupServices_Branch_A871 ; A8B2 D0 BD                    ..
         jmp     UpperFixedEngine_Entry_C8E1     ; A8B4 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A8B7:
-        jsr     BattleSetupServices_Entry_A93B  ; A8B7 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A8BA 20 B2 A5                  ..
+BattleSetup_ConfirmModeSevenSelection:
+        jsr     BattleSetup_LatchSetupOperands  ; A8B7 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A8BA 20 B2 A5                  ..
         cmp     #$07                            ; A8BD C9 07                    ..
-        bne     BattleSetupServices_Entry_A852  ; A8BF D0 91                    ..
+        bne     BattleSetup_ReturnToUpperEngine ; A8BF D0 91                    ..
         ldx     $0591                           ; A8C1 AE 91 05                 ...
         stx     $F9                             ; A8C4 86 F9                    ..
         brk                                     ; A8C6 00                       .
@@ -5682,15 +5682,15 @@ BattleSetupServices_Entry_A8B7:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A8CD 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A8D0:
-        jsr     BattleSetupServices_Entry_A93B  ; A8D0 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A8D3 20 B2 A5                  ..
+BattleSetup_ConfirmModeOneSelectionWithRandomGate:
+        jsr     BattleSetup_LatchSetupOperands  ; A8D0 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A8D3 20 B2 A5                  ..
         cmp     #$01                            ; A8D6 C9 01                    ..
         beq     BattleSetupServices_Branch_A8DD ; A8D8 F0 03                    ..
-        jmp     BattleSetupServices_Entry_A852  ; A8DA 4C 52 A8                 LR.
+        jmp     BattleSetup_ReturnToUpperEngine ; A8DA 4C 52 A8                 LR.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A8DD:
-        jsr     UpperFixedEngine_Entry_C891     ; A8DD 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A8DD 20 91 C8                  ..
         tax                                     ; A8E0 AA                       .
         bmi     BattleSetupServices_Branch_A8FB ; A8E1 30 18                    0.
         lda     $0591                           ; A8E3 AD 91 05                 ...
@@ -5700,12 +5700,12 @@ BattleSetupServices_Branch_A8DD:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A8EB 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A8EE:
-        jsr     BattleSetupServices_Entry_A93B  ; A8EE 20 3B A9                  ;.
-        jsr     BattleSetupServices_Entry_A5B2  ; A8F1 20 B2 A5                  ..
+BattleSetup_ConfirmModeOneSelectionAndSeedPrompt:
+        jsr     BattleSetup_LatchSetupOperands  ; A8EE 20 3B A9                  ;.
+        jsr     BattleSetup_QueryModeSelector   ; A8F1 20 B2 A5                  ..
         cmp     #$01                            ; A8F4 C9 01                    ..
         beq     BattleSetupServices_Branch_A8FB ; A8F6 F0 03                    ..
-        jmp     BattleSetupServices_Entry_A852  ; A8F8 4C 52 A8                 LR.
+        jmp     BattleSetup_ReturnToUpperEngine ; A8F8 4C 52 A8                 LR.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_A8FB:
         ldx     $0591                           ; A8FB AE 91 05                 ...
@@ -5761,7 +5761,7 @@ BattleSetupServices_Branch_A935:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Entry_C8E1     ; A938 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A93B:
+BattleSetup_LatchSetupOperands:
         pha                                     ; A93B 48                       H
         lda     $0592                           ; A93C AD 92 05                 ...
         brk                                     ; A93F 00                       .
@@ -5774,23 +5774,23 @@ BattleSetupServices_Entry_A93B:
         pla                                     ; A948 68                       h
         rts                                     ; A949 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A94A:
+BattleSetup_ClearSetupOperandIndex:
         ldx     #$00                            ; A94A A2 00                    ..
         brk                                     ; A94C 00                       .
         db   $8F,$3F                         ; A94D 8F 3F                    .?
 ; ----------------------------------------------------------------------------
         rts                                     ; A94F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A950:
+BattleSetup_ReadSetupByteFromScript:
         ldx     #$00                            ; A950 A2 00                    ..
         lda     #$13                            ; A952 A9 13                    ..
-        jmp     UpperFixedEngine_Entry_C3EA     ; A954 4C EA C3                 L..
+        jmp     ReadBankedByteThroughPointer    ; A954 4C EA C3                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A957:
+BattleSetup_DisplayPromptAndCommitOperands:
         brk                                     ; A957 00                       .
         db   $07,$6F,$43                     ; A958 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_A61A  ; A95B 20 1A A6                  ..
+        jsr     BattleSetup_DispatchDormantService8EFB; A95B 20 1A A6            ..
         ldy     #$10                            ; A95E A0 10                    ..
         brk                                     ; A960 00                       .
         db   $03,$4F                         ; A961 03 4F                    .O
@@ -5802,10 +5802,10 @@ BattleSetupServices_Entry_A957:
         brk                                     ; A96D 00                       .
         db   $C3,$2B                         ; A96E C3 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; A970 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; A970 20 EF B5                  ..
         rts                                     ; A973 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_A974:
+BattleSetup_CheckEligibilityByMap:
         pha                                     ; A974 48                       H
         brk                                     ; A975 00                       .
         db   $26,$EB,$20                     ; A976 26 EB 20                 &.
@@ -5888,14 +5888,14 @@ Bank12_BattleSetupEventIds:
         db   $35,$33,$3B,$36,$37,$38,$39,$29 ; AA0D 35 33 3B 36 37 38 39 29  53;6789)
         db   $2A,$2B,$2C,$2E,$3A,$30,$31,$37 ; AA15 2A 2B 2C 2E 3A 30 31 37  *+,.:017
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AA1D:
+BattleSetup_InitializeSetupDisplayState:
         lda     #$80                            ; AA1D A9 80                    ..
         sta     $6BDE                           ; AA1F 8D DE 6B                 ..k
-        jsr     UpperFixedEngine_Entry_C54E     ; AA22 20 4E C5                  N.
+        jsr     ResetDisplayState               ; AA22 20 4E C5                  N.
         jsr     UpperFixedEngine_Entry_C58F     ; AA25 20 8F C5                  ..
         jsr     UpperFixedEngine_Entry_C5BF     ; AA28 20 BF C5                  ..
-        jsr     BattleSetupServices_Entry_AA41  ; AA2B 20 41 AA                  A.
-        jsr     BattleSetupServices_Entry_AA5B  ; AA2E 20 5B AA                  [.
+        jsr     BattleSetup_RefreshPrimarySetupMirrors; AA2B 20 41 AA            A.
+        jsr     BattleSetup_BuildThreeSlotSetupList; AA2E 20 5B AA               [.
         brk                                     ; AA31 00                       .
         db   $1F,$FB                         ; AA32 1F FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5903,53 +5903,53 @@ BattleSetupServices_Branch_AA34:
         brk                                     ; AA34 00                       .
         db   $07,$6F,$53                     ; AA35 07 6F 53                 .oS
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_AAB7  ; AA38 20 B7 AA                  ..
-        jsr     BattleSetupServices_Entry_AD4A  ; AA3B 20 4A AD                  J.
+        jsr     BattleSetup_DispatchSetupOperationByIndex; AA38 20 B7 AA         ..
+        jsr     BattleSetup_ClearSetupWorkBuffer; AA3B 20 4A AD                  J.
         jmp     BattleSetupServices_Branch_AA34 ; AA3E 4C 34 AA                 L4.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AA41:
-        jsr     BattleSetupServices_Entry_AC73  ; AA41 20 73 AC                  s.
+BattleSetup_RefreshPrimarySetupMirrors:
+        jsr     BattleSetup_CheckSetupHeaderMirror; AA41 20 73 AC                s.
         bcs     BattleSetupServices_Branch_AA5A ; AA44 B0 14                    ..
-        jsr     BattleSetupServices_Entry_AC8C  ; AA46 20 8C AC                  ..
+        jsr     BattleSetup_CopySetupHeaderMirror; AA46 20 8C AC                 ..
         lda     #$00                            ; AA49 A9 00                    ..
         sta     $8A                             ; AA4B 85 8A                    ..
-        jsr     BattleSetupServices_Entry_AC01  ; AA4D 20 01 AC                  ..
+        jsr     BattleSetup_StoreSlotFlag10     ; AA4D 20 01 AC                  ..
         inc     $8A                             ; AA50 E6 8A                    ..
-        jsr     BattleSetupServices_Entry_AC01  ; AA52 20 01 AC                  ..
+        jsr     BattleSetup_StoreSlotFlag10     ; AA52 20 01 AC                  ..
         inc     $8A                             ; AA55 E6 8A                    ..
-        jmp     BattleSetupServices_Entry_AC01  ; AA57 4C 01 AC                 L..
+        jmp     BattleSetup_StoreSlotFlag10     ; AA57 4C 01 AC                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AA5A:
         rts                                     ; AA5A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AA5B:
+BattleSetup_BuildThreeSlotSetupList:
         lda     #$00                            ; AA5B A9 00                    ..
         sta     $6BDB                           ; AA5D 8D DB 6B                 ..k
         lda     #$02                            ; AA60 A9 02                    ..
         sta     $8A                             ; AA62 85 8A                    ..
 BattleSetupServices_Branch_AA64:
         lda     #$D6                            ; AA64 A9 D6                    ..
-        jsr     BattleSetupServices_Entry_AA7F  ; AA66 20 7F AA                  ..
-        jsr     BattleSetupServices_Entry_ACBD  ; AA69 20 BD AC                  ..
+        jsr     BattleSetup_StoreSetupSlotByte  ; AA66 20 7F AA                  ..
+        jsr     BattleSetup_ClassifyHeaderLengthMatch; AA69 20 BD AC             ..
         beq     BattleSetupServices_Branch_AA7A ; AA6C F0 0C                    ..
         pha                                     ; AA6E 48                       H
         lda     #$00                            ; AA6F A9 00                    ..
-        jsr     BattleSetupServices_Entry_AA7F  ; AA71 20 7F AA                  ..
+        jsr     BattleSetup_StoreSetupSlotByte  ; AA71 20 7F AA                  ..
         pla                                     ; AA74 68                       h
         bpl     BattleSetupServices_Branch_AA7A ; AA75 10 03                    ..
-        jsr     BattleSetupServices_Entry_AA85  ; AA77 20 85 AA                  ..
+        jsr     BattleSetup_OpenSetupSlotTransition; AA77 20 85 AA               ..
 BattleSetupServices_Branch_AA7A:
         dec     $8A                             ; AA7A C6 8A                    ..
         bpl     BattleSetupServices_Branch_AA64 ; AA7C 10 E6                    ..
         rts                                     ; AA7E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AA7F:
+BattleSetup_StoreSetupSlotByte:
         ldx     $8A                             ; AA7F A6 8A                    ..
         sta     $6BEC,x                         ; AA81 9D EC 6B                 ..k
         rts                                     ; AA84 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AA85:
-        jsr     BattleSetupServices_Entry_AC05  ; AA85 20 05 AC                  ..
+BattleSetup_OpenSetupSlotTransition:
+        jsr     BattleSetup_StoreSlotFlag40     ; AA85 20 05 AC                  ..
         brk                                     ; AA88 00                       .
         db   $12,$FB                         ; AA89 12 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5981,7 +5981,7 @@ BattleSetupServices_Entry_AA85:
 BattleSetupServices_Branch_AAB6:
         rts                                     ; AAB6 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AAB7:
+BattleSetup_DispatchSetupOperationByIndex:
         cmp     #$05                            ; AAB7 C9 05                    ..
         bcs     BattleSetupServices_Branch_AAB6 ; AAB9 B0 FB                    ..
         asl     a                               ; AABB 0A                       .
@@ -5996,16 +5996,16 @@ BattleSetupServices_Entry_AAB7:
         db   $AA,$10,$AB,$36,$AB,$C1,$AB,$E9 ; AACB AA 10 AB 36 AB C1 AB E9  ...6....
         db   $AB                             ; AAD3 AB                       .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AAD4:
-        jsr     BattleSetupServices_Entry_AAF0  ; AAD4 20 F0 AA                  ..
+BattleSetup_CommitSetupBlockAndRestoreDisplay:
+        jsr     BattleSetup_LoadSetupSlotIndex  ; AAD4 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AAEF ; AAD7 B0 16                    ..
-        jsr     BattleSetupServices_Entry_AC22  ; AAD9 20 22 AC                  ".
+        jsr     BattleSetup_CopySetupPayloadToWorkBuffer; AAD9 20 22 AC          ".
 BattleSetupServices_Branch_AADC:
         brk                                     ; AADC 00                       .
         db   $10,$2F                         ; AADD 10 2F                    ./
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_C5C5     ; AADF 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; AAE2 20 4E C5                  N.
+        jsr     ResetDisplayState               ; AAE2 20 4E C5                  N.
         brk                                     ; AAE5 00                       .
         db   $04,$9F                         ; AAE6 04 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -6016,7 +6016,7 @@ BattleSetupServices_Branch_AADC:
 BattleSetupServices_Branch_AAEF:
         rts                                     ; AAEF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AAF0:
+BattleSetup_LoadSetupSlotIndex:
         brk                                     ; AAF0 00                       .
         db   $07,$6F,$55                     ; AAF1 07 6F 55                 .oU
 ; ----------------------------------------------------------------------------
@@ -6024,7 +6024,7 @@ BattleSetupServices_Entry_AAF0:
         cmp     #$03                            ; AAF6 C9 03                    ..
         rts                                     ; AAF8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AAF9:
+BattleSetup_LoadSetupSlotIndexPreservingPointer:
         lda     $00                           ; AAF9 A5 00                    ..
         pha                                     ; AAFB 48                       H
         lda     $01                             ; AAFC A5 01                    ..
@@ -6041,8 +6041,8 @@ BattleSetupServices_Entry_AAF9:
         cmp     #$03                            ; AB0D C9 03                    ..
         rts                                     ; AB0F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AB10:
-        jsr     BattleSetupServices_Entry_AAF0  ; AB10 20 F0 AA                  ..
+BattleSetup_WriteIndexedSetupByte:
+        jsr     BattleSetup_LoadSetupSlotIndex  ; AB10 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AB35 ; AB13 B0 20                    .
         tax                                     ; AB15 AA                       .
         brk                                     ; AB16 00                       .
@@ -6050,9 +6050,9 @@ BattleSetupServices_Entry_AB10:
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; AB1A C9 08                    ..
         bcs     BattleSetupServices_Branch_AB35 ; AB1C B0 17                    ..
-BattleSetupServices_Entry_AB1E:
+BattleSetup_StoreIndexedSetupByteAndTail:
         pha                                     ; AB1E 48                       H
-        jsr     BattleSetupServices_Entry_AD15  ; AB1F 20 15 AD                  ..
+        jsr     BattleSetup_LoadSetupBasePointer; AB1F 20 15 AD                  ..
         lda     $AD82                           ; AB22 AD 82 AD                 ...
         ldy     $AD83                           ; AB25 AC 83 AD                 ...
         ldx     #$00                            ; AB28 A2 00                    ..
@@ -6060,25 +6060,25 @@ BattleSetupServices_Entry_AB1E:
         pla                                     ; AB2D 68                       h
         ldy     #$00                            ; AB2E A0 00                    ..
         sta     ($00),y                       ; AB30 91 00                    ..
-        jsr     BattleSetupServices_Entry_ACDF  ; AB32 20 DF AC                  ..
+        jsr     BattleSetup_WriteHeaderLengthPair; AB32 20 DF AC                 ..
 BattleSetupServices_Branch_AB35:
         rts                                     ; AB35 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AB36:
-        jsr     BattleSetupServices_Entry_AAF9  ; AB36 20 F9 AA                  ..
+BattleSetup_CloneSetupBlockAndMarkSlots:
+        jsr     BattleSetup_LoadSetupSlotIndexPreservingPointer; AB36 20 F9 AA   ..
         bcs     BattleSetupServices_Branch_AB35 ; AB39 B0 FA                    ..
-        jsr     BattleSetupServices_Entry_AD3F  ; AB3B 20 3F AD                  ?.
-        jsr     BattleSetupServices_Entry_AD15  ; AB3E 20 15 AD                  ..
+        jsr     BattleSetup_LoadPrimaryRecordPointer; AB3B 20 3F AD              ?.
+        jsr     BattleSetup_LoadSetupBasePointer; AB3E 20 15 AD                  ..
 BattleSetupServices_Branch_AB41:
         ldy     #$00                            ; AB41 A0 00                    ..
         tya                                     ; AB43 98                       .
         sta     ($00),y                       ; AB44 91 00                    ..
-        jsr     BattleSetupServices_Entry_AD03  ; AB46 20 03 AD                  ..
+        jsr     BattleSetup_AdvanceSetupPointer ; AB46 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AB41 ; AB49 D0 F6                    ..
         brk                                     ; AB4B 00                       .
         db   $07,$6F,$58                     ; AB4C 07 6F 58                 .oX
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_AD15  ; AB4F 20 15 AD                  ..
+        jsr     BattleSetup_LoadSetupBasePointer; AB4F 20 15 AD                  ..
         lda     $AD84                           ; AB52 AD 84 AD                 ...
         ldy     $AD85                           ; AB55 AC 85 AD                 ...
         ldx     #$00                            ; AB58 A2 00                    ..
@@ -6096,7 +6096,7 @@ BattleSetupServices_Branch_AB41:
         cmp     #$02                            ; AB6F C9 02                    ..
         bcs     BattleSetupServices_Branch_ABBE ; AB71 B0 4B                    .K
         pha                                     ; AB73 48                       H
-        jsr     BattleSetupServices_Entry_AD15  ; AB74 20 15 AD                  ..
+        jsr     BattleSetup_LoadSetupBasePointer; AB74 20 15 AD                  ..
         lda     $AD86                           ; AB77 AD 86 AD                 ...
         ldy     $AD87                           ; AB7A AC 87 AD                 ...
         ldx     #$00                            ; AB7D A2 00                    ..
@@ -6110,11 +6110,11 @@ BattleSetupServices_Branch_AB41:
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; AB8D C9 08                    ..
         bcs     BattleSetupServices_Branch_ABBE ; AB8F B0 2D                    .-
-        jsr     BattleSetupServices_Entry_AB1E  ; AB91 20 1E AB                  ..
-        jsr     BattleSetupServices_Entry_ACDF  ; AB94 20 DF AC                  ..
+        jsr     BattleSetup_StoreIndexedSetupByteAndTail; AB91 20 1E AB          ..
+        jsr     BattleSetup_WriteHeaderLengthPair; AB94 20 DF AC                 ..
         lda     $8A                             ; AB97 A5 8A                    ..
         sta     $6BDC                           ; AB99 8D DC 6B                 ..k
-        jsr     BattleSetupServices_Entry_AC22  ; AB9C 20 22 AC                  ".
+        jsr     BattleSetup_CopySetupPayloadToWorkBuffer; AB9C 20 22 AC          ".
         lda     #$42                            ; AB9F A9 42                    .B
         sta     $6285                           ; ABA1 8D 85 62                 ..b
         ldx     #$08                            ; ABA4 A2 08                    ..
@@ -6133,20 +6133,20 @@ BattleSetupServices_Branch_ABA6:
         brk                                     ; ABB5 00                       .
         db   $05,$5F                         ; ABB6 05 5F                    ._
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_AC53  ; ABB8 20 53 AC                  S.
+        jsr     BattleSetup_RestoreSelectionIndexAndCopyPayload; ABB8 20 53 AC   S.
         jmp     BattleSetupServices_Branch_AADC ; ABBB 4C DC AA                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_ABBE:
         jmp     BattleSetupServices_Branch_AC10 ; ABBE 4C 10 AC                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_ABC1:
-        jsr     BattleSetupServices_Entry_AAF0  ; ABC1 20 F0 AA                  ..
+BattleSetup_CopySetupBlockBetweenPointers:
+        jsr     BattleSetup_LoadSetupSlotIndex  ; ABC1 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_ABE8 ; ABC4 B0 22                    ."
-        jsr     BattleSetupServices_Entry_AD15  ; ABC6 20 15 AD                  ..
-        jsr     BattleSetupServices_Entry_AAF9  ; ABC9 20 F9 AA                  ..
+        jsr     BattleSetup_LoadSetupBasePointer; ABC6 20 15 AD                  ..
+        jsr     BattleSetup_LoadSetupSlotIndexPreservingPointer; ABC9 20 F9 AA   ..
         bcs     BattleSetupServices_Branch_ABE8 ; ABCC B0 1A                    ..
-        jsr     BattleSetupServices_Entry_AD1A  ; ABCE 20 1A AD                  ..
-        jsr     BattleSetupServices_Entry_AD3F  ; ABD1 20 3F AD                  ?.
+        jsr     BattleSetup_LoadIndexedBasePointer; ABCE 20 1A AD                ..
+        jsr     BattleSetup_LoadPrimaryRecordPointer; ABD1 20 3F AD              ?.
 BattleSetupServices_Branch_ABD4:
         ldy     #$00                            ; ABD4 A0 00                    ..
         lda     ($00),y                       ; ABD6 B1 00                    ..
@@ -6155,14 +6155,14 @@ BattleSetupServices_Branch_ABD4:
         bne     BattleSetupServices_Branch_ABE0 ; ABDC D0 02                    ..
         inc     $05                             ; ABDE E6 05                    ..
 BattleSetupServices_Branch_ABE0:
-        jsr     BattleSetupServices_Entry_AD03  ; ABE0 20 03 AD                  ..
+        jsr     BattleSetup_AdvanceSetupPointer ; ABE0 20 03 AD                  ..
         bne     BattleSetupServices_Branch_ABD4 ; ABE3 D0 EF                    ..
-        jsr     BattleSetupServices_Entry_AA5B  ; ABE5 20 5B AA                  [.
+        jsr     BattleSetup_BuildThreeSlotSetupList; ABE5 20 5B AA               [.
 BattleSetupServices_Branch_ABE8:
         rts                                     ; ABE8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_ABE9:
-        jsr     BattleSetupServices_Entry_AAF0  ; ABE9 20 F0 AA                  ..
+BattleSetup_UpdateSetupBlockConditionally:
+        jsr     BattleSetup_LoadSetupSlotIndex  ; ABE9 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AC00 ; ABEC B0 12                    ..
         ldx     $8A                             ; ABEE A6 8A                    ..
         brk                                     ; ABF0 00                       .
@@ -6172,45 +6172,45 @@ BattleSetupServices_Entry_ABE9:
         db   $07,$6F,$48                     ; ABF5 07 6F 48                 .oH
 ; ----------------------------------------------------------------------------
         bne     BattleSetupServices_Branch_AC00 ; ABF8 D0 06                    ..
-        jsr     BattleSetupServices_Entry_AC09  ; ABFA 20 09 AC                  ..
-        jsr     BattleSetupServices_Entry_AA5B  ; ABFD 20 5B AA                  [.
+        jsr     BattleSetup_StoreSlotFlag20     ; ABFA 20 09 AC                  ..
+        jsr     BattleSetup_BuildThreeSlotSetupList; ABFD 20 5B AA               [.
 BattleSetupServices_Branch_AC00:
         rts                                     ; AC00 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC01:
+BattleSetup_StoreSlotFlag10:
         lda     #$10                            ; AC01 A9 10                    ..
         bne     BattleSetupServices_Branch_AC0B ; AC03 D0 06                    ..
-BattleSetupServices_Entry_AC05:
+BattleSetup_StoreSlotFlag40:
         lda     #$40                            ; AC05 A9 40                    .@
         bne     BattleSetupServices_Branch_AC0B ; AC07 D0 02                    ..
-BattleSetupServices_Entry_AC09:
+BattleSetup_StoreSlotFlag20:
         lda     #$20                            ; AC09 A9 20                    .
 BattleSetupServices_Branch_AC0B:
         ldx     $8A                             ; AC0B A6 8A                    ..
         sta     $6BD9,x                         ; AC0D 9D D9 6B                 ..k
 BattleSetupServices_Branch_AC10:
-        jsr     BattleSetupServices_Entry_AD15  ; AC10 20 15 AD                  ..
-        jsr     BattleSetupServices_Entry_AD3F  ; AC13 20 3F AD                  ?.
+        jsr     BattleSetup_LoadSetupBasePointer; AC10 20 15 AD                  ..
+        jsr     BattleSetup_LoadPrimaryRecordPointer; AC13 20 3F AD              ?.
 BattleSetupServices_Branch_AC16:
         ldy     #$00                            ; AC16 A0 00                    ..
         lda     #$4B                            ; AC18 A9 4B                    .K
         sta     ($00),y                       ; AC1A 91 00                    ..
-        jsr     BattleSetupServices_Entry_AD03  ; AC1C 20 03 AD                  ..
+        jsr     BattleSetup_AdvanceSetupPointer ; AC1C 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AC16 ; AC1F D0 F5                    ..
         rts                                     ; AC21 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC22:
-        jsr     BattleSetupServices_Entry_AD15  ; AC22 20 15 AD                  ..
+BattleSetup_CopySetupPayloadToWorkBuffer:
+        jsr     BattleSetup_LoadSetupBasePointer; AC22 20 15 AD                  ..
         lda     $AD8A                           ; AC25 AD 8A AD                 ...
         sta     $04                             ; AC28 85 04                    ..
         lda     $AD8B                           ; AC2A AD 8B AD                 ...
         sta     $05                             ; AC2D 85 05                    ..
-        jsr     BattleSetupServices_Entry_AD34  ; AC2F 20 34 AD                  4.
+        jsr     BattleSetup_LoadAuxiliaryRecordPointer; AC2F 20 34 AD            4.
         ldx     #$00                            ; AC32 A2 00                    ..
         lda     #$02                            ; AC34 A9 02                    ..
         jsr     AddByteToPointer                ; AC36 20 13 C8                  ..
-BattleSetupServices_Entry_AC39:
-        jsr     BattleSetupServices_Entry_AD34  ; AC39 20 34 AD                  4.
+BattleSetup_CopySetupPayloadChunk:
+        jsr     BattleSetup_LoadAuxiliaryRecordPointer; AC39 20 34 AD            4.
 BattleSetupServices_Branch_AC3C:
         ldy     #$00                            ; AC3C A0 00                    ..
         lda     ($00),y                       ; AC3E B1 00                    ..
@@ -6219,16 +6219,16 @@ BattleSetupServices_Branch_AC3C:
         bne     BattleSetupServices_Branch_AC48 ; AC44 D0 02                    ..
         inc     $05                             ; AC46 E6 05                    ..
 BattleSetupServices_Branch_AC48:
-        jsr     BattleSetupServices_Entry_AD03  ; AC48 20 03 AD                  ..
+        jsr     BattleSetup_AdvanceSetupPointer ; AC48 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AC3C ; AC4B D0 EF                    ..
         lda     $8A                             ; AC4D A5 8A                    ..
         sta     $6BDC                           ; AC4F 8D DC 6B                 ..k
         rts                                     ; AC52 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC53:
+BattleSetup_RestoreSelectionIndexAndCopyPayload:
         lda     $6BDC                           ; AC53 AD DC 6B                 ..k
         sta     $8A                             ; AC56 85 8A                    ..
-        jsr     BattleSetupServices_Entry_AD1A  ; AC58 20 1A AD                  ..
+        jsr     BattleSetup_LoadIndexedBasePointer; AC58 20 1A AD                ..
         lda     $AD8A                           ; AC5B AD 8A AD                 ...
         sta     $00                           ; AC5E 85 00                    ..
         lda     $AD8B                           ; AC60 AD 8B AD                 ...
@@ -6236,11 +6236,11 @@ BattleSetupServices_Entry_AC53:
         ldx     #$04                            ; AC65 A2 04                    ..
         lda     #$02                            ; AC67 A9 02                    ..
         jsr     AddByteToPointer                ; AC69 20 13 C8                  ..
-        jsr     BattleSetupServices_Entry_AC39  ; AC6C 20 39 AC                  9.
-        jsr     BattleSetupServices_Entry_ACDF  ; AC6F 20 DF AC                  ..
+        jsr     BattleSetup_CopySetupPayloadChunk; AC6C 20 39 AC                 9.
+        jsr     BattleSetup_WriteHeaderLengthPair; AC6F 20 DF AC                 ..
         rts                                     ; AC72 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC73:
+BattleSetup_CheckSetupHeaderMirror:
         ldx     #$0C                            ; AC73 A2 0C                    ..
 BattleSetupServices_Branch_AC75:
         lda     $AD71,x                         ; AC75 BD 71 AD                 .q.
@@ -6251,7 +6251,7 @@ BattleSetupServices_Branch_AC75:
 BattleSetupServices_Branch_AC82:
         dex                                     ; AC82 CA                       .
         bpl     BattleSetupServices_Branch_AC75 ; AC83 10 F0                    ..
-        jsr     BattleSetupServices_Entry_AC8C  ; AC85 20 8C AC                  ..
+        jsr     BattleSetup_CopySetupHeaderMirror; AC85 20 8C AC                 ..
         sec                                     ; AC88 38                       8
         rts                                     ; AC89 60                       `
 ; ----------------------------------------------------------------------------
@@ -6259,7 +6259,7 @@ BattleSetupServices_Branch_AC8A:
         clc                                     ; AC8A 18                       .
         rts                                     ; AC8B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC8C:
+BattleSetup_CopySetupHeaderMirror:
         ldx     #$0C                            ; AC8C A2 0C                    ..
 BattleSetupServices_Branch_AC8E:
         lda     $AD71,x                         ; AC8E BD 71 AD                 .q.
@@ -6269,12 +6269,12 @@ BattleSetupServices_Branch_AC8E:
         bpl     BattleSetupServices_Branch_AC8E ; AC98 10 F4                    ..
         rts                                     ; AC9A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AC9B:
-        jsr     BattleSetupServices_Entry_AD15  ; AC9B 20 15 AD                  ..
+BattleSetup_BuildWorkspacePointerFromIndex:
+        jsr     BattleSetup_LoadSetupBasePointer; AC9B 20 15 AD                  ..
         lda     #$02                            ; AC9E A9 02                    ..
         ldx     #$00                            ; ACA0 A2 00                    ..
         jsr     AddByteToPointer                ; ACA2 20 13 C8                  ..
-        jsr     BattleSetupServices_Entry_AD34  ; ACA5 20 34 AD                  4.
+        jsr     BattleSetup_LoadAuxiliaryRecordPointer; ACA5 20 34 AD            4.
         lda     #$3A                            ; ACA8 A9 3A                    .:
         sta     $12                             ; ACAA 85 12                    ..
         sta     $13                             ; ACAC 85 13                    ..
@@ -6282,16 +6282,16 @@ BattleSetupServices_Branch_ACAE:
         ldy     #$00                            ; ACAE A0 00                    ..
         lda     ($00),y                       ; ACB0 B1 00                    ..
         sta     $16                             ; ACB2 85 16                    ..
-        jsr     UpperFixedEngine_Entry_C8AD     ; ACB4 20 AD C8                  ..
-        jsr     BattleSetupServices_Entry_AD03  ; ACB7 20 03 AD                  ..
+        jsr     AdvanceRandomStateByte          ; ACB4 20 AD C8                  ..
+        jsr     BattleSetup_AdvanceSetupPointer ; ACB7 20 03 AD                  ..
         bne     BattleSetupServices_Branch_ACAE ; ACBA D0 F2                    ..
         rts                                     ; ACBC 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_ACBD:
-        jsr     BattleSetupServices_Entry_ACF1  ; ACBD 20 F1 AC                  ..
+BattleSetup_ClassifyHeaderLengthMatch:
+        jsr     BattleSetup_CheckSetupBodySentinel; ACBD 20 F1 AC                ..
         bcc     BattleSetupServices_Branch_ACD9 ; ACC0 90 17                    ..
-        jsr     BattleSetupServices_Entry_AC9B  ; ACC2 20 9B AC                  ..
-        jsr     BattleSetupServices_Entry_AD15  ; ACC5 20 15 AD                  ..
+        jsr     BattleSetup_BuildWorkspacePointerFromIndex; ACC2 20 9B AC        ..
+        jsr     BattleSetup_LoadSetupBasePointer; ACC5 20 15 AD                  ..
         sec                                     ; ACC8 38                       8
         ldy     #$00                            ; ACC9 A0 00                    ..
         lda     $12                             ; ACCB A5 12                    ..
@@ -6311,9 +6311,9 @@ BattleSetupServices_Branch_ACDC:
         lda     #$80                            ; ACDC A9 80                    ..
         rts                                     ; ACDE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_ACDF:
-        jsr     BattleSetupServices_Entry_AC9B  ; ACDF 20 9B AC                  ..
-        jsr     BattleSetupServices_Entry_AD15  ; ACE2 20 15 AD                  ..
+BattleSetup_WriteHeaderLengthPair:
+        jsr     BattleSetup_BuildWorkspacePointerFromIndex; ACDF 20 9B AC        ..
+        jsr     BattleSetup_LoadSetupBasePointer; ACE2 20 15 AD                  ..
         ldy     #$00                            ; ACE5 A0 00                    ..
         lda     $12                             ; ACE7 A5 12                    ..
         sta     ($00),y                       ; ACE9 91 00                    ..
@@ -6322,8 +6322,8 @@ BattleSetupServices_Entry_ACDF:
         sta     ($00),y                       ; ACEE 91 00                    ..
         rts                                     ; ACF0 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_ACF1:
-        jsr     BattleSetupServices_Entry_AD15  ; ACF1 20 15 AD                  ..
+BattleSetup_CheckSetupBodySentinel:
+        jsr     BattleSetup_LoadSetupBasePointer; ACF1 20 15 AD                  ..
         ldy     #$04                            ; ACF4 A0 04                    ..
 BattleSetupServices_Branch_ACF6:
         lda     ($00),y                       ; ACF6 B1 00                    ..
@@ -6338,23 +6338,23 @@ BattleSetupServices_Branch_AD01:
         sec                                     ; AD01 38                       8
         rts                                     ; AD02 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD03:
+BattleSetup_AdvanceSetupPointer:
         inc     $00                           ; AD03 E6 00                    ..
         bne     BattleSetupServices_Branch_AD09 ; AD05 D0 02                    ..
         inc     $01                             ; AD07 E6 01                    ..
 BattleSetupServices_Branch_AD09:
         ldx     #$02                            ; AD09 A2 02                    ..
         lda     #$01                            ; AD0B A9 01                    ..
-        jsr     UpperFixedEngine_Entry_C7FB     ; AD0D 20 FB C7                  ..
+        jsr     SubtractByteFromPointer         ; AD0D 20 FB C7                  ..
         lda     $02                           ; AD10 A5 02                    ..
         ora     $03                             ; AD12 05 03                    ..
         rts                                     ; AD14 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD15:
+BattleSetup_LoadSetupBasePointer:
         ldx     #$00                            ; AD15 A2 00                    ..
         jmp     BattleSetupServices_Branch_AD1C ; AD17 4C 1C AD                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD1A:
+BattleSetup_LoadIndexedBasePointer:
         ldx     #$04                            ; AD1A A2 04                    ..
 BattleSetupServices_Branch_AD1C:
         lda     $AD80                           ; AD1C AD 80 AD                 ...
@@ -6367,21 +6367,21 @@ BattleSetupServices_Branch_AD1C:
         ldy     $AD89                           ; AD2E AC 89 AD                 ...
         jmp     AddWordToPointer                ; AD31 4C 1D C8                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD34:
+BattleSetup_LoadAuxiliaryRecordPointer:
         lda     $AD7E                           ; AD34 AD 7E AD                 .~.
         sta     $02                           ; AD37 85 02                    ..
         lda     $AD7F                           ; AD39 AD 7F AD                 ...
         sta     $03                             ; AD3C 85 03                    ..
         rts                                     ; AD3E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD3F:
+BattleSetup_LoadPrimaryRecordPointer:
         lda     $AD80                           ; AD3F AD 80 AD                 ...
         sta     $02                           ; AD42 85 02                    ..
         lda     $AD81                           ; AD44 AD 81 AD                 ...
         sta     $03                             ; AD47 85 03                    ..
         rts                                     ; AD49 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD4A:
+BattleSetup_ClearSetupWorkBuffer:
         ldx     #$6F                            ; AD4A A2 6F                    .o
         lda     #$00                            ; AD4C A9 00                    ..
 BattleSetupServices_Branch_AD4E:
@@ -6423,7 +6423,7 @@ BattleSetupServices_Branch_AD5D:
         db   $01                             ; AD8A 01                       .
         db   $60                             ; AD8B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AD8C:
+BattleSetup_ApplyChapterBattleEntryGate:
         ldx     SaveCurrentChapterMinus1        ; AD8C AE 5A 61                 .Za
         lda     $AE31,x                         ; AD8F BD 31 AE                 .1.
         sta     $00                           ; AD92 85 00                    ..
@@ -6431,12 +6431,12 @@ BattleSetupServices_Entry_AD8C:
         db   $62,$23,$4B                     ; AD95 62 23 4B                 b#K
 ; ----------------------------------------------------------------------------
         bne     BattleSetupServices_Branch_ADBB ; AD98 D0 21                    .!
-        jsr     BattleSetupServices_Entry_AE0F  ; AD9A 20 0F AE                  ..
+        jsr     BattleSetup_FindTableEntryByByte; AD9A 20 0F AE                  ..
         bcs     BattleSetupServices_Branch_ADA9 ; AD9D B0 0A                    ..
         lda     SaveCurrentChapterMinus1        ; AD9F AD 5A 61                 .Za
         cmp     #$04                            ; ADA2 C9 04                    ..
         bcc     BattleSetupServices_Branch_ADA9 ; ADA4 90 03                    ..
-        jsr     BattleSetupServices_Entry_AE23  ; ADA6 20 23 AE                  #.
+        jsr     BattleSetup_ReturnDefaultTableIndex; ADA6 20 23 AE               #.
 BattleSetupServices_Branch_ADA9:
         brk                                     ; ADA9 00                       .
         db   $44,$93,$07                     ; ADAA 44 93 07                 D..
@@ -6478,7 +6478,7 @@ BattleSetupServices_Branch_ADDE:
 BattleSetupServices_Branch_ADDF:
         lda     #$07                            ; ADDF A9 07                    ..
         sta     $00                           ; ADE1 85 00                    ..
-        jsr     BattleSetupServices_Entry_AE0F  ; ADE3 20 0F AE                  ..
+        jsr     BattleSetup_FindTableEntryByByte; ADE3 20 0F AE                  ..
         bcc     BattleSetupServices_Branch_AE04 ; ADE6 90 1C                    ..
         brk                                     ; ADE8 00                       .
         db   $44,$93,$07                     ; ADE9 44 93 07                 D..
@@ -6505,16 +6505,16 @@ BattleSetupServices_Branch_ADDF:
 BattleSetupServices_Branch_AE04:
         rts                                     ; AE04 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AE05:
+BattleSetup_FindModeOperandInTable:
         sta     $00                           ; AE05 85 00                    ..
         brk                                     ; AE07 00                       .
         db   $62,$33                         ; AE08 62 33                    b3
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AE13 ; AE0A 4C 13 AE                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AE0D:
+BattleSetup_FindModeOperandPreservingIndex:
         sta     $00                           ; AE0D 85 00                    ..
-BattleSetupServices_Entry_AE0F:
+BattleSetup_FindTableEntryByByte:
         brk                                     ; AE0F 00                       .
         db   $62,$23,$40                     ; AE10 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -6530,7 +6530,7 @@ BattleSetupServices_Branch_AE17:
         inx                                     ; AE1E E8                       .
         cpx     $01                             ; AE1F E4 01                    ..
         bcc     BattleSetupServices_Branch_AE17 ; AE21 90 F4                    ..
-BattleSetupServices_Entry_AE23:
+BattleSetup_ReturnDefaultTableIndex:
         ldx     #$00                            ; AE23 A2 00                    ..
         stx     $6E                             ; AE25 86 6E                    .n
         lda     #$08                            ; AE27 A9 08                    ..
@@ -6555,7 +6555,7 @@ BattleSetupServices_Branch_AE36:
         sta     $FE                             ; AE3F 85 FE                    ..
         sta     $FF                             ; AE41 85 FF                    ..
         lda     #$2C                            ; AE43 A9 2C                    .,
-        jsr     BattleSetupServices_Entry_B526  ; AE45 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; AE45 20 26 B5             &.
         sta     $00                           ; AE48 85 00                    ..
         brk                                     ; AE4A 00                       .
         db   $35,$0F                         ; AE4B 35 0F                    5.
@@ -6567,7 +6567,7 @@ BattleSetupServices_Branch_AE36:
         cmp     #$5E                            ; AE55 C9 5E                    .^
         beq     BattleSetupServices_Branch_AE60 ; AE57 F0 07                    ..
         pha                                     ; AE59 48                       H
-        jsr     BattleSetupServices_Entry_B547  ; AE5A 20 47 B5                  G.
+        jsr     BattleSetup_CopyPrimarySelectionToSecondaryIfAllowed; AE5A 20 47 B5 G.
         pla                                     ; AE5D 68                       h
         bcs     BattleSetupServices_Branch_AE8E ; AE5E B0 2E                    ..
 BattleSetupServices_Branch_AE60:
@@ -6596,9 +6596,9 @@ BattleSetupServices_Branch_AE60:
 BattleSetupServices_Branch_AE83:
         pla                                     ; AE83 68                       h
         sta     $00                           ; AE84 85 00                    ..
-        jsr     BattleSetupServices_Entry_AF0F  ; AE86 20 0F AF                  ..
+        jsr     BattleSetup_DispatchBattleEventById; AE86 20 0F AF               ..
         bcc     BattleSetupServices_Branch_AE8E ; AE89 90 03                    ..
-        jsr     BattleSetupServices_Entry_AF04  ; AE8B 20 04 AF                  ..
+        jsr     BattleSetup_LoadSelectionRowState; AE8B 20 04 AF                 ..
 BattleSetupServices_Branch_AE8E:
         jmp     UpperFixedEngine_Entry_D1F3     ; AE8E 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
@@ -6622,7 +6622,7 @@ BattleSetupServices_Branch_AEA5:
         brk                                     ; AEAC 00                       .
         db   $9E,$1B                         ; AEAD 9E 1B                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; AEAF 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; AEAF 20 EF B5                  ..
         brk                                     ; AEB2 00                       .
         db   $C5,$2B                         ; AEB3 C5 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -6634,11 +6634,11 @@ BattleSetupServices_Branch_AEBB:
         lda     $6279                           ; AEBD AD 79 62                 .yb
         sta     $6F                             ; AEC0 85 6F                    .o
         lda     #$2C                            ; AEC2 A9 2C                    .,
-        jsr     BattleSetupServices_Entry_B526  ; AEC4 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; AEC4 20 26 B5             &.
         lda     $73                             ; AEC7 A5 73                    .s
         bmi     BattleSetupServices_Branch_AED8 ; AEC9 30 0D                    0.
         lda     #$32                            ; AECB A9 32                    .2
-        jsr     BattleSetupServices_Entry_B526  ; AECD 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; AECD 20 26 B5             &.
         bpl     BattleSetupServices_Branch_AEDE ; AED0 10 0C                    ..
         ldx     #$01                            ; AED2 A2 01                    ..
         lda     #$9F                            ; AED4 A9 9F                    ..
@@ -6666,22 +6666,22 @@ BattleSetupServices_Branch_AEF0:
         brk                                     ; AEF5 00                       .
         db   $E6,$2B                         ; AEF6 E6 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; AEF8 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; AEF8 20 EF B5                  ..
         brk                                     ; AEFB 00                       .
         db   $C5,$2B                         ; AEFC C5 2B                    .+
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_C8E1     ; AEFE 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_AE8E ; AF01 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF04:
+BattleSetup_LoadSelectionRowState:
         lda     $6279                           ; AF04 AD 79 62                 .yb
         sta     $6F                             ; AF07 85 6F                    .o
         lda     #$30                            ; AF09 A9 30                    .0
-        jsr     BattleSetupServices_Entry_B526  ; AF0B 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; AF0B 20 26 B5             &.
 BattleSetupServices_Branch_AF0E:
         rts                                     ; AF0E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF0F:
+BattleSetup_DispatchBattleEventById:
         ldx     #$FF                            ; AF0F A2 FF                    ..
 BattleSetupServices_Branch_AF11:
         inx                                     ; AF11 E8                       .
@@ -6700,25 +6700,25 @@ BattleSetupServices_Branch_AF11:
         sta     $01                             ; AF2B 85 01                    ..
         jmp     ($0000)                         ; AF2D 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF30:
-        jsr     BattleSetupServices_Entry_B571  ; AF30 20 71 B5                  q.
+BattleSetup_RunSelectionConfirmationLoop:
+        jsr     BattleSetup_SelectBattleMode0   ; AF30 20 71 B5                  q.
         jmp     BattleSetupServices_Branch_AF39 ; AF33 4C 39 AF                 L9.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF36:
-        jsr     BattleSetupServices_Entry_B571  ; AF36 20 71 B5                  q.
+BattleSetup_RunSelectionConfirmationLoopFromReload:
+        jsr     BattleSetup_SelectBattleMode0   ; AF36 20 71 B5                  q.
 BattleSetupServices_Branch_AF39:
-        jsr     BattleSetupServices_Entry_B5EF  ; AF39 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; AF39 20 EF B5                  ..
         lda     #$01                            ; AF3C A9 01                    ..
-        jsr     BattleSetupServices_Entry_B533  ; AF3E 20 33 B5                  3.
+        jsr     BattleSetup_CheckPrimarySelectionAgainstCurrentValue; AF3E 20 33 B5 3.
         bcs     BattleSetupServices_Branch_AF6D ; AF41 B0 2A                    .*
-        jsr     BattleSetupServices_Entry_AF5A  ; AF43 20 5A AF                  Z.
-        jsr     BattleSetupServices_Entry_B56D  ; AF46 20 6D B5                  m.
+        jsr     BattleSetup_SeedSelectionPromptOperands; AF43 20 5A AF           Z.
+        jsr     BattleSetup_SelectBattleMode1   ; AF46 20 6D B5                  m.
 BattleSetupServices_Branch_AF49:
         brk                                     ; AF49 00                       .
         db   $27,$0F                         ; AF4A 27 0F                    '.
 ; ----------------------------------------------------------------------------
         ldx     #$14                            ; AF4C A2 14                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; AF4E 20 0C C9                  ..
+        jsr     WaitFrames                      ; AF4E 20 0C C9                  ..
         brk                                     ; AF51 00                       .
         db   $07,$6F,$10                     ; AF52 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
@@ -6727,27 +6727,27 @@ BattleSetupServices_Branch_AF55:
         sec                                     ; AF58 38                       8
         rts                                     ; AF59 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF5A:
+BattleSetup_SeedSelectionPromptOperands:
         lda     #$0B                            ; AF5A A9 0B                    ..
-        jsr     BattleSetupServices_Entry_B521  ; AF5C 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; AF5C 20 21 B5             !.
         adc     #$1E                            ; AF5F 69 1E                    i.
         sta     $6F                             ; AF61 85 6F                    .o
         lda     #$00                            ; AF63 A9 00                    ..
         sta     $70                             ; AF65 85 70                    .p
         lda     #$02                            ; AF67 A9 02                    ..
-        jsr     BattleSetupServices_Entry_B52C  ; AF69 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; AF69 20 2C B5           ,.
         rts                                     ; AF6C 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AF6D:
-        jsr     BattleSetupServices_Entry_B569  ; AF6D 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; AF6D 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AF55 ; AF70 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF73:
+BattleSetup_ProjectCurrentValueIntoPrompt:
         ldx     #$00                            ; AF73 A2 00                    ..
         stx     $627A                           ; AF75 8E 7A 62                 .zb
         lda     $72                             ; AF78 A5 72                    .r
         sta     $6279                           ; AF7A 8D 79 62                 .yb
-        jsr     BattleSetupServices_Entry_AF5A  ; AF7D 20 5A AF                  Z.
+        jsr     BattleSetup_SeedSelectionPromptOperands; AF7D 20 5A AF           Z.
         lda     $6279                           ; AF80 AD 79 62                 .yb
         sta     $6F                             ; AF83 85 6F                    .o
         brk                                     ; AF85 00                       .
@@ -6755,18 +6755,18 @@ BattleSetupServices_Entry_AF73:
 ; ----------------------------------------------------------------------------
         rts                                     ; AF88 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AF89:
-        jsr     BattleSetupServices_Entry_B571  ; AF89 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; AF8C 20 EF B5                  ..
+BattleSetup_RunSelectionRefreshFlow:
+        jsr     BattleSetup_SelectBattleMode0   ; AF89 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; AF8C 20 EF B5                  ..
         lda     #$05                            ; AF8F A9 05                    ..
         sta     $6F                             ; AF91 85 6F                    .o
         lda     #$45                            ; AF93 A9 45                    .E
-        jsr     BattleSetupServices_Entry_B52C  ; AF95 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; AF95 20 2C B5           ,.
         bcc     BattleSetupServices_Branch_AF6D ; AF98 90 D3                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; AF9A 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; AF9A 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF55 ; AF9D 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AFA0:
+BattleSetup_HandleSelectionConfirmResult:
         ldx     $F6                             ; AFA0 A6 F6                    ..
         brk                                     ; AFA2 00                       .
         db   $07,$6F,$16                     ; AFA3 07 6F 16                 .o.
@@ -6778,11 +6778,11 @@ BattleSetupServices_Entry_AFA0:
         db   $07,$6F,$50                     ; AFAC 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
         stx     $F6                             ; AFAF 86 F6                    ..
-        jsr     BattleSetupServices_Entry_B571  ; AFB1 20 71 B5                  q.
+        jsr     BattleSetup_SelectBattleMode0   ; AFB1 20 71 B5                  q.
         ldx     #$0C                            ; AFB4 A2 0C                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; AFB6 20 0C C9                  ..
+        jsr     WaitFrames                      ; AFB6 20 0C C9                  ..
         pla                                     ; AFB9 68                       h
-        jsr     BattleSetupServices_Entry_A974  ; AFBA 20 74 A9                  t.
+        jsr     BattleSetup_CheckEligibilityByMap; AFBA 20 74 A9                 t.
         bcs     BattleSetupServices_Branch_AFD7 ; AFBD B0 18                    ..
         brk                                     ; AFBF 00                       .
         db   $24,$EF                         ; AFC0 24 EF                    $.
@@ -6791,7 +6791,7 @@ BattleSetupServices_Entry_AFA0:
         brk                                     ; AFC4 00                       .
         db   $07,$6F,$50                     ; AFC5 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B56D  ; AFC8 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; AFC8 20 6D B5                  m.
 BattleSetupServices_Branch_AFCB:
         jsr     UpperFixedEngine_Entry_C8E1     ; AFCB 20 E1 C8                  ..
 BattleSetupServices_Branch_AFCE:
@@ -6820,24 +6820,24 @@ BattleSetupServices_Branch_AFD9:
         db   $3B,$13,$18,$11,$00,$19,$10,$00 ; AFEA 3B 13 18 11 00 19 10 00  ;.......
         db   $3B,$23,$20,$0F,$1C,$18,$40     ; AFF2 3B 23 20 0F 1C 18 40     ;# ...@
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_AFF9:
+BattleSetup_StartPromptSelector11:
         lda     #$11                            ; AFF9 A9 11                    ..
         bne     BattleSetupServices_Branch_B003 ; AFFB D0 06                    ..
-BattleSetupServices_Entry_AFFD:
+BattleSetup_StartPromptSelector13:
         lda     #$13                            ; AFFD A9 13                    ..
         bne     BattleSetupServices_Branch_B003 ; AFFF D0 02                    ..
-BattleSetupServices_Entry_B001:
+BattleSetup_HandleSelectionFlow24:
         lda     #$24                            ; B001 A9 24                    .$
 BattleSetupServices_Branch_B003:
         pha                                     ; B003 48                       H
-        jsr     BattleSetupServices_Entry_B571  ; B004 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B021  ; B007 20 21 B0                  !.
-        jsr     BattleSetupServices_Entry_B5EF  ; B00A 20 EF B5                  ..
+        jsr     BattleSetup_SelectBattleMode0   ; B004 20 71 B5                  q.
+        jsr     BattleSetup_SeedPromptStateFromMode03; B007 20 21 B0             !.
+        jsr     BattleSetup_WaitTwentyFrames    ; B00A 20 EF B5                  ..
         pla                                     ; B00D 68                       h
-        jsr     BattleSetupServices_Entry_B52C  ; B00E 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B00E 20 2C B5           ,.
         beq     BattleSetupServices_Branch_B01B ; B011 F0 08                    ..
         sta     $FD                             ; B013 85 FD                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B015 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B015 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF55 ; B018 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B01B:
@@ -6846,9 +6846,9 @@ BattleSetupServices_Branch_B01B:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AF55 ; B01E 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B021:
+BattleSetup_SeedPromptStateFromMode03:
         lda     #$03                            ; B021 A9 03                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B023 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B023 20 21 B5             !.
         adc     #$01                            ; B026 69 01                    i.
         sta     $6F                             ; B028 85 6F                    .o
         lda     #$00                            ; B02A A9 00                    ..
@@ -6857,24 +6857,24 @@ BattleSetupServices_Entry_B021:
         sta     $FF                             ; B030 85 FF                    ..
         rts                                     ; B032 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B033:
-        jsr     BattleSetupServices_Entry_B571  ; B033 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B036 20 EF B5                  ..
+BattleSetup_HandleSelectionFlow03:
+        jsr     BattleSetup_SelectBattleMode0   ; B033 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B036 20 EF B5                  ..
         lda     #$03                            ; B039 A9 03                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B03B 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B03B 20 21 B5             !.
         adc     #$04                            ; B03E 69 04                    i.
         sta     $6F                             ; B040 85 6F                    .o
         lda     #$00                            ; B042 A9 00                    ..
         sta     $70                             ; B044 85 70                    .p
         lda     #$03                            ; B046 A9 03                    ..
 BattleSetupServices_Branch_B048:
-        jsr     BattleSetupServices_Entry_B52C  ; B048 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B048 20 2C B5           ,.
         beq     BattleSetupServices_Branch_B05B ; B04B F0 0E                    ..
         sta     $FD                             ; B04D 85 FD                    ..
         lda     #$00                            ; B04F A9 00                    ..
         sta     $FE                             ; B051 85 FE                    ..
         sta     $FF                             ; B053 85 FF                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B055 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B055 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF55 ; B058 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B05B:
@@ -6883,24 +6883,24 @@ BattleSetupServices_Branch_B05B:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AF55 ; B05E 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B061:
-        jsr     BattleSetupServices_Entry_B571  ; B061 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B064 20 EF B5                  ..
+BattleSetup_HandleSelectionFlow0A:
+        jsr     BattleSetup_SelectBattleMode0   ; B061 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B064 20 EF B5                  ..
         lda     #$03                            ; B067 A9 03                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B069 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B069 20 21 B5             !.
         adc     #$03                            ; B06C 69 03                    i.
         sta     $6F                             ; B06E 85 6F                    .o
         lda     #$0A                            ; B070 A9 0A                    ..
         bne     BattleSetupServices_Branch_B048 ; B072 D0 D4                    ..
-BattleSetupServices_Entry_B074:
-        jsr     BattleSetupServices_Entry_B571  ; B074 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B077 20 EF B5                  ..
+BattleSetup_HandleSelectionFlow45:
+        jsr     BattleSetup_SelectBattleMode0   ; B074 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B077 20 EF B5                  ..
         lda     #$06                            ; B07A A9 06                    ..
         sta     $6F                             ; B07C 85 6F                    .o
         lda     #$45                            ; B07E A9 45                    .E
-        jsr     BattleSetupServices_Entry_B52C  ; B080 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B080 20 2C B5           ,.
         bcc     BattleSetupServices_Branch_B08E ; B083 90 09                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B085 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B085 20 6D B5                  m.
         brk                                     ; B088 00                       .
         db   $27,$EF                         ; B089 27 EF                    '.
 ; ----------------------------------------------------------------------------
@@ -6912,10 +6912,10 @@ BattleSetupServices_Branch_B08E:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AF55 ; B091 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B094:
-        jsr     BattleSetupServices_Entry_B571  ; B094 20 71 B5                  q.
+BattleSetup_HandleSelectionFlow09WithService0BAndPostCheck08:
+        jsr     BattleSetup_SelectBattleMode0   ; B094 20 71 B5                  q.
         lda     #$0B                            ; B097 A9 0B                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B099 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B099 20 21 B5             !.
         adc     #$14                            ; B09C 69 14                    i.
         sta     $6F                             ; B09E 85 6F                    .o
         lda     #$00                            ; B0A0 A9 00                    ..
@@ -6923,35 +6923,35 @@ BattleSetupServices_Entry_B094:
         sta     $FE                             ; B0A4 85 FE                    ..
         sta     $FF                             ; B0A6 85 FF                    ..
         lda     #$09                            ; B0A8 A9 09                    ..
-        jsr     BattleSetupServices_Entry_B52C  ; B0AA 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B0AA 20 2C B5           ,.
         sta     $FD                             ; B0AD 85 FD                    ..
         beq     BattleSetupServices_Branch_B0B7 ; B0AF F0 06                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B0B1 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B0B1 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_B0BA ; B0B4 4C BA B0                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0B7:
-        jsr     BattleSetupServices_Entry_B569  ; B0B7 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B0B7 20 69 B5                  i.
 BattleSetupServices_Branch_B0BA:
         lda     #$08                            ; B0BA A9 08                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B0BC 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B0BC 20 21 B5             !.
         bne     BattleSetupServices_Branch_B0CA ; B0BF D0 09                    ..
         brk                                     ; B0C1 00                       .
         db   $83,$2B                         ; B0C2 83 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B565  ; B0C4 20 65 B5                  e.
+        jsr     BattleSetup_SelectBattleMode3   ; B0C4 20 65 B5                  e.
         jmp     BattleSetupServices_Branch_AF55 ; B0C7 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0CA:
         jmp     BattleSetupServices_Branch_AFCB ; B0CA 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B0CD:
-        jsr     BattleSetupServices_Entry_B571  ; B0CD 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B0D0 20 EF B5                  ..
+BattleSetup_HandleSelectionFlow09WithPrimaryValueGate:
+        jsr     BattleSetup_SelectBattleMode0   ; B0CD 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B0D0 20 EF B5                  ..
         lda     #$01                            ; B0D3 A9 01                    ..
-        jsr     BattleSetupServices_Entry_B533  ; B0D5 20 33 B5                  3.
+        jsr     BattleSetup_CheckPrimarySelectionAgainstCurrentValue; B0D5 20 33 B5 3.
         bcs     BattleSetupServices_Branch_B101 ; B0D8 B0 27                    .'
         lda     #$06                            ; B0DA A9 06                    ..
-        jsr     BattleSetupServices_Entry_B521  ; B0DC 20 21 B5                  !.
+        jsr     BattleSetup_InvokeSelectionService17F; B0DC 20 21 B5             !.
         adc     #$0A                            ; B0DF 69 0A                    i.
         sta     $6F                             ; B0E1 85 6F                    .o
         lda     #$00                            ; B0E3 A9 00                    ..
@@ -6959,32 +6959,32 @@ BattleSetupServices_Entry_B0CD:
         sta     $FE                             ; B0E7 85 FE                    ..
         sta     $FF                             ; B0E9 85 FF                    ..
         lda     #$09                            ; B0EB A9 09                    ..
-        jsr     BattleSetupServices_Entry_B52C  ; B0ED 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B0ED 20 2C B5           ,.
         sta     $FD                             ; B0F0 85 FD                    ..
         tax                                     ; B0F2 AA                       .
         beq     BattleSetupServices_Branch_B0FB ; B0F3 F0 06                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B0F5 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B0F5 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF55 ; B0F8 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0FB:
-        jsr     BattleSetupServices_Entry_B569  ; B0FB 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B0FB 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AF55 ; B0FE 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B101:
-        jsr     BattleSetupServices_Entry_B565  ; B101 20 65 B5                  e.
+        jsr     BattleSetup_SelectBattleMode3   ; B101 20 65 B5                  e.
         jmp     BattleSetupServices_Branch_AF55 ; B104 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B107:
-        jsr     BattleSetupServices_Entry_B571  ; B107 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B10A 20 EF B5                  ..
+BattleSetup_HandleSelectionFlow44:
+        jsr     BattleSetup_SelectBattleMode0   ; B107 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B10A 20 EF B5                  ..
         lda     #$07                            ; B10D A9 07                    ..
         sta     $6F                             ; B10F 85 6F                    .o
         lda     #$44                            ; B111 A9 44                    .D
-        jsr     BattleSetupServices_Entry_B52C  ; B113 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B113 20 2C B5           ,.
         bcc     BattleSetupServices_Branch_B144 ; B116 90 2C                    .,
         lda     #$05                            ; B118 A9 05                    ..
-        jsr     BattleSetupServices_Entry_B52C  ; B11A 20 2C B5                  ,.
-        jsr     BattleSetupServices_Entry_B56D  ; B11D 20 6D B5                  m.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B11A 20 2C B5           ,.
+        jsr     BattleSetup_SelectBattleMode1   ; B11D 20 6D B5                  m.
         brk                                     ; B120 00                       .
         db   $27,$0F                         ; B121 27 0F                    '.
 ; ----------------------------------------------------------------------------
@@ -7017,16 +7017,16 @@ BattleSetupServices_Branch_B13E:
         jmp     BattleSetupServices_Branch_AF55 ; B141 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B144:
-        jsr     BattleSetupServices_Entry_B569  ; B144 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B144 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AF55 ; B147 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B14A:
-        jsr     BattleSetupServices_Entry_B571  ; B14A 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B14D 20 EF B5                  ..
+BattleSetup_ClearTransitionFlag0539:
+        jsr     BattleSetup_SelectBattleMode0   ; B14A 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B14D 20 EF B5                  ..
         lda     #$00                            ; B150 A9 00                    ..
         sta     $0539                           ; B152 8D 39 05                 .9.
-        jsr     BattleSetupServices_Entry_B56D  ; B155 20 6D B5                  m.
-        jsr     BattleSetupServices_Entry_B5EF  ; B158 20 EF B5                  ..
+        jsr     BattleSetup_SelectBattleMode1   ; B155 20 6D B5                  m.
+        jsr     BattleSetup_WaitTwentyFrames    ; B158 20 EF B5                  ..
         lda     #$FF                            ; B15B A9 FF                    ..
         brk                                     ; B15D 00                       .
         db   $24,$EF                         ; B15E 24 EF                    $.
@@ -7046,12 +7046,12 @@ BattleSetupServices_Branch_B171:
         brk                                     ; B171 00                       .
         db   $07,$6F,$50                     ; B172 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B569  ; B175 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B175 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AFCB ; B178 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B17B:
-        jsr     BattleSetupServices_Entry_B571  ; B17B 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B17E 20 EF B5                  ..
+BattleSetup_CountSelectionIterationsInto6E:
+        jsr     BattleSetup_SelectBattleMode0   ; B17B 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B17E 20 EF B5                  ..
         brk                                     ; B181 00                       .
         db   $62,$23,$01                     ; B182 62 23 01                 b#.
 ; ----------------------------------------------------------------------------
@@ -7065,16 +7065,16 @@ BattleSetupServices_Branch_B18B:
         inc     $6E                             ; B18F E6 6E                    .n
         dec     $00                           ; B191 C6 00                    ..
         bne     BattleSetupServices_Branch_B18B ; B193 D0 F6                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B195 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B195 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF49 ; B198 4C 49 AF                 LI.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B19B:
-        jsr     BattleSetupServices_Entry_B571  ; B19B 20 71 B5                  q.
+BattleSetup_CheckMap00Submap01TriggerList:
+        jsr     BattleSetup_SelectBattleMode0   ; B19B 20 71 B5                  q.
         brk                                     ; B19E 00                       .
         db   $AA,$FB                         ; B19F AA FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$78                            ; B1A1 A2 78                    .x
-        jsr     UpperFixedEngine_Entry_C90C     ; B1A3 20 0C C9                  ..
+        jsr     WaitFrames                      ; B1A3 20 0C C9                  ..
         lda     $41                             ; B1A6 A5 41                    .A
         asl     a                               ; B1A8 0A                       .
         bcc     BattleSetupServices_Branch_B1D3 ; B1A9 90 28                    .(
@@ -7118,13 +7118,13 @@ BattleSetupServices_Branch_B1D9:
         db   $1D,$18,$1D,$19,$1D,$17,$1E,$17 ; B1E7 1D 18 1D 19 1D 17 1E 17  ........
         db   $1F,$17,$20,$17,$21,$17,$22     ; B1EF 1F 17 20 17 21 17 22     .. .!."
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B1F6:
+BattleSetup_ForceBattleState7F:
         lda     #$7F                            ; B1F6 A9 7F                    ..
         sta     $6E41                           ; B1F8 8D 41 6E                 .An
-        jsr     BattleSetupServices_Entry_B571  ; B1FB 20 71 B5                  q.
+        jsr     BattleSetup_SelectBattleMode0   ; B1FB 20 71 B5                  q.
         jmp     BattleSetupServices_Branch_AF55 ; B1FE 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B201:
+BattleSetup_HandleMap01NightBattleGate:
         lda     $6283                           ; B201 AD 83 62                 ..b
         and     #$0C                            ; B204 29 0C                    ).
         cmp     #$0C                            ; B206 C9 0C                    ..
@@ -7144,7 +7144,7 @@ BattleSetupServices_Entry_B201:
         lda     CurrentSubmapNumber             ; B223 A5 64                    .d
         cmp     #$01                            ; B225 C9 01                    ..
         bne     BattleSetupServices_Branch_B264 ; B227 D0 3B                    .;
-        jsr     BattleSetupServices_Entry_B569  ; B229 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B229 20 69 B5                  i.
         lda     $6283                           ; B22C AD 83 62                 ..b
         ora     #$02                            ; B22F 09 02                    ..
         and     #$F7                            ; B231 29 F7                    ).
@@ -7152,7 +7152,7 @@ BattleSetupServices_Entry_B201:
         brk                                     ; B236 00                       .
         db   $00,$CB,$02                     ; B237 00 CB 02                 ...
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; B23A 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B23A 20 EF B5                  ..
         brk                                     ; B23D 00                       .
         db   $5F,$3B                         ; B23E 5F 3B                    _;
 ; ----------------------------------------------------------------------------
@@ -7172,19 +7172,19 @@ BattleSetupServices_Branch_B243:
         sbc     #$03                            ; B255 E9 03                    ..
         cmp     #$03                            ; B257 C9 03                    ..
         bcs     BattleSetupServices_Branch_B264 ; B259 B0 09                    ..
-        jsr     BattleSetupServices_Entry_B5EF  ; B25B 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B25B 20 EF B5                  ..
         brk                                     ; B25E 00                       .
         db   $2A,$4B                         ; B25F 2A 4B                    *K
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B261 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B264:
-        jsr     BattleSetupServices_Entry_B571  ; B264 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B267 20 EF B5                  ..
-        jsr     BattleSetupServices_Entry_B56D  ; B26A 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode0   ; B264 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B267 20 EF B5                  ..
+        jsr     BattleSetup_SelectBattleMode1   ; B26A 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AFCB ; B26D 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B270:
+BattleSetup_MirrorSelectionPairAndValidate:
         brk                                     ; B270 00                       .
         db   $62,$23,$40                     ; B271 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -7202,7 +7202,7 @@ BattleSetupServices_Entry_B270:
         brk                                     ; B28C 00                       .
         db   $9E,$1B                         ; B28D 9E 1B                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; B28F 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B28F 20 EF B5                  ..
         brk                                     ; B292 00                       .
         db   $36,$EF                         ; B293 36 EF                    6.
 ; ----------------------------------------------------------------------------
@@ -7216,16 +7216,16 @@ BattleSetupServices_Branch_B299:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B29C 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B29F:
-        jsr     BattleSetupServices_Entry_B571  ; B29F 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B2A2 20 EF B5                  ..
+BattleSetup_NotifySelectionState41AndReturnClear:
+        jsr     BattleSetup_SelectBattleMode0   ; B29F 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B2A2 20 EF B5                  ..
         brk                                     ; B2A5 00                       .
         db   $41,$EF                         ; B2A6 41 EF                    A.
 ; ----------------------------------------------------------------------------
         clc                                     ; B2A8 18                       .
         rts                                     ; B2A9 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B2AA:
+BattleSetup_HandleMap0DSubmap01SelectionSwap:
         lda     $41                             ; B2AA A5 41                    .A
         bpl     BattleSetupServices_Branch_B2C6 ; B2AC 10 18                    ..
         lda     CurrentMapNumber                ; B2AE A5 63                    .c
@@ -7244,8 +7244,8 @@ BattleSetupServices_Branch_B2C6:
         brk                                     ; B2C6 00                       .
         db   $07,$6F,$50                     ; B2C7 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B571  ; B2CA 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B2CD 20 EF B5                  ..
+        jsr     BattleSetup_SelectBattleMode0   ; B2CA 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B2CD 20 EF B5                  ..
         brk                                     ; B2D0 00                       .
         db   $C5,$2B                         ; B2D1 C5 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -7281,8 +7281,8 @@ BattleSetupServices_Branch_B2DB:
         sec                                     ; B2FD 38                       8
         rts                                     ; B2FE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B2FF:
-        jsr     BattleSetupServices_Entry_B571  ; B2FF 20 71 B5                  q.
+BattleSetup_HandleMap05Submap01SelectionFlag:
+        jsr     BattleSetup_SelectBattleMode0   ; B2FF 20 71 B5                  q.
         lda     CurrentMapNumber                ; B302 A5 63                    .c
         cmp     #$05                            ; B304 C9 05                    ..
         bne     BattleSetupServices_Branch_B328 ; B306 D0 20                    .
@@ -7295,18 +7295,18 @@ BattleSetupServices_Entry_B2FF:
         lda     PlayerLocalY                    ; B314 A5 45                    .E
         cmp     #$08                            ; B316 C9 08                    ..
         bne     BattleSetupServices_Branch_B328 ; B318 D0 0E                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B31A 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B31A 20 6D B5                  m.
         lda     $6283                           ; B31D AD 83 62                 ..b
         ora     #$01                            ; B320 09 01                    ..
         sta     $6283                           ; B322 8D 83 62                 ..b
         jmp     BattleSetupServices_Branch_AF55 ; B325 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B328:
-        jsr     BattleSetupServices_Entry_B569  ; B328 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B328 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AFCB ; B32B 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B32E:
-        jsr     BattleSetupServices_Entry_B571  ; B32E 20 71 B5                  q.
+BattleSetup_HandleMap04Submap06SelectionUpdate:
+        jsr     BattleSetup_SelectBattleMode0   ; B32E 20 71 B5                  q.
         lda     CurrentMapNumber                ; B331 A5 63                    .c
         cmp     #$04                            ; B333 C9 04                    ..
         bne     BattleSetupServices_Branch_B362 ; B335 D0 2B                    .+
@@ -7319,7 +7319,7 @@ BattleSetupServices_Entry_B32E:
         lda     PlayerLocalY                    ; B343 A5 45                    .E
         cmp     #$0B                            ; B345 C9 0B                    ..
         bne     BattleSetupServices_Branch_B362 ; B347 D0 19                    ..
-        jsr     BattleSetupServices_Entry_B56D  ; B349 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B349 20 6D B5                  m.
         ldx     $6278                           ; B34C AE 78 62                 .xb
         lda     $6279                           ; B34F AD 79 62                 .yb
         brk                                     ; B352 00                       .
@@ -7337,10 +7337,10 @@ BattleSetupServices_Entry_B32E:
         rts                                     ; B361 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B362:
-        jsr     BattleSetupServices_Entry_B569  ; B362 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode2   ; B362 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AFCB ; B365 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B368:
+BattleSetup_HandleMap42EncounterIntro:
         lda     CurrentMapNumber                ; B368 A5 63                    .c
         cmp     #$42                            ; B36A C9 42                    .B
         bne     BattleSetupServices_Branch_B3AF ; B36C D0 41                    .A
@@ -7366,12 +7366,12 @@ BattleSetupServices_Entry_B368:
         bne     BattleSetupServices_Branch_B3AF ; B391 D0 1C                    ..
         lda     $6278                           ; B393 AD 78 62                 .xb
         sta     $F9                             ; B396 85 F9                    ..
-        jsr     BattleSetupServices_Entry_B571  ; B398 20 71 B5                  q.
+        jsr     BattleSetup_SelectBattleMode0   ; B398 20 71 B5                  q.
         brk                                     ; B39B 00                       .
         db   $18,$CB,$10                     ; B39C 18 CB 10                 ...
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_D218     ; B39F 20 18 D2                  ..
-        jsr     BattleSetupServices_Entry_97A9  ; B3A2 20 A9 97                  ..
+        jsr     BattleSetup_RunEncounterIntroSequence; B3A2 20 A9 97             ..
         brk                                     ; B3A5 00                       .
         db   $07,$6F,$50                     ; B3A6 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
@@ -7381,12 +7381,12 @@ BattleSetupServices_Entry_B368:
         jmp     BattleSetupServices_Branch_AF55 ; B3AC 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B3AF:
-        jsr     BattleSetupServices_Entry_B56D  ; B3AF 20 6D B5                  m.
-        jsr     BattleSetupServices_Entry_B5EF  ; B3B2 20 EF B5                  ..
-        jsr     BattleSetupServices_Entry_B569  ; B3B5 20 69 B5                  i.
+        jsr     BattleSetup_SelectBattleMode1   ; B3AF 20 6D B5                  m.
+        jsr     BattleSetup_WaitTwentyFrames    ; B3B2 20 EF B5                  ..
+        jsr     BattleSetup_SelectBattleMode2   ; B3B5 20 69 B5                  i.
         jmp     BattleSetupServices_Branch_AFCB ; B3B8 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B3BB:
+BattleSetup_HandleMap1BEncounterIntro:
         lda     $41                             ; B3BB A5 41                    .A
         bpl     BattleSetupServices_Branch_B3FC ; B3BD 10 3D                    .=
         lda     CurrentMapNumber                ; B3BF A5 63                    .c
@@ -7410,7 +7410,7 @@ BattleSetupServices_Entry_B3BB:
         lda     $7928                           ; B3E3 AD 28 79                 .(y
         cmp     #$16                            ; B3E6 C9 16                    ..
         beq     BattleSetupServices_Branch_B405 ; B3E8 F0 1B                    ..
-        jsr     BattleSetupServices_Entry_B40E  ; B3EA 20 0E B4                  ..
+        jsr     BattleSetup_PrimeEncounterIntroState; B3EA 20 0E B4              ..
         ldx     #$10                            ; B3ED A2 10                    ..
         ldy     #$08                            ; B3EF A0 08                    ..
         lda     #$16                            ; B3F1 A9 16                    ..
@@ -7423,18 +7423,18 @@ BattleSetupServices_Entry_B3BB:
         jmp     BattleSetupServices_Branch_B2D6 ; B3F9 4C D6 B2                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B3FC:
-        jsr     BattleSetupServices_Entry_B40E  ; B3FC 20 0E B4                  ..
-        jsr     BattleSetupServices_Entry_B571  ; B3FF 20 71 B5                  q.
+        jsr     BattleSetup_PrimeEncounterIntroState; B3FC 20 0E B4              ..
+        jsr     BattleSetup_SelectBattleMode0   ; B3FF 20 71 B5                  q.
         jmp     BattleSetupServices_Branch_AFCB ; B402 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B405:
-        jsr     BattleSetupServices_Entry_B40E  ; B405 20 0E B4                  ..
+        jsr     BattleSetup_PrimeEncounterIntroState; B405 20 0E B4              ..
         brk                                     ; B408 00                       .
         db   $C5,$2B                         ; B409 C5 2B                    .+
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B40B 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B40E:
+BattleSetup_PrimeEncounterIntroState:
         brk                                     ; B40E 00                       .
         db   $07,$6F,$FF                     ; B40F 07 6F FF                 .o.
 ; ----------------------------------------------------------------------------
@@ -7446,7 +7446,7 @@ BattleSetupServices_Entry_B40E:
         brk                                     ; B41B 00                       .
         db   $53,$4B                         ; B41C 53 4B                    SK
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetupServices_Entry_B5EF  ; B41E 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B41E 20 EF B5                  ..
         brk                                     ; B421 00                       .
         db   $29,$FB                         ; B422 29 FB                    ).
 ; ----------------------------------------------------------------------------
@@ -7458,12 +7458,12 @@ BattleSetupServices_Entry_B40E:
 ; ----------------------------------------------------------------------------
         rts                                     ; B42A 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B42B:
-        jsr     BattleSetupServices_Entry_B571  ; B42B 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B42E 20 EF B5                  ..
-        jsr     BattleSetupServices_Entry_A974  ; B431 20 74 A9                  t.
+BattleSetup_RunBattleEntryEligibilityGate:
+        jsr     BattleSetup_SelectBattleMode0   ; B42B 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B42E 20 EF B5                  ..
+        jsr     BattleSetup_CheckEligibilityByMap; B431 20 74 A9                 t.
         bcs     BattleSetupServices_Branch_B458 ; B434 B0 22                    ."
-        jsr     BattleSetupServices_Entry_A721  ; B436 20 21 A7                  !.
+        jsr     BattleSetup_ShouldBlockBattleStart; B436 20 21 A7                !.
         bcs     BattleSetupServices_Branch_B458 ; B439 B0 1D                    ..
         lda     $41                             ; B43B A5 41                    .A
         bpl     BattleSetupServices_Branch_B44C ; B43D 10 0D                    ..
@@ -7477,7 +7477,7 @@ BattleSetupServices_Branch_B44C:
         lda     SaveTimeOfDay                   ; B44C AD ED 62                 ..b
         cmp     #$78                            ; B44F C9 78                    .x
         bcs     BattleSetupServices_Branch_B458 ; B451 B0 05                    ..
-        jsr     BattleSetupServices_Entry_A773  ; B453 20 73 A7                  s.
+        jsr     BattleSetup_ShowBattleEntryBlockedPrompt; B453 20 73 A7          s.
         clc                                     ; B456 18                       .
         rts                                     ; B457 60                       `
 ; ----------------------------------------------------------------------------
@@ -7493,9 +7493,9 @@ BattleSetupServices_Branch_B45E:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B461 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B464:
-        jsr     BattleSetupServices_Entry_B571  ; B464 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B467 20 EF B5                  ..
+BattleSetup_HandleWorldTriggerC22F:
+        jsr     BattleSetup_SelectBattleMode0   ; B464 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B467 20 EF B5                  ..
         lda     $62A1                           ; B46A AD A1 62                 ..b
         bmi     BattleSetupServices_Branch_B48E ; B46D 30 1F                    0.
         lda     $41                             ; B46F A5 41                    .A
@@ -7516,7 +7516,7 @@ BattleSetupServices_Entry_B464:
         rts                                     ; B487 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B488:
-        jsr     BattleSetupServices_Entry_B56D  ; B488 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B488 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AFCB ; B48B 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B48E:
@@ -7525,8 +7525,8 @@ BattleSetupServices_Branch_B48E:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B491 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B494:
-        jsr     BattleSetupServices_Entry_B571  ; B494 20 71 B5                  q.
+BattleSetup_HandleMap34Submap00Trigger:
+        jsr     BattleSetup_SelectBattleMode0   ; B494 20 71 B5                  q.
         bit     $62A1                           ; B497 2C A1 62                 ,.b
         bvs     BattleSetupServices_Branch_B48E ; B49A 70 F2                    p.
         lda     $41                             ; B49C A5 41                    .A
@@ -7552,15 +7552,15 @@ BattleSetupServices_Entry_B494:
         clc                                     ; B4BF 18                       .
         rts                                     ; B4C0 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B4C1:
-        jsr     BattleSetupServices_Entry_B571  ; B4C1 20 71 B5                  q.
+BattleSetup_HandleMap36BattleGate:
+        jsr     BattleSetup_SelectBattleMode0   ; B4C1 20 71 B5                  q.
         lda     $41                             ; B4C4 A5 41                    .A
         bpl     BattleSetupServices_Branch_B4CE ; B4C6 10 06                    ..
         lda     CurrentMapNumber                ; B4C8 A5 63                    .c
         cmp     #$36                            ; B4CA C9 36                    .6
         beq     BattleSetupServices_Branch_B4D6 ; B4CC F0 08                    ..
 BattleSetupServices_Branch_B4CE:
-        jsr     BattleSetupServices_Entry_B5EF  ; B4CE 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B4CE 20 EF B5                  ..
         brk                                     ; B4D1 00                       .
         db   $01,$DF                         ; B4D2 01 DF                    ..
 ; ----------------------------------------------------------------------------
@@ -7573,9 +7573,9 @@ BattleSetupServices_Branch_B4D6:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B4D9 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B4DC:
-        jsr     BattleSetupServices_Entry_B571  ; B4DC 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B4DF 20 EF B5                  ..
+BattleSetup_ForceSetupState32:
+        jsr     BattleSetup_SelectBattleMode0   ; B4DC 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B4DF 20 EF B5                  ..
         brk                                     ; B4E2 00                       .
         db   $5F,$0B                         ; B4E3 5F 0B                    _.
 ; ----------------------------------------------------------------------------
@@ -7583,9 +7583,9 @@ BattleSetupServices_Entry_B4DC:
         sta     $6BEB                           ; B4E7 8D EB 6B                 ..k
         jmp     BattleSetupServices_Branch_AF55 ; B4EA 4C 55 AF                 LU.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B4ED:
-        jsr     BattleSetupServices_Entry_B571  ; B4ED 20 71 B5                  q.
-        jsr     BattleSetupServices_Entry_B5EF  ; B4F0 20 EF B5                  ..
+BattleSetup_RunBattleIntroOverlayOrMode1Fallback:
+        jsr     BattleSetup_SelectBattleMode0   ; B4ED 20 71 B5                  q.
+        jsr     BattleSetup_WaitTwentyFrames    ; B4F0 20 EF B5                  ..
         lda     $41                             ; B4F3 A5 41                    .A
         bmi     BattleSetupServices_Branch_B518 ; B4F5 30 21                    0!
         lda     $62A1                           ; B4F7 AD A1 62                 ..b
@@ -7611,28 +7611,28 @@ BattleSetupServices_Entry_B4ED:
         rts                                     ; B511 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B512:
-        jsr     BattleSetupServices_Entry_B56D  ; B512 20 6D B5                  m.
+        jsr     BattleSetup_SelectBattleMode1   ; B512 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AFCB ; B515 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B518:
-        jsr     BattleSetupServices_Entry_B5EF  ; B518 20 EF B5                  ..
+        jsr     BattleSetup_WaitTwentyFrames    ; B518 20 EF B5                  ..
         brk                                     ; B51B 00                       .
         db   $4B,$0B                         ; B51C 4B 0B                    K.
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AFCB ; B51E 4C CB AF                 L..
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B521:
+BattleSetup_InvokeSelectionService17F:
         brk                                     ; B521 00                       .
         db   $17,$0F                         ; B522 17 0F                    ..
 ; ----------------------------------------------------------------------------
         clc                                     ; B524 18                       .
         rts                                     ; B525 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B526:
+BattleSetup_ReadPrimarySelectionIndex:
         ldx     $6278                           ; B526 AE 78 62                 .xb
         jmp     BattleSetupServices_Branch_B52F ; B529 4C 2F B5                 L/.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B52C:
+BattleSetup_ReadSecondarySelectionIndex:
         ldx     $627A                           ; B52C AE 7A 62                 .zb
 BattleSetupServices_Branch_B52F:
         brk                                     ; B52F 00                       .
@@ -7640,24 +7640,24 @@ BattleSetupServices_Branch_B52F:
 ; ----------------------------------------------------------------------------
         rts                                     ; B532 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B533:
+BattleSetup_CheckPrimarySelectionAgainstCurrentValue:
         pha                                     ; B533 48                       H
         lda     #$42                            ; B534 A9 42                    .B
-        jsr     BattleSetupServices_Entry_B52C  ; B536 20 2C B5                  ,.
+        jsr     BattleSetup_ReadSecondarySelectionIndex; B536 20 2C B5           ,.
         pla                                     ; B539 68                       h
         cmp     $72                             ; B53A C5 72                    .r
         beq     BattleSetupServices_Branch_B55A ; B53C F0 1C                    ..
         clc                                     ; B53E 18                       .
         rts                                     ; B53F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B540:
+BattleSetup_QuerySecondarySelectionService:
         ldx     $627A                           ; B540 AE 7A 62                 .zb
         brk                                     ; B543 00                       .
         db   $02,$73                         ; B544 02 73                    .s
 ; ----------------------------------------------------------------------------
         rts                                     ; B546 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B547:
+BattleSetup_CopyPrimarySelectionToSecondaryIfAllowed:
         brk                                     ; B547 00                       .
         db   $14,$0F                         ; B548 14 0F                    ..
 ; ----------------------------------------------------------------------------
@@ -7676,7 +7676,7 @@ BattleSetupServices_Branch_B55A:
         sec                                     ; B55A 38                       8
         rts                                     ; B55B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B55C:
+BattleSetup_CheckSecondarySelectionBelowEight:
         ldx     $627A                           ; B55C AE 7A 62                 .zb
         brk                                     ; B55F 00                       .
         db   $2B,$73                         ; B560 2B 73                    +s
@@ -7684,16 +7684,16 @@ BattleSetupServices_Entry_B55C:
         cmp     #$08                            ; B562 C9 08                    ..
         rts                                     ; B564 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B565:
+BattleSetup_SelectBattleMode3:
         lda     #$03                            ; B565 A9 03                    ..
         bne     BattleSetupServices_Branch_B573 ; B567 D0 0A                    ..
-BattleSetupServices_Entry_B569:
+BattleSetup_SelectBattleMode2:
         lda     #$02                            ; B569 A9 02                    ..
         bne     BattleSetupServices_Branch_B573 ; B56B D0 06                    ..
-BattleSetupServices_Entry_B56D:
+BattleSetup_SelectBattleMode1:
         lda     #$01                            ; B56D A9 01                    ..
         bne     BattleSetupServices_Branch_B573 ; B56F D0 02                    ..
-BattleSetupServices_Entry_B571:
+BattleSetup_SelectBattleMode0:
         lda     #$00                            ; B571 A9 00                    ..
 BattleSetupServices_Branch_B573:
         pha                                     ; B573 48                       H
@@ -7744,14 +7744,14 @@ BattleSetupServices_Branch_B5C1:
         lda     $6279                           ; B5C1 AD 79 62                 .yb
         sta     $6F                             ; B5C4 85 6F                    .o
         lda     #$2C                            ; B5C6 A9 2C                    .,
-        jsr     BattleSetupServices_Entry_B526  ; B5C8 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; B5C8 20 26 B5             &.
         jmp     BattleSetupServices_Branch_B5E3 ; B5CB 4C E3 B5                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B5CE:
         lda     $6279                           ; B5CE AD 79 62                 .yb
         sta     $6F                             ; B5D1 85 6F                    .o
         lda     #$2C                            ; B5D3 A9 2C                    .,
-        jsr     BattleSetupServices_Entry_B526  ; B5D5 20 26 B5                  &.
+        jsr     BattleSetup_ReadPrimarySelectionIndex; B5D5 20 26 B5             &.
         sta     $FA                             ; B5D8 85 FA                    ..
         lda     $6278                           ; B5DA AD 78 62                 .xb
         jmp     BattleSetupServices_Branch_B5E3 ; B5DD 4C E3 B5                 L..
@@ -7770,9 +7770,9 @@ BattleSetupServices_Branch_B5E5:
 ; ----------------------------------------------------------------------------
         rts                                     ; B5EE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B5EF:
+BattleSetup_WaitTwentyFrames:
         ldx     #$14                            ; B5EF A2 14                    ..
-        jmp     UpperFixedEngine_Entry_C90C     ; B5F1 4C 0C C9                 L..
+        jmp     WaitFrames                      ; B5F1 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
         db   $61,$9E,$82,$CA,$80,$C5,$61,$9E ; B5F4 61 9E 82 CA 80 C5 61 9E  a.....a.
         db   $82,$CC,$80,$C5,$51,$A8,$43,$A9 ; B5FC 82 CC 80 C5 51 A8 43 A9  ....Q.C.
@@ -7807,7 +7807,7 @@ BattleSetupServices_Entry_B5EF:
         db   $67,$1E,$6A,$5E,$52,$6E,$71,$72 ; B6D4 67 1E 6A 5E 52 6E 71 72  g.j^Rnqr
         db   $73,$FF                         ; B6DC 73 FF                    s.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B6DE:
+BattleSetup_ApplyMapTransitionRules:
         lda     #$00                            ; B6DE A9 00                    ..
         sta     $29                             ; B6E0 85 29                    .)
         lda     PlayerWorldX                    ; B6E2 A5 42                    .B
@@ -8019,7 +8019,7 @@ BattleSetupServices_Branch_B807:
         iny                                     ; B817 C8                       .
         lda     ($00),y                       ; B818 B1 00                    ..
         sta     $06                             ; B81A 85 06                    ..
-        jsr     BattleSetupServices_Entry_B856  ; B81C 20 56 B8                  V.
+        jsr     BattleSetup_CheckPlayerWithinPackedTransitionBounds; B81C 20 56 B8 V.
         bcc     BattleSetupServices_Branch_B829 ; B81F 90 08                    ..
 BattleSetupServices_Branch_B821:
         iny                                     ; B821 C8                       .
@@ -8064,7 +8064,7 @@ BattleSetupServices_Branch_B846:
         bne     BattleSetupServices_Branch_B82A ; B851 D0 D7                    ..
         jmp     BattleSetupServices_Branch_B821 ; B853 4C 21 B8                 L!.
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_B856:
+BattleSetup_CheckPlayerWithinPackedTransitionBounds:
         lda     PlayerLocalX                    ; B856 A5 44                    .D
         cmp     $04                             ; B858 C5 04                    ..
         bcc     BattleSetupServices_Branch_B878 ; B85A 90 1C                    ..
@@ -8267,7 +8267,7 @@ BattleSetupServices_Branch_B96A:
         db   $03,$05,$02,$09,$0A,$37,$81,$04 ; BA31 03 05 02 09 0A 37 81 04  .....7..
         db   $05,$02,$0A,$0A,$FF             ; BA39 05 02 0A 0A FF           .....
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BA3E:
+BattleSetup_StoreTextInputBuffer:
         lda     $03E3                           ; BA3E AD E3 03                 ...
         sta     $00                           ; BA41 85 00                    ..
         lda     $03DD                           ; BA43 AD DD 03                 ...
@@ -8318,7 +8318,7 @@ BattleSetupServices_Branch_BA76:
 BattleSetupServices_Branch_BA93:
         rts                                     ; BA93 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BA94:
+BattleSetup_QueueTextInputListTiles:
         lda     $03C9                           ; BA94 AD C9 03                 ...
         and     #$F0                            ; BA97 29 F0                    ).
         lsr     a                               ; BA99 4A                       J
@@ -8340,7 +8340,7 @@ BattleSetupServices_Entry_BA94:
         sta     $00                           ; BAB6 85 00                    ..
         inc     $00                           ; BAB8 E6 00                    ..
         lda     $03E4                           ; BABA AD E4 03                 ...
-        jmp     UpperFixedEngine_Entry_C65A     ; BABD 4C 5A C6                 LZ.
+        jmp     QueueNametableTileUpdate        ; BABD 4C 5A C6                 LZ.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BAC0:
         lda     $00                           ; BAC0 A5 00                    ..
@@ -8359,10 +8359,10 @@ BattleSetupServices_Branch_BAD6:
         bne     BattleSetupServices_Branch_BADE ; BADA D0 02                    ..
         lda     #$85                            ; BADC A9 85                    ..
 BattleSetupServices_Branch_BADE:
-        jsr     UpperFixedEngine_Entry_C65A     ; BADE 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; BADE 20 5A C6                  Z.
         dec     $01                             ; BAE1 C6 01                    ..
         lda     $03E3,y                         ; BAE3 B9 E3 03                 ...
-        jsr     UpperFixedEngine_Entry_C65A     ; BAE6 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; BAE6 20 5A C6                  Z.
         inc     $01                             ; BAE9 E6 01                    ..
         inc     $00                           ; BAEB E6 00                    ..
         iny                                     ; BAED C8                       .
@@ -8372,7 +8372,7 @@ BattleSetupServices_Branch_BADE:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BAF3:
         lda     $03E3,y                         ; BAF3 B9 E3 03                 ...
-        jsr     UpperFixedEngine_Entry_C65A     ; BAF6 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; BAF6 20 5A C6                  Z.
         inc     $00                           ; BAF9 E6 00                    ..
         iny                                     ; BAFB C8                       .
         cpy     #$05                            ; BAFC C0 05                    ..
@@ -8381,7 +8381,7 @@ BattleSetupServices_Branch_BAF3:
 ; ----------------------------------------------------------------------------
         db   $00,$03,$02,$01,$00             ; BB01 00 03 02 01 00           .....
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BB06:
+BattleSetup_InitializeTextInputCursorFromIndex:
         sta     $03DA                           ; BB06 8D DA 03                 ...
         lda     $07B4                           ; BB09 AD B4 07                 ...
         and     #$09                            ; BB0C 29 09                    ).
@@ -8399,7 +8399,7 @@ BattleSetupServices_Entry_BB06:
 BattleSetupServices_Branch_BB25:
         lda     $F8                             ; BB25 A5 F8                    ..
         cmp     #$F0                            ; BB27 C9 F0                    ..
-        bcc     BattleSetupServices_Entry_BB62  ; BB29 90 37                    .7
+        bcc     BattleSetup_ComputeTextInputCursorFromIndex; BB29 90 37         .7
         cmp     #$FE                            ; BB2B C9 FE                    ..
         bne     BattleSetupServices_Branch_BB3A ; BB2D D0 0B                    ..
         lda     #$00                            ; BB2F A9 00                    ..
@@ -8412,7 +8412,7 @@ BattleSetupServices_Branch_BB3A:
         clc                                     ; BB3A 18                       .
         sbc     #$F0                            ; BB3B E9 F0                    ..
         sta     $F8                             ; BB3D 85 F8                    ..
-        jsr     BattleSetupServices_Entry_BB62  ; BB3F 20 62 BB                  b.
+        jsr     BattleSetup_ComputeTextInputCursorFromIndex; BB3F 20 62 BB       b.
         lda     TextCursorPosition              ; BB42 AD CF 03                 ...
         and     #$0F                            ; BB45 29 0F                    ).
         bne     BattleSetupServices_Branch_BB61 ; BB47 D0 18                    ..
@@ -8428,7 +8428,7 @@ BattleSetupServices_Branch_BB3A:
 BattleSetupServices_Branch_BB61:
         rts                                     ; BB61 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BB62:
+BattleSetup_ComputeTextInputCursorFromIndex:
         ldy     $03DA                           ; BB62 AC DA 03                 ...
         lda     #$00                            ; BB65 A9 00                    ..
         sta     $03D1                           ; BB67 8D D1 03                 ...
@@ -8487,7 +8487,7 @@ BattleSetupServices_Branch_BBCB:
 ; ----------------------------------------------------------------------------
         db   $00,$01,$00,$03,$00,$00,$00,$07 ; BBCC 00 01 00 03 00 00 00 07  ........
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BBD4:
+BattleSetup_ReadSaveSlotFieldByte:
         cpy     #$02                            ; BBD4 C0 02                    ..
         bne     BattleSetupServices_Branch_BBE0 ; BBD6 D0 08                    ..
         cpx     #$03                            ; BBD8 E0 03                    ..
@@ -8543,11 +8543,11 @@ BattleSetupServices_Branch_BC10:
         db   $1E                             ; BC3A 1E                       .
         db   $00                             ; BC3B 00                       .
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BC3C:
+BattleSetup_PollTextInputButtonsWithAutoRepeat:
         asl     $03CC                           ; BC3C 0E CC 03                 ...
         lsr     $03CC                           ; BC3F 4E CC 03                 N..
 BattleSetupServices_Branch_BC42:
-        jsr     UpperFixedEngine_Entry_C8EC     ; BC42 20 EC C8                  ..
+        jsr     ReadControllers                 ; BC42 20 EC C8                  ..
         lda     $F5                             ; BC45 A5 F5                    ..
         and     #$02                            ; BC47 29 02                    ).
         beq     BattleSetupServices_Branch_BC53 ; BC49 F0 08                    ..
@@ -8582,7 +8582,7 @@ BattleSetupServices_Branch_BC76:
         and     ButtonsPressed                  ; BC80 25 14                    %.
         beq     BattleSetupServices_Branch_BC8F ; BC82 F0 0B                    ..
         jsr     WaitForNmi                      ; BC84 20 74 FF                  t.
-        jsr     BattleSetupServices_Entry_BCEF  ; BC87 20 EF BC                  ..
+        jsr     BattleSetup_UpdateTextInputAutoRepeatState; BC87 20 EF BC        ..
         bcc     BattleSetupServices_Branch_BC42 ; BC8A 90 B6                    ..
         jmp     BattleSetupServices_Branch_BCB6 ; BC8C 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
@@ -8590,21 +8590,21 @@ BattleSetupServices_Branch_BC8F:
         lda     $07B4                           ; BC8F AD B4 07                 ...
         and     #$DF                            ; BC92 29 DF                    ).
         sta     $07B4                           ; BC94 8D B4 07                 ...
-        jsr     BattleSetupServices_Entry_BCDB  ; BC97 20 DB BC                  ..
+        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BC97 20 DB BC       ..
 BattleSetupServices_Branch_BC9A:
-        jsr     UpperFixedEngine_Entry_C8EC     ; BC9A 20 EC C8                  ..
+        jsr     ReadControllers                 ; BC9A 20 EC C8                  ..
         lda     ButtonsPressed                  ; BC9D A5 14                    ..
         and     #$F3                            ; BC9F 29 F3                    ).
         bne     BattleSetupServices_Branch_BCB3 ; BCA1 D0 10                    ..
         lda     #$00                            ; BCA3 A9 00                    ..
         sta     $03CC                           ; BCA5 8D CC 03                 ...
         jsr     WaitForNmi                      ; BCA8 20 74 FF                  t.
-        jsr     BattleSetupServices_Entry_BCEF  ; BCAB 20 EF BC                  ..
+        jsr     BattleSetup_UpdateTextInputAutoRepeatState; BCAB 20 EF BC        ..
         bcc     BattleSetupServices_Branch_BC9A ; BCAE 90 EA                    ..
         jmp     BattleSetupServices_Branch_BCB6 ; BCB0 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BCB3:
-        jsr     BattleSetupServices_Entry_BCC4  ; BCB3 20 C4 BC                  ..
+        jsr     BattleSetup_SetTextInputButtonIndexFromMask; BCB3 20 C4 BC       ..
 BattleSetupServices_Branch_BCB6:
         lda     $03CC                           ; BCB6 AD CC 03                 ...
         and     #$0F                            ; BCB9 29 0F                    ).
@@ -8617,7 +8617,7 @@ BattleSetupServices_Branch_BCC2:
         clc                                     ; BCC2 18                       .
         rts                                     ; BCC3 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BCC4:
+BattleSetup_SetTextInputButtonIndexFromMask:
         ldy     #$00                            ; BCC4 A0 00                    ..
 BattleSetupServices_Branch_BCC6:
         lsr     a                               ; BCC6 4A                       J
@@ -8628,11 +8628,11 @@ BattleSetupServices_Branch_BCC6:
         tya                                     ; BCCF 98                       .
         ora     $03CC                           ; BCD0 0D CC 03                 ...
         sta     $03CC                           ; BCD3 8D CC 03                 ...
-        jsr     BattleSetupServices_Entry_BCDB  ; BCD6 20 DB BC                  ..
+        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BCD6 20 DB BC       ..
         clc                                     ; BCD9 18                       .
         rts                                     ; BCDA 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BCDB:
+BattleSetup_SeedTextInputAutoRepeatDeadline:
         ldx     #$0C                            ; BCDB A2 0C                    ..
         lda     $07B4                           ; BCDD AD B4 07                 ...
         and     #$20                            ; BCE0 29 20                    )
@@ -8645,7 +8645,7 @@ BattleSetupServices_Branch_BCE6:
         sta     $03CD                           ; BCEB 8D CD 03                 ...
         rts                                     ; BCEE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BCEF:
+BattleSetup_UpdateTextInputAutoRepeatState:
         lda     $03CD                           ; BCEF AD CD 03                 ...
         cmp     $050C                           ; BCF2 CD 0C 05                 ...
         bmi     BattleSetupServices_Branch_BD12 ; BCF5 30 1B                    0.
@@ -8664,14 +8664,14 @@ BattleSetupServices_Entry_BCEF:
         rts                                     ; BD11 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BD12:
-        jsr     BattleSetupServices_Entry_BCDB  ; BD12 20 DB BC                  ..
+        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BD12 20 DB BC       ..
         sec                                     ; BD15 38                       8
 BattleSetupServices_Branch_BD16:
         rts                                     ; BD16 60                       `
 ; ----------------------------------------------------------------------------
         db   $80,$40,$20,$10,$08,$04,$02,$01 ; BD17 80 40 20 10 08 04 02 01  .@ .....
 ; ----------------------------------------------------------------------------
-BattleSetupServices_Entry_BD1F:
+BattleSetup_ParseCountedScriptToken:
         lda     $07B2                           ; BD1F AD B2 07                 ...
         sta     $02                           ; BD22 85 02                    ..
         lda     $07B3                           ; BD24 AD B3 07                 ...

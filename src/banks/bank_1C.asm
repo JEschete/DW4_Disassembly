@@ -1021,7 +1021,7 @@ MapEntitySystem_Branch_9892:
         tay                                     ; 989E A8                       .
         lda     $6F60,x                         ; 989F BD 60 6F                 .`o
         tax                                     ; 98A2 AA                       .
-        jsr     UpperFixedEngine_Entry_D3E6     ; 98A3 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 98A3 20 E6 D3                  ..
         tay                                     ; 98A6 A8                       .
         pla                                     ; 98A7 68                       h
         tax                                     ; 98A8 AA                       .
@@ -1127,7 +1127,7 @@ MapEntitySystem_Entry_994E:
         stx     $0E                             ; 994E 86 0E                    ..
         ldx     #$DA                            ; 9950 A2 DA                    ..
         lda     $67                             ; 9952 A5 67                    .g
-        jsr     UpperFixedEngine_Entry_C3EA     ; 9954 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 9954 20 EA C3                  ..
         ldx     $0E                             ; 9957 A6 0E                    ..
         ora     #$00                            ; 9959 09 00                    ..
         rts                                     ; 995B 60                       `
@@ -1401,12 +1401,12 @@ Bank1C_LoadMapEntityPointer:
         sta     $03                             ; 9B20 85 03                    ..
         lda     #$05                            ; 9B22 A9 05                    ..
         ldx     #$02                            ; 9B24 A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 9B26 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 9B26 20 EA C3                  ..
         sta     $DA                             ; 9B29 85 DA                    ..
         iny                                     ; 9B2B C8                       .
         lda     #$05                            ; 9B2C A9 05                    ..
         ldx     #$02                            ; 9B2E A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 9B30 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 9B30 20 EA C3                  ..
         sta     $DB                             ; 9B33 85 DB                    ..
         lda     CurrentMapNumber                ; 9B35 A5 63                    .c
         cmp     #$FF                            ; 9B37 C9 FF                    ..
@@ -1841,7 +1841,7 @@ MapEntitySystem_Branch_9F1C:
         ldx     $6F66,y                         ; 9F44 BE 66 6F                 .fo
         lda     $6F86,y                         ; 9F47 B9 86 6F                 ..o
         tay                                     ; 9F4A A8                       .
-        jsr     UpperFixedEngine_Entry_D3E6     ; 9F4B 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 9F4B 20 E6 D3                  ..
         tax                                     ; 9F4E AA                       .
         pla                                     ; 9F4F 68                       h
         tay                                     ; 9F50 A8                       .
@@ -3832,7 +3832,7 @@ MapEntitySystem_Entry_AD1E:
         ldy     $6F86,x                         ; AD20 BC 86 6F                 ..o
         lda     $6F66,x                         ; AD23 BD 66 6F                 .fo
         tax                                     ; AD26 AA                       .
-        jsr     UpperFixedEngine_Entry_D3E6     ; AD27 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; AD27 20 E6 D3                  ..
         tay                                     ; AD2A A8                       .
         pla                                     ; AD2B 68                       h
         tax                                     ; AD2C AA                       .
@@ -3893,13 +3893,13 @@ MapEntitySystem_Entry_AD6E:
         db   $08,$CB,$80                     ; AD7B 08 CB 80                 ...
 ; ----------------------------------------------------------------------------
         ldx     #$02                            ; AD7E A2 02                    ..
-        jsr     MapEntitySystem_Entry_BF33      ; AD80 20 33 BF                  3.
+        jsr     SetEntityCoordinateSentinel80   ; AD80 20 33 BF                  3.
         ldx     #$01                            ; AD83 A2 01                    ..
-        jsr     MapEntitySystem_Entry_BF33      ; AD85 20 33 BF                  3.
+        jsr     SetEntityCoordinateSentinel80   ; AD85 20 33 BF                  3.
         ldx     #$06                            ; AD88 A2 06                    ..
         lda     #$17                            ; AD8A A9 17                    ..
         ldy     #$11                            ; AD8C A0 11                    ..
-        jsr     MapEntitySystem_Entry_BF25      ; AD8E 20 25 BF                  %.
+        jsr     SetEntityCurrentAndTargetCoordinates; AD8E 20 25 BF              %.
         ldx     #$07                            ; AD91 A2 07                    ..
         ldy     #$0C                            ; AD93 A0 0C                    ..
         bit     $6281                           ; AD95 2C 81 62                 ,.b
@@ -3908,7 +3908,7 @@ MapEntitySystem_Entry_AD6E:
         iny                                     ; AD9C C8                       .
 MapEntitySystem_Branch_AD9D:
         lda     #$0F                            ; AD9D A9 0F                    ..
-        jsr     MapEntitySystem_Entry_BF25      ; AD9F 20 25 BF                  %.
+        jsr     SetEntityCurrentAndTargetCoordinates; AD9F 20 25 BF              %.
         brk                                     ; ADA2 00                       .
         db   $08,$DF                         ; ADA3 08 DF                    ..
 ; ----------------------------------------------------------------------------
@@ -3920,14 +3920,14 @@ MapEntitySystem_Branch_AD9D:
         db   $20,$3B                         ; ADAC 20 3B                     ;
 ; ----------------------------------------------------------------------------
         ldx     #$00                            ; ADAE A2 00                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; ADB0 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; ADB0 20 37 BF                  7.
         ldx     #$03                            ; ADB3 A2 03                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; ADB5 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; ADB5 20 37 BF                  7.
         jsr     UpperFixedEngine_Entry_DFF1     ; ADB8 20 F1 DF                  ..
         jsr     UpperFixedEngine_Entry_D218     ; ADBB 20 18 D2                  ..
         lda     #$8F                            ; ADBE A9 8F                    ..
         ldx     #$04                            ; ADC0 A2 04                    ..
-        jsr     MapEntitySystem_Entry_BF16      ; ADC2 20 16 BF                  ..
+        jsr     InitializeMapPresentationState  ; ADC2 20 16 BF                  ..
         brk                                     ; ADC5 00                       .
         db   $0D,$CB,$80                     ; ADC6 0D CB 80                 ...
 ; ----------------------------------------------------------------------------
@@ -3948,7 +3948,7 @@ MapEntitySystem_Entry_ADCA:
         ora     #$40                            ; ADE6 09 40                    .@
         sta     $6280                           ; ADE8 8D 80 62                 ..b
         lda     #$85                            ; ADEB A9 85                    ..
-        jmp     MapEntitySystem_Entry_BF14      ; ADED 4C 14 BF                 L..
+        jmp     StartMapPresentation            ; ADED 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_ADF0:
         lda     #$0C                            ; ADF0 A9 0C                    ..
@@ -3957,7 +3957,7 @@ MapEntitySystem_Entry_ADF0:
         db   $04,$9F                         ; ADF5 04 9F                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$B4                            ; ADF7 A2 B4                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; ADF9 20 0C C9                  ..
+        jsr     WaitFrames                      ; ADF9 20 0C C9                  ..
         brk                                     ; ADFC 00                       .
         db   $02,$9F                         ; ADFD 02 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -4250,7 +4250,7 @@ MapEntitySystem_Branch_AFE3:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_AFF4:
         jsr     UpperFixedEngine_Entry_D218     ; AFF4 20 18 D2                  ..
-        jsr     MapEntitySystem_Entry_BF12      ; AFF7 20 12 BF                  ..
+        jsr     StartDefaultMapPresentation     ; AFF7 20 12 BF                  ..
         lda     #$04                            ; AFFA A9 04                    ..
         brk                                     ; AFFC 00                       .
         db   $01,$8F                         ; AFFD 01 8F                    ..
@@ -4364,7 +4364,7 @@ MapEntitySystem_Entry_B0B9:
         sta     $7046,x                         ; B0BD 9D 46 70                 .Fp
         ldx     #$03                            ; B0C0 A2 03                    ..
         sta     $7046,x                         ; B0C2 9D 46 70                 .Fp
-        jmp     MapEntitySystem_Entry_BF12      ; B0C5 4C 12 BF                 L..
+        jmp     StartDefaultMapPresentation     ; B0C5 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B0C8:
         lda     #$11                            ; B0C8 A9 11                    ..
@@ -4387,7 +4387,7 @@ MapEntitySystem_Branch_B0DD:
         sta     $6FC6,x                         ; B0EC 9D C6 6F                 ..o
         lda     #$81                            ; B0EF A9 81                    ..
         sta     $7020,y                         ; B0F1 99 20 70                 . p
-        jsr     MapEntitySystem_Entry_BF12      ; B0F4 20 12 BF                  ..
+        jsr     StartDefaultMapPresentation     ; B0F4 20 12 BF                  ..
         brk                                     ; B0F7 00                       .
         db   $0B,$DB,$FB                     ; B0F8 0B DB FB                 ...
 ; ----------------------------------------------------------------------------
@@ -4397,7 +4397,7 @@ MapEntitySystem_Entry_B0FC:
         jsr     UpperFixedEngine_Entry_C5C5     ; B0FC 20 C5 C5                  ..
         lda     #$80                            ; B0FF A9 80                    ..
         sta     $6BDE                           ; B101 8D DE 6B                 ..k
-        jsr     UpperFixedEngine_Entry_C54E     ; B104 20 4E C5                  N.
+        jsr     ResetDisplayState               ; B104 20 4E C5                  N.
         jsr     MapEntitySystem_Entry_BF46      ; B107 20 46 BF                  F.
         lda     #$30                            ; B10A A9 30                    .0
         sta     $05FD                           ; B10C 8D FD 05                 ...
@@ -4447,11 +4447,11 @@ MapEntitySystem_Entry_B15A:
         ldx     #$08                            ; B15A A2 08                    ..
         lda     #$80                            ; B15C A9 80                    ..
         tay                                     ; B15E A8                       .
-        jsr     MapEntitySystem_Entry_BF25      ; B15F 20 25 BF                  %.
+        jsr     SetEntityCurrentAndTargetCoordinates; B15F 20 25 BF              %.
         ldx     #$05                            ; B162 A2 05                    ..
         lda     #$11                            ; B164 A9 11                    ..
         sta     $7046,x                         ; B166 9D 46 70                 .Fp
-        jsr     MapEntitySystem_Entry_BF12      ; B169 20 12 BF                  ..
+        jsr     StartDefaultMapPresentation     ; B169 20 12 BF                  ..
         lda     #$00                            ; B16C A9 00                    ..
         sta     $F9                             ; B16E 85 F9                    ..
         sta     $FA                             ; B170 85 FA                    ..
@@ -4590,7 +4590,7 @@ MapEntitySystem_Entry_B24A:
 ; ----------------------------------------------------------------------------
         lda     #$8F                            ; B26A A9 8F                    ..
         ldx     #$03                            ; B26C A2 03                    ..
-        jsr     MapEntitySystem_Entry_BF16      ; B26E 20 16 BF                  ..
+        jsr     InitializeMapPresentationState  ; B26E 20 16 BF                  ..
         ldx     #$1F                            ; B271 A2 1F                    ..
         lda     #$00                            ; B273 A9 00                    ..
 MapEntitySystem_Branch_B275:
@@ -4712,7 +4712,7 @@ MapEntitySystem_Entry_B32C:
         db   $1F,$EF                         ; B336 1F EF                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; B338 A2 03                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B33A 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B33A 20 37 BF                  7.
         ldx     #$0C                            ; B33D A2 0C                    ..
         lda     $7000,x                         ; B33F BD 00 70                 ..p
         ora     #$03                            ; B342 09 03                    ..
@@ -4738,7 +4738,7 @@ MapEntitySystem_Entry_B32C:
         db   $03,$EF                         ; B368 03 EF                    ..
 ; ----------------------------------------------------------------------------
         lda     #$8F                            ; B36A A9 8F                    ..
-        jsr     MapEntitySystem_Entry_BF14      ; B36C 20 14 BF                  ..
+        jsr     StartMapPresentation            ; B36C 20 14 BF                  ..
         jmp     UpperFixedEngine_Entry_C5BF     ; B36F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B372:
@@ -4749,7 +4749,7 @@ MapEntitySystem_Entry_B372:
         cmp     #$01                            ; B37A C9 01                    ..
         bne     MapEntitySystem_Branch_B397     ; B37C D0 19                    ..
         ldx     #$3C                            ; B37E A2 3C                    .<
-        jsr     UpperFixedEngine_Entry_C90C     ; B380 20 0C C9                  ..
+        jsr     WaitFrames                      ; B380 20 0C C9                  ..
         ldx     PlayerLocalX                    ; B383 A6 44                    .D
         ldy     PlayerLocalY                    ; B385 A4 45                    .E
         lda     #$11                            ; B387 A9 11                    ..
@@ -4760,7 +4760,7 @@ MapEntitySystem_Entry_B372:
         db   $95,$FB                         ; B38D 95 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$0F                            ; B38F A2 0F                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B391 20 0C C9                  ..
+        jsr     WaitFrames                      ; B391 20 0C C9                  ..
         brk                                     ; B394 00                       .
         db   $1B,$EF                         ; B395 1B EF                    ..
 ; ----------------------------------------------------------------------------
@@ -4854,7 +4854,7 @@ MapEntitySystem_Branch_B3E7:
         db   $0A,$6F                         ; B40E 0A 6F                    .o
 ; ----------------------------------------------------------------------------
         ldx     #$0A                            ; B410 A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B412 20 0C C9                  ..
+        jsr     WaitFrames                      ; B412 20 0C C9                  ..
         ldx     #$01                            ; B415 A2 01                    ..
         lda     $5C                             ; B417 A5 5C                    .\
         brk                                     ; B419 00                       .
@@ -5136,7 +5136,7 @@ MapEntitySystem_Entry_B5C2:
         db   $03,$EF                         ; B606 03 EF                    ..
 ; ----------------------------------------------------------------------------
         lda     #$82                            ; B608 A9 82                    ..
-        jsr     MapEntitySystem_Entry_BF14      ; B60A 20 14 BF                  ..
+        jsr     StartMapPresentation            ; B60A 20 14 BF                  ..
         brk                                     ; B60D 00                       .
         db   $16,$CB,$04                     ; B60E 16 CB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -5144,7 +5144,7 @@ MapEntitySystem_Entry_B5C2:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B614:
         lda     #$84                            ; B614 A9 84                    ..
-        jsr     MapEntitySystem_Entry_BF14      ; B616 20 14 BF                  ..
+        jsr     StartMapPresentation            ; B616 20 14 BF                  ..
         lda     #$04                            ; B619 A9 04                    ..
         jsr     MapEntitySystem_Entry_B29E      ; B61B 20 9E B2                  ..
         brk                                     ; B61E 00                       .
@@ -5162,11 +5162,11 @@ MapEntitySystem_Entry_B623:
         db   $17,$CB,$02                     ; B630 17 CB 02                 ...
 ; ----------------------------------------------------------------------------
         lda     #$82                            ; B633 A9 82                    ..
-        jmp     MapEntitySystem_Entry_BF14      ; B635 4C 14 BF                 L..
+        jmp     StartMapPresentation            ; B635 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B638:
         lda     #$85                            ; B638 A9 85                    ..
-        jsr     MapEntitySystem_Entry_BF14      ; B63A 20 14 BF                  ..
+        jsr     StartMapPresentation            ; B63A 20 14 BF                  ..
         lda     #$0D                            ; B63D A9 0D                    ..
         jsr     MapEntitySystem_Entry_B29E      ; B63F 20 9E B2                  ..
         brk                                     ; B642 00                       .
@@ -5257,7 +5257,7 @@ MapEntitySystem_Entry_B6E8:
         ldx     #$0C                            ; B6E8 A2 0C                    ..
         lda     #$11                            ; B6EA A9 11                    ..
         sta     $7046,x                         ; B6EC 9D 46 70                 .Fp
-        jmp     MapEntitySystem_Entry_BF12      ; B6EF 4C 12 BF                 L..
+        jmp     StartDefaultMapPresentation     ; B6EF 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B6F2:
         lda     #$12                            ; B6F2 A9 12                    ..
@@ -5283,7 +5283,7 @@ MapEntitySystem_Entry_B6FB:
         db   $0F,$EF                         ; B712 0F EF                    ..
 ; ----------------------------------------------------------------------------
         lda     #$88                            ; B714 A9 88                    ..
-        jsr     MapEntitySystem_Entry_BF14      ; B716 20 14 BF                  ..
+        jsr     StartMapPresentation            ; B716 20 14 BF                  ..
         ldx     #$01                            ; B719 A2 01                    ..
         lda     #$11                            ; B71B A9 11                    ..
         sta     $7046,x                         ; B71D 9D 46 70                 .Fp
@@ -5347,7 +5347,7 @@ MapEntitySystem_Branch_B755:
         db   $0D,$87                         ; B77D 0D 87                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$0B                            ; B77F A2 0B                    ..
-        jsr     UpperFixedEngine_Entry_D804     ; B781 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; B781 20 04 D8                  ..
         pla                                     ; B784 68                       h
         pha                                     ; B785 48                       H
         jsr     MapEntitySystem_Entry_B29E      ; B786 20 9E B2                  ..
@@ -5376,13 +5376,13 @@ MapEntitySystem_Branch_B7A2:
         db   $4C,$14                         ; B7A3 4C 14                    L.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B7A5:
-        jsr     UpperFixedEngine_Entry_C54E     ; B7A5 20 4E C5                  N.
+        jsr     ResetDisplayState               ; B7A5 20 4E C5                  N.
         jsr     MapEntitySystem_Entry_B827      ; B7A8 20 27 B8                  '.
         brk                                     ; B7AB 00                       .
         db   $07,$6F,$43                     ; B7AC 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B7AF A2 3C                    .<
-        jsr     UpperFixedEngine_Entry_C90C     ; B7B1 20 0C C9                  ..
+        jsr     WaitFrames                      ; B7B1 20 0C C9                  ..
         jsr     UpperFixedEngine_Entry_C5BF     ; B7B4 20 BF C5                  ..
         lda     $053A                           ; B7B7 AD 3A 05                 .:.
         sta     $F9                             ; B7BA 85 F9                    ..
@@ -5396,7 +5396,7 @@ MapEntitySystem_Entry_B7A5:
         db   $1D,$EB,$01                     ; B7C3 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEntitySystem_Entry_B83A      ; B7C6 D0 72                    .r
-        jsr     UpperFixedEngine_Entry_C5AF     ; B7C8 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; B7C8 20 AF C5                  ..
         jsr     UpperFixedEngine_Entry_C58F     ; B7CB 20 8F C5                  ..
         brk                                     ; B7CE 00                       .
         db   $16,$CB,$10                     ; B7CF 16 CB 10                 ...
@@ -5412,7 +5412,7 @@ MapEntitySystem_Entry_B7A5:
         brk                                     ; B7DF 00                       .
         db   $0A,$6F                         ; B7E0 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; B7E2 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; B7E2 20 AF C5                  ..
         brk                                     ; B7E5 00                       .
         db   $0D,$DF                         ; B7E6 0D DF                    ..
 ; ----------------------------------------------------------------------------
@@ -5434,7 +5434,7 @@ MapEntitySystem_Entry_B7A5:
         brk                                     ; B7FB 00                       .
         db   $0D,$87                         ; B7FC 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C54E     ; B7FE 20 4E C5                  N.
+        jsr     ResetDisplayState               ; B7FE 20 4E C5                  N.
         brk                                     ; B801 00                       .
         db   $28,$0F                         ; B802 28 0F                    (.
 ; ----------------------------------------------------------------------------
@@ -5444,7 +5444,7 @@ MapEntitySystem_Entry_B7A5:
         db   $07,$6F,$43                     ; B80B 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
         ldx     #$3C                            ; B80E A2 3C                    .<
-        jsr     UpperFixedEngine_Entry_C90C     ; B810 20 0C C9                  ..
+        jsr     WaitFrames                      ; B810 20 0C C9                  ..
         jsr     UpperFixedEngine_Entry_C5BF     ; B813 20 BF C5                  ..
         brk                                     ; B816 00                       .
         db   $38,$4B                         ; B817 38 4B                    8K
@@ -5517,7 +5517,7 @@ MapEntitySystem_Entry_B83A:
         db   $D0,$4B                         ; B886 D0 4B                    .K
 ; ----------------------------------------------------------------------------
         ldx     #$00                            ; B888 A2 00                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B88A 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B88A 20 37 BF                  7.
         brk                                     ; B88D 00                       .
         db   $0A,$6F                         ; B88E 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -5552,7 +5552,7 @@ MapEntitySystem_Branch_B8A0:
         jmp     MapEntitySystem_Entry_B8EC      ; B8BC 4C EC B8                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B8BF:
-        jsr     MapEntitySystem_Entry_BF37      ; B8BF 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B8BF 20 37 BF                  7.
         brk                                     ; B8C2 00                       .
         db   $87,$FB                         ; B8C3 87 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5560,7 +5560,7 @@ MapEntitySystem_Entry_B8BF:
         db   $0A,$6F                         ; B8C6 0A 6F                    .o
 ; ----------------------------------------------------------------------------
         ldx     #$2D                            ; B8C8 A2 2D                    .-
-        jmp     UpperFixedEngine_Entry_C90C     ; B8CA 4C 0C C9                 L..
+        jmp     WaitFrames                      ; B8CA 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B8CD:
         lda     #$1B                            ; B8CD A9 1B                    ..
@@ -5620,7 +5620,7 @@ MapEntitySystem_Entry_B910:
         db   $1E,$DB,$00                     ; B91D 1E DB 00                 ...
 ; ----------------------------------------------------------------------------
         ldx     #$05                            ; B920 A2 05                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B922 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B922 20 37 BF                  7.
         brk                                     ; B925 00                       .
         db   $0B,$DF                         ; B926 0B DF                    ..
 ; ----------------------------------------------------------------------------
@@ -5655,7 +5655,7 @@ MapEntitySystem_Entry_B93F:
         sec                                     ; B947 38                       8
         sbc     #$06                            ; B948 E9 06                    ..
         tax                                     ; B94A AA                       .
-        jsr     MapEntitySystem_Entry_BF37      ; B94B 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B94B 20 37 BF                  7.
         brk                                     ; B94E 00                       .
         db   $1F,$EF                         ; B94F 1F EF                    ..
 ; ----------------------------------------------------------------------------
@@ -5750,11 +5750,11 @@ MapEntitySystem_Branch_B9DD:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_B9E5:
         ldx     #$04                            ; B9E5 A2 04                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B9E7 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B9E7 20 37 BF                  7.
         ldx     #$06                            ; B9EA A2 06                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B9EC 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B9EC 20 37 BF                  7.
         ldx     #$03                            ; B9EF A2 03                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; B9F1 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; B9F1 20 37 BF                  7.
         brk                                     ; B9F4 00                       .
         db   $0A,$6F                         ; B9F5 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -5898,12 +5898,12 @@ MapEntitySystem_Entry_BACE:
         db   $84,$FB                         ; BACF 84 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$0A                            ; BAD1 A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BAD3 20 0C C9                  ..
+        jsr     WaitFrames                      ; BAD3 20 0C C9                  ..
         brk                                     ; BAD6 00                       .
         db   $8A,$FB                         ; BAD7 8A FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$0A                            ; BAD9 A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BADB 20 0C C9                  ..
+        jsr     WaitFrames                      ; BADB 20 0C C9                  ..
         brk                                     ; BADE 00                       .
         db   $81,$FB                         ; BADF 81 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5927,7 +5927,7 @@ MapEntitySystem_Entry_BAE5:
         lda     #$11                            ; BAF8 A9 11                    ..
         ldx     #$00                            ; BAFA A2 00                    ..
         sta     $7046,x                         ; BAFC 9D 46 70                 .Fp
-        jmp     MapEntitySystem_Entry_BF12      ; BAFF 4C 12 BF                 L..
+        jmp     StartDefaultMapPresentation     ; BAFF 4C 12 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BB02:
         brk                                     ; BB02 00                       .
@@ -5950,7 +5950,7 @@ MapEntitySystem_Entry_BB02:
         lda     #$0F                            ; BB1F A9 0F                    ..
         jsr     MapEntitySystem_Entry_B29E      ; BB21 20 9E B2                  ..
         ldx     #$00                            ; BB24 A2 00                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BB26 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BB26 20 37 BF                  7.
         brk                                     ; BB29 00                       .
         db   $0A,$6F                         ; BB2A 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -6047,7 +6047,7 @@ MapEntitySystem_Branch_BB79:
         brk                                     ; BBC8 00                       .
         db   $0D,$87                         ; BBC9 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_E501     ; BBCB 20 01 E5                  ..
+        jsr     ResetMapEntityMotionState       ; BBCB 20 01 E5                  ..
         brk                                     ; BBCE 00                       .
         db   $0A,$6F                         ; BBCF 0A 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -6065,7 +6065,7 @@ MapEntitySystem_Branch_BBE1:
         ldx     $0F                             ; BBE7 A6 0F                    ..
         beq     MapEntitySystem_Branch_BC09     ; BBE9 F0 1E                    ..
         ldx     #$03                            ; BBEB A2 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BBED 20 0C C9                  ..
+        jsr     WaitFrames                      ; BBED 20 0C C9                  ..
         jsr     MapEntitySystem_Entry_BD83      ; BBF0 20 83 BD                  ..
         jsr     MapEntitySystem_Entry_BD67      ; BBF3 20 67 BD                  g.
         lda     $0F                             ; BBF6 A5 0F                    ..
@@ -6076,7 +6076,7 @@ MapEntitySystem_Branch_BBE1:
 MapEntitySystem_Branch_BBFF:
         tax                                     ; BBFF AA                       .
         inx                                     ; BC00 E8                       .
-        jsr     UpperFixedEngine_Entry_C90C     ; BC01 20 0C C9                  ..
+        jsr     WaitFrames                      ; BC01 20 0C C9                  ..
         dec     $0F                             ; BC04 C6 0F                    ..
         jmp     MapEntitySystem_Branch_BBE1     ; BC06 4C E1 BB                 L..
 ; ----------------------------------------------------------------------------
@@ -6084,13 +6084,13 @@ MapEntitySystem_Branch_BC09:
         jsr     MapEntitySystem_Entry_BD83      ; BC09 20 83 BD                  ..
         jsr     WaitForNmi                      ; BC0C 20 74 FF                  t.
         ldx     #$02                            ; BC0F A2 02                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BC11 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BC11 20 37 BF                  7.
         ldx     #$03                            ; BC14 A2 03                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BC16 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BC16 20 37 BF                  7.
         ldx     #$00                            ; BC19 A2 00                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BC1B 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BC1B 20 37 BF                  7.
         ldx     #$01                            ; BC1E A2 01                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BC20 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BC20 20 37 BF                  7.
         brk                                     ; BC23 00                       .
         db   $83,$4B                         ; BC24 83 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -6256,10 +6256,10 @@ MapEntitySystem_Branch_BCFE:
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BCFF:
         lda     #$0A                            ; BCFF A9 0A                    ..
-        jsr     UpperFixedEngine_Entry_D864     ; BD01 20 64 D8                  d.
+        jsr     SelectEntitySpriteDefinition    ; BD01 20 64 D8                  d.
         lda     #$02                            ; BD04 A9 02                    ..
         ldx     #$00                            ; BD06 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_D876     ; BD08 20 76 D8                  v.
+        jsr     LoadEntitySpriteFrame           ; BD08 20 76 D8                  v.
         lda     $00                           ; BD0B A5 00                    ..
         sta     $7F71                           ; BD0D 8D 71 7F                 .q.
         lda     $01                             ; BD10 A5 01                    ..
@@ -6356,7 +6356,7 @@ MapEntitySystem_Entry_BD96:
         sta     $0515                           ; BDB7 8D 15 05                 ...
         lda     #$06                            ; BDBA A9 06                    ..
         sta     $0534                           ; BDBC 8D 34 05                 .4.
-        jsr     MapEntitySystem_Entry_BF12      ; BDBF 20 12 BF                  ..
+        jsr     StartDefaultMapPresentation     ; BDBF 20 12 BF                  ..
         brk                                     ; BDC2 00                       .
         db   $0F,$CB,$10                     ; BDC3 0F CB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -6433,7 +6433,7 @@ MapEntitySystem_Entry_BE1F:
         sta     $00                           ; BE21 85 00                    ..
         lda     #$1A                            ; BE23 A9 1A                    ..
         sta     $01                             ; BE25 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; BE27 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; BE27 20 62 C6                  b.
         brk                                     ; BE2A 00                       .
         db   $25,$33                         ; BE2B 25 33                    %3
 ; ----------------------------------------------------------------------------
@@ -6457,11 +6457,11 @@ MapEntitySystem_Branch_BE46:
         cpx     #$08                            ; BE4E E0 08                    ..
         bcc     MapEntitySystem_Branch_BE46     ; BE50 90 F4                    ..
         inc     $050B                           ; BE52 EE 0B 05                 ...
-        jmp     UpperFixedEngine_Entry_C62D     ; BE55 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; BE55 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BE58:
         lda     #$83                            ; BE58 A9 83                    ..
-        jmp     MapEntitySystem_Entry_BF14      ; BE5A 4C 14 BF                 L..
+        jmp     StartMapPresentation            ; BE5A 4C 14 BF                 L..
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Entry_BE5D:
         jsr     MapEntitySystem_Entry_BE90      ; BE5D 20 90 BE                  ..
@@ -6526,9 +6526,9 @@ MapEntitySystem_Entry_BEB3:
         db   $08,$CF                         ; BEBC 08 CF                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$02                            ; BEBE A2 02                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BEC0 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BEC0 20 37 BF                  7.
         ldx     #$01                            ; BEC3 A2 01                    ..
-        jsr     MapEntitySystem_Entry_BF37      ; BEC5 20 37 BF                  7.
+        jsr     SetEntityCoordinateSentinel81   ; BEC5 20 37 BF                  7.
         brk                                     ; BEC8 00                       .
         db   $03,$EF                         ; BEC9 03 EF                    ..
 ; ----------------------------------------------------------------------------
@@ -6551,7 +6551,7 @@ MapEntitySystem_Entry_BED6:
         sbc     $29                             ; BEE1 E5 29                    .)
         asl     a                               ; BEE3 0A                       .
         tax                                     ; BEE4 AA                       .
-        jsr     UpperFixedEngine_Entry_C90C     ; BEE5 20 0C C9                  ..
+        jsr     WaitFrames                      ; BEE5 20 0C C9                  ..
         lda     $29                             ; BEE8 A5 29                    .)
         clc                                     ; BEEA 18                       .
         adc     #$04                            ; BEEB 69 04                    i.
@@ -6581,11 +6581,11 @@ MapEntitySystem_Entry_BEFE:
         sta     $0509                           ; BF0C 8D 09 05                 ...
         jmp     WaitForNmi                      ; BF0F 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BF12:
+StartDefaultMapPresentation:
         lda     #$8F                            ; BF12 A9 8F                    ..
-MapEntitySystem_Entry_BF14:
+StartMapPresentation:
         ldx     #$01                            ; BF14 A2 01                    ..
-MapEntitySystem_Entry_BF16:
+InitializeMapPresentationState:
         sta     $0530                           ; BF16 8D 30 05                 .0.
         stx     $0531                           ; BF19 8E 31 05                 .1.
         lda     #$00                            ; BF1C A9 00                    ..
@@ -6593,7 +6593,7 @@ MapEntitySystem_Entry_BF16:
         sta     $0532                           ; BF21 8D 32 05                 .2.
         rts                                     ; BF24 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BF25:
+SetEntityCurrentAndTargetCoordinates:
         sta     $6F66,x                         ; BF25 9D 66 6F                 .fo
         sta     $6FA6,x                         ; BF28 9D A6 6F                 ..o
         tya                                     ; BF2B 98                       .
@@ -6601,10 +6601,10 @@ MapEntitySystem_Entry_BF25:
         sta     $6FC6,x                         ; BF2F 9D C6 6F                 ..o
         rts                                     ; BF32 60                       `
 ; ----------------------------------------------------------------------------
-MapEntitySystem_Entry_BF33:
+SetEntityCoordinateSentinel80:
         lda     #$80                            ; BF33 A9 80                    ..
         bne     MapEntitySystem_Branch_BF39     ; BF35 D0 02                    ..
-MapEntitySystem_Entry_BF37:
+SetEntityCoordinateSentinel81:
         lda     #$81                            ; BF37 A9 81                    ..
 MapEntitySystem_Branch_BF39:
         sta     $6F66,x                         ; BF39 9D 66 6F                 .fo

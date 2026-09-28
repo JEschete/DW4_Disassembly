@@ -626,7 +626,7 @@ MapEventSystem_Branch_8C7D:
         jsr     MapEventSystem_Entry_8CAC       ; 8C9D 20 AC 8C                  ..
         jsr     MapEventSystem_Entry_8CAC       ; 8CA0 20 AC 8C                  ..
         jsr     MapEventSystem_Entry_8CAC       ; 8CA3 20 AC 8C                  ..
-        jsr     UpperFixedEngine_Entry_C626     ; 8CA6 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 8CA6 20 26 C6                  &.
 MapEventSystem_Branch_8CA9:
         lda     #$FF                            ; 8CA9 A9 FF                    ..
         rts                                     ; 8CAB 60                       `
@@ -670,11 +670,11 @@ MapEventSystem_Entry_8CE6:
         and     #$07                            ; 8CED 29 07                    ).
         cmp     #$07                            ; 8CEF C9 07                    ..
         bne     MapEventSystem_Branch_8D25      ; 8CF1 D0 32                    .2
-        jsr     UpperFixedEngine_Entry_C891     ; 8CF3 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8CF3 20 91 C8                  ..
         and     #$03                            ; 8CF6 29 03                    ).
         asl     a                               ; 8CF8 0A                       .
         tax                                     ; 8CF9 AA                       .
-        jsr     UpperFixedEngine_Entry_C891     ; 8CFA 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8CFA 20 91 C8                  ..
         and     #$03                            ; 8CFD 29 03                    ).
         asl     a                               ; 8CFF 0A                       .
         tay                                     ; 8D00 A8                       .
@@ -759,10 +759,10 @@ MapEventSystem_Entry_8DED:
         lda     #$00                            ; 8DF0 A9 00                    ..
         sta     CurrentTilesetCandidate         ; 8DF2 85 65                    .e
         jsr     UpperFixedEngine_Entry_C5C5     ; 8DF4 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; 8DF7 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 8DF7 20 4E C5                  N.
         jsr     MapEventSystem_Entry_8EA9       ; 8DFA 20 A9 8E                  ..
         jsr     MapEventSystem_Entry_8EC4       ; 8DFD 20 C4 8E                  ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; 8E00 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 8E00 20 AF C5                  ..
         jsr     MapEventSystem_Entry_8E68       ; 8E03 20 68 8E                  h.
         jsr     MapEventSystem_Entry_8E91       ; 8E06 20 91 8E                  ..
         jsr     MapEventSystem_Entry_8EE0       ; 8E09 20 E0 8E                  ..
@@ -774,12 +774,12 @@ MapEventSystem_Entry_8E15:
         pla                                     ; 8E18 68                       h
         pha                                     ; 8E19 48                       H
         jsr     MapEventSystem_Entry_8EF9       ; 8E1A 20 F9 8E                  ..
-        jsr     UpperFixedEngine_Entry_C8CC     ; 8E1D 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 8E1D 20 CC C8                  ..
         jsr     UpperFixedEngine_Entry_C5C5     ; 8E20 20 C5 C5                  ..
         brk                                     ; 8E23 00                       .
         db   $08,$8F                         ; 8E24 08 8F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; 8E26 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 8E26 20 AF C5                  ..
         pla                                     ; 8E29 68                       h
         sta     CurrentTilesetCandidate         ; 8E2A 85 65                    .e
         lda     $28                             ; 8E2C A5 28                    .(
@@ -1106,7 +1106,7 @@ MapEventSystem_Branch_9040:
         cpx     #$10                            ; 9047 E0 10                    ..
         bcc     MapEventSystem_Branch_9040      ; 9049 90 F5                    ..
         inc     $050B                           ; 904B EE 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C62D     ; 904E 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 904E 20 2D C6                  -.
         rts                                     ; 9051 60                       `
 ; ----------------------------------------------------------------------------
 Bank1D_GraphicsInitializationTemplate:
@@ -1647,7 +1647,7 @@ MapEventSystem_Entry_9484:
         jsr     MapEventSystem_Entry_94C4       ; 949A 20 C4 94                  ..
         jsr     MapEventSystem_Entry_94AC       ; 949D 20 AC 94                  ..
         ldx     #$14                            ; 94A0 A2 14                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 94A2 20 0C C9                  ..
+        jsr     WaitFrames                      ; 94A2 20 0C C9                  ..
         lda     $1F                             ; 94A5 A5 1F                    ..
         and     #$F7                            ; 94A7 29 F7                    ).
         sta     $1F                             ; 94A9 85 1F                    ..
@@ -1662,7 +1662,7 @@ MapEventSystem_Entry_94AC:
         and     #$FC                            ; 94B4 29 FC                    ).
         ora     #$02                            ; 94B6 09 02                    ..
         sta     $7000,x                         ; 94B8 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 94BB 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 94BB 20 04 D8                  ..
         brk                                     ; 94BE 00                       .
         db   $37,$4B                         ; 94BF 37 4B                    7K
 ; ----------------------------------------------------------------------------
@@ -1673,7 +1673,7 @@ MapEventSystem_Entry_94C4:
         lda     $7000,x                         ; 94C6 BD 00 70                 ..p
         and     #$FC                            ; 94C9 29 FC                    ).
         sta     $7000,x                         ; 94CB 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 94CE 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 94CE 20 04 D8                  ..
         brk                                     ; 94D1 00                       .
         db   $82,$FB                         ; 94D2 82 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -1688,7 +1688,7 @@ MapEventSystem_Branch_94D6:
         inc     $020C,x                         ; 94E3 FE 0C 02                 ...
         jsr     MapEventSystem_Entry_960D       ; 94E6 20 0D 96                  ..
         ldx     #$05                            ; 94E9 A2 05                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 94EB 20 0C C9                  ..
+        jsr     WaitFrames                      ; 94EB 20 0C C9                  ..
         pla                                     ; 94EE 68                       h
         tay                                     ; 94EF A8                       .
         dey                                     ; 94F0 88                       .
@@ -1697,7 +1697,7 @@ MapEventSystem_Branch_94D6:
         lda     $7000,x                         ; 94F5 BD 00 70                 ..p
         and     #$FC                            ; 94F8 29 FC                    ).
         sta     $7000,x                         ; 94FA 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 94FD 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 94FD 20 04 D8                  ..
         rts                                     ; 9500 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_9501:
@@ -1723,7 +1723,7 @@ MapEventSystem_Entry_9509:
         sta     $0208,x                         ; 951D 9D 08 02                 ...
         sta     $020C,x                         ; 9520 9D 0C 02                 ...
         ldx     #$B4                            ; 9523 A2 B4                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9525 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9525 20 0C C9                  ..
         ldx     #$09                            ; 9528 A2 09                    ..
         ldy     #$08                            ; 952A A0 08                    ..
         lda     $6FE0,x                         ; 952C BD E0 6F                 ..o
@@ -1746,7 +1746,7 @@ MapEventSystem_Entry_9509:
         and     #$FC                            ; 9559 29 FC                    ).
         ora     #$02                            ; 955B 09 02                    ..
         sta     $7000,x                         ; 955D 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 9560 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 9560 20 04 D8                  ..
         brk                                     ; 9563 00                       .
         db   $82,$FB                         ; 9564 82 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -1757,13 +1757,13 @@ MapEventSystem_Entry_9509:
         lda     $7000,x                         ; 956F BD 00 70                 ..p
         ora     #$03                            ; 9572 09 03                    ..
         sta     $7000,x                         ; 9574 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 9577 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 9577 20 04 D8                  ..
         ldx     #$06                            ; 957A A2 06                    ..
         lda     $7000,x                         ; 957C BD 00 70                 ..p
         and     #$FC                            ; 957F 29 FC                    ).
         ora     #$01                            ; 9581 09 01                    ..
         sta     $7000,x                         ; 9583 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D804     ; 9586 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 9586 20 04 D8                  ..
         rts                                     ; 9589 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_958A:
@@ -1776,7 +1776,7 @@ MapEventSystem_Entry_958A:
         pla                                     ; 9594 68                       h
         pha                                     ; 9595 48                       H
         tax                                     ; 9596 AA                       .
-        jsr     UpperFixedEngine_Entry_C90C     ; 9597 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9597 20 0C C9                  ..
         pla                                     ; 959A 68                       h
         tax                                     ; 959B AA                       .
         pla                                     ; 959C 68                       h
@@ -1856,7 +1856,7 @@ MapEventSystem_Branch_960A:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_960D:
         ldx     #$08                            ; 960D A2 08                    ..
-        jsr     UpperFixedEngine_Entry_D804     ; 960F 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 960F 20 04 D8                  ..
         jsr     UpperFixedEngine_Entry_CBB4     ; 9612 20 B4 CB                  ..
         rts                                     ; 9615 60                       `
 ; ----------------------------------------------------------------------------
@@ -2106,7 +2106,7 @@ MapEventSystem_Branch_97B3:
         db   $FB,$F7,$EF,$CF,$87,$07,$0F,$FF ; 988F FB F7 EF CF 87 07 0F FF  ........
         db   $63,$87,$0F,$07,$03,$03,$03,$0F ; 9897 63 87 0F 07 03 03 03 0F  c.......
 ; ----------------------------------------------------------------------------
-MapEventSystem_Entry_989F:
+DispatchMapEventById:
         asl     a                               ; 989F 0A                       .
         tax                                     ; 98A0 AA                       .
         bcs     MapEventSystem_Branch_98B0      ; 98A1 B0 0D                    ..
@@ -2136,22 +2136,22 @@ MapEventSystem_Entry_98BD:
         rts                                     ; 98D1 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_98D2:
-        jsr     MapEventSystem_Entry_98F9       ; 98D2 20 F9 98                  ..
-        jsr     MapEventSystem_Entry_9935       ; 98D5 20 35 99                  5.
+        jsr     LoadEntityCandidateCoordinates  ; 98D2 20 F9 98                  ..
+        jsr     ApplyDirectionOffsetToCandidate ; 98D5 20 35 99                  5.
         jmp     MapEventSystem_Branch_98E7      ; 98D8 4C E7 98                 L..
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_98DB:
-        jsr     MapEventSystem_Entry_98F9       ; 98DB 20 F9 98                  ..
+        jsr     LoadEntityCandidateCoordinates  ; 98DB 20 F9 98                  ..
         jmp     MapEventSystem_Branch_98E7      ; 98DE 4C E7 98                 L..
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_98E1:
-        jsr     MapEventSystem_Entry_98F9       ; 98E1 20 F9 98                  ..
+        jsr     LoadEntityCandidateCoordinates  ; 98E1 20 F9 98                  ..
         jsr     MapEventSystem_Entry_992F       ; 98E4 20 2F 99                  /.
 MapEventSystem_Branch_98E7:
         jsr     MapEventSystem_Entry_9926       ; 98E7 20 26 99                  &.
-        jsr     MapEventSystem_Entry_9916       ; 98EA 20 16 99                  ..
+        jsr     IsCandidateTileImpassable       ; 98EA 20 16 99                  ..
         bcs     MapEventSystem_Branch_98F7      ; 98ED B0 08                    ..
-        jsr     MapEventSystem_Entry_9906       ; 98EF 20 06 99                  ..
+        jsr     IsPlayerAtCandidateCoordinates  ; 98EF 20 06 99                  ..
         bcc     MapEventSystem_Branch_98E7      ; 98F2 90 F3                    ..
         pla                                     ; 98F4 68                       h
         pla                                     ; 98F5 68                       h
@@ -2161,7 +2161,7 @@ MapEventSystem_Branch_98F7:
         clc                                     ; 98F7 18                       .
         rts                                     ; 98F8 60                       `
 ; ----------------------------------------------------------------------------
-MapEventSystem_Entry_98F9:
+LoadEntityCandidateCoordinates:
         ldx     $5D                             ; 98F9 A6 5D                    .]
         lda     $6F60,x                         ; 98FB BD 60 6F                 .`o
         sta     $5F                             ; 98FE 85 5F                    ._
@@ -2169,7 +2169,7 @@ MapEventSystem_Entry_98F9:
         sta     $60                             ; 9903 85 60                    .`
         rts                                     ; 9905 60                       `
 ; ----------------------------------------------------------------------------
-MapEventSystem_Entry_9906:
+IsPlayerAtCandidateCoordinates:
         lda     $5F                             ; 9906 A5 5F                    ._
         cmp     PlayerLocalX                    ; 9908 C5 44                    .D
         bne     MapEventSystem_Branch_9912      ; 990A D0 06                    ..
@@ -2184,10 +2184,10 @@ MapEventSystem_Branch_9914:
         sec                                     ; 9914 38                       8
         rts                                     ; 9915 60                       `
 ; ----------------------------------------------------------------------------
-MapEventSystem_Entry_9916:
+IsCandidateTileImpassable:
         ldx     $5F                             ; 9916 A6 5F                    ._
         ldy     $60                             ; 9918 A4 60                    .`
-        jsr     UpperFixedEngine_Entry_D3E6     ; 991A 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 991A 20 E6 D3                  ..
         and     #$1F                            ; 991D 29 1F                    ).
         tax                                     ; 991F AA                       .
         lda     $6F40,x                         ; 9920 BD 40 6F                 .@o
@@ -2199,14 +2199,14 @@ MapEventSystem_Entry_9926:
         clc                                     ; 9928 18                       .
         adc     #$10                            ; 9929 69 10                    i.
         tay                                     ; 992B A8                       .
-        jmp     MapEventSystem_Entry_9935       ; 992C 4C 35 99                 L5.
+        jmp     ApplyDirectionOffsetToCandidate ; 992C 4C 35 99                 L5.
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_992F:
         lda     $5E                             ; 992F A5 5E                    .^
         clc                                     ; 9931 18                       .
         adc     #$08                            ; 9932 69 08                    i.
         tay                                     ; 9934 A8                       .
-MapEventSystem_Entry_9935:
+ApplyDirectionOffsetToCandidate:
         lda     $5F                             ; 9935 A5 5F                    ._
         clc                                     ; 9937 18                       .
         adc     $9946,y                         ; 9938 79 46 99                 yF.
@@ -2228,7 +2228,7 @@ MapEventSystem_Entry_995E:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9962 60                       `
 ; ----------------------------------------------------------------------------
-MapEventSystem_Entry_9963:
+SetEntityCoordinateColumns:
         sta     $6F66,x                         ; 9963 9D 66 6F                 .fo
         sta     $6F86,x                         ; 9966 9D 86 6F                 ..o
         sta     $6FA6,x                         ; 9969 9D A6 6F                 ..o
@@ -2439,7 +2439,7 @@ MapEventSystem_Entry_9AC5:
         db   $16,$EB,$20                     ; 9ADD 16 EB 20                 ..
 ; ----------------------------------------------------------------------------
         bne     MapEventSystem_Branch_9B2B      ; 9AE0 D0 49                    .I
-        jsr     UpperFixedEngine_Entry_C891     ; 9AE2 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9AE2 20 91 C8                  ..
         and     #$1F                            ; 9AE5 29 1F                    ).
         bne     MapEventSystem_Branch_9B2B      ; 9AE7 D0 42                    .B
         jsr     MapEventSystem_Entry_B16B       ; 9AE9 20 6B B1                  k.
@@ -2515,7 +2515,7 @@ MapEventSystem_Entry_9B42:
         lda     $3E                             ; 9B4E A5 3E                    .>
         beq     MapEventSystem_Branch_9B59      ; 9B50 F0 07                    ..
         lda     #$8F                            ; 9B52 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; 9B54 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; 9B54 20 3A A2                  :.
         clc                                     ; 9B57 18                       .
         rts                                     ; 9B58 60                       `
 ; ----------------------------------------------------------------------------
@@ -2986,7 +2986,7 @@ MapEventSystem_Branch_9DF3:
         db   $84,$FB                         ; 9DF6 84 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$04                            ; 9DF8 A2 04                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9DFA 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9DFA 20 0C C9                  ..
         pla                                     ; 9DFD 68                       h
         tay                                     ; 9DFE A8                       .
         dey                                     ; 9DFF 88                       .
@@ -3003,7 +3003,7 @@ MapEventSystem_Branch_9E07:
         db   $84,$FB                         ; 9E0A 84 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$04                            ; 9E0C A2 04                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9E0E 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9E0E 20 0C C9                  ..
         pla                                     ; 9E11 68                       h
         tay                                     ; 9E12 A8                       .
         dey                                     ; 9E13 88                       .
@@ -3292,7 +3292,7 @@ MapEventSystem_Entry_9FF9:
 ; ----------------------------------------------------------------------------
         jsr     UpperFixedEngine_Entry_D20A     ; A02E 20 0A D2                  ..
         lda     #$8F                            ; A031 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; A033 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; A033 20 3A A2                  :.
         lda     #$2F                            ; A036 A9 2F                    ./
         brk                                     ; A038 00                       .
         db   $07,$CF                         ; A039 07 CF                    ..
@@ -3376,7 +3376,7 @@ MapEventSystem_Branch_A08C:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_A097:
         lda     #$8F                            ; A097 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; A099 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; A099 20 3A A2                  :.
         ldx     #$0F                            ; A09C A2 0F                    ..
         ldy     #$07                            ; A09E A0 07                    ..
         jsr     MapEventSystem_Entry_A0A5       ; A0A0 20 A5 A0                  ..
@@ -3421,7 +3421,7 @@ MapEventSystem_Branch_A0CC:
         db   $09,$EF                         ; A0DA 09 EF                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$0A                            ; A0DC A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A0DE 20 0C C9                  ..
+        jsr     WaitFrames                      ; A0DE 20 0C C9                  ..
         inc     $54                             ; A0E1 E6 54                    .T
         lda     $54                             ; A0E3 A5 54                    .T
         cmp     #$09                            ; A0E5 C9 09                    ..
@@ -3439,7 +3439,7 @@ MapEventSystem_Branch_A0FA:
         dex                                     ; A100 CA                       .
         bpl     MapEventSystem_Branch_A0FA      ; A101 10 F7                    ..
         inc     $050B                           ; A103 EE 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C62D     ; A106 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; A106 20 2D C6                  -.
         ldx     #$00                            ; A109 A2 00                    ..
         lda     #$11                            ; A10B A9 11                    ..
         sta     $7046,x                         ; A10D 9D 46 70                 .Fp
@@ -3487,7 +3487,7 @@ MapEventSystem_Branch_A18A:
         rts                                     ; A18B 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_A18C:
-        jsr     UpperFixedEngine_Entry_C891     ; A18C 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A18C 20 91 C8                  ..
         and     #$07                            ; A18F 29 07                    ).
         ldx     $51                             ; A191 A6 51                    .Q
         sta     $7180,x                         ; A193 9D 80 71                 ..q
@@ -3579,7 +3579,7 @@ MapEventSystem_Entry_A21C:
         adc     #$00                            ; A233 69 00                    i.
         sta     $7060,x                         ; A235 9D 60 70                 .`p
         lda     #$8F                            ; A238 A9 8F                    ..
-MapEventSystem_Entry_A23A:
+StartMapEventPresentation:
         sta     $0530                           ; A23A 8D 30 05                 .0.
         lda     #$01                            ; A23D A9 01                    ..
         sta     $0531                           ; A23F 8D 31 05                 .1.
@@ -3842,7 +3842,7 @@ MapEventSystem_Entry_A3DA:
         db   $09,$EB,$04                     ; A3DB 09 EB 04                 ...
 ; ----------------------------------------------------------------------------
         bne     MapEventSystem_Branch_A404      ; A3DE D0 24                    .$
-        jsr     UpperFixedEngine_Entry_C891     ; A3E0 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A3E0 20 91 C8                  ..
         and     #$07                            ; A3E3 29 07                    ).
         tax                                     ; A3E5 AA                       .
         lda     $A3FC,x                         ; A3E6 BD FC A3                 ...
@@ -3871,14 +3871,14 @@ MapEventSystem_Branch_A404:
         rts                                     ; A415 60                       `
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_A416:
-        jsr     UpperFixedEngine_Entry_C8EC     ; A416 20 EC C8                  ..
+        jsr     ReadControllers                 ; A416 20 EC C8                  ..
         lda     ButtonsPressed                  ; A419 A5 14                    ..
         and     #$F0                            ; A41B 29 F0                    ).
         beq     MapEventSystem_Entry_A42F       ; A41D F0 10                    ..
         ldx     #$00                            ; A41F A2 00                    ..
         stx     $6FE0                           ; A421 8E E0 6F                 ..o
         dec     $7000                           ; A424 CE 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D7F1     ; A427 20 F1 D7                  ..
+        jsr     RenderActiveMapEntity           ; A427 20 F1 D7                  ..
         jsr     MapEventSystem_Entry_A42F       ; A42A 20 2F A4                  /.
         sec                                     ; A42D 38                       8
         rts                                     ; A42E 60                       `
@@ -4187,7 +4187,7 @@ MapEventSystem_Entry_A612:
         sta     $00                             ; A614 85 00                    ..
         lda     #$1A                            ; A616 A9 1A                    ..
         sta     $01                             ; A618 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; A61A 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; A61A 20 62 C6                  b.
         ldx     #$00                            ; A61D A2 00                    ..
         brk                                     ; A61F 00                       .
         db   $25,$73                         ; A620 25 73                    %s
@@ -4212,7 +4212,7 @@ MapEventSystem_Branch_A63B:
         cpx     #$08                            ; A643 E0 08                    ..
         bcc     MapEventSystem_Branch_A63B      ; A645 90 F4                    ..
         inc     $050B                           ; A647 EE 0B 05                 ...
-        jmp     UpperFixedEngine_Entry_C62D     ; A64A 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; A64A 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_A64D:
         ldx     #$00                            ; A64D A2 00                    ..
@@ -4255,7 +4255,7 @@ MapEventSystem_Entry_A671:
         cmp     #$07                            ; A685 C9 07                    ..
         beq     MapEventSystem_Branch_A68E      ; A687 F0 05                    ..
         lda     #$8F                            ; A689 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; A68B 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; A68B 20 3A A2                  :.
 MapEventSystem_Branch_A68E:
         ldx     #$02                            ; A68E A2 02                    ..
         lda     $6BE9                           ; A690 AD E9 6B                 ..k
@@ -4342,7 +4342,7 @@ MapEventSystem_Branch_A70B:
 ; ----------------------------------------------------------------------------
         ldx     #$0F                            ; A70E A2 0F                    ..
         lda     #$81                            ; A710 A9 81                    ..
-        jsr     MapEventSystem_Entry_9963       ; A712 20 63 99                  c.
+        jsr     SetEntityCoordinateColumns      ; A712 20 63 99                  c.
         ldx     #$0E                            ; A715 A2 0E                    ..
         lda     #$11                            ; A717 A9 11                    ..
         sta     $7046,x                         ; A719 9D 46 70                 .Fp
@@ -4572,7 +4572,7 @@ MapEventSystem_Entry_A858:
         cmp     #$0C                            ; A860 C9 0C                    ..
         bne     MapEventSystem_Branch_A891      ; A862 D0 2D                    .-
         lda     #$84                            ; A864 A9 84                    ..
-        jsr     MapEventSystem_Entry_A23A       ; A866 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; A866 20 3A A2                  :.
         ldx     #$00                            ; A869 A2 00                    ..
         ldy     #$02                            ; A86B A0 02                    ..
         jsr     MapEventSystem_Entry_A874       ; A86D 20 74 A8                  t.
@@ -4743,7 +4743,7 @@ MapEventSystem_Entry_A97B:
         sta     PlayerLocalY                    ; A982 85 45                    .E
         ldx     #$0E                            ; A984 A2 0E                    ..
         ldy     #$07                            ; A986 A0 07                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; A988 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; A988 20 E6 D3                  ..
         and     #$1F                            ; A98B 29 1F                    ).
         tax                                     ; A98D AA                       .
         lda     $6F40,x                         ; A98E BD 40 6F                 .@o
@@ -4858,7 +4858,7 @@ MapEventSystem_Entry_AA2A:
         lda     #$11                            ; AA41 A9 11                    ..
         sta     $7040,x                         ; AA43 9D 40 70                 .@p
         lda     #$8F                            ; AA46 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; AA48 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; AA48 20 3A A2                  :.
         sec                                     ; AA4B 38                       8
 MapEventSystem_Branch_AA4C:
         rts                                     ; AA4C 60                       `
@@ -4898,7 +4898,7 @@ MapEventSystem_Entry_AA72:
         lda     #$11                            ; AA82 A9 11                    ..
         sta     $7040,x                         ; AA84 9D 40 70                 .@p
         lda     #$8F                            ; AA87 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; AA89 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; AA89 20 3A A2                  :.
         ldy     PlayerLocalX                    ; AA8C A4 44                    .D
         cpy     #$1E                            ; AA8E C0 1E                    ..
         beq     MapEventSystem_Branch_AA96      ; AA90 F0 04                    ..
@@ -5129,7 +5129,7 @@ MapEventSystem_Entry_AC0B:
         sta     PlayerLocalX                    ; AC1B 85 44                    .D
         ldx     #$0F                            ; AC1D A2 0F                    ..
         ldy     #$0E                            ; AC1F A0 0E                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; AC21 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; AC21 20 E6 D3                  ..
         and     #$1F                            ; AC24 29 1F                    ).
         tax                                     ; AC26 AA                       .
         lda     $6F40,x                         ; AC27 BD 40 6F                 .@o
@@ -5350,8 +5350,8 @@ MapEventSystem_Branch_AD78:
         dex                                     ; AD7E CA                       .
         bpl     MapEventSystem_Branch_AD78      ; AD7F 10 F7                    ..
         ldx     #$78                            ; AD81 A2 78                    .x
-        jsr     UpperFixedEngine_Entry_C90C     ; AD83 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_E501     ; AD86 20 01 E5                  ..
+        jsr     WaitFrames                      ; AD83 20 0C C9                  ..
+        jsr     ResetMapEntityMotionState       ; AD86 20 01 E5                  ..
         jsr     UpperFixedEngine_Entry_DFF1     ; AD89 20 F1 DF                  ..
         sec                                     ; AD8C 38                       8
         rts                                     ; AD8D 60                       `
@@ -5459,7 +5459,7 @@ MapEventSystem_Entry_AE11:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_AE31:
         lda     #$8F                            ; AE31 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; AE33 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; AE33 20 3A A2                  :.
         sec                                     ; AE36 38                       8
         rts                                     ; AE37 60                       `
 ; ----------------------------------------------------------------------------
@@ -5733,7 +5733,7 @@ MapEventSystem_Entry_AFB8:
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_AFC0:
         lda     #$8F                            ; AFC0 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; AFC2 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; AFC2 20 3A A2                  :.
         inc     $0531                           ; AFC5 EE 31 05                 .1.
         sec                                     ; AFC8 38                       8
         rts                                     ; AFC9 60                       `
@@ -5796,7 +5796,7 @@ MapEventSystem_Entry_B00F:
         ldx     #$08                            ; B02F A2 08                    ..
         jsr     MapEventSystem_Entry_B001       ; B031 20 01 B0                  ..
         lda     #$8F                            ; B034 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B036 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B036 20 3A A2                  :.
         sec                                     ; B039 38                       8
         rts                                     ; B03A 60                       `
 ; ----------------------------------------------------------------------------
@@ -5819,11 +5819,11 @@ MapEventSystem_Entry_B03D:
 ; ----------------------------------------------------------------------------
         lda     #$80                            ; B04E A9 80                    ..
         ldx     #$02                            ; B050 A2 02                    ..
-        jsr     MapEventSystem_Entry_9963       ; B052 20 63 99                  c.
+        jsr     SetEntityCoordinateColumns      ; B052 20 63 99                  c.
         ldx     #$00                            ; B055 A2 00                    ..
-        jsr     MapEventSystem_Entry_9963       ; B057 20 63 99                  c.
+        jsr     SetEntityCoordinateColumns      ; B057 20 63 99                  c.
         ldx     #$01                            ; B05A A2 01                    ..
-        jsr     MapEventSystem_Entry_9963       ; B05C 20 63 99                  c.
+        jsr     SetEntityCoordinateColumns      ; B05C 20 63 99                  c.
         brk                                     ; B05F 00                       .
         db   $03,$EF                         ; B060 03 EF                    ..
 ; ----------------------------------------------------------------------------
@@ -6033,7 +6033,7 @@ MapEventSystem_Entry_B18D:
         lda     $3D                             ; B1A1 A5 3D                    .=
         bne     MapEventSystem_Branch_B1AA      ; B1A3 D0 05                    ..
         lda     #$8F                            ; B1A5 A9 8F                    ..
-        jmp     MapEventSystem_Entry_A23A       ; B1A7 4C 3A A2                 L:.
+        jmp     StartMapEventPresentation       ; B1A7 4C 3A A2                 L:.
 ; ----------------------------------------------------------------------------
 MapEventSystem_Branch_B1AA:
         clc                                     ; B1AA 18                       .
@@ -6086,7 +6086,7 @@ MapEventSystem_Branch_B1EC:
         ldx     #$02                            ; B1F3 A2 02                    ..
         sta     $7046,x                         ; B1F5 9D 46 70                 .Fp
         lda     #$8F                            ; B1F8 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B1FA 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B1FA 20 3A A2                  :.
         sec                                     ; B1FD 38                       8
         rts                                     ; B1FE 60                       `
 ; ----------------------------------------------------------------------------
@@ -6275,7 +6275,7 @@ MapEventSystem_Branch_B318:
         lda     PlayerLocalY                    ; B329 A5 45                    .E
         sta     $71C6,x                         ; B32B 9D C6 71                 ..q
         lda     #$8F                            ; B32E A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B330 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B330 20 3A A2                  :.
         sec                                     ; B333 38                       8
         rts                                     ; B334 60                       `
 ; ----------------------------------------------------------------------------
@@ -6497,7 +6497,7 @@ MapEventSystem_Entry_B48C:
         beq     MapEventSystem_Branch_B4AF      ; B48E F0 1F                    ..
         jsr     MapEventSystem_Entry_B16B       ; B490 20 6B B1                  k.
         lda     #$8F                            ; B493 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B495 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B495 20 3A A2                  :.
         inc     $0531                           ; B498 EE 31 05                 .1.
         inc     $0531                           ; B49B EE 31 05                 .1.
         inc     $0531                           ; B49E EE 31 05                 .1.
@@ -6517,7 +6517,7 @@ MapEventSystem_Entry_B4B1:
         lda     $3D                             ; B4B1 A5 3D                    .=
         bne     MapEventSystem_Branch_B4E1      ; B4B3 D0 2C                    .,
         lda     #$8F                            ; B4B5 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B4B7 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B4B7 20 3A A2                  :.
         lda     #$00                            ; B4BA A9 00                    ..
         brk                                     ; B4BC 00                       .
         db   $26,$2F                         ; B4BD 26 2F                    &/
@@ -6699,7 +6699,7 @@ MapEventSystem_Branch_B597:
         db   $20,$CB,$02                     ; B5C2 20 CB 02                  ..
 ; ----------------------------------------------------------------------------
         lda     #$85                            ; B5C5 A9 85                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B5C7 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B5C7 20 3A A2                  :.
         brk                                     ; B5CA 00                       .
         db   $3B,$EF                         ; B5CB 3B EF                    ;.
 ; ----------------------------------------------------------------------------
@@ -6730,7 +6730,7 @@ MapEventSystem_Entry_B5E2:
         cmp     #$14                            ; B5EC C9 14                    ..
         bne     MapEventSystem_Branch_B5F7      ; B5EE D0 07                    ..
         lda     #$8F                            ; B5F0 A9 8F                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B5F2 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B5F2 20 3A A2                  :.
         sec                                     ; B5F5 38                       8
         rts                                     ; B5F6 60                       `
 ; ----------------------------------------------------------------------------
@@ -6746,7 +6746,7 @@ MapEventSystem_Entry_B5F9:
         cmp     #$07                            ; B601 C9 07                    ..
         bne     MapEventSystem_Branch_B60C      ; B603 D0 07                    ..
         lda     #$84                            ; B605 A9 84                    ..
-        jsr     MapEventSystem_Entry_A23A       ; B607 20 3A A2                  :.
+        jsr     StartMapEventPresentation       ; B607 20 3A A2                  :.
         sec                                     ; B60A 38                       8
         rts                                     ; B60B 60                       `
 ; ----------------------------------------------------------------------------
@@ -7112,7 +7112,7 @@ MapEventSystem_Branch_B921:
         pla                                     ; B943 68                       h
         ora     $7000,x                         ; B944 1D 00 70                 ..p
         sta     $7000,x                         ; B947 9D 00 70                 ..p
-        jsr     UpperFixedEngine_Entry_D7F1     ; B94A 20 F1 D7                  ..
+        jsr     RenderActiveMapEntity           ; B94A 20 F1 D7                  ..
         pla                                     ; B94D 68                       h
         tay                                     ; B94E A8                       .
         jmp     MapEventSystem_Branch_B918      ; B94F 4C 18 B9                 L..
@@ -7170,7 +7170,7 @@ MapEventSystem_Entry_B99B:
         bcs     MapEventSystem_Branch_B9AF      ; B9AA B0 03                    ..
         ldx     $B9B7,y                         ; B9AC BE B7 B9                 ...
 MapEventSystem_Branch_B9AF:
-        jsr     UpperFixedEngine_Entry_C90C     ; B9AF 20 0C C9                  ..
+        jsr     WaitFrames                      ; B9AF 20 0C C9                  ..
         inc     $5F                             ; B9B2 E6 5F                    ._
         jmp     MapEventSystem_Entry_B980       ; B9B4 4C 80 B9                 L..
 ; ----------------------------------------------------------------------------
@@ -7202,7 +7202,7 @@ MapEventSystem_Branch_B9F2:
         cpx     #$30                            ; B9FA E0 30                    .0
         bcc     MapEventSystem_Branch_B9F2      ; B9FC 90 F4                    ..
         inc     $050B                           ; B9FE EE 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C62D     ; BA01 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; BA01 20 2D C6                  -.
         ldx     #$00                            ; BA04 A2 00                    ..
 MapEventSystem_Branch_BA06:
         lda     $BACB,x                         ; BA06 BD CB BA                 ...
@@ -7418,15 +7418,15 @@ MapEventSystem_Entry_BB69:
         db   $06                             ; BBF3 06                       .
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BBF4:
-        jsr     UpperFixedEngine_Entry_C62D     ; BBF4 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; BBF4 20 2D C6                  -.
         jsr     MapEventSystem_Entry_BC9C       ; BBF7 20 9C BC                  ..
         jsr     MapEventSystem_Entry_BC13       ; BBFA 20 13 BC                  ..
         lda     $1F                             ; BBFD A5 1F                    ..
         ora     #$40                            ; BBFF 09 40                    .@
         sta     $1F                             ; BC01 85 1F                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; BC03 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; BC03 20 2D C6                  -.
         jsr     MapEventSystem_Entry_BC5D       ; BC06 20 5D BC                  ].
-        jsr     UpperFixedEngine_Entry_C62D     ; BC09 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; BC09 20 2D C6                  -.
         lda     $1F                             ; BC0C A5 1F                    ..
         and     #$BF                            ; BC0E 29 BF                    ).
         sta     $1F                             ; BC10 85 1F                    ..
@@ -7554,7 +7554,7 @@ MapEventSystem_Branch_BD73:
         jsr     MapEventSystem_Entry_BDB8       ; BD7B 20 B8 BD                  ..
         jsr     MapEventSystem_Entry_BDE0       ; BD7E 20 E0 BD                  ..
         jsr     MapEventSystem_Entry_BF0A       ; BD81 20 0A BF                  ..
-        jmp     UpperFixedEngine_Entry_C62D     ; BD84 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; BD84 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapEventSystem_Entry_BD87:
         lda     $04F2                           ; BD87 AD F2 04                 ...
@@ -7568,7 +7568,7 @@ MapEventSystem_Entry_BD87:
         lsr     a                               ; BD93 4A                       J
         and     #$1E                            ; BD94 29 1E                    ).
         sta     $01                             ; BD96 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; BD98 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; BD98 20 62 C6                  b.
         bit     $1B                             ; BD9B 24 1B                    $.
         bpl     MapEventSystem_Branch_BDAE      ; BD9D 10 0F                    ..
         ldx     #$04                            ; BD9F A2 04                    ..
@@ -7586,7 +7586,7 @@ MapEventSystem_Branch_BDAE:
 MapEventSystem_Entry_BDAF:
         lda     $050B                           ; BDAF AD 0B 05                 ...
         beq     MapEventSystem_Branch_BDB7      ; BDB2 F0 03                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; BDB4 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; BDB4 20 2D C6                  -.
 MapEventSystem_Branch_BDB7:
         rts                                     ; BDB7 60                       `
 ; ----------------------------------------------------------------------------

@@ -542,7 +542,7 @@ MapEventText_Entry_8728:
         ldx     $058E                           ; 872E AE 8E 05                 ...
         lda     Bank1B_AnimationTimingValues,x  ; 8731 BD 38 87                 .8.
         tax                                     ; 8734 AA                       .
-        jmp     UpperFixedEngine_Entry_C90C     ; 8735 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 8735 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
 Bank1B_AnimationTimingValues:
         db   $00,$14,$0F,$01,$03             ; 8738 00 14 0F 01 03           .....
@@ -630,7 +630,7 @@ MapEventText_Entry_87C0:
 MapEventText_Branch_87C4:
         jsr     MapEventText_Entry_8853         ; 87C4 20 53 88                  S.
         jsr     MapEventText_Entry_887D         ; 87C7 20 7D 88                  }.
-        jsr     UpperFixedEngine_Entry_C62D     ; 87CA 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 87CA 20 2D C6                  -.
         jsr     MapEventText_Entry_87D3         ; 87CD 20 D3 87                  ..
         jmp     MapEventText_Branch_87C4        ; 87D0 4C C4 87                 L..
 ; ----------------------------------------------------------------------------
@@ -1115,7 +1115,7 @@ MapEventText_Branch_914E:
         lda     $52                             ; 915F A5 52                    .R
         cmp     #$81                            ; 9161 C9 81                    ..
         bcc     MapEventText_Branch_914E        ; 9163 90 E9                    ..
-        jsr     UpperFixedEngine_Entry_C5DE     ; 9165 20 DE C5                  ..
+        jsr     BuildPaletteUpdateCommand       ; 9165 20 DE C5                  ..
         lda     $52                             ; 9168 A5 52                    .R
         and     #$03                            ; 916A 29 03                    ).
         bne     MapEventText_Branch_9175        ; 916C D0 07                    ..
@@ -1170,7 +1170,7 @@ MapEventText_Entry_91C3:
         lda     $52                             ; 91C3 A5 52                    .R
         lsr     a                               ; 91C5 4A                       J
         bcs     MapEventText_Branch_91D9        ; 91C6 B0 11                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 91C8 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 91C8 20 91 C8                  ..
         and     #$07                            ; 91CB 29 07                    ).
         sta     $53                             ; 91CD 85 53                    .S
         lda     $0508                           ; 91CF AD 08 05                 ...
@@ -1226,7 +1226,7 @@ MapEventText_Entry_9209:
         tay                                     ; 9218 A8                       .
         ldx     Bank1B_AnimationSoundIds,y      ; 9219 BE 22 92                 .".
         beq     MapEventText_Branch_9221        ; 921C F0 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 921E 20 0C C9                  ..
+        jsr     WaitFrames                      ; 921E 20 0C C9                  ..
 MapEventText_Branch_9221:
         rts                                     ; 9221 60                       `
 ; ----------------------------------------------------------------------------
@@ -1267,7 +1267,7 @@ MapEventText_Entry_924B:
         lda     #$00                            ; 9254 A9 00                    ..
         sta     $00                           ; 9256 85 00                    ..
         sta     $01                             ; 9258 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; 925A 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; 925A 20 62 C6                  b.
         lda     $1C                             ; 925D A5 1C                    ..
         ora     #$80                            ; 925F 09 80                    ..
         sta     $0300                           ; 9261 8D 00 03                 ...
@@ -1290,7 +1290,7 @@ MapEventText_Branch_927E:
         bcc     MapEventText_Branch_927E        ; 9287 90 F5                    ..
         lda     #$02                            ; 9289 A9 02                    ..
         sta     $050B                           ; 928B 8D 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C626     ; 928E 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; 928E 20 26 C6                  &.
 MapEventText_Branch_9291:
         rts                                     ; 9291 60                       `
 ; ----------------------------------------------------------------------------
@@ -1356,7 +1356,7 @@ MapEventText_Branch_92F8:
         bcc     MapEventText_Branch_92F8        ; 9300 90 F6                    ..
         lda     #$01                            ; 9302 A9 01                    ..
         sta     $050B                           ; 9304 8D 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C62D     ; 9307 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 9307 20 2D C6                  -.
         lda     $4B                             ; 930A A5 4B                    .K
         clc                                     ; 930C 18                       .
         adc     #$40                            ; 930D 69 40                    i@
@@ -1419,7 +1419,7 @@ MapEventText_Branch_9363:
         cmp     #$4E                            ; 9365 C9 4E                    .N
         bcc     MapEventText_Branch_936E        ; 9367 90 05                    ..
         ldx     #$02                            ; 9369 A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 936B 20 0C C9                  ..
+        jsr     WaitFrames                      ; 936B 20 0C C9                  ..
 MapEventText_Branch_936E:
         rts                                     ; 936E 60                       `
 ; ----------------------------------------------------------------------------
@@ -1467,7 +1467,7 @@ MapEventText_Entry_93BF:
         pla                                     ; 93F0 68                       h
         tay                                     ; 93F1 A8                       .
         ldx     $9478,y                         ; 93F2 BE 78 94                 .x.
-        jmp     UpperFixedEngine_Entry_C90C     ; 93F5 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 93F5 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_93F8:
         lda     #$01                            ; 93F8 A9 01                    ..
@@ -2021,7 +2021,7 @@ MapEventText_Entry_9E8F:
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_9E97:
         ldx     #$14                            ; 9E97 A2 14                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9E99 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9E99 20 0C C9                  ..
         brk                                     ; 9E9C 00                       .
         db   $23,$FB                         ; 9E9D 23 FB                    #.
 ; ----------------------------------------------------------------------------
@@ -2031,7 +2031,7 @@ MapEventText_Branch_9EA2:
         lda     $1F                             ; 9EA5 A5 1F                    ..
         ora     #$40                            ; 9EA7 09 40                    .@
         sta     $1F                             ; 9EA9 85 1F                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 9EAB 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 9EAB 20 2D C6                  -.
         lda     $1F                             ; 9EAE A5 1F                    ..
         and     #$BF                            ; 9EB0 29 BF                    ).
         sta     $1F                             ; 9EB2 85 1F                    ..
@@ -2160,7 +2160,7 @@ MapEventText_Entry_9F91:
         lda     $9FBD                           ; 9F9A AD BD 9F                 ...
         sta     $4A                             ; 9F9D 85 4A                    .J
         jsr     MapEventText_Entry_9FB3         ; 9F9F 20 B3 9F                  ..
-        jsr     UpperFixedEngine_Entry_C662     ; 9FA2 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; 9FA2 20 62 C6                  b.
         ldx     #$FC                            ; 9FA5 A2 FC                    ..
         stx     $52                             ; 9FA7 86 52                    .R
         inx                                     ; 9FA9 E8                       .
@@ -2226,7 +2226,7 @@ Bank1B_MapEventService_A0FE:
         db   $94,$FB                         ; A0FF 94 FB                    ..
 ; ----------------------------------------------------------------------------
         jsr     MapEventText_Entry_A11D         ; A101 20 1D A1                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; A104 20 4E C5                  N.
+        jsr     ResetDisplayState               ; A104 20 4E C5                  N.
         brk                                     ; A107 00                       .
         db   $0A,$87                         ; A108 0A 87                    ..
 ; ----------------------------------------------------------------------------
@@ -2251,7 +2251,7 @@ MapEventText_Entry_A11D:
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A127:
         jsr     UpperFixedEngine_Entry_C5A8     ; A127 20 A8 C5                  ..
-        jsr     UpperFixedEngine_Entry_C592     ; A12A 20 92 C5                  ..
+        jsr     EnableRenderingAfterVBlank      ; A12A 20 92 C5                  ..
         jsr     MapEventText_Entry_A2D3         ; A12D 20 D3 A2                  ..
         jsr     MapEventText_Entry_A203         ; A130 20 03 A2                  ..
         jsr     MapEventText_Entry_A168         ; A133 20 68 A1                  h.
@@ -2597,7 +2597,7 @@ MapEventText_Branch_A36F:
         bne     MapEventText_Branch_A357        ; A376 D0 DF                    ..
         lda     #$01                            ; A378 A9 01                    ..
         sta     $050B                           ; A37A 8D 0B 05                 ...
-        jmp     UpperFixedEngine_Entry_C626     ; A37D 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; A37D 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A380:
         lda     $55                             ; A380 A5 55                    .U
@@ -2702,7 +2702,7 @@ Bank1B_MapMotionTables:
         db   $2C,$29,$26,$26                 ; A494 2C 29 26 26              ,)&&
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A498:
-        jsr     UpperFixedEngine_Entry_C5AF     ; A498 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; A498 20 AF C5                  ..
         lda     $46                             ; A49B A5 46                    .F
         bne     MapEventText_Branch_A4DA        ; A49D D0 3B                    .;
         lda     PPUSTATUS                       ; A49F AD 02 20                 ..
@@ -2758,7 +2758,7 @@ MapEventText_Entry_A4EF:
         db   $02,$9F                         ; A4F8 02 9F                    ..
 ; ----------------------------------------------------------------------------
         jsr     MapEventText_Entry_A71C         ; A4FA 20 1C A7                  ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; A4FD 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; A4FD 20 AF C5                  ..
         jsr     MapEventText_Entry_A706         ; A500 20 06 A7                  ..
         jsr     UpperFixedEngine_Entry_C5B9     ; A503 20 B9 C5                  ..
         jsr     MapEventText_Entry_A530         ; A506 20 30 A5                  0.
@@ -2794,10 +2794,10 @@ MapEventText_Entry_A530:
         jsr     MapEventText_Entry_A580         ; A53C 20 80 A5                  ..
         jsr     UpperFixedEngine_Entry_C58F     ; A53F 20 8F C5                  ..
         ldx     #$78                            ; A542 A2 78                    .x
-        jsr     UpperFixedEngine_Entry_C90C     ; A544 20 0C C9                  ..
+        jsr     WaitFrames                      ; A544 20 0C C9                  ..
         jsr     UpperFixedEngine_Entry_C5C5     ; A547 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; A54A 20 4E C5                  N.
-        jsr     UpperFixedEngine_Entry_C5AF     ; A54D 20 AF C5                  ..
+        jsr     ResetDisplayState               ; A54A 20 4E C5                  N.
+        jsr     SuspendRenderingUpdates         ; A54D 20 AF C5                  ..
         lda     #$09                            ; A550 A9 09                    ..
         jsr     MapEventText_Entry_A580         ; A552 20 80 A5                  ..
         jsr     UpperFixedEngine_Entry_C5BF     ; A555 20 BF C5                  ..
@@ -2815,7 +2815,7 @@ MapEventText_Entry_A530:
         sta     $1F                             ; A56D 85 1F                    ..
         bcs     MapEventText_Branch_A57A        ; A56F B0 09                    ..
         ldx     #$0F                            ; A571 A2 0F                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A573 20 0C C9                  ..
+        jsr     WaitFrames                      ; A573 20 0C C9                  ..
         brk                                     ; A576 00                       .
         db   $02,$FB                         ; A577 02 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -3008,8 +3008,8 @@ Bank1B_PpuSetupValues:
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A77B:
         jsr     UpperFixedEngine_Entry_C5C5     ; A77B 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; A77E 20 4E C5                  N.
-        jsr     UpperFixedEngine_Entry_C5AF     ; A781 20 AF C5                  ..
+        jsr     ResetDisplayState               ; A77E 20 4E C5                  N.
+        jsr     SuspendRenderingUpdates         ; A781 20 AF C5                  ..
         lda     #$00                            ; A784 A9 00                    ..
         sta     $0508                           ; A786 8D 08 05                 ...
         sta     $0509                           ; A789 8D 09 05                 ...
@@ -3035,11 +3035,11 @@ MapEventText_Entry_A7B2:
         lda     $1F                             ; A7B2 A5 1F                    ..
         ora     #$08                            ; A7B4 09 08                    ..
         sta     $1F                             ; A7B6 85 1F                    ..
-        jsr     UpperFixedEngine_Entry_C54E     ; A7B8 20 4E C5                  N.
+        jsr     ResetDisplayState               ; A7B8 20 4E C5                  N.
         jsr     MapEventText_Entry_AF67         ; A7BB 20 67 AF                  g.
 MapEventText_Entry_A7BE:
         jsr     FixedTrampoline13               ; A7BE 20 3A C0                  :.
-        jsr     UpperFixedEngine_Entry_C5AF     ; A7C1 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; A7C1 20 AF C5                  ..
         ldx     #$00                            ; A7C4 A2 00                    ..
         jsr     UpperFixedEngine_Entry_F3FB     ; A7C6 20 FB F3                  ..
         jsr     MapEventText_Entry_A8A8         ; A7C9 20 A8 A8                  ..
@@ -3047,7 +3047,7 @@ MapEventText_Entry_A7BE:
         jsr     WaitForNmi                      ; A7CF 20 74 FF                  t.
         ldx     #$0C                            ; A7D2 A2 0C                    ..
         jsr     MapEventText_Entry_A85A         ; A7D4 20 5A A8                  Z.
-        jsr     UpperFixedEngine_Entry_C592     ; A7D7 20 92 C5                  ..
+        jsr     EnableRenderingAfterVBlank      ; A7D7 20 92 C5                  ..
         jsr     UpperFixedEngine_Entry_FECD     ; A7DA 20 CD FE                  ..
         jsr     WaitForNmi                      ; A7DD 20 74 FF                  t.
         lda     $6BF9                           ; A7E0 AD F9 6B                 ..k
@@ -3063,7 +3063,7 @@ MapEventText_Branch_A7ED:
         lda     $B0                             ; A7F6 A5 B0                    ..
         and     #$20                            ; A7F8 29 20                    )
         bne     MapEventText_Branch_A803        ; A7FA D0 07                    ..
-        jsr     UpperFixedEngine_Entry_C8EC     ; A7FC 20 EC C8                  ..
+        jsr     ReadControllers                 ; A7FC 20 EC C8                  ..
         lda     ButtonsPressed                  ; A7FF A5 14                    ..
         beq     MapEventText_Branch_A7ED        ; A801 F0 EA                    ..
 MapEventText_Branch_A803:
@@ -3098,7 +3098,7 @@ MapEventText_Entry_A82B:
         jsr     MapEventText_Entry_A83D         ; A837 20 3D A8                  =.
         jsr     MapEventText_Entry_A83D         ; A83A 20 3D A8                  =.
 MapEventText_Entry_A83D:
-        jsr     UpperFixedEngine_Entry_C5DE     ; A83D 20 DE C5                  ..
+        jsr     BuildPaletteUpdateCommand       ; A83D 20 DE C5                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; A840 20 10 FF                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; A843 20 10 FF                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; A846 20 10 FF                  ..
@@ -3113,7 +3113,7 @@ MapEventText_Entry_A83D:
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A85A:
         jsr     MapEventText_Entry_A860         ; A85A 20 60 A8                  `.
-        jmp     UpperFixedEngine_Entry_C62D     ; A85D 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; A85D 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_A860:
         ldy     #$0C                            ; A860 A0 0C                    ..
@@ -3344,7 +3344,7 @@ MapEventText_Branch_AA1D:
 MapEventText_Branch_AA1E:
         ldx     #$33                            ; AA1E A2 33                    .3
         jsr     MapEventText_Entry_A860         ; AA20 20 60 A8                  `.
-        jmp     UpperFixedEngine_Entry_C626     ; AA23 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; AA23 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AA26:
         ldx     #$20                            ; AA26 A2 20                    .
@@ -3355,7 +3355,7 @@ MapEventText_Branch_AA28:
         bpl     MapEventText_Branch_AA28        ; AA2F 10 F7                    ..
         lda     #$05                            ; AA31 A9 05                    ..
         sta     $050B                           ; AA33 8D 0B 05                 ...
-        jmp     UpperFixedEngine_Entry_C626     ; AA36 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; AA36 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 Bank1B_PpuUpdateTemplate:
         db   $A0,$02,$B8,$C2,$C3,$A1,$04,$2E ; AA39 A0 02 B8 C2 C3 A1 04 2E  ........
@@ -3431,7 +3431,7 @@ MapEventText_Branch_AAB4:
         dec     $02                             ; AAD8 C6 02                    ..
         bpl     MapEventText_Branch_AA6C        ; AADA 10 90                    ..
         inc     $0D                             ; AADC E6 0D                    ..
-        jmp     UpperFixedEngine_Entry_C626     ; AADE 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; AADE 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 Bank1B_MapRendererTables:
         db   $50,$40,$10,$00                 ; AAE1 50 40 10 00              P@..
@@ -3514,7 +3514,7 @@ MapEventText_Entry_AB52:
         db   $3E,$EF                         ; AB63 3E EF                    >.
 ; ----------------------------------------------------------------------------
         ldx     #$C8                            ; AB65 A2 C8                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; AB67 20 0C C9                  ..
+        jsr     WaitFrames                      ; AB67 20 0C C9                  ..
         jsr     UpperFixedEngine_Entry_C5C5     ; AB6A 20 C5 C5                  ..
         lda     #$7C                            ; AB6D A9 7C                    .|
         ldx     #$03                            ; AB6F A2 03                    ..
@@ -3574,7 +3574,7 @@ MapEventText_Branch_ABB6:
         brk                                     ; ABBE 00                       .
         db   $04,$9F                         ; ABBF 04 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C54E     ; ABC1 20 4E C5                  N.
+        jsr     ResetDisplayState               ; ABC1 20 4E C5                  N.
         lda     #$30                            ; ABC4 A9 30                    .0
         sta     $05FD                           ; ABC6 8D FD 05                 ...
         lda     #$80                            ; ABC9 A9 80                    ..
@@ -3601,7 +3601,7 @@ MapEventText_Branch_ABB6:
         sec                                     ; ABEC 38                       8
         ror     $6282                           ; ABED 6E 82 62                 n.b
         jsr     MapEventText_Entry_A730         ; ABF0 20 30 A7                  0.
-        jsr     UpperFixedEngine_Entry_C54E     ; ABF3 20 4E C5                  N.
+        jsr     ResetDisplayState               ; ABF3 20 4E C5                  N.
         lda     #$80                            ; ABF6 A9 80                    ..
         sta     $6BDE                           ; ABF8 8D DE 6B                 ..k
         brk                                     ; ABFB 00                       .
@@ -3703,7 +3703,7 @@ MapEventText_Branch_AC90:
         cmp     #$FF                            ; AC94 C9 FF                    ..
         bne     MapEventText_Branch_AC79        ; AC96 D0 E1                    ..
         ldx     #$78                            ; AC98 A2 78                    .x
-        jsr     UpperFixedEngine_Entry_C90C     ; AC9A 20 0C C9                  ..
+        jsr     WaitFrames                      ; AC9A 20 0C C9                  ..
         jsr     MapEventText_Entry_B54C         ; AC9D 20 4C B5                  L.
 MapEventText_Entry_ACA0:
         jsr     FixedTrampoline10               ; ACA0 20 31 C0                  1.
@@ -3761,7 +3761,7 @@ MapEventText_Entry_ACEA:
         brk                                     ; ACF5 00                       .
         db   $3C,$EF                         ; ACF6 3C EF                    <.
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; ACF8 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; ACF8 20 AF C5                  ..
         lda     PPUSTATUS                       ; ACFB AD 02 20                 ..
         lda     #$10                            ; ACFE A9 10                    ..
         sta     PPUADDR                         ; AD00 8D 06 20                 ..
@@ -3819,16 +3819,16 @@ MapEventText_Branch_AD4C:
         lda     $BB                             ; AD4F A5 BB                    ..
         bne     MapEventText_Branch_AD4C        ; AD51 D0 F9                    ..
         ldx     #$3C                            ; AD53 A2 3C                    .<
-        jsr     UpperFixedEngine_Entry_C90C     ; AD55 20 0C C9                  ..
+        jsr     WaitFrames                      ; AD55 20 0C C9                  ..
         brk                                     ; AD58 00                       .
         db   $31,$FB                         ; AD59 31 FB                    1.
 ; ----------------------------------------------------------------------------
         ldx     #$00                            ; AD5B A2 00                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; AD5D 20 0C C9                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; AD60 20 4E C5                  N.
+        jsr     WaitFrames                      ; AD5D 20 0C C9                  ..
+        jsr     ResetDisplayState               ; AD60 20 4E C5                  N.
         jsr     MapEventText_Entry_AF67         ; AD63 20 67 AF                  g.
         ldx     #$78                            ; AD66 A2 78                    .x
-        jsr     UpperFixedEngine_Entry_C90C     ; AD68 20 0C C9                  ..
+        jsr     WaitFrames                      ; AD68 20 0C C9                  ..
 MapEventText_Entry_AD6B:
         jsr     FixedTrampoline12               ; AD6B 20 37 C0                  7.
         jsr     UpperFixedEngine_Entry_FECD     ; AD6E 20 CD FE                  ..
@@ -3865,7 +3865,7 @@ MapEventText_Branch_ADA7:
         bne     MapEventText_Branch_ADB3        ; ADAE D0 03                    ..
         jsr     WaitForNmi                      ; ADB0 20 74 FF                  t.
 MapEventText_Branch_ADB3:
-        jsr     UpperFixedEngine_Entry_C592     ; ADB3 20 92 C5                  ..
+        jsr     EnableRenderingAfterVBlank      ; ADB3 20 92 C5                  ..
         ldx     #$C8                            ; ADB6 A2 C8                    ..
         jsr     MapEventText_Entry_ADF5         ; ADB8 20 F5 AD                  ..
         ldy     $02                             ; ADBB A4 02                    ..
@@ -3886,7 +3886,7 @@ MapEventText_Entry_ADD4:
         jsr     MapEventText_Entry_ADE1         ; ADDB 20 E1 AD                  ..
         jsr     MapEventText_Entry_ADE1         ; ADDE 20 E1 AD                  ..
 MapEventText_Entry_ADE1:
-        jsr     UpperFixedEngine_Entry_C5DE     ; ADE1 20 DE C5                  ..
+        jsr     BuildPaletteUpdateCommand       ; ADE1 20 DE C5                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; ADE4 20 10 FF                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; ADE7 20 10 FF                  ..
         jsr     UpperFixedEngine_Entry_FF10     ; ADEA 20 10 FF                  ..
@@ -3941,7 +3941,7 @@ MapEventText_Entry_AE32:
         brk                                     ; AE5C 00                       .
         db   $2A,$CB,$80                     ; AE5D 2A CB 80                 *..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; AE60 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; AE60 20 AF C5                  ..
         ldx     #$00                            ; AE63 A2 00                    ..
         jsr     MapEventText_Entry_AE7A         ; AE65 20 7A AE                  z.
         ldx     #$01                            ; AE68 A2 01                    ..
@@ -4063,7 +4063,7 @@ Bank1B_RamInitializationData:
 MapEventText_Entry_AFF7:
         jsr     UpperFixedEngine_Entry_D1F3     ; AFF7 20 F3 D1                  ..
         ldx     #$1E                            ; AFFA A2 1E                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; AFFC 20 0C C9                  ..
+        jsr     WaitFrames                      ; AFFC 20 0C C9                  ..
         jsr     InitializeOamShadow             ; AFFF 20 43 C5                  C.
         ldx     #$00                            ; B002 A2 00                    ..
         ldy     #$00                            ; B004 A0 00                    ..
@@ -4151,7 +4151,7 @@ MapEventText_Branch_B062:
 MapEventText_Entry_B09A:
         jsr     MapEventText_Entry_B0DC         ; B09A 20 DC B0                  ..
         jsr     MapEventText_Entry_B32E         ; B09D 20 2E B3                  ..
-        jsr     UpperFixedEngine_Entry_C5DE     ; B0A0 20 DE C5                  ..
+        jsr     BuildPaletteUpdateCommand       ; B0A0 20 DE C5                  ..
         lda     $16                             ; B0A3 A5 16                    ..
         clc                                     ; B0A5 18                       .
         adc     #$10                            ; B0A6 69 10                    i.
@@ -4938,15 +4938,15 @@ MapEventText_Branch_B542:
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_B54C:
         jsr     UpperFixedEngine_Entry_C5C5     ; B54C 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; B54F 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; B54F 20 AF C5                  ..
         ldx     #$01                            ; B552 A2 01                    ..
         jsr     UpperFixedEngine_Entry_F3FB     ; B554 20 FB F3                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; B557 20 4E C5                  N.
+        jsr     ResetDisplayState               ; B557 20 4E C5                  N.
 MapEventText_Entry_B55A:
         jsr     FixedTrampoline11               ; B55A 20 34 C0                  4.
         jsr     MapEventText_Entry_B5FF         ; B55D 20 FF B5                  ..
         ldx     #$64                            ; B560 A2 64                    .d
-        jsr     UpperFixedEngine_Entry_C90C     ; B562 20 0C C9                  ..
+        jsr     WaitFrames                      ; B562 20 0C C9                  ..
         lda     #$21                            ; B565 A9 21                    .!
         sta     $05FD                           ; B567 8D FD 05                 ...
         lda     #$32                            ; B56A A9 32                    .2
@@ -4967,7 +4967,7 @@ MapEventText_Branch_B58A:
         jsr     MapEventText_Entry_B6C6         ; B58A 20 C6 B6                  ..
         inc     $52                             ; B58D E6 52                    .R
         ldx     #$03                            ; B58F A2 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B591 20 0C C9                  ..
+        jsr     WaitFrames                      ; B591 20 0C C9                  ..
         jmp     MapEventText_Branch_B57B        ; B594 4C 7B B5                 L{.
 ; ----------------------------------------------------------------------------
 MapEventText_Entry_B597:
@@ -5054,17 +5054,17 @@ MapEventText_Entry_B626:
         pla                                     ; B62E 68                       h
         pla                                     ; B62F 68                       h
         ldx     #$FF                            ; B630 A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B632 20 0C C9                  ..
+        jsr     WaitFrames                      ; B632 20 0C C9                  ..
         ldx     #$FF                            ; B635 A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B637 20 0C C9                  ..
+        jsr     WaitFrames                      ; B637 20 0C C9                  ..
         ldx     #$FF                            ; B63A A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B63C 20 0C C9                  ..
+        jsr     WaitFrames                      ; B63C 20 0C C9                  ..
         ldx     #$FF                            ; B63F A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B641 20 0C C9                  ..
+        jsr     WaitFrames                      ; B641 20 0C C9                  ..
         ldx     #$FF                            ; B644 A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B646 20 0C C9                  ..
+        jsr     WaitFrames                      ; B646 20 0C C9                  ..
         ldx     #$FF                            ; B649 A2 FF                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B64B 20 0C C9                  ..
+        jsr     WaitFrames                      ; B64B 20 0C C9                  ..
 MapEventText_Branch_B64E:
         rts                                     ; B64E 60                       `
 ; ----------------------------------------------------------------------------

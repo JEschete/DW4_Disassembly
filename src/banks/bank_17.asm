@@ -23,7 +23,7 @@ Bank17_MapSystemServices:
         ora     #$08                            ; 804E 09 08                    ..
         sta     $1F                             ; 8050 85 1F                    ..
         jsr     UpperFixedEngine_Entry_C5C5     ; 8052 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; 8055 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 8055 20 4E C5                  N.
         lda     #$00                            ; 8058 A9 00                    ..
         sta     $0508                           ; 805A 8D 08 05                 ...
         sta     $0509                           ; 805D 8D 09 05                 ...
@@ -39,7 +39,7 @@ Bank17_MapSystemInitialize:
         jsr     MapSystem_Entry_91E7            ; 8072 20 E7 91                  ..
         jsr     MapSystem_Entry_91AF            ; 8075 20 AF 91                  ..
         jsr     MapSystem_Entry_8C04            ; 8078 20 04 8C                  ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 807B 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 807B 20 2D C6                  -.
         jsr     MapSystem_Entry_8C83            ; 807E 20 83 8C                  ..
         jsr     UpperFixedEngine_Entry_C5BF     ; 8081 20 BF C5                  ..
 MapSystem_Branch_8084:
@@ -105,7 +105,7 @@ MapSystem_Branch_80E1:
         pla                                     ; 80F3 68                       h
         jsr     MultiplyPointerWord             ; 80F4 20 27 C8                  '.
         jsr     MapSystem_Entry_8C39            ; 80F7 20 39 8C                  9.
-        jsr     UpperFixedEngine_Entry_C62D     ; 80FA 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 80FA 20 2D C6                  -.
         jsr     MapSystem_Entry_818F            ; 80FD 20 8F 81                  ..
         jsr     MapSystem_Entry_81DD            ; 8100 20 DD 81                  ..
         lda     #$5A                            ; 8103 A9 5A                    .Z
@@ -113,7 +113,7 @@ MapSystem_Branch_80E1:
 MapSystem_Branch_8107:
         jsr     MapSystem_Entry_8237            ; 8107 20 37 82                  7.
         jsr     WaitForNmi                      ; 810A 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C8EC     ; 810D 20 EC C8                  ..
+        jsr     ReadControllers                 ; 810D 20 EC C8                  ..
         lda     ButtonsPressed                  ; 8110 A5 14                    ..
         bne     MapSystem_Branch_8118           ; 8112 D0 04                    ..
         dec     $8A                             ; 8114 C6 8A                    ..
@@ -130,7 +130,7 @@ MapSystem_Branch_8118:
 MapSystem_Branch_812E:
         jsr     MapSystem_Entry_8237            ; 812E 20 37 82                  7.
         jsr     WaitForNmi                      ; 8131 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C8EC     ; 8134 20 EC C8                  ..
+        jsr     ReadControllers                 ; 8134 20 EC C8                  ..
         jsr     MapSystem_Entry_8141            ; 8137 20 41 81                  A.
         lsr     ButtonsPressed                  ; 813A 46 14                    F.
         bcs     MapSystem_Branch_8179           ; 813C B0 3B                    .;
@@ -330,11 +330,11 @@ MapSystem_Branch_825D:
         tay                                     ; 826F A8                       .
 MapSystem_Branch_8270:
         lda     #$00                            ; 8270 A9 00                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 8272 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8272 20 5A C6                  Z.
         inc     $00                             ; 8275 E6 00                    ..
         dey                                     ; 8277 88                       .
         bne     MapSystem_Branch_8270           ; 8278 D0 F6                    ..
-        jmp     UpperFixedEngine_Entry_C62D     ; 827A 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; 827A 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 Bank17_UiLengths:
         db   $13,$13,$13,$13,$13,$0D,$0D,$10 ; 827D 13 13 13 13 13 0D 0D 10  ........
@@ -353,13 +353,13 @@ MapSystem_Branch_8296:
         lda     Bank17_UiStrings,y              ; 8296 B9 EC 82                 ...
         cmp     #$FF                            ; 8299 C9 FF                    ..
         beq     MapSystem_Branch_82A6           ; 829B F0 09                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 829D 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 829D 20 5A C6                  Z.
         iny                                     ; 82A0 C8                       .
         inc     $00                             ; 82A1 E6 00                    ..
         jmp     MapSystem_Branch_8296           ; 82A3 4C 96 82                 L..
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_82A6:
-        jmp     UpperFixedEngine_Entry_C62D     ; 82A6 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; 82A6 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_82A9:
         pha                                     ; 82A9 48                       H
@@ -440,7 +440,7 @@ Bank17_UiPointersAlternate:
 Bank17_UiUpdate:
         jsr     MapSystem_Entry_847C            ; 83CD 20 7C 84                  |.
         jsr     Bank17_UiUpdateAlternate        ; 83D0 20 DA 83                  ..
-        jsr     UpperFixedEngine_Entry_C8CC     ; 83D3 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 83D3 20 CC C8                  ..
         jsr     MapSystem_Entry_848E            ; 83D6 20 8E 84                  ..
         rts                                     ; 83D9 60                       `
 ; ----------------------------------------------------------------------------
@@ -486,12 +486,12 @@ MapSystem_Entry_840E:
         cpx     #$10                            ; 841A E0 10                    ..
         bcc     MapSystem_Branch_8423           ; 841C 90 05                    ..
         lda     $02                             ; 841E A5 02                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 8420 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8420 20 5A C6                  Z.
 MapSystem_Branch_8423:
         inc     $00                             ; 8423 E6 00                    ..
         lda     #$00                            ; 8425 A9 00                    ..
         jsr     MapSystem_Entry_8C56            ; 8427 20 56 8C                  V.
-        jsr     UpperFixedEngine_Entry_C62D     ; 842A 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 842A 20 2D C6                  -.
         lda     $9D                             ; 842D A5 9D                    ..
         cmp     #$17                            ; 842F C9 17                    ..
         bcc     MapSystem_Branch_83E7           ; 8431 90 B4                    ..
@@ -530,17 +530,17 @@ MapSystem_Entry_8455:
         sta     $00                             ; 845D 85 00                    ..
         stx     $01                             ; 845F 86 01                    ..
         pla                                     ; 8461 68                       h
-        jsr     UpperFixedEngine_Entry_C65A     ; 8462 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8462 20 5A C6                  Z.
         inc     $00                             ; 8465 E6 00                    ..
         pla                                     ; 8467 68                       h
-        jsr     UpperFixedEngine_Entry_C65A     ; 8468 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8468 20 5A C6                  Z.
         inc     $00                             ; 846B E6 00                    ..
         lda     $02                             ; 846D A5 02                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 846F 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 846F 20 5A C6                  Z.
         inc     $00                             ; 8472 E6 00                    ..
         lda     #$00                            ; 8474 A9 00                    ..
         jsr     MapSystem_Entry_8C56            ; 8476 20 56 8C                  V.
-        jmp     UpperFixedEngine_Entry_C62D     ; 8479 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; 8479 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_847C:
         lda     $0508                           ; 847C AD 08 05                 ...
@@ -903,13 +903,13 @@ MapSystem_Branch_8652:
 Bank17_MapGameInitialize:
         lda     #$00                            ; 8654 A9 00                    ..
         sta     $82                             ; 8656 85 82                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 8658 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8658 20 91 C8                  ..
         and     #$07                            ; 865B 29 07                    ).
         sta     $83                             ; 865D 85 83                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 865F 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 865F 20 91 C8                  ..
         and     #$07                            ; 8662 29 07                    ).
         sta     $84                             ; 8664 85 84                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 8666 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8666 20 91 C8                  ..
         and     #$07                            ; 8669 29 07                    ).
         sta     $85                             ; 866B 85 85                    ..
 MapSystem_Branch_866D:
@@ -942,7 +942,7 @@ MapSystem_Entry_86A6:
         cmp     #$34                            ; 86A9 C9 34                    .4
         bne     MapSystem_Branch_86BB           ; 86AB D0 0E                    ..
         ldx     #$50                            ; 86AD A2 50                    .P
-        jsr     UpperFixedEngine_Entry_C90C     ; 86AF 20 0C C9                  ..
+        jsr     WaitFrames                      ; 86AF 20 0C C9                  ..
         jsr     MapSystem_Entry_877B            ; 86B2 20 7B 87                  {.
         jsr     MapSystem_Entry_87F1            ; 86B5 20 F1 87                  ..
         jmp     MapSystem_Branch_8827           ; 86B8 4C 27 88                 L'.
@@ -1016,7 +1016,7 @@ MapSystem_Branch_8720:
 MapSystem_Branch_8724:
         txa                                     ; 8724 8A                       .
         pha                                     ; 8725 48                       H
-        jsr     UpperFixedEngine_Entry_C891     ; 8726 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8726 20 91 C8                  ..
         and     #$03                            ; 8729 29 03                    ).
         tay                                     ; 872B A8                       .
         iny                                     ; 872C C8                       .
@@ -1048,7 +1048,7 @@ MapSystem_Branch_873F:
 MapSystem_Branch_8751:
         txa                                     ; 8751 8A                       .
         pha                                     ; 8752 48                       H
-        jsr     UpperFixedEngine_Entry_C891     ; 8753 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 8753 20 91 C8                  ..
         and     #$03                            ; 8756 29 03                    ).
         tay                                     ; 8758 A8                       .
         iny                                     ; 8759 C8                       .
@@ -1215,7 +1215,7 @@ MapSystem_Branch_884A:
         sta     $37                             ; 8854 85 37                    .7
         sta     $38                             ; 8856 85 38                    .8
         jsr     MapSystem_Entry_8C39            ; 8858 20 39 8C                  9.
-        jsr     UpperFixedEngine_Entry_C62D     ; 885B 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 885B 20 2D C6                  -.
         pla                                     ; 885E 68                       h
         pla                                     ; 885F 68                       h
         rts                                     ; 8860 60                       `
@@ -1225,7 +1225,7 @@ MapSystem_Branch_8861:
         rol     $37                             ; 8863 26 37                    &7
         rol     $38                             ; 8865 26 38                    &8
         jsr     MapSystem_Entry_8C39            ; 8867 20 39 8C                  9.
-        jsr     UpperFixedEngine_Entry_C62D     ; 886A 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 886A 20 2D C6                  -.
         jsr     MapSystem_Entry_818F            ; 886D 20 8F 81                  ..
         lda     #$30                            ; 8870 A9 30                    .0
         ldx     $38                             ; 8872 A6 38                    .8
@@ -1318,7 +1318,7 @@ MapSystem_Entry_88EA:
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_88ED:
         ldx     #$2D                            ; 88ED A2 2D                    .-
-        jsr     UpperFixedEngine_Entry_C90C     ; 88EF 20 0C C9                  ..
+        jsr     WaitFrames                      ; 88EF 20 0C C9                  ..
         rts                                     ; 88F2 60                       `
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_88F3:
@@ -1347,7 +1347,7 @@ MapSystem_Entry_890A:
 MapSystem_Branch_8920:
         jsr     MapSystem_Entry_8237            ; 8920 20 37 82                  7.
         jsr     WaitForNmi                      ; 8923 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C8EC     ; 8926 20 EC C8                  ..
+        jsr     ReadControllers                 ; 8926 20 EC C8                  ..
         jsr     MapSystem_Entry_8141            ; 8929 20 41 81                  A.
         lda     ButtonsPressed                  ; 892C A5 14                    ..
         lsr     a                               ; 892E 4A                       J
@@ -1417,7 +1417,7 @@ MapSystem_Entry_8974:
         sta     $38                             ; 8996 85 38                    .8
         jsr     MapSystem_Entry_8C04            ; 8998 20 04 8C                  ..
         jsr     MapSystem_Entry_8C39            ; 899B 20 39 8C                  9.
-        jsr     UpperFixedEngine_Entry_C62D     ; 899E 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 899E 20 2D C6                  -.
         jsr     Bank17_UiService                ; 89A1 20 46 94                  F.
         pla                                     ; 89A4 68                       h
         pla                                     ; 89A5 68                       h
@@ -1469,7 +1469,7 @@ MapSystem_Entry_89F4:
         jsr     MapSystem_Entry_92F6            ; 89F4 20 F6 92                  ..
         jsr     MapSystem_Entry_8A3F            ; 89F7 20 3F 8A                  ?.
 MapSystem_Branch_89FA:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 89FA 20 EC C8                  ..
+        jsr     ReadControllers                 ; 89FA 20 EC C8                  ..
         lda     ButtonsPressed                  ; 89FD A5 14                    ..
         asl     a                               ; 89FF 0A                       .
         bcs     MapSystem_Branch_8A17           ; 8A00 B0 15                    ..
@@ -1552,7 +1552,7 @@ MapSystem_Entry_8A73:
         db   $08,$8F                         ; 8A74 08 8F                    ..
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8A76:
-        jsr     UpperFixedEngine_Entry_C5AF     ; 8A76 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 8A76 20 AF C5                  ..
         brk                                     ; 8A79 00                       .
         db   $1D,$EF                         ; 8A7A 1D EF                    ..
 ; ----------------------------------------------------------------------------
@@ -1642,12 +1642,12 @@ Bank17_CasinoLoop:
         jsr     MapSystem_Entry_8B32            ; 8B06 20 32 8B                  2.
         jsr     MapSystem_Entry_8C04            ; 8B09 20 04 8C                  ..
         jsr     MapSystem_Entry_8C24            ; 8B0C 20 24 8C                  $.
-        jsr     UpperFixedEngine_Entry_C62D     ; 8B0F 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 8B0F 20 2D C6                  -.
         jmp     Bank17_CasinoLoop               ; 8B12 4C FD 8A                 L..
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8B15:
         inc     $9E                             ; 8B15 E6 9E                    ..
-        jsr     UpperFixedEngine_Entry_C8EC     ; 8B17 20 EC C8                  ..
+        jsr     ReadControllers                 ; 8B17 20 EC C8                  ..
         lda     ButtonsPressed                  ; 8B1A A5 14                    ..
         cmp     $9D                             ; 8B1C C5 9D                    ..
         bne     MapSystem_Branch_8B2B           ; 8B1E D0 0B                    ..
@@ -1746,7 +1746,7 @@ MapSystem_Entry_8BA0:
 MapSystem_Entry_8BA9:
         jsr     MapSystem_Entry_8C04            ; 8BA9 20 04 8C                  ..
         jsr     MapSystem_Entry_8C39            ; 8BAC 20 39 8C                  9.
-        jsr     UpperFixedEngine_Entry_C62D     ; 8BAF 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 8BAF 20 2D C6                  -.
         lda     $36                             ; 8BB2 A5 36                    .6
         sta     $04F4                           ; 8BB4 8D F4 04                 ...
         lda     $62C6                           ; 8BB7 AD C6 62                 ..b
@@ -1810,7 +1810,7 @@ MapSystem_Entry_8C04:
 MapSystem_Branch_8C13:
         tax                                     ; 8C13 AA                       .
         lda     $02,x                           ; 8C14 B5 02                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 8C16 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8C16 20 5A C6                  Z.
         inc     $00                             ; 8C19 E6 00                    ..
         inc     $0F                             ; 8C1B E6 0F                    ..
         lda     $0F                             ; 8C1D A5 0F                    ..
@@ -1848,7 +1848,7 @@ MapSystem_Entry_8C45:
         stx     $00                             ; 8C49 86 00                    ..
         sty     $01                             ; 8C4B 84 01                    ..
         lda     $02                             ; 8C4D A5 02                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 8C4F 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8C4F 20 5A C6                  Z.
         inc     $00                             ; 8C52 E6 00                    ..
         lda     #$00                            ; 8C54 A9 00                    ..
 MapSystem_Entry_8C56:
@@ -1856,7 +1856,7 @@ MapSystem_Entry_8C56:
 MapSystem_Branch_8C58:
         tax                                     ; 8C58 AA                       .
         lda     $03,x                           ; 8C59 B5 03                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; 8C5B 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8C5B 20 5A C6                  Z.
         inc     $00                             ; 8C5E E6 00                    ..
         inc     $0F                             ; 8C60 E6 0F                    ..
         lda     $0F                             ; 8C62 A5 0F                    ..
@@ -1974,7 +1974,7 @@ MapSystem_Branch_8D13:
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8D1A:
         ldx     #$0A                            ; 8D1A A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 8D1C 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8D1C 20 0C C9                  ..
 MapSystem_Entry_8D1F:
         jsr     MapSystem_Entry_8D43            ; 8D1F 20 43 8D                  C.
         jsr     MapSystem_Entry_8F5A            ; 8D22 20 5A 8F                  Z.
@@ -2092,7 +2092,7 @@ MapSystem_Entry_8DBE:
         rts                                     ; 8DC3 60                       `
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8DC4:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 8DC4 20 EC C8                  ..
+        jsr     ReadControllers                 ; 8DC4 20 EC C8                  ..
         ldy     ButtonsPressed                  ; 8DC7 A4 14                    ..
         beq     MapSystem_Branch_8DD8           ; 8DC9 F0 0D                    ..
         ldy     $35                             ; 8DCB A4 35                    .5
@@ -2217,21 +2217,21 @@ MapSystem_Branch_8E7B:
         lda     #$12                            ; 8E80 A9 12                    ..
         sta     $01                             ; 8E82 85 01                    ..
         lda     $2A                             ; 8E84 A5 2A                    .*
-        jsr     UpperFixedEngine_Entry_C65A     ; 8E86 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8E86 20 5A C6                  Z.
         inc     $00                             ; 8E89 E6 00                    ..
         lda     $2B                             ; 8E8B A5 2B                    .+
-        jsr     UpperFixedEngine_Entry_C65A     ; 8E8D 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8E8D 20 5A C6                  Z.
         inc     $00                             ; 8E90 E6 00                    ..
         lda     $2C                             ; 8E92 A5 2C                    .,
-        jsr     UpperFixedEngine_Entry_C65A     ; 8E94 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8E94 20 5A C6                  Z.
         inc     $00                             ; 8E97 E6 00                    ..
         lda     $2D                             ; 8E99 A5 2D                    .-
-        jsr     UpperFixedEngine_Entry_C65A     ; 8E9B 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 8E9B 20 5A C6                  Z.
         brk                                     ; 8E9E 00                       .
         db   $B6,$FB                         ; 8E9F B6 FB                    ..
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8EA1:
-        jmp     UpperFixedEngine_Entry_C626     ; 8EA1 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; 8EA1 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 Bank17_DisplayPositions:
         db   $03,$09,$0F,$15,$1B             ; 8EA4 03 09 0F 15 1B           .....
@@ -2309,7 +2309,7 @@ MapSystem_Branch_8F18:
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_8F1E:
         ldx     #$0A                            ; 8F1E A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 8F20 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8F20 20 0C C9                  ..
         tya                                     ; 8F23 98                       .
         pha                                     ; 8F24 48                       H
         jsr     MapSystem_Entry_8D43            ; 8F25 20 43 8D                  C.
@@ -2657,7 +2657,7 @@ MapSystem_Branch_9201:
         inx                                     ; 9208 E8                       .
         cpx     #$09                            ; 9209 E0 09                    ..
         bne     MapSystem_Branch_9201           ; 920B D0 F4                    ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; 920D 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 920D 20 AF C5                  ..
         lda     PPUSTATUS                       ; 9210 AD 02 20                 ..
         ldx     #$00                            ; 9213 A2 00                    ..
         ldy     #$00                            ; 9215 A0 00                    ..
@@ -2711,7 +2711,7 @@ MapSystem_Branch_9268:
         inx                                     ; 926F E8                       .
         cpx     #$09                            ; 9270 E0 09                    ..
         bne     MapSystem_Branch_9268           ; 9272 D0 F4                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 9274 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 9274 20 2D C6                  -.
         rts                                     ; 9277 60                       `
 ; ----------------------------------------------------------------------------
 Bank17_UiLayoutData:
@@ -2836,7 +2836,7 @@ MapSystem_Entry_9371:
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_9372:
         jsr     WaitForNmi                      ; 9372 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C5AF     ; 9375 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 9375 20 AF C5                  ..
         ldx     #$00                            ; 9378 A2 00                    ..
         jsr     MapSystem_Entry_93AA            ; 937A 20 AA 93                  ..
         ldx     #$05                            ; 937D A2 05                    ..
@@ -2945,7 +2945,7 @@ Bank17_PpuUploadDescriptors:
 ; ----------------------------------------------------------------------------
 Bank17_UiService:
         ldx     #$0A                            ; 9446 A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9448 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9448 20 0C C9                  ..
         jsr     UpperFixedEngine_Entry_F0C7     ; 944B 20 C7 F0                  ..
         brk                                     ; 944E 00                       .
         db   $09,$9F                         ; 944F 09 9F                    ..
@@ -3210,9 +3210,9 @@ MapSystem_Entry_9BFA:
 ; ----------------------------------------------------------------------------
 Bank17_MapUiEntry:
         jsr     MapSystem_Entry_9C7E            ; 9C07 20 7E 9C                  ~.
-        jsr     UpperFixedEngine_Entry_C54E     ; 9C0A 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 9C0A 20 4E C5                  N.
         jsr     MapSystem_Entry_A875            ; 9C0D 20 75 A8                  u.
-        jsr     UpperFixedEngine_Entry_C5AF     ; 9C10 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 9C10 20 AF C5                  ..
         jsr     MapSystem_Entry_A7FE            ; 9C13 20 FE A7                  ..
         jsr     MapSystem_Entry_A599            ; 9C16 20 99 A5                  ..
         jsr     MapSystem_Entry_A57A            ; 9C19 20 7A A5                  z.
@@ -3220,7 +3220,7 @@ Bank17_MapUiEntry:
         jsr     UpperFixedEngine_Entry_C58F     ; 9C1F 20 8F C5                  ..
         jsr     MapSystem_Entry_9C35            ; 9C22 20 35 9C                  5.
         jsr     UpperFixedEngine_Entry_C5C5     ; 9C25 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C596     ; 9C28 20 96 C5                  ..
+        jsr     DisableRenderingAfterVBlank     ; 9C28 20 96 C5                  ..
         brk                                     ; 9C2B 00                       .
         db   $15,$EF                         ; 9C2C 15 EF                    ..
 ; ----------------------------------------------------------------------------
@@ -3256,7 +3256,7 @@ MapSystem_Branch_9C62:
         inx                                     ; 9C66 E8                       .
         cpx     #$10                            ; 9C67 E0 10                    ..
         bcc     MapSystem_Branch_9C62           ; 9C69 90 F7                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 9C6B 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9C6B 20 91 C8                  ..
         and     #$0F                            ; 9C6E 29 0F                    ).
         sta     $29                             ; 9C70 85 29                    .)
         sta     $2A                             ; 9C72 85 2A                    .*
@@ -3284,11 +3284,11 @@ MapSystem_Entry_9C94:
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_9C9A:
         ldx     #$05                            ; 9C9A A2 05                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9C9C 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9C9C 20 0C C9                  ..
         lda     $C000                           ; 9C9F AD 00 C0                 ...
         beq     MapSystem_Branch_9CAB           ; 9CA2 F0 07                    ..
 MapSystem_Branch_9CA4:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 9CA4 20 EC C8                  ..
+        jsr     ReadControllers                 ; 9CA4 20 EC C8                  ..
         lda     ButtonsPressed                  ; 9CA7 A5 14                    ..
         bne     MapSystem_Branch_9CA4           ; 9CA9 D0 F9                    ..
 MapSystem_Branch_9CAB:
@@ -3330,14 +3330,14 @@ MapSystem_Entry_9CD8:
         ldy     $5A                             ; 9CE0 A4 5A                    .Z
         lda     Bank17_MapUiPointers,y          ; 9CE2 B9 FB 9C                 ...
         sta     $1E                             ; 9CE5 85 1E                    ..
-        jsr     UpperFixedEngine_Entry_C636     ; 9CE7 20 36 C6                  6.
+        jsr     QueuePpuWriteByte               ; 9CE7 20 36 C6                  6.
         lda     #$50                            ; 9CEA A9 50                    .P
         sta     $1D                             ; 9CEC 85 1D                    ..
         ldy     $5A                             ; 9CEE A4 5A                    .Z
         lda     $9CFC,y                         ; 9CF0 B9 FC 9C                 ...
         sta     $1E                             ; 9CF3 85 1E                    ..
-        jsr     UpperFixedEngine_Entry_C636     ; 9CF5 20 36 C6                  6.
-        jmp     UpperFixedEngine_Entry_C626     ; 9CF8 4C 26 C6                 L&.
+        jsr     QueuePpuWriteByte               ; 9CF5 20 36 C6                  6.
+        jmp     RequestPpuUpdate                ; 9CF8 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 Bank17_MapUiPointers:
         db   $81                             ; 9CFB 81                       .
@@ -3435,11 +3435,11 @@ MapSystem_Entry_9D70:
 MapSystem_Branch_9D77:
         lda     $A791,y                         ; 9D77 B9 91 A7                 ...
         sta     $1E                             ; 9D7A 85 1E                    ..
-        jsr     UpperFixedEngine_Entry_C636     ; 9D7C 20 36 C6                  6.
+        jsr     QueuePpuWriteByte               ; 9D7C 20 36 C6                  6.
         iny                                     ; 9D7F C8                       .
         dec     $82                             ; 9D80 C6 82                    ..
         bne     MapSystem_Branch_9D77           ; 9D82 D0 F3                    ..
-        jmp     UpperFixedEngine_Entry_C626     ; 9D84 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; 9D84 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_9D87:
         ldy     $81                             ; 9D87 A4 81                    ..
@@ -3451,10 +3451,10 @@ MapSystem_Branch_9D8C:
         sta     $1E                             ; 9D91 85 1E                    ..
         ldy     #$06                            ; 9D93 A0 06                    ..
 MapSystem_Branch_9D95:
-        jsr     UpperFixedEngine_Entry_C636     ; 9D95 20 36 C6                  6.
+        jsr     QueuePpuWriteByte               ; 9D95 20 36 C6                  6.
         dey                                     ; 9D98 88                       .
         bne     MapSystem_Branch_9D95           ; 9D99 D0 FA                    ..
-        jmp     UpperFixedEngine_Entry_C626     ; 9D9B 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; 9D9B 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_9D9E:
         ldy     $81                             ; 9D9E A4 81                    ..
@@ -3669,7 +3669,7 @@ MapSystem_Entry_9F03:
         lda     #$00                            ; 9F03 A9 00                    ..
         sta     $36                             ; 9F05 85 36                    .6
 MapSystem_Branch_9F07:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 9F07 20 EC C8                  ..
+        jsr     ReadControllers                 ; 9F07 20 EC C8                  ..
         lda     ButtonsPressed                  ; 9F0A A5 14                    ..
         lda     ButtonsPressed                  ; 9F0C A5 14                    ..
         and     #$10                            ; 9F0E 29 10                    ).
@@ -3677,7 +3677,7 @@ MapSystem_Branch_9F07:
         bne     MapSystem_Branch_9F30           ; 9F12 D0 1C                    ..
 MapSystem_Branch_9F14:
         ldx     #$05                            ; 9F14 A2 05                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 9F16 20 0C C9                  ..
+        jsr     WaitFrames                      ; 9F16 20 0C C9                  ..
         lda     SaveCasinoCoins                 ; 9F19 AD AD 62                 ..b
         ora     $62AE                           ; 9F1C 0D AE 62                 ..b
         ora     $62AF                           ; 9F1F 0D AF 62                 ..b
@@ -3876,7 +3876,7 @@ Bank17_MapOamXPositions:
         db   $58,$60,$68,$70,$78,$80         ; A04A 58 60 68 70 78 80        X`hpx.
 ; ----------------------------------------------------------------------------
 MapSystem_Entry_A050:
-        jsr     UpperFixedEngine_Entry_C8EC     ; A050 20 EC C8                  ..
+        jsr     ReadControllers                 ; A050 20 EC C8                  ..
         lda     ButtonsPressed                  ; A053 A5 14                    ..
         and     #$01                            ; A055 29 01                    ).
         bne     MapSystem_Entry_A050            ; A057 D0 F7                    ..
@@ -3913,7 +3913,7 @@ MapSystem_Branch_A094:
         lda     $C000                           ; A094 AD 00 C0                 ...
         bne     MapSystem_Branch_A067           ; A097 D0 CE                    ..
 MapSystem_Entry_A099:
-        jsr     UpperFixedEngine_Entry_C8EC     ; A099 20 EC C8                  ..
+        jsr     ReadControllers                 ; A099 20 EC C8                  ..
         lda     ButtonsPressed                  ; A09C A5 14                    ..
         eor     $03                             ; A09E 45 03                    E.
         and     #$01                            ; A0A0 29 01                    ).
@@ -4054,12 +4054,12 @@ MapSystem_Branch_A180:
         beq     MapSystem_Branch_A1A8           ; A180 F0 26                    .&
         cmp     #$02                            ; A182 C9 02                    ..
         beq     MapSystem_Branch_A18E           ; A184 F0 08                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; A186 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A186 20 91 C8                  ..
         lsr     a                               ; A189 4A                       J
         bcs     MapSystem_Branch_A1A8           ; A18A B0 1C                    ..
         bcc     MapSystem_Entry_A15B            ; A18C 90 CD                    ..
 MapSystem_Branch_A18E:
-        jsr     UpperFixedEngine_Entry_C891     ; A18E 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A18E 20 91 C8                  ..
         and     #$03                            ; A191 29 03                    ).
         sta     $5D,x                           ; A193 95 5D                    .]
         lsr     a                               ; A195 4A                       J
@@ -4114,7 +4114,7 @@ MapSystem_Branch_A1DE:
         beq     MapSystem_Branch_A1EC           ; A1DE F0 0C                    ..
         cmp     #$02                            ; A1E0 C9 02                    ..
         beq     MapSystem_Branch_A1F1           ; A1E2 F0 0D                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; A1E4 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A1E4 20 91 C8                  ..
         and     #$3F                            ; A1E7 29 3F                    )?
         sta     $32,x                           ; A1E9 95 32                    .2
         rts                                     ; A1EB 60                       `
@@ -4125,12 +4125,12 @@ MapSystem_Branch_A1EC:
         rts                                     ; A1F0 60                       `
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_A1F1:
-        jsr     UpperFixedEngine_Entry_C891     ; A1F1 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A1F1 20 91 C8                  ..
         sta     $32,x                           ; A1F4 95 32                    .2
         rts                                     ; A1F6 60                       `
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_A1F7:
-        jsr     UpperFixedEngine_Entry_C891     ; A1F7 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A1F7 20 91 C8                  ..
         and     #$3F                            ; A1FA 29 3F                    )?
         sta     $32,x                           ; A1FC 95 32                    .2
         rts                                     ; A1FE 60                       `

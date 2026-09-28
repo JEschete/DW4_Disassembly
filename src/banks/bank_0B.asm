@@ -1534,7 +1534,7 @@ Bank0B_UnderworldRowPointers:
         db   $81,$AE,$02,$02,$83,$AE,$02,$02 ; AF51 81 AE 02 02 83 AE 02 02  ........
         db   $85,$AE,$02,$02,$87,$AE,$02,$02 ; AF59 85 AE 02 02 87 AE 02 02  ........
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_AF61:
+DecodeIndexedNameToTextScratch:
         stx     $03DA                           ; AF61 8E DA 03                 ...
         tax                                     ; AF64 AA                       .
         lda     #$00                            ; AF65 A9 00                    ..
@@ -1571,7 +1571,7 @@ CompressedMapData_Branch_AF96:
 CompressedMapData_Branch_AFA1:
         dex                                     ; AFA1 CA                       .
         bne     CompressedMapData_Branch_AF96   ; AFA2 D0 F2                    ..
-        jsr     CompressedMapData_Entry_AFB1    ; AFA4 20 B1 AF                  ..
+        jsr     DecodeNameRecord                ; AFA4 20 B1 AF                  ..
 CompressedMapData_Branch_AFA7:
         ldx     $03FF                           ; AFA7 AE FF 03                 ...
         lda     #$40                            ; AFAA A9 40                    .@
@@ -1579,7 +1579,7 @@ CompressedMapData_Branch_AFA7:
         pla                                     ; AFAF 68                       h
         rts                                     ; AFB0 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_AFB1:
+DecodeNameRecord:
         ldy     #$00                            ; AFB1 A0 00                    ..
         lda     ($00),y                         ; AFB3 B1 00                    ..
         sta     $03DA                           ; AFB5 8D DA 03                 ...
@@ -1596,7 +1596,7 @@ CompressedMapData_Branch_AFB9:
         asl     a                               ; AFC8 0A                       .
         tax                                     ; AFC9 AA                       .
         lda     $BC63,x                         ; AFCA BD 63 BC                 .c.
-        jsr     CompressedMapData_Entry_AFED    ; AFCD 20 ED AF                  ..
+        jsr     AppendDecodedNameSymbol         ; AFCD 20 ED AF                  ..
         lda     $BC64,x                         ; AFD0 BD 64 BC                 .d.
         jmp     CompressedMapData_Branch_AFE1   ; AFD3 4C E1 AF                 L..
 ; ----------------------------------------------------------------------------
@@ -1604,10 +1604,10 @@ CompressedMapData_Branch_AFD6:
         asl     a                               ; AFD6 0A                       .
         tax                                     ; AFD7 AA                       .
         lda     $BD63,x                         ; AFD8 BD 63 BD                 .c.
-        jsr     CompressedMapData_Entry_AFED    ; AFDB 20 ED AF                  ..
+        jsr     AppendDecodedNameSymbol         ; AFDB 20 ED AF                  ..
         lda     $BD64,x                         ; AFDE BD 64 BD                 .d.
 CompressedMapData_Branch_AFE1:
-        jsr     CompressedMapData_Entry_AFED    ; AFE1 20 ED AF                  ..
+        jsr     AppendDecodedNameSymbol         ; AFE1 20 ED AF                  ..
         pla                                     ; AFE4 68                       h
         tay                                     ; AFE5 A8                       .
         iny                                     ; AFE6 C8                       .
@@ -1615,7 +1615,7 @@ CompressedMapData_Branch_AFE1:
         bne     CompressedMapData_Branch_AFB9   ; AFEA D0 CD                    ..
         rts                                     ; AFEC 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_AFED:
+AppendDecodedNameSymbol:
         tay                                     ; AFED A8                       .
         txa                                     ; AFEE 8A                       .
         pha                                     ; AFEF 48                       H
@@ -2114,13 +2114,13 @@ CompressedMapData_Branch_B028:
         db   $0E,$0D,$01,$0F,$11,$11,$13,$12 ; BE14 0E 0D 01 0F 11 11 13 12  ........
         db   $02,$14,$00                     ; BE1C 02 14 00                 ...
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BE1F:
+RunOamRectangleAnimation:
         ldy     #$05                            ; BE1F A0 05                    ..
-        jsr     CompressedMapData_Entry_BEE8    ; BE21 20 E8 BE                  ..
-        jsr     CompressedMapData_Entry_BF36    ; BE24 20 36 BF                  6.
+        jsr     LoadAnimationRectangleRecord    ; BE21 20 E8 BE                  ..
+        jsr     FillOamRectangle                ; BE24 20 36 BF                  6.
         ldy     #$0B                            ; BE27 A0 0B                    ..
-        jsr     CompressedMapData_Entry_BEE8    ; BE29 20 E8 BE                  ..
-        jsr     CompressedMapData_Entry_BF36    ; BE2C 20 36 BF                  6.
+        jsr     LoadAnimationRectangleRecord    ; BE29 20 E8 BE                  ..
+        jsr     FillOamRectangle                ; BE2C 20 36 BF                  6.
         lda     #$0F                            ; BE2F A9 0F                    ..
         sta     $02                             ; BE31 85 02                    ..
 CompressedMapData_Branch_BE33:
@@ -2153,22 +2153,22 @@ CompressedMapData_Branch_BE33:
 CompressedMapData_Branch_BE64:
         ldx     #$00                            ; BE64 A2 00                    ..
         inc     $06                             ; BE66 E6 06                    ..
-        jsr     CompressedMapData_Entry_BECE    ; BE68 20 CE BE                  ..
+        jsr     StepAnimationAxisTowardTarget   ; BE68 20 CE BE                  ..
         inx                                     ; BE6B E8                       .
-        jsr     CompressedMapData_Entry_BECE    ; BE6C 20 CE BE                  ..
+        jsr     StepAnimationAxisTowardTarget   ; BE6C 20 CE BE                  ..
         lda     $03                             ; BE6F A5 03                    ..
         beq     CompressedMapData_Branch_BE64   ; BE71 F0 F1                    ..
         sty     $03                             ; BE73 84 03                    ..
 CompressedMapData_Branch_BE75:
         ldy     $03                             ; BE75 A4 03                    ..
         ldx     #$00                            ; BE77 A2 00                    ..
-        jsr     CompressedMapData_Entry_BEE0    ; BE79 20 E0 BE                  ..
+        jsr     StepAnimationAxis               ; BE79 20 E0 BE                  ..
         sta     $0203,y                         ; BE7C 99 03 02                 ...
         inx                                     ; BE7F E8                       .
-        jsr     CompressedMapData_Entry_BEE0    ; BE80 20 E0 BE                  ..
+        jsr     StepAnimationAxis               ; BE80 20 E0 BE                  ..
         sta     $0200,y                         ; BE83 99 00 02                 ...
-        jsr     LowerFixedEngine_Entry_FF74     ; BE86 20 74 FF                  t.
-        jsr     LowerFixedEngine_Entry_C8EC     ; BE89 20 EC C8                  ..
+        jsr     LowerFixed_WaitForNmi           ; BE86 20 74 FF                  t.
+        jsr     LowerFixed_ReadControllers      ; BE89 20 EC C8                  ..
         lda     ButtonsPressed                  ; BE8C A5 14                    ..
         bne     CompressedMapData_Branch_BECC   ; BE8E D0 3C                    .<
         dec     $06                             ; BE90 C6 06                    ..
@@ -2179,7 +2179,7 @@ CompressedMapData_Branch_BE75:
         sta     $00                             ; BE9A 85 00                    ..
 CompressedMapData_Branch_BE9C:
         ldy     #$11                            ; BE9C A0 11                    ..
-        jsr     CompressedMapData_Entry_BEE8    ; BE9E 20 E8 BE                  ..
+        jsr     LoadAnimationRectangleRecord    ; BE9E 20 E8 BE                  ..
         ldx     $00                             ; BEA1 A6 00                    ..
         lda     $BF06,x                         ; BEA3 BD 06 BF                 ...
         clc                                     ; BEA6 18                       .
@@ -2192,10 +2192,10 @@ CompressedMapData_Branch_BE9C:
         lda     #$44                            ; BEB3 A9 44                    .D
 CompressedMapData_Branch_BEB5:
         sta     $0B                             ; BEB5 85 0B                    ..
-        jsr     CompressedMapData_Entry_BF36    ; BEB7 20 36 BF                  6.
+        jsr     FillOamRectangle                ; BEB7 20 36 BF                  6.
         ldx     #$03                            ; BEBA A2 03                    ..
-        jsr     LowerFixedEngine_Entry_C90C     ; BEBC 20 0C C9                  ..
-        jsr     LowerFixedEngine_Entry_C8EC     ; BEBF 20 EC C8                  ..
+        jsr     LowerFixed_WaitFrames           ; BEBC 20 0C C9                  ..
+        jsr     LowerFixed_ReadControllers      ; BEBF 20 EC C8                  ..
         lda     ButtonsPressed                  ; BEC2 A5 14                    ..
         bne     CompressedMapData_Branch_BECC   ; BEC4 D0 06                    ..
         dec     $00                             ; BEC6 C6 00                    ..
@@ -2207,7 +2207,7 @@ CompressedMapData_Branch_BECC:
         sec                                     ; BECC 38                       8
         rts                                     ; BECD 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BECE:
+StepAnimationAxisTowardTarget:
         lda     $04,x                           ; BECE B5 04                    ..
         sec                                     ; BED0 38                       8
         sbc     $00,x                           ; BED1 F5 00                    ..
@@ -2221,14 +2221,14 @@ CompressedMapData_Branch_BEDD:
 CompressedMapData_Branch_BEDF:
         rts                                     ; BEDF 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BEE0:
+StepAnimationAxis:
         lda     $04,x                           ; BEE0 B5 04                    ..
         clc                                     ; BEE2 18                       .
         adc     $00,x                           ; BEE3 75 00                    u.
         sta     $04,x                           ; BEE5 95 04                    ..
         rts                                     ; BEE7 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BEE8:
+LoadAnimationRectangleRecord:
         ldx     #$05                            ; BEE8 A2 05                    ..
 CompressedMapData_Branch_BEEA:
         lda     $BEF4,y                         ; BEEA B9 F4 BE                 ...
@@ -2249,7 +2249,7 @@ CompressedMapData_Branch_BEEA:
         db   $30,$75,$04,$0C,$59,$46,$14,$68 ; BF26 30 75 04 0C 59 46 14 68  0u..YF.h
         db   $24,$52,$1A,$4C,$7D,$29,$66,$3B ; BF2E 24 52 1A 4C 7D 29 66 3B  $R.L})f;
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BF36:
+FillOamRectangle:
         ldy     $0A                             ; BF36 A4 0A                    ..
         lda     $0B                             ; BF38 A5 0B                    ..
         and     #$0F                            ; BF3A 29 0F                    ).
@@ -2294,7 +2294,7 @@ CompressedMapData_Branch_BF65:
         bne     CompressedMapData_Branch_BF4A   ; BF79 D0 CF                    ..
         rts                                     ; BF7B 60                       `
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BF7C:
+EnterFixedSubmapAfterSelection:
         lda     $0558                           ; BF7C AD 58 05                 .X.
         sta     $62A6                           ; BF7F 8D A6 62                 ..b
         lda     $0559                           ; BF82 AD 59 05                 .Y.
@@ -2319,7 +2319,7 @@ CompressedMapData_Entry_BF7C:
 ; ----------------------------------------------------------------------------
         jmp     LowerFixedEngine_Branch_C5BF    ; BFA3 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-CompressedMapData_Entry_BFA6:
+HandleSpecialTextSymbol:
         lda     $FA                             ; BFA6 A5 FA                    ..
         ldx     #$17                            ; BFA8 A2 17                    ..
 CompressedMapData_Branch_BFAA:

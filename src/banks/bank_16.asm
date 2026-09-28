@@ -15,7 +15,7 @@ Bank16_TextUiDirectory:
 ; ----------------------------------------------------------------------------
 Bank16_TextUiServices:
         jsr     TextUiSystem_Entry_872B         ; 8028 20 2B 87                  +.
-        jsr     TextUiSystem_Entry_85C8         ; 802B 20 C8 85                  ..
+        jsr     InitializeDialogueTextLayout    ; 802B 20 C8 85                  ..
         jsr     TextUiSystem_Entry_85F9         ; 802E 20 F9 85                  ..
         jsr     TextUiSystem_Entry_8036         ; 8031 20 36 80                  6.
         sec                                     ; 8034 38                       8
@@ -29,7 +29,7 @@ TextUiSystem_Entry_8036:
 TextUiSystem_Entry_803F:
         lda     $5C                             ; 803F A5 5C                    .\
         bne     TextUiSystem_Branch_8091        ; 8041 D0 4E                    .N
-        jsr     TextUiSystem_Entry_8678         ; 8043 20 78 86                  x.
+        jsr     AdvanceDecodedTextLookahead     ; 8043 20 78 86                  x.
         lda     $55                             ; 8046 A5 55                    .U
         beq     TextUiSystem_Branch_8089        ; 8048 F0 3F                    .?
         ldx     #$06                            ; 804A A2 06                    ..
@@ -98,7 +98,7 @@ TextUiSystem_Branch_80B5:
         jsr     TextUiSystem_Entry_868F         ; 80B6 20 8F 86                  ..
         jsr     TextUiSystem_Entry_80EA         ; 80B9 20 EA 80                  ..
         pla                                     ; 80BC 68                       h
-        jsr     TextUiSystem_Entry_836B         ; 80BD 20 6B 83                  k.
+        jsr     AppendDialogueCharacter         ; 80BD 20 6B 83                  k.
         jsr     TextUiSystem_Entry_8373         ; 80C0 20 73 83                  s.
         rts                                     ; 80C3 60                       `
 ; ----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ TextUiSystem_Entry_810C:
         stx     TextOutputX                     ; 8114 8E 51 05                 .Q.
         inx                                     ; 8117 E8                       .
         stx     $55                             ; 8118 86 55                    .U
-        jsr     TextUiSystem_Entry_85E7         ; 811A 20 E7 85                  ..
+        jsr     ComputeDialogueTextBufferOffset ; 811A 20 E7 85                  ..
         lda     #$69                            ; 811D A9 69                    .i
         sta     $57                             ; 811F 85 57                    .W
         jmp     TextUiSystem_Branch_80B5        ; 8121 4C B5 80                 L..
@@ -154,17 +154,17 @@ TextUiSystem_Entry_812A:
         bpl     TextUiSystem_Branch_8137        ; 812D 10 08                    ..
         lda     $050B                           ; 812F AD 0B 05                 ...
         beq     TextUiSystem_Branch_8137        ; 8132 F0 03                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 8134 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 8134 20 2D C6                  -.
 TextUiSystem_Branch_8137:
         rts                                     ; 8137 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8138:
         jsr     TextUiSystem_Entry_812A         ; 8138 20 2A 81                  *.
         ldx     #$1E                            ; 813B A2 1E                    ..
-        jmp     UpperFixedEngine_Entry_C90C     ; 813D 4C 0C C9                 L..
+        jmp     WaitFrames                      ; 813D 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8140:
-        jsr     TextUiSystem_Entry_83CD         ; 8140 20 CD 83                  ..
+        jsr     ResetTextCursorColumn           ; 8140 20 CD 83                  ..
         jmp     TextUiSystem_Entry_81CC         ; 8143 4C CC 81                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8146:
@@ -197,7 +197,7 @@ TextUiSystem_Entry_8167:
 TextUiSystem_Entry_816D:
         lda     #$00                            ; 816D A9 00                    ..
         sta     TextOutputX                     ; 816F 8D 51 05                 .Q.
-        jsr     TextUiSystem_Entry_85E7         ; 8172 20 E7 85                  ..
+        jsr     ComputeDialogueTextBufferOffset ; 8172 20 E7 85                  ..
         jsr     TextUiSystem_Entry_81CC         ; 8175 20 CC 81                  ..
         bcs     TextUiSystem_Branch_817E        ; 8178 B0 04                    ..
         lda     #$00                            ; 817A A9 00                    ..
@@ -205,7 +205,7 @@ TextUiSystem_Entry_816D:
 TextUiSystem_Branch_817E:
         lda     #$13                            ; 817E A9 13                    ..
         sta     $56                             ; 8180 85 56                    .V
-        jsr     TextUiSystem_Entry_8393         ; 8182 20 93 83                  ..
+        jsr     ComputeTextOutputPosition       ; 8182 20 93 83                  ..
         lda     $00                           ; 8185 A5 00                    ..
         clc                                     ; 8187 18                       .
         adc     #$0B                            ; 8188 69 0B                    i.
@@ -224,8 +224,8 @@ TextUiSystem_Entry_8199:
         ldx     #$00                            ; 819F A2 00                    ..
 TextUiSystem_Entry_81A1:
         txa                                     ; 81A1 8A                       .
-        jsr     UpperFixedEngine_Entry_C65A     ; 81A2 20 5A C6                  Z.
-        jsr     UpperFixedEngine_Entry_C62D     ; 81A5 20 2D C6                  -.
+        jsr     QueueNametableTileUpdate        ; 81A2 20 5A C6                  Z.
+        jsr     RequestPpuUpdateAndWait         ; 81A5 20 2D C6                  -.
         lda     $59                             ; 81A8 A5 59                    .Y
         clc                                     ; 81AA 18                       .
         adc     #$08                            ; 81AB 69 08                    i.
@@ -233,7 +233,7 @@ TextUiSystem_Entry_81A1:
         rts                                     ; 81AF 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_81B0:
-        jsr     UpperFixedEngine_Entry_C8EC     ; 81B0 20 EC C8                  ..
+        jsr     ReadControllers                 ; 81B0 20 EC C8                  ..
         lda     ButtonsPressed                  ; 81B3 A5 14                    ..
         and     #$03                            ; 81B5 29 03                    ).
         beq     TextUiSystem_Branch_81C6        ; 81B7 F0 0D                    ..
@@ -242,7 +242,7 @@ TextUiSystem_Entry_81B0:
         brk                                     ; 81BE 00                       .
         db   $85,$FB                         ; 81BF 85 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     TextUiSystem_Entry_83D2         ; 81C1 20 D2 83                  ..
+        jsr     AdvanceTextCursorRow            ; 81C1 20 D2 83                  ..
         pla                                     ; 81C4 68                       h
         pla                                     ; 81C5 68                       h
 TextUiSystem_Branch_81C6:
@@ -270,7 +270,7 @@ TextUiSystem_Branch_81DB:
         sta     TextOutputX                     ; 81DE 8D 51 05                 .Q.
         lda     #$01                            ; 81E1 A9 01                    ..
         sta     $55                             ; 81E3 85 55                    .U
-        jsr     TextUiSystem_Entry_85E7         ; 81E5 20 E7 85                  ..
+        jsr     ComputeDialogueTextBufferOffset ; 81E5 20 E7 85                  ..
         sec                                     ; 81E8 38                       8
         rts                                     ; 81E9 60                       `
 ; ----------------------------------------------------------------------------
@@ -296,7 +296,7 @@ TextUiSystem_Branch_81FA:
         cmp     #$0E                            ; 8203 C9 0E                    ..
         beq     TextUiSystem_Branch_8212        ; 8205 F0 0B                    ..
         ldx     #$0A                            ; 8207 A2 0A                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; 8209 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8209 20 0C C9                  ..
         brk                                     ; 820C 00                       .
         db   $07,$9F                         ; 820D 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -350,19 +350,19 @@ TextUiSystem_Branch_8244:
 TextUiSystem_Entry_8257:
         ldx     $5C                             ; 8257 A6 5C                    .\
         bne     TextUiSystem_Branch_8219        ; 8259 D0 BE                    ..
-        jsr     TextUiSystem_Entry_8356         ; 825B 20 56 83                  V.
+        jsr     ReadTextCommandOperand          ; 825B 20 56 83                  V.
         ldx     #$0A                            ; 825E A2 0A                    ..
         stx     $60                             ; 8260 86 60                    .`
         brk                                     ; 8262 00                       .
         db   $04,$B7                         ; 8263 04 B7                    ..
 ; ----------------------------------------------------------------------------
-        jsr     TextUiSystem_Entry_835D         ; 8265 20 5D 83                  ].
+        jsr     CopyTextScratchToDialogueLine   ; 8265 20 5D 83                  ].
         jmp     TextUiSystem_Branch_8336        ; 8268 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_826B:
         ldx     $5C                             ; 826B A6 5C                    .\
         bne     TextUiSystem_Branch_8219        ; 826D D0 AA                    ..
-        jsr     TextUiSystem_Entry_8356         ; 826F 20 56 83                  V.
+        jsr     ReadTextCommandOperand          ; 826F 20 56 83                  V.
         cmp     #$80                            ; 8272 C9 80                    ..
         bcs     TextUiSystem_Branch_829A        ; 8274 B0 24                    .$
         and     #$0F                            ; 8276 29 0F                    ).
@@ -440,7 +440,7 @@ TextUiSystem_Branch_82DB:
         brk                                     ; 82E4 00                       .
         db   $04,$B7                         ; 82E5 04 B7                    ..
 ; ----------------------------------------------------------------------------
-        jsr     TextUiSystem_Entry_835D         ; 82E7 20 5D 83                  ].
+        jsr     CopyTextScratchToDialogueLine   ; 82E7 20 5D 83                  ].
         pla                                     ; 82EA 68                       h
         and     #$78                            ; 82EB 29 78                    )x
         lsr     a                               ; 82ED 4A                       J
@@ -463,12 +463,12 @@ TextUiSystem_Branch_8306:
 TextUiSystem_Entry_8309:
         ldx     $5C                             ; 8309 A6 5C                    .\
         bne     TextUiSystem_Branch_8338        ; 830B D0 2B                    .+
-        jsr     TextUiSystem_Entry_8356         ; 830D 20 56 83                  V.
+        jsr     ReadTextCommandOperand          ; 830D 20 56 83                  V.
         ldx     #$08                            ; 8310 A2 08                    ..
         brk                                     ; 8312 00                       .
         db   $04,$B7                         ; 8313 04 B7                    ..
 ; ----------------------------------------------------------------------------
-        jsr     TextUiSystem_Entry_835D         ; 8315 20 5D 83                  ].
+        jsr     CopyTextScratchToDialogueLine   ; 8315 20 5D 83                  ].
         jmp     TextUiSystem_Branch_8336        ; 8318 4C 36 83                 L6.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_831B:
@@ -513,13 +513,13 @@ TextUiSystem_Branch_8346:
 TextUiSystem_Branch_8355:
         rts                                     ; 8355 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8356:
+ReadTextCommandOperand:
         ldx     $5B                             ; 8356 A6 5B                    .[
         lda     $F9,x                           ; 8358 B5 F9                    ..
         inc     $5B                             ; 835A E6 5B                    .[
         rts                                     ; 835C 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_835D:
+CopyTextScratchToDialogueLine:
         ldy     #$00                            ; 835D A0 00                    ..
 TextUiSystem_Branch_835F:
         lda     $03E3,y                         ; 835F B9 E3 03                 ...
@@ -529,7 +529,7 @@ TextUiSystem_Branch_835F:
         bne     TextUiSystem_Branch_835F        ; 8368 D0 F5                    ..
         rts                                     ; 836A 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_836B:
+AppendDialogueCharacter:
         ldx     $52                             ; 836B A6 52                    .R
         sta     DialogueWindowText,x            ; 836D 9D AA 06                 ...
         inc     $52                             ; 8370 E6 52                    .R
@@ -538,22 +538,22 @@ TextUiSystem_Entry_836B:
 TextUiSystem_Entry_8373:
         lda     #$13                            ; 8373 A9 13                    ..
         sta     $56                             ; 8375 85 56                    .V
-        jsr     TextUiSystem_Entry_8393         ; 8377 20 93 83                  ..
+        jsr     ComputeTextOutputPosition       ; 8377 20 93 83                  ..
         jsr     TextUiSystem_Entry_8386         ; 837A 20 86 83                  ..
-        jsr     TextUiSystem_Entry_83C0         ; 837D 20 C0 83                  ..
+        jsr     AdvanceTextCursor               ; 837D 20 C0 83                  ..
         jsr     TextUiSystem_Entry_83A4         ; 8380 20 A4 83                  ..
         jmp     TextUiSystem_Branch_838B        ; 8383 4C 8B 83                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_8386:
         lda     $57                             ; 8386 A5 57                    .W
-        jmp     UpperFixedEngine_Entry_C65A     ; 8388 4C 5A C6                 LZ.
+        jmp     QueueNametableTileUpdate        ; 8388 4C 5A C6                 LZ.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_838B:
         lda     $0553                           ; 838B AD 53 05                 .S.
         bmi     TextUiSystem_Branch_83A3        ; 838E 30 13                    0.
-        jmp     UpperFixedEngine_Entry_C62D     ; 8390 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; 8390 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8393:
+ComputeTextOutputPosition:
         lda     TextOutputX                     ; 8393 AD 51 05                 .Q.
         clc                                     ; 8396 18                       .
         adc     $53                             ; 8397 65 53                    eS
@@ -584,65 +584,65 @@ TextUiSystem_Entry_83A4:
 TextUiSystem_Branch_83BF:
         rts                                     ; 83BF 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_83C0:
+AdvanceTextCursor:
         inc     TextOutputX                     ; 83C0 EE 51 05                 .Q.
         lda     TextOutputX                     ; 83C3 AD 51 05                 .Q.
         cmp     $54                             ; 83C6 C5 54                    .T
         bcc     TextUiSystem_Branch_83FA        ; 83C8 90 30                    .0
         jsr     TextUiSystem_Entry_870E         ; 83CA 20 0E 87                  ..
-TextUiSystem_Entry_83CD:
+ResetTextCursorColumn:
         lda     $55                             ; 83CD A5 55                    .U
         sta     TextOutputX                     ; 83CF 8D 51 05                 .Q.
-TextUiSystem_Entry_83D2:
+AdvanceTextCursorRow:
         inc     TextOutputY                     ; 83D2 EE 52 05                 .R.
-        jsr     TextUiSystem_Entry_85E7         ; 83D5 20 E7 85                  ..
+        jsr     ComputeDialogueTextBufferOffset ; 83D5 20 E7 85                  ..
         lda     $0553                           ; 83D8 AD 53 05                 .S.
         bpl     TextUiSystem_Branch_83E5        ; 83DB 10 08                    ..
         lda     $050B                           ; 83DD AD 0B 05                 ...
         beq     TextUiSystem_Branch_83FA        ; 83E0 F0 18                    ..
-        jmp     UpperFixedEngine_Entry_C62D     ; 83E2 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; 83E2 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_83E5:
         lda     TextOutputY                     ; 83E5 AD 52 05                 .R.
         cmp     #$08                            ; 83E8 C9 08                    ..
         bne     TextUiSystem_Branch_83FA        ; 83EA D0 0E                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 83EC 20 2D C6                  -.
-        jsr     TextUiSystem_Entry_83FB         ; 83EF 20 FB 83                  ..
+        jsr     RequestPpuUpdateAndWait         ; 83EC 20 2D C6                  -.
+        jsr     BuildDialogueWindowUpdate       ; 83EF 20 FB 83                  ..
         lda     #$07                            ; 83F2 A9 07                    ..
         sta     TextOutputY                     ; 83F4 8D 52 05                 .R.
-        jsr     TextUiSystem_Entry_85E7         ; 83F7 20 E7 85                  ..
+        jsr     ComputeDialogueTextBufferOffset ; 83F7 20 E7 85                  ..
 TextUiSystem_Branch_83FA:
         rts                                     ; 83FA 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_83FB:
-        jsr     TextUiSystem_Entry_858F         ; 83FB 20 8F 85                  ..
-        jsr     TextUiSystem_Entry_85AD         ; 83FE 20 AD 85                  ..
+BuildDialogueWindowUpdate:
+        jsr     SelectDialogueWindowPpuOrigin   ; 83FB 20 8F 85                  ..
+        jsr     ScrollDialogueTextBuffer        ; 83FE 20 AD 85                  ..
         lda     $6BDE                           ; 8401 AD DE 6B                 ..k
         bmi     TextUiSystem_Branch_8424        ; 8404 30 1E                    0.
-        jsr     TextUiSystem_Entry_844F         ; 8406 20 4F 84                  O.
-        jsr     TextUiSystem_Entry_8442         ; 8409 20 42 84                  B.
-        jsr     TextUiSystem_Entry_848A         ; 840C 20 8A 84                  ..
-        jsr     TextUiSystem_Entry_8442         ; 840F 20 42 84                  B.
-        jsr     TextUiSystem_Entry_848A         ; 8412 20 8A 84                  ..
-        jsr     TextUiSystem_Entry_8442         ; 8415 20 42 84                  B.
-        jsr     TextUiSystem_Entry_848A         ; 8418 20 8A 84                  ..
-        jsr     TextUiSystem_Entry_8442         ; 841B 20 42 84                  B.
-        jsr     TextUiSystem_Entry_84C4         ; 841E 20 C4 84                  ..
-        jmp     TextUiSystem_Entry_8442         ; 8421 4C 42 84                 LB.
+        jsr     BuildDialogueWindowTopRow       ; 8406 20 4F 84                  O.
+        jsr     AdvanceDialogueWindowTileRow    ; 8409 20 42 84                  B.
+        jsr     BuildDialogueWindowMiddleRow    ; 840C 20 8A 84                  ..
+        jsr     AdvanceDialogueWindowTileRow    ; 840F 20 42 84                  B.
+        jsr     BuildDialogueWindowMiddleRow    ; 8412 20 8A 84                  ..
+        jsr     AdvanceDialogueWindowTileRow    ; 8415 20 42 84                  B.
+        jsr     BuildDialogueWindowMiddleRow    ; 8418 20 8A 84                  ..
+        jsr     AdvanceDialogueWindowTileRow    ; 841B 20 42 84                  B.
+        jsr     BuildDialogueWindowBottomRow    ; 841E 20 C4 84                  ..
+        jmp     AdvanceDialogueWindowTileRow    ; 8421 4C 42 84                 LB.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8424:
-        jsr     TextUiSystem_Entry_84EE         ; 8424 20 EE 84                  ..
-        jsr     TextUiSystem_Entry_8442         ; 8427 20 42 84                  B.
-        jsr     TextUiSystem_Entry_8529         ; 842A 20 29 85                  ).
-        jsr     TextUiSystem_Entry_8442         ; 842D 20 42 84                  B.
-        jsr     TextUiSystem_Entry_8529         ; 8430 20 29 85                  ).
-        jsr     TextUiSystem_Entry_8442         ; 8433 20 42 84                  B.
-        jsr     TextUiSystem_Entry_8529         ; 8436 20 29 85                  ).
-        jsr     TextUiSystem_Entry_8442         ; 8439 20 42 84                  B.
-        jsr     TextUiSystem_Entry_8565         ; 843C 20 65 85                  e.
-        jmp     TextUiSystem_Entry_8442         ; 843F 4C 42 84                 LB.
+        jsr     BuildOffsetDialogueWindowTopRow ; 8424 20 EE 84                  ..
+        jsr     AdvanceDialogueWindowTileRow    ; 8427 20 42 84                  B.
+        jsr     BuildOffsetDialogueWindowMiddleRow; 842A 20 29 85                ).
+        jsr     AdvanceDialogueWindowTileRow    ; 842D 20 42 84                  B.
+        jsr     BuildOffsetDialogueWindowMiddleRow; 8430 20 29 85                ).
+        jsr     AdvanceDialogueWindowTileRow    ; 8433 20 42 84                  B.
+        jsr     BuildOffsetDialogueWindowMiddleRow; 8436 20 29 85                ).
+        jsr     AdvanceDialogueWindowTileRow    ; 8439 20 42 84                  B.
+        jsr     BuildOffsetDialogueWindowBottomRow; 843C 20 65 85                e.
+        jmp     AdvanceDialogueWindowTileRow    ; 843F 4C 42 84                 LB.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8442:
+AdvanceDialogueWindowTileRow:
         brk                                     ; 8442 00                       .
         db   $13,$DF                         ; 8443 13 DF                    ..
 ; ----------------------------------------------------------------------------
@@ -652,7 +652,7 @@ TextUiSystem_Entry_8442:
         sta     $04F2                           ; 844B 8D F2 04                 ...
         rts                                     ; 844E 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_844F:
+BuildDialogueWindowTopRow:
         lda     #$86                            ; 844F A9 86                    ..
         sta     $0480                           ; 8451 8D 80 04                 ...
         lda     $58                             ; 8454 A5 58                    .X
@@ -686,8 +686,8 @@ TextUiSystem_Branch_847C:
         dec     $59                             ; 8484 C6 59                    .Y
         bne     TextUiSystem_Branch_847C        ; 8486 D0 F4                    ..
         beq     TextUiSystem_Branch_84AE        ; 8488 F0 24                    .$
-TextUiSystem_Entry_848A:
-        jsr     TextUiSystem_Entry_85A2         ; 848A 20 A2 85                  ..
+BuildDialogueWindowMiddleRow:
+        jsr     ClearDialogueWindowTileBuffer   ; 848A 20 A2 85                  ..
         lda     $58                             ; 848D A5 58                    .X
         tay                                     ; 848F A8                       .
         asl     a                               ; 8490 0A                       .
@@ -702,13 +702,13 @@ TextUiSystem_Entry_848A:
         sta     $0480,y                         ; 84A1 99 80 04                 ...
         ldy     #$01                            ; 84A4 A0 01                    ..
         ldx     $5A                             ; 84A6 A6 5A                    .Z
-        jsr     TextUiSystem_Entry_84B1         ; 84A8 20 B1 84                  ..
-        jsr     TextUiSystem_Entry_84B1         ; 84AB 20 B1 84                  ..
+        jsr     CopyDialogueLineToWindowBuffer  ; 84A8 20 B1 84                  ..
+        jsr     CopyDialogueLineToWindowBuffer  ; 84AB 20 B1 84                  ..
 TextUiSystem_Branch_84AE:
         stx     $5A                             ; 84AE 86 5A                    .Z
         rts                                     ; 84B0 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_84B1:
+CopyDialogueLineToWindowBuffer:
         lda     $54                             ; 84B1 A5 54                    .T
         sta     $59                             ; 84B3 85 59                    .Y
 TextUiSystem_Branch_84B5:
@@ -722,8 +722,8 @@ TextUiSystem_Branch_84B5:
         iny                                     ; 84C2 C8                       .
         rts                                     ; 84C3 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_84C4:
-        jsr     TextUiSystem_Entry_85A2         ; 84C4 20 A2 85                  ..
+BuildDialogueWindowBottomRow:
+        jsr     ClearDialogueWindowTileBuffer   ; 84C4 20 A2 85                  ..
         lda     #$84                            ; 84C7 A9 84                    ..
         sta     $0480                           ; 84C9 8D 80 04                 ...
         lda     $58                             ; 84CC A5 58                    .X
@@ -748,7 +748,7 @@ TextUiSystem_Branch_84E6:
         bne     TextUiSystem_Branch_84E6        ; 84EB D0 F9                    ..
         rts                                     ; 84ED 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_84EE:
+BuildOffsetDialogueWindowTopRow:
         lda     #$86                            ; 84EE A9 86                    ..
         sta     $0481                           ; 84F0 8D 81 04                 ...
         lda     $58                             ; 84F3 A5 58                    .X
@@ -782,8 +782,8 @@ TextUiSystem_Branch_851B:
         dec     $59                             ; 8523 C6 59                    .Y
         bne     TextUiSystem_Branch_851B        ; 8525 D0 F4                    ..
         beq     TextUiSystem_Branch_84AE        ; 8527 F0 85                    ..
-TextUiSystem_Entry_8529:
-        jsr     TextUiSystem_Entry_85A2         ; 8529 20 A2 85                  ..
+BuildOffsetDialogueWindowMiddleRow:
+        jsr     ClearDialogueWindowTileBuffer   ; 8529 20 A2 85                  ..
         lda     $58                             ; 852C A5 58                    .X
         tay                                     ; 852E A8                       .
         asl     a                               ; 852F 0A                       .
@@ -798,12 +798,12 @@ TextUiSystem_Entry_8529:
         sta     $0481,y                         ; 8540 99 81 04                 ...
         ldy     #$02                            ; 8543 A0 02                    ..
         ldx     $5A                             ; 8545 A6 5A                    .Z
-        jsr     TextUiSystem_Entry_8550         ; 8547 20 50 85                  P.
-        jsr     TextUiSystem_Entry_8550         ; 854A 20 50 85                  P.
+        jsr     CopyOffsetDialogueLineToWindowBuffer; 8547 20 50 85              P.
+        jsr     CopyOffsetDialogueLineToWindowBuffer; 854A 20 50 85              P.
         stx     $5A                             ; 854D 86 5A                    .Z
         rts                                     ; 854F 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8550:
+CopyOffsetDialogueLineToWindowBuffer:
         lda     $54                             ; 8550 A5 54                    .T
         sta     $59                             ; 8552 85 59                    .Y
 TextUiSystem_Branch_8554:
@@ -819,8 +819,8 @@ TextUiSystem_Branch_8554:
         iny                                     ; 8563 C8                       .
         rts                                     ; 8564 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8565:
-        jsr     TextUiSystem_Entry_85A2         ; 8565 20 A2 85                  ..
+BuildOffsetDialogueWindowBottomRow:
+        jsr     ClearDialogueWindowTileBuffer   ; 8565 20 A2 85                  ..
         lda     #$84                            ; 8568 A9 84                    ..
         sta     $0481                           ; 856A 8D 81 04                 ...
         lda     $58                             ; 856D A5 58                    .X
@@ -845,7 +845,7 @@ TextUiSystem_Branch_8587:
         bne     TextUiSystem_Branch_8587        ; 858C D0 F9                    ..
         rts                                     ; 858E 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_858F:
+SelectDialogueWindowPpuOrigin:
         ldx     #$1C                            ; 858F A2 1C                    ..
         ldy     #$92                            ; 8591 A0 92                    ..
         lda     $6BDE                           ; 8593 AD DE 6B                 ..k
@@ -855,7 +855,7 @@ TextUiSystem_Entry_858F:
 TextUiSystem_Branch_859C:
         stx     $04F3                           ; 859C 8E F3 04                 ...
         sty     $04F2                           ; 859F 8C F2 04                 ...
-TextUiSystem_Entry_85A2:
+ClearDialogueWindowTileBuffer:
         ldx     #$37                            ; 85A2 A2 37                    .7
         lda     #$00                            ; 85A4 A9 00                    ..
 TextUiSystem_Branch_85A6:
@@ -864,7 +864,7 @@ TextUiSystem_Branch_85A6:
         bpl     TextUiSystem_Branch_85A6        ; 85AA 10 FA                    ..
         rts                                     ; 85AC 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_85AD:
+ScrollDialogueTextBuffer:
         ldy     $54                             ; 85AD A4 54                    .T
         ldx     #$00                            ; 85AF A2 00                    ..
 TextUiSystem_Branch_85B1:
@@ -882,7 +882,7 @@ TextUiSystem_Branch_85BF:
         bne     TextUiSystem_Branch_85BF        ; 85C5 D0 F8                    ..
         rts                                     ; 85C7 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_85C8:
+InitializeDialogueTextLayout:
         lda     #$00                            ; 85C8 A9 00                    ..
         sta     TextOutputX                     ; 85CA 8D 51 05                 .Q.
         sta     $5B                             ; 85CD 85 5B                    .[
@@ -901,7 +901,7 @@ TextUiSystem_Branch_85DF:
         iny                                     ; 85E3 C8                       .
         iny                                     ; 85E4 C8                       .
         sty     $58                             ; 85E5 84 58                    .X
-TextUiSystem_Entry_85E7:
+ComputeDialogueTextBufferOffset:
         lda     #$00                            ; 85E7 A9 00                    ..
         ldx     TextOutputY                     ; 85E9 AE 52 05                 .R.
 TextUiSystem_Branch_85EC:
@@ -965,7 +965,7 @@ TextUiSystem_Branch_864D:
         sta     $55                             ; 864F 85 55                    .U
         rts                                     ; 8651 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8652:
+ClearDialogueTextBuffer:
         ldx     #$00                            ; 8652 A2 00                    ..
         txa                                     ; 8654 8A                       .
 TextUiSystem_Branch_8655:
@@ -977,7 +977,7 @@ TextUiSystem_Branch_8655:
         sta     TextOutputY                     ; 8660 8D 52 05                 .R.
         rts                                     ; 8663 60                       `
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8664:
+ScheduleDialogueRowUpdate:
         sta     TextOutputY                     ; 8664 8D 52 05                 .R.
         asl     a                               ; 8667 0A                       .
         tax                                     ; 8668 AA                       .
@@ -988,7 +988,7 @@ TextUiSystem_Entry_8664:
         sta     $1F                             ; 8673 85 1F                    ..
         jmp     WaitForNmi                      ; 8675 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-TextUiSystem_Entry_8678:
+AdvanceDecodedTextLookahead:
         jsr     Bank16_DecodeHuffmanSymbol      ; 8678 20 A8 87                  ..
         sta     $6E9A                           ; 867B 8D 9A 6E                 ..n
         ldy     $6E8A                           ; 867E AC 8A 6E                 ..n
@@ -1041,7 +1041,7 @@ TextUiSystem_Branch_86D0:
         inx                                     ; 86D0 E8                       .
         dey                                     ; 86D1 88                       .
         bne     TextUiSystem_Branch_86C1        ; 86D2 D0 ED                    ..
-        jmp     TextUiSystem_Entry_83CD         ; 86D4 4C CD 83                 L..
+        jmp     ResetTextCursorColumn           ; 86D4 4C CD 83                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_86D7:
         lda     $6E8A,x                         ; 86D7 BD 8A 6E                 ..n
@@ -1059,7 +1059,7 @@ TextUiSystem_Branch_86EC:
         dey                                     ; 86ED 88                       .
         bne     TextUiSystem_Branch_86D7        ; 86EE D0 E7                    ..
 TextUiSystem_Branch_86F0:
-        jmp     TextUiSystem_Entry_83CD         ; 86F0 4C CD 83                 L..
+        jmp     ResetTextCursorColumn           ; 86F0 4C CD 83                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_86F3:
         ldx     #$FF                            ; 86F3 A2 FF                    ..
@@ -1096,7 +1096,7 @@ TextUiSystem_Entry_870E:
 TextUiSystem_Branch_8722:
         lda     $6E8A                           ; 8722 AD 8A 6E                 ..n
         bne     TextUiSystem_Branch_872A        ; 8725 D0 03                    ..
-        jsr     TextUiSystem_Entry_8678         ; 8727 20 78 86                  x.
+        jsr     AdvanceDecodedTextLookahead     ; 8727 20 78 86                  x.
 TextUiSystem_Branch_872A:
         rts                                     ; 872A 60                       `
 ; ----------------------------------------------------------------------------
@@ -1420,7 +1420,7 @@ TextUiSystem_Branch_8A25:
         lda     $0517                           ; 8A2F AD 17 05                 ...
         ldx     #$00                            ; 8A32 A2 00                    ..
         ldy     #$00                            ; 8A34 A0 00                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 8A36 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 8A36 20 EA C3                  ..
         sta     $F6                             ; 8A39 85 F6                    ..
         jsr     TextUiSystem_Entry_8AA5         ; 8A3B 20 A5 8A                  ..
         pla                                     ; 8A3E 68                       h
@@ -1446,7 +1446,7 @@ TextUiSystem_Branch_8A52:
         lda     $0517                           ; 8A5C AD 17 05                 ...
         ldx     #$00                            ; 8A5F A2 00                    ..
         ldy     #$00                            ; 8A61 A0 00                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 8A63 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 8A63 20 EA C3                  ..
         sta     $F6                             ; 8A66 85 F6                    ..
         jsr     TextUiSystem_Entry_8AA5         ; 8A68 20 A5 8A                  ..
         pla                                     ; 8A6B 68                       h
@@ -1475,7 +1475,7 @@ TextUiSystem_Branch_8A84:
         lda     $0517                           ; 8A8E AD 17 05                 ...
         ldx     #$00                            ; 8A91 A2 00                    ..
         ldy     #$00                            ; 8A93 A0 00                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; 8A95 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; 8A95 20 EA C3                  ..
         sta     $F6                             ; 8A98 85 F6                    ..
         jsr     TextUiSystem_Entry_8AA5         ; 8A9A 20 A5 8A                  ..
         pla                                     ; 8A9D 68                       h
@@ -1941,12 +1941,12 @@ TextUiSystem_Branch_8DE0:
         sta     $53                             ; 8DF2 85 53                    .S
         lda     $41                             ; 8DF4 A5 41                    .A
         bmi     TextUiSystem_Branch_8E01        ; 8DF6 30 09                    0.
-        jsr     UpperFixedEngine_Entry_D251     ; 8DF8 20 51 D2                  Q.
+        jsr     ReadWorldMapTile                ; 8DF8 20 51 D2                  Q.
         jsr     UpperFixedEngine_Entry_D486     ; 8DFB 20 86 D4                  ..
         jmp     TextUiSystem_Branch_8E07        ; 8DFE 4C 07 8E                 L..
 ; ----------------------------------------------------------------------------
 TextUiSystem_Branch_8E01:
-        jsr     UpperFixedEngine_Entry_D3E6     ; 8E01 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 8E01 20 E6 D3                  ..
         jsr     UpperFixedEngine_Entry_D4F3     ; 8E04 20 F3 D4                  ..
 TextUiSystem_Branch_8E07:
         sta     $04                             ; 8E07 85 04                    ..
@@ -2348,7 +2348,7 @@ TextUiSystem_Entry_90C4:
         lda     #$00                            ; 90CC A9 00                    ..
         sta     $F8                             ; 90CE 85 F8                    ..
         sta     $F5                             ; 90D0 85 F5                    ..
-        jsr     UpperFixedEngine_Entry_C8EC     ; 90D2 20 EC C8                  ..
+        jsr     ReadControllers                 ; 90D2 20 EC C8                  ..
         lda     #$00                            ; 90D5 A9 00                    ..
         sta     $03CC                           ; 90D7 8D CC 03                 ...
         lda     ButtonsPressed                  ; 90DA A5 14                    ..
@@ -4069,7 +4069,7 @@ TextUiSystem_Branch_9C16:
         sta     $03CA                           ; 9C16 8D CA 03                 ...
 TextUiSystem_Entry_9C19:
         jsr     TextUiSystem_Entry_9C20         ; 9C19 20 20 9C                   .
-        jsr     UpperFixedEngine_Entry_C62D     ; 9C1C 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 9C1C 20 2D C6                  -.
         rts                                     ; 9C1F 60                       `
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_9C20:
@@ -4120,7 +4120,7 @@ TextUiSystem_Branch_9C67:
         bne     TextUiSystem_Branch_9C72        ; 9C6E D0 02                    ..
         lda     #$00                            ; 9C70 A9 00                    ..
 TextUiSystem_Branch_9C72:
-        jsr     UpperFixedEngine_Entry_C65A     ; 9C72 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; 9C72 20 5A C6                  Z.
         lda     $050C                           ; 9C75 AD 0C 05                 ...
         clc                                     ; 9C78 18                       .
         adc     #$0F                            ; 9C79 69 0F                    i.
@@ -5083,7 +5083,7 @@ TextUiSystem_Branch_A319:
         lda     $09                             ; A31D A5 09                    ..
         sta     $01                             ; A31F 85 01                    ..
         jsr     TextUiSystem_Entry_A334         ; A321 20 34 A3                  4.
-        jmp     UpperFixedEngine_Entry_C62D     ; A324 4C 2D C6                 L-.
+        jmp     RequestPpuUpdateAndWait         ; A324 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
 TextUiSystem_Entry_A327:
         lda     #$00                            ; A327 A9 00                    ..
@@ -5111,7 +5111,7 @@ TextUiSystem_Entry_A334:
         sta     $00                           ; A34E 85 00                    ..
         inc     $00                           ; A350 E6 00                    ..
         lda     $03CA                           ; A352 AD CA 03                 ...
-        jsr     UpperFixedEngine_Entry_C65A     ; A355 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; A355 20 5A C6                  Z.
         lda     $050C                           ; A358 AD 0C 05                 ...
         clc                                     ; A35B 18                       .
         adc     #$0F                            ; A35C 69 0F                    i.
@@ -5192,7 +5192,7 @@ TextUiSystem_Entry_A3B5:
         lda     $F5                             ; A3BC A5 F5                    ..
         and     #$04                            ; A3BE 29 04                    ).
         bne     TextUiSystem_Branch_A3C5        ; A3C0 D0 03                    ..
-        jsr     TextUiSystem_Entry_8652         ; A3C2 20 52 86                  R.
+        jsr     ClearDialogueTextBuffer         ; A3C2 20 52 86                  R.
 TextUiSystem_Branch_A3C5:
         jmp     TextUiSystem_Entry_A3AF         ; A3C5 4C AF A3                 L..
 ; ----------------------------------------------------------------------------
@@ -5230,7 +5230,7 @@ TextUiSystem_Entry_A3FA:
         lda     $F5                             ; A401 A5 F5                    ..
         and     #$04                            ; A403 29 04                    ).
         bne     TextUiSystem_Branch_A40A        ; A405 D0 03                    ..
-        jsr     TextUiSystem_Entry_8652         ; A407 20 52 86                  R.
+        jsr     ClearDialogueTextBuffer         ; A407 20 52 86                  R.
 TextUiSystem_Branch_A40A:
         lda     $F2                             ; A40A A5 F2                    ..
         pha                                     ; A40C 48                       H

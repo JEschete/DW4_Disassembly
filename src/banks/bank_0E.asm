@@ -9,18 +9,18 @@ Bank0E_Start:
 Bank0E_GraphicsPaletteDirectory:
         db   $10,$80,$2D,$80,$0B,$BE,$EA,$BE ; 8000 10 80 2D 80 0B BE EA BE  ..-.....
 ; ----------------------------------------------------------------------------
-Bank0E_EntryCode:
+ResolveCurrentMapPalette:
         sta     $07                             ; 8008 85 07                    ..
-        jsr     Bank0E_SelectMapPalette         ; 800A 20 F7 BA                  ..
+        jsr     SelectMapPaletteNumber          ; 800A 20 F7 BA                  ..
         sta     $06                             ; 800D 85 06                    ..
         rts                                     ; 800F 60                       `
 ; ----------------------------------------------------------------------------
-GraphicsPaletteSystem_Entry_8010:
+RefreshCurrentMapPalette:
         lda     $06                             ; 8010 A5 06                    ..
         pha                                     ; 8012 48                       H
         lda     $28                             ; 8013 A5 28                    .(
         beq     GraphicsPaletteSystem_Branch_8026; 8015 F0 0F                   ..
-        jsr     GraphicsPaletteSystem_Entry_802D; 8017 20 2D 80                  -.
+        jsr     LoadCurrentMapPaletteColors     ; 8017 20 2D 80                  -.
         brk                                     ; 801A 00                       .
         db   $28,$0F                         ; 801B 28 0F                    (.
 ; ----------------------------------------------------------------------------
@@ -37,8 +37,8 @@ GraphicsPaletteSystem_Branch_8029:
         sta     $06                             ; 802A 85 06                    ..
         rts                                     ; 802C 60                       `
 ; ----------------------------------------------------------------------------
-GraphicsPaletteSystem_Entry_802D:
-        jsr     Bank0E_EntryCode                ; 802D 20 08 80                  ..
+LoadCurrentMapPaletteColors:
+        jsr     ResolveCurrentMapPalette        ; 802D 20 08 80                  ..
         lda     $06                             ; 8030 A5 06                    ..
         sta     $16                             ; 8032 85 16                    ..
         lda     $8095                           ; 8034 AD 95 80                 ...
@@ -56,7 +56,7 @@ GraphicsPaletteSystem_Entry_802D:
         lda     Bank0E_GraphicsPalettePointers  ; 804F AD 91 80                 ...
         ldy     $8092                           ; 8052 AC 92 80                 ...
         ldx     #$16                            ; 8055 A2 16                    ..
-        jsr     LowerFixedEngine_Entry_C81D     ; 8057 20 1D C8                  ..
+        jsr     LowerFixed_AddWordToPointer     ; 8057 20 1D C8                  ..
         ldy     #$00                            ; 805A A0 00                    ..
 GraphicsPaletteSystem_Branch_805C:
         tya                                     ; 805C 98                       .
@@ -72,7 +72,7 @@ GraphicsPaletteSystem_Branch_805C:
         lda     $8093                           ; 806D AD 93 80                 ...
         ldy     $8094                           ; 8070 AC 94 80                 ...
         ldx     #$18                            ; 8073 A2 18                    ..
-        jsr     LowerFixedEngine_Entry_C81D     ; 8075 20 1D C8                  ..
+        jsr     LowerFixed_AddWordToPointer     ; 8075 20 1D C8                  ..
         ldy     #$00                            ; 8078 A0 00                    ..
 GraphicsPaletteSystem_Branch_807A:
         lda     ($18),y                         ; 807A B1 18                    ..
@@ -82,7 +82,7 @@ GraphicsPaletteSystem_Branch_807A:
         bne     GraphicsPaletteSystem_Branch_807A; 8081 D0 F7                   ..
         tya                                     ; 8083 98                       .
         ldx     #$1A                            ; 8084 A2 1A                    ..
-        jsr     LowerFixedEngine_Entry_C813     ; 8086 20 13 C8                  ..
+        jsr     LowerFixed_AddByteToPointer     ; 8086 20 13 C8                  ..
         pla                                     ; 8089 68                       h
         tay                                     ; 808A A8                       .
         iny                                     ; 808B C8                       .
@@ -1968,7 +1968,7 @@ Bank0E_PostSpriteRegion:
         db   $23,$11,$20,$49,$1E,$3F,$7F,$EB ; BAE7 23 11 20 49 1E 3F 7F EB  #. I.?..
         db   $5F,$EF,$8F,$07,$01,$00,$30,$E8 ; BAEF 5F EF 8F 07 01 00 30 E8  _.....0.
 ; ----------------------------------------------------------------------------
-Bank0E_SelectMapPalette:
+SelectMapPaletteNumber:
         pha                                     ; BAF7 48                       H
         ldy     #$00                            ; BAF8 A0 00                    ..
         ldx     #$00                            ; BAFA A2 00                    ..
@@ -2154,7 +2154,7 @@ Bank0E_PostPaletteData:
         db   $24,$2A,$3C,$23,$19,$3C,$24,$19 ; BEDB 24 2A 3C 23 19 3C 24 19  $*<#.<$.
         db   $45,$23,$1C,$45,$24,$1C,$FF     ; BEE3 45 23 1C 45 24 1C FF     E#.E$..
 ; ----------------------------------------------------------------------------
-GraphicsPaletteSystem_Entry_BEEA:
+ParseSixDigitDecimalValue:
         lda     $F5                             ; BEEA A5 F5                    ..
         bmi     GraphicsPaletteSystem_Branch_BF3F; BEEC 30 51                   0Q
         lda     $F8                             ; BEEE A5 F8                    ..
@@ -2169,15 +2169,15 @@ GraphicsPaletteSystem_Entry_BEEA:
         jmp     GraphicsPaletteSystem_Branch_BF2A; BEFF 4C 2A BF                L*.
 ; ----------------------------------------------------------------------------
 GraphicsPaletteSystem_Branch_BF02:
-        jsr     GraphicsPaletteSystem_Entry_BF41; BF02 20 41 BF                  A.
+        jsr     Shift24BitValueLeft             ; BF02 20 41 BF                  A.
         lda     $00,x                           ; BF05 B5 00                    ..
         sta     $72                             ; BF07 85 72                    .r
         lda     $01,x                           ; BF09 B5 01                    ..
         sta     $73                             ; BF0B 85 73                    .s
         lda     $02,x                           ; BF0D B5 02                    ..
         sta     $74                             ; BF0F 85 74                    .t
-        jsr     GraphicsPaletteSystem_Entry_BF41; BF11 20 41 BF                  A.
-        jsr     GraphicsPaletteSystem_Entry_BF41; BF14 20 41 BF                  A.
+        jsr     Shift24BitValueLeft             ; BF11 20 41 BF                  A.
+        jsr     Shift24BitValueLeft             ; BF14 20 41 BF                  A.
         clc                                     ; BF17 18                       .
         lda     $00,x                           ; BF18 B5 00                    ..
         adc     $72                             ; BF1A 65 72                    er
@@ -2205,7 +2205,7 @@ GraphicsPaletteSystem_Branch_BF3F:
         clc                                     ; BF3F 18                       .
         rts                                     ; BF40 60                       `
 ; ----------------------------------------------------------------------------
-GraphicsPaletteSystem_Entry_BF41:
+Shift24BitValueLeft:
         asl     $00,x                           ; BF41 16 00                    ..
         rol     $01,x                           ; BF43 36 01                    6.
         rol     $02,x                           ; BF45 36 02                    6.

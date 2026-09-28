@@ -12,6 +12,66 @@ A byte-exact, bank-oriented disassembly of Dragon Warrior IV for the NES. The re
 
 The fixed `$C000-$FFFF` banks are physical banks `$0F` and `$1F` for the two SUROM outer regions. All other banks map into `$8000-$BFFF`.
 
+## Current Metrics
+
+- Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
+- Detailed semantic classification: 100% (524,288 / 524,288) - Done
+- Remaining unclassified: 0 bytes - Done
+- Verified instruction bytes: 163,493 (31.18%)
+- Explicitly ranged data bytes: 361,317 (68.92%)
+- Dual-use code/data overlap: 522 bytes (0.10%)
+- Meaningfully named routines: 2,445/4,315 (56.66%)
+- Routines remaining to label: 1,870/4,315 (43.34%)
+- Semantic contracts: 37/4,315 (0.86%)
+- Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
+- Current analyzer warnings and control-flow conflicts: 0
+- Structured asset encoders: 0/5 complete
+
+## Routine Naming Backlog
+
+`Named` counts curated code/function/interrupt/vector labels that coincide with an entry in
+`analysis/routine-interfaces.tsv`. `Remaining %` uses each bank's routine count as its denominator. Pure-data banks
+have no routine interfaces and report `n/a`.
+
+The 2026-09-28 audit checked all 2,229 routine interfaces in banks `$00-$15` against generated ASM and interface
+evidence, with direct review of 102 high-risk generic or numeric names. Its final result had zero review flags,
+duplicate addresses, or duplicate global names.
+
+| Bank | Named | Total | Remaining | Remaining % |
+|---:|---:|---:|---:|---:|
+| `$00` | 0 | 0 | 0 | n/a |
+| `$01` | 0 | 0 | 0 | n/a |
+| `$02` | 0 | 0 | 0 | n/a |
+| `$03` | 0 | 0 | 0 | n/a |
+| `$04` | 0 | 0 | 0 | n/a |
+| `$05` | 0 | 0 | 0 | n/a |
+| `$06` | 0 | 0 | 0 | n/a |
+| `$07` | 0 | 0 | 0 | n/a |
+| `$08` | 77 | 77 | 0 | 0.00% |
+| `$09` | 0 | 0 | 0 | n/a |
+| `$0A` | 0 | 0 | 0 | n/a |
+| `$0B` | 10 | 10 | 0 | 0.00% |
+| `$0C` | 0 | 0 | 0 | n/a |
+| `$0D` | 0 | 0 | 0 | n/a |
+| `$0E` | 6 | 6 | 0 | 0.00% |
+| `$0F` | 323 | 323 | 0 | 0.00% |
+| `$10` | 374 | 374 | 0 | 0.00% |
+| `$11` | 367 | 367 | 0 | 0.00% |
+| `$12` | 271 | 271 | 0 | 0.00% |
+| `$13` | 371 | 371 | 0 | 0.00% |
+| `$14` | 185 | 185 | 0 | 0.00% |
+| `$15` | 245 | 245 | 0 | 0.00% |
+| `$16` | 28 | 386 | 358 | 92.75% |
+| `$17` | 10 | 245 | 235 | 95.92% |
+| `$18` | 1 | 90 | 89 | 98.89% |
+| `$19` | 12 | 12 | 0 | 0.00% |
+| `$1A` | 0 | 0 | 0 | n/a |
+| `$1B` | 5 | 172 | 167 | 97.09% |
+| `$1C` | 8 | 219 | 211 | 96.35% |
+| `$1D` | 10 | 309 | 299 | 96.76% |
+| `$1E` | 8 | 326 | 318 | 97.55% |
+| `$1F` | 134 | 327 | 193 | 59.02% |
+
 ## Quick Start
 
 Clone with submodules and build from tracked source:

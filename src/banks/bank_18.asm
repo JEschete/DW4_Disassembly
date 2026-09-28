@@ -1403,7 +1403,7 @@ MonsterBattleFont_Entry_9CF6:
         asl     $0E                             ; 9D02 06 0E                    ..
         bcs     MonsterBattleFont_Branch_9D0C   ; 9D04 B0 06                    ..
 MonsterBattleFont_Branch_9D06:
-        jsr     UpperFixedEngine_Entry_C891     ; 9D06 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9D06 20 91 C8                  ..
         cmp     $0E                             ; 9D09 C5 0E                    ..
         rts                                     ; 9D0B 60                       `
 ; ----------------------------------------------------------------------------
@@ -1549,7 +1549,7 @@ MonsterBattleFont_Entry_9DDE:
         ldx     $0E                             ; 9DDE A6 0E                    ..
         cmp     #$FF                            ; 9DE0 C9 FF                    ..
         bne     MonsterBattleFont_Branch_9DEA   ; 9DE2 D0 06                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 9DE4 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9DE4 20 91 C8                  ..
         jmp     MonsterBattleFont_Branch_9DED   ; 9DE7 4C ED 9D                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_9DEA:
@@ -1707,7 +1707,7 @@ MonsterBattleFont_Branch_9EB9:
         tax                                     ; 9ED5 AA                       .
         ldy     #$00                            ; 9ED6 A0 00                    ..
 MonsterBattleFont_Branch_9ED8:
-        jsr     UpperFixedEngine_Entry_C891     ; 9ED8 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9ED8 20 91 C8                  ..
         cmp     Bank18_EncounterWeights,x       ; 9EDB DD 8D A2                 ...
         bcs     MonsterBattleFont_Branch_9EFF   ; 9EDE B0 1F                    ..
         txa                                     ; 9EE0 8A                       .
@@ -1739,7 +1739,7 @@ MonsterBattleFont_Branch_9F08:
         lda     $6E00                           ; 9F0B AD 00 6E                 ..n
         cmp     Bank18_EncounterThresholds,y    ; 9F0E D9 64 A4                 .d.
         bcs     MonsterBattleFont_Branch_9F33   ; 9F11 B0 20                    .
-        jsr     UpperFixedEngine_Entry_C891     ; 9F13 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9F13 20 91 C8                  ..
         jsr     MonsterBattleFont_Entry_A262    ; 9F16 20 62 A2                  b.
         cmp     $A46C,y                         ; 9F19 D9 6C A4                 .l.
         bcs     MonsterBattleFont_Branch_9F33   ; 9F1C B0 15                    ..
@@ -1821,7 +1821,7 @@ MonsterBattleFont_Branch_9F8F:
         lda     $627D                           ; 9FA0 AD 7D 62                 .}b
         and     #$10                            ; 9FA3 29 10                    ).
         beq     MonsterBattleFont_Branch_9FAF   ; 9FA5 F0 08                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; 9FA7 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 9FA7 20 91 C8                  ..
         cmp     #$55                            ; 9FAA C9 55                    .U
         bcc     MonsterBattleFont_Branch_9FB4   ; 9FAC 90 06                    ..
         rts                                     ; 9FAE 60                       `
@@ -2109,7 +2109,7 @@ MonsterBattleFont_Branch_A173:
         bne     MonsterBattleFont_Branch_A189   ; A17F D0 08                    ..
 MonsterBattleFont_Branch_A181:
         ldx     #$1E                            ; A181 A2 1E                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; A183 20 0C C9                  ..
+        jsr     WaitFrames                      ; A183 20 0C C9                  ..
         brk                                     ; A186 00                       .
         db   $1E,$FB                         ; A187 1E FB                    ..
 ; ----------------------------------------------------------------------------
@@ -2560,7 +2560,7 @@ MonsterBattleFont_Branch_A893:
 MonsterBattleFont_Branch_A89F:
         ldx     #$29                            ; A89F A2 29                    .)
         lda     #$08                            ; A8A1 A9 08                    ..
-        jsr     UpperFixedEngine_Entry_C3EA     ; A8A3 20 EA C3                  ..
+        jsr     ReadBankedByteThroughPointer    ; A8A3 20 EA C3                  ..
         cpy     #$04                            ; A8A6 C0 04                    ..
         bcc     MonsterBattleFont_Branch_A8AF   ; A8A8 90 05                    ..
         sta     $6E35,y                         ; A8AA 99 35 6E                 .5n
@@ -2645,7 +2645,7 @@ MonsterBattleFont_Branch_A919:
         db   $17,$0F                         ; A91D 17 0F                    ..
 ; ----------------------------------------------------------------------------
         sta     $2E                             ; A91F 85 2E                    ..
-        jsr     UpperFixedEngine_Entry_C891     ; A921 20 91 C8                  ..
+        jsr     NextRandomByte                  ; A921 20 91 C8                  ..
         pha                                     ; A924 48                       H
         ldy     $30                             ; A925 A4 30                    .0
         lda     $6E39,y                         ; A927 B9 39 6E                 .9n
@@ -2684,7 +2684,7 @@ MonsterBattleFont_Branch_A953:
 MonsterBattleFont_Branch_A961:
         ldx     #$00                            ; A961 A2 00                    ..
         lda     #$0A                            ; A963 A9 0A                    ..
-        jsr     UpperFixedEngine_Entry_C851     ; A965 20 51 C8                  Q.
+        jsr     DividePointerWord               ; A965 20 51 C8                  Q.
         ldy     $30                             ; A968 A4 30                    .0
         sta     $6E3D,y                         ; A96A 99 3D 6E                 .=n
         lda     $00                             ; A96D A5 00                    ..
@@ -2916,7 +2916,7 @@ MonsterBattleFont_Entry_AACC:
         db   $07,$6F,$6C                     ; AACD 07 6F 6C                 .ol
 ; ----------------------------------------------------------------------------
         jsr     MonsterBattleFont_Entry_ACE3    ; AAD0 20 E3 AC                  ..
-        jsr     UpperFixedEngine_Entry_C62D     ; AAD3 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; AAD3 20 2D C6                  -.
         brk                                     ; AAD6 00                       .
         db   $11,$FB                         ; AAD7 11 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -3258,7 +3258,7 @@ MonsterBattleFont_Entry_ACBF:
 MonsterBattleFont_Entry_ACD9:
         jsr     MonsterBattleFont_Entry_ACE3    ; ACD9 20 E3 AC                  ..
         jsr     MonsterBattleFont_Entry_AD1C    ; ACDC 20 1C AD                  ..
-        jsr     UpperFixedEngine_Entry_C62D     ; ACDF 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; ACDF 20 2D C6                  -.
         rts                                     ; ACE2 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Entry_ACE3:
@@ -3290,7 +3290,7 @@ MonsterBattleFont_Branch_ACFF:
 MonsterBattleFont_Branch_AD0B:
         tax                                     ; AD0B AA                       .
         lda     $02,x                           ; AD0C B5 02                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; AD0E 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; AD0E 20 5A C6                  Z.
         inc     $00                             ; AD11 E6 00                    ..
         inc     $0F                             ; AD13 E6 0F                    ..
         lda     $0F                             ; AD15 A5 0F                    ..
@@ -3317,7 +3317,7 @@ MonsterBattleFont_Entry_AD1C:
 MonsterBattleFont_Branch_AD38:
         tax                                     ; AD38 AA                       .
         lda     $03,x                           ; AD39 B5 03                    ..
-        jsr     UpperFixedEngine_Entry_C65A     ; AD3B 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; AD3B 20 5A C6                  Z.
         inc     $00                             ; AD3E E6 00                    ..
         inc     $0F                             ; AD40 E6 0F                    ..
         lda     $0F                             ; AD42 A5 0F                    ..
@@ -3326,7 +3326,7 @@ MonsterBattleFont_Branch_AD38:
         rts                                     ; AD48 60                       `
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Entry_AD49:
-        jsr     UpperFixedEngine_Entry_C8EC     ; AD49 20 EC C8                  ..
+        jsr     ReadControllers                 ; AD49 20 EC C8                  ..
         ldy     ButtonsPressed                  ; AD4C A4 14                    ..
         beq     MonsterBattleFont_Branch_AD5D   ; AD4E F0 0D                    ..
         ldy     $33                             ; AD50 A4 33                    .3
@@ -3426,7 +3426,7 @@ MonsterBattleFont_Branch_AE6D:
         sta     OAMDMA                          ; AE80 8D 14 40                 ..@
         sta     OAMDMA                          ; AE83 8D 14 40                 ..@
         jsr     WaitForNmi                      ; AE86 20 74 FF                  t.
-        jsr     UpperFixedEngine_Entry_C54E     ; AE89 20 4E C5                  N.
+        jsr     ResetDisplayState               ; AE89 20 4E C5                  N.
         lda     #$00                            ; AE8C A9 00                    ..
         sta     $0508                           ; AE8E 8D 08 05                 ...
         sta     $0509                           ; AE91 8D 09 05                 ...
@@ -3454,7 +3454,7 @@ MonsterBattleFont_Entry_AEA7:
         lda     $B244                           ; AEC4 AD 44 B2                 .D.
         sta     $E1                             ; AEC7 85 E1                    ..
         jsr     MonsterBattleFont_Entry_B120    ; AEC9 20 20 B1                   .
-        jsr     UpperFixedEngine_Entry_C62D     ; AECC 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; AECC 20 2D C6                  -.
         ldy     #$00                            ; AECF A0 00                    ..
 MonsterBattleFont_Branch_AED1:
         sty     $DB                             ; AED1 84 DB                    ..
@@ -3585,7 +3585,7 @@ MonsterBattleFont_Branch_AFAA:
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AFAE:
         iny                                     ; AFAE C8                       .
-        jsr     UpperFixedEngine_Entry_C62D     ; AFAF 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; AFAF 20 2D C6                  -.
         dec     $DA                             ; AFB2 C6 DA                    ..
         beq     MonsterBattleFont_Branch_AFD1   ; AFB4 F0 1B                    ..
         jmp     MonsterBattleFont_Branch_AED1   ; AFB6 4C D1 AE                 L..
@@ -3813,7 +3813,7 @@ MonsterBattleFont_Entry_B120:
         lda     #$00                            ; B120 A9 00                    ..
         sta     $00                             ; B122 85 00                    ..
         sta     $01                             ; B124 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; B126 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; B126 20 62 C6                  b.
         lda     $1D                             ; B129 A5 1D                    ..
         sta     $E7                             ; B12B 85 E7                    ..
         lda     $1C                             ; B12D A5 1C                    ..
@@ -3880,12 +3880,12 @@ MonsterBattleFont_Branch_B187:
 MonsterBattleFont_Branch_B192:
         lda     #$00                            ; B192 A9 00                    ..
 MonsterBattleFont_Branch_B194:
-        jsr     UpperFixedEngine_Entry_C65A     ; B194 20 5A C6                  Z.
+        jsr     QueueNametableTileUpdate        ; B194 20 5A C6                  Z.
 MonsterBattleFont_Branch_B197:
         lda     $050B                           ; B197 AD 0B 05                 ...
         cmp     #$2C                            ; B19A C9 2C                    .,
         bcc     MonsterBattleFont_Branch_B1A1   ; B19C 90 03                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; B19E 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; B19E 20 2D C6                  -.
 MonsterBattleFont_Branch_B1A1:
         pla                                     ; B1A1 68                       h
         tay                                     ; B1A2 A8                       .
@@ -3914,7 +3914,7 @@ MonsterBattleFont_Branch_B1AF:
         iny                                     ; B1C5 C8                       .
         cpy     #$1E                            ; B1C6 C0 1E                    ..
         bcc     MonsterBattleFont_Branch_B1AF   ; B1C8 90 E5                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; B1CA 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; B1CA 20 2D C6                  -.
         lda     $DB                             ; B1CD A5 DB                    ..
         cmp     #$10                            ; B1CF C9 10                    ..
         bcs     MonsterBattleFont_Branch_B1DA   ; B1D1 B0 07                    ..
@@ -3945,13 +3945,13 @@ MonsterBattleFont_Branch_B1F0:
         iny                                     ; B1F5 C8                       .
         cpy     #$20                            ; B1F6 C0 20                    .
         bcc     MonsterBattleFont_Branch_B1E0   ; B1F8 90 E6                    ..
-        jsr     UpperFixedEngine_Entry_C62D     ; B1FA 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; B1FA 20 2D C6                  -.
         inc     $DB                             ; B1FD E6 DB                    ..
         lda     $DB                             ; B1FF A5 DB                    ..
         cmp     #$1E                            ; B201 C9 1E                    ..
         bcc     MonsterBattleFont_Branch_B1DE   ; B203 90 D9                    ..
         ldx     #$28                            ; B205 A2 28                    .(
-        jmp     UpperFixedEngine_Entry_C90C     ; B207 4C 0C C9                 L..
+        jmp     WaitFrames                      ; B207 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
         db   $BC,$73,$D2,$27,$04,$89,$12,$21 ; B20A BC 73 D2 27 04 89 12 21  .s.'...!
         db   $04,$09,$12,$21,$1C,$09,$1E,$21 ; B212 04 09 12 21 1C 09 1E 21  ...!...!
@@ -3967,7 +3967,7 @@ MonsterBattleFont_Branch_B228:
         eor     #$01                            ; B22D 49 01                    I.
         sta     $0506                           ; B22F 8D 06 05                 ...
         ldx     #$03                            ; B232 A2 03                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; B234 20 0C C9                  ..
+        jsr     WaitFrames                      ; B234 20 0C C9                  ..
         pla                                     ; B237 68                       h
         tax                                     ; B238 AA                       .
         dex                                     ; B239 CA                       .
@@ -4165,7 +4165,7 @@ MonsterBattleFont_Entry_B79E:
         ldx     #$02                            ; B7A0 A2 02                    ..
 MonsterBattleFont_Branch_B7A2:
         sty     $00                             ; B7A2 84 00                    ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; B7A4 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; B7A4 20 AF C5                  ..
         lda     #$10                            ; B7A7 A9 10                    ..
         sta     PPUADDR                         ; B7A9 8D 06 20                 ..
         lda     #$00                            ; B7AC A9 00                    ..
@@ -4180,7 +4180,7 @@ MonsterBattleFont_Branch_B7C1:
         ldy     #$08                            ; B7C1 A0 08                    ..
         ldx     #$16                            ; B7C3 A2 16                    ..
 MonsterBattleFont_Branch_B7C5:
-        jsr     UpperFixedEngine_Entry_C888     ; B7C5 20 88 C8                  ..
+        jsr     ReadByteAndAdvancePointer       ; B7C5 20 88 C8                  ..
         sta     PPUDATA                         ; B7C8 8D 07 20                 ..
         dey                                     ; B7CB 88                       .
         bne     MonsterBattleFont_Branch_B7C5   ; B7CC D0 F7                    ..
@@ -4217,7 +4217,7 @@ MonsterBattleFont_Branch_B7FA:
         jsr     MonsterBattleFont_Entry_B81C    ; B802 20 1C B8                  ..
         jsr     MonsterBattleFont_Entry_B81C    ; B805 20 1C B8                  ..
         inc     $050B                           ; B808 EE 0B 05                 ...
-        jsr     UpperFixedEngine_Entry_C62D     ; B80B 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; B80B 20 2D C6                  -.
         lda     NextTextCharacter               ; B80E AD 02 03                 ...
         clc                                     ; B811 18                       .
         adc     #$40                            ; B812 69 40                    i@

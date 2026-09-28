@@ -1,6 +1,6 @@
 # Project Status
 
-Last verified: 2026-09-27
+Last verified: 2026-09-28
 
 This document is the authoritative human-readable status snapshot. Generated totals come from `../analysis/`; completion policy is enforced by `../verify-completion.cmd`.
 
@@ -12,7 +12,8 @@ This document is the authoritative human-readable status snapshot. Generated tot
 - Verified instruction bytes: 163,493 (31.18%)
 - Explicitly ranged data bytes: 361,317 (68.92%)
 - Dual-use code/data overlap: 522 bytes (0.10%)
-- Meaningfully named routines: 81/4,315 (1.88%)
+- Meaningfully named routines: 2,445/4,315 (56.66%)
+- Routines remaining to label: 1,870/4,315 (43.34%)
 - Semantic contracts: 37/4,315 (0.86%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
@@ -28,6 +29,52 @@ The completion gate (`verify-completion.cmd`) passes end to end: 0 current analy
 identities ledgered, including all 143 original warnings; 2,143 pointers typed; 2,036/2,036 executable targets
 decoded; 38/38 indirect jumps audited; 4,315 routine interfaces; 37 semantic contracts; 26 asset slices; 15 save
 fields; 9 runtime paths; exact ROM match.
+
+The 2026-09-28 routine-name audit checked all 2,229 interfaces in banks `$00-$15` against their generated ASM
+bodies and interface evidence, then directly reviewed 102 high-risk generic or numeric names. Confirmed semantic
+errors and generic lettered families were corrected; the final audit reported zero review flags, duplicate
+addresses, or duplicate global names.
+
+## Routine Naming Backlog
+
+`Named` counts curated code/function/interrupt/vector labels that coincide with an entry in
+`analysis/routine-interfaces.tsv`. `Remaining %` uses each bank's routine count as its denominator. Pure-data banks
+have no routine interfaces and report `n/a`.
+
+| Bank | Named | Total | Remaining | Remaining % |
+|---:|---:|---:|---:|---:|
+| `$00` | 0 | 0 | 0 | n/a |
+| `$01` | 0 | 0 | 0 | n/a |
+| `$02` | 0 | 0 | 0 | n/a |
+| `$03` | 0 | 0 | 0 | n/a |
+| `$04` | 0 | 0 | 0 | n/a |
+| `$05` | 0 | 0 | 0 | n/a |
+| `$06` | 0 | 0 | 0 | n/a |
+| `$07` | 0 | 0 | 0 | n/a |
+| `$08` | 77 | 77 | 0 | 0.00% |
+| `$09` | 0 | 0 | 0 | n/a |
+| `$0A` | 0 | 0 | 0 | n/a |
+| `$0B` | 10 | 10 | 0 | 0.00% |
+| `$0C` | 0 | 0 | 0 | n/a |
+| `$0D` | 0 | 0 | 0 | n/a |
+| `$0E` | 6 | 6 | 0 | 0.00% |
+| `$0F` | 323 | 323 | 0 | 0.00% |
+| `$10` | 374 | 374 | 0 | 0.00% |
+| `$11` | 367 | 367 | 0 | 0.00% |
+| `$12` | 271 | 271 | 0 | 0.00% |
+| `$13` | 371 | 371 | 0 | 0.00% |
+| `$14` | 185 | 185 | 0 | 0.00% |
+| `$15` | 245 | 245 | 0 | 0.00% |
+| `$16` | 28 | 386 | 358 | 92.75% |
+| `$17` | 10 | 245 | 235 | 95.92% |
+| `$18` | 1 | 90 | 89 | 98.89% |
+| `$19` | 12 | 12 | 0 | 0.00% |
+| `$1A` | 0 | 0 | 0 | n/a |
+| `$1B` | 5 | 172 | 167 | 97.09% |
+| `$1C` | 8 | 219 | 211 | 96.35% |
+| `$1D` | 10 | 309 | 299 | 96.76% |
+| `$1E` | 8 | 326 | 318 | 97.55% |
+| `$1F` | 134 | 327 | 193 | 59.02% |
 
 ## Enforced Evidence Checks
 

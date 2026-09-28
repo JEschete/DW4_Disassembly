@@ -52,15 +52,15 @@ MapInteractionSystem_Branch_80A7:
         db   $80,$CC,$81,$D0,$81,$60,$82,$64 ; 80AB 80 CC 81 D0 81 60 82 64  .....`.d
         db   $82,$FD,$83,$42,$83,$3F,$83     ; 80B3 82 FD 83 42 83 3F 83     ...B.?.
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_80BA:
+InteractWithFacingObjectOrTile:
         bit     $41                             ; 80BA 24 41                    $A
         bpl     MapInteractionSystem_Branch_80EA; 80BC 10 2C                    .,
-        jsr     MapInteractionSystem_Entry_81AE ; 80BE 20 AE 81                  ..
-        jsr     MapInteractionSystem_Entry_8126 ; 80C1 20 26 81                  &.
+        jsr     GetCoordinatesInFrontOfPlayer   ; 80BE 20 AE 81                  ..
+        jsr     FindInteractableEntityAtCoordinates; 80C1 20 26 81               &.
         bcs     MapInteractionSystem_Branch_80F9; 80C4 B0 33                    .3
         ldx     $51                             ; 80C6 A6 51                    .Q
         ldy     $52                             ; 80C8 A4 52                    .R
-        jsr     UpperFixedEngine_Entry_D3E6     ; 80CA 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 80CA 20 E6 D3                  ..
         and     #$1F                            ; 80CD 29 1F                    ).
         tax                                     ; 80CF AA                       .
         ldy     #$00                            ; 80D0 A0 00                    ..
@@ -74,9 +74,9 @@ MapInteractionSystem_Entry_80BA:
         iny                                     ; 80E0 C8                       .
         iny                                     ; 80E1 C8                       .
 MapInteractionSystem_Branch_80E2:
-        jsr     MapInteractionSystem_Entry_81B8 ; 80E2 20 B8 81                  ..
+        jsr     OffsetCoordinatesByFacing       ; 80E2 20 B8 81                  ..
 MapInteractionSystem_Branch_80E5:
-        jsr     MapInteractionSystem_Entry_8126 ; 80E5 20 26 81                  &.
+        jsr     FindInteractableEntityAtCoordinates; 80E5 20 26 81               &.
         bcs     MapInteractionSystem_Branch_80F9; 80E8 B0 0F                    ..
 MapInteractionSystem_Branch_80EA:
         jsr     MapInteractionSystem_Entry_BAEA ; 80EA 20 EA BA                  ..
@@ -105,7 +105,7 @@ MapInteractionSystem_Branch_8101:
         pha                                     ; 8114 48                       H
         tya                                     ; 8115 98                       .
         pha                                     ; 8116 48                       H
-        jsr     UpperFixedEngine_Entry_D7FC     ; 8117 20 FC D7                  ..
+        jsr     RenderVisibleMapEntity          ; 8117 20 FC D7                  ..
         jsr     WaitForNmi                      ; 811A 20 74 FF                  t.
         pla                                     ; 811D 68                       h
         tay                                     ; 811E A8                       .
@@ -118,7 +118,7 @@ MapInteractionSystem_Branch_8121:
 ; ----------------------------------------------------------------------------
         rts                                     ; 8125 60                       `
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_8126:
+FindInteractableEntityAtCoordinates:
         ldx     #$06                            ; 8126 A2 06                    ..
 MapInteractionSystem_Branch_8128:
         lda     $7020,x                         ; 8128 BD 20 70                 . p
@@ -206,12 +206,12 @@ MapInteractionSystem_Branch_8197:
         db   $80,$16,$01,$06,$0B,$80,$0D,$00 ; 81A2 80 16 01 06 0B 80 0D 00  ........
         db   $07,$0B,$80,$FF                 ; 81AA 07 0B 80 FF              ....
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_81AE:
+GetCoordinatesInFrontOfPlayer:
         lda     $6F60                           ; 81AE AD 60 6F                 .`o
         sta     $51                             ; 81B1 85 51                    .Q
         lda     $6F80                           ; 81B3 AD 80 6F                 ..o
         sta     $52                             ; 81B6 85 52                    .R
-MapInteractionSystem_Entry_81B8:
+OffsetCoordinatesByFacing:
         lda     $3D                             ; 81B8 A5 3D                    .=
         asl     a                               ; 81BA 0A                       .
         tax                                     ; 81BB AA                       .
@@ -263,7 +263,7 @@ MapInteractionSystem_Branch_81FB:
         db   $09,$6F,$52                     ; 81FC 09 6F 52                 .oR
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_81FF:
-        jsr     UpperFixedEngine_Entry_C8CC     ; 81FF 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 81FF 20 CC C8                  ..
         brk                                     ; 8202 00                       .
         db   $09,$6F,$09                     ; 8203 09 6F 09                 .o.
 ; ----------------------------------------------------------------------------
@@ -284,7 +284,7 @@ MapInteractionSystem_Branch_81FF:
 ; ----------------------------------------------------------------------------
         beq     MapInteractionSystem_Branch_823A; 821D F0 1B                    ..
 MapInteractionSystem_Branch_821F:
-        jsr     UpperFixedEngine_Entry_C8CC     ; 821F 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 821F 20 CC C8                  ..
         brk                                     ; 8222 00                       .
         db   $85,$FB                         ; 8223 85 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ MapInteractionSystem_Branch_821F:
 ; ----------------------------------------------------------------------------
         cmp     #$05                            ; 822F C9 05                    ..
         bcs     MapInteractionSystem_Branch_823A; 8231 B0 07                    ..
-        jsr     UpperFixedEngine_Entry_C8CC     ; 8233 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 8233 20 CC C8                  ..
         brk                                     ; 8236 00                       .
         db   $09,$6F,$0D                     ; 8237 09 6F 0D                 .o.
 ; ----------------------------------------------------------------------------
@@ -489,7 +489,7 @@ MapInteractionSystem_Entry_832D:
         brk                                     ; 833A 00                       .
         db   $5D,$3B                         ; 833B 5D 3B                    ];
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C8CC     ; 833D 4C CC C8                 L..
+        jmp     WaitForFreshButtonPress         ; 833D 4C CC C8                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8340:
         jmp     MapInteractionSystem_Entry_B3F3 ; 8340 4C F3 B3                 L..
@@ -498,7 +498,7 @@ MapInteractionSystem_Entry_8343:
         jmp     MapInteractionSystem_Entry_B2A6 ; 8343 4C A6 B2                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8346:
-        jsr     MapInteractionSystem_Entry_83D9 ; 8346 20 D9 83                  ..
+        jsr     GetFacingTileBehavior           ; 8346 20 D9 83                  ..
         cmp     #$14                            ; 8349 C9 14                    ..
         bcc     MapInteractionSystem_Branch_835B; 834B 90 0E                    ..
         cmp     #$24                            ; 834D C9 24                    .$
@@ -521,7 +521,7 @@ MapInteractionSystem_Entry_835D:
         bcs     MapInteractionSystem_Branch_8383; 8360 B0 21                    .!
         pha                                     ; 8362 48                       H
         jsr     MapInteractionSystem_Entry_9E8C ; 8363 20 8C 9E                  ..
-        jsr     MapInteractionSystem_Entry_83EC ; 8366 20 EC 83                  ..
+        jsr     FindFreeMapOverrideRecord       ; 8366 20 EC 83                  ..
         lda     $04                             ; 8369 A5 04                    ..
         sta     $6C0D,x                         ; 836B 9D 0D 6C                 ..l
         lda     $05                             ; 836E A5 05                    ..
@@ -572,7 +572,7 @@ MapInteractionSystem_Branch_8392:
         iny                                     ; 83B4 C8                       .
         lda     $53                             ; 83B5 A5 53                    .S
         jsr     MapInteractionSystem_Entry_9E8C ; 83B7 20 8C 9E                  ..
-        jsr     MapInteractionSystem_Entry_83EC ; 83BA 20 EC 83                  ..
+        jsr     FindFreeMapOverrideRecord       ; 83BA 20 EC 83                  ..
         lda     $04                             ; 83BD A5 04                    ..
         sta     $6C0D,x                         ; 83BF 9D 0D 6C                 ..l
         lda     $05                             ; 83C2 A5 05                    ..
@@ -587,18 +587,18 @@ MapInteractionSystem_Branch_8392:
 ; ----------------------------------------------------------------------------
         jmp     WaitForNmi                      ; 83D6 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_83D9:
-        jsr     MapInteractionSystem_Entry_81AE ; 83D9 20 AE 81                  ..
+GetFacingTileBehavior:
+        jsr     GetCoordinatesInFrontOfPlayer   ; 83D9 20 AE 81                  ..
         ldx     $51                             ; 83DC A6 51                    .Q
         ldy     $52                             ; 83DE A4 52                    .R
-        jsr     UpperFixedEngine_Entry_D3E6     ; 83E0 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 83E0 20 E6 D3                  ..
         and     #$1F                            ; 83E3 29 1F                    ).
         tax                                     ; 83E5 AA                       .
         lda     $6F40,x                         ; 83E6 BD 40 6F                 .@o
         and     #$7F                            ; 83E9 29 7F                    ).
         rts                                     ; 83EB 60                       `
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_83EC:
+FindFreeMapOverrideRecord:
         ldx     #$00                            ; 83EC A2 00                    ..
 MapInteractionSystem_Branch_83EE:
         lda     $6C0C,x                         ; 83EE BD 0C 6C                 ..l
@@ -705,7 +705,7 @@ MapInteractionSystem_Branch_847C:
         db   $0E,$DB,$EF                     ; 848F 0E DB EF                 ...
 ; ----------------------------------------------------------------------------
         lda     #$82                            ; 8492 A9 82                    ..
-        jsr     MapInteractionSystem_Entry_84BC ; 8494 20 BC 84                  ..
+        jsr     StartMapPresentationState       ; 8494 20 BC 84                  ..
 MapInteractionSystem_Branch_8497:
         brk                                     ; 8497 00                       .
         db   $27,$0F                         ; 8498 27 0F                    '.
@@ -732,11 +732,11 @@ MapInteractionSystem_Branch_84A3:
         db   $07,$6F,$29                     ; 84B3 07 6F 29                 .o)
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_84B6:
-        jsr     UpperFixedEngine_Entry_C8CC     ; 84B6 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; 84B6 20 CC C8                  ..
 MapInteractionSystem_Branch_84B9:
         jmp     UpperFixedEngine_Entry_D1F3     ; 84B9 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-MapInteractionSystem_Entry_84BC:
+StartMapPresentationState:
         sta     $0530                           ; 84BC 8D 30 05                 .0.
         ldx     #$01                            ; 84BF A2 01                    ..
         stx     $0531                           ; 84C1 8E 31 05                 .1.
@@ -822,7 +822,7 @@ MapInteractionSystem_Branch_852A:
         jsr     UpperFixedEngine_Entry_D542     ; 8531 20 42 D5                  B.
 MapInteractionSystem_Branch_8534:
         jsr     UpperFixedEngine_Entry_E06E     ; 8534 20 6E E0                  n.
-        jsr     UpperFixedEngine_Entry_D7D5     ; 8537 20 D5 D7                  ..
+        jsr     RenderPartyMapEntities          ; 8537 20 D5 D7                  ..
         jsr     WaitForNmi                      ; 853A 20 74 FF                  t.
         jsr     UpperFixedEngine_Entry_CBB4     ; 853D 20 B4 CB                  ..
         inc     $3C                             ; 8540 E6 3C                    .<
@@ -918,7 +918,7 @@ MapInteractionSystem_Entry_85A4:
         jsr     UpperFixedEngine_Entry_C5B9     ; 85DC 20 B9 C5                  ..
 MapInteractionSystem_Branch_85DF:
         ldx     #$09                            ; 85DF A2 09                    ..
-        jsr     UpperFixedEngine_Entry_D804     ; 85E1 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 85E1 20 04 D8                  ..
         lda     #$02                            ; 85E4 A9 02                    ..
         jsr     MapInteractionSystem_Entry_85EC ; 85E6 20 EC 85                  ..
         jmp     MapInteractionSystem_Entry_9C13 ; 85E9 4C 13 9C                 L..
@@ -935,7 +935,7 @@ MapInteractionSystem_Branch_85F5:
         pla                                     ; 85F9 68                       h
         pha                                     ; 85FA 48                       H
         tax                                     ; 85FB AA                       .
-        jsr     UpperFixedEngine_Entry_C90C     ; 85FC 20 0C C9                  ..
+        jsr     WaitFrames                      ; 85FC 20 0C C9                  ..
         pla                                     ; 85FF 68                       h
         dec     $51                             ; 8600 C6 51                    .Q
         bne     MapInteractionSystem_Branch_85F5; 8602 D0 F1                    ..
@@ -949,7 +949,7 @@ MapInteractionSystem_Branch_8606:
         lda     #$0A                            ; 8611 A9 0A                    ..
         sta     $6FE9                           ; 8613 8D E9 6F                 ..o
         ldx     #$09                            ; 8616 A2 09                    ..
-        jsr     UpperFixedEngine_Entry_D804     ; 8618 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 8618 20 04 D8                  ..
         jmp     WaitForNmi                      ; 861B 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_861E:
@@ -969,7 +969,7 @@ MapInteractionSystem_Entry_861E:
         lda     #$0A                            ; 8640 A9 0A                    ..
         sta     $6FE9                           ; 8642 8D E9 6F                 ..o
         ldx     #$09                            ; 8645 A2 09                    ..
-        jsr     UpperFixedEngine_Entry_D804     ; 8647 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 8647 20 04 D8                  ..
         lda     #$01                            ; 864A A9 01                    ..
         jsr     MapInteractionSystem_Entry_85EC ; 864C 20 EC 85                  ..
         lda     #$FF                            ; 864F A9 FF                    ..
@@ -1054,7 +1054,7 @@ MapInteractionSystem_Branch_86D7:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_86DD:
         jsr     UpperFixedEngine_Entry_E06E     ; 86DD 20 6E E0                  n.
-        jsr     UpperFixedEngine_Entry_D7D5     ; 86E0 20 D5 D7                  ..
+        jsr     RenderPartyMapEntities          ; 86E0 20 D5 D7                  ..
         jmp     UpperFixedEngine_Entry_CBB4     ; 86E3 4C B4 CB                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_86E6:
@@ -1117,7 +1117,7 @@ MapInteractionSystem_Entry_8730:
         brk                                     ; 8746 00                       .
         db   $0C,$BF                         ; 8747 0C BF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; 8749 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 8749 20 AF C5                  ..
         lda     $28                             ; 874C A5 28                    .(
         brk                                     ; 874E 00                       .
         db   $02,$87                         ; 874F 02 87                    ..
@@ -1138,7 +1138,7 @@ MapInteractionSystem_Entry_8730:
         brk                                     ; 8766 00                       .
         db   $03,$CF                         ; 8767 03 CF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_E501     ; 8769 20 01 E5                  ..
+        jsr     ResetMapEntityMotionState       ; 8769 20 01 E5                  ..
         jsr     UpperFixedEngine_Entry_DFF1     ; 876C 20 F1 DF                  ..
         ldx     #$88                            ; 876F A2 88                    ..
         jsr     MapInteractionSystem_Entry_888A ; 8771 20 8A 88                  ..
@@ -1158,7 +1158,7 @@ MapInteractionSystem_Entry_8730:
         brk                                     ; 878C 00                       .
         db   $03,$CF                         ; 878D 03 CF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_E501     ; 878F 20 01 E5                  ..
+        jsr     ResetMapEntityMotionState       ; 878F 20 01 E5                  ..
         jmp     UpperFixedEngine_Entry_DFF1     ; 8792 4C F1 DF                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8795:
@@ -1171,7 +1171,7 @@ MapInteractionSystem_Entry_8795:
 MapInteractionSystem_Branch_87A2:
         ldx     PlayerLocalX                    ; 87A2 A6 44                    .D
         ldy     PlayerLocalY                    ; 87A4 A4 45                    .E
-        jsr     UpperFixedEngine_Entry_D3E6     ; 87A6 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 87A6 20 E6 D3                  ..
         and     #$E0                            ; 87A9 29 E0                    ).
         sta     $46                             ; 87AB 85 46                    .F
 MapInteractionSystem_Branch_87AD:
@@ -1194,7 +1194,7 @@ MapInteractionSystem_Branch_87BE:
         pla                                     ; 87C9 68                       h
         pha                                     ; 87CA 48                       H
         jsr     MapInteractionSystem_Entry_87D7 ; 87CB 20 D7 87                  ..
-        jsr     UpperFixedEngine_Entry_C62D     ; 87CE 20 2D C6                  -.
+        jsr     RequestPpuUpdateAndWait         ; 87CE 20 2D C6                  -.
         pla                                     ; 87D1 68                       h
         tax                                     ; 87D2 AA                       .
         dex                                     ; 87D3 CA                       .
@@ -1240,7 +1240,7 @@ MapInteractionSystem_Branch_8816:
         sta     $00                           ; 8818 85 00                    ..
         lda     #$1D                            ; 881A A9 1D                    ..
         sta     $01                             ; 881C 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; 881E 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; 881E 20 62 C6                  b.
         ldx     $050A                           ; 8821 AE 0A 05                 ...
         lda     $1C                             ; 8824 A5 1C                    ..
         ora     #$80                            ; 8826 09 80                    ..
@@ -1827,7 +1827,7 @@ MapInteractionSystem_Branch_8C57:
         cmp     #$41                            ; 8C66 C9 41                    .A
         bne     MapInteractionSystem_Branch_8C6F; 8C68 D0 05                    ..
         ldx     #$28                            ; 8C6A A2 28                    .(
-        jsr     UpperFixedEngine_Entry_C90C     ; 8C6C 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8C6C 20 0C C9                  ..
 MapInteractionSystem_Branch_8C6F:
         lda     #$01                            ; 8C6F A9 01                    ..
         sta     $57                             ; 8C71 85 57                    .W
@@ -1961,7 +1961,7 @@ MapInteractionSystem_Entry_8D2C:
         pla                                     ; 8D3B 68                       h
         pha                                     ; 8D3C 48                       H
         tax                                     ; 8D3D AA                       .
-        jsr     UpperFixedEngine_Entry_C90C     ; 8D3E 20 0C C9                  ..
+        jsr     WaitFrames                      ; 8D3E 20 0C C9                  ..
         pla                                     ; 8D41 68                       h
         tay                                     ; 8D42 A8                       .
         pla                                     ; 8D43 68                       h
@@ -2030,14 +2030,14 @@ MapInteractionSystem_Branch_8D8A:
         sta     $03                             ; 8DAF 85 03                    ..
         ldx     #$00                            ; 8DB1 A2 00                    ..
         ldy     #$3C                            ; 8DB3 A0 3C                    .<
-        jsr     UpperFixedEngine_Entry_C73E     ; 8DB5 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8DB5 20 3E C7                  >.
         lda     $03                             ; 8DB8 A5 03                    ..
         clc                                     ; 8DBA 18                       .
         adc     #$08                            ; 8DBB 69 08                    i.
         sta     $03                             ; 8DBD 85 03                    ..
         ldx     #$00                            ; 8DBF A2 00                    ..
         iny                                     ; 8DC1 C8                       .
-        jsr     UpperFixedEngine_Entry_C73E     ; 8DC2 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8DC2 20 3E C7                  >.
         lda     $03                             ; 8DC5 A5 03                    ..
         sec                                     ; 8DC7 38                       8
         sbc     #$08                            ; 8DC8 E9 08                    ..
@@ -2048,14 +2048,14 @@ MapInteractionSystem_Branch_8D8A:
         sta     $00                           ; 8DD1 85 00                    ..
         ldx     #$00                            ; 8DD3 A2 00                    ..
         iny                                     ; 8DD5 C8                       .
-        jsr     UpperFixedEngine_Entry_C73E     ; 8DD6 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8DD6 20 3E C7                  >.
         lda     $03                             ; 8DD9 A5 03                    ..
         clc                                     ; 8DDB 18                       .
         adc     #$08                            ; 8DDC 69 08                    i.
         sta     $03                             ; 8DDE 85 03                    ..
         ldx     #$00                            ; 8DE0 A2 00                    ..
         iny                                     ; 8DE2 C8                       .
-        jsr     UpperFixedEngine_Entry_C73E     ; 8DE3 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8DE3 20 3E C7                  >.
         brk                                     ; 8DE6 00                       .
         db   $16,$CB,$40                     ; 8DE7 16 CB 40                 ..@
 ; ----------------------------------------------------------------------------
@@ -2067,7 +2067,7 @@ MapInteractionSystem_Branch_8DED:
         ldy     #$3C                            ; 8DED A0 3C                    .<
 MapInteractionSystem_Branch_8DEF:
         ldx     #$00                            ; 8DEF A2 00                    ..
-        jsr     UpperFixedEngine_Entry_C770     ; 8DF1 20 70 C7                  p.
+        jsr     CopyOamSpriteRecord             ; 8DF1 20 70 C7                  p.
         tya                                     ; 8DF4 98                       .
         sec                                     ; 8DF5 38                       8
         sbc     #$3C                            ; 8DF6 E9 3C                    .<
@@ -2089,7 +2089,7 @@ MapInteractionSystem_Branch_8DEF:
         adc     $8E55,x                         ; 8E0D 7D 55 8E                 }U.
         sta     $03                             ; 8E10 85 03                    ..
         ldx     #$00                            ; 8E12 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_C73E     ; 8E14 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8E14 20 3E C7                  >.
         iny                                     ; 8E17 C8                       .
         cpy     #$40                            ; 8E18 C0 40                    .@
         bcc     MapInteractionSystem_Branch_8DEF; 8E1A 90 D3                    ..
@@ -2107,7 +2107,7 @@ MapInteractionSystem_Branch_8DEF:
         ldy     #$3C                            ; 8E30 A0 3C                    .<
 MapInteractionSystem_Branch_8E32:
         ldx     #$00                            ; 8E32 A2 00                    ..
-        jsr     UpperFixedEngine_Entry_C73E     ; 8E34 20 3E C7                  >.
+        jsr     CopySpriteRecordToOam           ; 8E34 20 3E C7                  >.
         iny                                     ; 8E37 C8                       .
         cpy     #$40                            ; 8E38 C0 40                    .@
         bcc     MapInteractionSystem_Branch_8E32; 8E3A 90 F6                    ..
@@ -2189,7 +2189,7 @@ MapInteractionSystem_Branch_8F02:
         ldx     PlayerLocalX                    ; 8F17 A6 44                    .D
         inx                                     ; 8F19 E8                       .
         ldy     PlayerLocalY                    ; 8F1A A4 45                    .E
-        jsr     UpperFixedEngine_Entry_D3E6     ; 8F1C 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 8F1C 20 E6 D3                  ..
         and     #$1F                            ; 8F1F 29 1F                    ).
         jsr     MapInteractionSystem_Entry_8F6B ; 8F21 20 6B 8F                  k.
         bcc     MapInteractionSystem_Branch_8F2C; 8F24 90 06                    ..
@@ -2199,7 +2199,7 @@ MapInteractionSystem_Branch_8F2C:
         ldx     $053E                           ; 8F2C AE 3E 05                 .>.
         dec     $053F                           ; 8F2F CE 3F 05                 .?.
         ldy     $053F                           ; 8F32 AC 3F 05                 .?.
-        jsr     UpperFixedEngine_Entry_D3E6     ; 8F35 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 8F35 20 E6 D3                  ..
         sta     $0540                           ; 8F38 8D 40 05                 .@.
         brk                                     ; 8F3B 00                       .
         db   $A9,$FB                         ; 8F3C A9 FB                    ..
@@ -2232,7 +2232,7 @@ MapInteractionSystem_Branch_8F62:
         rts                                     ; 8F62 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_8F63:
-        jsr     UpperFixedEngine_Entry_D3E6     ; 8F63 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 8F63 20 E6 D3                  ..
         and     #$1F                            ; 8F66 29 1F                    ).
         sta     $0541                           ; 8F68 8D 41 05                 .A.
 MapInteractionSystem_Entry_8F6B:
@@ -2428,7 +2428,7 @@ MapInteractionSystem_Entry_9083:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9090:
         jsr     FixedTrampoline07               ; 9090 20 16 C0                  ..
-        jsr     UpperFixedEngine_Entry_C5AF     ; 9093 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 9093 20 AF C5                  ..
         sec                                     ; 9096 38                       8
 MapInteractionSystem_Entry_9097:
         jsr     FixedTrampoline01               ; 9097 20 04 C0                  ..
@@ -2438,7 +2438,7 @@ MapInteractionSystem_Entry_9097:
         db   $11,$87                         ; 90A0 11 87                    ..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_90A2:
-        jsr     UpperFixedEngine_Entry_C54E     ; 90A2 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 90A2 20 4E C5                  N.
         jmp     UpperFixedEngine_Entry_C58F     ; 90A5 4C 8F C5                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_90A8:
@@ -2454,7 +2454,7 @@ MapInteractionSystem_Entry_90AF:
         sta     $47                             ; 90BA 85 47                    .G
         ldx     PlayerLocalX                    ; 90BC A6 44                    .D
         ldy     PlayerLocalY                    ; 90BE A4 45                    .E
-        jsr     UpperFixedEngine_Entry_D3E6     ; 90C0 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; 90C0 20 E6 D3                  ..
         and     #$E0                            ; 90C3 29 E0                    ).
         sta     $46                             ; 90C5 85 46                    .F
         rts                                     ; 90C7 60                       `
@@ -2475,7 +2475,7 @@ MapInteractionSystem_Branch_90D8:
         rts                                     ; 90E1 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_90E2:
-        jsr     UpperFixedEngine_Entry_C5AF     ; 90E2 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 90E2 20 AF C5                  ..
         brk                                     ; 90E5 00                       .
         db   $00,$CF                         ; 90E6 00 CF                    ..
 ; ----------------------------------------------------------------------------
@@ -2932,7 +2932,7 @@ MapInteractionSystem_Branch_9441:
         sta     $054E                           ; 9443 8D 4E 05                 .N.
         sta     $054F                           ; 9446 8D 4F 05                 .O.
         sta     $0598                           ; 9449 8D 98 05                 ...
-        jsr     UpperFixedEngine_Entry_C5AF     ; 944C 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 944C 20 AF C5                  ..
         lda     #$00                            ; 944F A9 00                    ..
         sta     $28                             ; 9451 85 28                    .(
         brk                                     ; 9453 00                       .
@@ -2940,7 +2940,7 @@ MapInteractionSystem_Branch_9441:
 ; ----------------------------------------------------------------------------
         jsr     MapInteractionSystem_Entry_A289 ; 9456 20 89 A2                  ..
         jsr     MapInteractionSystem_Entry_96B7 ; 9459 20 B7 96                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; 945C 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 945C 20 4E C5                  N.
         jsr     UpperFixedEngine_Entry_C58F     ; 945F 20 8F C5                  ..
         jsr     MapInteractionSystem_Entry_AAB4 ; 9462 20 B4 AA                  ..
         jsr     MapInteractionSystem_Entry_958A ; 9465 20 8A 95                  ..
@@ -3149,10 +3149,10 @@ MapInteractionSystem_Entry_9582:
 MapInteractionSystem_Entry_958A:
         lda     #$00                            ; 958A A9 00                    ..
         sta     $0539                           ; 958C 8D 39 05                 .9.
-        jsr     UpperFixedEngine_Entry_C54E     ; 958F 20 4E C5                  N.
+        jsr     ResetDisplayState               ; 958F 20 4E C5                  N.
 MapInteractionSystem_Entry_9592:
         jsr     FixedTrampoline03               ; 9592 20 0A C0                  ..
-        jsr     UpperFixedEngine_Entry_E501     ; 9595 20 01 E5                  ..
+        jsr     ResetMapEntityMotionState       ; 9595 20 01 E5                  ..
         jmp     UpperFixedEngine_Entry_DFF1     ; 9598 4C F1 DF                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_959B:
@@ -3264,7 +3264,7 @@ MapInteractionSystem_Branch_9642:
         rts                                     ; 9647 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9648:
-        jsr     UpperFixedEngine_Entry_C5AF     ; 9648 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; 9648 20 AF C5                  ..
         ldx     #$00                            ; 964B A2 00                    ..
         jsr     MapInteractionSystem_Entry_966C ; 964D 20 6C 96                  l.
         brk                                     ; 9650 00                       .
@@ -3509,18 +3509,18 @@ MapInteractionSystem_Branch_97EF:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_97F5:
         ldx     $053A                           ; 97F5 AE 3A 05                 .:.
-        jsr     UpperFixedEngine_Entry_D804     ; 97F8 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 97F8 20 04 D8                  ..
         ldx     $053B                           ; 97FB AE 3B 05                 .;.
-        jsr     UpperFixedEngine_Entry_D804     ; 97FE 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 97FE 20 04 D8                  ..
         ldx     $053C                           ; 9801 AE 3C 05                 .<.
-        jsr     UpperFixedEngine_Entry_D804     ; 9804 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 9804 20 04 D8                  ..
         ldx     $053D                           ; 9807 AE 3D 05                 .=.
-        jsr     UpperFixedEngine_Entry_D804     ; 980A 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 980A 20 04 D8                  ..
         rts                                     ; 980D 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_980E:
         ldx     $053A,y                         ; 980E BE 3A 05                 .:.
-        jsr     UpperFixedEngine_Entry_D804     ; 9811 20 04 D8                  ..
+        jsr     RenderMapEntity                 ; 9811 20 04 D8                  ..
         jmp     WaitForNmi                      ; 9814 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9817:
@@ -3660,7 +3660,7 @@ MapInteractionSystem_Entry_9902:
         beq     MapInteractionSystem_Branch_991E; 9907 F0 15                    ..
         txa                                     ; 9909 8A                       .
         pha                                     ; 990A 48                       H
-        jsr     UpperFixedEngine_Entry_C891     ; 990B 20 91 C8                  ..
+        jsr     NextRandomByte                  ; 990B 20 91 C8                  ..
         and     #$07                            ; 990E 29 07                    ).
         bne     MapInteractionSystem_Branch_991C; 9910 D0 0A                    ..
         pla                                     ; 9912 68                       h
@@ -4327,7 +4327,7 @@ MapInteractionSystem_Entry_9D93:
         jsr     UpperFixedEngine_Entry_E06E     ; 9D93 20 6E E0                  n.
 MapInteractionSystem_Entry_9D96:
         jsr     UpperFixedEngine_Entry_CBB4     ; 9D96 20 B4 CB                  ..
-        jsr     UpperFixedEngine_Entry_D7D5     ; 9D99 20 D5 D7                  ..
+        jsr     RenderPartyMapEntities          ; 9D99 20 D5 D7                  ..
         jsr     WaitForNmi                      ; 9D9C 20 74 FF                  t.
         inc     $3C                             ; 9D9F E6 3C                    .<
         rts                                     ; 9DA1 60                       `
@@ -4599,13 +4599,13 @@ MapInteractionSystem_Branch_9F0C:
         pla                                     ; 9F35 68                       h
         tax                                     ; 9F36 AA                       .
         lda     $76C0,x                         ; 9F37 BD C0 76                 ..v
-        jsr     UpperFixedEngine_Entry_C727     ; 9F3A 20 27 C7                  '.
-        jmp     UpperFixedEngine_Entry_C626     ; 9F3D 4C 26 C6                 L&.
+        jsr     QueueNametableAttributeUpdate   ; 9F3A 20 27 C7                  '.
+        jmp     RequestPpuUpdate                ; 9F3D 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9F40:
         lda     $7600,y                         ; 9F40 B9 00 76                 ..v
         iny                                     ; 9F43 C8                       .
-        jmp     UpperFixedEngine_Entry_C65A     ; 9F44 4C 5A C6                 LZ.
+        jmp     QueueNametableTileUpdate        ; 9F44 4C 5A C6                 LZ.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_9F47:
         php                                     ; 9F47 08                       .
@@ -4664,14 +4664,14 @@ MapInteractionSystem_Branch_9F97:
         iny                                     ; 9F97 C8                       .
         dec     $00                           ; 9F98 C6 00                    ..
         bne     MapInteractionSystem_Branch_9F81; 9F9A D0 E5                    ..
-        jsr     UpperFixedEngine_Entry_E66F     ; 9F9C 20 6F E6                  o.
+        jsr     AddMapWidthToPointer            ; 9F9C 20 6F E6                  o.
         dec     $01                             ; 9F9F C6 01                    ..
         bne     MapInteractionSystem_Branch_9F7B; 9FA1 D0 D8                    ..
         jmp     MapInteractionSystem_Branch_A02B; 9FA3 4C 2B A0                 L+.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_9FA6:
         sta     $05                             ; 9FA6 85 05                    ..
-        jsr     UpperFixedEngine_Entry_E66F     ; 9FA8 20 6F E6                  o.
+        jsr     AddMapWidthToPointer            ; 9FA8 20 6F E6                  o.
         lda     $01                             ; 9FAB A5 01                    ..
         cmp     #$01                            ; 9FAD C9 01                    ..
         bne     MapInteractionSystem_Branch_9FB7; 9FAF D0 06                    ..
@@ -4716,7 +4716,7 @@ MapInteractionSystem_Branch_9FE7:
         and     #$07                            ; 9FED 29 07                    ).
         bne     MapInteractionSystem_Branch_A010; 9FEF D0 1F                    ..
 MapInteractionSystem_Branch_9FF1:
-        jsr     UpperFixedEngine_Entry_E67B     ; 9FF1 20 7B E6                  {.
+        jsr     SubtractMapWidthFromPointer     ; 9FF1 20 7B E6                  {.
         lda     $05                             ; 9FF4 A5 05                    ..
         and     #$03                            ; 9FF6 29 03                    ).
         sec                                     ; 9FF8 38                       8
@@ -4734,7 +4734,7 @@ MapInteractionSystem_Branch_A007:
         cmp     $0520                           ; A00B CD 20 05                 . .
         beq     MapInteractionSystem_Branch_9FE5; A00E F0 D5                    ..
 MapInteractionSystem_Branch_A010:
-        jsr     UpperFixedEngine_Entry_E67B     ; A010 20 7B E6                  {.
+        jsr     SubtractMapWidthFromPointer     ; A010 20 7B E6                  {.
         jmp     MapInteractionSystem_Branch_9F97; A013 4C 97 9F                 L..
 ; ----------------------------------------------------------------------------
         db   $25,$26,$27,$28,$2B,$FF         ; A016 25 26 27 28 2B FF        %&'(+.
@@ -4892,7 +4892,7 @@ MapInteractionSystem_Branch_A105:
         sbc     #$01                            ; A11B E9 01                    ..
         ldy     #$00                            ; A11D A0 00                    ..
         ldx     #$49                            ; A11F A2 49                    .I
-        jsr     UpperFixedEngine_Entry_C807     ; A121 20 07 C8                  ..
+        jsr     SubtractWordFromPointer         ; A121 20 07 C8                  ..
         pla                                     ; A124 68                       h
         tay                                     ; A125 A8                       .
         pla                                     ; A126 68                       h
@@ -4999,8 +4999,8 @@ MapInteractionSystem_Entry_A1C9:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A1D2:
         jsr     UpperFixedEngine_Entry_C5C5     ; A1D2 20 C5 C5                  ..
-        jsr     UpperFixedEngine_Entry_C54E     ; A1D5 20 4E C5                  N.
-        jsr     UpperFixedEngine_Entry_C5AF     ; A1D8 20 AF C5                  ..
+        jsr     ResetDisplayState               ; A1D5 20 4E C5                  N.
+        jsr     SuspendRenderingUpdates         ; A1D8 20 AF C5                  ..
         lda     #$00                            ; A1DB A9 00                    ..
         sta     $6BDE                           ; A1DD 8D DE 6B                 ..k
         lda     $0553                           ; A1E0 AD 53 05                 .S.
@@ -5099,14 +5099,14 @@ MapInteractionSystem_Branch_A276:
         jsr     MapInteractionSystem_Entry_A289 ; A276 20 89 A2                  ..
         lda     #$00                            ; A279 A9 00                    ..
         sta     $16                             ; A27B 85 16                    ..
-        jmp     UpperFixedEngine_Entry_C5DE     ; A27D 4C DE C5                 L..
+        jmp     BuildPaletteUpdateCommand       ; A27D 4C DE C5                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A280:
         jsr     MapInteractionSystem_Entry_A296 ; A280 20 96 A2                  ..
         brk                                     ; A283 00                       .
         db   $27,$0F                         ; A284 27 0F                    '.
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Entry_C626     ; A286 4C 26 C6                 L&.
+        jmp     RequestPpuUpdate                ; A286 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A289:
         jsr     MapInteractionSystem_Entry_A296 ; A289 20 96 A2                  ..
@@ -5446,7 +5446,7 @@ MapInteractionSystem_Entry_A4C4:
         rts                                     ; A4D4 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A4D5:
-        jsr     UpperFixedEngine_Entry_C54E     ; A4D5 20 4E C5                  N.
+        jsr     ResetDisplayState               ; A4D5 20 4E C5                  N.
         brk                                     ; A4D8 00                       .
         db   $07,$6F,$43                     ; A4D9 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5517,7 +5517,7 @@ MapInteractionSystem_Entry_A547:
         pha                                     ; A549 48                       H
         tya                                     ; A54A 98                       .
         pha                                     ; A54B 48                       H
-        jsr     UpperFixedEngine_Entry_C54E     ; A54C 20 4E C5                  N.
+        jsr     ResetDisplayState               ; A54C 20 4E C5                  N.
         brk                                     ; A54F 00                       .
         db   $07,$6F,$43                     ; A550 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -5613,7 +5613,7 @@ MapInteractionSystem_Branch_A5F7:
         and     $6F80,x                         ; A600 3D 80 6F                 =.o
         cmp     #$FF                            ; A603 C9 FF                    ..
         beq     MapInteractionSystem_Branch_A614; A605 F0 0D                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; A607 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; A607 20 E6 D3                  ..
         ldx     $51                             ; A60A A6 51                    .Q
         sta     $7140,x                         ; A60C 9D 40 71                 .@q
         inx                                     ; A60F E8                       .
@@ -5867,7 +5867,7 @@ MapInteractionSystem_Branch_A808:
 MapInteractionSystem_Entry_A809:
         lda     $050B                           ; A809 AD 0B 05                 ...
         beq     MapInteractionSystem_Branch_A811; A80C F0 03                    ..
-        jsr     UpperFixedEngine_Entry_C626     ; A80E 20 26 C6                  &.
+        jsr     RequestPpuUpdate                ; A80E 20 26 C6                  &.
 MapInteractionSystem_Branch_A811:
         jmp     WaitForNmi                      ; A811 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
@@ -5914,7 +5914,7 @@ MapInteractionSystem_Entry_A861:
         sta     $00                           ; A863 85 00                    ..
         lda     #$0E                            ; A865 A9 0E                    ..
         sta     $01                             ; A867 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; A869 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; A869 20 62 C6                  b.
         lda     #$03                            ; A86C A9 03                    ..
         sta     $51                             ; A86E 85 51                    .Q
         lda     #$01                            ; A870 A9 01                    ..
@@ -5946,7 +5946,7 @@ MapInteractionSystem_Branch_A88B:
         sta     $54                             ; A898 85 54                    .T
         lda     #$00                            ; A89A A9 00                    ..
         sta     $01                             ; A89C 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; A89E 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; A89E 20 62 C6                  b.
         lda     #$02                            ; A8A1 A9 02                    ..
         sta     $51                             ; A8A3 85 51                    .Q
         lda     #$0F                            ; A8A5 A9 0F                    ..
@@ -5957,7 +5957,7 @@ MapInteractionSystem_Entry_A8AA:
         lda     #$00                            ; A8AA A9 00                    ..
         sta     $00                           ; A8AC 85 00                    ..
         sta     $01                             ; A8AE 85 01                    ..
-        jsr     UpperFixedEngine_Entry_C662     ; A8B0 20 62 C6                  b.
+        jsr     ComputeNametableTileAddress     ; A8B0 20 62 C6                  b.
         lda     #$02                            ; A8B3 A9 02                    ..
         sta     $51                             ; A8B5 85 51                    .Q
         lda     #$0E                            ; A8B7 A9 0E                    ..
@@ -5977,7 +5977,7 @@ MapInteractionSystem_Entry_A8AA:
 MapInteractionSystem_Entry_A8CE:
         ldx     $53                             ; A8CE A6 53                    .S
         ldy     $54                             ; A8D0 A4 54                    .T
-        jmp     UpperFixedEngine_Entry_D3E6     ; A8D2 4C E6 D3                 L..
+        jmp     GetMapTileAtCoordinates         ; A8D2 4C E6 D3                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_A8D5:
         pha                                     ; A8D5 48                       H
@@ -6330,7 +6330,7 @@ MapInteractionSystem_Branch_AAC9:
         beq     MapInteractionSystem_Branch_AAFC; AAE8 F0 12                    ..
         ldx     PlayerLocalX                    ; AAEA A6 44                    .D
         ldy     PlayerLocalY                    ; AAEC A4 45                    .E
-        jsr     UpperFixedEngine_Entry_D3E6     ; AAEE 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; AAEE 20 E6 D3                  ..
         pha                                     ; AAF1 48                       H
         lda     $0534                           ; AAF2 AD 34 05                 .4.
         and     #$0F                            ; AAF5 29 0F                    ).
@@ -6608,10 +6608,10 @@ MapInteractionSystem_Entry_ACD9:
         tay                                     ; ACDF A8                       .
         lda     $41                             ; ACE0 A5 41                    .A
         bpl     MapInteractionSystem_Branch_ACE7; ACE2 10 03                    ..
-        jmp     UpperFixedEngine_Entry_D3E6     ; ACE4 4C E6 D3                 L..
+        jmp     GetMapTileAtCoordinates         ; ACE4 4C E6 D3                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_ACE7:
-        jmp     UpperFixedEngine_Entry_D251     ; ACE7 4C 51 D2                 LQ.
+        jmp     ReadWorldMapTile                ; ACE7 4C 51 D2                 LQ.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_ACEA:
         lda     $7000                           ; ACEA AD 00 70                 ..p
@@ -6742,7 +6742,7 @@ MapInteractionSystem_Branch_ADCE:
         lda     $0553                           ; ADD3 AD 53 05                 .S.
         and     #$7F                            ; ADD6 29 7F                    ).
         sta     $0553                           ; ADD8 8D 53 05                 .S.
-        jsr     UpperFixedEngine_Entry_C5AF     ; ADDB 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; ADDB 20 AF C5                  ..
         jsr     MapInteractionSystem_Entry_AB6B ; ADDE 20 6B AB                  k.
         jsr     MapInteractionSystem_Entry_9648 ; ADE1 20 48 96                  H.
         jsr     MapInteractionSystem_Entry_97F5 ; ADE4 20 F5 97                  ..
@@ -6763,7 +6763,7 @@ MapInteractionSystem_Entry_ADED:
         brk                                     ; AE01 00                       .
         db   $0C,$BF                         ; AE02 0C BF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     UpperFixedEngine_Entry_C5AF     ; AE04 20 AF C5                  ..
+        jsr     SuspendRenderingUpdates         ; AE04 20 AF C5                  ..
         jsr     MapInteractionSystem_Entry_9799 ; AE07 20 99 97                  ..
         jsr     MapInteractionSystem_Entry_AB6B ; AE0A 20 6B AB                  k.
         jsr     MapInteractionSystem_Entry_9648 ; AE0D 20 48 96                  H.
@@ -7028,7 +7028,7 @@ MapInteractionSystem_Entry_B02F:
         cmp     #$09                            ; B04E C9 09                    ..
         bcc     MapInteractionSystem_Branch_B061; B050 90 0F                    ..
 MapInteractionSystem_Branch_B052:
-        jsr     UpperFixedEngine_Entry_C891     ; B052 20 91 C8                  ..
+        jsr     NextRandomByte                  ; B052 20 91 C8                  ..
         cmp     #$C0                            ; B055 C9 C0                    ..
         bcc     MapInteractionSystem_Branch_B061; B057 90 08                    ..
         lda     #$25                            ; B059 A9 25                    .%
@@ -7527,7 +7527,7 @@ MapInteractionSystem_Branch_B35A:
         jmp     MapInteractionSystem_Branch_B2DE; B35A 4C DE B2                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_B35D:
-        jsr     MapInteractionSystem_Entry_83D9 ; B35D 20 D9 83                  ..
+        jsr     GetFacingTileBehavior           ; B35D 20 D9 83                  ..
         sta     $00                           ; B360 85 00                    ..
         cmp     #$14                            ; B362 C9 14                    ..
         bcc     MapInteractionSystem_Branch_B36C; B364 90 06                    ..
@@ -7630,7 +7630,7 @@ MapInteractionSystem_Entry_B3ED:
 MapInteractionSystem_Entry_B3F3:
         jsr     MapInteractionSystem_Entry_B3FE ; B3F3 20 FE B3                  ..
         bcs     MapInteractionSystem_Branch_B3FB; B3F6 B0 03                    ..
-        jsr     UpperFixedEngine_Entry_C8CC     ; B3F8 20 CC C8                  ..
+        jsr     WaitForFreshButtonPress         ; B3F8 20 CC C8                  ..
 MapInteractionSystem_Branch_B3FB:
         jmp     UpperFixedEngine_Entry_D1F3     ; B3FB 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
@@ -8443,7 +8443,7 @@ MapInteractionSystem_Entry_B87C:
         beq     MapInteractionSystem_Branch_B8AA; B884 F0 24                    .$
         ldx     #$14                            ; B886 A2 14                    ..
         ldy     #$0B                            ; B888 A0 0B                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; B88A 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; B88A 20 E6 D3                  ..
         and     #$1F                            ; B88D 29 1F                    ).
         cmp     #$03                            ; B88F C9 03                    ..
         beq     MapInteractionSystem_Branch_B8AA; B891 F0 17                    ..
@@ -8473,7 +8473,7 @@ MapInteractionSystem_Entry_B8AD:
         bne     MapInteractionSystem_Branch_B8AA; B8B1 D0 F7                    ..
         ldx     #$0E                            ; B8B3 A2 0E                    ..
         ldy     #$04                            ; B8B5 A0 04                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; B8B7 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; B8B7 20 E6 D3                  ..
         and     #$1F                            ; B8BA 29 1F                    ).
         cmp     #$03                            ; B8BC C9 03                    ..
         beq     MapInteractionSystem_Branch_B8AA; B8BE F0 EA                    ..
@@ -8716,7 +8716,7 @@ MapInteractionSystem_Branch_BA0E:
         jsr     UpperFixedEngine_Entry_D1F3     ; BA17 20 F3 D1                  ..
         ldx     #$0B                            ; BA1A A2 0B                    ..
         ldy     #$12                            ; BA1C A0 12                    ..
-        jsr     UpperFixedEngine_Entry_D3E6     ; BA1E 20 E6 D3                  ..
+        jsr     GetMapTileAtCoordinates         ; BA1E 20 E6 D3                  ..
         and     #$1F                            ; BA21 29 1F                    ).
         cmp     #$0A                            ; BA23 C9 0A                    ..
         beq     MapInteractionSystem_Branch_BA33; BA25 F0 0C                    ..
@@ -8757,11 +8757,11 @@ MapInteractionSystem_Branch_BA47:
         cpx     #$10                            ; BA5A E0 10                    ..
         bne     MapInteractionSystem_Branch_BA47; BA5C D0 E9                    ..
         ldx     #$02                            ; BA5E A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BA60 20 0C C9                  ..
+        jsr     WaitFrames                      ; BA60 20 0C C9                  ..
         dec     $00                           ; BA63 C6 00                    ..
         bne     MapInteractionSystem_Branch_BA45; BA65 D0 DE                    ..
         ldx     #$05                            ; BA67 A2 05                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BA69 20 0C C9                  ..
+        jsr     WaitFrames                      ; BA69 20 0C C9                  ..
         lda     #$08                            ; BA6C A9 08                    ..
         sta     $00                           ; BA6E 85 00                    ..
 MapInteractionSystem_Branch_BA70:
@@ -8781,7 +8781,7 @@ MapInteractionSystem_Branch_BA72:
         cpx     #$10                            ; BA8B E0 10                    ..
         bne     MapInteractionSystem_Branch_BA72; BA8D D0 E3                    ..
         ldx     #$02                            ; BA8F A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BA91 20 0C C9                  ..
+        jsr     WaitFrames                      ; BA91 20 0C C9                  ..
         dec     $00                           ; BA94 C6 00                    ..
         bne     MapInteractionSystem_Branch_BA70; BA96 D0 D8                    ..
         brk                                     ; BA98 00                       .
@@ -8810,7 +8810,7 @@ MapInteractionSystem_Branch_BAAF:
         cpx     #$10                            ; BAC2 E0 10                    ..
         bne     MapInteractionSystem_Branch_BAAF; BAC4 D0 E9                    ..
         ldx     #$02                            ; BAC6 A2 02                    ..
-        jsr     UpperFixedEngine_Entry_C90C     ; BAC8 20 0C C9                  ..
+        jsr     WaitFrames                      ; BAC8 20 0C C9                  ..
         dec     $00                           ; BACB C6 00                    ..
         bne     MapInteractionSystem_Branch_BAAD; BACD D0 DE                    ..
         rts                                     ; BACF 60                       `
@@ -8818,10 +8818,10 @@ MapInteractionSystem_Branch_BAAF:
         db   $0C,$09,$0D,$0E,$08,$0A,$0B     ; BAD0 0C 09 0D 0E 08 0A 0B     .......
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_BAD7:
-        jsr     MapInteractionSystem_Entry_81AE ; BAD7 20 AE 81                  ..
+        jsr     GetCoordinatesInFrontOfPlayer   ; BAD7 20 AE 81                  ..
         ldx     $51                             ; BADA A6 51                    .Q
         ldy     $52                             ; BADC A4 52                    .R
-        jsr     UpperFixedEngine_Entry_D251     ; BADE 20 51 D2                  Q.
+        jsr     ReadWorldMapTile                ; BADE 20 51 D2                  Q.
         and     #$1F                            ; BAE1 29 1F                    ).
         tax                                     ; BAE3 AA                       .
         lda     $6F40,x                         ; BAE4 BD 40 6F                 .@o
@@ -8831,7 +8831,7 @@ MapInteractionSystem_Entry_BAD7:
 MapInteractionSystem_Entry_BAEA:
         bit     $41                             ; BAEA 24 41                    $A
         bpl     MapInteractionSystem_Branch_BAF4; BAEC 10 06                    ..
-        jsr     MapInteractionSystem_Entry_83D9 ; BAEE 20 D9 83                  ..
+        jsr     GetFacingTileBehavior           ; BAEE 20 D9 83                  ..
         jmp     MapInteractionSystem_Branch_BAF7; BAF1 4C F7 BA                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_BAF4:
@@ -8852,7 +8852,7 @@ MapInteractionSystem_Entry_BB07:
         jmp     MapInteractionSystem_Branch_BB10; BB0A 4C 10 BB                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Entry_BB0D:
-        jsr     MapInteractionSystem_Entry_83D9 ; BB0D 20 D9 83                  ..
+        jsr     GetFacingTileBehavior           ; BB0D 20 D9 83                  ..
 MapInteractionSystem_Branch_BB10:
         ldx     #$00                            ; BB10 A2 00                    ..
 MapInteractionSystem_Branch_BB12:
@@ -8915,7 +8915,7 @@ MapInteractionSystem_Entry_BB52:
         bpl     MapInteractionSystem_Branch_BB63; BB5F 10 02                    ..
         ldy     #$00                            ; BB61 A0 00                    ..
 MapInteractionSystem_Branch_BB63:
-        jsr     MapInteractionSystem_Entry_81AE ; BB63 20 AE 81                  ..
+        jsr     GetCoordinatesInFrontOfPlayer   ; BB63 20 AE 81                  ..
         lda     $BBB6,y                         ; BB66 B9 B6 BB                 ...
         sta     $00                           ; BB69 85 00                    ..
         lda     $BBB7,y                         ; BB6B B9 B7 BB                 ...
