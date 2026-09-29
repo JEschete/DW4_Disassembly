@@ -1310,7 +1310,7 @@ BattlePresentation_Branch_8881:
         asl     a                               ; 8881 0A                       .
         sta     $94                             ; 8882 85 94                    ..
         sta     $95                             ; 8884 85 95                    ..
-        lda     $72E4                           ; 8886 AD E4 72                 ..r
+        lda     BattleModeFlags                 ; 8886 AD E4 72                 ..r
         bmi     BattlePresentation_Branch_88BF  ; 8889 30 34                    04
         jsr     SelectPartyGroupOffset          ; 888B 20 32 8A                  2.
         ldy     #$03                            ; 888E A0 03                    ..
@@ -4935,7 +4935,7 @@ BattlePresentation_Branch_A26D:
         jmp     FinishSpecialBattleActionScan   ; A273 4C 21 A2                 L!.
 ; ----------------------------------------------------------------------------
 CheckBattleActionCountThreshold:
-        lda     $72E7                           ; A276 AD E7 72                 ..r
+        lda     BattleActionFlags               ; A276 AD E7 72                 ..r
         and     #$10                            ; A279 29 10                    ).
         bne     BattlePresentation_Branch_A2E5  ; A27B D0 68                    .h
         lda     #$00                            ; A27D A9 00                    ..
@@ -5476,7 +5476,7 @@ CanUseBattlePresentationSlot:
         lda     $6E80                           ; A5FC AD 80 6E                 ..n
         cmp     #$05                            ; A5FF C9 05                    ..
         beq     BattlePresentation_Branch_A618  ; A601 F0 15                    ..
-        lda     $72E4                           ; A603 AD E4 72                 ..r
+        lda     BattleModeFlags                 ; A603 AD E4 72                 ..r
         bmi     BattlePresentation_Branch_A618  ; A606 30 10                    0.
         lda     $75E8                           ; A608 AD E8 75                 ..u
         jsr     FindBattleSlotByCharacterId     ; A60B 20 F5 89                  ..
@@ -6441,7 +6441,7 @@ ResolveBattlePresentationWindow:
         lda     #$06                            ; AD41 A9 06                    ..
         jsr     ScalePointerWordByNibble        ; AD43 20 98 81                  ..
 BattlePresentation_Branch_AD46:
-        lda     $72E4                           ; AD46 AD E4 72                 ..r
+        lda     BattleModeFlags                 ; AD46 AD E4 72                 ..r
         bmi     BattlePresentation_Branch_AD8B  ; AD49 30 40                    0@
         ldy     #$05                            ; AD4B A0 05                    ..
         lda     ($79),y                         ; AD4D B1 79                    .y
@@ -7111,7 +7111,7 @@ AccumulateBattleWindowBaseValue:
         jmp     AddScaledOffsetToAccumulator75BB; B238 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowIfStatusClear:
-        lda     $72E4                           ; B23B AD E4 72                 ..r
+        lda     BattleModeFlags                 ; B23B AD E4 72                 ..r
         bmi     BattlePresentation_Branch_B24B  ; B23E 30 0B                    0.
         jsr     AccumulateBattleSlotWindow0C00  ; B240 20 79 88                  y.
         lda     #$30                            ; B243 A9 30                    .0
@@ -7418,9 +7418,9 @@ ApplyPresentationGateA:
         bcc     BattlePresentation_Branch_B4B8  ; B49F 90 17                    ..
         cmp     #$19                            ; B4A1 C9 19                    ..
         bcs     BattlePresentation_Branch_B4B8  ; B4A3 B0 13                    ..
-        lda     $7363                           ; B4A5 AD 63 73                 .cs
+        lda     BattleTargetSelector            ; B4A5 AD 63 73                 .cs
         bmi     BattlePresentation_Branch_B4B8  ; B4A8 30 0E                    0.
-        lda     $72E7                           ; B4AA AD E7 72                 ..r
+        lda     BattleActionFlags               ; B4AA AD E7 72                 ..r
         and     #$10                            ; B4AD 29 10                    ).
         beq     BattlePresentation_Branch_B4B8  ; B4AF F0 07                    ..
         lda     #$80                            ; B4B1 A9 80                    ..
@@ -7453,9 +7453,9 @@ BattlePresentation_Branch_B4CB:
         tax                                     ; B4D7 AA                       .
         lda     $B749,x                         ; B4D8 BD 49 B7                 .I.
         jsr     StorePresentationPair           ; B4DB 20 53 B5                  S.
-        inc     $7361                           ; B4DE EE 61 73                 .as
+        inc     BattleDamageAmountLow           ; B4DE EE 61 73                 .as
         bne     BattlePresentation_Branch_B4E6  ; B4E1 D0 03                    ..
-        inc     $7362                           ; B4E3 EE 62 73                 .bs
+        inc     BattleDamageAmountHigh          ; B4E3 EE 62 73                 .bs
 BattlePresentation_Branch_B4E6:
         pla                                     ; B4E6 68                       h
         rts                                     ; B4E7 60                       `
@@ -7533,9 +7533,9 @@ BattlePresentation_Branch_B53F:
 ; ----------------------------------------------------------------------------
 StorePresentationPair:
         pha                                     ; B553 48                       H
-        lda     $7361                           ; B554 AD 61 73                 .as
+        lda     BattleDamageAmountLow           ; B554 AD 61 73                 .as
         sta     $00                           ; B557 85 00                    ..
-        lda     $7362                           ; B559 AD 62 73                 .bs
+        lda     BattleDamageAmountHigh          ; B559 AD 62 73                 .bs
         sta     $01                             ; B55C 85 01                    ..
         pla                                     ; B55E 68                       h
         ldx     #$00                            ; B55F A2 00                    ..
@@ -7544,10 +7544,10 @@ StorePresentationPair:
 ; ----------------------------------------------------------------------------
         lda     $01                             ; B564 A5 01                    ..
         sta     $00                           ; B566 85 00                    ..
-        sta     $7361                           ; B568 8D 61 73                 .as
+        sta     BattleDamageAmountLow           ; B568 8D 61 73                 .as
         lda     $02                           ; B56B A5 02                    ..
         sta     $01                             ; B56D 85 01                    ..
-        sta     $7362                           ; B56F 8D 62 73                 .bs
+        sta     BattleDamageAmountHigh          ; B56F 8D 62 73                 .bs
         rts                                     ; B572 60                       `
 ; ----------------------------------------------------------------------------
 ResolvePresentationPointer:
@@ -7579,9 +7579,9 @@ BattlePresentation_Branch_B596:
         ldx     #$00                            ; B59C A2 00                    ..
         jsr     AddByteToPointer                ; B59E 20 13 C8                  ..
         lda     $00                           ; B5A1 A5 00                    ..
-        sta     $7361                           ; B5A3 8D 61 73                 .as
+        sta     BattleDamageAmountLow           ; B5A3 8D 61 73                 .as
         lda     $01                             ; B5A6 A5 01                    ..
-        sta     $7362                           ; B5A8 8D 62 73                 .bs
+        sta     BattleDamageAmountHigh          ; B5A8 8D 62 73                 .bs
         pla                                     ; B5AB 68                       h
         rts                                     ; B5AC 60                       `
 ; ----------------------------------------------------------------------------
@@ -7685,9 +7685,9 @@ BattlePresentation_Branch_B62B:
         db   $01,$03,$0C,$02,$02,$02         ; B665 01 03 0C 02 02 02        ......
 ; ----------------------------------------------------------------------------
 ResolvePresentationFlag:
-        lda     $72E7                           ; B66B AD E7 72                 ..r
+        lda     BattleActionFlags               ; B66B AD E7 72                 ..r
         and     #$02                            ; B66E 29 02                    ).
-        lda     $72E9                           ; B670 AD E9 72                 ..r
+        lda     BattleSetupModeFlags            ; B670 AD E9 72                 ..r
         bmi     BattlePresentation_Branch_B67A  ; B673 30 05                    0.
         brk                                     ; B675 00                       .
         db   $0E,$1F                         ; B676 0E 1F                    ..
@@ -7698,7 +7698,7 @@ BattlePresentation_Branch_B67A:
         db   $03,$1F                         ; B67B 03 1F                    ..
 ; ----------------------------------------------------------------------------
         tax                                     ; B67D AA                       .
-        lda     $7363                           ; B67E AD 63 73                 .cs
+        lda     BattleTargetSelector            ; B67E AD 63 73                 .cs
         bmi     BattlePresentation_Branch_B693  ; B681 30 10                    0.
         lda     Bank13_BattlePresentationLookup,x; B683 BD 0B B8                ...
         and     #$E0                            ; B686 29 E0                    ).
@@ -7716,7 +7716,7 @@ BattlePresentation_Branch_B693:
         cpx     #$10                            ; B69C E0 10                    ..
         bcs     ClampPresentationFlag           ; B69E B0 2B                    .+
         pha                                     ; B6A0 48                       H
-        lda     $7363                           ; B6A1 AD 63 73                 .cs
+        lda     BattleTargetSelector            ; B6A1 AD 63 73                 .cs
         and     #$07                            ; B6A4 29 07                    ).
         tax                                     ; B6A6 AA                       .
         pla                                     ; B6A7 68                       h
@@ -7765,7 +7765,7 @@ StorePresentationFlag:
         rts                                     ; B6DF 60                       `
 ; ----------------------------------------------------------------------------
 ComputePresentationRatio:
-        lda     $7363                           ; B6E0 AD 63 73                 .cs
+        lda     BattleTargetSelector            ; B6E0 AD 63 73                 .cs
         bmi     BattlePresentation_Branch_B715  ; B6E3 30 30                    00
         brk                                     ; B6E5 00                       .
         db   $67,$73                         ; B6E6 67 73                    gs

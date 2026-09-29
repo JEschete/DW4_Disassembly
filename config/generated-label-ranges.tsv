@@ -1,0 +1,10 @@
+# Bank<TAB>Start<TAB>EndExclusive<TAB>Prefix<TAB>Reason
+12	9300	97A9	FieldItem	Item selection, transfer, appraisal, and equipment checks
+12	97A9	9BFD	LighthouseFire	Lighthouse Evil Fire extinguishing animation and sprite helpers
+12	9BFD	A0FB	LevelGrowth	Experience thresholds, level gains, stat growth, and spell learning
+12	A304	A4A5	BattleFlyAway	Battle warp fly-away transition selected by service-directory entry $2E
+12	A4A5	A61A	FieldCommand	Field-command operation dispatch, mode selection, and record writes
+12	A61A	AA1D	FieldSpell	Field-spell dispatch, map restrictions, choices, and effects
+12	AA1D	AD8C	AdventureLog	Adventure Log slot, block, payload, and mirror handling
+12	AD8C	B6BC	ItemUse	Item-use dispatch, prompts, story triggers, and state helpers
+17	8000	A100	CasinoSystem	Poker and slot-machine code and shared casino user-interface helpers

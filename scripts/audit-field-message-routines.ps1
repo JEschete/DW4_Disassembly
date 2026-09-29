@@ -1,7 +1,8 @@
 param(
     [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
     [string[]]$Banks = @('15', '1C', '1D', '1E'),
-    [string]$NamePattern = '.'
+    [string]$NamePattern = '.',
+    [switch]$Summary
 )
 
 $labelsByBank = @{}
@@ -58,6 +59,24 @@ $results = foreach ($bank in $Banks) {
     }
 }
 
-$results | Where-Object RoutineName -Match $NamePattern |
-    Sort-Object Bank, RoutineAddress, CallAddress |
-    Format-Table Bank, RoutineAddress, RoutineName, CallAddress, TextId, Text -Wrap
+$filteredResults = @($results | Where-Object RoutineName -Match $NamePattern)
+if ($Summary) {
+    $filteredResults |
+        Group-Object Bank, RoutineAddress, RoutineName |
+        ForEach-Object {
+            $first = $_.Group | Sort-Object CallAddress | Select-Object -First 1
+            [pscustomobject]@{
+                Bank = $first.Bank
+                RoutineAddress = $first.RoutineAddress
+                RoutineName = $first.RoutineName
+                TextIds = ($_.Group.TextId | Sort-Object -Unique) -join ','
+                FirstText = $first.Text
+            }
+        } |
+        Sort-Object Bank, RoutineAddress |
+        Format-Table Bank, RoutineAddress, RoutineName, TextIds, FirstText -Wrap
+} else {
+    $filteredResults |
+        Sort-Object Bank, RoutineAddress, CallAddress |
+        Format-Table Bank, RoutineAddress, RoutineName, CallAddress, TextId, Text -Wrap
+}

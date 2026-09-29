@@ -36,8 +36,8 @@ The 2026-09-28 audit checked all 2,354 routine interfaces in banks `$00-$15` aga
 evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call targets, increasing the
 all-bank inventory from 4,315 to 4,562 routines. The strengthened semantic-name review reports zero generated,
 numeric-operand, stacked-jargon, broad-prefix, generic-name-with-direct-battle-message, audio-only display-name,
-Dormant-with-callers, duplicate-address, duplicate-global-name, or byte-identical fixed-bank semantic-mismatch
-findings.
+Dormant-with-callers, failure-framed-name-with-direct-battle-message, duplicate-address, duplicate-global-name, or
+byte-identical fixed-bank semantic-mismatch findings.
 
 The corrective audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
 flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. Battle,
@@ -49,6 +49,14 @@ message output. Bank `$12:$9300-$B5FF` now distinguishes item use, field spells,
 growth and spell learning, the Lighthouse fire scene, and neutral transition/operation helpers whose ownership is
 not proven. Story scenes in banks `$1C-$1E` use evidenced in-game events, chapter names use displayed values 1-5,
 and reviewed byte-identical `$0F/$1F` routines share one semantic stem.
+
+The fifth corrective naming pass names core battle routines for their main path instead of one failure branch,
+standardizes `$7361-$7362` as `BattleDamageAmountLow-High`, and identifies the battle command menu without
+guessing the two still-unverified command identities. Sparse overrides in `config/generated-label-ranges.tsv`
+assign generated helpers by evidenced address range before falling back to each bank's dominant classification;
+this corrected 335 bank `$12` and 293 bank `$17` generated labels. The pass also identifies the seven-routine
+battle fly-away block and replaces roughly 40 mechanical field, service, and story names using decoded text and
+main-path control flow.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

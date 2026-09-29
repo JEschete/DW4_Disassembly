@@ -3272,16 +3272,16 @@ BattlePartyServices_Branch_968C:
         rts                                     ; 968D 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_968E:
-        lda     $72E6                           ; 968E AD E6 72                 ..r
+        lda     BattlePhaseFlags                ; 968E AD E6 72                 ..r
         and     #$30                            ; 9691 29 30                    )0
         beq     BattlePartyServices_Branch_9697 ; 9693 F0 02                    ..
         clc                                     ; 9695 18                       .
         rts                                     ; 9696 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9697:
-        lda     $72E6                           ; 9697 AD E6 72                 ..r
+        lda     BattlePhaseFlags                ; 9697 AD E6 72                 ..r
         ora     #$30                            ; 969A 09 30                    .0
-        sta     $72E6                           ; 969C 8D E6 72                 ..r
+        sta     BattlePhaseFlags                ; 969C 8D E6 72                 ..r
         sec                                     ; 969F 38                       8
         rts                                     ; 96A0 60                       `
 ; ----------------------------------------------------------------------------
@@ -6360,7 +6360,7 @@ ResolveBattleTransitionModeFromWorldState:
 BattlePartyServices_Branch_ABC9:
         lda     $6BDE                           ; ABC9 AD DE 6B                 ..k
         bpl     BattlePartyServices_Branch_ABD3 ; ABCC 10 05                    ..
-        lda     $72E9                           ; ABCE AD E9 72                 ..r
+        lda     BattleSetupModeFlags            ; ABCE AD E9 72                 ..r
         bmi     BattlePartyServices_Branch_AC08 ; ABD1 30 35                    05
 BattlePartyServices_Branch_ABD3:
         brk                                     ; ABD3 00                       .
@@ -6614,7 +6614,7 @@ BattlePartyServices_Branch_AD22:
 ; ----------------------------------------------------------------------------
 ReadBattleSlotHighBitFlag:
         pha                                     ; AD26 48                       H
-        lda     $72E9                           ; AD27 AD E9 72                 ..r
+        lda     BattleSetupModeFlags            ; AD27 AD E9 72                 ..r
         asl     a                               ; AD2A 0A                       .
         pla                                     ; AD2B 68                       h
         rts                                     ; AD2C 60                       `
@@ -6731,7 +6731,7 @@ BattlePartyServices_Branch_ADB7:
         bpl     BattlePartyServices_Branch_ADAB ; ADB8 10 F1                    ..
         bmi     BattlePartyServices_Branch_ADC3 ; ADBA 30 07                    0.
 BattlePartyServices_Branch_ADBC:
-        lda     $72E6                           ; ADBC AD E6 72                 ..r
+        lda     BattlePhaseFlags                ; ADBC AD E6 72                 ..r
         and     #$30                            ; ADBF 29 30                    )0
         beq     BattlePartyServices_Branch_ADEC ; ADC1 F0 29                    .)
 BattlePartyServices_Branch_ADC3:
@@ -7386,12 +7386,12 @@ BattlePartyServices_Branch_B1EF:
         jsr     ReadShiftedBattleSlotDescriptorBit; B1EF 20 57 AD                W.
         bcc     BattlePartyServices_Branch_B1FD ; B1F2 90 09                    ..
         tay                                     ; B1F4 A8                       .
-        lda     $72E6                           ; B1F5 AD E6 72                 ..r
+        lda     BattlePhaseFlags                ; B1F5 AD E6 72                 ..r
         and     #$30                            ; B1F8 29 30                    )0
         bne     BattlePartyServices_Branch_B1E8 ; B1FA D0 EC                    ..
         tya                                     ; B1FC 98                       .
 BattlePartyServices_Branch_B1FD:
-        ldy     $72E4                           ; B1FD AC E4 72                 ..r
+        ldy     BattleModeFlags                 ; B1FD AC E4 72                 ..r
         bmi     BattlePartyServices_Branch_B1E8 ; B200 30 E6                    0.
 BattlePartyServices_Branch_B202:
         jsr     ReadShiftedBattleSlotDescriptorBit; B202 20 57 AD                W.
@@ -8947,7 +8947,7 @@ FilterSelectionMaskBySource05Complement:
         jmp     IntersectBattleTargetMask       ; BAFC 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 LoadInvertedBattleStateBitsShiftedLeft:
-        lda     $72E4                           ; BAFF AD E4 72                 ..r
+        lda     BattleModeFlags                 ; BAFF AD E4 72                 ..r
         eor     #$FF                            ; BB02 49 FF                    I.
         asl     a                               ; BB04 0A                       .
         rts                                     ; BB05 60                       `

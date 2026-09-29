@@ -19,6 +19,15 @@ CurrentTilesetCandidate  = $0065
 BattleActionIds          = $6D8C
 BattleActionWeights      = $6DC2
 BattleSlotDescriptors    = $72F4
+BattleModeFlags          = $72E4
+BattleStatusFlags        = $72E5
+BattlePhaseFlags         = $72E6
+BattleActionFlags        = $72E7
+BattleDisplayRecordMask  = $72E8
+BattleSetupModeFlags     = $72E9
+BattleDamageAmountLow    = $7361
+BattleDamageAmountHigh   = $7362
+BattleTargetSelector     = $7363
 
 SaveWorkArea             = $610E
 SaveTotalGold            = $6157

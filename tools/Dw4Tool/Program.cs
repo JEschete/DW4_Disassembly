@@ -120,6 +120,8 @@ internal static class Program
             Path.Combine(projectRoot, "config", "code-data-overlaps.tsv"));
         List<BankClassification> bankClassifications = LoadBankClassifications(
             Path.Combine(projectRoot, "config", "bank-classifications.tsv"));
+        List<GeneratedLabelRange> generatedLabelRanges = LoadGeneratedLabelRanges(
+            Path.Combine(projectRoot, "config", "generated-label-ranges.tsv"));
         InlineOperandAbi inlineOperandAbi = InlineOperandAbi.Load(
             Path.Combine(projectRoot, "config", "inline-operand-abi.tsv"));
         ValidateInlineServiceRanges(rom, contentRanges, inlineOperandAbi);
@@ -214,6 +216,7 @@ internal static class Program
             labels,
             analyses,
             bankClassifications,
+            generatedLabelRanges,
             routineTargets.Keys.ToHashSet());
         WriteRoutineInterfaceReport(
             Path.Combine(projectRoot, "analysis", "routine-interfaces.tsv"),
@@ -347,6 +350,7 @@ internal static class Program
         Dictionary<int, List<BankLabel>> labels,
         IReadOnlyDictionary<int, BankAnalysis> analyses,
         IReadOnlyList<BankClassification> bankClassifications,
+        IReadOnlyList<GeneratedLabelRange> generatedLabelRanges,
         IReadOnlySet<(int Bank, int Address)> routineTargets)
     {
         Dictionary<int, List<BankLabel>> result = Enumerable.Range(0, PrgBankCount)
@@ -356,6 +360,9 @@ internal static class Program
         Dictionary<int, string> subsystemNames = bankClassifications.ToDictionary(
             classification => classification.Bank,
             classification => classification.Category);
+        Dictionary<int, List<GeneratedLabelRange>> generatedRangesByBank = generatedLabelRanges
+            .GroupBy(range => range.Bank)
+            .ToDictionary(group => group.Key, group => group.OrderBy(range => range.Start).ToList());
         foreach ((int bank, BankAnalysis analysis) in analyses)
         {
             HashSet<int> labeledAddresses = result[bank].Select(label => label.Address).ToHashSet();
@@ -369,9 +376,19 @@ internal static class Program
                 if (labeledAddresses.Add(address))
                 {
                     string role = routineTargets.Contains((bank, address)) ? "Entry" : "Branch";
+                    string subsystemName = subsystemNames[bank];
+                    if (generatedRangesByBank.TryGetValue(bank, out List<GeneratedLabelRange>? ranges))
+                    {
+                        GeneratedLabelRange? range = ranges.FirstOrDefault(
+                            candidate => address >= candidate.Start && address < candidate.EndExclusive);
+                        if (range is not null)
+                        {
+                            subsystemName = range.Prefix;
+                        }
+                    }
                     result[bank].Add(new BankLabel(
                         address,
-                        $"{subsystemNames[bank]}_{role}_{address:X4}",
+                        $"{subsystemName}_{role}_{address:X4}",
                         "Code",
                         role == "Entry"
                             ? "Verified entry point recovered from a typed pointer table"
@@ -985,6 +1002,64 @@ internal static class Program
             throw new InvalidDataException("all dominant bank classifications must be Verified");
         }
         return classifications;
+    }
+
+    private static List<GeneratedLabelRange> LoadGeneratedLabelRanges(string path)
+    {
+        List<GeneratedLabelRange> ranges = [];
+        foreach (string line in File.ReadLines(path))
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+            {
+                continue;
+            }
+
+            string[] columns = line.Split('\t');
+            if (columns.Length != 5)
+            {
+                throw new InvalidDataException($"invalid generated label range: {line}");
+            }
+
+            int bank = int.Parse(columns[0], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int start = int.Parse(columns[1], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            int endExclusive = int.Parse(columns[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            string prefix = columns[3];
+            if (bank < 0 || bank >= PrgBankCount)
+            {
+                throw new InvalidDataException($"generated label range has invalid bank ${bank:X2}");
+            }
+            int cpuBase = CodeAnalyzer.CpuBase(bank);
+            if (start < cpuBase || endExclusive > cpuBase + PrgBankSize || start >= endExclusive)
+            {
+                throw new InvalidDataException(
+                    $"generated label range bank ${bank:X2}:${start:X4}-${endExclusive:X4} is outside its CPU window");
+            }
+            if (!Regex.IsMatch(prefix, @"^[A-Za-z_][A-Za-z0-9_]*$"))
+            {
+                throw new InvalidDataException($"invalid generated label prefix: {prefix}");
+            }
+            if (string.IsNullOrWhiteSpace(columns[4]))
+            {
+                throw new InvalidDataException($"generated label range lacks evidence: {line}");
+            }
+            ranges.Add(new GeneratedLabelRange(bank, start, endExclusive, prefix, columns[4]));
+        }
+
+        foreach (IGrouping<int, GeneratedLabelRange> group in ranges.GroupBy(range => range.Bank))
+        {
+            GeneratedLabelRange[] bankRanges = group.OrderBy(range => range.Start).ToArray();
+            for (int index = 1; index < bankRanges.Length; index++)
+            {
+                if (bankRanges[index - 1].EndExclusive > bankRanges[index].Start)
+                {
+                    throw new InvalidDataException(
+                        $"overlapping generated label ranges in bank ${group.Key:X2}: " +
+                        $"${bankRanges[index - 1].Start:X4}-${bankRanges[index - 1].EndExclusive:X4} and " +
+                        $"${bankRanges[index].Start:X4}-${bankRanges[index].EndExclusive:X4}");
+                }
+            }
+        }
+        return ranges;
     }
 
     private static EntryTableLoadResult LoadEntryTableSeeds(
@@ -2106,6 +2181,14 @@ internal static class Program
             {
                 reasons.Add("generic-name-prints-battle-message");
             }
+            if (Regex.IsMatch(
+                    name,
+                    "^(?:Reject|ResolveFailed|HandleFailed|ReportFailed|Blocked)",
+                    RegexOptions.IgnoreCase) &&
+                RoutinePrintsBattleMessage(location.Bank, location.Address))
+            {
+                reasons.Add("failure-framed-name-prints-battle-message");
+            }
             if (reasons.Count == 0)
             {
                 continue;
@@ -2447,6 +2530,13 @@ internal static class Program
         string Reason);
     private sealed record CodeDataOverlap(int Bank, int Start, int EndExclusive, string Reason);
     private sealed record BankClassification(int Bank, string Category, string Confidence, string Reason);
+
+    private sealed record GeneratedLabelRange(
+        int Bank,
+        int Start,
+        int EndExclusive,
+        string Prefix,
+        string Reason);
     private sealed record EntryTableLoadResult(List<CodeSeed> Seeds, List<EntryPointer> Entries);
     private sealed record EntryPointer(
         int Bank,

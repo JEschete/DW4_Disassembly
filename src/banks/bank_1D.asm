@@ -1643,7 +1643,7 @@ RunScriptedMapEntityOamSequence:
         jsr     PlayMapEventJingleAndWait       ; 948E 20 AF 95                  ..
         jsr     RunMapEventDelay                ; 9491 20 A2 95                  ..
         jsr     AnimateEventEntityExchange      ; 9494 20 09 95                  ..
-        jsr     RunMapEventDialogueServices35   ; 9497 20 01 95                  ..
+        jsr     RunSaroAndRosaDialogue          ; 9497 20 01 95                  ..
         jsr     AnimateEventSpritesDownAndHideEntities; 949A 20 C4 94            ..
         jsr     SetEntitySixDirectionTwoAndRender; 949D 20 AC 94                 ..
         ldx     #$14                            ; 94A0 A2 14                    ..
@@ -1700,7 +1700,7 @@ MapEventSystem_Branch_94D6:
         jsr     RenderMapEntity                 ; 94FD 20 04 D8                  ..
         rts                                     ; 9500 60                       `
 ; ----------------------------------------------------------------------------
-RunMapEventDialogueServices35:
+RunSaroAndRosaDialogue:
         brk                                     ; 9501 00                       .
         db   $07,$6F,$43                     ; 9502 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -3327,7 +3327,7 @@ CompleteMapTriggerSequence:
         clc                                     ; A05B 18                       .
         rts                                     ; A05C 60                       `
 ; ----------------------------------------------------------------------------
-RunMapEventResource76Sequence:
+RunFakePrincessThiefsKeyScene:
         lda     $51                             ; A05D A5 51                    .Q
         pha                                     ; A05F 48                       H
         brk                                     ; A060 00                       .
@@ -3389,7 +3389,7 @@ CopyEntityCounterPair:
         sec                                     ; A0B1 38                       8
         rts                                     ; A0B2 60                       `
 ; ----------------------------------------------------------------------------
-StartMapEventDialogue:
+RunFakePrincessImposterDialogue:
         brk                                     ; A0B3 00                       .
         db   $07,$6F,$43                     ; A0B4 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -3911,7 +3911,7 @@ CompleteMapEventAndClearPresentation:
         sec                                     ; A459 38                       8
         rts                                     ; A45A 60                       `
 ; ----------------------------------------------------------------------------
-HandleEntityZeroTriggerAcrossColumns10To14:
+PromptSlotMachineAtMapTrigger:
         lda     $6FA0                           ; A45B AD A0 6F                 ..o
         sec                                     ; A45E 38                       8
         sbc     #$10                            ; A45F E9 10                    ..
@@ -4361,7 +4361,7 @@ ActivateMapEntitiesElevenAndTwelve:
         sec                                     ; A730 38                       8
         rts                                     ; A731 60                       `
 ; ----------------------------------------------------------------------------
-CompleteMapEventResource76:
+CompleteFakePrincessDeparture:
         jsr     RefreshMapEventEntityState      ; A732 20 5E 99                  ^.
         brk                                     ; A735 00                       .
         db   $67,$3B                         ; A736 67 3B                    g;
@@ -4623,12 +4623,12 @@ TransferQueuedMapEventActors:
         brk                                     ; A8C4 00                       .
         db   $0D,$87                         ; A8C5 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     ResolveTransferredEntityDialogue; A8C7 20 CE A8                  ..
+        jsr     RunCristoAndBreyTournamentFarewells; A8C7 20 CE A8               ..
         pla                                     ; A8CA 68                       h
         sta     $51                             ; A8CB 85 51                    .Q
         rts                                     ; A8CD 60                       `
 ; ----------------------------------------------------------------------------
-ResolveTransferredEntityDialogue:
+RunCristoAndBreyTournamentFarewells:
         lda     $6BE8                           ; A8CE AD E8 6B                 ..k
         and     #$7F                            ; A8D1 29 7F                    ).
         clc                                     ; A8D3 18                       .
@@ -4695,7 +4695,7 @@ TransferQueuedEntityToActiveSlot:
         iny                                     ; A939 C8                       .
         rts                                     ; A93A 60                       `
 ; ----------------------------------------------------------------------------
-HandleEntityZeroTriggerAtRow0A:
+RunEndorKingTournamentWelcome:
         lda     $6FC0                           ; A93B AD C0 6F                 ..o
         cmp     #$0A                            ; A93E C9 0A                    ..
         bne     MapEventSystem_Branch_A966      ; A940 D0 24                    .$
@@ -4917,7 +4917,7 @@ MapEventSystem_Branch_AA9D:
         clc                                     ; AA9D 18                       .
         rts                                     ; AA9E 60                       `
 ; ----------------------------------------------------------------------------
-CompleteMapEventAndSaveProgress:
+SummonAlenaBackToSanteem:
         lda     $51                             ; AA9F A5 51                    .Q
         sta     $059C                           ; AAA1 8D 9C 05                 ...
         pha                                     ; AAA4 48                       H
@@ -5059,7 +5059,7 @@ ExitEventSubmapAndResetTime:
         jsr     CloseFieldMessageWindow         ; AB92 20 F3 D1                  ..
         jmp     MapEventSystem_Branch_B624      ; AB95 4C 24 B6                 L$.
 ; ----------------------------------------------------------------------------
-TransferEntityTwoSourceToOne:
+StartBalzackKeeleonConfrontation:
         jsr     CloseFieldMessageWindow         ; AB98 20 F3 D1                  ..
         ldx     #$02                            ; AB9B A2 02                    ..
         lda     $6FE6,x                         ; AB9D BD E6 6F                 ..o
@@ -5359,7 +5359,7 @@ MapEventSystem_Branch_AD78:
         db   $3B,$00,$00,$78,$3B,$01,$00,$80 ; AD8E 3B 00 00 78 3B 01 00 80  ;..x;...
         db   $43,$02,$00,$78,$43,$03,$00,$80 ; AD96 43 02 00 78 43 03 00 80  C..xC...
 ; ----------------------------------------------------------------------------
-HandlePrimaryActorSubmapTransition:
+PromptMapButtonPress:
         lda     $51                             ; AD9E A5 51                    .Q
         pha                                     ; ADA0 48                       H
         lda     $6FA0                           ; ADA1 AD A0 6F                 ..o
@@ -5700,7 +5700,7 @@ MapEventSystem_Branch_AF95:
         clc                                     ; AF95 18                       .
         rts                                     ; AF96 60                       `
 ; ----------------------------------------------------------------------------
-HandleWorldStateMapEvent:
+RunEnemyBackAttackAmbush:
         lda     $6289                           ; AF97 AD 89 62                 ..b
         bpl     MapEventSystem_Branch_AFB6      ; AF9A 10 1A                    ..
         lda     $3E                             ; AF9C A5 3E                    .>
@@ -5804,7 +5804,7 @@ MapEventSystem_Branch_B03B:
         clc                                     ; B03B 18                       .
         rts                                     ; B03C 60                       `
 ; ----------------------------------------------------------------------------
-CompleteEventAndHideFirstThreeEntities:
+StartLighthouseEvilFireBattle:
         jsr     RefreshMapEventEntityState      ; B03D 20 5E 99                  ^.
         brk                                     ; B040 00                       .
         db   $E8,$3B                         ; B041 E8 3B                    .;
@@ -5890,7 +5890,7 @@ MapEventSystem_Branch_B0CC:
         clc                                     ; B0CC 18                       .
         rts                                     ; B0CD 60                       `
 ; ----------------------------------------------------------------------------
-HandleConditionalMapEventFlags13:
+BlockTravelUntilJarItemsCollected:
         brk                                     ; B0CE 00                       .
         db   $13,$EB,$08                     ; B0CF 13 EB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -5918,7 +5918,7 @@ MapEventSystem_Branch_B0F4:
         clc                                     ; B0F4 18                       .
         rts                                     ; B0F5 60                       `
 ; ----------------------------------------------------------------------------
-ResolvePrimaryActorItemEvent:
+RunPadequiaPartyReunionEvents:
         brk                                     ; B0F6 00                       .
         db   $16,$EB,$08                     ; B0F7 16 EB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -6196,7 +6196,7 @@ MapEventSystem_Branch_B2A2:
         brk                                     ; B2A8 00                       .
         db   $07,$6F,$43                     ; B2A9 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
-ResolveMapEventSelectionFromResource37:
+RunRuvasZenithianArmorDialogue:
         brk                                     ; B2AC 00                       .
         db   $62,$23,$40                     ; B2AD 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -6439,7 +6439,7 @@ MapEventSystem_Branch_B431:
         sec                                     ; B431 38                       8
         rts                                     ; B432 60                       `
 ; ----------------------------------------------------------------------------
-CompleteSelectionEventAndHideEntity:
+RunSaroEsturkRevivalAnnouncement:
         lda     $51                             ; B433 A5 51                    .Q
         pha                                     ; B435 48                       H
         jsr     RefreshMapEventEntityState      ; B436 20 5E 99                  ^.

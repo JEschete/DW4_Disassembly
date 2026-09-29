@@ -860,8 +860,8 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	8321	CheckCurrentBattleSlotCandidate	Direct call from $11:$8268; Direct call from $11:$82F2; Direct call from $11:$8316		P,X		
 11	8324	CheckBattleSlotCandidateAtX	Direct call from $11:$8389		P		
 11	8364	InvokeBattleServicePreservingXY	Direct call from $11:$873D	A,X,Y	A,P		
-11	8371	SelectBattleActionTier	Direct call from $11:$826D; Direct call from $11:$82F7		P		$87BB
-11	8403	ResolveFailedBattleEscape	Direct call from $11:$82D4		P		
+11	8371	RunBattleCommandMenu	Direct call from $11:$826D; Direct call from $11:$82F7		P		$87BB
+11	8403	RunBattleEscapeCommand	Direct call from $11:$82D4		P		
 11	85EA	EnableAlternateBattleChoiceState	Direct call from $11:$8464; Direct call from $11:$859C	A	A,P,X	$7354	
 11	85F1	DisableAlternateBattleChoiceState	Direct ROM analysis: Dormant alternate initializer LDA #$00 / STA $7354 that falls through to decoded entry $85F6; byte-identical to the initializer at $8530-$8534	A	A,P,X	$7354	
 11	85F6	UpdateBattleChoiceState	Direct call from $11:$8502; Direct call from $11:$85C1		A,P,X		
@@ -884,7 +884,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	885B	IterateBattleSlotsByLowNibbleGroup	Direct call from $11:$8077		P		$80C4
 11	8894	RunBattleActionResolutionPipeline	Direct call from $11:$888E		P		$8D9D,$8DAB,$8DCC,$AC4D
 11	88CA	WalkBattleActionResolutionLoop	Direct call from $11:$88BF; Direct call from $11:$A200; Direct call from $11:$B846	A	A,P	$735C	$80C4,$893A,$8A3A,$8A55,$8ACF,$8C49,$8DDC,$8DE5,$ABB5,$AC3A,$AC4D,$AD25,$AFFF,$B286,$B2F5,$B52D,$B871,$BCF1
-11	893A	RejectBattleTargetInWagon	Direct call from $11:$890C; Direct call from $11:$B4A4; Direct call from $11:$B804		P		
+11	893A	RunBattleActionTargetingLoop	Direct call from $11:$890C; Direct call from $11:$B4A4; Direct call from $11:$B804		P		
 11	89F1	RestartTimeAndUpdateCountdown	Direct call from $11:$88AD	A	A,P	$00	
 11	8A3A	CaptureBattleSlotGroupIndex	Direct call from $11:$88D4	A,X	A,P,X	$735C,$735D	
 11	8A55	SelectBattleActionGroupOrdinal	Direct call from $11:$88DA		P		
@@ -894,7 +894,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	8C49	CheckBattleActionIdBelowDispatchThreshold	Direct call from $11:$8902		P		
 11	8C50	ReportContainedOrNullifiedSpell	Direct call from $11:$B896		P		
 11	8C88	JumpThroughBattleActionVectorByOffset	Direct call from $11:$8978; Direct call from $11:$89DD	A	A,P	$00,$01	
-11	8D0D	ReportSpellBlockedByRangeOrWallOfLights	Direct call from $11:$896E; Direct call from $11:$89D3		P		
+11	8D0D	ValidateSpellTargetReachability	Direct call from $11:$896E; Direct call from $11:$89D3		P		
 11	8D9D	IsBattleActionHoldFlagSet	Direct call from $11:$8894		A,P		
 11	8DAB	CheckBattlePhaseModeBits	Direct call from $11:$8899	A	A,P		
 11	8DCC	CheckBattleTransitionFlagsClear	Direct call from $11:$889E	A	A,P		
@@ -942,37 +942,37 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	92C7	ResetBattleTargetIndex	Direct call from $11:$9218	A	A,P	$7D	
 11	92CF	ResolveBattleModeFlags	Direct call from $11:$8083; Direct call from $11:$921F	A	A,P,X		
 11	9316	SetBattleModeTwoFlag	Direct call from $11:$9358; Direct call from $11:$9363	A	A,P	$72E7	
-11	9383	IsBattleSelectionWordNonzero	Direct call from $11:$9106; Direct call from $11:$9166	A	A,P		
+11	9383	IsBattleDamageAmountNonzero	Direct call from $11:$9106; Direct call from $11:$9166	A	A,P		
 11	938A	SetBattleActionPendingFlag	Direct call from $11:$913B; Direct call from $11:$9147; Direct call from $11:$91C9; Direct call from $11:$97EC; Direct call from $11:$A69A	A	A,P	$72E7	
 11	9393	ClearBattleActionPendingFlag	Direct call from $11:$90DB	A	A,P	$72E7	
 11	939C	BuildBattleCandidateTable	Direct call from $11:$970C	A,X	A,P,X	$7374+X	
 11	94B2	PopulateBattleCandidateSlots	Direct call from $11:$9404	A,X	A,P,X	$00,$02,$03,$7364+X,$736C+X,$97	$99C0
-11	9518	RejectDefeatedBattleTarget	Direct call from $11:$89AA		P		
+11	9518	ResolveBattleActionTargets	Direct call from $11:$89AA		P		
 11	95D2	CommitBattleSelectionMask	Direct call from $11:$95B1; Direct call from $11:$95BF		A,P		
 11	9611	ValidateBattleSelectionMask	Direct call from $11:$895F		P		
 11	96C3	RouteBattleSelectionCheck	Direct call from $11:$B1A3; Direct call from $11:$B70E		P		
 11	96D1	ShiftBattleMaskByCount	Direct call from $11:$9657; Direct call from $11:$969F; Direct call from $11:$96B1	X	A,P,X	$00	
 11	96DB	ClearBattleModeBitZero	Direct call from $11:$9945; Direct call from $11:$9952; Direct call from $11:$995F; Direct call from $11:$B17C; Direct call from $11:$B20B; Pointer $11:$A490 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A	A,P	$72E7	
-11	970C	ResolveCoverAllyBattleAction	Direct call from $11:$96EE		P		$939C
+11	970C	ResolvePhysicalHit	Direct call from $11:$96EE		P		$939C
 11	97E6	ReportBattleMissForTargetSide	Direct call from $11:$9726; Direct call from $11:$9786		P		
-11	9817	ShiftBattleSelectionWordLeftOneBit	Direct call from $11:$9736; Direct call from $11:$979E	A	A,P	$7361,$7362	
-11	981E	RescaleBattleSelectionWordByThreeHalves	Direct call from $11:$A722	A	A,P,X	$7361,$7362	$9832,$983D,$C827
-11	9832	LoadBattleEffectMagnitudeToMathBuffer	Direct call from $11:$9824	A	A,P	$00,$01	
-11	983D	StoreBattleEffectMagnitudeFromMathBuffer	Direct call from $11:$982E	A	A,P	$7361,$7362	
+11	9817	DoubleBattleDamageAmount	Direct call from $11:$9736; Direct call from $11:$979E	A	A,P	$7361,$7362	
+11	981E	ScaleBattleDamageAmountByThreeHalves	Direct call from $11:$A722	A	A,P,X	$7361,$7362	$9832,$983D,$C827
+11	9832	LoadBattleDamageAmountToMathBuffer	Direct call from $11:$9824	A	A,P	$00,$01	
+11	983D	StoreBattleDamageAmountFromMathBuffer	Direct call from $11:$982E	A	A,P	$7361,$7362	
 11	9848	FetchResolvedBattleActionId	Direct call from $11:$A6A4; Direct call from $11:$A6E8; Direct call from $11:$A795; Direct call from $11:$A7D2		P		
 11	9851	SetBattleActionModeBit3	Direct call from $11:$9775	A	A,P	$72E7	
 11	985A	ClearBattleActionModeBit3	Direct call from $11:$A6B2; Direct call from $11:$A711	A	A,P	$72E7	
-11	9863	AdvanceBattleSelectionWordByQuarterStep	Direct call from $11:$A7F0; Direct call from $11:$A855	A	A,P	$7361,$7362	
+11	9863	QuarterBattleDamageAmountAndIncrement	Direct call from $11:$A7F0; Direct call from $11:$A855	A	A,P	$7361,$7362	
 11	9878	RunGoofOffNoDamageOrSplitInterruption	Direct call from $11:$97DA	A	A,P,X		$C891
-11	98E2	AdvanceBattleEffectMagnitudeOrResetMode	Pointer $11:$A492 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		$9916
-11	98FA	RescaleBattleSelectionWordByFive	Pointer $11:$A494 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
-11	9916	LoadBattleSelectionWordFromPackedTable	Direct call from $11:$97CC; Direct call from $11:$98E2; Direct call from $11:$B1EF		A,P		
-11	993A	StorePackedWordToBattleSelectionWord	Direct call from $11:$9910	A,X,Y	A,P,Y	$7361,$7362	
+11	98E2	ApplyPackedBattleDamageOrResetMode	Pointer $11:$A492 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		$9916
+11	98FA	ScaleBattleDamageAmountByFive	Pointer $11:$A494 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	9916	LoadBattleDamageAmountFromPackedTable	Direct call from $11:$97CC; Direct call from $11:$98E2; Direct call from $11:$B1EF		A,P		
+11	993A	StorePackedWordToBattleDamageAmount	Direct call from $11:$9910	A,X,Y	A,P,Y	$7361,$7362	
 11	9945	QueueDefaultBattleResultWhenPriorityAllows	Pointer $11:$A496 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A,X	A,P,X	$6F,$7C	$96DB,$996D
 11	9952	QueueBattleResultFiveWhenPriorityAllows	Pointer $11:$A498 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		A,P		$96DB,$996D
 11	995F	QueueBattleResultPairWhenPriorityAllows	Pointer $11:$A49A (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A	A,P,X		$96DB,$996D,$9D4F
 11	996D	IsBattleModePriorityBelowThreshold	Direct call from $11:$994A; Direct call from $11:$9957; Direct call from $11:$9964; Direct call from $11:$A819; Direct call from $11:$A82B; Direct call from $11:$A83D	A	A,P	$00	
-11	9980	NormalizeBattleSelectionWordAgainstTwelve	Direct call from $11:$947E; Direct call from $11:$9AFC	A,X	A,P		
+11	9980	NormalizeBattleDamageAmountAgainstTwelve	Direct call from $11:$947E; Direct call from $11:$9AFC	A,X	A,P		
 11	99C0	RollPhysicalAttackDamage	Direct call from $11:$93BC; Direct call from $11:$94BA; Direct call from $11:$9B05	A,X	A,P		
 11	9A33	ComputeBasePhysicalDamage	Direct call from $11:$998F; Direct call from $11:$99CB	A	A,P	$0E,$0F	
 11	9A84	Divide24BitBattleCandidateByWordAtY	Direct call from $11:$94FE	A,X,Y	A,P,Y	$00+X,$01+X,$02+X,$6E11,$6E12,$6E13,$6E14,$6E15,$6E16	
@@ -980,7 +980,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	9AEB	ResolveRollOverBattleAction	Pointer $11:$A50C (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	9B0C	PlayBattleSound9EAndAdvanceRewardTimer	Pointer $11:$A430 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A432 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A4A2 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	9B53	AdvanceBattlePhaseForResult0F	Pointer $11:$A436 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A542 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5FC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
-11	9B86	ApplyBattleEffectMagnitudeToResult	Pointer $11:$A434 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	9B86	ApplyBattleDamageAmountToResult	Pointer $11:$A434 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	9C20	RouteBattleResultByTargetSide	Pointer $11:$A4E6 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5B2 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	9C2B	ComputeBattleResultRecordOffset	Direct call from $11:$9B97; Direct call from $11:$9BE7	A,X	A,P,X	$72,$73,$7E,$7F	$C827
 11	9C50	ResolveExhaustionDefeat	Pointer $11:$A60A (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A60C (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A60E (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
@@ -1002,7 +1002,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	9D4F	QueueBattleResultPairAndResolve	Direct call from $11:$9D39; Direct call from $11:$AFF8; Direct call from $11:$B3A0; Tail jump from $11:$9CC0; Tail jump from $11:$9CC7; Tail jump from $11:$9CCE; Tail jump from $11:$9D07; Tail jump from $11:$9D0E; Tail jump from $11:$9D19; Tail jump from $11:$AE32; Tail jump from $11:$AE52; Tail jump from $11:$AE62; Tail jump from $11:$B0B7; Tail jump from $11:$B1D4; Tail jump from $11:$B1DB	A,X	P	$6F,$7C	
 11	9D6E	ResolveBattleResultWithTargetCheck	Tail jump from $11:$9D2F	A,X	P	$6F,$7C	
 11	9D90	QueueBattleResult11ByTargetState	Pointer $11:$A456 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
-11	9DB4	ResolveNoEffectAgainstTarget	Pointer $11:$A458 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	9DB4	ResolveBattleEffectAgainstTarget	Pointer $11:$A458 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	9E4C	ConditionallyScaleSelectionByteByEight	Direct call from $11:$9DD8; Pointer $11:$8022 (25-entry code dispatch table; first target is $8032)		P		
 11	9E5C	BuildAlternateBattleResultSequence	Direct call from $11:$9DF2	A	A,P,X	$7D	
 11	9E91	BuildPrimaryBattleResultSequence	Direct call from $11:$9E3F	A	A,P,X	$70	
@@ -1068,7 +1068,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	A69F	ResolvePoisonNeedleCriticalHit	Direct call from $11:$9778	A	P		$9848,$A86D
 11	A6E3	AdjustSpecialBattleActionMagnitude	Direct call from $11:$9790	A	P		$9848,$A86D
 11	A78B	ResolveWoundHealingInterruption	Direct call from $11:$97D7		P		
-11	A7AB	ExportBattleSelectionWordTo70Or7D	Direct call from $11:$A7A1; Direct call from $11:$A85B	A	A,P	$70,$7D	
+11	A7AB	ExportBattleDamageAmountToTargetSide	Direct call from $11:$A7A1; Direct call from $11:$A85B	A	A,P	$70,$7D	
 11	A7C4	ResolveHealingOrAffectionBattleAction	Direct call from $11:$97E2		A,P		
 11	A86D	TestResolvedBattleActionId82	Direct call from $11:$A69F; Direct call from $11:$A6E3; Direct call from $11:$A790; Direct call from $11:$A7CF		P		
 11	A873	ResolveMpDrainBattleAction	Direct call from $11:$8980; Direct call from $11:$89E5		P		
@@ -1118,7 +1118,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	AEBF	ClearBattleTransformationsAndSpellEffects	Pointer $11:$A4E8 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A522 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	AF9F	CopyAlternateBattleEffectMagnitude	Direct call from $11:$AEF6; Direct call from $11:$AEFF	A	A,P	$7D	
 11	AFA6	CopyPrimaryBattleEffectMagnitude	Direct call from $11:$AF55; Direct call from $11:$AF5E	A	A,P	$70	
-11	AFAD	ResolveCeilingOrStrangeForceBarrier	Pointer $11:$A470 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A536 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5C2 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	AFAD	ResolveBattleWarpEscape	Pointer $11:$A470 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A536 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5C2 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	AFEA	QueueBattleResult05WhenAllowed	Pointer $11:$A4B2 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Tail jump from $11:$995C		P		
 11	AFF4	QueueBattleResultAndRefreshModes	Direct call from $11:$A84C; Pointer $11:$A4B4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5AC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A	A,P,X		$9D4F
 11	AFFF	ProjectBattleStatusFromSelectionFlags	Direct call from $11:$88FF		P		
@@ -1167,7 +1167,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	B4A8	CountMatchingBattleDescriptors	Direct call from $11:$B481; Direct call from $11:$B488; Direct call from $11:$B48F	A	P	$00	
 11	B4C6	ValidateBattleActionAndUpdateDialogue	Pointer $11:$A58E (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	B4E4	NormalizeBattleActionSlotsFromCounter	Pointer $11:$A582 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
-11	B51D	SeedBattleSelectionWordFromChapterState	Direct call from $11:$B392; Direct call from $11:$B3D8; Direct call from $11:$B429		A,P		
+11	B51D	SeedBattleDamageAmountFromChapterState	Direct call from $11:$B392; Direct call from $11:$B3D8; Direct call from $11:$B429		A,P		
 11	B52D	ResolveContextualBattleAction	Direct call from $11:$88EA		P		
 11	B60C	CommitSelectedBattleAction	Direct call from $11:$B5CA		P		
 11	B651	ResolveBattleOutcome1EAndAdvancePhase	Pointer $11:$A5B4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A	A,P	$8E	$B91C
@@ -1175,7 +1175,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	B666	InitializeBattleActionStateFromIndex	Pointer $11:$A5BA (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	B693	UpdateBattlePhaseDecisionState	Pointer $11:$A5BC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	B6DB	QueueBattleActionResult0COr0D	Pointer $11:$A5BE (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5F4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5F6 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
-11	B6F2	LoadBattleEffectMagnitudeAndAccumulate	Pointer $11:$A5EC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5EE (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	B6F2	LoadBattleDamageAmountAndApply	Pointer $11:$A5EC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5EE (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	B700	ResolveBattleOutcomeAfterMagnitudeAdvance	Pointer $11:$A5C4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)	A	A,P	$8E	
 11	B705	RunGiantAttackAndWithdrawalSequence	Pointer $11:$A5C8 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	B73D	ResolveMetalSlimeTransformation	Pointer $11:$A5CA (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
@@ -1214,13 +1214,13 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 11	BBFA	EmitPrimaryStoredTargetToken	Direct call from $11:$BBB7	A,Y	A,P		$BC12
 11	BC06	EmitSecondaryStoredTargetToken	Direct call from $11:$BBC8	A,Y	A,P		$BC12
 11	BC12	ClassifyCurrentStoredTargetForDialogue	Direct call from $11:$BBFB; Direct call from $11:$BC07		P		
-11	BC5A	ResolveWagonExitBattleAction	Direct call from $11:$887A; Direct call from $11:$888B		P		$80C4
+11	BC5A	HandleNoMatchingBattleSlotGroup	Direct call from $11:$887A; Direct call from $11:$888B		P		$80C4
 11	BCF1	RunNaraTarotCardSequence	Direct call from $11:$88F2		P		
 11	BD52	LoadBattleDisplayRecordToDialogueBuffer	Direct call from $11:$BD11		A,P		
 11	BD83	PlayBattleSound9FAndAnimatePalette	Direct call from $11:$BD14		P		
 11	BDEE	RestoreBattleDisplayPaletteBuffer	Direct call from $11:$BDE1	A,X	A,P,X	$05FC+X	
 11	BDFC	CommitQueuedBattleActionSlotMatch	Pointer $11:$A5FE (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		$A1A9
-11	BE00	TryRandomizeBattleSelectionWord	Pointer $11:$A600 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
+11	BE00	TryRandomizeBattleDamageAmount	Pointer $11:$A600 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C)		P		
 11	BEB2	RollBattleTurnOrderByAgility	Direct call from $11:$8071	A,X,Y	A,P,X,Y	$00,$0E,$0F,$7348+X	
 11	BF2E	PlayInlineBattleSound	Direct call from $11:$8D64; Direct call from $11:$8D7D; Direct call from $11:$8E13; Direct call from $11:$8E77; Direct call from $11:$8E86; Direct call from $11:$8EB3; Direct call from $11:$8EC2; Direct call from $11:$8ECE; Direct call from $11:$8EDA; Direct call from $11:$8EEE; Direct call from $11:$8EF9; Direct call from $11:$8F02; Direct call from $11:$8F1F; Direct call from $11:$8F2D; Direct call from $11:$911A; Direct call from $11:$913F; Direct call from $11:$918B; Direct call from $11:$9199; Direct call from $11:$91A0; Direct call from $11:$91E1; Direct call from $11:$91E8; Direct call from $11:$97CF; Direct call from $11:$9805; Direct call from $11:$980E; Direct call from $11:$98B4; Direct call from $11:$98EF; Direct call from $11:$9B13; Direct call from $11:$9B3F; Direct call from $11:$9BB9; Direct call from $11:$9BD0; Direct call from $11:$9C02; Direct call from $11:$9C17; Direct call from $11:$A6C1; Direct call from $11:$AC97; Direct call from $11:$AE65; Direct call from $11:$AE84; Direct call from $11:$AE8B; Direct call from $11:$B040; Direct call from $11:$B1E7; Direct call from $11:$B1FE; Direct call from $11:$B3E2; Direct call from $11:$B406; Direct call from $11:$B40E; Direct call from $11:$B41C; Direct call from $11:$B497; Direct call from $11:$B713; Direct call from $11:$B884; Direct call from $11:$B974; Direct call from $11:$BD17; Direct call from $11:$BDBC	A,X,Y	A,P,X,Y	$00,$01,$0101+X,$0102+X	
 11	BF55	PlayBattleSoundFromAccumulator	Direct call from $11:$8E93; Direct call from $11:$8EE6; Direct call from $11:$9CA7; Direct call from $11:$A693	A	P		
@@ -1291,17 +1291,17 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	91DD	RollPostVictoryItemDrop	Direct call from $12:$8854	A	A,P,X		
 12	92AD	BattleSetup_PickSetupCandidateByThreshold	Pointer $12:$802A (50-entry code dispatch table; first target is $8064)		P		
 12	92EF	BattleSetup_ResolveSelectionIndex	Pointer $12:$802C (50-entry code dispatch table; first target is $8064)	A,X	A,P,X		
-12	930C	FieldItem_NormalizeItemSelectionState	Pointer $12:$8028 (50-entry code dispatch table; first target is $8064)		P		
+12	930C	RunFieldItemCommand	Pointer $12:$8028 (50-entry code dispatch table; first target is $8064)		P		
 12	9461	TransferSelectedItemToPartyMemberOrToolBag	Direct call from $12:$945B	A	A,P,X	$F9	$953E
-12	9507	FieldItem_CompareItemSelectionStateWithFallback	Direct call from $12:$94FB	A,X	A,P	$F9,$FB	$953E
+12	9507	DiscardSelectedItemWithFallback	Direct call from $12:$94FB	A,X	A,P	$F9,$FB	$953E
 12	952A	FieldItem_SwapItemSelectionBytes	Direct call from $12:$9404; Direct call from $12:$9445; Direct call from $12:$94F6	A	A,P,X,Y		
 12	953E	FieldItem_ClearModeByte	Direct call from $12:$9461; Direct call from $12:$9507	A	A,P	$6E	
-12	9548	FieldItem_LoadModeByteFromSelector8	Guarded flow recovery: Coherent routine block immediately after RTS $9547; 7 instructions, 1 BRK service calls, returns	A	A,P	$6E	
+12	9548	RejectLifelessPartyMemberItemCheck	Guarded flow recovery: Coherent routine block immediately after RTS $9547; 7 instructions, 1 BRK service calls, returns	A	A,P	$6E	
 12	955E	AppraiseSelectedItem	Direct call from $12:$9379		P		
-12	9619	FieldItem_TestItemSelectionCode	Direct call from $12:$9656	A	A,P	$6F	
-12	963D	FieldItem_TestItemSelectionThreshold	Direct call from $12:$965E		A,P,X		
+12	9619	ClassifyItemEquipmentEligibility	Direct call from $12:$9656	A	A,P	$6F	
+12	963D	CheckSelectedItemEquipmentThreshold	Direct call from $12:$965E		A,P,X		
 12	964F	FieldItem_ValidateItemSelectionState	Direct call from $12:$95E6	A	A,P		$9619,$963D,$9662
-12	9662	FieldItem_CountItemSelectionBits	Direct call from $12:$965B	A,X	A,P,X	$00,$01,$6F	
+12	9662	ReportItemEquipmentEligibility	Direct call from $12:$965B	A,X	A,P,X	$00,$01,$6F	
 12	974A	FieldItem_ValidatePrimaryAndSecondaryItemSelection	Direct call from $12:$9382		A,P,X		
 12	9767	ShowCursedEquipmentMessage	Direct call from $12:$93D9; Direct call from $12:$9760		P		
 12	9774	FieldItem_ReadBankedItemSelectionByte	Direct call from $12:$9788	A	A,P,X,Y	$23,$24	$C3CE,$C3EA
@@ -1346,18 +1346,18 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	A06E	CalculateCharacterGrowthDescriptorOffset	Direct call from $12:$9FAA	A	A,P,X	$0F	
 12	A07D	ScaleCharacterGrowthValue	Direct call from $12:$A024	A,X,Y	A,P,Y	$00+X,$01+X,$02+X,$0F,$8A,$8B,$8C,$8D	
 12	A0DF	AddCharacterGrowthValue	Direct call from $12:$A029	A,X,Y	A,P	$0000+Y,$0001+Y,$0002+Y	
-12	A304	RunTransitionFrameLoop	Pointer $12:$805C (50-entry code dispatch table; first target is $8064)	A	A,P	$1F	$A475
-12	A3A0	AdvanceTransitionSpriteOffsets	Direct call from $12:$A329	A,X	A,P,X	$0200+X,$0509,$7600+X,$7601+X	$A3DD,$A410
-12	A3DD	AdjustTransitionShift	Direct call from $12:$A3A6	A	A,P	$00,$01,$0505,$0509	
-12	A410	ComputeTransitionStep	Direct call from $12:$A3A0; Direct call from $12:$A42B	A	A,P,X	$00,$01	$C827,$C851
-12	A42B	ApplyTransitionShiftFrame	Direct call from $12:$A376	A,X	A,P,X	$00,$0200+X,$0505,$0509,$7600+X,$7601+X	$A410
-12	A475	SnapshotTransitionOam	Direct call from $12:$A30A	A,X	A,P,X	$7600+X,$7601+X	
-12	A489	PulseTransitionPalette	Direct call from $12:$A346	A,X	A,P,X	$05FC	$C5B9,$C90C
+12	A304	RunBattleFlyAwayAnimation	Pointer $12:$805C (50-entry code dispatch table; first target is $8064)	A	A,P	$1F	$A475
+12	A3A0	AdvanceBattleFlyAwaySpriteOffsets	Direct call from $12:$A329	A,X	A,P,X	$0200+X,$0509,$7600+X,$7601+X	$A3DD,$A410
+12	A3DD	AdjustBattleFlyAwayShift	Direct call from $12:$A3A6	A	A,P	$00,$01,$0505,$0509	
+12	A410	ComputeBattleFlyAwayStep	Direct call from $12:$A3A0; Direct call from $12:$A42B	A	A,P,X	$00,$01	$C827,$C851
+12	A42B	ApplyBattleFlyAwayShiftFrame	Direct call from $12:$A376	A,X	A,P,X	$00,$0200+X,$0505,$0509,$7600+X,$7601+X	$A410
+12	A475	SnapshotBattleFlyAwayOam	Direct call from $12:$A30A	A,X	A,P,X	$7600+X,$7601+X	
+12	A489	PulseBattleFlyAwayPalette	Direct call from $12:$A346	A,X	A,P,X	$05FC	$C5B9,$C90C
 12	A4A5	DispatchIndexedOperation	Pointer $12:$8024 (50-entry code dispatch table; first target is $8064)	A,Y	A,P,Y	$00,$01	
 12	A4B4	WriteOperationFieldGroup	Direct call from $12:$A4C5; Direct call from $12:$A4DA; Pointer $12:$A541 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A520,$A525,$A52A
-12	A4BA	WriteBattleSetupFieldTail	Tail jump from $12:$A4C9		P		$A525
+12	A4BA	WriteOperationFieldTail	Tail jump from $12:$A4C9		P		$A525
 12	A4C0	WriteConditionalOperationFieldGroup	Direct call from $12:$A4E7; Pointer $12:$A543 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A4B4,$A52F
-12	A4C9	WriteOperationFieldTail	Direct call from $12:$A4F4; Pointer $12:$A545 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A525
+12	A4C9	TailCallWriteOperationFieldTail	Direct call from $12:$A4F4; Pointer $12:$A545 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A525
 12	A4CC	WriteConditionalOperationFieldTail	Direct call from $12:$A501; Pointer $12:$A547 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A52F,$A53A
 12	A4D5	RepeatOperationFieldGroup	Pointer $12:$A549 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)	X,Y	P,X,Y		$A4B4,$A51B
 12	A4E2	RepeatConditionalOperationFieldGroup	Pointer $12:$A54B (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)	X,Y	P,X,Y		$A4C0,$A51B
@@ -1379,29 +1379,29 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	A615	FieldCommand_QueryFieldOption	Direct ROM analysis: Dormant TAX / BRK $42,$53 / RTS helper byte-identical to decoded routine $A5B2-$A5B6	A	P,X		
 12	A61A	PlayFieldSpellSound	Direct call from $12:$A6A0; Direct call from $12:$A95B		P		
 12	A61E	DispatchFieldSpellById	Direct call from $12:$A58B	A,X	A,P,X	$00,$01	$A957
-12	A646	PrintStrangeForceContainsSpellMessage	Pointer $12:$A9ED (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X,Y	A,P,X,Y	$0554+X	$A93B
+12	A646	HandleMapSpecificFieldSpellRestriction	Pointer $12:$A9ED (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X,Y	A,P,X,Y	$0554+X	$A93B
 12	A690	CastFieldSpellOrReportLowCeiling	Pointer $12:$A9EF (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		
 12	A6E8	FieldSpell_ForceFieldStateFF	Pointer $12:$A9F1 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	A,P	$6E41	$A93B
 12	A6F2	FieldSpell_SelectTransitionServiceCode	Pointer $12:$A9F3 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
 12	A714	FieldSpell_SetTransitionFlags60	Pointer $12:$A9F5 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643); Pointer $12:$AA0B (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	A,P	$627F	$A93B
 12	A721	FieldSpell_ShouldBlockFieldStart	Direct call from $12:$A75D; Direct call from $12:$B436	A	A,P		
-12	A755	FieldSpell_RunFieldSpellGate	Pointer $12:$A9F7 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	A,P		$A721,$A93B,$A974
-12	A773	FieldSpell_ShowFieldSpellBlockedPrompt	Direct call from $12:$B453		P		
-12	A783	FieldSpell_CheckFieldSpellGate	Pointer $12:$A9F9 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
-12	A78C	FieldSpell_RunFieldSpellChoice	Pointer $12:$A9FB (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,Y	P,Y		$A5B2,$A93B,$A94A,$A950
-12	A79F	RunBattleEntryChoiceScript	Tail jump from $12:$A7E0	A,Y	P,Y		$A950
-12	A7D1	FieldSpell_RunFieldSpellChoiceFromScriptOffset2	Pointer $12:$A9FD (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,Y	P,Y		$A5B2,$A93B,$A94A,$A950
-12	A7E3	FieldSpell_RunFieldSpellChoiceLatch	Pointer $12:$A9FF (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	P,X		$A5B2,$A93B
-12	A7F9	FieldSpell_AccumulateFieldSpellData	Pointer $12:$AA01 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
-12	A852	FieldSpell_ReturnToUpperEngine	Direct call from $12:$A670		P		
-12	A858	FieldSpell_CompareOperandAcrossWindow	Pointer $12:$AA03 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
+12	A755	FieldSpell_RunGate	Pointer $12:$A9F7 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	A,P		$A721,$A93B,$A974
+12	A773	FieldSpell_ShowBlockedPrompt	Direct call from $12:$B453		P		
+12	A783	FieldSpell_CheckGate	Pointer $12:$A9F9 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
+12	A78C	FieldSpell_RunChoice	Pointer $12:$A9FB (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,Y	P,Y		$A5B2,$A93B,$A94A,$A950
+12	A79F	RunFieldSpellHealingChoiceScript	Tail jump from $12:$A7E0	A,Y	P,Y		$A950
+12	A7D1	FieldSpell_RunChoiceFromScriptOffset2	Pointer $12:$A9FD (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,Y	P,Y		$A5B2,$A93B,$A94A,$A950
+12	A7E3	FieldSpell_RunChoiceLatch	Pointer $12:$A9FF (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A	P,X		$A5B2,$A93B
+12	A7F9	HealPartyWithFieldSpell	Pointer $12:$AA01 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
+12	A852	ReportFieldSpellFailureAndReturn	Direct call from $12:$A670		P		
+12	A858	CurePartyMemberNumbness	Pointer $12:$AA03 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)		P		$A93B
 12	A8B7	CurePartyMemberPoison	Pointer $12:$AA05 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X	P,X	$F9	$A5B2,$A93B
-12	A8D0	FieldSpell_RandomlyCommitFieldSpellOptionOne	Pointer $12:$AA07 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X	A,P,X	$F9	$A5B2,$A93B,$C891
+12	A8D0	TryRevivePartyMemberRandomly	Pointer $12:$AA07 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X	A,P,X	$F9	$A5B2,$A93B,$C891
 12	A8EE	RevivePartyMember	Pointer $12:$AA09 (Sixteen-entry battle setup event handler table selected through parallel IDs $AA0D-$AA1C and dispatched at $A643)	A,X	A,P,X	$F9	$A5B2,$A93B
-12	A93B	FieldSpell_LatchFieldSpellOperands	Direct call from $12:$A646; Direct call from $12:$A699; Direct call from $12:$A6E8; Direct call from $12:$A6F2; Direct call from $12:$A714; Direct call from $12:$A755; Direct call from $12:$A783; Direct call from $12:$A78C; Direct call from $12:$A7D1; Direct call from $12:$A7E3; Direct call from $12:$A7F9; Direct call from $12:$A858; Direct call from $12:$A8B7; Direct call from $12:$A8D0; Direct call from $12:$A8EE	A	A,P		
-12	A94A	FieldSpell_ClearFieldSpellOperandIndex	Direct call from $12:$A79A; Direct call from $12:$A7DB; Direct call from $12:$A80E		P,X		
-12	A950	FieldSpell_ReadFieldSpellByteFromScript	Direct call from $12:$A79F; Direct call from $12:$A7A4; Direct call from $12:$A813; Direct call from $12:$A818		A,P,X		
-12	A957	FieldSpell_DisplayPromptAndCommitOperands	Direct call from $12:$A625		P		
+12	A93B	FieldSpell_LatchOperands	Direct call from $12:$A646; Direct call from $12:$A699; Direct call from $12:$A6E8; Direct call from $12:$A6F2; Direct call from $12:$A714; Direct call from $12:$A755; Direct call from $12:$A783; Direct call from $12:$A78C; Direct call from $12:$A7D1; Direct call from $12:$A7E3; Direct call from $12:$A7F9; Direct call from $12:$A858; Direct call from $12:$A8B7; Direct call from $12:$A8D0; Direct call from $12:$A8EE	A	A,P		
+12	A94A	FieldSpell_ClearOperandIndex	Direct call from $12:$A79A; Direct call from $12:$A7DB; Direct call from $12:$A80E		P,X		
+12	A950	FieldSpell_ReadByteFromScript	Direct call from $12:$A79F; Direct call from $12:$A7A4; Direct call from $12:$A813; Direct call from $12:$A818		A,P,X		
+12	A957	AnnounceFieldSpellCastAndCommitOperands	Direct call from $12:$A625		P		
 12	A974	FieldSpell_CheckEligibilityByMap	Direct call from $12:$A6B9; Direct call from $12:$A758; Direct call from $12:$AFBA; Direct call from $12:$B431	A	P		
 12	AA1D	AdventureLog_InitializeDisplayState	Pointer $12:$801A (50-entry code dispatch table; first target is $8064)	A	A,P	$6BDE	$AA41,$AA5B,$C54E,$C58F,$C5BF
 12	AA41	AdventureLog_RefreshPrimaryMirrors	Direct call from $12:$AA2B	A,X,Y	A,P,X,Y	($00),Y,$6BD9+X,$8A	$AC01,$AC73,$AC8C,$AD03,$AD15,$AD3F
@@ -1432,7 +1432,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	AD03	AdventureLog_AdvancePointer	Direct call from $12:$AB46; Direct call from $12:$ABE0; Direct call from $12:$AC1C; Direct call from $12:$AC48; Direct call from $12:$ACB7	A	A,P,X	$00,$01	$C7FB
 12	AD15	AdventureLog_LoadBasePointer	Direct call from $12:$AB1F; Direct call from $12:$AB3E; Direct call from $12:$AB4F; Direct call from $12:$AB74; Direct call from $12:$ABC6; Direct call from $12:$AC10; Direct call from $12:$AC22; Direct call from $12:$AC9B; Direct call from $12:$ACC5; Direct call from $12:$ACE2; Direct call from $12:$ACF1	A,X	A,P,X,Y	$00+X,$01+X	$C827
 12	AD1A	AdventureLog_LoadIndexedBasePointer	Direct call from $12:$ABCE; Direct call from $12:$AC58	A,X	A,P,X,Y	$00+X,$01+X	$C827
-12	AD1C	ComputeIndexedBattleSetupPointer	Tail jump from $12:$AD17	A,X	A,P,Y	$00+X,$01+X	$C827
+12	AD1C	AdventureLog_ComputeIndexedRecordPointer	Tail jump from $12:$AD17	A,X	A,P,Y	$00+X,$01+X	$C827
 12	AD34	AdventureLog_LoadAuxiliaryRecordPointer	Direct call from $12:$AC2F; Direct call from $12:$AC39; Direct call from $12:$ACA5	A	A,P	$02,$03	
 12	AD3F	AdventureLog_LoadPrimaryRecordPointer	Direct call from $12:$AB3B; Direct call from $12:$ABD1; Direct call from $12:$AC13	A	A,P	$02,$03	
 12	AD4A	AdventureLog_ClearWorkBuffer	Direct call from $12:$AA3B	A,X	A,P,X	$0480+X,$04F2,$04F3,$8B	
@@ -1440,18 +1440,18 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	AE05	ItemUse_FindModeOperandInTable	Pointer $12:$8014 (50-entry code dispatch table; first target is $8064)	A	P	$00	
 12	AE0D	ItemUse_FindModeOperandPreservingIndex	Pointer $12:$804C (50-entry code dispatch table; first target is $8064)	A	P	$00	
 12	AE0F	ItemUse_FindHandlerById	Direct call from $12:$AD9A; Direct call from $12:$ADE3		P		
-12	AE23	ItemUse_SelectDefaultHandlerIndex	Direct call from $12:$ADA6	X	A,P,X	$6E	
+12	AE23	RunDefaultItemUseHandler	Direct call from $12:$ADA6	X	A,P,X	$6E	
 12	AF04	ItemUse_LoadSelectionRowState	Direct call from $12:$AE8B	A	A,P	$6F	$B526
 12	AF0F	ItemUse_DispatchHandlerById	Direct call from $12:$AE86	A,X	A,P,X	$00,$01,$6DF9	
 12	AF30	ItemUse_RunSelectionConfirmationLoop	Pointer $12:$B6A8 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)		A,P		$AF5A,$B533,$B569,$B56D,$B571,$B5EF,$C8E1
 12	AF36	ItemUse_RunSelectionConfirmationLoopFromReload	Pointer $12:$B67A (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)		A,P		$AF5A,$B533,$B569,$B56D,$B571,$B5EF,$C8E1
-12	AF39	RunBattleSelectionConfirmation	Tail jump from $12:$AF33		A,P		$AF5A,$B533,$B569,$B56D,$B5EF,$C8E1
-12	AF55	WaitForBattleSelectionConfirmation	Tail jump from $12:$AF9D; Tail jump from $12:$B104; Tail jump from $12:$B147; Tail jump from $12:$B1FE		P		$C8E1
+12	AF39	ItemUse_RunSelectionConfirmation	Tail jump from $12:$AF33		A,P		$AF5A,$B533,$B569,$B56D,$B5EF,$C8E1
+12	AF55	ItemUse_WaitForSelectionConfirmation	Tail jump from $12:$AF9D; Tail jump from $12:$B104; Tail jump from $12:$B147; Tail jump from $12:$B1FE		P		$C8E1
 12	AF5A	ItemUse_SeedSelectionPromptOperands	Direct call from $12:$AF43; Direct call from $12:$AF7D	A	A,P	$6F,$70	$B521,$B52C
 12	AF73	ItemUse_ProjectCurrentValueIntoPrompt	Pointer $12:$8052 (50-entry code dispatch table; first target is $8064)	A,X	A,P,X	$6279,$627A,$6F	$AF5A
 12	AF89	ItemUse_RunSelectionRefreshFlow	Pointer $12:$B67C (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P	$6F	$B52C,$B569,$B56D,$B571,$B5EF,$C8E1
 12	AFA0	ItemUse_HandleSelectionConfirmResult	Pointer $12:$B67E (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)		P,X		
-12	AFCB	WaitForBattleSelectionInputAndCancel	Tail jump from $12:$B0CA; Tail jump from $12:$B26D; Tail jump from $12:$B32B; Tail jump from $12:$B365; Tail jump from $12:$B3B8		P		$C8E1
+12	AFCB	ItemUse_WaitForSelectionInputAndCancel	Tail jump from $12:$B0CA; Tail jump from $12:$B26D; Tail jump from $12:$B32B; Tail jump from $12:$B365; Tail jump from $12:$B3B8		P		$C8E1
 12	AFF9	ItemUse_StartPrimaryChoicePrompt	Pointer $12:$B680 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P	$FD	$B021,$B52C,$B56D,$B571,$B5EF,$C8E1
 12	AFFD	ItemUse_StartAlternateChoicePrompt	Pointer $12:$B682 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P	$FD	$B021,$B52C,$B56D,$B571,$B5EF,$C8E1
 12	B001	ItemUse_RunDefaultChoicePrompt	Pointer $12:$B684 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P	$FD	$B021,$B52C,$B56D,$B571,$B5EF,$C8E1
@@ -1473,18 +1473,18 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	B2FF	HandleBonmalmoItemUseProgress	Pointer $12:$B698 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P	$6283	$B569,$B56D,$B571,$C8E1
 12	B32E	HandleEndorItemUseStateUpdate	Pointer $12:$B69A (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P,X		$B569,$B56D,$B571,$C8E1
 12	B368	UseFireOfSerenityOnEvilFireAtLighthouse	Pointer $12:$B69C (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P		$B569,$B56D,$B5EF,$C8E1
-12	B3BB	HandleRosavilleItemUseIntro	Pointer $12:$B6A0 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P,X,Y		$B40E,$B571,$C8E1
+12	B3BB	RevealRosavilleStairs	Pointer $12:$B6A0 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P,X,Y		$B40E,$B571,$C8E1
 12	B40E	UseFluteOfUncovering	Direct call from $12:$B3EA; Direct call from $12:$B3FC; Direct call from $12:$B405		P		
 12	B42B	ItemUse_RunEligibilityGate	Pointer $12:$B6AA (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P		$A721,$A773,$A974,$B571,$B5EF
 12	B464	HandleWorldItemUseTriggerC22F	Pointer $12:$B6AC (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P		$B56D,$B571,$B5EF,$C8E1
 12	B494	HandleCascadeCaveItemUseTrigger	Pointer $12:$B6AE (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A,X,Y	A,P,X,Y		$B56D,$B571,$C8E1
 12	B4C1	HandleIronSafeCaveItemUseGate	Pointer $12:$B6B4 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P		$B571,$B5EF
-12	B4DC	ItemUse_ForceState32	Pointer $12:$B6B0 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)		P		$B571,$B5EF
+12	B4DC	ReleaseStrangeSmellItemEffect	Pointer $12:$B6B0 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)		P		$B571,$B5EF
 12	B4ED	ItemUse_RunIntroOverlayOrMode1Fallback	Pointer $12:$B6B2 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D)	A	A,P		$B56D,$B571,$B5EF,$C8E1
 12	B521	ItemUse_ReadChoiceValue	Direct call from $12:$AF5C; Direct call from $12:$B023; Direct call from $12:$B03B; Direct call from $12:$B069; Direct call from $12:$B099; Direct call from $12:$B0BC; Direct call from $12:$B0DC		P		
 12	B526	ItemUse_ReadPrimarySelectionIndex	Direct call from $12:$AE45; Direct call from $12:$AEC4; Direct call from $12:$AECD; Direct call from $12:$AF0B; Direct call from $12:$B5C8; Direct call from $12:$B5D5		P,X		
 12	B52C	ItemUse_ReadSecondarySelectionIndex	Direct call from $12:$AF69; Direct call from $12:$AF95; Direct call from $12:$B00E; Direct call from $12:$B048; Direct call from $12:$B080; Direct call from $12:$B0AA; Direct call from $12:$B0ED; Direct call from $12:$B113; Direct call from $12:$B11A; Direct call from $12:$B536		P,X		
-12	B52F	ReadBattleSelectionIndexValue	Tail jump from $12:$B529		P		
+12	B52F	ItemUse_ReadSelectionIndexValue	Tail jump from $12:$B529		P		
 12	B533	ItemUse_CheckPrimarySelectionAgainstCurrentValue	Direct call from $12:$AF3E; Direct call from $12:$B0D5	A	A,P		$B52C
 12	B540	ItemUse_QuerySecondaryChoice	Guarded flow recovery: Coherent routine block immediately after RTS $B53F; 3 instructions, 1 BRK service calls, returns		P,X		
 12	B547	ItemUse_CopyPrimarySelectionToSecondaryIfAllowed	Direct call from $12:$AE5A		P		
@@ -2138,7 +2138,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	9D57	EffectCallback_Wait180FramesThenSetStatus00	Pointer $15:$8128 (Command $00 callback operand parsed from a pointer-delimited effect script)	A,Y	A,P,Y		$D218
 15	9D5C	EffectCallback_SetStatus80AfterA66A	Pointer $15:$829F (Command $01 callback operand parsed from a pointer-delimited effect script)	A	A,P	$E7	$A66A
 15	9D62	EffectCallback_SetInitialEventProgress	Pointer $15:$82A7 (Command $00 callback operand parsed from a pointer-delimited effect script)		A,P		
-15	9D68	EffectCallback_TestOperand07AndSignalF9	Pointer $15:$833A (Command $01 callback operand parsed from a pointer-delimited effect script)		A,P		$9AD4
+15	9D68	RunKingInTroubleSummons	Pointer $15:$833A (Command $01 callback operand parsed from a pointer-delimited effect script)		A,P		$9AD4
 15	9D83	EffectCallback_SetMapExitFlagBit08	Pointer $15:$8896 (Command $00 callback operand parsed from a pointer-delimited effect script)	A	A,P	$62AA	
 15	9D8C	EffectCallback_Consume07C6TripletAndContinue	Pointer $15:$8551 (Command $01 callback operand parsed from a pointer-delimited effect script)	A,X,Y	A,P,X	$00,$0F	$9D92
 15	9D92	EffectCallback_Move07C6TripletToWorkingValue	Direct call from $15:$9D8C; Direct call from $15:$A2C4	A	A,P	$70,$71,$FD,$FE,$FF	
@@ -2166,7 +2166,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	A1DB	EffectCallback_StoreOneBasedValueIn0554	Direct call from $15:$A15B; Direct call from $15:$A198	A	A,P	$0554,$0555	
 15	A1E7	EffectCallback_CountEffectSequenceSteps	Direct call from $15:$A140; Direct call from $15:$A14B	A,Y	A,P,Y	$00,$01	
 15	A20C	EffectCallback_WaitAndSetSlot2Command11	Pointer $15:$8028 (26-entry code dispatch table)		P		$D218
-15	A21B	EffectCallback_BranchOnSavedOperandAndSelectionState	Guarded flow recovery: Coherent routine block immediately after RTS $A21A; 15 instructions, 5 BRK service calls, returns and jumps and merges into existing code		P		$9A93
+15	A21B	RunTaloonWeaponShopWorkChoice	Guarded flow recovery: Coherent routine block immediately after RTS $A21A; 15 instructions, 5 BRK service calls, returns and jumps and merges into existing code		P		$9A93
 15	A244	EffectCallback_RunA2C8WhenEb20Clear	Pointer $15:$8022 (26-entry code dispatch table)		P		
 15	A24C	EffectCallback_SetStatus01ThenRunA2C8	Pointer $15:$8560 (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$856E (Command $00 callback operand parsed from a pointer-delimited effect script)		P		$B0AE
 15	A258	EffectCallback_RollIndexedListPosition	Direct call from $15:$A303	A	A,P,X	$00,$01,$DA	$C851,$C891
@@ -2180,7 +2180,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	A4A6	EffectCallback_SetFlag05ThenStatusC0	Pointer $15:$8998 (Command $00 callback operand parsed from a pointer-delimited effect script)		A,P		
 15	A4AE	EffectCallback_SetFlag04ThenStatusC0	Pointer $15:$89CB (Command $00 callback operand parsed from a pointer-delimited effect script)		A,P		
 15	A4B6	EffectCallback_FinalizeEffectState	Pointer $15:$80B7 (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$80CF (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$811C (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$8988 (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$8AB8 (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$8AD6 (Command $00 callback operand parsed from a pointer-delimited effect script)		P		
-15	A4BA	EffectCallback_RefreshMapAndWaitForInput	Pointer $15:$8024 (26-entry code dispatch table)		P		$A4C9
+15	A4BA	RunFloraAndAlexReunion	Pointer $15:$8024 (26-entry code dispatch table)		P		$A4C9
 15	A4C9	EffectCallback_InvokeMapRefreshPreservingPointers	Direct call from $15:$9E17; Direct call from $15:$9E7C; Direct call from $15:$A0B7; Direct call from $15:$A2D5; Direct call from $15:$A4BA; Direct call from $15:$AB30; Direct call from $15:$AD64; Direct call from $15:$AE7B; Direct call from $15:$B00C; Direct call from $15:$BEE6	A	A,P		$B7B5
 15	A4DE	EffectCallback_SetSlot1Command11AndStatus80	Pointer $15:$8720 (Command $00 callback operand parsed from a pointer-delimited effect script)		P		
 15	A4F0	EffectCallback_SelectInitialEffectState	Pointer $15:$8728 (Command $01 callback operand parsed from a pointer-delimited effect script)	A,X,Y	A,P,X	$00,$0F	$A664,$B089
@@ -2220,7 +2220,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	A845	CompareWorkingValueWithCasinoLimit	Tail jump from $15:$A83E	A	A,P		
 15	A84E	EffectCallback_TestWorkingTripletThreshold	Direct call from $15:$A7EE; Direct call from $15:$BF2D	A	A,P	$70,$71	
 15	A85C	EffectCallback_GetChapterCasinoStake	Direct call from $15:$A7A8; Direct call from $15:$A7DD; Pointer $15:$8008 (26-entry code dispatch table)	A	A,P		
-15	A870	EffectCallback_RunCasinoSpendFlow	Pointer $15:$8454 (Command $00 callback operand parsed from a pointer-delimited effect script)		P		
+15	A870	RunCasinoExchangeCounter	Pointer $15:$8454 (Command $00 callback operand parsed from a pointer-delimited effect script)		P		
 15	A960	EffectCallback_LoadPrimaryItemCandidateList	Direct call from $15:$A873; Direct call from $15:$A99A	A	A,P	$07C5	
 15	A96D	EffectCallback_CountMatchingItemCandidates	Direct call from $15:$A99D	A,X	A,P,X	$00,$01	
 15	A99A	RunSmallMedalKingRewardExchange	Pointer $15:$9604 (Command $00 callback operand parsed from a pointer-delimited effect script)	A	P	$DB,$FD	$A960,$A96D
@@ -2298,7 +2298,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	B09A	EffectCallback_LoadEffectAvailabilityResult	Direct call from $15:$A053; Direct call from $15:$A514	A,Y	A,P	$E0	
 15	B0AE	EffectCallback_SetInterpreterStatus01	Direct call from $15:$A068; Direct call from $15:$A24C; Direct call from $15:$A489; Direct call from $15:$A48F; Direct call from $15:$A498; Tail jump from $15:$AC85	A	A,P	$E7	
 15	B0B6	SetEffectInterpreterStatus80	Tail jump from $15:$9D5F	A	A,P	$E7	
-15	B0BB	EffectCallback_AbortWhenEffectChoiceMissing	Direct call from $15:$9939	A	P		
+15	B0BB	RejectDirectPartyMemberTalk	Direct call from $15:$9939	A	P		
 15	B0CE	EffectCallback_WaitShortThenSetFlagAndStatus01	Direct call from $15:$B133; Tail jump from $15:$AACE; Tail jump from $15:$ADF3; Tail jump from $15:$B014	A,Y	A,P,Y		$D214
 15	B0D7	EffectCallback_Wait180FramesThenSetFlagAndStatus01	Direct call from $15:$A043; Tail jump from $15:$9D59; Tail jump from $15:$A09F; Tail jump from $15:$AAC5; Tail jump from $15:$ABF0; Tail jump from $15:$ABF5; Tail jump from $15:$ABFA; Tail jump from $15:$AC5F; Tail jump from $15:$AC77; Tail jump from $15:$AD8C; Tail jump from $15:$AF6B	A,Y	A,P,Y		$D218
 15	B0DD	FinishEffectDelayAndSetStatus	Tail jump from $15:$B0D4	A	A,P,Y		
@@ -2322,12 +2322,12 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 15	B4CB	InventoryAccumulator_TrySubtractWorkingValue	Direct call from $15:$BD56; Pointer $15:$8018 (26-entry code dispatch table)	A	A,P	$03,$625B,$625C	
 15	B4E3	InventoryAccumulator_LoadCurrentValue	Direct call from $15:$BC07; Direct call from $15:$BC4C; Direct call from $15:$BD1C; Direct call from $15:$BDED; Pointer $15:$801A (26-entry code dispatch table)	A	A,P	$00,$01	
 15	B4EE	EffectMath_Multiply0001By1000	Direct call from $15:$BD6B; Direct call from $15:$BECC; Pointer $15:$801C (26-entry code dispatch table)	A,X	A,P,X	$02,$03,$04,$05	$B3F2
-15	B513	EffectCallback_RefreshMapAndLoadReferencedEntry	Pointer $15:$802C (26-entry code dispatch table)		P		
-15	B524	EffectCallback_ShowEffectFollowupMessage	Pointer $15:$8026 (26-entry code dispatch table)		P		
+15	B513	InitializeHouseOfHealingVisit	Pointer $15:$802C (26-entry code dispatch table)		P		
+15	B524	ShowHouseOfHealingFarewell	Pointer $15:$8026 (26-entry code dispatch table)		P		
 15	B528	RunEffectLookupAndAudioCue	Tail jump from $15:$9CE2		A,P		$B7B5
 15	B530	RunHouseOfHealingService	Pointer $15:$82AF (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$82E0 (Command $00 callback operand parsed from a pointer-delimited effect script); Pointer $15:$92F7 (Command $00 callback operand parsed from a pointer-delimited effect script)		P		
-15	B766	EffectCallback_RunE2TripletValidationFlow	Direct call from $15:$B5D1; Direct call from $15:$B624; Direct call from $15:$B69D	A	A,P	$FD,$FE,$FF	
-15	B7A6	EffectCallback_SetAudioCompletionAndDispatchEffect	Direct call from $15:$B5D7; Direct call from $15:$B62A; Direct call from $15:$B6A6		P		
+15	B766	RunHouseOfHealingPaymentPrompt	Direct call from $15:$B5D1; Direct call from $15:$B624; Direct call from $15:$B69D	A	A,P	$FD,$FE,$FF	
+15	B7A6	CompleteHouseOfHealingTreatment	Direct call from $15:$B5D7; Direct call from $15:$B62A; Direct call from $15:$B6A6		P		
 15	B7B5	EffectCallback_InvokeLookupWithDaPreserved	Direct call from $15:$9ACB; Direct call from $15:$9EF7; Direct call from $15:$9F5E; Direct call from $15:$A300; Direct call from $15:$A4D1; Direct call from $15:$A545; Direct call from $15:$A6AB; Direct call from $15:$A7BD; Direct call from $15:$A896; Direct call from $15:$A8D2; Direct call from $15:$A902; Direct call from $15:$A9E1; Direct call from $15:$AA27; Direct call from $15:$AD28; Direct call from $15:$B518; Direct call from $15:$B52A; Direct call from $15:$B563; Direct call from $15:$B56B; Direct call from $15:$B5A7; Direct call from $15:$B5F0; Direct call from $15:$B643; Direct call from $15:$B6C7; Direct call from $15:$B6E3; Direct call from $15:$B6F4; Direct call from $15:$B74B; Direct call from $15:$B777; Direct call from $15:$B77C; Direct call from $15:$B806; Direct call from $15:$B817; Direct call from $15:$B858; Direct call from $15:$B886; Direct call from $15:$B938; Direct call from $15:$BA24; Direct call from $15:$BBDB; Direct call from $15:$BBE0; Direct call from $15:$BBF6; Direct call from $15:$BC1F; Direct call from $15:$BC95; Direct call from $15:$BD0B; Direct call from $15:$BD33; Direct call from $15:$BDBC; Direct call from $15:$BE17; Direct call from $15:$BF08; Tail jump from $15:$A6B9	A,X,Y	A,P,X	$0E,$0F,$6BDE	
 15	B7FB	EffectCallback_PrepareEffectSelectionContext	Direct call from $15:$9972; Direct call from $15:$B0C4; Direct call from $15:$B12B; Direct call from $15:$B16E; Direct call from $15:$B196; Direct call from $15:$B822; Direct call from $15:$B829; Direct call from $15:$B830; Direct call from $15:$BBCE	A	A,P		
 15	B810	EffectCallback_LoadEffectContextAndResolveEntry	Direct call from $15:$B83D		P		
@@ -3598,7 +3598,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	9484	RunScriptedMapEntityOamSequence	Pointer $1D:$8020 (21-entry mixed map-event service directory)		P		
 1D	94AC	SetEntitySixDirectionTwoAndRender	Direct call from $1D:$949D		P		
 1D	94C4	AnimateEventSpritesDownAndHideEntities	Direct call from $1D:$949A	A,X	A,P,X	$7000+X	$D804
-1D	9501	RunMapEventDialogueServices35	Direct call from $1D:$9497		P		
+1D	9501	RunSaroAndRosaDialogue	Direct call from $1D:$9497		P		
 1D	9509	AnimateEventEntityExchange	Direct call from $1D:$9494		P,X,Y		$958A
 1D	958A	MoveFourEventSpritesUpRepeatedly	Direct call from $1D:$950D; Direct call from $1D:$956A	A,X,Y	A,P,X,Y		$95EC,$960D,$C90C
 1D	95A2	RunMapEventDelay	Direct call from $1D:$9491		A,P,X,Y		
@@ -3679,10 +3679,10 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	9F8F	LoadMapEntityFormationTemplate	Direct ROM analysis: Coherent 24-byte graphics copy helper ending at RTS $9FB0; Direct call from $1D:$9D42		P,X,Y		
 1D	9FF9	OperateColossusLever	Pointer $1D:$B65C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	A04E	CompleteMapTriggerSequence	Pointer $1D:$B65E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
-1D	A05D	RunMapEventResource76Sequence	Pointer $1D:$B660 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
+1D	A05D	RunFakePrincessThiefsKeyScene	Pointer $1D:$B660 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	A097	StartPresentationAndCopyEntityCounters	Pointer $1D:$B662 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$7060+Y,$7080+Y	$A0A5,$A23A
 1D	A0A5	CopyEntityCounterPair	Direct call from $1D:$A0A0	A,X,Y	A,P	$7060+Y,$7080+Y	
-1D	A0B3	StartMapEventDialogue	Pointer $1D:$B664 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
+1D	A0B3	RunFakePrincessImposterDialogue	Pointer $1D:$B664 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	A0C8	AnimateNineMapEffectPositions	Pointer $1D:$B666 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X,Y	$54	
 1D	A164	MovePlayerUpAndToggleFirstEntities	Pointer $1D:$B668 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$3E,$45,$6F80,$7001+X	$A179,$C007
 1D	A176	RunTrampoline02AndToggleFirstEntities	Direct ROM scan: JSR to fixed trampoline $C007	A,X	A,P,X	$7001+X	$C007
@@ -3714,7 +3714,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	A42F	StartMapEventPresentation82	Direct call from $1D:$A42A	A	A,P	$0530,$0531,$0532,$0533	
 1D	A443	HideMapEntityOne	Pointer $1D:$B68A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$7021	
 1D	A44D	CompleteMapEventAndClearPresentation	Pointer $1D:$B68C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		$B73E
-1D	A45B	HandleEntityZeroTriggerAcrossColumns10To14	Pointer $1D:$B68E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
+1D	A45B	PromptSlotMachineAtMapTrigger	Pointer $1D:$B68E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	A4A8	RunKidnappedChildMotherReunion	Pointer $1D:$B690 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$0530,$0531,$0532,$0533,$51,$6F61,$6F81,$7001	$A509,$A51F
 1D	A509	SynchronizePlayerWithEntityZero	Direct call from $1D:$A4EB; Direct call from $1D:$B16B	A	A,P	$3E,$44,$45,$6F60,$6F80	
 1D	A51F	ActivateEntityFromQueuedSlot	Direct call from $1D:$A4E8	A,X,Y	A,P,Y	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7021+Y	
@@ -3729,7 +3729,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	A6DF	RunMapEventDialogue02	Pointer $1D:$B6A0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		A,P		
 1D	A6EA	RunEntityZeroInteractionAndHideEntity15	Pointer $1D:$B6A2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$7000	$995E
 1D	A724	ActivateMapEntitiesElevenAndTwelve	Pointer $1D:$B6A4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7046+X	
-1D	A732	CompleteMapEventResource76	Pointer $1D:$B6A6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		$995E
+1D	A732	CompleteFakePrincessDeparture	Pointer $1D:$B6A6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		$995E
 1D	A765	ReserveEventTargetAtGateCoordinates	Pointer $1D:$B6A8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	A7A4	SelectMapEventPartySlot	Direct call from $1D:$A07E; Direct call from $1D:$A790		A,P		
 1D	A7B1	StartCoordinateMapEffect22Or68	Pointer $1D:$B6AA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$0527,$0593,$0594	
@@ -3740,9 +3740,9 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	A858	StartPresentation84AndTransferEntityPairs	Pointer $1D:$B6B0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	A874	CopyQueuedEntityCounterAndActivate	Direct call from $1D:$A86D	A,X,Y	A,P	$7006+X,$7046+X,$7066+X,$7086+X	
 1D	A893	TransferQueuedMapEventActors	Pointer $1D:$B6B2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$7000	
-1D	A8CE	ResolveTransferredEntityDialogue	Direct call from $1D:$A8C7	A	A,P,X		$995E,$D1F3
+1D	A8CE	RunCristoAndBreyTournamentFarewells	Direct call from $1D:$A8C7	A	A,P,X		$995E,$D1F3
 1D	A90D	TransferQueuedEntityToActiveSlot	Direct call from $1D:$A8B3; Direct call from $1D:$A8B8	A,X,Y	A,P,Y	$6F60+Y,$6F66+X,$6F80+Y,$6F86+X,$6FA0+Y,$6FA6+X,$6FC0+Y,$6FC6+X,$6FE6+X	
-1D	A93B	HandleEntityZeroTriggerAtRow0A	Pointer $1D:$B6B4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		$995E
+1D	A93B	RunEndorKingTournamentWelcome	Pointer $1D:$B6B4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		$995E
 1D	A968	AdvanceMapEventVariantAndReload	Pointer $1D:$B6B6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	A97B	ReloadMapEventAroundRows08And0A	Direct call from $1D:$A951; Direct call from $1D:$A970; Pointer $1D:$8012 (21-entry mixed map-event service directory)	A,X	A,P,X,Y	$058E,$45	$D3E6
 1D	A9A3	LoadMapEventVariantPointer	Pointer $1D:$B6B8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$059A,$059B	
@@ -3754,10 +3754,10 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	AA4D	ClearPresentationAndLoadSubmapZero	Pointer $1D:$B6C2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$0530	
 1D	AA52	LoadEventReturnDestination	Pointer $1D:$8022 (21-entry mixed map-event service directory)		P		
 1D	AA72	StartEntityEventAtPlayerRow0A	Pointer $1D:$B6C4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$7040+X,$71A0+X,$71C0+X	$A23A
-1D	AA9F	CompleteMapEventAndSaveProgress	Pointer $1D:$B6C6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$059C	$995E
+1D	AA9F	SummonAlenaBackToSanteem	Pointer $1D:$B6C6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$059C	$995E
 1D	AABF	RunPrimaryActorDialogueEvent	Pointer $1D:$B6C8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7000,$7000+X	$995E
 1D	AAF6	ExitEventSubmapAndResetTime	Pointer $1D:$B6CA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7000,$7006+X	$995E
-1D	AB98	TransferEntityTwoSourceToOne	Pointer $1D:$B6CC (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$6FE6+X,$7006+X	$D1F3
+1D	AB98	StartBalzackKeeleonConfrontation	Pointer $1D:$B6CC (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$6FE6+X,$7006+X	$D1F3
 1D	ABC8	TransferEntityTwoToSix	Pointer $1D:$B6CE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$6F62,$6F66+X,$6F82,$6F86+X,$6FA2,$6FA6+X,$6FC2,$6FC6+X,$7002,$7006+X,$7046+X	
 1D	AC0B	ReloadMapEventAtArrivalPosition	Pointer $1D:$B6D0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X,Y	$058E,$3D,$44,$45	$D3E6
 1D	AC60	IsPrimaryEventProgressSet	Pointer $1D:$B6D2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
@@ -3770,7 +3770,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	AD1A	StartDirectionalPresentation82	Pointer $1D:$B6E0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$0530,$0531,$0532,$0533,$0554,$0555	
 1D	AD4C	ActivateMapEntitiesTwoThroughEight	Pointer $1D:$B6E2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7046+X	
 1D	AD73	ShowFixedFourSpriteMapEvent	Pointer $1D:$B6E4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$0200+X	$C543,$C90C,$DFF1,$E501
-1D	AD9E	HandlePrimaryActorSubmapTransition	Pointer $1D:$B6E6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
+1D	AD9E	PromptMapButtonPress	Pointer $1D:$B6E6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	ADD8	RunTrampoline07ThenEntityHideSequence	Direct ROM scan: JSR to fixed trampoline $C016	X	P,X		$AE11,$C004,$C016
 1D	ADDC	RunEntityHideScrollPulseSequence	Direct ROM scan: JSR to fixed trampoline $C004	X	P,X		$AE11,$C004
 1D	AE0C	RestoreMapEventResultAndReturnClear	Inline service continuation: PLA/restore/return tail after BRK service $00,$DB,$7F at $AE08	A	A,P	$51	
@@ -3786,23 +3786,23 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	AF5C	ResetMapEventAudio	Pointer $1D:$B6F8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	AF61	StartFacingSelectedPresentation82	Pointer $1D:$B6FA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$0530,$0531,$0532,$0533,$0563	
 1D	AF85	TestPlayerAtColumns0E_0FRow15	Pointer $1D:$B6FC (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
-1D	AF97	HandleWorldStateMapEvent	Pointer $1D:$B6FE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$51	$B16B
+1D	AF97	RunEnemyBackAttackAmbush	Pointer $1D:$B6FE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$51	$B16B
 1D	AFB8	StartDoublePhasePresentationAtRow05	Pointer $1D:$B700 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$0531	$A23A
 1D	AFCA	AlignSelectedEntityWithPlayerSide	Pointer $1D:$B702 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$7000,$7000+X	
 1D	B001	CopyQueuedCountersToActiveEntity	Direct call from $1D:$B023; Direct call from $1D:$B02A; Direct call from $1D:$B031	A,X,Y	A,P	$7060+X,$7080+X	
 1D	B00F	StartRegionalActorPresentation	Pointer $1D:$B704 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P,X,Y		$A23A,$B001
-1D	B03D	CompleteEventAndHideFirstThreeEntities	Pointer $1D:$B706 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		$995E
+1D	B03D	StartLighthouseEvilFireBattle	Pointer $1D:$B706 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		$995E
 1D	B073	FinalizeMapEventInteraction	Pointer $1D:$B708 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$0515	$C5C5
 1D	B08F	SynchronizeEventActorFormation	Pointer $1D:$B70A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$3E,$44,$45,$6F60+X,$6F80+X,$7000+X	
-1D	B0CE	HandleConditionalMapEventFlags13	Pointer $1D:$B70C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
-1D	B0F6	ResolvePrimaryActorItemEvent	Pointer $1D:$B70E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
+1D	B0CE	BlockTravelUntilJarItemsCollected	Pointer $1D:$B70C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
+1D	B0F6	RunPadequiaPartyReunionEvents	Pointer $1D:$B70E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	B16B	SynchronizeActiveEntitiesToTargets	Direct call from $1D:$9AE9; Direct call from $1D:$A019; Direct call from $1D:$A2AE; Direct call from $1D:$A33E; Direct call from $1D:$A47A; Direct call from $1D:$ADB5; Direct call from $1D:$AFA0; Direct call from $1D:$B0E2; Direct call from $1D:$B10A; Direct call from $1D:$B2A5; Direct call from $1D:$B490; Direct call from $1D:$B51F; Direct call from $1D:$B572	A,X	A,P,X	$6F60+X,$6F80+X,$7000+X	$A509
 1D	B18D	StartFacingDependentActorPresentation	Pointer $1D:$B710 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	B1AC	RunDirectionalMapEventAndSetFlag19	Pointer $1D:$B712 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$3D,$7000	$995E
 1D	B1DA	StartDualRegionActorPresentation	Pointer $1D:$B714 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7046+X	$A23A
 1D	B201	InitializeCoordinateSelectedMapEffect	Pointer $1D:$B716 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	B288	HandleAlternateMapEventEntrances	Pointer $1D:$B718 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		$B16B
-1D	B2AC	ResolveMapEventSelectionFromResource37	Inline service continuation: Nested BRK service $62,$23,$40 path restoring $51 and returning before entry $B2CD		P		
+1D	B2AC	RunRuvasZenithianArmorDialogue	Inline service continuation: Nested BRK service $62,$23,$40 path restoring $51 and returning before entry $B2CD		P		
 1D	B2CD	PositionSelectedEntityByFacing	Pointer $1D:$B71A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X,Y	A,P,X,Y	$6F66+X,$6FA6+X,$7000+Y,$71A0+Y,$71C0+Y	
 1D	B308	StartAlternateArrivalPresentation	Pointer $1D:$B71C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7046+X,$71A6+X,$71C6+X	$A23A
 1D	B337	StartRowSelectedMapPresentation	Pointer $1D:$B71E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$0530,$0531,$0532,$0533,$0563,$0564	
@@ -3810,7 +3810,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	B377	EnterFollowupEventSubmap	Pointer $1D:$B722 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P	$6C0C	
 1D	B3E9	RestoreSavedMapPresentationParameters	Direct call from $1D:$B3DA; Pointer $1D:$8016 (21-entry mixed map-event service directory)	A,X	A,P,X	$0554+X,$0558,$0559,$055A	
 1D	B406	SetTransformedEntityDelayByRegion	Pointer $1D:$B724 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7180+X	
-1D	B433	CompleteSelectionEventAndHideEntity	Pointer $1D:$B726 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		$995E
+1D	B433	RunSaroEsturkRevivalAnnouncement	Pointer $1D:$B726 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		$995E
 1D	B479	HandleSpecialActorLocation	Pointer $1D:$B728 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	B48C	StartPhaseFourPresentationForMovingEntities	Pointer $1D:$B72A (Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA)	A,X	A,P,X	$0531,$7046+X	$A23A,$B16B
 1D	B4B1	RunFourResourceSelectionChecks	Pointer $1D:$B72C (Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA)		A,P		$A23A

@@ -3046,7 +3046,7 @@ RunMonsterArenaBattleService:
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_ABA6:
         lda     #$80                            ; ABA6 A9 80                    ..
-        sta     $72E9                           ; ABA8 8D E9 72                 ..r
+        sta     BattleSetupModeFlags            ; ABA8 8D E9 72                 ..r
         brk                                     ; ABAB 00                       .
         db   $28,$0F                         ; ABAC 28 0F                    (.
 ; ----------------------------------------------------------------------------

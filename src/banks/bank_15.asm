@@ -863,7 +863,7 @@ EffectScript_InitializeInterpreterContext:
         brk                                     ; 9936 00                       .
         db   $01,$CF                         ; 9937 01 CF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_AbortWhenEffectChoiceMissing; 9939 20 BB B0       ..
+        jsr     RejectDirectPartyMemberTalk     ; 9939 20 BB B0                  ..
         jsr     EffectScript_LoadReferencedEntryValue; 993C 20 56 99             V.
         jsr     RunCaptivePrisonerRescueDialogue; 993F 20 E6 B0                  ..
         jsr     EffectScript_ResolveInitialSelector; 9942 20 62 99               b.
@@ -1600,7 +1600,7 @@ EffectCallback_SetInitialEventProgress:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9D67 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestOperand07AndSignalF9:
+RunKingInTroubleSummons:
         lda     #$07                            ; 9D68 A9 07                    ..
         jsr     EffectScript_TestThreshold63ByChapterRules; 9D6A 20 D4 9A        ..
         beq     ItemEffectInventory_Branch_9D76 ; 9D6D F0 07                    ..
@@ -2338,7 +2338,7 @@ EffectCallback_WaitAndSetSlot2Command11:
         sta     $7046,x                         ; A217 9D 46 70                 .Fp
         rts                                     ; A21A 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_BranchOnSavedOperandAndSelectionState:
+RunTaloonWeaponShopWorkChoice:
         jsr     EffectScript_ReturnOriginalScriptOperandY; A21B 20 93 9A         ..
         bne     ItemEffectInventory_Branch_A235 ; A21E D0 15                    ..
         brk                                     ; A220 00                       .
@@ -2786,7 +2786,7 @@ EffectCallback_FinalizeEffectState:
 ; ----------------------------------------------------------------------------
         rts                                     ; A4B9 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RefreshMapAndWaitForInput:
+RunFloraAndAlexReunion:
         jsr     EffectCallback_InvokeMapRefreshPreservingPointers; A4BA 20 C9 A4 ..
         brk                                     ; A4BD 00                       .
         db   $04,$3B                         ; A4BE 04 3B                    .;
@@ -3439,7 +3439,7 @@ ItemEffectInventory_Branch_A86D:
         lda     #$14                            ; A86D A9 14                    ..
         rts                                     ; A86F 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RunCasinoSpendFlow:
+RunCasinoExchangeCounter:
         brk                                     ; A870 00                       .
         db   $50,$3B                         ; A871 50 3B                    P;
 ; ----------------------------------------------------------------------------
@@ -4948,7 +4948,7 @@ ItemEffectInventory_Branch_B0B8:
         sta     $E7                             ; B0B8 85 E7                    ..
         rts                                     ; B0BA 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_AbortWhenEffectChoiceMissing:
+RejectDirectPartyMemberTalk:
         pha                                     ; B0BB 48                       H
         brk                                     ; B0BC 00                       .
         db   $62,$23,$41                     ; B0BD 62 23 41                 b#A
@@ -5651,7 +5651,7 @@ ItemEffectInventory_Branch_B500:
         pla                                     ; B511 68                       h
         rts                                     ; B512 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RefreshMapAndLoadReferencedEntry:
+InitializeHouseOfHealingVisit:
         brk                                     ; B513 00                       .
         db   $22,$2F                         ; B514 22 2F                    "/
 ; ----------------------------------------------------------------------------
@@ -5664,7 +5664,7 @@ EffectCallback_RefreshMapAndLoadReferencedEntry:
         brk                                     ; B521 00                       .
         db   $B4,$3B                         ; B522 B4 3B                    .;
 ; ----------------------------------------------------------------------------
-EffectCallback_ShowEffectFollowupMessage:
+ShowHouseOfHealingFarewell:
         brk                                     ; B524 00                       .
         db   $18,$3B                         ; B525 18 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -5786,11 +5786,11 @@ ItemEffectInventory_Branch_B5C7:
         lda     #$00                            ; B5CB A9 00                    ..
         sta     $E3                             ; B5CD 85 E3                    ..
         sta     $E4                             ; B5CF 85 E4                    ..
-        jsr     EffectCallback_RunE2TripletValidationFlow; B5D1 20 66 B7         f.
+        jsr     RunHouseOfHealingPaymentPrompt  ; B5D1 20 66 B7                  f.
         brk                                     ; B5D4 00                       .
         db   $1F,$2B                         ; B5D5 1F 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_SetAudioCompletionAndDispatchEffect; B5D7 20 A6 B7 ..
+        jsr     CompleteHouseOfHealingTreatment ; B5D7 20 A6 B7                  ..
         ldx     $DB                             ; B5DA A6 DB                    ..
         brk                                     ; B5DC 00                       .
         db   $45,$93,$05                     ; B5DD 45 93 05                 E..
@@ -5841,11 +5841,11 @@ ItemEffectInventory_Branch_B610:
         lda     #$1E                            ; B61D A9 1E                    ..
         ldx     #$E2                            ; B61F A2 E2                    ..
         jsr     MultiplyPointerWord             ; B621 20 27 C8                  '.
-        jsr     EffectCallback_RunE2TripletValidationFlow; B624 20 66 B7         f.
+        jsr     RunHouseOfHealingPaymentPrompt  ; B624 20 66 B7                  f.
         brk                                     ; B627 00                       .
         db   $22,$2B                         ; B628 22 2B                    "+
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_SetAudioCompletionAndDispatchEffect; B62A 20 A6 B7 ..
+        jsr     CompleteHouseOfHealingTreatment ; B62A 20 A6 B7                  ..
         ldx     $DB                             ; B62D A6 DB                    ..
         brk                                     ; B62F 00                       .
         db   $45,$93,$04                     ; B630 45 93 04                 E..
@@ -5919,14 +5919,14 @@ ItemEffectInventory_Branch_B68F:
         lda     #$0A                            ; B698 A9 0A                    ..
         jsr     MultiplyPointerWord             ; B69A 20 27 C8                  '.
 ItemEffectInventory_Branch_B69D:
-        jsr     EffectCallback_RunE2TripletValidationFlow; B69D 20 66 B7         f.
+        jsr     RunHouseOfHealingPaymentPrompt  ; B69D 20 66 B7                  f.
         brk                                     ; B6A0 00                       .
         db   $25,$2B                         ; B6A1 25 2B                    %+
 ; ----------------------------------------------------------------------------
         brk                                     ; B6A3 00                       .
         db   $26,$2B                         ; B6A4 26 2B                    &+
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_SetAudioCompletionAndDispatchEffect; B6A6 20 A6 B7 ..
+        jsr     CompleteHouseOfHealingTreatment ; B6A6 20 A6 B7                  ..
         ldx     $DB                             ; B6A9 A6 DB                    ..
         brk                                     ; B6AB 00                       .
         db   $44,$93,$07                     ; B6AC 44 93 07                 D..
@@ -6064,7 +6064,7 @@ ItemEffectInventory_Branch_B73D:
 ; ----------------------------------------------------------------------------
         jmp     UpperFixedEngine_Branch_C0E9    ; B763 4C E9 C0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunE2TripletValidationFlow:
+RunHouseOfHealingPaymentPrompt:
         lda     $E2                             ; B766 A5 E2                    ..
         sta     $FD                             ; B768 85 FD                    ..
         lda     $E3                             ; B76A A5 E3                    ..
@@ -6110,7 +6110,7 @@ ItemEffectInventory_Branch_B79B:
         pla                                     ; B7A2 68                       h
         jmp     ItemEffectInventory_Branch_B595 ; B7A3 4C 95 B5                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetAudioCompletionAndDispatchEffect:
+CompleteHouseOfHealingTreatment:
         brk                                     ; B7A6 00                       .
         db   $04,$9F                         ; B7A7 04 9F                    ..
 ; ----------------------------------------------------------------------------

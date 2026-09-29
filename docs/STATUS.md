@@ -50,6 +50,14 @@ subsystem is not proven. Banks `$1C-$1E` identify their evidenced story scenes; 
 displayed values 1-5. All 100 changed lower-fixed names were compared with their prior semantics; stronger Select,
 field-frame, Start-menu, entity visibility, map-object animation, and Coin Seller names were restored in both twins.
 
+The fifth corrective naming pass renamed core battle routines for their main path rather than an early failure
+branch; standardized `$7361-$7362` and its consumers as the active battle damage amount; and curated the battle
+command menu while leaving action `$41/$43` identities explicitly unverified. Sparse generated-label overrides now
+assign evidenced subsystem prefixes to address ranges before falling back to each bank's dominant classification,
+correcting 335 bank `$12` and 293 bank `$17` generated definitions. Seven fly-away routines and roughly 40 field,
+service, and story routines now use decoded behavior. The naming review also flags failure-framed names that print
+direct battle text; the resulting review queue remains empty.
+
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
 
