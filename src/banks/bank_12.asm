@@ -64,7 +64,7 @@ BattleSetup_InitializeSlotRecords:
         sta     $96                             ; 80B6 85 96                    ..
         ldx     #$6F                            ; 80B8 A2 6F                    .o
 BattleSetupServices_Branch_80BA:
-        sta     $7274,x                         ; 80BA 9D 74 72                 .tr
+        sta     CombatantRecordBase,x           ; 80BA 9D 74 72                 .tr
         dex                                     ; 80BD CA                       .
         bpl     BattleSetupServices_Branch_80BA ; 80BE 10 FA                    ..
 BattleSetupServices_Branch_80C0:
@@ -78,7 +78,7 @@ BattleSetupServices_Branch_80C0:
         ldx     $96                             ; 80CD A6 96                    ..
         sta     $72EA,x                         ; 80CF 9D EA 72                 ..r
         jsr     BattleSetup_ComputeSlotRecordOffset; 80D2 20 48 81               H.
-        sta     $7210,x                         ; 80D5 9D 10 72                 ..r
+        sta     BattlePartyRecordBase,x         ; 80D5 9D 10 72                 ..r
         ldx     $96                             ; 80D8 A6 96                    ..
         brk                                     ; 80DA 00                       .
         db   $17,$33                         ; 80DB 17 33                    .3
@@ -196,12 +196,12 @@ LatchBattleMessageNumber:
 PrintBattleMessage:
         jsr     DecodeBattleMessageGroup        ; 8180 20 BD 81                  ..
         jsr     RemapBattleMessageForContext    ; 8183 20 DA 81                  ..
-        jsr     BattleSetup_RefreshSelectionDecode; 8186 20 B9 82                ..
-        jsr     BattleSetup_WaitForDelayWindow  ; 8189 20 E7 85                  ..
-        jsr     BattleSetup_UpdateSelectionState; 818C 20 6A 82                  j.
-        jsr     BattleSetup_WaitThreeFramesIfBusy; 818F 20 B0 82                 ..
-        jsr     BattleSetup_CommitSelectionState; 8192 20 C3 82                  ..
-        jsr     BattleSetup_LatchDelayState     ; 8195 20 E9 82                  ..
+        jsr     BattleMessage_RefreshVariableSubstitution; 8186 20 B9 82         ..
+        jsr     BattleMessage_WaitForSpeedDelay ; 8189 20 E7 85                  ..
+        jsr     BattleMessage_UpdateCursorRows  ; 818C 20 6A 82                  j.
+        jsr     BattleMessage_WaitThreeFramesIfBusy; 818F 20 B0 82               ..
+        jsr     BattleMessage_CommitCursorState ; 8192 20 C3 82                  ..
+        jsr     BattleMessage_LatchDelayState   ; 8195 20 E9 82                  ..
         rts                                     ; 8198 60                       `
 ; ----------------------------------------------------------------------------
 ReadInlineBattleMessageNumber:
@@ -236,7 +236,7 @@ DecodeBattleMessageGroup:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_81CC:
         lda     $8D                             ; 81CC A5 8D                    ..
-        jsr     BattleSetup_ParseRecordStream   ; 81CE 20 FC 82                  ..
+        jsr     LookupActionStepMessage         ; 81CE 20 FC 82                  ..
         sta     $8A                             ; 81D1 85 8A                    ..
         stx     $8B                             ; 81D3 86 8B                    ..
         bcs     BattleSetupServices_Branch_81D9 ; 81D5 B0 02                    ..
@@ -333,7 +333,7 @@ BattleSetupServices_Branch_8251:
         db   $08,$16,$4E,$65,$67,$68,$6F,$78 ; 825A 08 16 4E 65 67 68 6F 78  ..Neghox
         db   $6B,$16,$4D,$66,$6C,$69,$70,$79 ; 8262 6B 16 4D 66 6C 69 70 79  k.Mflipy
 ; ----------------------------------------------------------------------------
-BattleSetup_UpdateSelectionState:
+BattleMessage_UpdateCursorRows:
         lda     $8C                             ; 826A A5 8C                    ..
         and     #$1C                            ; 826C 29 1C                    ).
         beq     BattleSetupServices_Branch_8292 ; 826E F0 22                    ."
@@ -346,7 +346,7 @@ BattleSetup_UpdateSelectionState:
 BattleSetupServices_Branch_827C:
         lda     $735F                           ; 827C AD 5F 73                 ._s
         asl     a                               ; 827F 0A                       .
-        jsr     BattleSetup_ComputeBoundedSelectionIndex; 8280 20 9F 82          ..
+        jsr     BattleMessage_ComputeSubstitutionIndex; 8280 20 9F 82            ..
         bcc     BattleSetupServices_Branch_828B ; 8283 90 06                    ..
         lda     $7360                           ; 8285 AD 60 73                 .`s
         sta     $735F                           ; 8288 8D 5F 73                 ._s
@@ -363,12 +363,12 @@ BattleSetupServices_Branch_8292:
         beq     BattleSetupServices_Branch_828E ; 8294 F0 F8                    ..
 BattleSetupServices_Branch_8296:
         lda     TextOutputY                     ; 8296 AD 52 05                 .R.
-        jsr     BattleSetup_ComputeBoundedSelectionIndex; 8299 20 9F 82          ..
+        jsr     BattleMessage_ComputeSubstitutionIndex; 8299 20 9F 82            ..
         bcs     BattleSetupServices_Branch_827C ; 829C B0 DE                    ..
 BattleSetupServices_Branch_829E:
         rts                                     ; 829E 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ComputeBoundedSelectionIndex:
+BattleMessage_ComputeSubstitutionIndex:
         pha                                     ; 829F 48                       H
         lda     $8B                             ; 82A0 A5 8B                    ..
         ldx     $8A                             ; 82A2 A6 8A                    ..
@@ -382,21 +382,21 @@ BattleSetup_ComputeBoundedSelectionIndex:
         cmp     #$0A                            ; 82AD C9 0A                    ..
         rts                                     ; 82AF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_WaitThreeFramesIfBusy:
+BattleMessage_WaitThreeFramesIfBusy:
         bit     $8C                             ; 82B0 24 8C                    $.
         bvc     BattleSetupServices_Branch_829E ; 82B2 50 EA                    P.
         ldx     #$03                            ; 82B4 A2 03                    ..
         jmp     WaitFrames                      ; 82B6 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleSetup_RefreshSelectionDecode:
+BattleMessage_RefreshVariableSubstitution:
         lda     $8C                             ; 82B9 A5 8C                    ..
         and     #$20                            ; 82BB 29 20                    )
         beq     BattleSetupServices_Branch_82C2 ; 82BD F0 03                    ..
-        jsr     BattleSetup_DecodeSelectorMap   ; 82BF 20 70 83                  p.
+        jsr     BattleMessage_DecodeVariableSelectorMap; 82BF 20 70 83           p.
 BattleSetupServices_Branch_82C2:
         rts                                     ; 82C2 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_CommitSelectionState:
+BattleMessage_CommitCursorState:
         lda     $0553                           ; 82C3 AD 53 05                 .S.
         ora     #$80                            ; 82C6 09 80                    ..
         sta     $0553                           ; 82C8 8D 53 05                 .S.
@@ -418,20 +418,20 @@ BattleSetup_CommitSelectionState:
 BattleSetupServices_Branch_82E8:
         rts                                     ; 82E8 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_LatchDelayState:
+BattleMessage_LatchDelayState:
         lda     $050C                           ; 82E9 AD 0C 05                 ...
         sta     $6E5C                           ; 82EC 8D 5C 6E                 .\n
         lda     #$00                            ; 82EF A9 00                    ..
         sta     $6E5D                           ; 82F1 8D 5D 6E                 .]n
         lda     $8C                             ; 82F4 A5 8C                    ..
         bpl     BattleSetupServices_Branch_82FB ; 82F6 10 03                    ..
-        jsr     BattleSetup_StartDelayWindow    ; 82F8 20 CA 85                  ..
+        jsr     BattleMessage_StartSpeedDelay   ; 82F8 20 CA 85                  ..
 BattleSetupServices_Branch_82FB:
         rts                                     ; 82FB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ParseRecordStream:
+LookupActionStepMessage:
         sta     $00                           ; 82FC 85 00                    ..
-        lda     Bank12_BattleSetupDataPointers  ; 82FE AD 8D 84                 ...
+        lda     Bank12_ActionMessageTable       ; 82FE AD 8D 84                 ...
         sta     $02                           ; 8301 85 02                    ..
         lda     $848E                           ; 8303 AD 8E 84                 ...
         sta     $03                             ; 8306 85 03                    ..
@@ -516,7 +516,7 @@ BattleSetupServices_Branch_836A:
         sec                                     ; 836E 38                       8
         rts                                     ; 836F 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_DecodeSelectorMap:
+BattleMessage_DecodeVariableSelectorMap:
         lda     $8A                             ; 8370 A5 8A                    ..
         and     #$01                            ; 8372 29 01                    ).
         asl     a                               ; 8374 0A                       .
@@ -533,7 +533,7 @@ BattleSetup_DecodeSelectorMap:
         pha                                     ; 838B 48                       H
         and     #$07                            ; 838C 29 07                    ).
         beq     BattleSetupServices_Branch_8395 ; 838E F0 05                    ..
-        jsr     BattleSetup_DispatchHandlerByIndex; 8390 20 D3 83                ..
+        jsr     BattleMessage_DispatchVariableHandlerByIndex; 8390 20 D3 83      ..
         sta     $F9                             ; 8393 85 F9                    ..
 BattleSetupServices_Branch_8395:
         pla                                     ; 8395 68                       h
@@ -543,7 +543,7 @@ BattleSetupServices_Branch_8395:
         lsr     a                               ; 8399 4A                       J
         and     #$07                            ; 839A 29 07                    ).
         beq     BattleSetupServices_Branch_83A3 ; 839C F0 05                    ..
-        jsr     BattleSetup_DispatchHandlerByIndex; 839E 20 D3 83                ..
+        jsr     BattleMessage_DispatchVariableHandlerByIndex; 839E 20 D3 83      ..
         sta     $FA                             ; 83A1 85 FA                    ..
 BattleSetupServices_Branch_83A3:
         pla                                     ; 83A3 68                       h
@@ -574,11 +574,11 @@ BattleSetupServices_Branch_83CA:
         lda     $7E                             ; 83CA A5 7E                    .~
         ldx     $7F                             ; 83CC A6 7F                    ..
 BattleSetupServices_Branch_83CE:
-        sta     $FD                             ; 83CE 85 FD                    ..
+        sta     MessageNumberArgument           ; 83CE 85 FD                    ..
         stx     $FE                             ; 83D0 86 FE                    ..
         rts                                     ; 83D2 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_DispatchHandlerByIndex:
+BattleMessage_DispatchVariableHandlerByIndex:
         asl     a                               ; 83D3 0A                       .
         tax                                     ; 83D4 AA                       .
         lda     $8491,x                         ; 83D5 BD 91 84                 ...
@@ -587,18 +587,18 @@ BattleSetup_DispatchHandlerByIndex:
         sta     $03                             ; 83DD 85 03                    ..
         jmp     ($0002)                         ; 83DF 6C 02 00                 l..
 ; ----------------------------------------------------------------------------
-BattleSetup_NormalizeHandlerField:
-        jsr     BattleSetup_LoadHandlerFieldFromService; 83E2 20 E8 83           ..
+BattleMessage_NormalizeVariableHandlerField:
+        jsr     BattleMessage_LoadVariableFieldFromService; 83E2 20 E8 83        ..
         jmp     NormalizeBattleSetupHandlerField; 83E5 4C F1 83                 L..
 ; ----------------------------------------------------------------------------
-BattleSetup_LoadHandlerFieldFromService:
+BattleMessage_LoadVariableFieldFromService:
         brk                                     ; 83E8 00                       .
         db   $01,$1F                         ; 83E9 01 1F                    ..
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_8408 ; 83EB 4C 08 84                 L..
 ; ----------------------------------------------------------------------------
-BattleSetup_LoadHandlerFieldFromSelectionState:
-        jsr     BattleSetup_LoadSelectionSourceField; 83EE 20 05 84              ..
+BattleMessage_LoadVariableFieldFromTarget:
+        jsr     BattleMessage_LoadTargetSelectorField; 83EE 20 05 84             ..
 NormalizeBattleSetupHandlerField:
         lda     $02                           ; 83F1 A5 02                    ..
         bpl     BattleSetupServices_Branch_8404 ; 83F3 10 0F                    ..
@@ -606,7 +606,7 @@ NormalizeBattleSetupHandlerField:
         sta     $02                           ; 83F7 85 02                    ..
         and     #$07                            ; 83F9 29 07                    ).
         tax                                     ; 83FB AA                       .
-        jsr     BattleSetup_FindMaskedHeaderEntry; 83FC 20 2C 84                 ,.
+        jsr     BattleMessage_FindMaskedHeaderEntry; 83FC 20 2C 84               ,.
         asl     a                               ; 83FF 0A                       .
         asl     a                               ; 8400 0A                       .
         asl     a                               ; 8401 0A                       .
@@ -614,7 +614,7 @@ NormalizeBattleSetupHandlerField:
 BattleSetupServices_Branch_8404:
         rts                                     ; 8404 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_LoadSelectionSourceField:
+BattleMessage_LoadTargetSelectorField:
         lda     BattleTargetSelector            ; 8405 AD 63 73                 .cs
 BattleSetupServices_Branch_8408:
         pha                                     ; 8408 48                       H
@@ -640,17 +640,17 @@ BattleSetupServices_Branch_841F:
         sta     $02                           ; 8421 85 02                    ..
         rts                                     ; 8423 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ReadCachedStatusByte:
+BattleMessage_ReadCachedStatusByte:
         lda     $7355                           ; 8424 AD 55 73                 .Us
         rts                                     ; 8427 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ReturnServiceStub:
+BattleMessage_ReturnServiceStub:
         brk                                     ; 8428 00                       .
         db   $03,$1F                         ; 8429 03 1F                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; 842B 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_FindMaskedHeaderEntry:
+BattleMessage_FindMaskedHeaderEntry:
         lda     $7E                             ; 842C A5 7E                    .~
         pha                                     ; 842E 48                       H
         lda     $7F                             ; 842F A5 7F                    ..
@@ -725,14 +725,14 @@ BattleSetupServices_Branch_8488:
         pla                                     ; 8488 68                       h
         ldx     #$08                            ; 8489 A2 08                    ..
         bne     BattleSetupServices_Branch_8480 ; 848B D0 F3                    ..
-Bank12_BattleSetupDataPointers:
+Bank12_ActionMessageTable:
         db   $BC                             ; 848D BC                       .
         db   $8B                             ; 848E 8B                       .
         db   $36                             ; 848F 36                       6
         db   $8A                             ; 8490 8A                       .
         db   $C1                             ; 8491 C1                       .
         db   $8A                             ; 8492 8A                       .
-Bank12_BattleSetupHandlerPointers:
+Bank12_BattleMessageVariableHandlerPointers:
         db   $E2,$83,$EE,$83,$E8,$83,$05,$84 ; 8493 E2 83 EE 83 E8 83 05 84  ........
         db   $24,$84,$28,$84,$24,$84,$61,$73 ; 849B 24 84 28 84 24 84 61 73  $.(.$.as
         db   $72,$00,$7E,$00,$61,$73         ; 84A3 72 00 7E 00 61 73        r.~.as
@@ -766,7 +766,7 @@ BattleSetupServices_Branch_84C7:
         lda     $6E45,x                         ; 84C9 BD 45 6E                 .En
         cmp     #$FF                            ; 84CC C9 FF                    ..
         beq     BattleSetupServices_Branch_84DC ; 84CE F0 0C                    ..
-        jsr     BattleSetup_FindLowestSetBitIndex; 84D0 20 AB 85                 ..
+        jsr     BattleMessage_FindLowestSetBitIndex; 84D0 20 AB 85               ..
         txa                                     ; 84D3 8A                       .
         ora     #$C0                            ; 84D4 09 C0                    ..
         sta     $F9                             ; 84D6 85 F9                    ..
@@ -813,7 +813,7 @@ BattleSetupServices_Branch_8513:
         brk                                     ; 8513 00                       .
         db   $13,$2F                         ; 8514 13 2F                    ./
 ; ----------------------------------------------------------------------------
-        jsr     BattleSetup_BuildThresholdSelectionState; 8516 20 36 85          6.
+        jsr     BattleMessage_BuildVariableSelectionMask; 8516 20 36 85          6.
         brk                                     ; 8519 00                       .
         db   $10,$1F                         ; 851A 10 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -837,7 +837,7 @@ BattleSetupServices_Branch_8524:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_92CD ; 8533 4C CD 92                 L..
 ; ----------------------------------------------------------------------------
-BattleSetup_BuildThresholdSelectionState:
+BattleMessage_BuildVariableSelectionMask:
         brk                                     ; 8536 00                       .
         db   $07,$6F,$3D                     ; 8537 07 6F 3D                 .o=
 ; ----------------------------------------------------------------------------
@@ -855,7 +855,7 @@ BattleSetupServices_Branch_8543:
 ; ----------------------------------------------------------------------------
         bcc     BattleSetupServices_Branch_85A3 ; 8549 90 58                    .X
         stx     $F9                             ; 854B 86 F9                    ..
-        jsr     BattleSetup_FindMaskedHeaderEntry; 854D 20 2C 84                 ,.
+        jsr     BattleMessage_FindMaskedHeaderEntry; 854D 20 2C 84               ,.
         asl     a                               ; 8550 0A                       .
         asl     a                               ; 8551 0A                       .
         asl     a                               ; 8552 0A                       .
@@ -921,7 +921,7 @@ BattleSetupServices_Branch_85A3:
         bcc     BattleSetupServices_Branch_8543 ; 85A8 90 99                    ..
         rts                                     ; 85AA 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_FindLowestSetBitIndex:
+BattleMessage_FindLowestSetBitIndex:
         pha                                     ; 85AB 48                       H
         txa                                     ; 85AC 8A                       .
         ldx     #$FF                            ; 85AD A2 FF                    ..
@@ -941,25 +941,25 @@ BattleSetupServices_Branch_85B6:
         db   $01,$01,$02                     ; 85C3 01 01 02                 ...
         db   $00,$0D,$02,$06                 ; 85C6 00 0D 02 06              ....
 ; ----------------------------------------------------------------------------
-BattleSetup_StartDelayWindow:
+BattleMessage_StartSpeedDelay:
         lda     $62EE                           ; 85CA AD EE 62                 ..b
         cmp     #$07                            ; 85CD C9 07                    ..
         beq     BattleSetupServices_Branch_861B ; 85CF F0 4A                    .J
 BattleSetupServices_Branch_85D1:
-        jsr     BattleSetup_GetDelayBySpeed     ; 85D1 20 0D 86                  ..
+        jsr     BattleMessage_GetSpeedDelay     ; 85D1 20 0D 86                  ..
         sta     $6E5D                           ; 85D4 8D 5D 6E                 .]n
         clc                                     ; 85D7 18                       .
         adc     $050C                           ; 85D8 6D 0C 05                 m..
         sta     $6E5C                           ; 85DB 8D 5C 6E                 .\n
         rts                                     ; 85DE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_StartDelayWindowIfNeeded:
+BattleMessage_StartSpeedDelayIfNeeded:
         lda     $62EE                           ; 85DF AD EE 62                 ..b
         cmp     #$07                            ; 85E2 C9 07                    ..
         bne     BattleSetupServices_Branch_85D1 ; 85E4 D0 EB                    ..
         rts                                     ; 85E6 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_WaitForDelayWindow:
+BattleMessage_WaitForSpeedDelay:
         txa                                     ; 85E7 8A                       .
         pha                                     ; 85E8 48                       H
         lda     $62EE                           ; 85E9 AD EE 62                 ..b
@@ -980,11 +980,11 @@ BattleSetupServices_Branch_8604:
         tax                                     ; 8605 AA                       .
         rts                                     ; 8606 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_WaitAndGateDelay:
-        jsr     BattleSetup_WaitForDelayWindow  ; 8607 20 E7 85                  ..
-        jmp     BattleSetup_StartDelayWindowIfNeeded; 860A 4C DF 85             L..
+BattleMessage_WaitAndGateSpeedDelay:
+        jsr     BattleMessage_WaitForSpeedDelay ; 8607 20 E7 85                  ..
+        jmp     BattleMessage_StartSpeedDelayIfNeeded; 860A 4C DF 85            L..
 ; ----------------------------------------------------------------------------
-BattleSetup_GetDelayBySpeed:
+BattleMessage_GetSpeedDelay:
         ldx     $62EE                           ; 860D AE EE 62                 ..b
         lda     $8614,x                         ; 8610 BD 14 86                 ...
         rts                                     ; 8613 60                       `
@@ -997,17 +997,17 @@ BattleSetupServices_Branch_861B:
 BattleSetupServices_Branch_861F:
         jsr     ReadControllers                 ; 861F 20 EC C8                  ..
         lda     #$80                            ; 8622 A9 80                    ..
-        jsr     BattleSetup_QueuePromptTileUpdate; 8624 20 37 86                 7.
-        jsr     BattleSetup_PollConfirmInput    ; 8627 20 44 86                  D.
+        jsr     BattleMessage_DrawContinuePrompt; 8624 20 37 86                  7.
+        jsr     BattleMessage_PollConfirmInput  ; 8627 20 44 86                  D.
         bne     BattleSetupServices_Branch_8636 ; 862A D0 0A                    ..
         lda     #$00                            ; 862C A9 00                    ..
-        jsr     BattleSetup_QueuePromptTileUpdate; 862E 20 37 86                 7.
-        jsr     BattleSetup_PollConfirmInput    ; 8631 20 44 86                  D.
+        jsr     BattleMessage_DrawContinuePrompt; 862E 20 37 86                  7.
+        jsr     BattleMessage_PollConfirmInput  ; 8631 20 44 86                  D.
         beq     BattleSetupServices_Branch_861F ; 8634 F0 E9                    ..
 BattleSetupServices_Branch_8636:
         rts                                     ; 8636 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_QueuePromptTileUpdate:
+BattleMessage_DrawContinuePrompt:
         ldx     #$1B                            ; 8637 A2 1B                    ..
         stx     $00                           ; 8639 86 00                    ..
         dex                                     ; 863B CA                       .
@@ -1015,7 +1015,7 @@ BattleSetup_QueuePromptTileUpdate:
         jsr     QueueNametableTileUpdate        ; 863E 20 5A C6                  Z.
         jmp     RequestPpuUpdate                ; 8641 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
-BattleSetup_PollConfirmInput:
+BattleMessage_PollConfirmInput:
         ldx     #$0F                            ; 8644 A2 0F                    ..
 BattleSetupServices_Branch_8646:
         txa                                     ; 8646 8A                       .
@@ -1024,11 +1024,11 @@ BattleSetupServices_Branch_8646:
         jsr     ReadControllers                 ; 864B 20 EC C8                  ..
         lda     $7384                           ; 864E AD 84 73                 ..s
         bne     BattleSetupServices_Branch_865A ; 8651 D0 07                    ..
-        jsr     BattleSetup_LatchButtonsPressed ; 8653 20 71 86                  q.
+        jsr     BattleMessage_LatchButtonsPressed; 8653 20 71 86                 q.
         bne     BattleSetupServices_Branch_866D ; 8656 D0 15                    ..
         beq     BattleSetupServices_Branch_865F ; 8658 F0 05                    ..
 BattleSetupServices_Branch_865A:
-        jsr     BattleSetup_LatchButtonsPressed ; 865A 20 71 86                  q.
+        jsr     BattleMessage_LatchButtonsPressed; 865A 20 71 86                 q.
         inc     $02                           ; 865D E6 02                    ..
 BattleSetupServices_Branch_865F:
         pla                                     ; 865F 68                       h
@@ -1047,7 +1047,7 @@ BattleSetupServices_Branch_866E:
         lda     #$FF                            ; 866E A9 FF                    ..
         rts                                     ; 8670 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_LatchButtonsPressed:
+BattleMessage_LatchButtonsPressed:
         lda     ButtonsPressed                  ; 8671 A5 14                    ..
         sta     $7384                           ; 8673 8D 84 73                 ..s
         rts                                     ; 8676 60                       `
@@ -1066,7 +1066,7 @@ BattleSetupServices_Branch_8688:
         rts                                     ; 8688 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_8689:
-        jsr     BattleSetup_WaitForDelayWindow  ; 8689 20 E7 85                  ..
+        jsr     BattleMessage_WaitForSpeedDelay ; 8689 20 E7 85                  ..
         brk                                     ; 868C 00                       .
         db   $8E,$FB                         ; 868D 8E FB                    ..
 ; ----------------------------------------------------------------------------
@@ -1102,7 +1102,7 @@ BattleSetupServices_Branch_86B4:
         clc                                     ; 86B4 18                       .
         rts                                     ; 86B5 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_DispatchModeTransition:
+DispatchBattleEndOutcome:
         brk                                     ; 86B6 00                       .
         db   $10,$1F                         ; 86B7 10 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -1197,7 +1197,7 @@ BattleSetupServices_Branch_872F:
         sta     $1F                             ; 8739 85 1F                    ..
         ldx     #$FF                            ; 873B A2 FF                    ..
         txs                                     ; 873D 9A                       .
-        jmp     UpperFixedEngine_Branch_C977    ; 873E 4C 77 C9                 Lw.
+        jmp     ResumeFieldAfterDefeatOrLoad    ; 873E 4C 77 C9                 Lw.
 ; ----------------------------------------------------------------------------
         db   $06,$07,$05,$03                 ; 8741 06 07 05 03              ....
 ; ----------------------------------------------------------------------------
@@ -1206,7 +1206,7 @@ BattleSetupServices_Branch_8745:
         and     #$03                            ; 8748 29 03                    ).
         sta     $F9                             ; 874A 85 F9                    ..
         tax                                     ; 874C AA                       .
-        jsr     BattleSetup_FindMaskedHeaderEntry; 874D 20 2C 84                 ,.
+        jsr     BattleMessage_FindMaskedHeaderEntry; 874D 20 2C 84               ,.
         asl     a                               ; 8750 0A                       .
         asl     a                               ; 8751 0A                       .
         asl     a                               ; 8752 0A                       .
@@ -1329,7 +1329,7 @@ BattleSetupServices_Branch_87E7:
         rol     $7205                           ; 87F6 2E 05 72                 ..r
 BattleSetupServices_Branch_87F9:
         lda     $7203                           ; 87F9 AD 03 72                 ..r
-        sta     $FD                             ; 87FC 85 FD                    ..
+        sta     MessageNumberArgument           ; 87FC 85 FD                    ..
         ora     $7204                           ; 87FE 0D 04 72                 ..r
         ora     $7205                           ; 8801 0D 05 72                 ..r
         beq     BattleSetupServices_Branch_8847 ; 8804 F0 41                    .A
@@ -1360,7 +1360,7 @@ BattleSetupServices_Branch_882A:
         db   $0D,$0B                         ; 882B 0D 0B                    ..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_882D:
-        lda     $FD                             ; 882D A5 FD                    ..
+        lda     MessageNumberArgument           ; 882D A5 FD                    ..
         sta     $6F                             ; 882F 85 6F                    .o
         lda     $FE                             ; 8831 A5 FE                    ..
         sta     $70                             ; 8833 85 70                    .p
@@ -1403,7 +1403,7 @@ BattleSetupServices_Branch_8863:
         db   $4B,$33                         ; 8877 4B 33                    K3
 ; ----------------------------------------------------------------------------
         lda     $6F                             ; 8879 A5 6F                    .o
-        sta     $FD                             ; 887B 85 FD                    ..
+        sta     MessageNumberArgument           ; 887B 85 FD                    ..
         lda     $70                             ; 887D A5 70                    .p
         sta     $FE                             ; 887F 85 FE                    ..
         lda     $71                             ; 8881 A5 71                    .q
@@ -2084,13 +2084,13 @@ BattleSetupServices_Branch_905E:
         sta     SaveGameStateFlags              ; 906C 8D 8E 61                 ..a
         lda     #$FF                            ; 906F A9 FF                    ..
         ldx     #$03                            ; 9071 A2 03                    ..
-        sta     $6001,x                         ; 9073 9D 01 60                 ..`
+        sta     CharacterRecordBase,x           ; 9073 9D 01 60                 ..`
         sta     $6002,x                         ; 9076 9D 02 60                 ..`
         ldx     #$01                            ; 9079 A2 01                    ..
-        sta     $6001,x                         ; 907B 9D 01 60                 ..`
+        sta     CharacterRecordBase,x           ; 907B 9D 01 60                 ..`
         sta     $6002,x                         ; 907E 9D 02 60                 ..`
         ldx     #$1B                            ; 9081 A2 1B                    ..
-        sta     $6001,x                         ; 9083 9D 01 60                 ..`
+        sta     CharacterRecordBase,x           ; 9083 9D 01 60                 ..`
         sta     $6002,x                         ; 9086 9D 02 60                 ..`
         sta     $6003,x                         ; 9089 9D 03 60                 ..`
 BattleSetupServices_Branch_908C:
@@ -2154,7 +2154,7 @@ BattleSetupServices_Branch_90DC:
 ; ----------------------------------------------------------------------------
         rts                                     ; 90EB 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ResolveChapterTwoTriplet:
+AdjustChapterTwoInventoryForPartyState:
         lda     SaveCurrentChapterMinus1        ; 90EC AD 5A 61                 .Za
         cmp     #$01                            ; 90EF C9 01                    ..
         bne     BattleSetupServices_Branch_9134 ; 90F1 D0 41                    .A
@@ -2364,7 +2364,7 @@ BattleSetupServices_Branch_9284:
         db   $01,$02,$04,$05,$06,$25,$26,$27 ; 929D 01 02 04 05 06 25 26 27  .....%&'
         db   $28,$3D,$3E,$46,$47,$53,$54,$56 ; 92A5 28 3D 3E 46 47 53 54 56  (=>FGSTV
 ; ----------------------------------------------------------------------------
-BattleSetup_PickSetupCandidateByThreshold:
+ResolveMonsterSplit:
         brk                                     ; 92AD 00                       .
         db   $12,$1F                         ; 92AE 12 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -3030,7 +3030,7 @@ FieldItem_Branch_9601:
         db   $02,$5F                         ; 9607 02 5F                    ._
 ; ----------------------------------------------------------------------------
         lda     $00                           ; 9609 A5 00                    ..
-        sta     $FD                             ; 960B 85 FD                    ..
+        sta     MessageNumberArgument           ; 960B 85 FD                    ..
         lda     $01                             ; 960D A5 01                    ..
         sta     $FE                             ; 960F 85 FE                    ..
         lda     $02                           ; 9611 A5 02                    ..
@@ -4154,7 +4154,7 @@ LevelGrowth_Branch_9E16:
         pla                                     ; 9E17 68                       h
         sta     $6F                             ; 9E18 85 6F                    .o
         beq     LevelGrowth_Branch_9E2F         ; 9E1A F0 13                    ..
-        sta     $FD                             ; 9E1C 85 FD                    ..
+        sta     MessageNumberArgument           ; 9E1C 85 FD                    ..
         lda     $6E3E                           ; 9E1E AD 3E 6E                 .>n
         asl     a                               ; 9E21 0A                       .
         tax                                     ; 9E22 AA                       .
@@ -4928,118 +4928,118 @@ BattleFlyAway_Branch_A48B:
 ; ----------------------------------------------------------------------------
         db   $31,$21,$11,$01                 ; A4A1 31 21 11 01              1!..
 ; ----------------------------------------------------------------------------
-DispatchIndexedOperation:
+DispatchCharacterRecordBitOperation:
         asl     a                               ; A4A5 0A                       .
         tay                                     ; A4A6 A8                       .
-        lda     Bank12_FieldCommandOperationPointers,y; A4A7 B9 41 A5           .A.
+        lda     Bank12_CharacterRecordBitOperationPointers,y; A4A7 B9 41 A5     .A.
         sta     $00                           ; A4AA 85 00                    ..
         lda     $A542,y                         ; A4AC B9 42 A5                 .B.
         sta     $01                             ; A4AF 85 01                    ..
         jmp     ($0000)                         ; A4B1 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-WriteOperationFieldGroup:
-        jsr     WriteOperationField06           ; A4B4 20 20 A5                   .
-        jsr     WriteOperationField05           ; A4B7 20 2A A5                  *.
-WriteOperationFieldTail:
-        jsr     WriteOperationField07           ; A4BA 20 25 A5                  %.
-        jmp     FinalizeOperationWrite          ; A4BD 4C 3A A5                 L:.
+WriteCharacterRecordBitGroup:
+        jsr     SetCharacterRecordBit06         ; A4B4 20 20 A5                   .
+        jsr     SetCharacterRecordBit05         ; A4B7 20 2A A5                  *.
+WriteCharacterRecordBitTail:
+        jsr     ClearCharacterRecordBit07       ; A4BA 20 25 A5                  %.
+        jmp     FinalizeCharacterRecordBitWrite ; A4BD 4C 3A A5                 L:.
 ; ----------------------------------------------------------------------------
-WriteConditionalOperationFieldGroup:
-        jsr     TestOperationEqualsOne          ; A4C0 20 2F A5                  /.
+WriteConditionalCharacterRecordBitGroup:
+        jsr     IsCharacterRecordOperationValueOne; A4C0 20 2F A5                /.
         bcs     FieldCommand_Branch_A4C8        ; A4C3 B0 03                    ..
-        jsr     WriteOperationFieldGroup        ; A4C5 20 B4 A4                  ..
+        jsr     WriteCharacterRecordBitGroup    ; A4C5 20 B4 A4                  ..
 FieldCommand_Branch_A4C8:
         rts                                     ; A4C8 60                       `
 ; ----------------------------------------------------------------------------
-TailCallWriteOperationFieldTail:
-        jmp     WriteOperationFieldTail         ; A4C9 4C BA A4                 L..
+TailCallWriteCharacterRecordBitTail:
+        jmp     WriteCharacterRecordBitTail     ; A4C9 4C BA A4                 L..
 ; ----------------------------------------------------------------------------
-WriteConditionalOperationFieldTail:
-        jsr     TestOperationEqualsOne          ; A4CC 20 2F A5                  /.
+WriteConditionalCharacterRecordBitTail:
+        jsr     IsCharacterRecordOperationValueOne; A4CC 20 2F A5                /.
         bcs     FieldCommand_Branch_A4D4        ; A4CF B0 03                    ..
-        jsr     FinalizeOperationWrite          ; A4D1 20 3A A5                  :.
+        jsr     FinalizeCharacterRecordBitWrite ; A4D1 20 3A A5                  :.
 FieldCommand_Branch_A4D4:
         rts                                     ; A4D4 60                       `
 ; ----------------------------------------------------------------------------
-RepeatOperationFieldGroup:
-        jsr     LoadOperationRepeatCount        ; A4D5 20 1B A5                  ..
+RepeatCharacterRecordBitGroup:
+        jsr     LoadActivePartyCount            ; A4D5 20 1B A5                  ..
         ldx     #$00                            ; A4D8 A2 00                    ..
 FieldCommand_Branch_A4DA:
-        jsr     WriteOperationFieldGroup        ; A4DA 20 B4 A4                  ..
+        jsr     WriteCharacterRecordBitGroup    ; A4DA 20 B4 A4                  ..
         inx                                     ; A4DD E8                       .
         dey                                     ; A4DE 88                       .
         bne     FieldCommand_Branch_A4DA        ; A4DF D0 F9                    ..
         rts                                     ; A4E1 60                       `
 ; ----------------------------------------------------------------------------
-RepeatConditionalOperationFieldGroup:
-        jsr     LoadOperationRepeatCount        ; A4E2 20 1B A5                  ..
+RepeatConditionalCharacterRecordBitGroup:
+        jsr     LoadActivePartyCount            ; A4E2 20 1B A5                  ..
         ldx     #$00                            ; A4E5 A2 00                    ..
 FieldCommand_Branch_A4E7:
-        jsr     WriteConditionalOperationFieldGroup; A4E7 20 C0 A4               ..
+        jsr     WriteConditionalCharacterRecordBitGroup; A4E7 20 C0 A4           ..
         inx                                     ; A4EA E8                       .
         dey                                     ; A4EB 88                       .
         bne     FieldCommand_Branch_A4E7        ; A4EC D0 F9                    ..
         rts                                     ; A4EE 60                       `
 ; ----------------------------------------------------------------------------
-RepeatOperationFieldTail:
-        jsr     LoadOperationRepeatCount        ; A4EF 20 1B A5                  ..
+RepeatCharacterRecordBitTail:
+        jsr     LoadActivePartyCount            ; A4EF 20 1B A5                  ..
         ldx     #$00                            ; A4F2 A2 00                    ..
 FieldCommand_Branch_A4F4:
-        jsr     TailCallWriteOperationFieldTail ; A4F4 20 C9 A4                  ..
+        jsr     TailCallWriteCharacterRecordBitTail; A4F4 20 C9 A4               ..
         inx                                     ; A4F7 E8                       .
         dey                                     ; A4F8 88                       .
         bne     FieldCommand_Branch_A4F4        ; A4F9 D0 F9                    ..
         rts                                     ; A4FB 60                       `
 ; ----------------------------------------------------------------------------
-RepeatConditionalOperationFieldTail:
-        jsr     LoadOperationRepeatCount        ; A4FC 20 1B A5                  ..
+RepeatConditionalCharacterRecordBitTail:
+        jsr     LoadActivePartyCount            ; A4FC 20 1B A5                  ..
         ldx     #$00                            ; A4FF A2 00                    ..
 FieldCommand_Branch_A501:
-        jsr     WriteConditionalOperationFieldTail; A501 20 CC A4                ..
+        jsr     WriteConditionalCharacterRecordBitTail; A501 20 CC A4            ..
         inx                                     ; A504 E8                       .
         dey                                     ; A505 88                       .
         bne     FieldCommand_Branch_A501        ; A506 D0 F9                    ..
         rts                                     ; A508 60                       `
 ; ----------------------------------------------------------------------------
-RepeatOperationGateAndWrite:
-        jsr     LoadOperationRepeatCount        ; A509 20 1B A5                  ..
+RepeatCharacterRecordBitGateAndWrite:
+        jsr     LoadActivePartyCount            ; A509 20 1B A5                  ..
         ldx     #$00                            ; A50C A2 00                    ..
 FieldCommand_Branch_A50E:
-        jsr     TestOperationEqualsOne          ; A50E 20 2F A5                  /.
+        jsr     IsCharacterRecordOperationValueOne; A50E 20 2F A5                /.
         bcs     FieldCommand_Branch_A516        ; A511 B0 03                    ..
-        jsr     WriteOperationField05           ; A513 20 2A A5                  *.
+        jsr     SetCharacterRecordBit05         ; A513 20 2A A5                  *.
 FieldCommand_Branch_A516:
         inx                                     ; A516 E8                       .
         dey                                     ; A517 88                       .
         bne     FieldCommand_Branch_A50E        ; A518 D0 F4                    ..
         rts                                     ; A51A 60                       `
 ; ----------------------------------------------------------------------------
-LoadOperationRepeatCount:
+LoadActivePartyCount:
         brk                                     ; A51B 00                       .
         db   $62,$33                         ; A51C 62 33                    b3
 ; ----------------------------------------------------------------------------
         tay                                     ; A51E A8                       .
         rts                                     ; A51F 60                       `
 ; ----------------------------------------------------------------------------
-WriteOperationField06:
+SetCharacterRecordBit06:
         brk                                     ; A520 00                       .
         db   $45,$93,$06                     ; A521 45 93 06                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A524 60                       `
 ; ----------------------------------------------------------------------------
-WriteOperationField07:
+ClearCharacterRecordBit07:
         brk                                     ; A525 00                       .
         db   $44,$93,$07                     ; A526 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         rts                                     ; A529 60                       `
 ; ----------------------------------------------------------------------------
-WriteOperationField05:
+SetCharacterRecordBit05:
         brk                                     ; A52A 00                       .
         db   $45,$93,$05                     ; A52B 45 93 05                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A52E 60                       `
 ; ----------------------------------------------------------------------------
-TestOperationEqualsOne:
+IsCharacterRecordOperationValueOne:
         brk                                     ; A52F 00                       .
         db   $42,$53                         ; A530 42 53                    BS
 ; ----------------------------------------------------------------------------
@@ -5052,7 +5052,7 @@ FieldCommand_Branch_A538:
         sec                                     ; A538 38                       8
         rts                                     ; A539 60                       `
 ; ----------------------------------------------------------------------------
-FinalizeOperationWrite:
+FinalizeCharacterRecordBitWrite:
         brk                                     ; A53A 00                       .
         db   $05,$53                         ; A53B 05 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5061,13 +5061,13 @@ FinalizeOperationWrite:
 ; ----------------------------------------------------------------------------
         rts                                     ; A540 60                       `
 ; ----------------------------------------------------------------------------
-Bank12_FieldCommandOperationPointers:
+Bank12_CharacterRecordBitOperationPointers:
         db   $B4                             ; A541 B4                       .
         db   $A4,$C0,$A4,$C9,$A4,$CC,$A4,$D5 ; A542 A4 C0 A4 C9 A4 CC A4 D5  ........
         db   $A4,$E2,$A4,$EF,$A4,$FC,$A4,$09 ; A54A A4 E2 A4 EF A4 FC A4 09  ........
         db   $A5                             ; A552 A5                       .
 ; ----------------------------------------------------------------------------
-FieldCommand_ProcessCommand:
+RunFieldSpellCommand:
         brk                                     ; A553 00                       .
         db   $07,$6F,$04                     ; A554 07 6F 04                 .o.
 ; ----------------------------------------------------------------------------
@@ -5075,10 +5075,10 @@ FieldCommand_ProcessCommand:
         beq     FieldCommand_Branch_A58E        ; A559 F0 33                    .3
         sta     $0590                           ; A55B 8D 90 05                 ...
         sta     $F9                             ; A55E 85 F9                    ..
-        jsr     FieldCommand_ValidateFieldOption; A560 20 B7 A5                  ..
+        jsr     CheckMemberKnowsUsableFieldSpell; A560 20 B7 A5                  ..
         bcs     FieldCommand_Branch_A58E        ; A563 B0 29                    .)
         lda     $0590                           ; A565 AD 90 05                 ...
-        jsr     FieldCommand_QueryModeSelector  ; A568 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A568 20 B2 A5                  ..
         cmp     #$01                            ; A56B C9 01                    ..
         beq     FieldCommand_Branch_A59B        ; A56D F0 2C                    .,
         cmp     #$02                            ; A56F C9 02                    ..
@@ -5089,10 +5089,10 @@ FieldCommand_ProcessCommand:
 ; ----------------------------------------------------------------------------
         cmp     #$FF                            ; A57A C9 FF                    ..
         beq     FieldCommand_Branch_A58E        ; A57C F0 10                    ..
-        jsr     FieldCommand_StoreSelectedMode  ; A57E 20 DA A5                  ..
-        jsr     FieldCommand_CheckStoredModeRange; A581 20 E4 A5                 ..
+        jsr     StoreSelectedFieldSpell         ; A57E 20 DA A5                  ..
+        jsr     CheckSelectedFieldSpellRange    ; A581 20 E4 A5                  ..
         bcs     FieldCommand_Branch_A58E        ; A584 B0 08                    ..
-        jsr     FieldCommand_StoreSecondaryMode ; A586 20 FE A5                  ..
+        jsr     StoreSecondaryFieldSpellSelection; A586 20 FE A5                 ..
         bcs     FieldCommand_Branch_A58E        ; A589 B0 03                    ..
         jsr     DispatchFieldSpellById          ; A58B 20 1E A6                  ..
 FieldCommand_Branch_A58E:
@@ -5126,14 +5126,14 @@ FieldCommand_Branch_A5AC:
         jsr     WaitForButtonPress              ; A5AC 20 E1 C8                  ..
         jmp     FieldCommand_Branch_A58E        ; A5AF 4C 8E A5                 L..
 ; ----------------------------------------------------------------------------
-FieldCommand_QueryModeSelector:
+QueryFieldSpellSelector:
         tax                                     ; A5B2 AA                       .
         brk                                     ; A5B3 00                       .
         db   $42,$53                         ; A5B4 42 53                    BS
 ; ----------------------------------------------------------------------------
         rts                                     ; A5B6 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_ValidateFieldOption:
+CheckMemberKnowsUsableFieldSpell:
         tax                                     ; A5B7 AA                       .
         brk                                     ; A5B8 00                       .
         db   $3E,$53                         ; A5B9 3E 53                    >S
@@ -5167,7 +5167,7 @@ FieldCommand_Branch_A5D5:
         sec                                     ; A5D8 38                       8
         rts                                     ; A5D9 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_StoreSelectedMode:
+StoreSelectedFieldSpell:
         ldx     $0590                           ; A5DA AE 90 05                 ...
         brk                                     ; A5DD 00                       .
         db   $40,$73                         ; A5DE 40 73                    @s
@@ -5175,7 +5175,7 @@ FieldCommand_StoreSelectedMode:
         sta     $0592                           ; A5E0 8D 92 05                 ...
         rts                                     ; A5E3 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_CheckStoredModeRange:
+CheckSelectedFieldSpellRange:
         lda     $0592                           ; A5E4 AD 92 05                 ...
         brk                                     ; A5E7 00                       .
         db   $0A,$3F                         ; A5E8 0A 3F                    .?
@@ -5197,7 +5197,7 @@ FieldCommand_Branch_A5F4:
 ; ----------------------------------------------------------------------------
         jmp     FieldCommand_Branch_A5D5        ; A5FB 4C D5 A5                 L..
 ; ----------------------------------------------------------------------------
-FieldCommand_StoreSecondaryMode:
+StoreSecondaryFieldSpellSelection:
         lda     $0592                           ; A5FE AD 92 05                 ...
         brk                                     ; A601 00                       .
         db   $0D,$3F                         ; A602 0D 3F                    .?
@@ -5217,7 +5217,7 @@ FieldCommand_Branch_A613:
         sec                                     ; A613 38                       8
         rts                                     ; A614 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_QueryFieldOption:
+QueryFieldSpellOption:
         tax                                     ; A615 AA                       .
         brk                                     ; A616 00                       .
         db   $42,$53                         ; A617 42 53                    BS
@@ -5354,12 +5354,12 @@ FieldSpell_Branch_A6DE:
 ; ----------------------------------------------------------------------------
         db   $36,$0F,$1E,$1F,$1C,$18,$40     ; A6E1 36 0F 1E 1F 1C 18 40     6.....@
 ; ----------------------------------------------------------------------------
-FieldSpell_ForceFieldStateFF:
+CastRepelFieldSpell:
         jsr     FieldSpell_LatchOperands        ; A6E8 20 3B A9                  ;.
         lda     #$FF                            ; A6EB A9 FF                    ..
-        sta     $6E41                           ; A6ED 8D 41 6E                 .An
+        sta     RepelStepCounter                ; A6ED 8D 41 6E                 .An
         bne     FieldSpell_Branch_A6DE          ; A6F0 D0 EC                    ..
-FieldSpell_SelectTransitionServiceCode:
+CastXRayFieldSpell:
         jsr     FieldSpell_LatchOperands        ; A6F2 20 3B A9                  ;.
         brk                                     ; A6F5 00                       .
         db   $40,$EF                         ; A6F6 40 EF                    @.
@@ -5386,13 +5386,13 @@ FieldSpell_Branch_A70B:
 FieldSpell_Branch_A711:
         jmp     WaitForButtonPress              ; A711 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-FieldSpell_SetTransitionFlags60:
+CastStepGuardFieldSpell:
         jsr     FieldSpell_LatchOperands        ; A714 20 3B A9                  ;.
         lda     #$60                            ; A717 A9 60                    .`
         ora     $627F                           ; A719 0D 7F 62                 ..b
         sta     $627F                           ; A71C 8D 7F 62                 ..b
         bne     FieldSpell_Branch_A711          ; A71F D0 F0                    ..
-FieldSpell_ShouldBlockFieldStart:
+CheckDayNightSpellBlocked:
         lda     CurrentTilesetCandidate         ; A721 A5 65                    .e
         cmp     #$03                            ; A723 C9 03                    ..
         beq     FieldSpell_Branch_A753          ; A725 F0 2C                    .,
@@ -5424,21 +5424,21 @@ FieldSpell_Branch_A753:
         sec                                     ; A753 38                       8
         rts                                     ; A754 60                       `
 ; ----------------------------------------------------------------------------
-FieldSpell_RunGate:
+CastDayNightFieldSpell:
         jsr     FieldSpell_LatchOperands        ; A755 20 3B A9                  ;.
         jsr     FieldSpell_CheckEligibilityByMap; A758 20 74 A9                  t.
         bcs     FieldSpell_Branch_A777          ; A75B B0 1A                    ..
-        jsr     FieldSpell_ShouldBlockFieldStart; A75D 20 21 A7                  !.
+        jsr     CheckDayNightSpellBlocked       ; A75D 20 21 A7                  !.
         bcs     FieldSpell_Branch_A777          ; A760 B0 15                    ..
         lda     $41                             ; A762 A5 41                    .A
-        bpl     FieldSpell_ShowBlockedPrompt    ; A764 10 0D                    ..
+        bpl     RunDayNightSpellTransition      ; A764 10 0D                    ..
         lda     $07BA                           ; A766 AD BA 07                 ...
         and     #$7F                            ; A769 29 7F                    ).
         cmp     #$04                            ; A76B C9 04                    ..
         beq     FieldSpell_Branch_A77D          ; A76D F0 0E                    ..
         cmp     #$05                            ; A76F C9 05                    ..
         beq     FieldSpell_Branch_A77D          ; A771 F0 0A                    ..
-FieldSpell_ShowBlockedPrompt:
+RunDayNightSpellTransition:
         brk                                     ; A773 00                       .
         db   $0F,$BF                         ; A774 0F BF                    ..
 ; ----------------------------------------------------------------------------
@@ -5456,7 +5456,7 @@ FieldSpell_Branch_A77D:
 ; ----------------------------------------------------------------------------
         jmp     WaitForButtonPress              ; A780 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
-FieldSpell_CheckGate:
+HandleBlankFieldSpellEntry:
         jsr     FieldSpell_LatchOperands        ; A783 20 3B A9                  ;.
         brk                                     ; A786 00                       .
         db   $35,$EF                         ; A787 35 EF                    5.
@@ -5466,7 +5466,7 @@ FieldSpell_CheckGate:
 ; ----------------------------------------------------------------------------
 FieldSpell_RunChoice:
         jsr     FieldSpell_LatchOperands        ; A78C 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A78F 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A78F 20 B2 A5                  ..
         cmp     #$01                            ; A792 C9 01                    ..
         bne     FieldSpell_Branch_A79A          ; A794 D0 04                    ..
         brk                                     ; A796 00                       .
@@ -5513,7 +5513,7 @@ FieldSpell_Branch_A7BD:
 ; ----------------------------------------------------------------------------
 FieldSpell_RunChoiceFromScriptOffset2:
         jsr     FieldSpell_LatchOperands        ; A7D1 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A7D4 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A7D4 20 B2 A5                  ..
         cmp     #$01                            ; A7D7 C9 01                    ..
         beq     ReportFieldSpellFailureAndReturn; A7D9 F0 77                    .w
         jsr     FieldSpell_ClearOperandIndex    ; A7DB 20 4A A9                  J.
@@ -5522,7 +5522,7 @@ FieldSpell_RunChoiceFromScriptOffset2:
 ; ----------------------------------------------------------------------------
 FieldSpell_RunChoiceLatch:
         jsr     FieldSpell_LatchOperands        ; A7E3 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A7E6 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A7E6 20 B2 A5                  ..
         cmp     #$01                            ; A7E9 C9 01                    ..
         beq     ReportFieldSpellFailureAndReturn; A7EB F0 65                    .e
         ldx     $0591                           ; A7ED AE 91 05                 ...
@@ -5542,7 +5542,7 @@ HealPartyWithFieldSpell:
         sta     $6E                             ; A803 85 6E                    .n
 FieldSpell_Branch_A805:
         lda     $6E                             ; A805 A5 6E                    .n
-        jsr     FieldCommand_QueryModeSelector  ; A807 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A807 20 B2 A5                  ..
         cmp     #$01                            ; A80A C9 01                    ..
         beq     FieldSpell_Branch_A829          ; A80C F0 1B                    ..
         jsr     FieldSpell_ClearOperandIndex    ; A80E 20 4A A9                  J.
@@ -5669,7 +5669,7 @@ FieldSpell_Branch_A8AF:
 ; ----------------------------------------------------------------------------
 CurePartyMemberPoison:
         jsr     FieldSpell_LatchOperands        ; A8B7 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A8BA 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A8BA 20 B2 A5                  ..
         cmp     #$07                            ; A8BD C9 07                    ..
         bne     ReportFieldSpellFailureAndReturn; A8BF D0 91                    ..
         ldx     $0591                           ; A8C1 AE 91 05                 ...
@@ -5684,7 +5684,7 @@ CurePartyMemberPoison:
 ; ----------------------------------------------------------------------------
 TryRevivePartyMemberRandomly:
         jsr     FieldSpell_LatchOperands        ; A8D0 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A8D3 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A8D3 20 B2 A5                  ..
         cmp     #$01                            ; A8D6 C9 01                    ..
         beq     FieldSpell_Branch_A8DD          ; A8D8 F0 03                    ..
         jmp     ReportFieldSpellFailureAndReturn; A8DA 4C 52 A8                 LR.
@@ -5702,7 +5702,7 @@ FieldSpell_Branch_A8DD:
 ; ----------------------------------------------------------------------------
 RevivePartyMember:
         jsr     FieldSpell_LatchOperands        ; A8EE 20 3B A9                  ;.
-        jsr     FieldCommand_QueryModeSelector  ; A8F1 20 B2 A5                  ..
+        jsr     QueryFieldSpellSelector         ; A8F1 20 B2 A5                  ..
         cmp     #$01                            ; A8F4 C9 01                    ..
         beq     FieldSpell_Branch_A8FB          ; A8F6 F0 03                    ..
         jmp     ReportFieldSpellFailureAndReturn; A8F8 4C 52 A8                 LR.
@@ -5968,11 +5968,11 @@ EraseAdventureLog:
         and     #$7F                            ; AA9D 29 7F                    ).
         sta     $0553                           ; AA9F 8D 53 05                 .S.
         ldx     $8A                             ; AAA2 A6 8A                    ..
-        stx     $FD                             ; AAA4 86 FD                    ..
+        stx     MessageNumberArgument           ; AAA4 86 FD                    ..
         lda     #$00                            ; AAA6 A9 00                    ..
         sta     $FE                             ; AAA8 85 FE                    ..
         sta     $FF                             ; AAAA 85 FF                    ..
-        inc     $FD                             ; AAAC E6 FD                    ..
+        inc     MessageNumberArgument           ; AAAC E6 FD                    ..
         brk                                     ; AAAE 00                       .
         db   $CC,$1B                         ; AAAF CC 1B                    ..
 ; ----------------------------------------------------------------------------
@@ -6423,7 +6423,7 @@ AdventureLog_Branch_AD5D:
         db   $01                             ; AD8A 01                       .
         db   $60                             ; AD8B 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_ApplyChapterGate:
+ApplyChapterPartyFlagsAndGoldPenalty:
         ldx     SaveCurrentChapterMinus1        ; AD8C AE 5A 61                 .Za
         lda     $AE31,x                         ; AD8F BD 31 AE                 .1.
         sta     $00                           ; AD92 85 00                    ..
@@ -6431,12 +6431,12 @@ ItemUse_ApplyChapterGate:
         db   $62,$23,$4B                     ; AD95 62 23 4B                 b#K
 ; ----------------------------------------------------------------------------
         bne     ItemUse_Branch_ADBB             ; AD98 D0 21                    .!
-        jsr     ItemUse_FindHandlerById         ; AD9A 20 0F AE                  ..
+        jsr     FindPartyOrdinalByCharacterId   ; AD9A 20 0F AE                  ..
         bcs     ItemUse_Branch_ADA9             ; AD9D B0 0A                    ..
         lda     SaveCurrentChapterMinus1        ; AD9F AD 5A 61                 .Za
         cmp     #$04                            ; ADA2 C9 04                    ..
         bcc     ItemUse_Branch_ADA9             ; ADA4 90 03                    ..
-        jsr     RunDefaultItemUseHandler        ; ADA6 20 23 AE                  #.
+        jsr     ReturnPartyCharacterNotFound    ; ADA6 20 23 AE                  #.
 ItemUse_Branch_ADA9:
         brk                                     ; ADA9 00                       .
         db   $44,$93,$07                     ; ADAA 44 93 07                 D..
@@ -6478,7 +6478,7 @@ ItemUse_Branch_ADDE:
 ItemUse_Branch_ADDF:
         lda     #$07                            ; ADDF A9 07                    ..
         sta     $00                           ; ADE1 85 00                    ..
-        jsr     ItemUse_FindHandlerById         ; ADE3 20 0F AE                  ..
+        jsr     FindPartyOrdinalByCharacterId   ; ADE3 20 0F AE                  ..
         bcc     ItemUse_Branch_AE04             ; ADE6 90 1C                    ..
         brk                                     ; ADE8 00                       .
         db   $44,$93,$07                     ; ADE9 44 93 07                 D..
@@ -6505,16 +6505,16 @@ ItemUse_Branch_ADDF:
 ItemUse_Branch_AE04:
         rts                                     ; AE04 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_FindModeOperandInTable:
+LoadPartyCharacterIdForOrdinalLookup:
         sta     $00                           ; AE05 85 00                    ..
         brk                                     ; AE07 00                       .
         db   $62,$33                         ; AE08 62 33                    b3
 ; ----------------------------------------------------------------------------
         jmp     ItemUse_Branch_AE13             ; AE0A 4C 13 AE                 L..
 ; ----------------------------------------------------------------------------
-ItemUse_FindModeOperandPreservingIndex:
+FindPartyOrdinalByCharacterIdPreservingIndex:
         sta     $00                           ; AE0D 85 00                    ..
-ItemUse_FindHandlerById:
+FindPartyOrdinalByCharacterId:
         brk                                     ; AE0F 00                       .
         db   $62,$23,$40                     ; AE10 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -6530,7 +6530,7 @@ ItemUse_Branch_AE17:
         inx                                     ; AE1E E8                       .
         cpx     $01                             ; AE1F E4 01                    ..
         bcc     ItemUse_Branch_AE17             ; AE21 90 F4                    ..
-RunDefaultItemUseHandler:
+ReturnPartyCharacterNotFound:
         ldx     #$00                            ; AE23 A2 00                    ..
         stx     $6E                             ; AE25 86 6E                    .n
         lda     #$08                            ; AE27 A9 08                    ..
@@ -6551,7 +6551,7 @@ ItemUse_Branch_AE36:
         lda     $6279                           ; AE36 AD 79 62                 .yb
         sta     $6F                             ; AE39 85 6F                    .o
         lda     #$00                            ; AE3B A9 00                    ..
-        sta     $FD                             ; AE3D 85 FD                    ..
+        sta     MessageNumberArgument           ; AE3D 85 FD                    ..
         sta     $FE                             ; AE3F 85 FE                    ..
         sta     $FF                             ; AE41 85 FF                    ..
         lda     #$2C                            ; AE43 A9 2C                    .,
@@ -6701,18 +6701,18 @@ ItemUse_Branch_AF11:
         jmp     ($0000)                         ; AF2D 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
 ItemUse_RunSelectionConfirmationLoop:
-        jsr     ItemUse_SelectMode0             ; AF30 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; AF30 20 71 B5                  q.
         jmp     ItemUse_RunSelectionConfirmation; AF33 4C 39 AF                 L9.
 ; ----------------------------------------------------------------------------
 ItemUse_RunSelectionConfirmationLoopFromReload:
-        jsr     ItemUse_SelectMode0             ; AF36 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; AF36 20 71 B5                  q.
 ItemUse_RunSelectionConfirmation:
         jsr     ItemUse_WaitTwentyFrames        ; AF39 20 EF B5                  ..
         lda     #$01                            ; AF3C A9 01                    ..
         jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; AF3E 20 33 B5  3.
         bcs     ItemUse_Branch_AF6D             ; AF41 B0 2A                    .*
         jsr     ItemUse_SeedSelectionPromptOperands; AF43 20 5A AF               Z.
-        jsr     ItemUse_SelectMode1             ; AF46 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; AF46 20 6D B5                  m.
 ItemUse_Branch_AF49:
         brk                                     ; AF49 00                       .
         db   $27,$0F                         ; AF4A 27 0F                    '.
@@ -6739,7 +6739,7 @@ ItemUse_SeedSelectionPromptOperands:
         rts                                     ; AF6C 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_AF6D:
-        jsr     ItemUse_SelectMode2             ; AF6D 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; AF6D 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionConfirmation; AF70 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_ProjectCurrentValueIntoPrompt:
@@ -6756,14 +6756,14 @@ ItemUse_ProjectCurrentValueIntoPrompt:
         rts                                     ; AF88 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_RunSelectionRefreshFlow:
-        jsr     ItemUse_SelectMode0             ; AF89 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; AF89 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; AF8C 20 EF B5                  ..
         lda     #$05                            ; AF8F A9 05                    ..
         sta     $6F                             ; AF91 85 6F                    .o
         lda     #$45                            ; AF93 A9 45                    .E
         jsr     ItemUse_ReadSecondarySelectionIndex; AF95 20 2C B5               ,.
         bcc     ItemUse_Branch_AF6D             ; AF98 90 D3                    ..
-        jsr     ItemUse_SelectMode1             ; AF9A 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; AF9A 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionConfirmation; AF9D 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_HandleSelectionConfirmResult:
@@ -6778,7 +6778,7 @@ ItemUse_HandleSelectionConfirmResult:
         db   $07,$6F,$50                     ; AFAC 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
         stx     $F6                             ; AFAF 86 F6                    ..
-        jsr     ItemUse_SelectMode0             ; AFB1 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; AFB1 20 71 B5                  q.
         ldx     #$0C                            ; AFB4 A2 0C                    ..
         jsr     WaitFrames                      ; AFB6 20 0C C9                  ..
         pla                                     ; AFB9 68                       h
@@ -6791,7 +6791,7 @@ ItemUse_HandleSelectionConfirmResult:
         brk                                     ; AFC4 00                       .
         db   $07,$6F,$50                     ; AFC5 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     ItemUse_SelectMode1             ; AFC8 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; AFC8 20 6D B5                  m.
 ItemUse_WaitForSelectionInputAndCancel:
         jsr     WaitForButtonPress              ; AFCB 20 E1 C8                  ..
 ItemUse_Branch_AFCE:
@@ -6830,14 +6830,14 @@ ItemUse_RunDefaultChoicePrompt:
         lda     #$24                            ; B001 A9 24                    .$
 ItemUse_Branch_B003:
         pha                                     ; B003 48                       H
-        jsr     ItemUse_SelectMode0             ; B004 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B004 20 71 B5                  q.
         jsr     ItemUse_InitializeChoicePrompt  ; B007 20 21 B0                  !.
         jsr     ItemUse_WaitTwentyFrames        ; B00A 20 EF B5                  ..
         pla                                     ; B00D 68                       h
         jsr     ItemUse_ReadSecondarySelectionIndex; B00E 20 2C B5               ,.
         beq     ItemUse_Branch_B01B             ; B011 F0 08                    ..
-        sta     $FD                             ; B013 85 FD                    ..
-        jsr     ItemUse_SelectMode1             ; B015 20 6D B5                  m.
+        sta     MessageNumberArgument           ; B013 85 FD                    ..
+        jsr     PrintItemUseMessage1            ; B015 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionConfirmation; B018 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B01B:
@@ -6858,7 +6858,7 @@ ItemUse_InitializeChoicePrompt:
         rts                                     ; B032 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_RunBasicChoice:
-        jsr     ItemUse_SelectMode0             ; B033 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B033 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B036 20 EF B5                  ..
         lda     #$03                            ; B039 A9 03                    ..
         jsr     ItemUse_ReadChoiceValue         ; B03B 20 21 B5                  !.
@@ -6870,11 +6870,11 @@ ItemUse_RunBasicChoice:
 ItemUse_Branch_B048:
         jsr     ItemUse_ReadSecondarySelectionIndex; B048 20 2C B5               ,.
         beq     ItemUse_Branch_B05B             ; B04B F0 0E                    ..
-        sta     $FD                             ; B04D 85 FD                    ..
+        sta     MessageNumberArgument           ; B04D 85 FD                    ..
         lda     #$00                            ; B04F A9 00                    ..
         sta     $FE                             ; B051 85 FE                    ..
         sta     $FF                             ; B053 85 FF                    ..
-        jsr     ItemUse_SelectMode1             ; B055 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B055 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionConfirmation; B058 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B05B:
@@ -6884,7 +6884,7 @@ ItemUse_Branch_B05B:
         jmp     ItemUse_WaitForSelectionConfirmation; B05E 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_RunExtendedChoice:
-        jsr     ItemUse_SelectMode0             ; B061 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B061 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B064 20 EF B5                  ..
         lda     #$03                            ; B067 A9 03                    ..
         jsr     ItemUse_ReadChoiceValue         ; B069 20 21 B5                  !.
@@ -6893,14 +6893,14 @@ ItemUse_RunExtendedChoice:
         lda     #$0A                            ; B070 A9 0A                    ..
         bne     ItemUse_Branch_B048             ; B072 D0 D4                    ..
 ItemUse_RunChoiceWithSuccessEffect:
-        jsr     ItemUse_SelectMode0             ; B074 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B074 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B077 20 EF B5                  ..
         lda     #$06                            ; B07A A9 06                    ..
         sta     $6F                             ; B07C 85 6F                    .o
         lda     #$45                            ; B07E A9 45                    .E
         jsr     ItemUse_ReadSecondarySelectionIndex; B080 20 2C B5               ,.
         bcc     ItemUse_Branch_B08E             ; B083 90 09                    ..
-        jsr     ItemUse_SelectMode1             ; B085 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B085 20 6D B5                  m.
         brk                                     ; B088 00                       .
         db   $27,$EF                         ; B089 27 EF                    '.
 ; ----------------------------------------------------------------------------
@@ -6913,7 +6913,7 @@ ItemUse_Branch_B08E:
         jmp     ItemUse_WaitForSelectionConfirmation; B091 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_RunChoiceWithPostcheck:
-        jsr     ItemUse_SelectMode0             ; B094 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B094 20 71 B5                  q.
         lda     #$0B                            ; B097 A9 0B                    ..
         jsr     ItemUse_ReadChoiceValue         ; B099 20 21 B5                  !.
         adc     #$14                            ; B09C 69 14                    i.
@@ -6924,13 +6924,13 @@ ItemUse_RunChoiceWithPostcheck:
         sta     $FF                             ; B0A6 85 FF                    ..
         lda     #$09                            ; B0A8 A9 09                    ..
         jsr     ItemUse_ReadSecondarySelectionIndex; B0AA 20 2C B5               ,.
-        sta     $FD                             ; B0AD 85 FD                    ..
+        sta     MessageNumberArgument           ; B0AD 85 FD                    ..
         beq     ItemUse_Branch_B0B7             ; B0AF F0 06                    ..
-        jsr     ItemUse_SelectMode1             ; B0B1 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B0B1 20 6D B5                  m.
         jmp     ItemUse_Branch_B0BA             ; B0B4 4C BA B0                 L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B0B7:
-        jsr     ItemUse_SelectMode2             ; B0B7 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B0B7 20 69 B5                  i.
 ItemUse_Branch_B0BA:
         lda     #$08                            ; B0BA A9 08                    ..
         jsr     ItemUse_ReadChoiceValue         ; B0BC 20 21 B5                  !.
@@ -6938,14 +6938,14 @@ ItemUse_Branch_B0BA:
         brk                                     ; B0C1 00                       .
         db   $83,$2B                         ; B0C2 83 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     ItemUse_SelectMode3             ; B0C4 20 65 B5                  e.
+        jsr     PrintItemUseMessage3            ; B0C4 20 65 B5                  e.
         jmp     ItemUse_WaitForSelectionConfirmation; B0C7 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B0CA:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B0CA 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_RunChoiceWithPrimaryGate:
-        jsr     ItemUse_SelectMode0             ; B0CD 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B0CD 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B0D0 20 EF B5                  ..
         lda     #$01                            ; B0D3 A9 01                    ..
         jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; B0D5 20 33 B5  3.
@@ -6960,22 +6960,22 @@ ItemUse_RunChoiceWithPrimaryGate:
         sta     $FF                             ; B0E9 85 FF                    ..
         lda     #$09                            ; B0EB A9 09                    ..
         jsr     ItemUse_ReadSecondarySelectionIndex; B0ED 20 2C B5               ,.
-        sta     $FD                             ; B0F0 85 FD                    ..
+        sta     MessageNumberArgument           ; B0F0 85 FD                    ..
         tax                                     ; B0F2 AA                       .
         beq     ItemUse_Branch_B0FB             ; B0F3 F0 06                    ..
-        jsr     ItemUse_SelectMode1             ; B0F5 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B0F5 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionConfirmation; B0F8 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B0FB:
-        jsr     ItemUse_SelectMode2             ; B0FB 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B0FB 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionConfirmation; B0FE 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B101:
-        jsr     ItemUse_SelectMode3             ; B101 20 65 B5                  e.
+        jsr     PrintItemUseMessage3            ; B101 20 65 B5                  e.
         jmp     ItemUse_WaitForSelectionConfirmation; B104 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_RunNestedChoice:
-        jsr     ItemUse_SelectMode0             ; B107 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B107 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B10A 20 EF B5                  ..
         lda     #$07                            ; B10D A9 07                    ..
         sta     $6F                             ; B10F 85 6F                    .o
@@ -6984,7 +6984,7 @@ ItemUse_RunNestedChoice:
         bcc     ItemUse_Branch_B144             ; B116 90 2C                    .,
         lda     #$05                            ; B118 A9 05                    ..
         jsr     ItemUse_ReadSecondarySelectionIndex; B11A 20 2C B5               ,.
-        jsr     ItemUse_SelectMode1             ; B11D 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B11D 20 6D B5                  m.
         brk                                     ; B120 00                       .
         db   $27,$0F                         ; B121 27 0F                    '.
 ; ----------------------------------------------------------------------------
@@ -7017,15 +7017,15 @@ ItemUse_Branch_B13E:
         jmp     ItemUse_WaitForSelectionConfirmation; B141 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B144:
-        jsr     ItemUse_SelectMode2             ; B144 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B144 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionConfirmation; B147 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_ClearTransitionFlag0539:
-        jsr     ItemUse_SelectMode0             ; B14A 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B14A 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B14D 20 EF B5                  ..
         lda     #$00                            ; B150 A9 00                    ..
         sta     $0539                           ; B152 8D 39 05                 .9.
-        jsr     ItemUse_SelectMode1             ; B155 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B155 20 6D B5                  m.
         jsr     ItemUse_WaitTwentyFrames        ; B158 20 EF B5                  ..
         lda     #$FF                            ; B15B A9 FF                    ..
         brk                                     ; B15D 00                       .
@@ -7046,11 +7046,11 @@ ItemUse_Branch_B171:
         brk                                     ; B171 00                       .
         db   $07,$6F,$50                     ; B172 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     ItemUse_SelectMode2             ; B175 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B175 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B178 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_CountSelectionIterationsInto6E:
-        jsr     ItemUse_SelectMode0             ; B17B 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B17B 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B17E 20 EF B5                  ..
         brk                                     ; B181 00                       .
         db   $62,$23,$01                     ; B182 62 23 01                 b#.
@@ -7065,11 +7065,11 @@ ItemUse_Branch_B18B:
         inc     $6E                             ; B18F E6 6E                    .n
         dec     $00                           ; B191 C6 00                    ..
         bne     ItemUse_Branch_B18B             ; B193 D0 F6                    ..
-        jsr     ItemUse_SelectMode1             ; B195 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B195 20 6D B5                  m.
         jmp     ItemUse_Branch_AF49             ; B198 4C 49 AF                 LI.
 ; ----------------------------------------------------------------------------
 HandleKeeleonItemUseTrigger:
-        jsr     ItemUse_SelectMode0             ; B19B 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B19B 20 71 B5                  q.
         brk                                     ; B19E 00                       .
         db   $AA,$FB                         ; B19F AA FB                    ..
 ; ----------------------------------------------------------------------------
@@ -7120,8 +7120,8 @@ ItemUse_Branch_B1D9:
 ; ----------------------------------------------------------------------------
 ItemUse_ForceState7F:
         lda     #$7F                            ; B1F6 A9 7F                    ..
-        sta     $6E41                           ; B1F8 8D 41 6E                 .An
-        jsr     ItemUse_SelectMode0             ; B1FB 20 71 B5                  q.
+        sta     RepelStepCounter                ; B1F8 8D 41 6E                 .An
+        jsr     PrintItemUseMessage0            ; B1FB 20 71 B5                  q.
         jmp     ItemUse_WaitForSelectionConfirmation; B1FE 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 RestoreKingOfSanteemVoice:
@@ -7144,7 +7144,7 @@ RestoreKingOfSanteemVoice:
         lda     CurrentSubmapNumber             ; B223 A5 64                    .d
         cmp     #$01                            ; B225 C9 01                    ..
         bne     ItemUse_Branch_B264             ; B227 D0 3B                    .;
-        jsr     ItemUse_SelectMode2             ; B229 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B229 20 69 B5                  i.
         lda     $6283                           ; B22C AD 83 62                 ..b
         ora     #$02                            ; B22F 09 02                    ..
         and     #$F7                            ; B231 29 F7                    ).
@@ -7179,9 +7179,9 @@ ItemUse_Branch_B243:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B261 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B264:
-        jsr     ItemUse_SelectMode0             ; B264 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B264 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B267 20 EF B5                  ..
-        jsr     ItemUse_SelectMode1             ; B26A 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B26A 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B26D 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_MirrorSelectionPairAndValidate:
@@ -7217,7 +7217,7 @@ ItemUse_Branch_B299:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B29C 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_NotifyState41AndReturnClear:
-        jsr     ItemUse_SelectMode0             ; B29F 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B29F 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B2A2 20 EF B5                  ..
         brk                                     ; B2A5 00                       .
         db   $41,$EF                         ; B2A6 41 EF                    A.
@@ -7244,7 +7244,7 @@ ItemUse_Branch_B2C6:
         brk                                     ; B2C6 00                       .
         db   $07,$6F,$50                     ; B2C7 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     ItemUse_SelectMode0             ; B2CA 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B2CA 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B2CD 20 EF B5                  ..
         brk                                     ; B2D0 00                       .
         db   $C5,$2B                         ; B2D1 C5 2B                    .+
@@ -7282,7 +7282,7 @@ ItemUse_Branch_B2DB:
         rts                                     ; B2FE 60                       `
 ; ----------------------------------------------------------------------------
 HandleBonmalmoItemUseProgress:
-        jsr     ItemUse_SelectMode0             ; B2FF 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B2FF 20 71 B5                  q.
         lda     CurrentMapNumber                ; B302 A5 63                    .c
         cmp     #$05                            ; B304 C9 05                    ..
         bne     ItemUse_Branch_B328             ; B306 D0 20                    .
@@ -7295,18 +7295,18 @@ HandleBonmalmoItemUseProgress:
         lda     PlayerLocalY                    ; B314 A5 45                    .E
         cmp     #$08                            ; B316 C9 08                    ..
         bne     ItemUse_Branch_B328             ; B318 D0 0E                    ..
-        jsr     ItemUse_SelectMode1             ; B31A 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B31A 20 6D B5                  m.
         lda     $6283                           ; B31D AD 83 62                 ..b
         ora     #$01                            ; B320 09 01                    ..
         sta     $6283                           ; B322 8D 83 62                 ..b
         jmp     ItemUse_WaitForSelectionConfirmation; B325 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B328:
-        jsr     ItemUse_SelectMode2             ; B328 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B328 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B32B 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 HandleEndorItemUseStateUpdate:
-        jsr     ItemUse_SelectMode0             ; B32E 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B32E 20 71 B5                  q.
         lda     CurrentMapNumber                ; B331 A5 63                    .c
         cmp     #$04                            ; B333 C9 04                    ..
         bne     ItemUse_Branch_B362             ; B335 D0 2B                    .+
@@ -7319,7 +7319,7 @@ HandleEndorItemUseStateUpdate:
         lda     PlayerLocalY                    ; B343 A5 45                    .E
         cmp     #$0B                            ; B345 C9 0B                    ..
         bne     ItemUse_Branch_B362             ; B347 D0 19                    ..
-        jsr     ItemUse_SelectMode1             ; B349 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B349 20 6D B5                  m.
         ldx     $6278                           ; B34C AE 78 62                 .xb
         lda     $6279                           ; B34F AD 79 62                 .yb
         brk                                     ; B352 00                       .
@@ -7337,7 +7337,7 @@ HandleEndorItemUseStateUpdate:
         rts                                     ; B361 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B362:
-        jsr     ItemUse_SelectMode2             ; B362 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B362 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B365 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 UseFireOfSerenityOnEvilFireAtLighthouse:
@@ -7366,7 +7366,7 @@ UseFireOfSerenityOnEvilFireAtLighthouse:
         bne     ItemUse_Branch_B3AF             ; B391 D0 1C                    ..
         lda     $6278                           ; B393 AD 78 62                 .xb
         sta     $F9                             ; B396 85 F9                    ..
-        jsr     ItemUse_SelectMode0             ; B398 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B398 20 71 B5                  q.
         brk                                     ; B39B 00                       .
         db   $18,$CB,$10                     ; B39C 18 CB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -7381,9 +7381,9 @@ UseFireOfSerenityOnEvilFireAtLighthouse:
         jmp     ItemUse_WaitForSelectionConfirmation; B3AC 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B3AF:
-        jsr     ItemUse_SelectMode1             ; B3AF 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B3AF 20 6D B5                  m.
         jsr     ItemUse_WaitTwentyFrames        ; B3B2 20 EF B5                  ..
-        jsr     ItemUse_SelectMode2             ; B3B5 20 69 B5                  i.
+        jsr     PrintItemUseMessage2            ; B3B5 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B3B8 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 RevealRosavilleStairs:
@@ -7424,7 +7424,7 @@ RevealRosavilleStairs:
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B3FC:
         jsr     UseFluteOfUncovering            ; B3FC 20 0E B4                  ..
-        jsr     ItemUse_SelectMode0             ; B3FF 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B3FF 20 71 B5                  q.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B402 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B405:
@@ -7459,11 +7459,11 @@ UseFluteOfUncovering:
         rts                                     ; B42A 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_RunEligibilityGate:
-        jsr     ItemUse_SelectMode0             ; B42B 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B42B 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B42E 20 EF B5                  ..
         jsr     FieldSpell_CheckEligibilityByMap; B431 20 74 A9                  t.
         bcs     ItemUse_Branch_B458             ; B434 B0 22                    ."
-        jsr     FieldSpell_ShouldBlockFieldStart; B436 20 21 A7                  !.
+        jsr     CheckDayNightSpellBlocked       ; B436 20 21 A7                  !.
         bcs     ItemUse_Branch_B458             ; B439 B0 1D                    ..
         lda     $41                             ; B43B A5 41                    .A
         bpl     ItemUse_Branch_B44C             ; B43D 10 0D                    ..
@@ -7477,7 +7477,7 @@ ItemUse_Branch_B44C:
         lda     SaveTimeOfDay                   ; B44C AD ED 62                 ..b
         cmp     #$78                            ; B44F C9 78                    .x
         bcs     ItemUse_Branch_B458             ; B451 B0 05                    ..
-        jsr     FieldSpell_ShowBlockedPrompt    ; B453 20 73 A7                  s.
+        jsr     RunDayNightSpellTransition      ; B453 20 73 A7                  s.
         clc                                     ; B456 18                       .
         rts                                     ; B457 60                       `
 ; ----------------------------------------------------------------------------
@@ -7494,7 +7494,7 @@ ItemUse_Branch_B45E:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B461 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 HandleWorldItemUseTriggerC22F:
-        jsr     ItemUse_SelectMode0             ; B464 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B464 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B467 20 EF B5                  ..
         lda     $62A1                           ; B46A AD A1 62                 ..b
         bmi     ItemUse_Branch_B48E             ; B46D 30 1F                    0.
@@ -7516,7 +7516,7 @@ HandleWorldItemUseTriggerC22F:
         rts                                     ; B487 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B488:
-        jsr     ItemUse_SelectMode1             ; B488 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B488 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B48B 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B48E:
@@ -7526,7 +7526,7 @@ ItemUse_Branch_B48E:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B491 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 HandleCascadeCaveItemUseTrigger:
-        jsr     ItemUse_SelectMode0             ; B494 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B494 20 71 B5                  q.
         bit     $62A1                           ; B497 2C A1 62                 ,.b
         bvs     ItemUse_Branch_B48E             ; B49A 70 F2                    p.
         lda     $41                             ; B49C A5 41                    .A
@@ -7553,7 +7553,7 @@ HandleCascadeCaveItemUseTrigger:
         rts                                     ; B4C0 60                       `
 ; ----------------------------------------------------------------------------
 HandleIronSafeCaveItemUseGate:
-        jsr     ItemUse_SelectMode0             ; B4C1 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B4C1 20 71 B5                  q.
         lda     $41                             ; B4C4 A5 41                    .A
         bpl     ItemUse_Branch_B4CE             ; B4C6 10 06                    ..
         lda     CurrentMapNumber                ; B4C8 A5 63                    .c
@@ -7574,7 +7574,7 @@ ItemUse_Branch_B4D6:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B4D9 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ReleaseStrangeSmellItemEffect:
-        jsr     ItemUse_SelectMode0             ; B4DC 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B4DC 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B4DF 20 EF B5                  ..
         brk                                     ; B4E2 00                       .
         db   $5F,$0B                         ; B4E3 5F 0B                    _.
@@ -7584,7 +7584,7 @@ ReleaseStrangeSmellItemEffect:
         jmp     ItemUse_WaitForSelectionConfirmation; B4EA 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
 ItemUse_RunIntroOverlayOrMode1Fallback:
-        jsr     ItemUse_SelectMode0             ; B4ED 20 71 B5                  q.
+        jsr     PrintItemUseMessage0            ; B4ED 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B4F0 20 EF B5                  ..
         lda     $41                             ; B4F3 A5 41                    .A
         bmi     ItemUse_Branch_B518             ; B4F5 30 21                    0!
@@ -7611,7 +7611,7 @@ ItemUse_RunIntroOverlayOrMode1Fallback:
         rts                                     ; B511 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B512:
-        jsr     ItemUse_SelectMode1             ; B512 20 6D B5                  m.
+        jsr     PrintItemUseMessage1            ; B512 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B515 4C CB AF           L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B518:
@@ -7684,16 +7684,16 @@ ItemUse_CheckSecondarySelectionBelowEight:
         cmp     #$08                            ; B562 C9 08                    ..
         rts                                     ; B564 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_SelectMode3:
+PrintItemUseMessage3:
         lda     #$03                            ; B565 A9 03                    ..
         bne     ItemUse_Branch_B573             ; B567 D0 0A                    ..
-ItemUse_SelectMode2:
+PrintItemUseMessage2:
         lda     #$02                            ; B569 A9 02                    ..
         bne     ItemUse_Branch_B573             ; B56B D0 06                    ..
-ItemUse_SelectMode1:
+PrintItemUseMessage1:
         lda     #$01                            ; B56D A9 01                    ..
         bne     ItemUse_Branch_B573             ; B56F D0 02                    ..
-ItemUse_SelectMode0:
+PrintItemUseMessage0:
         lda     #$00                            ; B571 A9 00                    ..
 ItemUse_Branch_B573:
         pha                                     ; B573 48                       H
@@ -7807,7 +7807,7 @@ ItemUse_WaitTwentyFrames:
         db   $67,$1E,$6A,$5E,$52,$6E,$71,$72 ; B6D4 67 1E 6A 5E 52 6E 71 72  g.j^Rnqr
         db   $73,$FF                         ; B6DC 73 FF                    s.
 ; ----------------------------------------------------------------------------
-BattleSetup_ApplyMapTransitionRules:
+MapTransition_ApplyExitRules:
         lda     #$00                            ; B6DE A9 00                    ..
         sta     $29                             ; B6E0 85 29                    .)
         lda     PlayerWorldX                    ; B6E2 A5 42                    .B
@@ -7846,7 +7846,7 @@ BattleSetupServices_Branch_B710:
 BattleSetupServices_Branch_B717:
         cmp     #$36                            ; B717 C9 36                    .6
         bne     BattleSetupServices_Branch_B71E ; B719 D0 03                    ..
-        jmp     HandleSpecialSubmapOneTransition; B71B 4C EE B8                 L..
+        jmp     MapTransition_HandleSpecialSubmapOne; B71B 4C EE B8             L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B71E:
         lda     $B970                           ; B71E AD 70 B9                 .p.
@@ -7869,7 +7869,7 @@ BattleSetupServices_Branch_B73C:
         jmp     BattleSetupServices_Branch_B7EF ; B73C 4C EF B7                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B73F:
-        jmp     ApplySubmapTransitionRecord     ; B73F 4C BC B7                 L..
+        jmp     MapTransition_ApplySubmapRecord ; B73F 4C BC B7                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B742:
         lda     CurrentMapNumber                ; B742 A5 63                    .c
@@ -7947,7 +7947,7 @@ BattleSetupServices_Branch_B7B6:
         clc                                     ; B7BA 18                       .
         rts                                     ; B7BB 60                       `
 ; ----------------------------------------------------------------------------
-ApplySubmapTransitionRecord:
+MapTransition_ApplySubmapRecord:
         iny                                     ; B7BC C8                       .
         lda     ($00),y                       ; B7BD B1 00                    ..
         bmi     BattleSetupServices_Branch_B7E9 ; B7BF 30 28                    0(
@@ -8019,7 +8019,7 @@ BattleSetupServices_Branch_B807:
         iny                                     ; B817 C8                       .
         lda     ($00),y                       ; B818 B1 00                    ..
         sta     $06                             ; B81A 85 06                    ..
-        jsr     BattleSetup_CheckPlayerWithinPackedTransitionBounds; B81C 20 56 B8 V.
+        jsr     MapTransition_CheckPlayerWithinBounds; B81C 20 56 B8             V.
         bcc     BattleSetupServices_Branch_B829 ; B81F 90 08                    ..
 BattleSetupServices_Branch_B821:
         iny                                     ; B821 C8                       .
@@ -8064,7 +8064,7 @@ BattleSetupServices_Branch_B846:
         bne     BattleSetupServices_Branch_B82A ; B851 D0 D7                    ..
         jmp     BattleSetupServices_Branch_B821 ; B853 4C 21 B8                 L!.
 ; ----------------------------------------------------------------------------
-BattleSetup_CheckPlayerWithinPackedTransitionBounds:
+MapTransition_CheckPlayerWithinBounds:
         lda     PlayerLocalX                    ; B856 A5 44                    .D
         cmp     $04                             ; B858 C5 04                    ..
         bcc     BattleSetupServices_Branch_B878 ; B85A 90 1C                    ..
@@ -8155,7 +8155,7 @@ BattleSetupServices_Branch_B8CE:
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_B8BC ; B8EB 4C BC B8                 L..
 ; ----------------------------------------------------------------------------
-HandleSpecialSubmapOneTransition:
+MapTransition_HandleSpecialSubmapOne:
         lda     CurrentSubmapNumber             ; B8EE A5 64                    .d
         cmp     #$01                            ; B8F0 C9 01                    ..
         bne     BattleSetupServices_Branch_B909 ; B8F2 D0 15                    ..
@@ -8267,7 +8267,7 @@ BattleSetupServices_Branch_B96A:
         db   $03,$05,$02,$09,$0A,$37,$81,$04 ; BA31 03 05 02 09 0A 37 81 04  .....7..
         db   $05,$02,$0A,$0A,$FF             ; BA39 05 02 0A 0A FF           .....
 ; ----------------------------------------------------------------------------
-BattleSetup_StoreTextInputBuffer:
+TextInput_StoreBuffer:
         lda     $03E3                           ; BA3E AD E3 03                 ...
         sta     $00                           ; BA41 85 00                    ..
         lda     $03DD                           ; BA43 AD DD 03                 ...
@@ -8318,7 +8318,7 @@ BattleSetupServices_Branch_BA76:
 BattleSetupServices_Branch_BA93:
         rts                                     ; BA93 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_QueueTextInputListTiles:
+TextInput_QueueListTiles:
         lda     $03C9                           ; BA94 AD C9 03                 ...
         and     #$F0                            ; BA97 29 F0                    ).
         lsr     a                               ; BA99 4A                       J
@@ -8381,7 +8381,7 @@ BattleSetupServices_Branch_BAF3:
 ; ----------------------------------------------------------------------------
         db   $00,$03,$02,$01,$00             ; BB01 00 03 02 01 00           .....
 ; ----------------------------------------------------------------------------
-BattleSetup_InitializeTextInputCursorFromIndex:
+TextInput_InitializeCursorFromIndex:
         sta     $03DA                           ; BB06 8D DA 03                 ...
         lda     $07B4                           ; BB09 AD B4 07                 ...
         and     #$09                            ; BB0C 29 09                    ).
@@ -8399,7 +8399,7 @@ BattleSetup_InitializeTextInputCursorFromIndex:
 BattleSetupServices_Branch_BB25:
         lda     $F8                             ; BB25 A5 F8                    ..
         cmp     #$F0                            ; BB27 C9 F0                    ..
-        bcc     BattleSetup_ComputeTextInputCursorFromIndex; BB29 90 37         .7
+        bcc     TextInput_ComputeCursorFromIndex; BB29 90 37                    .7
         cmp     #$FE                            ; BB2B C9 FE                    ..
         bne     BattleSetupServices_Branch_BB3A ; BB2D D0 0B                    ..
         lda     #$00                            ; BB2F A9 00                    ..
@@ -8412,7 +8412,7 @@ BattleSetupServices_Branch_BB3A:
         clc                                     ; BB3A 18                       .
         sbc     #$F0                            ; BB3B E9 F0                    ..
         sta     $F8                             ; BB3D 85 F8                    ..
-        jsr     BattleSetup_ComputeTextInputCursorFromIndex; BB3F 20 62 BB       b.
+        jsr     TextInput_ComputeCursorFromIndex; BB3F 20 62 BB                  b.
         lda     TextCursorPosition              ; BB42 AD CF 03                 ...
         and     #$0F                            ; BB45 29 0F                    ).
         bne     BattleSetupServices_Branch_BB61 ; BB47 D0 18                    ..
@@ -8428,7 +8428,7 @@ BattleSetupServices_Branch_BB3A:
 BattleSetupServices_Branch_BB61:
         rts                                     ; BB61 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_ComputeTextInputCursorFromIndex:
+TextInput_ComputeCursorFromIndex:
         ldy     $03DA                           ; BB62 AC DA 03                 ...
         lda     #$00                            ; BB65 A9 00                    ..
         sta     $03D1                           ; BB67 8D D1 03                 ...
@@ -8487,7 +8487,7 @@ BattleSetupServices_Branch_BBCB:
 ; ----------------------------------------------------------------------------
         db   $00,$01,$00,$03,$00,$00,$00,$07 ; BBCC 00 01 00 03 00 00 00 07  ........
 ; ----------------------------------------------------------------------------
-BattleSetup_ReadSaveSlotFieldByte:
+SaveSlot_ReadSelectedFieldByte:
         cpy     #$02                            ; BBD4 C0 02                    ..
         bne     BattleSetupServices_Branch_BBE0 ; BBD6 D0 08                    ..
         cpx     #$03                            ; BBD8 E0 03                    ..
@@ -8543,7 +8543,7 @@ BattleSetupServices_Branch_BC10:
         db   $1E                             ; BC3A 1E                       .
         db   $00                             ; BC3B 00                       .
 ; ----------------------------------------------------------------------------
-BattleSetup_PollTextInputButtonsWithAutoRepeat:
+TextInput_PollButtonsWithAutoRepeat:
         asl     $03CC                           ; BC3C 0E CC 03                 ...
         lsr     $03CC                           ; BC3F 4E CC 03                 N..
 BattleSetupServices_Branch_BC42:
@@ -8582,7 +8582,7 @@ BattleSetupServices_Branch_BC76:
         and     ButtonsPressed                  ; BC80 25 14                    %.
         beq     BattleSetupServices_Branch_BC8F ; BC82 F0 0B                    ..
         jsr     WaitForNmi                      ; BC84 20 74 FF                  t.
-        jsr     BattleSetup_UpdateTextInputAutoRepeatState; BC87 20 EF BC        ..
+        jsr     TextInput_UpdateAutoRepeatState ; BC87 20 EF BC                  ..
         bcc     BattleSetupServices_Branch_BC42 ; BC8A 90 B6                    ..
         jmp     BattleSetupServices_Branch_BCB6 ; BC8C 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
@@ -8590,7 +8590,7 @@ BattleSetupServices_Branch_BC8F:
         lda     $07B4                           ; BC8F AD B4 07                 ...
         and     #$DF                            ; BC92 29 DF                    ).
         sta     $07B4                           ; BC94 8D B4 07                 ...
-        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BC97 20 DB BC       ..
+        jsr     TextInput_SeedAutoRepeatDeadline; BC97 20 DB BC                  ..
 BattleSetupServices_Branch_BC9A:
         jsr     ReadControllers                 ; BC9A 20 EC C8                  ..
         lda     ButtonsPressed                  ; BC9D A5 14                    ..
@@ -8599,12 +8599,12 @@ BattleSetupServices_Branch_BC9A:
         lda     #$00                            ; BCA3 A9 00                    ..
         sta     $03CC                           ; BCA5 8D CC 03                 ...
         jsr     WaitForNmi                      ; BCA8 20 74 FF                  t.
-        jsr     BattleSetup_UpdateTextInputAutoRepeatState; BCAB 20 EF BC        ..
+        jsr     TextInput_UpdateAutoRepeatState ; BCAB 20 EF BC                  ..
         bcc     BattleSetupServices_Branch_BC9A ; BCAE 90 EA                    ..
         jmp     BattleSetupServices_Branch_BCB6 ; BCB0 4C B6 BC                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BCB3:
-        jsr     BattleSetup_SetTextInputButtonIndexFromMask; BCB3 20 C4 BC       ..
+        jsr     TextInput_SetButtonIndexFromMask; BCB3 20 C4 BC                  ..
 BattleSetupServices_Branch_BCB6:
         lda     $03CC                           ; BCB6 AD CC 03                 ...
         and     #$0F                            ; BCB9 29 0F                    ).
@@ -8617,7 +8617,7 @@ BattleSetupServices_Branch_BCC2:
         clc                                     ; BCC2 18                       .
         rts                                     ; BCC3 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_SetTextInputButtonIndexFromMask:
+TextInput_SetButtonIndexFromMask:
         ldy     #$00                            ; BCC4 A0 00                    ..
 BattleSetupServices_Branch_BCC6:
         lsr     a                               ; BCC6 4A                       J
@@ -8628,11 +8628,11 @@ BattleSetupServices_Branch_BCC6:
         tya                                     ; BCCF 98                       .
         ora     $03CC                           ; BCD0 0D CC 03                 ...
         sta     $03CC                           ; BCD3 8D CC 03                 ...
-        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BCD6 20 DB BC       ..
+        jsr     TextInput_SeedAutoRepeatDeadline; BCD6 20 DB BC                  ..
         clc                                     ; BCD9 18                       .
         rts                                     ; BCDA 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_SeedTextInputAutoRepeatDeadline:
+TextInput_SeedAutoRepeatDeadline:
         ldx     #$0C                            ; BCDB A2 0C                    ..
         lda     $07B4                           ; BCDD AD B4 07                 ...
         and     #$20                            ; BCE0 29 20                    )
@@ -8645,7 +8645,7 @@ BattleSetupServices_Branch_BCE6:
         sta     $03CD                           ; BCEB 8D CD 03                 ...
         rts                                     ; BCEE 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_UpdateTextInputAutoRepeatState:
+TextInput_UpdateAutoRepeatState:
         lda     $03CD                           ; BCEF AD CD 03                 ...
         cmp     $050C                           ; BCF2 CD 0C 05                 ...
         bmi     BattleSetupServices_Branch_BD12 ; BCF5 30 1B                    0.
@@ -8664,14 +8664,14 @@ BattleSetup_UpdateTextInputAutoRepeatState:
         rts                                     ; BD11 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_BD12:
-        jsr     BattleSetup_SeedTextInputAutoRepeatDeadline; BD12 20 DB BC       ..
+        jsr     TextInput_SeedAutoRepeatDeadline; BD12 20 DB BC                  ..
         sec                                     ; BD15 38                       8
 BattleSetupServices_Branch_BD16:
         rts                                     ; BD16 60                       `
 ; ----------------------------------------------------------------------------
         db   $80,$40,$20,$10,$08,$04,$02,$01 ; BD17 80 40 20 10 08 04 02 01  .@ .....
 ; ----------------------------------------------------------------------------
-BattleSetup_ParseCountedScriptToken:
+TextInput_ParseCountedScriptToken:
         lda     $07B2                           ; BD1F AD B2 07                 ...
         sta     $02                           ; BD22 85 02                    ..
         lda     $07B3                           ; BD24 AD B3 07                 ...

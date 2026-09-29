@@ -12,22 +12,22 @@ Bank19_AudioServiceDirectory:
         db   $3B,$80,$26,$80                 ; 8010 3B 80 26 80              ;.&.
 ; ----------------------------------------------------------------------------
 ResetApuChannelsService:
-        jmp     FixedTrampoline09               ; 8014 4C 1C C0                 L..
+        jmp     ResetApuChannelsTrampoline      ; 8014 4C 1C C0                 L..
 ; ----------------------------------------------------------------------------
 StartAudioTrackService:
-        jmp     FixedTrampoline0A               ; 8017 4C 1F C0                 L..
+        jmp     StartAudioTrackTrampoline       ; 8017 4C 1F C0                 L..
 ; ----------------------------------------------------------------------------
 SetAudioCompletionFlagsService:
-        jmp     FixedTrampoline0B               ; 801A 4C 22 C0                 L".
+        jmp     SetAudioSequenceCompletionFlagsTrampoline; 801A 4C 22 C0        L".
 ; ----------------------------------------------------------------------------
 StartAudioTrackWithCompletionFlagsService:
-        jmp     FixedTrampoline0C               ; 801D 4C 25 C0                 L%.
+        jmp     StartAudioTrackWithCompletionFlagsTrampoline; 801D 4C 25 C0     L%.
 ; ----------------------------------------------------------------------------
 SetAudioGlobalSettingService:
-        jmp     FixedTrampoline0D               ; 8020 4C 28 C0                 L(.
+        jmp     SetAudioGlobalLowNibbleTrampoline; 8020 4C 28 C0                L(.
 ; ----------------------------------------------------------------------------
 WaitForAudioCompletionService:
-        jmp     FixedTrampoline0E               ; 8023 4C 2B C0                 L+.
+        jmp     WaitForAudioCompletionTrampoline; 8023 4C 2B C0                 L+.
 ; ----------------------------------------------------------------------------
 PlayCurrentMapMusic:
         lda     $6E                             ; 8026 A5 6E                    .n

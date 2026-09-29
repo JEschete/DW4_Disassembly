@@ -6,7 +6,7 @@ base $8000
 Bank13_Start:
 ; ----------------------------------------------------------------------------
 ; ----------------------------------------------------------------------------
-Bank13_BattlePresentationDirectory:
+Bank13_BattleAiServiceDirectory:
         db   $38,$80,$73,$B5,$6B,$B6,$2E,$B7 ; 8000 38 80 73 B5 6B B6 2E B7  8.s.k...
         db   $32,$B7,$E4,$B5,$18,$B7,$89,$B4 ; 8008 32 B7 E4 B5 18 B7 89 B4  2.......
         db   $53,$B5,$0B,$B9,$15,$B9,$66,$B0 ; 8010 53 B5 0B B9 15 B9 66 B0  S.....f.
@@ -15,19 +15,19 @@ Bank13_BattlePresentationDirectory:
         db   $62,$B4,$CB,$BB,$EA,$BC,$E3,$BD ; 8028 62 B4 CB BB EA BC E3 BD  b.......
         db   $81,$BE,$A8,$BE,$21,$BF,$65,$BF ; 8030 81 BE A8 BE 21 BF 65 BF  ....!.e.
 ; ----------------------------------------------------------------------------
-Bank13_BattlePresentationServices:
+Bank13_BattleAiServices:
         jsr     SelectBattleIntroState          ; 8038 20 88 80                  ..
         jsr     ResolveInitialBattleState       ; 803B 20 A1 80                  ..
-        bcc     BattlePresentation_Branch_8049  ; 803E 90 09                    ..
+        bcc     BattleAi_Branch_8049            ; 803E 90 09                    ..
         jsr     LoadBattleSetupMasks            ; 8040 20 4A 80                  J.
-        jsr     InitializeBattlePresentationWindow; 8043 20 12 92                ..
+        jsr     InitializeBattleAiWindow        ; 8043 20 12 92                  ..
         jsr     DispatchBattleStateHandler      ; 8046 20 5B 80                  [.
-BattlePresentation_Branch_8049:
+BattleAi_Branch_8049:
         rts                                     ; 8049 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleSetupMasks:
         jsr     ReadBattleSlotMask              ; 804A 20 51 80                  Q.
-        jsr     InitializeBattlePresentationState; 804D 20 5A 84                 Z.
+        jsr     InitializeBattleAiState         ; 804D 20 5A 84                  Z.
         rts                                     ; 8050 60                       `
 ; ----------------------------------------------------------------------------
 ReadBattleSlotMask:
@@ -41,7 +41,7 @@ ReadBattleSlotMask:
 DispatchBattleStateHandler:
         lda     $6E80                           ; 805B AD 80 6E                 ..n
         cmp     #$04                            ; 805E C9 04                    ..
-        beq     BattlePresentation_Branch_8075  ; 8060 F0 13                    ..
+        beq     BattleAi_Branch_8075            ; 8060 F0 13                    ..
         lda     $75E8                           ; 8062 AD E8 75                 ..u
         asl     a                               ; 8065 0A                       .
         tax                                     ; 8066 AA                       .
@@ -54,8 +54,8 @@ DispatchBattleStateHandler:
 EmptyBattleStateHandler:
         rts                                     ; 8074 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8075:
-        jmp     BattlePresentation_Branch_A8C6  ; 8075 4C C6 A8                 L..
+BattleAi_Branch_8075:
+        jmp     BattleAi_Branch_A8C6            ; 8075 4C C6 A8                 L..
 ; ----------------------------------------------------------------------------
 Bank13_BattleStateHandlerPointers:
         db   $74                             ; 8078 74                       t
@@ -65,18 +65,18 @@ Bank13_BattleStateHandlerPointers:
 SelectBattleIntroState:
         lda     $615B                           ; 8088 AD 5B 61                 .[a
         sta     $6E80                           ; 808B 8D 80 6E                 ..n
-        beq     BattlePresentation_Branch_8094  ; 808E F0 04                    ..
+        beq     BattleAi_Branch_8094            ; 808E F0 04                    ..
         cmp     #$02                            ; 8090 C9 02                    ..
-        bne     BattlePresentation_Branch_809E  ; 8092 D0 0A                    ..
-BattlePresentation_Branch_8094:
+        bne     BattleAi_Branch_809E            ; 8092 D0 0A                    ..
+BattleAi_Branch_8094:
         lda     $6E44                           ; 8094 AD 44 6E                 .Dn
-        bpl     BattlePresentation_Branch_809E  ; 8097 10 05                    ..
+        bpl     BattleAi_Branch_809E            ; 8097 10 05                    ..
         lda     #$06                            ; 8099 A9 06                    ..
         sta     $6E80                           ; 809B 8D 80 6E                 ..n
-BattlePresentation_Branch_809E:
+BattleAi_Branch_809E:
         rts                                     ; 809E 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_809F:
+BattleAi_Branch_809F:
         clc                                     ; 809F 18                       .
         rts                                     ; 80A0 60                       `
 ; ----------------------------------------------------------------------------
@@ -85,58 +85,58 @@ ResolveInitialBattleState:
         lda     BattleSlotDescriptors,x         ; 80A3 BD F4 72                 ..r
         and     #$70                            ; 80A6 29 70                    )p
         cmp     #$10                            ; 80A8 C9 10                    ..
-        bne     BattlePresentation_Branch_809F  ; 80AA D0 F3                    ..
+        bne     BattleAi_Branch_809F            ; 80AA D0 F3                    ..
         brk                                     ; 80AC 00                       .
         db   $06,$1F                         ; 80AD 06 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80AF B0 EE                    ..
+        bcs     BattleAi_Branch_809F            ; 80AF B0 EE                    ..
         brk                                     ; 80B1 00                       .
         db   $46,$93,$07                     ; 80B2 46 93 07                 F..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_809F  ; 80B5 90 E8                    ..
+        bcc     BattleAi_Branch_809F            ; 80B5 90 E8                    ..
         brk                                     ; 80B7 00                       .
         db   $46,$93,$06                     ; 80B8 46 93 06                 F..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80BB B0 E2                    ..
+        bcs     BattleAi_Branch_809F            ; 80BB B0 E2                    ..
         brk                                     ; 80BD 00                       .
         db   $46,$93,$10                     ; 80BE 46 93 10                 F..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80C1 B0 DC                    ..
+        bcs     BattleAi_Branch_809F            ; 80C1 B0 DC                    ..
         brk                                     ; 80C3 00                       .
         db   $46,$93,$11                     ; 80C4 46 93 11                 F..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80C7 B0 D6                    ..
+        bcs     BattleAi_Branch_809F            ; 80C7 B0 D6                    ..
         brk                                     ; 80C9 00                       .
         db   $46,$93,$23                     ; 80CA 46 93 23                 F.#
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80CD B0 D0                    ..
+        bcs     BattleAi_Branch_809F            ; 80CD B0 D0                    ..
         brk                                     ; 80CF 00                       .
         db   $46,$93,$24                     ; 80D0 46 93 24                 F.$
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80D3 B0 CA                    ..
+        bcs     BattleAi_Branch_809F            ; 80D3 B0 CA                    ..
         brk                                     ; 80D5 00                       .
         db   $46,$93,$25                     ; 80D6 46 93 25                 F.%
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80D9 B0 C4                    ..
+        bcs     BattleAi_Branch_809F            ; 80D9 B0 C4                    ..
         brk                                     ; 80DB 00                       .
         db   $46,$93,$12                     ; 80DC 46 93 12                 F..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 80DF B0 BE                    ..
+        bcs     BattleAi_Branch_809F            ; 80DF B0 BE                    ..
         brk                                     ; 80E1 00                       .
         db   $2B,$53                         ; 80E2 2B 53                    +S
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; 80E4 C9 08                    ..
-        bcs     BattlePresentation_Branch_809F  ; 80E6 B0 B7                    ..
+        bcs     BattleAi_Branch_809F            ; 80E6 B0 B7                    ..
         sta     $75E8                           ; 80E8 8D E8 75                 ..u
         brk                                     ; 80EB 00                       .
         db   $07,$73                         ; 80EC 07 73                    .s
 ; ----------------------------------------------------------------------------
         sta     $75DC                           ; 80EE 8D DC 75                 ..u
         lda     $73                             ; 80F1 A5 73                    .s
-        beq     BattlePresentation_Branch_80FA  ; 80F3 F0 05                    ..
+        beq     BattleAi_Branch_80FA            ; 80F3 F0 05                    ..
         lda     #$FF                            ; 80F5 A9 FF                    ..
         sta     $75DC                           ; 80F7 8D DC 75                 ..u
-BattlePresentation_Branch_80FA:
+BattleAi_Branch_80FA:
         ldx     #$00                            ; 80FA A2 00                    ..
         stx     $75D4                           ; 80FC 8E D4 75                 ..u
         stx     $75D5                           ; 80FF 8E D5 75                 ..u
@@ -151,8 +151,8 @@ BattlePresentation_Branch_80FA:
         brk                                     ; 8118 00                       .
         db   $06,$1F                         ; 8119 06 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_809F  ; 811B B0 82                    ..
-        jsr     AccumulateBattlePresentationSlots; 811D 20 11 AE                 ..
+        bcs     BattleAi_Branch_809F            ; 811B B0 82                    ..
+        jsr     AccumulateBattleAiSlots         ; 811D 20 11 AE                  ..
         brk                                     ; 8120 00                       .
         db   $62,$23,$41                     ; 8121 62 23 41                 b#A
 ; ----------------------------------------------------------------------------
@@ -164,46 +164,46 @@ BattlePresentation_Branch_80FA:
         sta     $75E9                           ; 812C 8D E9 75                 ..u
         lda     #$00                            ; 812F A9 00                    ..
         ldx     #$03                            ; 8131 A2 03                    ..
-BattlePresentation_Branch_8133:
+BattleAi_Branch_8133:
         sta     $7591,x                         ; 8133 9D 91 75                 ..u
         sta     $7595,x                         ; 8136 9D 95 75                 ..u
         dex                                     ; 8139 CA                       .
-        bpl     BattlePresentation_Branch_8133  ; 813A 10 F7                    ..
+        bpl     BattleAi_Branch_8133            ; 813A 10 F7                    ..
         brk                                     ; 813C 00                       .
         db   $62,$23,$40                     ; 813D 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
         sta     $8A                             ; 8140 85 8A                    ..
         ldx     #$00                            ; 8142 A2 00                    ..
-BattlePresentation_Branch_8144:
+BattleAi_Branch_8144:
         brk                                     ; 8144 00                       .
         db   $46,$93,$07                     ; 8145 46 93 07                 F..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_816F  ; 8148 90 25                    .%
+        bcc     BattleAi_Branch_816F            ; 8148 90 25                    .%
         lda     #$10                            ; 814A A9 10                    ..
         sta     $7591,x                         ; 814C 9D 91 75                 ..u
         sta     $7595,x                         ; 814F 9D 95 75                 ..u
         brk                                     ; 8152 00                       .
         db   $46,$93,$16                     ; 8153 46 93 16                 F..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_815E  ; 8156 B0 06                    ..
+        bcs     BattleAi_Branch_815E            ; 8156 B0 06                    ..
         brk                                     ; 8158 00                       .
         db   $46,$93,$17                     ; 8159 46 93 17                 F..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_8163  ; 815C 90 05                    ..
-BattlePresentation_Branch_815E:
+        bcc     BattleAi_Branch_8163            ; 815C 90 05                    ..
+BattleAi_Branch_815E:
         lda     #$00                            ; 815E A9 00                    ..
         sta     $7595,x                         ; 8160 9D 95 75                 ..u
-BattlePresentation_Branch_8163:
+BattleAi_Branch_8163:
         brk                                     ; 8163 00                       .
         db   $46,$93,$19                     ; 8164 46 93 19                 F..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_816F  ; 8167 90 06                    ..
+        bcc     BattleAi_Branch_816F            ; 8167 90 06                    ..
         lsr     $7591,x                         ; 8169 5E 91 75                 ^.u
         lsr     $7595,x                         ; 816C 5E 95 75                 ^.u
-BattlePresentation_Branch_816F:
+BattleAi_Branch_816F:
         inx                                     ; 816F E8                       .
         cpx     $8A                             ; 8170 E4 8A                    ..
-        bcc     BattlePresentation_Branch_8144  ; 8172 90 D0                    ..
+        bcc     BattleAi_Branch_8144            ; 8172 90 D0                    ..
         sec                                     ; 8174 38                       8
         rts                                     ; 8175 60                       `
 ; ----------------------------------------------------------------------------
@@ -233,9 +233,9 @@ ScalePointerWordByNibble:
         ldx     #$94                            ; 8198 A2 94                    ..
 ScalePointerWordByNibbleBody:
         cmp     #$00                            ; 819A C9 00                    ..
-        beq     BattlePresentation_Branch_81BE  ; 819C F0 20                    .
+        beq     BattleAi_Branch_81BE            ; 819C F0 20                    .
         cmp     #$10                            ; 819E C9 10                    ..
-        beq     BattlePresentation_Branch_81BD  ; 81A0 F0 1B                    ..
+        beq     BattleAi_Branch_81BD            ; 81A0 F0 1B                    ..
         jsr     MultiplyIndexedWordByA          ; 81A2 20 30 83                  0.
 ShiftScaledPointerWordRightBy4:
         lsr     $19                             ; 81A5 46 19                    F.
@@ -250,10 +250,10 @@ ShiftScaledPointerWordRightBy4:
         lsr     $19                             ; 81B7 46 19                    F.
         ror     $01,x                           ; 81B9 76 01                    v.
         ror     $00,x                         ; 81BB 76 00                    v.
-BattlePresentation_Branch_81BD:
+BattleAi_Branch_81BD:
         rts                                     ; 81BD 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_81BE:
+BattleAi_Branch_81BE:
         lda     #$00                            ; 81BE A9 00                    ..
         sta     $00,x                         ; 81C0 95 00                    ..
         sta     $01,x                           ; 81C2 95 01                    ..
@@ -262,77 +262,77 @@ BattlePresentation_Branch_81BE:
 ScaleBattlePointerWordBySmallPowerOfTwo:
         jsr     LoadBattlePointerBase           ; 81C5 20 31 82                  1.
         cmp     #$01                            ; 81C8 C9 01                    ..
-        beq     BattlePresentation_Branch_81DF  ; 81CA F0 13                    ..
+        beq     BattleAi_Branch_81DF            ; 81CA F0 13                    ..
         cmp     #$02                            ; 81CC C9 02                    ..
-        beq     BattlePresentation_Branch_81DB  ; 81CE F0 0B                    ..
+        beq     BattleAi_Branch_81DB            ; 81CE F0 0B                    ..
         cmp     #$04                            ; 81D0 C9 04                    ..
-        beq     BattlePresentation_Branch_81D7  ; 81D2 F0 03                    ..
+        beq     BattleAi_Branch_81D7            ; 81D2 F0 03                    ..
         jmp     MultiplyPointerWord             ; 81D4 4C 27 C8                 L'.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_81D7:
+BattleAi_Branch_81D7:
         asl     $94                             ; 81D7 06 94                    ..
         rol     $95                             ; 81D9 26 95                    &.
-BattlePresentation_Branch_81DB:
+BattleAi_Branch_81DB:
         asl     $94                             ; 81DB 06 94                    ..
         rol     $95                             ; 81DD 26 95                    &.
-BattlePresentation_Branch_81DF:
+BattleAi_Branch_81DF:
         rts                                     ; 81DF 60                       `
 ; ----------------------------------------------------------------------------
 DivideBattlePointerWordBySmallPowerOfTwo:
         jsr     LoadBattlePointerBase           ; 81E0 20 31 82                  1.
         cmp     #$01                            ; 81E3 C9 01                    ..
-        beq     BattlePresentation_Branch_81FA  ; 81E5 F0 13                    ..
+        beq     BattleAi_Branch_81FA            ; 81E5 F0 13                    ..
         cmp     #$02                            ; 81E7 C9 02                    ..
-        beq     BattlePresentation_Branch_81F6  ; 81E9 F0 0B                    ..
+        beq     BattleAi_Branch_81F6            ; 81E9 F0 0B                    ..
         cmp     #$04                            ; 81EB C9 04                    ..
-        beq     BattlePresentation_Branch_81F2  ; 81ED F0 03                    ..
+        beq     BattleAi_Branch_81F2            ; 81ED F0 03                    ..
         jmp     DividePointerWord               ; 81EF 4C 51 C8                 LQ.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_81F2:
+BattleAi_Branch_81F2:
         lsr     $95                             ; 81F2 46 95                    F.
         ror     $94                             ; 81F4 66 94                    f.
-BattlePresentation_Branch_81F6:
+BattleAi_Branch_81F6:
         lsr     $95                             ; 81F6 46 95                    F.
         ror     $94                             ; 81F8 66 94                    f.
-BattlePresentation_Branch_81FA:
+BattleAi_Branch_81FA:
         rts                                     ; 81FA 60                       `
 ; ----------------------------------------------------------------------------
 ScaleIndexedBattleWordBySmallPowerOfTwo:
         jsr     LoadBattleSelectionByte         ; 81FB 20 33 82                  3.
         cmp     #$01                            ; 81FE C9 01                    ..
-        beq     BattlePresentation_Branch_8215  ; 8200 F0 13                    ..
+        beq     BattleAi_Branch_8215            ; 8200 F0 13                    ..
         cmp     #$02                            ; 8202 C9 02                    ..
-        beq     BattlePresentation_Branch_8211  ; 8204 F0 0B                    ..
+        beq     BattleAi_Branch_8211            ; 8204 F0 0B                    ..
         cmp     #$04                            ; 8206 C9 04                    ..
-        beq     BattlePresentation_Branch_820D  ; 8208 F0 03                    ..
+        beq     BattleAi_Branch_820D            ; 8208 F0 03                    ..
         jmp     MultiplyPointerWord             ; 820A 4C 27 C8                 L'.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_820D:
+BattleAi_Branch_820D:
         asl     $00,x                         ; 820D 16 00                    ..
         rol     $01,x                           ; 820F 36 01                    6.
-BattlePresentation_Branch_8211:
+BattleAi_Branch_8211:
         asl     $00,x                         ; 8211 16 00                    ..
         rol     $01,x                           ; 8213 36 01                    6.
-BattlePresentation_Branch_8215:
+BattleAi_Branch_8215:
         rts                                     ; 8215 60                       `
 ; ----------------------------------------------------------------------------
 DivideIndexedBattleWordBySmallPowerOfTwo:
         jsr     LoadBattleSelectionByte         ; 8216 20 33 82                  3.
         cmp     #$01                            ; 8219 C9 01                    ..
-        beq     BattlePresentation_Branch_8230  ; 821B F0 13                    ..
+        beq     BattleAi_Branch_8230            ; 821B F0 13                    ..
         cmp     #$02                            ; 821D C9 02                    ..
-        beq     BattlePresentation_Branch_822C  ; 821F F0 0B                    ..
+        beq     BattleAi_Branch_822C            ; 821F F0 0B                    ..
         cmp     #$04                            ; 8221 C9 04                    ..
-        beq     BattlePresentation_Branch_8228  ; 8223 F0 03                    ..
+        beq     BattleAi_Branch_8228            ; 8223 F0 03                    ..
         jmp     DividePointerWord               ; 8225 4C 51 C8                 LQ.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8228:
+BattleAi_Branch_8228:
         lsr     $01,x                           ; 8228 56 01                    V.
         ror     $00,x                         ; 822A 76 00                    v.
-BattlePresentation_Branch_822C:
+BattleAi_Branch_822C:
         lsr     $01,x                           ; 822C 56 01                    V.
         ror     $00,x                         ; 822E 76 00                    v.
-BattlePresentation_Branch_8230:
+BattleAi_Branch_8230:
         rts                                     ; 8230 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattlePointerBase:
@@ -345,120 +345,120 @@ LoadScaledBattleRecordOffset:
         lda     $759A                           ; 8236 AD 9A 75                 ..u
         ldx     #$94                            ; 8239 A2 94                    ..
         cmp     #$FF                            ; 823B C9 FF                    ..
-        beq     BattlePresentation_Branch_824A  ; 823D F0 0B                    ..
+        beq     BattleAi_Branch_824A            ; 823D F0 0B                    ..
         jsr     MultiplyIndexedWordByA          ; 823F 20 30 83                  0.
         lda     $95                             ; 8242 A5 95                    ..
         sta     $94                             ; 8244 85 94                    ..
         lda     $19                             ; 8246 A5 19                    ..
         sta     $95                             ; 8248 85 95                    ..
-BattlePresentation_Branch_824A:
+BattleAi_Branch_824A:
         rts                                     ; 824A 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75AD:
+AddScaledOffsetToBattleAiScoreA:
         jsr     LoadScaledBattleRecordOffset    ; 824B 20 36 82                  6.
         lda     $94                             ; 824E A5 94                    ..
         clc                                     ; 8250 18                       .
-        adc     $75AD                           ; 8251 6D AD 75                 m.u
-        sta     $75AD                           ; 8254 8D AD 75                 ..u
+        adc     BattleAiScoreA                  ; 8251 6D AD 75                 m.u
+        sta     BattleAiScoreA                  ; 8254 8D AD 75                 ..u
         lda     $95                             ; 8257 A5 95                    ..
         adc     $75AE                           ; 8259 6D AE 75                 m.u
         sta     $75AE                           ; 825C 8D AE 75                 ..u
         rts                                     ; 825F 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75AF:
+AddScaledOffsetToBattleAiScoreB:
         jsr     LoadScaledBattleRecordOffset    ; 8260 20 36 82                  6.
         lda     $94                             ; 8263 A5 94                    ..
         clc                                     ; 8265 18                       .
-        adc     $75AF                           ; 8266 6D AF 75                 m.u
-        sta     $75AF                           ; 8269 8D AF 75                 ..u
+        adc     BattleAiScoreB                  ; 8266 6D AF 75                 m.u
+        sta     BattleAiScoreB                  ; 8269 8D AF 75                 ..u
         lda     $95                             ; 826C A5 95                    ..
         adc     $75B0                           ; 826E 6D B0 75                 m.u
         sta     $75B0                           ; 8271 8D B0 75                 ..u
         rts                                     ; 8274 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75B5:
+AddScaledOffsetToBattleAiScoreE:
         jsr     LoadScaledBattleRecordOffset    ; 8275 20 36 82                  6.
         lda     $94                             ; 8278 A5 94                    ..
         clc                                     ; 827A 18                       .
-        adc     $75B5                           ; 827B 6D B5 75                 m.u
-        sta     $75B5                           ; 827E 8D B5 75                 ..u
+        adc     BattleAiScoreE                  ; 827B 6D B5 75                 m.u
+        sta     BattleAiScoreE                  ; 827E 8D B5 75                 ..u
         lda     $95                             ; 8281 A5 95                    ..
         adc     $75B6                           ; 8283 6D B6 75                 m.u
         sta     $75B6                           ; 8286 8D B6 75                 ..u
         rts                                     ; 8289 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75B7:
+AddScaledOffsetToBattleAiScoreF:
         jsr     LoadScaledBattleRecordOffset    ; 828A 20 36 82                  6.
         lda     $94                             ; 828D A5 94                    ..
         clc                                     ; 828F 18                       .
-        adc     $75B7                           ; 8290 6D B7 75                 m.u
-        sta     $75B7                           ; 8293 8D B7 75                 ..u
+        adc     BattleAiScoreF                  ; 8290 6D B7 75                 m.u
+        sta     BattleAiScoreF                  ; 8293 8D B7 75                 ..u
         lda     $95                             ; 8296 A5 95                    ..
         adc     $75B8                           ; 8298 6D B8 75                 m.u
         sta     $75B8                           ; 829B 8D B8 75                 ..u
         rts                                     ; 829E 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75B9:
+AddScaledOffsetToBattleAiScoreG:
         jsr     LoadScaledBattleRecordOffset    ; 829F 20 36 82                  6.
         lda     $94                             ; 82A2 A5 94                    ..
         clc                                     ; 82A4 18                       .
-        adc     $75B9                           ; 82A5 6D B9 75                 m.u
-        sta     $75B9                           ; 82A8 8D B9 75                 ..u
+        adc     BattleAiScoreG                  ; 82A5 6D B9 75                 m.u
+        sta     BattleAiScoreG                  ; 82A8 8D B9 75                 ..u
         lda     $95                             ; 82AB A5 95                    ..
         adc     $75BA                           ; 82AD 6D BA 75                 m.u
         sta     $75BA                           ; 82B0 8D BA 75                 ..u
         rts                                     ; 82B3 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75BB:
+AddScaledOffsetToBattleAiScoreH:
         jsr     LoadScaledBattleRecordOffset    ; 82B4 20 36 82                  6.
         lda     $94                             ; 82B7 A5 94                    ..
         clc                                     ; 82B9 18                       .
-        adc     $75BB                           ; 82BA 6D BB 75                 m.u
-        sta     $75BB                           ; 82BD 8D BB 75                 ..u
+        adc     BattleAiScoreH                  ; 82BA 6D BB 75                 m.u
+        sta     BattleAiScoreH                  ; 82BD 8D BB 75                 ..u
         lda     $95                             ; 82C0 A5 95                    ..
         adc     $75BC                           ; 82C2 6D BC 75                 m.u
         sta     $75BC                           ; 82C5 8D BC 75                 ..u
         rts                                     ; 82C8 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75B1:
+AddScaledOffsetToBattleAiScoreC:
         jsr     LoadScaledBattleRecordOffset    ; 82C9 20 36 82                  6.
         lda     $94                             ; 82CC A5 94                    ..
         clc                                     ; 82CE 18                       .
-        adc     $75B1                           ; 82CF 6D B1 75                 m.u
-        sta     $75B1                           ; 82D2 8D B1 75                 ..u
+        adc     BattleAiScoreC                  ; 82CF 6D B1 75                 m.u
+        sta     BattleAiScoreC                  ; 82D2 8D B1 75                 ..u
         lda     $95                             ; 82D5 A5 95                    ..
         adc     $75B2                           ; 82D7 6D B2 75                 m.u
         sta     $75B2                           ; 82DA 8D B2 75                 ..u
         rts                                     ; 82DD 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75B3:
+AddScaledOffsetToBattleAiScoreD:
         jsr     LoadScaledBattleRecordOffset    ; 82DE 20 36 82                  6.
         lda     $94                             ; 82E1 A5 94                    ..
         clc                                     ; 82E3 18                       .
-        adc     $75B3                           ; 82E4 6D B3 75                 m.u
-        sta     $75B3                           ; 82E7 8D B3 75                 ..u
+        adc     BattleAiScoreD                  ; 82E4 6D B3 75                 m.u
+        sta     BattleAiScoreD                  ; 82E7 8D B3 75                 ..u
         lda     $95                             ; 82EA A5 95                    ..
         adc     $75B4                           ; 82EC 6D B4 75                 m.u
         sta     $75B4                           ; 82EF 8D B4 75                 ..u
         rts                                     ; 82F2 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75BD:
+AddScaledOffsetToBattleAiScoreI:
         jsr     LoadScaledBattleRecordOffset    ; 82F3 20 36 82                  6.
         lda     $94                             ; 82F6 A5 94                    ..
         clc                                     ; 82F8 18                       .
-        adc     $75BD                           ; 82F9 6D BD 75                 m.u
-        sta     $75BD                           ; 82FC 8D BD 75                 ..u
+        adc     BattleAiScoreI                  ; 82F9 6D BD 75                 m.u
+        sta     BattleAiScoreI                  ; 82FC 8D BD 75                 ..u
         lda     $95                             ; 82FF A5 95                    ..
         adc     $75BE                           ; 8301 6D BE 75                 m.u
         sta     $75BE                           ; 8304 8D BE 75                 ..u
         rts                                     ; 8307 60                       `
 ; ----------------------------------------------------------------------------
-AddScaledOffsetToAccumulator75BF:
+AddScaledOffsetToBattleAiScoreJ:
         jsr     LoadScaledBattleRecordOffset    ; 8308 20 36 82                  6.
         lda     $94                             ; 830B A5 94                    ..
         clc                                     ; 830D 18                       .
-        adc     $75BF                           ; 830E 6D BF 75                 m.u
-        sta     $75BF                           ; 8311 8D BF 75                 ..u
+        adc     BattleAiScoreJ                  ; 830E 6D BF 75                 m.u
+        sta     BattleAiScoreJ                  ; 8311 8D BF 75                 ..u
         lda     $95                             ; 8314 A5 95                    ..
         adc     $75C0                           ; 8316 6D C0 75                 m.u
         sta     $75C0                           ; 8319 8D C0 75                 ..u
@@ -485,9 +485,9 @@ MultiplyIndexedWordByA:
         sta     $18                             ; 8336 85 18                    ..
         sta     $19                             ; 8338 85 19                    ..
         sta     $1A                             ; 833A 85 1A                    ..
-BattlePresentation_Branch_833C:
+BattleAi_Branch_833C:
         lsr     $16                             ; 833C 46 16                    F.
-        bcc     BattlePresentation_Branch_8353  ; 833E 90 13                    ..
+        bcc     BattleAi_Branch_8353            ; 833E 90 13                    ..
         lda     $00,x                         ; 8340 B5 00                    ..
         clc                                     ; 8342 18                       .
         adc     $17                             ; 8343 65 17                    e.
@@ -498,12 +498,12 @@ BattlePresentation_Branch_833C:
         lda     $19                             ; 834D A5 19                    ..
         adc     $1A                             ; 834F 65 1A                    e.
         sta     $19                             ; 8351 85 19                    ..
-BattlePresentation_Branch_8353:
+BattleAi_Branch_8353:
         asl     $00,x                         ; 8353 16 00                    ..
         rol     $01,x                           ; 8355 36 01                    6.
         rol     $1A                             ; 8357 26 1A                    &.
         lda     $16                             ; 8359 A5 16                    ..
-        bne     BattlePresentation_Branch_833C  ; 835B D0 DF                    ..
+        bne     BattleAi_Branch_833C            ; 835B D0 DF                    ..
         lda     $17                             ; 835D A5 17                    ..
         sta     $00,x                         ; 835F 95 00                    ..
         lda     $18                             ; 8361 A5 18                    ..
@@ -518,9 +518,9 @@ MultiplyIndexedLongByA:
         sta     $19                             ; 836E 85 19                    ..
         sta     $1A                             ; 8370 85 1A                    ..
         sta     $1B                             ; 8372 85 1B                    ..
-BattlePresentation_Branch_8374:
+BattleAi_Branch_8374:
         lsr     $16                             ; 8374 46 16                    F.
-        bcc     BattlePresentation_Branch_8391  ; 8376 90 19                    ..
+        bcc     BattleAi_Branch_8391            ; 8376 90 19                    ..
         lda     $00,x                         ; 8378 B5 00                    ..
         clc                                     ; 837A 18                       .
         adc     $17                             ; 837B 65 17                    e.
@@ -534,13 +534,13 @@ BattlePresentation_Branch_8374:
         lda     $1A                             ; 838B A5 1A                    ..
         adc     $1B                             ; 838D 65 1B                    e.
         sta     $1A                             ; 838F 85 1A                    ..
-BattlePresentation_Branch_8391:
+BattleAi_Branch_8391:
         asl     $00,x                         ; 8391 16 00                    ..
         rol     $01,x                           ; 8393 36 01                    6.
         rol     $02,x                         ; 8395 36 02                    6.
         rol     $1B                             ; 8397 26 1B                    &.
         lda     $16                             ; 8399 A5 16                    ..
-        bne     BattlePresentation_Branch_8374  ; 839B D0 D7                    ..
+        bne     BattleAi_Branch_8374            ; 839B D0 D7                    ..
         lda     $17                             ; 839D A5 17                    ..
         sta     $00,x                         ; 839F 95 00                    ..
         lda     $18                             ; 83A1 A5 18                    ..
@@ -561,7 +561,7 @@ DivideIndexedWordByWord:
         sta     $6E16                           ; 83BC 8D 16 6E                 ..n
         sta     $6E11                           ; 83BF 8D 11 6E                 ..n
         sta     $6E12                           ; 83C2 8D 12 6E                 ..n
-BattlePresentation_Branch_83C5:
+BattleAi_Branch_83C5:
         asl     $00,x                         ; 83C5 16 00                    ..
         rol     $01,x                           ; 83C7 36 01                    6.
         rol     $6E11                           ; 83C9 2E 11 6E                 ..n
@@ -573,18 +573,18 @@ BattlePresentation_Branch_83C5:
         pha                                     ; 83D8 48                       H
         lda     $6E12                           ; 83D9 AD 12 6E                 ..n
         sbc     $6E15                           ; 83DC ED 15 6E                 ..n
-        bcs     BattlePresentation_Branch_83E7  ; 83DF B0 06                    ..
+        bcs     BattleAi_Branch_83E7            ; 83DF B0 06                    ..
         pla                                     ; 83E1 68                       h
         dec     $00,x                         ; 83E2 D6 00                    ..
-        jmp     BattlePresentation_Branch_83EE  ; 83E4 4C EE 83                 L..
+        jmp     BattleAi_Branch_83EE            ; 83E4 4C EE 83                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_83E7:
+BattleAi_Branch_83E7:
         sta     $6E12                           ; 83E7 8D 12 6E                 ..n
         pla                                     ; 83EA 68                       h
         sta     $6E11                           ; 83EB 8D 11 6E                 ..n
-BattlePresentation_Branch_83EE:
+BattleAi_Branch_83EE:
         dey                                     ; 83EE 88                       .
-        bne     BattlePresentation_Branch_83C5  ; 83EF D0 D4                    ..
+        bne     BattleAi_Branch_83C5            ; 83EF D0 D4                    ..
         pla                                     ; 83F1 68                       h
         tay                                     ; 83F2 A8                       .
         rts                                     ; 83F3 60                       `
@@ -604,7 +604,7 @@ DivideIndexedLongByWordWithHighByte:
         sta     $6E11                           ; 840B 8D 11 6E                 ..n
         sta     $6E12                           ; 840E 8D 12 6E                 ..n
         sta     $6E13                           ; 8411 8D 13 6E                 ..n
-BattlePresentation_Branch_8414:
+BattleAi_Branch_8414:
         asl     $00,x                         ; 8414 16 00                    ..
         rol     $01,x                           ; 8416 36 01                    6.
         rol     $02,x                         ; 8418 36 02                    6.
@@ -621,21 +621,21 @@ BattlePresentation_Branch_8414:
         pha                                     ; 8433 48                       H
         lda     $6E13                           ; 8434 AD 13 6E                 ..n
         sbc     $6E16                           ; 8437 ED 16 6E                 ..n
-        bcs     BattlePresentation_Branch_8443  ; 843A B0 07                    ..
+        bcs     BattleAi_Branch_8443            ; 843A B0 07                    ..
         pla                                     ; 843C 68                       h
         pla                                     ; 843D 68                       h
         dec     $00,x                         ; 843E D6 00                    ..
-        jmp     BattlePresentation_Branch_844E  ; 8440 4C 4E 84                 LN.
+        jmp     BattleAi_Branch_844E            ; 8440 4C 4E 84                 LN.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8443:
+BattleAi_Branch_8443:
         sta     $6E13                           ; 8443 8D 13 6E                 ..n
         pla                                     ; 8446 68                       h
         sta     $6E12                           ; 8447 8D 12 6E                 ..n
         pla                                     ; 844A 68                       h
         sta     $6E11                           ; 844B 8D 11 6E                 ..n
-BattlePresentation_Branch_844E:
+BattleAi_Branch_844E:
         dey                                     ; 844E 88                       .
-        bne     BattlePresentation_Branch_8414  ; 844F D0 C3                    ..
+        bne     BattleAi_Branch_8414            ; 844F D0 C3                    ..
         pla                                     ; 8451 68                       h
         tay                                     ; 8452 A8                       .
         rts                                     ; 8453 60                       `
@@ -644,7 +644,7 @@ DivideIndexedLongByWordAtOffset2:
         lda     $0002,y                         ; 8454 B9 02 00                 ...
         jmp     DivideIndexedLongByWordWithHighByte; 8457 4C F6 83              L..
 ; ----------------------------------------------------------------------------
-InitializeBattlePresentationState:
+InitializeBattleAiState:
         brk                                     ; 845A 00                       .
         db   $12,$8F                         ; 845B 12 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -662,18 +662,18 @@ InitializeBattlePresentationState:
         jsr     InitializeBattleActionBitfields ; 8473 20 17 85                  ..
         lda     #$00                            ; 8476 A9 00                    ..
         sta     $93                             ; 8478 85 93                    ..
-BattlePresentation_Branch_847A:
+BattleAi_Branch_847A:
         jsr     SelectBattleActions             ; 847A 20 A8 84                  ..
         inc     $93                             ; 847D E6 93                    ..
         lda     $93                             ; 847F A5 93                    ..
         cmp     #$08                            ; 8481 C9 08                    ..
-        bcc     BattlePresentation_Branch_847A  ; 8483 90 F5                    ..
-        jmp     BattlePresentation_Branch_8F26  ; 8485 4C 26 8F                 L&.
+        bcc     BattleAi_Branch_847A            ; 8483 90 F5                    ..
+        jmp     BattleAi_Branch_8F26            ; 8485 4C 26 8F                 L&.
 ; ----------------------------------------------------------------------------
 ClearBattleRecordBuffers:
         ldx     #$39                            ; 8488 A2 39                    .9
         lda     #$00                            ; 848A A9 00                    ..
-BattlePresentation_Branch_848C:
+BattleAi_Branch_848C:
         sta     $7600,x                         ; 848C 9D 00 76                 ..v
         sta     $763A,x                         ; 848F 9D 3A 76                 .:v
         sta     $7674,x                         ; 8492 9D 74 76                 .tv
@@ -683,7 +683,7 @@ BattlePresentation_Branch_848C:
         sta     $775C,x                         ; 849E 9D 5C 77                 .\w
         sta     $7796,x                         ; 84A1 9D 96 77                 ..w
         dex                                     ; 84A4 CA                       .
-        bpl     BattlePresentation_Branch_848C  ; 84A5 10 E5                    ..
+        bpl     BattleAi_Branch_848C            ; 84A5 10 E5                    ..
         rts                                     ; 84A7 60                       `
 ; ----------------------------------------------------------------------------
 SelectBattleActions:
@@ -692,9 +692,9 @@ SelectBattleActions:
         brk                                     ; 84AD 00                       .
         db   $29,$C3,$0C                     ; 84AE 29 C3 0C                 )..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_84E3  ; 84B1 B0 30                    .0
+        bcs     BattleAi_Branch_84E3            ; 84B1 B0 30                    .0
         ldx     #$05                            ; 84B3 A2 05                    ..
-BattlePresentation_Branch_84B5:
+BattleAi_Branch_84B5:
         lda     $93                             ; 84B5 A5 93                    ..
         asl     a                               ; 84B7 0A                       .
         sta     $00                           ; 84B8 85 00                    ..
@@ -705,11 +705,11 @@ BattlePresentation_Branch_84B5:
         adc     $00                           ; 84C0 65 00                    e.
         tay                                     ; 84C2 A8                       .
         lda     BattleActionWeights,y           ; 84C3 B9 C2 6D                 ..m
-        beq     BattlePresentation_Branch_84DD  ; 84C6 F0 15                    ..
+        beq     BattleAi_Branch_84DD            ; 84C6 F0 15                    ..
         sta     $759A                           ; 84C8 8D 9A 75                 ..u
         lda     BattleActionIds,y               ; 84CB B9 8C 6D                 ..m
         cmp     #$FF                            ; 84CE C9 FF                    ..
-        beq     BattlePresentation_Branch_84DD  ; 84D0 F0 0B                    ..
+        beq     BattleAi_Branch_84DD            ; 84D0 F0 0B                    ..
         sta     $7599                           ; 84D2 8D 99 75                 ..u
         tay                                     ; 84D5 A8                       .
         txa                                     ; 84D6 8A                       .
@@ -717,14 +717,14 @@ BattlePresentation_Branch_84B5:
         jsr     DispatchBattleActionHandler     ; 84D8 20 E9 84                  ..
         pla                                     ; 84DB 68                       h
         tax                                     ; 84DC AA                       .
-BattlePresentation_Branch_84DD:
+BattleAi_Branch_84DD:
         dex                                     ; 84DD CA                       .
-        bpl     BattlePresentation_Branch_84B5  ; 84DE 10 D5                    ..
-        jmp     BattlePresentation_Branch_8D3C  ; 84E0 4C 3C 8D                 L<.
+        bpl     BattleAi_Branch_84B5            ; 84DE 10 D5                    ..
+        jmp     BattleAi_Branch_8D3C            ; 84E0 4C 3C 8D                 L<.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_84E3:
+BattleAi_Branch_84E3:
         jsr     LoadBattleRecordMetadata        ; 84E3 20 9B 85                  ..
-        jmp     BattlePresentation_Branch_8D3C  ; 84E6 4C 3C 8D                 L<.
+        jmp     BattleAi_Branch_8D3C            ; 84E6 4C 3C 8D                 L<.
 ; ----------------------------------------------------------------------------
 DispatchBattleActionHandler:
         lda     Bank13_BattleActionHandlerBasePointer; 84E9 AD 99 85            ...
@@ -748,36 +748,36 @@ DispatchBattleActionHandler:
 ClearBattleActionVectors:
         lda     #$00                            ; 850C A9 00                    ..
         ldx     #$2D                            ; 850E A2 2D                    .-
-BattlePresentation_Branch_8510:
+BattleAi_Branch_8510:
         sta     $75A3,x                         ; 8510 9D A3 75                 ..u
         dex                                     ; 8513 CA                       .
-        bpl     BattlePresentation_Branch_8510  ; 8514 10 FA                    ..
+        bpl     BattleAi_Branch_8510            ; 8514 10 FA                    ..
         rts                                     ; 8516 60                       `
 ; ----------------------------------------------------------------------------
 InitializeBattleActionBitfields:
         ldx     #$07                            ; 8517 A2 07                    ..
         lda     #$10                            ; 8519 A9 10                    ..
-BattlePresentation_Branch_851B:
+BattleAi_Branch_851B:
         sta     $7579,x                         ; 851B 9D 79 75                 .yu
         sta     $7581,x                         ; 851E 9D 81 75                 ..u
         sta     $7589,x                         ; 8521 9D 89 75                 ..u
         dex                                     ; 8524 CA                       .
-        bpl     BattlePresentation_Branch_851B  ; 8525 10 F4                    ..
+        bpl     BattleAi_Branch_851B            ; 8525 10 F4                    ..
         lda     $7578                           ; 8527 AD 78 75                 .xu
         sta     $00                           ; 852A 85 00                    ..
         ldx     #$00                            ; 852C A2 00                    ..
-BattlePresentation_Branch_852E:
+BattleAi_Branch_852E:
         lsr     $00                           ; 852E 46 00                    F.
-        bcc     BattlePresentation_Branch_8586  ; 8530 90 54                    .T
+        bcc     BattleAi_Branch_8586            ; 8530 90 54                    .T
         lda     #$20                            ; 8532 A9 20                    .
         jsr     TestBattleRecordFlag06          ; 8534 20 F2 85                  ..
-        bne     BattlePresentation_Branch_857F  ; 8537 D0 46                    .F
+        bne     BattleAi_Branch_857F            ; 8537 D0 46                    .F
         lda     #$04                            ; 8539 A9 04                    ..
         jsr     TestBattleRecordFlag05          ; 853B 20 EE 85                  ..
-        bne     BattlePresentation_Branch_857F  ; 853E D0 3F                    .?
+        bne     BattleAi_Branch_857F            ; 853E D0 3F                    .?
         lda     #$02                            ; 8540 A9 02                    ..
         jsr     TestBattleRecordFlag07          ; 8542 20 F6 85                  ..
-        bne     BattlePresentation_Branch_857F  ; 8545 D0 38                    .8
+        bne     BattleAi_Branch_857F            ; 8545 D0 38                    .8
         lda     #$01                            ; 8547 A9 01                    ..
         jsr     TestBattleRecordFlag05          ; 8549 20 EE 85                  ..
         jsr     ClearBattleActionBit            ; 854C 20 8D 85                  ..
@@ -786,42 +786,42 @@ BattlePresentation_Branch_852E:
         jsr     SetBattleActionBit              ; 8554 20 93 85                  ..
         lda     #$08                            ; 8557 A9 08                    ..
         jsr     TestBattleRecordFlag05          ; 8559 20 EE 85                  ..
-        beq     BattlePresentation_Branch_8563  ; 855C F0 05                    ..
+        beq     BattleAi_Branch_8563            ; 855C F0 05                    ..
         lda     #$00                            ; 855E A9 00                    ..
         sta     $7581,x                         ; 8560 9D 81 75                 ..u
-BattlePresentation_Branch_8563:
+BattleAi_Branch_8563:
         lda     #$10                            ; 8563 A9 10                    ..
         jsr     TestBattleRecordFlag05          ; 8565 20 EE 85                  ..
-        beq     BattlePresentation_Branch_856F  ; 8568 F0 05                    ..
+        beq     BattleAi_Branch_856F            ; 8568 F0 05                    ..
         lda     #$06                            ; 856A A9 06                    ..
         sta     $7589,x                         ; 856C 9D 89 75                 ..u
-BattlePresentation_Branch_856F:
+BattleAi_Branch_856F:
         lda     #$20                            ; 856F A9 20                    .
         jsr     TestBattleRecordFlag05          ; 8571 20 EE 85                  ..
-        beq     BattlePresentation_Branch_8579  ; 8574 F0 03                    ..
+        beq     BattleAi_Branch_8579            ; 8574 F0 03                    ..
         asl     $7589,x                         ; 8576 1E 89 75                 ..u
-BattlePresentation_Branch_8579:
+BattleAi_Branch_8579:
         inx                                     ; 8579 E8                       .
         cpx     #$08                            ; 857A E0 08                    ..
-        bcc     BattlePresentation_Branch_852E  ; 857C 90 B0                    ..
+        bcc     BattleAi_Branch_852E            ; 857C 90 B0                    ..
         rts                                     ; 857E 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_857F:
+BattleAi_Branch_857F:
         lda     #$01                            ; 857F A9 01                    ..
         sta     $7579,x                         ; 8581 9D 79 75                 .yu
-        bne     BattlePresentation_Branch_8579  ; 8584 D0 F3                    ..
-BattlePresentation_Branch_8586:
+        bne     BattleAi_Branch_8579            ; 8584 D0 F3                    ..
+BattleAi_Branch_8586:
         lda     #$00                            ; 8586 A9 00                    ..
         sta     $7579,x                         ; 8588 9D 79 75                 .yu
-        beq     BattlePresentation_Branch_8579  ; 858B F0 EC                    ..
+        beq     BattleAi_Branch_8579            ; 858B F0 EC                    ..
 ClearBattleActionBit:
-        beq     BattlePresentation_Branch_8592  ; 858D F0 03                    ..
+        beq     BattleAi_Branch_8592            ; 858D F0 03                    ..
         lsr     $7579,x                         ; 858F 5E 79 75                 ^yu
-BattlePresentation_Branch_8592:
+BattleAi_Branch_8592:
         rts                                     ; 8592 60                       `
 ; ----------------------------------------------------------------------------
 SetBattleActionBit:
-        beq     BattlePresentation_Branch_8592  ; 8593 F0 FD                    ..
+        beq     BattleAi_Branch_8592            ; 8593 F0 FD                    ..
         asl     $7579,x                         ; 8595 1E 79 75                 .yu
         rts                                     ; 8598 60                       `
 ; ----------------------------------------------------------------------------
@@ -833,30 +833,30 @@ LoadBattleRecordMetadata:
         lda     #$FF                            ; 859B A9 FF                    ..
         sta     $759A                           ; 859D 8D 9A 75                 ..u
         ldx     $93                             ; 85A0 A6 93                    ..
-        jsr     GetBattleCharacterRecordPointer ; 85A2 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 85A2 20 9C 89                  ..
         ldy     #$05                            ; 85A5 A0 05                    ..
         lda     ($86),y                       ; 85A7 B1 86                    ..
         and     #$08                            ; 85A9 29 08                    ).
-        bne     BattlePresentation_Branch_85E5  ; 85AB D0 38                    .8
+        bne     BattleAi_Branch_85E5            ; 85AB D0 38                    .8
         ldy     #$09                            ; 85AD A0 09                    ..
         lda     ($86),y                       ; 85AF B1 86                    ..
         and     #$0F                            ; 85B1 29 0F                    ).
         jsr     GetBattleSlotStateId            ; 85B3 20 AB 8A                  ..
         cmp     #$09                            ; 85B6 C9 09                    ..
-        bcs     BattlePresentation_Branch_85E8  ; 85B8 B0 2E                    ..
+        bcs     BattleAi_Branch_85E8            ; 85B8 B0 2E                    ..
         pha                                     ; 85BA 48                       H
         and     #$07                            ; 85BB 29 07                    ).
         cmp     #$05                            ; 85BD C9 05                    ..
         pla                                     ; 85BF 68                       h
-        bcs     BattlePresentation_Branch_85E5  ; 85C0 B0 23                    .#
+        bcs     BattleAi_Branch_85E5            ; 85C0 B0 23                    .#
         pha                                     ; 85C2 48                       H
         jsr     ResolveBattleSlotRecordPointer  ; 85C3 20 B6 89                  ..
         ldy     #$05                            ; 85C6 A0 05                    ..
         lda     ($79),y                         ; 85C8 B1 79                    .y
         cmp     #$32                            ; 85CA C9 32                    .2
-        bcc     BattlePresentation_Branch_85D0  ; 85CC 90 02                    ..
+        bcc     BattleAi_Branch_85D0            ; 85CC 90 02                    ..
         lda     #$32                            ; 85CE A9 32                    .2
-BattlePresentation_Branch_85D0:
+BattleAi_Branch_85D0:
         sta     $94                             ; 85D0 85 94                    ..
         lda     #$00                            ; 85D2 A9 00                    ..
         sta     $95                             ; 85D4 85 95                    ..
@@ -867,25 +867,25 @@ BattlePresentation_Branch_85D0:
         ldx     #$94                            ; 85DD A2 94                    ..
         jsr     MultiplyPointerWord             ; 85DF 20 27 C8                  '.
         jsr     ClearBattleRecordOffsetHigh     ; 85E2 20 76 8C                  v.
-BattlePresentation_Branch_85E5:
+BattleAi_Branch_85E5:
         jmp     AccumulatePerSlotLowBattleExtents; 85E5 4C 92 B3                L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_85E8:
+BattleAi_Branch_85E8:
         rts                                     ; 85E8 60                       `
 ; ----------------------------------------------------------------------------
         db   $05,$03,$03,$04,$04             ; 85E9 05 03 03 04 04           .....
 ; ----------------------------------------------------------------------------
 TestBattleRecordFlag05:
         ldy     #$05                            ; 85EE A0 05                    ..
-        bne     BattlePresentation_Branch_85F8  ; 85F0 D0 06                    ..
+        bne     BattleAi_Branch_85F8            ; 85F0 D0 06                    ..
 TestBattleRecordFlag06:
         ldy     #$06                            ; 85F2 A0 06                    ..
-        bne     BattlePresentation_Branch_85F8  ; 85F4 D0 02                    ..
+        bne     BattleAi_Branch_85F8            ; 85F4 D0 02                    ..
 TestBattleRecordFlag07:
         ldy     #$07                            ; 85F6 A0 07                    ..
-BattlePresentation_Branch_85F8:
+BattleAi_Branch_85F8:
         sta     $76                             ; 85F8 85 76                    .v
-        jsr     GetBattleCharacterRecordPointer ; 85FA 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 85FA 20 9C 89                  ..
         lda     ($86),y                       ; 85FD B1 86                    ..
         and     $76                             ; 85FF 25 76                    %v
         rts                                     ; 8601 60                       `
@@ -893,7 +893,7 @@ BattlePresentation_Branch_85F8:
 TestBattleRecordModeField:
         ldy     #$0D                            ; 8602 A0 0D                    ..
         ldx     $81                             ; 8604 A6 81                    ..
-        jsr     GetBattleCharacterRecordPointer ; 8606 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 8606 20 9C 89                  ..
         lda     ($86),y                       ; 8609 B1 86                    ..
         and     #$03                            ; 860B 29 03                    ).
         cmp     $8D                             ; 860D C5 8D                    ..
@@ -901,16 +901,16 @@ TestBattleRecordModeField:
 ; ----------------------------------------------------------------------------
 LoadBattleRecordPairIfAllowed:
         jsr     LoadBattleRecordSlotWithStatus  ; 8610 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_864B  ; 8613 90 36                    .6
+        bcc     BattleAi_Branch_864B            ; 8613 90 36                    .6
         ldy     #$01                            ; 8615 A0 01                    ..
         ldx     #$00                            ; 8617 A2 00                    ..
         jmp     CopyBattleRecordPair            ; 8619 4C 41 86                 LA.
 ; ----------------------------------------------------------------------------
 LoadBattleRecordPairIfAllowedExtended:
         jsr     LoadBattleRecordSlotWithStatus  ; 861C 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_864B  ; 861F 90 2A                    .*
+        bcc     BattleAi_Branch_864B            ; 861F 90 2A                    .*
         cmp     #$09                            ; 8621 C9 09                    ..
-        bcc     BattlePresentation_Branch_863D  ; 8623 90 18                    ..
+        bcc     BattleAi_Branch_863D            ; 8623 90 18                    ..
         lda     $79                             ; 8625 A5 79                    .y
         pha                                     ; 8627 48                       H
         lda     $7A                             ; 8628 A5 7A                    .z
@@ -926,7 +926,7 @@ LoadBattleRecordPairIfAllowedExtended:
         sec                                     ; 863B 38                       8
         rts                                     ; 863C 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_863D:
+BattleAi_Branch_863D:
         ldy     #$0C                            ; 863D A0 0C                    ..
         ldx     #$02                            ; 863F A2 02                    ..
 CopyBattleRecordPair:
@@ -936,7 +936,7 @@ CopyBattleRecordPair:
         lda     ($79),y                         ; 8646 B1 79                    .y
         sta     $01,x                           ; 8648 95 01                    ..
         sec                                     ; 864A 38                       8
-BattlePresentation_Branch_864B:
+BattleAi_Branch_864B:
         rts                                     ; 864B 60                       `
 ; ----------------------------------------------------------------------------
 SumPartyCharacterOffsetPair:
@@ -945,11 +945,11 @@ SumPartyCharacterOffsetPair:
         sta     $01                             ; 8650 85 01                    ..
         jsr     SelectPartyGroupOffset          ; 8652 20 32 8A                  2.
         ldy     #$03                            ; 8655 A0 03                    ..
-BattlePresentation_Branch_8657:
+BattleAi_Branch_8657:
         tya                                     ; 8657 98                       .
         pha                                     ; 8658 48                       H
         lda     SavePartyCharacter1,x           ; 8659 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_8673  ; 865C 10 15                    ..
+        bpl     BattleAi_Branch_8673            ; 865C 10 15                    ..
         and     #$0F                            ; 865E 29 0F                    ).
         jsr     ResolveBattleSlotRecordPointer  ; 8660 20 B6 89                  ..
         ldy     #$01                            ; 8663 A0 01                    ..
@@ -961,12 +961,12 @@ BattlePresentation_Branch_8657:
         lda     ($79),y                         ; 866D B1 79                    .y
         adc     $01                             ; 866F 65 01                    e.
         sta     $01                             ; 8671 85 01                    ..
-BattlePresentation_Branch_8673:
+BattleAi_Branch_8673:
         pla                                     ; 8673 68                       h
         tay                                     ; 8674 A8                       .
         inx                                     ; 8675 E8                       .
         dey                                     ; 8676 88                       .
-        bpl     BattlePresentation_Branch_8657  ; 8677 10 DE                    ..
+        bpl     BattleAi_Branch_8657            ; 8677 10 DE                    ..
         rts                                     ; 8679 60                       `
 ; ----------------------------------------------------------------------------
 SumPartyCharacterOffsetTriple:
@@ -975,39 +975,39 @@ SumPartyCharacterOffsetTriple:
         sta     $03                             ; 867E 85 03                    ..
         jsr     SelectPartyGroupOffset          ; 8680 20 32 8A                  2.
         ldy     #$03                            ; 8683 A0 03                    ..
-BattlePresentation_Branch_8685:
+BattleAi_Branch_8685:
         tya                                     ; 8685 98                       .
         pha                                     ; 8686 48                       H
         lda     SavePartyCharacter1,x           ; 8687 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_86B4  ; 868A 10 28                    .(
+        bpl     BattleAi_Branch_86B4            ; 868A 10 28                    .(
         and     #$0F                            ; 868C 29 0F                    ).
         pha                                     ; 868E 48                       H
         jsr     ResolveBattleSlotRecordPointer  ; 868F 20 B6 89                  ..
         pla                                     ; 8692 68                       h
         cmp     #$09                            ; 8693 C9 09                    ..
-        bcc     BattlePresentation_Branch_869D  ; 8695 90 06                    ..
+        bcc     BattleAi_Branch_869D            ; 8695 90 06                    ..
         jsr     ReadBattleRecordField05         ; 8697 20 BB 86                  ..
-        jmp     BattlePresentation_Branch_86A8  ; 869A 4C A8 86                 L..
+        jmp     BattleAi_Branch_86A8            ; 869A 4C A8 86                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_869D:
+BattleAi_Branch_869D:
         ldy     #$0D                            ; 869D A0 0D                    ..
         lda     ($79),y                         ; 869F B1 79                    .y
         and     #$03                            ; 86A1 29 03                    ).
         sta     $7364                           ; 86A3 8D 64 73                 .ds
         lda     ($79),y                         ; 86A6 B1 79                    .y
-BattlePresentation_Branch_86A8:
+BattleAi_Branch_86A8:
         clc                                     ; 86A8 18                       .
         adc     $02                           ; 86A9 65 02                    e.
         sta     $02                           ; 86AB 85 02                    ..
         lda     $7364                           ; 86AD AD 64 73                 .ds
         adc     $03                             ; 86B0 65 03                    e.
         sta     $03                             ; 86B2 85 03                    ..
-BattlePresentation_Branch_86B4:
+BattleAi_Branch_86B4:
         pla                                     ; 86B4 68                       h
         tay                                     ; 86B5 A8                       .
         inx                                     ; 86B6 E8                       .
         dey                                     ; 86B7 88                       .
-        bpl     BattlePresentation_Branch_8685  ; 86B8 10 CB                    ..
+        bpl     BattleAi_Branch_8685            ; 86B8 10 CB                    ..
         rts                                     ; 86BA 60                       `
 ; ----------------------------------------------------------------------------
 ReadBattleRecordField05:
@@ -1021,7 +1021,7 @@ ReadBattleRecordField05:
         rts                                     ; 86C6 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleSlotRecordPointer:
-        jsr     GetBattleCharacterRecordPointer ; 86C7 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 86C7 20 9C 89                  ..
         ldy     #$0A                            ; 86CA A0 0A                    ..
         lda     ($86),y                       ; 86CC B1 86                    ..
         sta     $00                           ; 86CE 85 00                    ..
@@ -1033,12 +1033,12 @@ LoadBattleSlotRecordPointer:
 CopyBattleRecordPairIfMatch:
         lda     $82                             ; 86D6 A5 82                    ..
         jsr     LoadBattleRecordSlotWithStatus  ; 86D8 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_86E4  ; 86DB 90 07                    ..
+        bcc     BattleAi_Branch_86E4            ; 86DB 90 07                    ..
         ldx     #$00                            ; 86DD A2 00                    ..
         ldy     #$03                            ; 86DF A0 03                    ..
         jmp     CopyBattleRecordPair            ; 86E1 4C 41 86                 LA.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_86E4:
+BattleAi_Branch_86E4:
         rts                                     ; 86E4 60                       `
 ; ----------------------------------------------------------------------------
 SumPartyCharacterOffsetPairFiltered:
@@ -1047,16 +1047,16 @@ SumPartyCharacterOffsetPairFiltered:
         sta     $01                             ; 86E9 85 01                    ..
         jsr     SelectPartyGroupOffset          ; 86EB 20 32 8A                  2.
         ldy     #$03                            ; 86EE A0 03                    ..
-BattlePresentation_Branch_86F0:
+BattleAi_Branch_86F0:
         tya                                     ; 86F0 98                       .
         pha                                     ; 86F1 48                       H
         lda     SavePartyCharacter1,x           ; 86F2 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_8712  ; 86F5 10 1B                    ..
+        bpl     BattleAi_Branch_8712            ; 86F5 10 1B                    ..
         and     #$0F                            ; 86F7 29 0F                    ).
         jsr     ResolveBattleSlotRecordPointer  ; 86F9 20 B6 89                  ..
         ldy     #$00                            ; 86FC A0 00                    ..
         lda     ($79),y                         ; 86FE B1 79                    .y
-        bpl     BattlePresentation_Branch_8712  ; 8700 10 10                    ..
+        bpl     BattleAi_Branch_8712            ; 8700 10 10                    ..
         ldy     #$03                            ; 8702 A0 03                    ..
         clc                                     ; 8704 18                       .
         lda     ($79),y                         ; 8705 B1 79                    .y
@@ -1066,18 +1066,18 @@ BattlePresentation_Branch_86F0:
         lda     ($79),y                         ; 870C B1 79                    .y
         adc     $01                             ; 870E 65 01                    e.
         sta     $01                             ; 8710 85 01                    ..
-BattlePresentation_Branch_8712:
+BattleAi_Branch_8712:
         pla                                     ; 8712 68                       h
         tay                                     ; 8713 A8                       .
         inx                                     ; 8714 E8                       .
         dey                                     ; 8715 88                       .
-        bpl     BattlePresentation_Branch_86F0  ; 8716 10 D8                    ..
+        bpl     BattleAi_Branch_86F0            ; 8716 10 D8                    ..
         rts                                     ; 8718 60                       `
 ; ----------------------------------------------------------------------------
 SumPartyCharacterOffsetPairIfVisible:
         lda     $82                             ; 8719 A5 82                    ..
         jsr     LoadBattleRecordSlotWithStatus  ; 871B 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_8736  ; 871E 90 16                    ..
+        bcc     BattleAi_Branch_8736            ; 871E 90 16                    ..
 LoadBattleRecordPairAndMaybeScale:
         jsr     FindBattleSlotByCharacterId     ; 8720 20 F5 89                  ..
         ldx     #$0C                            ; 8723 A2 0C                    ..
@@ -1086,42 +1086,42 @@ LoadBattleRecordPairAndMaybeScale:
         ldy     #$05                            ; 872A A0 05                    ..
         lda     ($79),y                         ; 872C B1 79                    .y
         and     #$20                            ; 872E 29 20                    )
-        beq     BattlePresentation_Branch_8736  ; 8730 F0 04                    ..
+        beq     BattleAi_Branch_8736            ; 8730 F0 04                    ..
         asl     $0C                             ; 8732 06 0C                    ..
         rol     $0D                             ; 8734 26 0D                    &.
-BattlePresentation_Branch_8736:
+BattleAi_Branch_8736:
         rts                                     ; 8736 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateFilteredPartyPrimaryValue:
         lda     #$D4                            ; 8737 A9 D4                    ..
-        bne     BattlePresentation_Branch_873D  ; 8739 D0 02                    ..
+        bne     BattleAi_Branch_873D            ; 8739 D0 02                    ..
 AccumulateFilteredPartySecondaryValue:
         lda     #$14                            ; 873B A9 14                    ..
-BattlePresentation_Branch_873D:
+BattleAi_Branch_873D:
         sta     $0B                             ; 873D 85 0B                    ..
         lda     #$00                            ; 873F A9 00                    ..
         sta     $0C                             ; 8741 85 0C                    ..
         sta     $0D                             ; 8743 85 0D                    ..
         jsr     SelectPartyGroupOffset          ; 8745 20 32 8A                  2.
         ldy     #$03                            ; 8748 A0 03                    ..
-BattlePresentation_Branch_874A:
+BattleAi_Branch_874A:
         tya                                     ; 874A 98                       .
         pha                                     ; 874B 48                       H
         txa                                     ; 874C 8A                       .
         pha                                     ; 874D 48                       H
         lda     SavePartyCharacter1,x           ; 874E BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_877C  ; 8751 10 29                    .)
+        bpl     BattleAi_Branch_877C            ; 8751 10 29                    .)
         and     #$0F                            ; 8753 29 0F                    ).
         jsr     TestBattleRecordTopFlags        ; 8755 20 48 8A                  H.
-        bne     BattlePresentation_Branch_877C  ; 8758 D0 22                    ."
+        bne     BattleAi_Branch_877C            ; 8758 D0 22                    ."
         lda     $00                           ; 875A A5 00                    ..
         jsr     FindBattleSlotByCharacterId     ; 875C 20 F5 89                  ..
         ldy     #$05                            ; 875F A0 05                    ..
         lda     ($79),y                         ; 8761 B1 79                    .y
         and     $0B                             ; 8763 25 0B                    %.
-        bne     BattlePresentation_Branch_877C  ; 8765 D0 15                    ..
+        bne     BattleAi_Branch_877C            ; 8765 D0 15                    ..
         jsr     TestBattleRecordConditionFlags  ; 8767 20 5D 8A                  ].
-        bne     BattlePresentation_Branch_877C  ; 876A D0 10                    ..
+        bne     BattleAi_Branch_877C            ; 876A D0 10                    ..
         ldy     #$01                            ; 876C A0 01                    ..
         clc                                     ; 876E 18                       .
         lda     ($79),y                         ; 876F B1 79                    .y
@@ -1131,52 +1131,52 @@ BattlePresentation_Branch_874A:
         lda     ($79),y                         ; 8776 B1 79                    .y
         adc     $0D                             ; 8778 65 0D                    e.
         sta     $0D                             ; 877A 85 0D                    ..
-BattlePresentation_Branch_877C:
+BattleAi_Branch_877C:
         pla                                     ; 877C 68                       h
         tax                                     ; 877D AA                       .
         pla                                     ; 877E 68                       h
         tay                                     ; 877F A8                       .
         dey                                     ; 8780 88                       .
-        bpl     BattlePresentation_Branch_874A  ; 8781 10 C7                    ..
+        bpl     BattleAi_Branch_874A            ; 8781 10 C7                    ..
         rts                                     ; 8783 60                       `
 ; ----------------------------------------------------------------------------
 SelectBattleExtentLow:
         lda     #$00                            ; 8784 A9 00                    ..
-        beq     BattlePresentation_Branch_878A  ; 8786 F0 02                    ..
+        beq     BattleAi_Branch_878A            ; 8786 F0 02                    ..
 SelectBattleExtentHigh:
         lda     #$C0                            ; 8788 A9 C0                    ..
-BattlePresentation_Branch_878A:
+BattleAi_Branch_878A:
         sta     $01                             ; 878A 85 01                    ..
         txa                                     ; 878C 8A                       .
         jsr     LoadBattleRecordSlotWithStatus  ; 878D 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_87B8  ; 8790 90 26                    .&
+        bcc     BattleAi_Branch_87B8            ; 8790 90 26                    .&
         sta     $00                           ; 8792 85 00                    ..
         lda     #$00                            ; 8794 A9 00                    ..
         sta     $0E                             ; 8796 85 0E                    ..
         sta     $0F                             ; 8798 85 0F                    ..
         ldy     #$00                            ; 879A A0 00                    ..
         lda     ($79),y                         ; 879C B1 79                    .y
-        bpl     BattlePresentation_Branch_87B8  ; 879E 10 18                    ..
+        bpl     BattleAi_Branch_87B8            ; 879E 10 18                    ..
         lda     $00                           ; 87A0 A5 00                    ..
         jsr     FindBattleSlotByCharacterId     ; 87A2 20 F5 89                  ..
         ldy     #$05                            ; 87A5 A0 05                    ..
         lda     $01                             ; 87A7 A5 01                    ..
         and     ($79),y                         ; 87A9 31 79                    1y
-        bne     BattlePresentation_Branch_87B8  ; 87AB D0 0B                    ..
+        bne     BattleAi_Branch_87B8            ; 87AB D0 0B                    ..
         ldy     #$03                            ; 87AD A0 03                    ..
         lda     ($79),y                         ; 87AF B1 79                    .y
         sta     $0E                             ; 87B1 85 0E                    ..
         iny                                     ; 87B3 C8                       .
         lda     ($79),y                         ; 87B4 B1 79                    .y
         sta     $0F                             ; 87B6 85 0F                    ..
-BattlePresentation_Branch_87B8:
+BattleAi_Branch_87B8:
         rts                                     ; 87B8 60                       `
 ; ----------------------------------------------------------------------------
 SumBattleExtents:
         ldx     #$00                            ; 87B9 A2 00                    ..
         stx     $94                             ; 87BB 86 94                    ..
         stx     $95                             ; 87BD 86 95                    ..
-BattlePresentation_Branch_87BF:
+BattleAi_Branch_87BF:
         txa                                     ; 87BF 8A                       .
         pha                                     ; 87C0 48                       H
         jsr     SelectBattleExtentHigh          ; 87C1 20 88 87                  ..
@@ -1191,7 +1191,7 @@ BattlePresentation_Branch_87BF:
         tax                                     ; 87D2 AA                       .
         inx                                     ; 87D3 E8                       .
         cpx     #$04                            ; 87D4 E0 04                    ..
-        bcc     BattlePresentation_Branch_87BF  ; 87D6 90 E7                    ..
+        bcc     BattleAi_Branch_87BF            ; 87D6 90 E7                    ..
         rts                                     ; 87D8 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateBattleSlotRanges:
@@ -1199,15 +1199,15 @@ AccumulateBattleSlotRanges:
         sta     $0E                             ; 87DB 85 0E                    ..
         sta     $0F                             ; 87DD 85 0F                    ..
         ldx     #$07                            ; 87DF A2 07                    ..
-BattlePresentation_Branch_87E1:
+BattleAi_Branch_87E1:
         txa                                     ; 87E1 8A                       .
         pha                                     ; 87E2 48                       H
-        jsr     GetBattleCharacterRecordPointer ; 87E3 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 87E3 20 9C 89                  ..
         ldy     #$06                            ; 87E6 A0 06                    ..
         lda     ($86),y                       ; 87E8 B1 86                    ..
         and     #$C0                            ; 87EA 29 C0                    ).
         cmp     #$C0                            ; 87EC C9 C0                    ..
-        bne     BattlePresentation_Branch_8800  ; 87EE D0 10                    ..
+        bne     BattleAi_Branch_8800            ; 87EE D0 10                    ..
         clc                                     ; 87F0 18                       .
         ldy     #$03                            ; 87F1 A0 03                    ..
         lda     ($86),y                       ; 87F3 B1 86                    ..
@@ -1217,23 +1217,23 @@ BattlePresentation_Branch_87E1:
         lda     ($86),y                       ; 87FA B1 86                    ..
         adc     $0F                             ; 87FC 65 0F                    e.
         sta     $0F                             ; 87FE 85 0F                    ..
-BattlePresentation_Branch_8800:
+BattleAi_Branch_8800:
         pla                                     ; 8800 68                       h
         tax                                     ; 8801 AA                       .
         dex                                     ; 8802 CA                       .
-        bpl     BattlePresentation_Branch_87E1  ; 8803 10 DC                    ..
+        bpl     BattleAi_Branch_87E1            ; 8803 10 DC                    ..
         rts                                     ; 8805 60                       `
 ; ----------------------------------------------------------------------------
 CopyBattleRecordCurrentValue:
         txa                                     ; 8806 8A                       .
-        jsr     GetBattleCharacterRecordPointer ; 8807 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 8807 20 9C 89                  ..
         ldy     #$03                            ; 880A A0 03                    ..
         ldx     #$0C                            ; 880C A2 0C                    ..
         jmp     CopyBattleRecordPairBody        ; 880E 4C 19 88                 L..
 ; ----------------------------------------------------------------------------
 CopyBattleRecordMaximumValue:
         txa                                     ; 8811 8A                       .
-        jsr     GetBattleCharacterRecordPointer ; 8812 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 8812 20 9C 89                  ..
         ldy     #$03                            ; 8815 A0 03                    ..
         ldx     #$0E                            ; 8817 A2 0E                    ..
 CopyBattleRecordPairBody:
@@ -1254,32 +1254,32 @@ ComputeHalfDifference:
         lda     $0D                             ; 882E A5 0D                    ..
         sbc     $0F                             ; 8830 E5 0F                    ..
         sta     $95                             ; 8832 85 95                    ..
-        bcs     BattlePresentation_Branch_883D  ; 8834 B0 07                    ..
+        bcs     BattleAi_Branch_883D            ; 8834 B0 07                    ..
         lda     #$00                            ; 8836 A9 00                    ..
         sta     $94                             ; 8838 85 94                    ..
         sta     $95                             ; 883A 85 95                    ..
         rts                                     ; 883C 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_883D:
+BattleAi_Branch_883D:
         lsr     $95                             ; 883D 46 95                    F.
         ror     $94                             ; 883F 66 94                    f.
         rts                                     ; 8841 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleRecordHighPairIfPresent:
         jsr     SelectBattleSlotIndex           ; 8842 20 66 88                  f.
-        bcc     BattlePresentation_Branch_8855  ; 8845 90 0E                    ..
+        bcc     BattleAi_Branch_8855            ; 8845 90 0E                    ..
         jsr     FindBattleSlotByCharacterId     ; 8847 20 F5 89                  ..
         ldx     #$0C                            ; 884A A2 0C                    ..
         ldy     #$00                            ; 884C A0 00                    ..
         jsr     CopyBattleRecordPair            ; 884E 20 41 86                  A.
         lda     #$00                            ; 8851 A9 00                    ..
         sta     $0D                             ; 8853 85 0D                    ..
-BattlePresentation_Branch_8855:
+BattleAi_Branch_8855:
         rts                                     ; 8855 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleRecordMaximumValue:
         txa                                     ; 8856 8A                       .
-        jsr     GetBattleCharacterRecordPointer ; 8857 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 8857 20 9C 89                  ..
         ldy     #$00                            ; 885A A0 00                    ..
         ldx     #$0E                            ; 885C A2 0E                    ..
         jsr     CopyBattleRecordPairBody        ; 885E 20 19 88                  ..
@@ -1296,51 +1296,51 @@ AccumulateBattleSlotWindow0C80:
         sta     $07                             ; 886D 85 07                    ..
         lda     #$80                            ; 886F A9 80                    ..
         sta     $08                             ; 8871 85 08                    ..
-        bne     BattlePresentation_Branch_8881  ; 8873 D0 0C                    ..
+        bne     BattleAi_Branch_8881            ; 8873 D0 0C                    ..
 AccumulateBattleSlotWindowCC0:
         lda     #$CC                            ; 8875 A9 CC                    ..
-        bne     BattlePresentation_Branch_887B  ; 8877 D0 02                    ..
+        bne     BattleAi_Branch_887B            ; 8877 D0 02                    ..
 AccumulateBattleSlotWindow0C00:
         lda     #$0C                            ; 8879 A9 0C                    ..
-BattlePresentation_Branch_887B:
+BattleAi_Branch_887B:
         sta     $07                             ; 887B 85 07                    ..
         lda     #$00                            ; 887D A9 00                    ..
         sta     $08                             ; 887F 85 08                    ..
-BattlePresentation_Branch_8881:
+BattleAi_Branch_8881:
         asl     a                               ; 8881 0A                       .
         sta     $94                             ; 8882 85 94                    ..
         sta     $95                             ; 8884 85 95                    ..
         lda     BattleModeFlags                 ; 8886 AD E4 72                 ..r
-        bmi     BattlePresentation_Branch_88BF  ; 8889 30 34                    04
+        bmi     BattleAi_Branch_88BF            ; 8889 30 34                    04
         jsr     SelectPartyGroupOffset          ; 888B 20 32 8A                  2.
         ldy     #$03                            ; 888E A0 03                    ..
-BattlePresentation_Branch_8890:
+BattleAi_Branch_8890:
         tya                                     ; 8890 98                       .
         pha                                     ; 8891 48                       H
         lda     SavePartyCharacter1,x           ; 8892 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_88B9  ; 8895 10 22                    ."
+        bpl     BattleAi_Branch_88B9            ; 8895 10 22                    ."
         and     #$0F                            ; 8897 29 0F                    ).
         cmp     #$05                            ; 8899 C9 05                    ..
-        bcs     BattlePresentation_Branch_88B9  ; 889B B0 1C                    ..
+        bcs     BattleAi_Branch_88B9            ; 889B B0 1C                    ..
         sta     $00                           ; 889D 85 00                    ..
         jsr     TestBattleRecordTopFlags        ; 889F 20 48 8A                  H.
-        bne     BattlePresentation_Branch_88B9  ; 88A2 D0 15                    ..
+        bne     BattleAi_Branch_88B9            ; 88A2 D0 15                    ..
         lda     $00                           ; 88A4 A5 00                    ..
         jsr     FindBattleSlotByCharacterId     ; 88A6 20 F5 89                  ..
         ldy     #$05                            ; 88A9 A0 05                    ..
         lda     ($79),y                         ; 88AB B1 79                    .y
         and     $07                             ; 88AD 25 07                    %.
-        bne     BattlePresentation_Branch_88B9  ; 88AF D0 08                    ..
+        bne     BattleAi_Branch_88B9            ; 88AF D0 08                    ..
         jsr     TestBattleRecordConditionFlags  ; 88B1 20 5D 8A                  ].
-        bne     BattlePresentation_Branch_88B9  ; 88B4 D0 03                    ..
+        bne     BattleAi_Branch_88B9            ; 88B4 D0 03                    ..
         jsr     AccumulateScoreFromRecordBitfield1BTo1D; 88B6 20 C0 88           ..
-BattlePresentation_Branch_88B9:
+BattleAi_Branch_88B9:
         pla                                     ; 88B9 68                       h
         tay                                     ; 88BA A8                       .
         inx                                     ; 88BB E8                       .
         dey                                     ; 88BC 88                       .
-        bpl     BattlePresentation_Branch_8890  ; 88BD 10 D1                    ..
-BattlePresentation_Branch_88BF:
+        bpl     BattleAi_Branch_8890            ; 88BD 10 D1                    ..
+BattleAi_Branch_88BF:
         rts                                     ; 88BF 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateScoreFromRecordBitfield1BTo1D:
@@ -1353,10 +1353,10 @@ AccumulateScoreFromRecordBitfield1BTo1D:
         sta     $02                           ; 88CB 85 02                    ..
         iny                                     ; 88CD C8                       .
         lda     ($79),y                         ; 88CE B1 79                    .y
-        beq     BattlePresentation_Branch_88D6  ; 88D0 F0 04                    ..
+        beq     BattleAi_Branch_88D6            ; 88D0 F0 04                    ..
         lda     #$FF                            ; 88D2 A9 FF                    ..
         sta     $02                           ; 88D4 85 02                    ..
-BattlePresentation_Branch_88D6:
+BattleAi_Branch_88D6:
         ldy     #$1B                            ; 88D6 A0 1B                    ..
         lda     ($79),y                         ; 88D8 B1 79                    .y
         sta     $04                             ; 88DA 85 04                    ..
@@ -1368,88 +1368,88 @@ BattlePresentation_Branch_88D6:
         sta     $06                             ; 88E4 85 06                    ..
         ldy     #$12                            ; 88E6 A0 12                    ..
         lda     $00                           ; 88E8 A5 00                    ..
-        beq     BattlePresentation_Branch_88EE  ; 88EA F0 02                    ..
+        beq     BattleAi_Branch_88EE            ; 88EA F0 02                    ..
         ldy     #$0C                            ; 88EC A0 0C                    ..
-BattlePresentation_Branch_88EE:
+BattleAi_Branch_88EE:
         sty     $01                             ; 88EE 84 01                    ..
         ldx     $00                           ; 88F0 A6 00                    ..
         lda     $892B,x                         ; 88F2 BD 2B 89                 .+.
         tax                                     ; 88F5 AA                       .
-BattlePresentation_Branch_88F6:
+BattleAi_Branch_88F6:
         lsr     $06                             ; 88F6 46 06                    F.
         ror     $05                             ; 88F8 66 05                    f.
         ror     $04                             ; 88FA 66 04                    f.
-        bcc     BattlePresentation_Branch_8923  ; 88FC 90 25                    .%
+        bcc     BattleAi_Branch_8923            ; 88FC 90 25                    .%
         lda     $B328,x                         ; 88FE BD 28 B3                 .(.
         tay                                     ; 8901 A8                       .
-        lda     Bank13_BattlePresentationStateLookup,y; 8902 B9 67 B9           .g.
+        lda     Bank13_BattleAiStateLookup,y    ; 8902 B9 67 B9                 .g.
         and     #$1F                            ; 8905 29 1F                    ).
         cmp     $02                           ; 8907 C5 02                    ..
-        beq     BattlePresentation_Branch_890D  ; 8909 F0 02                    ..
-        bcs     BattlePresentation_Branch_8923  ; 890B B0 16                    ..
-BattlePresentation_Branch_890D:
+        beq     BattleAi_Branch_890D            ; 8909 F0 02                    ..
+        bcs     BattleAi_Branch_8923            ; 890B B0 16                    ..
+BattleAi_Branch_890D:
         lda     $08                             ; 890D A5 08                    ..
-        bpl     BattlePresentation_Branch_8917  ; 890F 10 06                    ..
+        bpl     BattleAi_Branch_8917            ; 890F 10 06                    ..
         tya                                     ; 8911 98                       .
-        jsr     RotateStateLookupValueThroughCarry; 8912 20 30 B9                0.
-        bcc     BattlePresentation_Branch_8923  ; 8915 90 0C                    ..
-BattlePresentation_Branch_8917:
-        lda     Bank13_BattlePresentationValuesA,y; 8917 B9 EF 8A               ...
+        jsr     RotateActionAttributesThroughCarry; 8912 20 30 B9                0.
+        bcc     BattleAi_Branch_8923            ; 8915 90 0C                    ..
+BattleAi_Branch_8917:
+        lda     Bank13_BattleAiValuesA,y        ; 8917 B9 EF 8A                 ...
         clc                                     ; 891A 18                       .
         adc     $94                             ; 891B 65 94                    e.
         sta     $94                             ; 891D 85 94                    ..
-        bcc     BattlePresentation_Branch_8923  ; 891F 90 02                    ..
+        bcc     BattleAi_Branch_8923            ; 891F 90 02                    ..
         inc     $95                             ; 8921 E6 95                    ..
-BattlePresentation_Branch_8923:
+BattleAi_Branch_8923:
         inx                                     ; 8923 E8                       .
         dec     $01                             ; 8924 C6 01                    ..
-        bne     BattlePresentation_Branch_88F6  ; 8926 D0 CE                    ..
+        bne     BattleAi_Branch_88F6            ; 8926 D0 CE                    ..
         pla                                     ; 8928 68                       h
         tax                                     ; 8929 AA                       .
         rts                                     ; 892A 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$12,$1E,$2A,$36             ; 892B 00 12 1E 2A 36           ...*6
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationScoreMaskC4:
+AccumulateBattleAiScoreMaskC4:
         lda     #$C4                            ; 8930 A9 C4                    ..
-        bne     BattlePresentation_Branch_8936  ; 8932 D0 02                    ..
-AccumulateBattlePresentationScoreMask04:
+        bne     BattleAi_Branch_8936            ; 8932 D0 02                    ..
+AccumulateBattleAiScoreMask04:
         lda     #$04                            ; 8934 A9 04                    ..
-BattlePresentation_Branch_8936:
+BattleAi_Branch_8936:
         sta     $01                             ; 8936 85 01                    ..
         lda     #$00                            ; 8938 A9 00                    ..
         sta     $94                             ; 893A 85 94                    ..
         sta     $95                             ; 893C 85 95                    ..
         jsr     SelectPartyGroupOffset          ; 893E 20 32 8A                  2.
         ldy     #$03                            ; 8941 A0 03                    ..
-BattlePresentation_Branch_8943:
+BattleAi_Branch_8943:
         tya                                     ; 8943 98                       .
         pha                                     ; 8944 48                       H
         lda     SavePartyCharacter1,x           ; 8945 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_8971  ; 8948 10 27                    .'
+        bpl     BattleAi_Branch_8971            ; 8948 10 27                    .'
         and     #$0F                            ; 894A 29 0F                    ).
         cmp     #$08                            ; 894C C9 08                    ..
-        bcs     BattlePresentation_Branch_8971  ; 894E B0 21                    .!
+        bcs     BattleAi_Branch_8971            ; 894E B0 21                    .!
         jsr     TestBattleRecordTopFlags        ; 8950 20 48 8A                  H.
-        bne     BattlePresentation_Branch_8971  ; 8953 D0 1C                    ..
+        bne     BattleAi_Branch_8971            ; 8953 D0 1C                    ..
         lda     $00                           ; 8955 A5 00                    ..
         jsr     FindBattleSlotByCharacterId     ; 8957 20 F5 89                  ..
         ldy     #$05                            ; 895A A0 05                    ..
         lda     ($79),y                         ; 895C B1 79                    .y
         and     $01                             ; 895E 25 01                    %.
-        bne     BattlePresentation_Branch_8971  ; 8960 D0 0F                    ..
+        bne     BattleAi_Branch_8971            ; 8960 D0 0F                    ..
         iny                                     ; 8962 C8                       .
         lda     ($79),y                         ; 8963 B1 79                    .y
         and     #$20                            ; 8965 29 20                    )
-        bne     BattlePresentation_Branch_8971  ; 8967 D0 08                    ..
+        bne     BattleAi_Branch_8971            ; 8967 D0 08                    ..
         jsr     TestBattleRecordConditionFlags  ; 8969 20 5D 8A                  ].
-        bne     BattlePresentation_Branch_8971  ; 896C D0 03                    ..
+        bne     BattleAi_Branch_8971            ; 896C D0 03                    ..
         jsr     AccumulateScoreFromRecordBytes13To1A; 896E 20 77 89              w.
-BattlePresentation_Branch_8971:
+BattleAi_Branch_8971:
         pla                                     ; 8971 68                       h
         tay                                     ; 8972 A8                       .
         dey                                     ; 8973 88                       .
-        bpl     BattlePresentation_Branch_8943  ; 8974 10 CD                    ..
+        bpl     BattleAi_Branch_8943            ; 8974 10 CD                    ..
         rts                                     ; 8976 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateScoreFromRecordBytes13To1A:
@@ -1458,26 +1458,26 @@ AccumulateScoreFromRecordBytes13To1A:
         lda     $00                           ; 8979 A5 00                    ..
         jsr     ResolveBattleSlotRecordPointer  ; 897B 20 B6 89                  ..
         ldy     #$13                            ; 897E A0 13                    ..
-BattlePresentation_Branch_8980:
+BattleAi_Branch_8980:
         lda     ($79),y                         ; 8980 B1 79                    .y
         and     #$7F                            ; 8982 29 7F                    ).
         cmp     #$67                            ; 8984 C9 67                    .g
-        bcs     BattlePresentation_Branch_8994  ; 8986 B0 0C                    ..
+        bcs     BattleAi_Branch_8994            ; 8986 B0 0C                    ..
         tax                                     ; 8988 AA                       .
-        lda     Bank13_BattlePresentationValuesB,x; 8989 BD 24 8B               .$.
+        lda     Bank13_BattleAiValuesB,x        ; 8989 BD 24 8B                 .$.
         adc     $94                             ; 898C 65 94                    e.
         sta     $94                             ; 898E 85 94                    ..
-        bcc     BattlePresentation_Branch_8994  ; 8990 90 02                    ..
+        bcc     BattleAi_Branch_8994            ; 8990 90 02                    ..
         inc     $95                             ; 8992 E6 95                    ..
-BattlePresentation_Branch_8994:
+BattleAi_Branch_8994:
         iny                                     ; 8994 C8                       .
         cpy     #$1B                            ; 8995 C0 1B                    ..
-        bcc     BattlePresentation_Branch_8980  ; 8997 90 E7                    ..
+        bcc     BattleAi_Branch_8980            ; 8997 90 E7                    ..
         pla                                     ; 8999 68                       h
         tax                                     ; 899A AA                       .
         rts                                     ; 899B 60                       `
 ; ----------------------------------------------------------------------------
-GetBattleCharacterRecordPointer:
+GetCombatantRecordPointer:
         txa                                     ; 899C 8A                       .
         asl     a                               ; 899D 0A                       .
         sta     $86                           ; 899E 85 86                    ..
@@ -1487,14 +1487,14 @@ GetBattleCharacterRecordPointer:
         sec                                     ; 89A3 38                       8
         sbc     $86                           ; 89A4 E5 86                    ..
         clc                                     ; 89A6 18                       .
-        adc     Bank13_BattleCharacterRecordBase; 89A7 6D B4 89                 m..
+        adc     Bank13_CombatantRecordBase      ; 89A7 6D B4 89                 m..
         sta     $86                           ; 89AA 85 86                    ..
         lda     $89B5                           ; 89AC AD B5 89                 ...
         adc     #$00                            ; 89AF 69 00                    i.
         sta     $87                             ; 89B1 85 87                    ..
         rts                                     ; 89B3 60                       `
 ; ----------------------------------------------------------------------------
-Bank13_BattleCharacterRecordBase:
+Bank13_CombatantRecordBase:
         db   $74                             ; 89B4 74                       t
         db   $72                             ; 89B5 72                       r
 ; ----------------------------------------------------------------------------
@@ -1505,7 +1505,7 @@ ResolveBattleSlotRecordPointer:
         lda     $79                             ; 89BA A5 79                    .y
         asl     a                               ; 89BC 0A                       .
         tax                                     ; 89BD AA                       .
-        lda     Bank13_BattleCharacterRecordPointers,x; 89BE BD CB 89           ...
+        lda     Bank13_CharacterRecordPointers,x; 89BE BD CB 89                 ...
         sta     $79                             ; 89C1 85 79                    .y
         lda     $89CC,x                         ; 89C3 BD CC 89                 ...
         sta     $7A                             ; 89C6 85 7A                    .z
@@ -1513,7 +1513,7 @@ ResolveBattleSlotRecordPointer:
         tax                                     ; 89C9 AA                       .
         rts                                     ; 89CA 60                       `
 ; ----------------------------------------------------------------------------
-Bank13_BattleCharacterRecordPointers:
+Bank13_CharacterRecordPointers:
         db   $01                             ; 89CB 01                       .
         db   $60,$1F,$60,$3D,$60,$5B,$60,$79 ; 89CC 60 1F 60 3D 60 5B 60 79  `.`=`[`y
         db   $60,$97,$60,$B5,$60,$D3,$60,$F1 ; 89D4 60 97 60 B5 60 D3 60 F1  `.`.`.`.
@@ -1527,21 +1527,21 @@ FindBattleSlotByCharacterId:
         txa                                     ; 89F7 8A                       .
         pha                                     ; 89F8 48                       H
         ldx     #$09                            ; 89F9 A2 09                    ..
-BattlePresentation_Branch_89FB:
+BattleAi_Branch_89FB:
         lda     $72EA,x                         ; 89FB BD EA 72                 ..r
-        bpl     BattlePresentation_Branch_8A06  ; 89FE 10 06                    ..
+        bpl     BattleAi_Branch_8A06            ; 89FE 10 06                    ..
         and     #$1F                            ; 8A00 29 1F                    ).
         cmp     $7A                             ; 8A02 C5 7A                    .z
-        beq     BattlePresentation_Branch_8A0D  ; 8A04 F0 07                    ..
-BattlePresentation_Branch_8A06:
+        beq     BattleAi_Branch_8A0D            ; 8A04 F0 07                    ..
+BattleAi_Branch_8A06:
         dex                                     ; 8A06 CA                       .
-        bpl     BattlePresentation_Branch_89FB  ; 8A07 10 F2                    ..
+        bpl     BattleAi_Branch_89FB            ; 8A07 10 F2                    ..
         clc                                     ; 8A09 18                       .
         pla                                     ; 8A0A 68                       h
         tax                                     ; 8A0B AA                       .
         rts                                     ; 8A0C 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8A0D:
+BattleAi_Branch_8A0D:
         txa                                     ; 8A0D 8A                       .
         asl     a                               ; 8A0E 0A                       .
         tax                                     ; 8A0F AA                       .
@@ -1563,16 +1563,16 @@ Bank13_BattleSlotRecordPointers:
 SelectPartyGroupOffset:
         ldy     #$00                            ; 8A32 A0 00                    ..
         lda     SaveGameStateFlags              ; 8A34 AD 8E 61                 ..a
-        bpl     BattlePresentation_Branch_8A3B  ; 8A37 10 02                    ..
+        bpl     BattleAi_Branch_8A3B            ; 8A37 10 02                    ..
         ldy     #$04                            ; 8A39 A0 04                    ..
-BattlePresentation_Branch_8A3B:
+BattleAi_Branch_8A3B:
         bit     SaveGameStateFlags              ; 8A3B 2C 8E 61                 ,.a
-        bvc     BattlePresentation_Branch_8A45  ; 8A3E 50 05                    P.
+        bvc     BattleAi_Branch_8A45            ; 8A3E 50 05                    P.
         tya                                     ; 8A40 98                       .
         clc                                     ; 8A41 18                       .
         adc     #$1C                            ; 8A42 69 1C                    i.
         tay                                     ; 8A44 A8                       .
-BattlePresentation_Branch_8A45:
+BattleAi_Branch_8A45:
         tya                                     ; 8A45 98                       .
         tax                                     ; 8A46 AA                       .
         rts                                     ; 8A47 60                       `
@@ -1596,11 +1596,11 @@ TestBattleRecordConditionFlags:
         ldy     #$06                            ; 8A5D A0 06                    ..
         lda     ($79),y                         ; 8A5F B1 79                    .y
         and     #$01                            ; 8A61 29 01                    ).
-        bne     BattlePresentation_Branch_8A6A  ; 8A63 D0 05                    ..
+        bne     BattleAi_Branch_8A6A            ; 8A63 D0 05                    ..
         iny                                     ; 8A65 C8                       .
         lda     ($79),y                         ; 8A66 B1 79                    .y
         and     #$40                            ; 8A68 29 40                    )@
-BattlePresentation_Branch_8A6A:
+BattleAi_Branch_8A6A:
         rts                                     ; 8A6A 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleRecordSlotWithStatus:
@@ -1616,68 +1616,68 @@ FindBattleSlotForCurrentState:
         sta     $7364                           ; 8A76 8D 64 73                 .ds
         jsr     SelectPartyGroupOffset          ; 8A79 20 32 8A                  2.
         ldy     #$00                            ; 8A7C A0 00                    ..
-BattlePresentation_Branch_8A7E:
+BattleAi_Branch_8A7E:
         lda     SavePartyCharacter1,x           ; 8A7E BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_8A88  ; 8A81 10 05                    ..
+        bpl     BattleAi_Branch_8A88            ; 8A81 10 05                    ..
         dec     $7364                           ; 8A83 CE 64 73                 .ds
-        bmi     BattlePresentation_Branch_8A90  ; 8A86 30 08                    0.
-BattlePresentation_Branch_8A88:
+        bmi     BattleAi_Branch_8A90            ; 8A86 30 08                    0.
+BattleAi_Branch_8A88:
         inx                                     ; 8A88 E8                       .
         iny                                     ; 8A89 C8                       .
         cpy     #$04                            ; 8A8A C0 04                    ..
-        bcc     BattlePresentation_Branch_8A7E  ; 8A8C 90 F0                    ..
+        bcc     BattleAi_Branch_8A7E            ; 8A8C 90 F0                    ..
         clc                                     ; 8A8E 18                       .
         rts                                     ; 8A8F 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8A90:
+BattleAi_Branch_8A90:
         and     #$1F                            ; 8A90 29 1F                    ).
         sec                                     ; 8A92 38                       8
         rts                                     ; 8A93 60                       `
 ; ----------------------------------------------------------------------------
 FindMatchingBattleSlotIndex:
         jsr     GetBattleSlotStateId            ; 8A94 20 AB 8A                  ..
-        bcc     BattlePresentation_Branch_8AA9  ; 8A97 90 10                    ..
+        bcc     BattleAi_Branch_8AA9            ; 8A97 90 10                    ..
         sta     $7365                           ; 8A99 8D 65 73                 .es
         jsr     SelectPartyGroupOffset          ; 8A9C 20 32 8A                  2.
         ldy     #$00                            ; 8A9F A0 00                    ..
         jsr     FindBattleSlotByPartyMarker     ; 8AA1 20 D3 8A                  ..
-        bcc     BattlePresentation_Branch_8AA9  ; 8AA4 90 03                    ..
+        bcc     BattleAi_Branch_8AA9            ; 8AA4 90 03                    ..
         tya                                     ; 8AA6 98                       .
         sec                                     ; 8AA7 38                       8
         rts                                     ; 8AA8 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8AA9:
+BattleAi_Branch_8AA9:
         clc                                     ; 8AA9 18                       .
         rts                                     ; 8AAA 60                       `
 ; ----------------------------------------------------------------------------
 GetBattleSlotStateId:
         tax                                     ; 8AAB AA                       .
         lda     $72EA,x                         ; 8AAC BD EA 72                 ..r
-        bpl     BattlePresentation_Branch_8AA9  ; 8AAF 10 F8                    ..
+        bpl     BattleAi_Branch_8AA9            ; 8AAF 10 F8                    ..
         and     #$1F                            ; 8AB1 29 1F                    ).
         sec                                     ; 8AB3 38                       8
         rts                                     ; 8AB4 60                       `
 ; ----------------------------------------------------------------------------
 FindBattleSlotByStateId:
         jsr     SelectBattleSlotIndex           ; 8AB5 20 66 88                  f.
-        bcc     BattlePresentation_Branch_8ACE  ; 8AB8 90 14                    ..
+        bcc     BattleAi_Branch_8ACE            ; 8AB8 90 14                    ..
 FindBattleSlotByStateIdBody:
         sta     $7364                           ; 8ABA 8D 64 73                 .ds
         ldx     #$09                            ; 8ABD A2 09                    ..
-BattlePresentation_Branch_8ABF:
+BattleAi_Branch_8ABF:
         lda     $72EA,x                         ; 8ABF BD EA 72                 ..r
-        bpl     BattlePresentation_Branch_8ACB  ; 8AC2 10 07                    ..
+        bpl     BattleAi_Branch_8ACB            ; 8AC2 10 07                    ..
         and     #$7F                            ; 8AC4 29 7F                    ).
         cmp     $7364                           ; 8AC6 CD 64 73                 .ds
-        beq     BattlePresentation_Branch_8AD0  ; 8AC9 F0 05                    ..
-BattlePresentation_Branch_8ACB:
+        beq     BattleAi_Branch_8AD0            ; 8AC9 F0 05                    ..
+BattleAi_Branch_8ACB:
         dex                                     ; 8ACB CA                       .
-        bpl     BattlePresentation_Branch_8ABF  ; 8ACC 10 F1                    ..
-BattlePresentation_Branch_8ACE:
+        bpl     BattleAi_Branch_8ABF            ; 8ACC 10 F1                    ..
+BattleAi_Branch_8ACE:
         clc                                     ; 8ACE 18                       .
         rts                                     ; 8ACF 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8AD0:
+BattleAi_Branch_8AD0:
         sec                                     ; 8AD0 38                       8
         txa                                     ; 8AD1 8A                       .
         rts                                     ; 8AD2 60                       `
@@ -1685,25 +1685,25 @@ BattlePresentation_Branch_8AD0:
 FindBattleSlotByPartyMarker:
         lda     #$03                            ; 8AD3 A9 03                    ..
         sta     $7364                           ; 8AD5 8D 64 73                 .ds
-BattlePresentation_Branch_8AD8:
+BattleAi_Branch_8AD8:
         lda     SavePartyCharacter1,x           ; 8AD8 BD 6A 61                 .ja
-        bpl     BattlePresentation_Branch_8AE5  ; 8ADB 10 08                    ..
+        bpl     BattleAi_Branch_8AE5            ; 8ADB 10 08                    ..
         and     #$1F                            ; 8ADD 29 1F                    ).
         cmp     $7365                           ; 8ADF CD 65 73                 .es
-        beq     BattlePresentation_Branch_8AED  ; 8AE2 F0 09                    ..
+        beq     BattleAi_Branch_8AED            ; 8AE2 F0 09                    ..
         iny                                     ; 8AE4 C8                       .
-BattlePresentation_Branch_8AE5:
+BattleAi_Branch_8AE5:
         inx                                     ; 8AE5 E8                       .
         dec     $7364                           ; 8AE6 CE 64 73                 .ds
-        bpl     BattlePresentation_Branch_8AD8  ; 8AE9 10 ED                    ..
+        bpl     BattleAi_Branch_8AD8            ; 8AE9 10 ED                    ..
         clc                                     ; 8AEB 18                       .
         rts                                     ; 8AEC 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8AED:
+BattleAi_Branch_8AED:
         sec                                     ; 8AED 38                       8
         rts                                     ; 8AEE 60                       `
 ; ----------------------------------------------------------------------------
-Bank13_BattlePresentationValuesA:
+Bank13_BattleAiValuesA:
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AEF 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AF7 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8AFF 01 01 01 01 01 01 01 01  ........
@@ -1711,7 +1711,7 @@ Bank13_BattlePresentationValuesA:
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8B0F 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; 8B17 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01             ; 8B1F 01 01 01 01 01           .....
-Bank13_BattlePresentationValuesB:
+Bank13_BattleAiValuesB:
         db   $00,$00,$00,$00,$00,$00,$00,$00 ; 8B24 00 00 00 00 00 00 00 00  ........
         db   $00,$00,$00,$01,$00,$00,$00,$00 ; 8B2C 00 00 00 01 00 00 00 00  ........
         db   $00,$02,$00,$00,$00,$00,$00,$03 ; 8B34 00 02 00 00 00 00 00 03  ........
@@ -1758,18 +1758,18 @@ EmptyBattleRecordHandler:
 ; ----------------------------------------------------------------------------
 AddBattleRecordOffsetA:
         jsr     LoadBattleActionBaseOffset      ; 8C5A 20 BC 8C                  ..
-        jmp     AddScaledOffsetToAccumulator75AD; 8C5D 4C 4B 82                 LK.
+        jmp     AddScaledOffsetToBattleAiScoreA ; 8C5D 4C 4B 82                 LK.
 ; ----------------------------------------------------------------------------
 AddBattleRecordOffsetB:
         jsr     LoadBattleActionBaseOffset      ; 8C60 20 BC 8C                  ..
         jsr     ScaleBattlePointerWordBySmallPowerOfTwo; 8C63 20 C5 81           ..
-        jmp     AddScaledOffsetToAccumulator75AD; 8C66 4C 4B 82                 LK.
+        jmp     AddScaledOffsetToBattleAiScoreA ; 8C66 4C 4B 82                 LK.
 ; ----------------------------------------------------------------------------
 AddBattleRecordOffsetC:
         jsr     LoadBattleActionBaseOffset      ; 8C69 20 BC 8C                  ..
-BattlePresentation_Branch_8C6C:
+BattleAi_Branch_8C6C:
         jsr     ScaleBattlePointerWordBySmallPowerOfTwo; 8C6C 20 C5 81           ..
-        jmp     AddScaledOffsetToAccumulator75AF; 8C6F 4C 60 82                 L`.
+        jmp     AddScaledOffsetToBattleAiScoreB ; 8C6F 4C 60 82                 L`.
 ; ----------------------------------------------------------------------------
 SelectBattleRecordStatField:
         lda     #$14                            ; 8C72 A9 14                    ..
@@ -1777,7 +1777,7 @@ SelectBattleRecordStatField:
 ClearBattleRecordOffsetHigh:
         lda     #$00                            ; 8C76 A9 00                    ..
         sta     $95                             ; 8C78 85 95                    ..
-        beq     BattlePresentation_Branch_8C6C  ; 8C7A F0 F0                    ..
+        beq     BattleAi_Branch_8C6C            ; 8C7A F0 F0                    ..
 ClearBattleRecordOffsetHighAlternate:
         lda     #$1C                            ; 8C7C A9 1C                    ..
         bne     ClearBattleRecordOffsetHigh     ; 8C7E D0 F6                    ..
@@ -1787,7 +1787,7 @@ AccumulateScaledBattleRecordValue:
 ScaleAndAddRecordOffsetToPrimaryTotal:
         lda     #$06                            ; 8C86 A9 06                    ..
         jsr     ScalePointerWordByNibble        ; 8C88 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75AD; 8C8B 4C 4B 82                 LK.
+        jmp     AddScaledOffsetToBattleAiScoreA ; 8C8B 4C 4B 82                 LK.
 ; ----------------------------------------------------------------------------
 AccumulateBattleRecordValue:
         jsr     ComputeBattleRecordOffset       ; 8C8E 20 A5 8C                  ..
@@ -1800,7 +1800,7 @@ LoadBattleRecordOffsetAndStore:
         lda     $01                             ; 8C9B A5 01                    ..
         sta     $95                             ; 8C9D 85 95                    ..
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; 8C9F 20 E0 81          ..
-        jmp     AddScaledOffsetToAccumulator75AF; 8CA2 4C 60 82                 L`.
+        jmp     AddScaledOffsetToBattleAiScoreB ; 8CA2 4C 60 82                 L`.
 ; ----------------------------------------------------------------------------
 ComputeBattleRecordOffset:
         jsr     SumPartyCharacterOffsetPair     ; 8CA5 20 4C 86                  L.
@@ -1823,12 +1823,12 @@ LoadBattleActionBaseOffset:
         asl     a                               ; 8CC3 0A                       .
         tax                                     ; 8CC4 AA                       .
         cpx     #$78                            ; 8CC5 E0 78                    .x
-        bcs     BattlePresentation_Branch_8CCF  ; 8CC7 B0 06                    ..
+        bcs     BattleAi_Branch_8CCF            ; 8CC7 B0 06                    ..
         lda     $B7BD,x                         ; 8CC9 BD BD B7                 ...
         sta     $94                             ; 8CCC 85 94                    ..
         rts                                     ; 8CCE 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8CCF:
+BattleAi_Branch_8CCF:
         sbc     #$78                            ; 8CCF E9 78                    .x
         tax                                     ; 8CD1 AA                       .
         lda     $B7D7,x                         ; 8CD2 BD D7 B7                 ...
@@ -1839,56 +1839,56 @@ L8CD6 = $+ 1
 AddActionBitmapToFieldA:
         ldx     $7599                           ; 8CD8 AE 99 75                 ..u
         lda     $8D0B,x                         ; 8CDB BD 0B 8D                 ...
-        beq     BattlePresentation_Branch_8D00  ; 8CDE F0 20                    .
+        beq     BattleAi_Branch_8D00            ; 8CDE F0 20                    .
         sta     $00                           ; 8CE0 85 00                    ..
         lda     $75AB                           ; 8CE2 AD AB 75                 ..u
         ora     $00                           ; 8CE5 05 00                    ..
         sta     $75AB                           ; 8CE7 8D AB 75                 ..u
         lda     $00                           ; 8CEA A5 00                    ..
         ldy     #$FF                            ; 8CEC A0 FF                    ..
-BattlePresentation_Branch_8CEE:
+BattleAi_Branch_8CEE:
         iny                                     ; 8CEE C8                       .
         lsr     a                               ; 8CEF 4A                       J
-        bcc     BattlePresentation_Branch_8CEE  ; 8CF0 90 FC                    ..
+        bcc     BattleAi_Branch_8CEE            ; 8CF0 90 FC                    ..
         clc                                     ; 8CF2 18                       .
         lda     $759A                           ; 8CF3 AD 9A 75                 ..u
         adc     $75C1,y                         ; 8CF6 79 C1 75                 y.u
-        bcc     BattlePresentation_Branch_8CFD  ; 8CF9 90 02                    ..
+        bcc     BattleAi_Branch_8CFD            ; 8CF9 90 02                    ..
         lda     #$FF                            ; 8CFB A9 FF                    ..
-BattlePresentation_Branch_8CFD:
+BattleAi_Branch_8CFD:
         sta     $75C1,y                         ; 8CFD 99 C1 75                 ..u
-BattlePresentation_Branch_8D00:
+BattleAi_Branch_8D00:
         rts                                     ; 8D00 60                       `
 ; ----------------------------------------------------------------------------
 AddActionBitmapToFieldB:
         ldx     $7599                           ; 8D01 AE 99 75                 ..u
         lda     $8CD6,x                         ; 8D04 BD D6 8C                 ...
-        beq     BattlePresentation_Branch_8D29  ; 8D07 F0 20                    .
+        beq     BattleAi_Branch_8D29            ; 8D07 F0 20                    .
         sta     $00                           ; 8D09 85 00                    ..
         lda     $75AC                           ; 8D0B AD AC 75                 ..u
         ora     $00                           ; 8D0E 05 00                    ..
         sta     $75AC                           ; 8D10 8D AC 75                 ..u
         lda     $00                           ; 8D13 A5 00                    ..
         ldy     #$FF                            ; 8D15 A0 FF                    ..
-BattlePresentation_Branch_8D17:
+BattleAi_Branch_8D17:
         iny                                     ; 8D17 C8                       .
         lsr     a                               ; 8D18 4A                       J
-        bcc     BattlePresentation_Branch_8D17  ; 8D19 90 FC                    ..
+        bcc     BattleAi_Branch_8D17            ; 8D19 90 FC                    ..
         clc                                     ; 8D1B 18                       .
         lda     $759A                           ; 8D1C AD 9A 75                 ..u
         adc     $75C9,y                         ; 8D1F 79 C9 75                 y.u
-        bcc     BattlePresentation_Branch_8D26  ; 8D22 90 02                    ..
+        bcc     BattleAi_Branch_8D26            ; 8D22 90 02                    ..
         lda     #$FF                            ; 8D24 A9 FF                    ..
-BattlePresentation_Branch_8D26:
+BattleAi_Branch_8D26:
         sta     $75C9,y                         ; 8D26 99 C9 75                 ..u
-BattlePresentation_Branch_8D29:
+BattleAi_Branch_8D29:
         rts                                     ; 8D29 60                       `
 ; ----------------------------------------------------------------------------
         db   $08,$10,$80,$01,$01,$01,$02,$02 ; 8D2A 08 10 80 01 01 01 02 02  ........
         db   $02,$20,$40,$02,$10,$00,$00,$00 ; 8D32 02 20 40 02 10 00 00 00  . @.....
         db   $00,$01                         ; 8D3A 00 01                    ..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8D3C:
+BattleAi_Branch_8D3C:
         jsr     NormalizeFourRecordAccumulatorPairs; 8D3C 20 91 8D               ..
         lda     #$00                            ; 8D3F A9 00                    ..
         sta     $77D0                           ; 8D41 8D D0 77                 ..w
@@ -1896,7 +1896,7 @@ BattlePresentation_Branch_8D3C:
         lda     $93                             ; 8D47 A5 93                    ..
         sta     $81                             ; 8D49 85 81                    ..
         jsr     TestBattleRecordVisibility      ; 8D4B 20 69 8D                  i.
-        beq     BattlePresentation_Branch_8D68  ; 8D4E F0 18                    ..
+        beq     BattleAi_Branch_8D68            ; 8D4E F0 18                    ..
         jsr     LoadBattleRecordBasePointer     ; 8D50 20 77 8D                  w.
         jsr     WriteScaledPairsToRecordOffsets00To06; 8D53 20 E7 8D             ..
         jsr     WriteScaled75ADToRecordOffsets08To0E; 8D56 20 0B 8E              ..
@@ -1905,16 +1905,16 @@ BattlePresentation_Branch_8D3C:
         jsr     WriteBattleRecordWordGroup      ; 8D5F 20 9E 8E                  ..
         jsr     WriteBattleRecordFlags          ; 8D62 20 CE 8E                  ..
         jsr     AdvanceBattleRecordPointer      ; 8D65 20 16 8F                  ..
-BattlePresentation_Branch_8D68:
+BattleAi_Branch_8D68:
         rts                                     ; 8D68 60                       `
 ; ----------------------------------------------------------------------------
 TestBattleRecordVisibility:
         ldx     $81                             ; 8D69 A6 81                    ..
         lda     $FF5E,x                         ; 8D6B BD 5E FF                 .^.
         and     $7578                           ; 8D6E 2D 78 75                 -xu
-        beq     BattlePresentation_Branch_8D76  ; 8D71 F0 03                    ..
+        beq     BattleAi_Branch_8D76            ; 8D71 F0 03                    ..
         lda     $7579,x                         ; 8D73 BD 79 75                 .yu
-BattlePresentation_Branch_8D76:
+BattleAi_Branch_8D76:
         rts                                     ; 8D76 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleRecordBasePointer:
@@ -1937,7 +1937,7 @@ NormalizeFourRecordAccumulatorPairs:
         lda     #$00                            ; 8D91 A9 00                    ..
         sta     $77D0                           ; 8D93 8D D0 77                 ..w
         ldy     #$00                            ; 8D96 A0 00                    ..
-BattlePresentation_Branch_8D98:
+BattleAi_Branch_8D98:
         lda     $7591,y                         ; 8D98 B9 91 75                 ..u
         pha                                     ; 8D9B 48                       H
         tya                                     ; 8D9C 98                       .
@@ -1951,7 +1951,7 @@ BattlePresentation_Branch_8D98:
         jsr     ScalePointerWordByNibble        ; 8DAA 20 98 81                  ..
         lda     $94                             ; 8DAD A5 94                    ..
         ora     $95                             ; 8DAF 05 95                    ..
-        beq     BattlePresentation_Branch_8DC4  ; 8DB1 F0 11                    ..
+        beq     BattleAi_Branch_8DC4            ; 8DB1 F0 11                    ..
         lda     $92                             ; 8DB3 A5 92                    ..
         asl     a                               ; 8DB5 0A                       .
         asl     a                               ; 8DB6 0A                       .
@@ -1960,7 +1960,7 @@ BattlePresentation_Branch_8D98:
         lda     $8DD3,x                         ; 8DBB BD D3 8D                 ...
         jsr     ScalePointerWordByNibble        ; 8DBE 20 98 81                  ..
         inc     $77D0                           ; 8DC1 EE D0 77                 ..w
-BattlePresentation_Branch_8DC4:
+BattleAi_Branch_8DC4:
         tya                                     ; 8DC4 98                       .
         asl     a                               ; 8DC5 0A                       .
         tax                                     ; 8DC6 AA                       .
@@ -1971,7 +1971,7 @@ BattlePresentation_Branch_8DC4:
         iny                                     ; 8DD1 C8                       .
 L8DD3 = $+ 1
         cpy     #$04                            ; 8DD2 C0 04                    ..
-        bcc     BattlePresentation_Branch_8D98  ; 8DD4 90 C2                    ..
+        bcc     BattleAi_Branch_8D98            ; 8DD4 90 C2                    ..
         rts                                     ; 8DD6 60                       `
 ; ----------------------------------------------------------------------------
         db   $10,$00,$00,$00,$09,$07,$00,$00 ; 8DD7 10 00 00 00 09 07 00 00  ........
@@ -1980,7 +1980,7 @@ L8DD3 = $+ 1
 WriteScaledPairsToRecordOffsets00To06:
         lda     #$03                            ; 8DE7 A9 03                    ..
         sta     $82                             ; 8DE9 85 82                    ..
-BattlePresentation_Branch_8DEB:
+BattleAi_Branch_8DEB:
         lda     $82                             ; 8DEB A5 82                    ..
         asl     a                               ; 8DED 0A                       .
         tay                                     ; 8DEE A8                       .
@@ -1994,23 +1994,23 @@ BattlePresentation_Branch_8DEB:
         ldy     #$00                            ; 8E01 A0 00                    ..
         jsr     CopyIndexedRecordPair           ; 8E03 20 1D 83                  ..
         dec     $82                             ; 8E06 C6 82                    ..
-        bpl     BattlePresentation_Branch_8DEB  ; 8E08 10 E1                    ..
+        bpl     BattleAi_Branch_8DEB            ; 8E08 10 E1                    ..
         rts                                     ; 8E0A 60                       `
 ; ----------------------------------------------------------------------------
 WriteScaled75ADToRecordOffsets08To0E:
-        lda     $75AD                           ; 8E0B AD AD 75                 ..u
+        lda     BattleAiScoreA                  ; 8E0B AD AD 75                 ..u
         sta     $00                           ; 8E0E 85 00                    ..
         lda     $75AE                           ; 8E10 AD AE 75                 ..u
         sta     $01                             ; 8E13 85 01                    ..
         ldx     $81                             ; 8E15 A6 81                    ..
         lda     $7581,x                         ; 8E17 BD 81 75                 ..u
-        beq     BattlePresentation_Branch_8E41  ; 8E1A F0 25                    .%
+        beq     BattleAi_Branch_8E41            ; 8E1A F0 25                    .%
         ldx     #$00                            ; 8E1C A2 00                    ..
         jsr     ScalePointerWordByNibbleBody    ; 8E1E 20 9A 81                  ..
         jsr     DivideIndexedBattleWordBySmallPowerOfTwo; 8E21 20 16 82          ..
         lda     #$03                            ; 8E24 A9 03                    ..
         sta     $82                             ; 8E26 85 82                    ..
-BattlePresentation_Branch_8E28:
+BattleAi_Branch_8E28:
         lda     $00                           ; 8E28 A5 00                    ..
         sta     $94                             ; 8E2A 85 94                    ..
         lda     $01                             ; 8E2C A5 01                    ..
@@ -2021,12 +2021,12 @@ BattlePresentation_Branch_8E28:
         ldy     #$08                            ; 8E38 A0 08                    ..
         jsr     CopyIndexedRecordPair           ; 8E3A 20 1D 83                  ..
         dec     $82                             ; 8E3D C6 82                    ..
-        bpl     BattlePresentation_Branch_8E28  ; 8E3F 10 E7                    ..
-BattlePresentation_Branch_8E41:
+        bpl     BattleAi_Branch_8E28            ; 8E3F 10 E7                    ..
+BattleAi_Branch_8E41:
         rts                                     ; 8E41 60                       `
 ; ----------------------------------------------------------------------------
 WriteDivided75AFToRecordOffsets10To16:
-        lda     $75AF                           ; 8E42 AD AF 75                 ..u
+        lda     BattleAiScoreB                  ; 8E42 AD AF 75                 ..u
         sta     $94                             ; 8E45 85 94                    ..
         lda     $75B0                           ; 8E47 AD B0 75                 ..u
         sta     $95                             ; 8E4A 85 95                    ..
@@ -2034,27 +2034,27 @@ WriteDivided75AFToRecordOffsets10To16:
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; 8E4E 20 E0 81          ..
         lda     #$03                            ; 8E51 A9 03                    ..
         sta     $82                             ; 8E53 85 82                    ..
-BattlePresentation_Branch_8E55:
+BattleAi_Branch_8E55:
         ldy     #$10                            ; 8E55 A0 10                    ..
         jsr     CopyIndexedRecordPair           ; 8E57 20 1D 83                  ..
         dec     $82                             ; 8E5A C6 82                    ..
-        bpl     BattlePresentation_Branch_8E55  ; 8E5C 10 F7                    ..
+        bpl     BattleAi_Branch_8E55            ; 8E5C 10 F7                    ..
         rts                                     ; 8E5E 60                       `
 ; ----------------------------------------------------------------------------
 WriteScaledBattleRecordWordGroup:
-        lda     $75B1                           ; 8E5F AD B1 75                 ..u
+        lda     BattleAiScoreC                  ; 8E5F AD B1 75                 ..u
         ldx     $75B2                           ; 8E62 AE B2 75                 ..u
         ldy     #$18                            ; 8E65 A0 18                    ..
         jsr     WriteBattleRecordWord           ; 8E67 20 88 8E                  ..
-        lda     $75B5                           ; 8E6A AD B5 75                 ..u
+        lda     BattleAiScoreE                  ; 8E6A AD B5 75                 ..u
         ldx     $75B6                           ; 8E6D AE B6 75                 ..u
         ldy     #$1C                            ; 8E70 A0 1C                    ..
         jsr     WriteBattleRecordWord           ; 8E72 20 88 8E                  ..
-        lda     $75B9                           ; 8E75 AD B9 75                 ..u
+        lda     BattleAiScoreG                  ; 8E75 AD B9 75                 ..u
         ldx     $75BA                           ; 8E78 AE BA 75                 ..u
         ldy     #$20                            ; 8E7B A0 20                    .
         jsr     WriteBattleRecordWord           ; 8E7D 20 88 8E                  ..
-        lda     $75BD                           ; 8E80 AD BD 75                 ..u
+        lda     BattleAiScoreI                  ; 8E80 AD BD 75                 ..u
         ldx     $75BE                           ; 8E83 AE BE 75                 ..u
         ldy     #$36                            ; 8E86 A0 36                    .6
 WriteBattleRecordWord:
@@ -2071,19 +2071,19 @@ WriteBattleRecordWord:
         rts                                     ; 8E9D 60                       `
 ; ----------------------------------------------------------------------------
 WriteBattleRecordWordGroup:
-        lda     $75B3                           ; 8E9E AD B3 75                 ..u
+        lda     BattleAiScoreD                  ; 8E9E AD B3 75                 ..u
         ldx     $75B4                           ; 8EA1 AE B4 75                 ..u
         ldy     #$1A                            ; 8EA4 A0 1A                    ..
         jsr     WriteBattleRecordWordBody       ; 8EA6 20 C7 8E                  ..
-        lda     $75B7                           ; 8EA9 AD B7 75                 ..u
+        lda     BattleAiScoreF                  ; 8EA9 AD B7 75                 ..u
         ldx     $75B8                           ; 8EAC AE B8 75                 ..u
         ldy     #$1E                            ; 8EAF A0 1E                    ..
         jsr     WriteBattleRecordWordBody       ; 8EB1 20 C7 8E                  ..
-        lda     $75BB                           ; 8EB4 AD BB 75                 ..u
+        lda     BattleAiScoreH                  ; 8EB4 AD BB 75                 ..u
         ldx     $75BC                           ; 8EB7 AE BC 75                 ..u
         ldy     #$22                            ; 8EBA A0 22                    ."
         jsr     WriteBattleRecordWordBody       ; 8EBC 20 C7 8E                  ..
-        lda     $75BF                           ; 8EBF AD BF 75                 ..u
+        lda     BattleAiScoreJ                  ; 8EBF AD BF 75                 ..u
         ldx     $75C0                           ; 8EC2 AE C0 75                 ..u
         ldy     #$38                            ; 8EC5 A0 38                    .8
 WriteBattleRecordWordBody:
@@ -2096,20 +2096,20 @@ WriteBattleRecordWordBody:
 WriteBattleRecordFlags:
         ldx     #$07                            ; 8ECE A2 07                    ..
         ldy     #$2C                            ; 8ED0 A0 2C                    .,
-BattlePresentation_Branch_8ED2:
+BattleAi_Branch_8ED2:
         lda     $75C1,x                         ; 8ED2 BD C1 75                 ..u
         sta     ($88),y                       ; 8ED5 91 88                    ..
         dey                                     ; 8ED7 88                       .
         dex                                     ; 8ED8 CA                       .
-        bpl     BattlePresentation_Branch_8ED2  ; 8ED9 10 F7                    ..
+        bpl     BattleAi_Branch_8ED2            ; 8ED9 10 F7                    ..
         ldx     #$07                            ; 8EDB A2 07                    ..
         ldy     #$35                            ; 8EDD A0 35                    .5
-BattlePresentation_Branch_8EDF:
+BattleAi_Branch_8EDF:
         lda     $75C9,x                         ; 8EDF BD C9 75                 ..u
         sta     ($88),y                       ; 8EE2 91 88                    ..
         dey                                     ; 8EE4 88                       .
         dex                                     ; 8EE5 CA                       .
-        bpl     BattlePresentation_Branch_8EDF  ; 8EE6 10 F7                    ..
+        bpl     BattleAi_Branch_8EDF            ; 8EE6 10 F7                    ..
         ldy     #$24                            ; 8EE8 A0 24                    .$
         lda     $75AB                           ; 8EEA AD AB 75                 ..u
         sta     ($88),y                       ; 8EED 91 88                    ..
@@ -2120,7 +2120,7 @@ BattlePresentation_Branch_8EDF:
         lda     $7581,x                         ; 8EF8 BD 81 75                 ..u
         sta     $00                           ; 8EFB 85 00                    ..
         ldy     #$25                            ; 8EFD A0 25                    .%
-BattlePresentation_Branch_8EFF:
+BattleAi_Branch_8EFF:
         lda     ($88),y                       ; 8EFF B1 88                    ..
         sta     $94                             ; 8F01 85 94                    ..
         lda     #$00                            ; 8F03 A9 00                    ..
@@ -2131,7 +2131,7 @@ BattlePresentation_Branch_8EFF:
         sta     ($88),y                       ; 8F0E 91 88                    ..
         iny                                     ; 8F10 C8                       .
         cpy     #$2D                            ; 8F11 C0 2D                    .-
-        bcc     BattlePresentation_Branch_8EFF  ; 8F13 90 EA                    ..
+        bcc     BattleAi_Branch_8EFF            ; 8F13 90 EA                    ..
         rts                                     ; 8F15 60                       `
 ; ----------------------------------------------------------------------------
 AdvanceBattleRecordPointer:
@@ -2145,65 +2145,65 @@ AdvanceBattleRecordPointer:
         sta     ($88),y                       ; 8F23 91 88                    ..
         rts                                     ; 8F25 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_8F26:
+BattleAi_Branch_8F26:
         lda     #$07                            ; 8F26 A9 07                    ..
         sta     $81                             ; 8F28 85 81                    ..
-BattlePresentation_Branch_8F2A:
+BattleAi_Branch_8F2A:
         jsr     LoadBattleRecordBasePointer     ; 8F2A 20 77 8D                  w.
         ldx     #$06                            ; 8F2D A2 06                    ..
-BattlePresentation_Branch_8F2F:
+BattleAi_Branch_8F2F:
         lda     Bank13_BattleFieldOffsets,x     ; 8F2F BD EC 90                 ...
         jsr     AccumulateBattleFrameFromYOffset; 8F32 20 D0 90                  ..
         dex                                     ; 8F35 CA                       .
-        bpl     BattlePresentation_Branch_8F2F  ; 8F36 10 F7                    ..
+        bpl     BattleAi_Branch_8F2F            ; 8F36 10 F7                    ..
         ldx     #$0A                            ; 8F38 A2 0A                    ..
-BattlePresentation_Branch_8F3A:
+BattleAi_Branch_8F3A:
         lda     $90F4,x                         ; 8F3A BD F4 90                 ...
         jsr     AccumulateBattleFrameFromXOffset; 8F3D 20 D4 90                  ..
         dex                                     ; 8F40 CA                       .
-        bpl     BattlePresentation_Branch_8F3A  ; 8F41 10 F7                    ..
+        bpl     BattleAi_Branch_8F3A            ; 8F41 10 F7                    ..
         jsr     AccumulateBattleFrameA          ; 8F43 20 B6 90                  ..
         dec     $81                             ; 8F46 C6 81                    ..
-        bpl     BattlePresentation_Branch_8F2A  ; 8F48 10 E0                    ..
+        bpl     BattleAi_Branch_8F2A            ; 8F48 10 E0                    ..
         jsr     ScaleTwentyFieldPairsAcrossEightRecords; 8F4A 20 E8 A4           ..
-        jsr     ComputeBattlePresentationSeed   ; 8F4D 20 21 90                  !.
+        jsr     ComputeBattleAiSeed             ; 8F4D 20 21 90                  !.
         lda     #$07                            ; 8F50 A9 07                    ..
         sta     $81                             ; 8F52 85 81                    ..
-BattlePresentation_Branch_8F54:
+BattleAi_Branch_8F54:
         jsr     LoadBattleRecordBasePointer     ; 8F54 20 77 8D                  w.
-        jsr     ComputeSeeds759DAnd75A1FromFrameOffsets37And39; 8F57 20 67 90    g.
+        jsr     ComputeBattleAiWorkingScoreDeltas; 8F57 20 67 90                 g.
         ldy     #$24                            ; 8F5A A0 24                    .$
-        jsr     AccumulateBattlePresentationBits; 8F5C 20 73 8F                  s.
+        jsr     AccumulateBattleAiBits          ; 8F5C 20 73 8F                  s.
         ldy     #$36                            ; 8F5F A0 36                    .6
         jsr     AddBattleWordToFrame            ; 8F61 20 12 90                  ..
         ldy     #$2D                            ; 8F64 A0 2D                    .-
-        jsr     AccumulateBattlePresentationBits; 8F66 20 73 8F                  s.
+        jsr     AccumulateBattleAiBits          ; 8F66 20 73 8F                  s.
         ldy     #$38                            ; 8F69 A0 38                    .8
         jsr     AddBattleWordToFrame            ; 8F6B 20 12 90                  ..
         dec     $81                             ; 8F6E C6 81                    ..
-        bpl     BattlePresentation_Branch_8F54  ; 8F70 10 E2                    ..
+        bpl     BattleAi_Branch_8F54            ; 8F70 10 E2                    ..
         rts                                     ; 8F72 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationBits:
+AccumulateBattleAiBits:
         lda     #$00                            ; 8F73 A9 00                    ..
         sta     $94                             ; 8F75 85 94                    ..
         sta     $95                             ; 8F77 85 95                    ..
         lda     ($88),y                       ; 8F79 B1 88                    ..
         sta     $0F                             ; 8F7B 85 0F                    ..
         ldx     #$00                            ; 8F7D A2 00                    ..
-BattlePresentation_Branch_8F7F:
+BattleAi_Branch_8F7F:
         txa                                     ; 8F7F 8A                       .
         pha                                     ; 8F80 48                       H
         sta     $759A                           ; 8F81 8D 9A 75                 ..u
         lsr     $0F                             ; 8F84 46 0F                    F.
-        bcc     BattlePresentation_Branch_8F8B  ; 8F86 90 03                    ..
+        bcc     BattleAi_Branch_8F8B            ; 8F86 90 03                    ..
         jsr     DispatchBattleMathHelper        ; 8F88 20 93 8F                  ..
-BattlePresentation_Branch_8F8B:
+BattleAi_Branch_8F8B:
         pla                                     ; 8F8B 68                       h
         tax                                     ; 8F8C AA                       .
         inx                                     ; 8F8D E8                       .
         cpx     #$08                            ; 8F8E E0 08                    ..
-        bcc     BattlePresentation_Branch_8F7F  ; 8F90 90 ED                    ..
+        bcc     BattleAi_Branch_8F7F            ; 8F90 90 ED                    ..
         rts                                     ; 8F92 60                       `
 ; ----------------------------------------------------------------------------
 DispatchBattleMathHelper:
@@ -2215,8 +2215,8 @@ DispatchBattleMathHelper:
         sta     $01                             ; 8F9D 85 01                    ..
         jmp     ($0000)                         ; 8F9F 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-LoadAndHalveAccumulator759F:
-        lda     $759F                           ; 8FA2 AD 9F 75                 ..u
+LoadAndHalveBattleAiWorkingScoreC:
+        lda     BattleAiWorkingScoreC           ; 8FA2 AD 9F 75                 ..u
         ldx     $75A0                           ; 8FA5 AE A0 75                 ..u
 HalveAndAccumulateBattleMathOperand:
         jsr     SetBattleMathOperands           ; 8FA8 20 EF 8F                  ..
@@ -2224,26 +2224,26 @@ HalveAndAccumulateBattleMathOperand:
         ror     $00                           ; 8FAD 66 00                    f.
         jmp     AccumulateWeightedBattleMathValue; 8FAF 4C F4 8F                L..
 ; ----------------------------------------------------------------------------
-LoadAndHalveAccumulator75A1:
-        lda     $75A1                           ; 8FB2 AD A1 75                 ..u
+LoadAndHalveBattleAiWorkingScoreD:
+        lda     BattleAiWorkingScoreD           ; 8FB2 AD A1 75                 ..u
         ldx     $75A2                           ; 8FB5 AE A2 75                 ..u
         jmp     HalveAndAccumulateBattleMathOperand; 8FB8 4C A8 8F              L..
 ; ----------------------------------------------------------------------------
-LoadAccumulator75A1:
-        lda     $75A1                           ; 8FBB AD A1 75                 ..u
+LoadBattleAiWorkingScoreD:
+        lda     BattleAiWorkingScoreD           ; 8FBB AD A1 75                 ..u
         ldx     $75A2                           ; 8FBE AE A2 75                 ..u
 AccumulateBattleMathOperand:
         jsr     SetBattleMathOperands           ; 8FC1 20 EF 8F                  ..
         jmp     AccumulateWeightedBattleMathValue; 8FC4 4C F4 8F                L..
 ; ----------------------------------------------------------------------------
-LoadAndHalveAccumulator759B:
-        lda     $759B                           ; 8FC7 AD 9B 75                 ..u
+LoadAndHalveBattleAiWorkingScoreA:
+        lda     BattleAiWorkingScoreA           ; 8FC7 AD 9B 75                 ..u
         ldx     $759C                           ; 8FCA AE 9C 75                 ..u
         jsr     SetBattleMathOperands           ; 8FCD 20 EF 8F                  ..
         jmp     HalveAndAccumulateBattleMathOperand; 8FD0 4C A8 8F              L..
 ; ----------------------------------------------------------------------------
-LoadAccumulator759B:
-        lda     $759B                           ; 8FD3 AD 9B 75                 ..u
+LoadBattleAiWorkingScoreA:
+        lda     BattleAiWorkingScoreA           ; 8FD3 AD 9B 75                 ..u
         ldx     $759C                           ; 8FD6 AE 9C 75                 ..u
         jmp     AccumulateBattleMathOperand     ; 8FD9 4C C1 8F                 L..
 ; ----------------------------------------------------------------------------
@@ -2292,7 +2292,7 @@ AddBattleWordToFrame:
         sta     ($88),y                       ; 901E 91 88                    ..
         rts                                     ; 9020 60                       `
 ; ----------------------------------------------------------------------------
-ComputeBattlePresentationSeed:
+ComputeBattleAiSeed:
         lda     #$00                            ; 9021 A9 00                    ..
         sta     $00                           ; 9023 85 00                    ..
         sta     $01                             ; 9025 85 01                    ..
@@ -2301,20 +2301,20 @@ ComputeBattlePresentationSeed:
         sta     $81                             ; 902B 85 81                    ..
         lda     $7577                           ; 902D AD 77 75                 .wu
         sta     $03                             ; 9030 85 03                    ..
-BattlePresentation_Branch_9032:
+BattleAi_Branch_9032:
         lsr     $03                             ; 9032 46 03                    F.
-        bcc     BattlePresentation_Branch_9038  ; 9034 90 02                    ..
+        bcc     BattleAi_Branch_9038            ; 9034 90 02                    ..
         inc     $00                           ; 9036 E6 00                    ..
-BattlePresentation_Branch_9038:
+BattleAi_Branch_9038:
         jsr     LoadBattleRecordBasePointer     ; 9038 20 77 8D                  w.
         ldy     #$36                            ; 903B A0 36                    .6
         jsr     AddFrameWordToRunningTotal      ; 903D 20 A7 90                  ..
         ldy     #$38                            ; 9040 A0 38                    .8
         jsr     AddFrameWordToRunningTotal      ; 9042 20 A7 90                  ..
         dec     $81                             ; 9045 C6 81                    ..
-        bpl     BattlePresentation_Branch_9032  ; 9047 10 E9                    ..
+        bpl     BattleAi_Branch_9032            ; 9047 10 E9                    ..
         lda     $01                             ; 9049 A5 01                    ..
-        sta     $759B                           ; 904B 8D 9B 75                 ..u
+        sta     BattleAiWorkingScoreA           ; 904B 8D 9B 75                 ..u
         lda     $02                           ; 904E A5 02                    ..
         sta     $759C                           ; 9050 8D 9C 75                 ..u
         ldx     #$01                            ; 9053 A2 01                    ..
@@ -2322,13 +2322,13 @@ BattlePresentation_Branch_9038:
         sta     $82                             ; 9057 85 82                    ..
         jsr     DividePointerWord               ; 9059 20 51 C8                  Q.
         lda     $01                             ; 905C A5 01                    ..
-        sta     $759F                           ; 905E 8D 9F 75                 ..u
+        sta     BattleAiWorkingScoreC           ; 905E 8D 9F 75                 ..u
         lda     $02                           ; 9061 A5 02                    ..
         sta     $75A0                           ; 9063 8D A0 75                 ..u
         rts                                     ; 9066 60                       `
 ; ----------------------------------------------------------------------------
-ComputeSeeds759DAnd75A1FromFrameOffsets37And39:
-        lda     $759B                           ; 9067 AD 9B 75                 ..u
+ComputeBattleAiWorkingScoreDeltas:
+        lda     BattleAiWorkingScoreA           ; 9067 AD 9B 75                 ..u
         ldx     $759C                           ; 906A AE 9C 75                 ..u
         jsr     SetBattleMathOperands           ; 906D 20 EF 8F                  ..
         ldy     #$37                            ; 9070 A0 37                    .7
@@ -2342,12 +2342,12 @@ ComputeSeeds759DAnd75A1FromFrameOffsets37And39:
         ldx     $82                             ; 9084 A6 82                    ..
         dex                                     ; 9086 CA                       .
         txa                                     ; 9087 8A                       .
-        beq     BattlePresentation_Branch_908F  ; 9088 F0 05                    ..
+        beq     BattleAi_Branch_908F            ; 9088 F0 05                    ..
         ldx     #$00                            ; 908A A2 00                    ..
         jsr     DividePointerWord               ; 908C 20 51 C8                  Q.
-BattlePresentation_Branch_908F:
+BattleAi_Branch_908F:
         lda     $00                           ; 908F A5 00                    ..
-        sta     $75A1                           ; 9091 8D A1 75                 ..u
+        sta     BattleAiWorkingScoreD           ; 9091 8D A1 75                 ..u
         lda     $01                             ; 9094 A5 01                    ..
         sta     $75A2                           ; 9096 8D A2 75                 ..u
         rts                                     ; 9099 60                       `
@@ -2390,10 +2390,10 @@ AccumulateBattleFrameB:
 ; ----------------------------------------------------------------------------
 AccumulateBattleFrameFromYOffset:
         ldy     #$36                            ; 90D0 A0 36                    .6
-        bne     BattlePresentation_Branch_90D6  ; 90D2 D0 02                    ..
+        bne     BattleAi_Branch_90D6            ; 90D2 D0 02                    ..
 AccumulateBattleFrameFromXOffset:
         ldy     #$38                            ; 90D4 A0 38                    .8
-BattlePresentation_Branch_90D6:
+BattleAi_Branch_90D6:
         sty     $00                           ; 90D6 84 00                    ..
         tay                                     ; 90D8 A8                       .
         pha                                     ; 90D9 48                       H
@@ -2422,19 +2422,19 @@ CommitResolvedBattleActionState:
         ldx     $96                             ; 9110 A6 96                    ..
         lda     $75DB                           ; 9112 AD DB 75                 ..u
         cmp     #$FF                            ; 9115 C9 FF                    ..
-        beq     BattlePresentation_Branch_912F  ; 9117 F0 16                    ..
+        beq     BattleAi_Branch_912F            ; 9117 F0 16                    ..
         sta     $7324,x                         ; 9119 9D 24 73                 .$s
         lda     $75DA                           ; 911C AD DA 75                 ..u
         sta     $7300,x                         ; 911F 9D 00 73                 ..s
         and     #$70                            ; 9122 29 70                    )p
         cmp     #$20                            ; 9124 C9 20                    .
-        bne     BattlePresentation_Branch_912E  ; 9126 D0 06                    ..
+        bne     BattleAi_Branch_912E            ; 9126 D0 06                    ..
         lda     $75F2                           ; 9128 AD F2 75                 ..u
         sta     $7324,x                         ; 912B 9D 24 73                 .$s
-BattlePresentation_Branch_912E:
+BattleAi_Branch_912E:
         rts                                     ; 912E 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_912F:
+BattleAi_Branch_912F:
         lda     #$3C                            ; 912F A9 3C                    .<
         sta     $7324,x                         ; 9131 9D 24 73                 .$s
         rts                                     ; 9134 60                       `
@@ -2442,31 +2442,31 @@ BattlePresentation_Branch_912F:
 DispatchSpecialBattleAction:
         lda     $75DA                           ; 9135 AD DA 75                 ..u
         and     #$70                            ; 9138 29 70                    )p
-        bne     BattlePresentation_Branch_9155  ; 913A D0 19                    ..
+        bne     BattleAi_Branch_9155            ; 913A D0 19                    ..
         lda     $75DB                           ; 913C AD DB 75                 ..u
         cmp     #$13                            ; 913F C9 13                    ..
         bcc     LoadActionThresholdFromTable    ; 9141 90 35                    .5
         cmp     #$1C                            ; 9143 C9 1C                    ..
-        bcc     CompareActionThreshold75ECWith06; 9145 90 53                    .S
+        bcc     CompareBattleAiThresholdWithFallback; 9145 90 53                .S
         cmp     #$29                            ; 9147 C9 29                    .)
-        bcc     BattlePresentation_Branch_9174  ; 9149 90 29                    .)
+        bcc     BattleAi_Branch_9174            ; 9149 90 29                    .)
         cmp     #$33                            ; 914B C9 33                    .3
         bcc     NoActionThreshold               ; 914D 90 27                    .'
         cmp     #$43                            ; 914F C9 43                    .C
         beq     LoadActionThresholdFromTable    ; 9151 F0 25                    .%
-        bne     BattlePresentation_Branch_9174  ; 9153 D0 1F                    ..
-BattlePresentation_Branch_9155:
+        bne     BattleAi_Branch_9174            ; 9153 D0 1F                    ..
+BattleAi_Branch_9155:
         ldx     #$11                            ; 9155 A2 11                    ..
-BattlePresentation_Branch_9157:
+BattleAi_Branch_9157:
         lda     Bank13_SpecialBattleActionIds,x ; 9157 BD A9 91                 ...
         cmp     $75DB                           ; 915A CD DB 75                 ..u
-        beq     BattlePresentation_Branch_9164  ; 915D F0 05                    ..
+        beq     BattleAi_Branch_9164            ; 915D F0 05                    ..
         dex                                     ; 915F CA                       .
-        bpl     BattlePresentation_Branch_9157  ; 9160 10 F5                    ..
+        bpl     BattleAi_Branch_9157            ; 9160 10 F5                    ..
         sec                                     ; 9162 38                       8
         rts                                     ; 9163 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9164:
+BattleAi_Branch_9164:
         txa                                     ; 9164 8A                       .
         asl     a                               ; 9165 0A                       .
         tax                                     ; 9166 AA                       .
@@ -2476,7 +2476,7 @@ BattlePresentation_Branch_9164:
         sta     $01                             ; 916F 85 01                    ..
         jmp     ($0000)                         ; 9171 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9174:
+BattleAi_Branch_9174:
         sec                                     ; 9174 38                       8
         rts                                     ; 9175 60                       `
 ; ----------------------------------------------------------------------------
@@ -2494,15 +2494,15 @@ LoadActionThresholdFromTable:
         jsr     MultiplyPointerWord             ; 9186 20 27 C8                  '.
         jsr     ShiftIndexedWordRightBy4        ; 9189 20 87 81                  ..
         lda     $01                             ; 918C A5 01                    ..
-        beq     BattlePresentation_Branch_9194  ; 918E F0 04                    ..
+        beq     BattleAi_Branch_9194            ; 918E F0 04                    ..
         lda     #$FF                            ; 9190 A9 FF                    ..
         sta     $00                           ; 9192 85 00                    ..
-BattlePresentation_Branch_9194:
+BattleAi_Branch_9194:
         lda     $75EC                           ; 9194 AD EC 75                 ..u
         cmp     $00                           ; 9197 C5 00                    ..
         rts                                     ; 9199 60                       `
 ; ----------------------------------------------------------------------------
-CompareActionThreshold75ECWith06:
+CompareBattleAiThresholdWithFallback:
         lda     #$06                            ; 919A A9 06                    ..
         cmp     $75EC                           ; 919C CD EC 75                 ..u
         rts                                     ; 919F 60                       `
@@ -2528,45 +2528,45 @@ Bank13_SpecialBattleActionHandlerPointers:
         db   $91,$76,$91,$76,$91,$9A,$91,$76 ; 91E6 91 76 91 76 91 9A 91 76  .v.v...v
         db   $91                             ; 91EE 91                       .
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationStateLimit:
+LoadBattleAiStateLimit:
         lda     $75D3                           ; 91EF AD D3 75                 ..u
         cmp     #$10                            ; 91F2 C9 10                    ..
-        bcc     BattlePresentation_Branch_91F9  ; 91F4 90 03                    ..
-        jsr     MapPresentationCode             ; 91F6 20 BC B5                  ..
-BattlePresentation_Branch_91F9:
+        bcc     BattleAi_Branch_91F9            ; 91F4 90 03                    ..
+        jsr     MapActionEffectRollCode         ; 91F6 20 BC B5                  ..
+BattleAi_Branch_91F9:
         asl     a                               ; 91F9 0A                       .
         tax                                     ; 91FA AA                       .
         lda     $B74D,x                         ; 91FB BD 4D B7                 .M.
         sta     $8A                             ; 91FE 85 8A                    ..
         rts                                     ; 9200 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationStateMask:
+LoadBattleAiStateMask:
         ldx     $75D3                           ; 9201 AE D3 75                 ..u
-        lda     Bank13_BattlePresentationStateLookup,x; 9204 BD 67 B9           .g.
+        lda     Bank13_BattleAiStateLookup,x    ; 9204 BD 67 B9                 .g.
         and     #$1F                            ; 9207 29 1F                    ).
         cmp     #$1F                            ; 9209 C9 1F                    ..
-        bne     BattlePresentation_Branch_920F  ; 920B D0 02                    ..
+        bne     BattleAi_Branch_920F            ; 920B D0 02                    ..
         lda     #$00                            ; 920D A9 00                    ..
-BattlePresentation_Branch_920F:
+BattleAi_Branch_920F:
         sta     $8B                             ; 920F 85 8B                    ..
         rts                                     ; 9211 60                       `
 ; ----------------------------------------------------------------------------
-InitializeBattlePresentationWindow:
+InitializeBattleAiWindow:
         lda     #$00                            ; 9212 A9 00                    ..
         sta     $01                             ; 9214 85 01                    ..
         sta     $02                           ; 9216 85 02                    ..
         lda     #$07                            ; 9218 A9 07                    ..
         sta     $81                             ; 921A 85 81                    ..
-BattlePresentation_Branch_921C:
+BattleAi_Branch_921C:
         jsr     LoadBattleRecordBasePointer     ; 921C 20 77 8D                  w.
         ldy     #$00                            ; 921F A0 00                    ..
-        jsr     AddBattlePresentationWordTriplet; 9221 20 5F 92                  _.
+        jsr     AddBattleAiWordTriplet          ; 9221 20 5F 92                  _.
         ldy     #$08                            ; 9224 A0 08                    ..
-        jsr     AddBattlePresentationWordTriplet; 9226 20 5F 92                  _.
+        jsr     AddBattleAiWordTriplet          ; 9226 20 5F 92                  _.
         ldy     #$10                            ; 9229 A0 10                    ..
-        jsr     AddBattlePresentationWordTriplet; 922B 20 5F 92                  _.
+        jsr     AddBattleAiWordTriplet          ; 922B 20 5F 92                  _.
         dec     $81                             ; 922E C6 81                    ..
-        bpl     BattlePresentation_Branch_921C  ; 9230 10 EA                    ..
+        bpl     BattleAi_Branch_921C            ; 9230 10 EA                    ..
         lda     #$00                            ; 9232 A9 00                    ..
         sta     $00                           ; 9234 85 00                    ..
         sta     $04                             ; 9236 85 04                    ..
@@ -2576,25 +2576,25 @@ BattlePresentation_Branch_921C:
         ldy     #$03                            ; 923E A0 03                    ..
         jsr     DivideIndexedLongByWord         ; 9240 20 F4 83                  ..
         lda     $02                           ; 9243 A5 02                    ..
-        beq     BattlePresentation_Branch_924D  ; 9245 F0 06                    ..
+        beq     BattleAi_Branch_924D            ; 9245 F0 06                    ..
         lda     #$FF                            ; 9247 A9 FF                    ..
         sta     $00                           ; 9249 85 00                    ..
         sta     $01                             ; 924B 85 01                    ..
-BattlePresentation_Branch_924D:
+BattleAi_Branch_924D:
         lda     $00                           ; 924D A5 00                    ..
         sta     $75ED                           ; 924F 8D ED 75                 ..u
         lda     $01                             ; 9252 A5 01                    ..
         sta     $75EE                           ; 9254 8D EE 75                 ..u
         ora     $00                           ; 9257 05 00                    ..
-        bne     BattlePresentation_Branch_925E  ; 9259 D0 03                    ..
+        bne     BattleAi_Branch_925E            ; 9259 D0 03                    ..
         inc     $75ED                           ; 925B EE ED 75                 ..u
-BattlePresentation_Branch_925E:
+BattleAi_Branch_925E:
         rts                                     ; 925E 60                       `
 ; ----------------------------------------------------------------------------
-AddBattlePresentationWordTriplet:
+AddBattleAiWordTriplet:
         lda     #$03                            ; 925F A9 03                    ..
         sta     $82                             ; 9261 85 82                    ..
-BattlePresentation_Branch_9263:
+BattleAi_Branch_9263:
         lda     ($88),y                       ; 9263 B1 88                    ..
         adc     $01                             ; 9265 65 01                    e.
         sta     $01                             ; 9267 85 01                    ..
@@ -2604,33 +2604,33 @@ BattlePresentation_Branch_9263:
         sta     $02                           ; 926E 85 02                    ..
         iny                                     ; 9270 C8                       .
         dec     $82                             ; 9271 C6 82                    ..
-        bpl     BattlePresentation_Branch_9263  ; 9273 10 EE                    ..
+        bpl     BattleAi_Branch_9263            ; 9273 10 EE                    ..
         rts                                     ; 9275 60                       `
 ; ----------------------------------------------------------------------------
-ConvertBattlePresentationByte:
+ConvertBattleAiByte:
         ldx     $75D3                           ; 9276 AE D3 75                 ..u
-        lda     Bank13_BattlePresentationLookup,x; 9279 BD 0B B8                ...
+        lda     Bank13_BattleAiActionLookup,x   ; 9279 BD 0B B8                 ...
         and     #$1F                            ; 927C 29 1F                    ).
         tax                                     ; 927E AA                       .
         lda     $94CC,x                         ; 927F BD CC 94                 ...
-        jsr     ExtractBattlePresentationSubfield; 9282 20 E2 92                 ..
+        jsr     ExtractBattleAiSubfield         ; 9282 20 E2 92                  ..
         sta     $00                           ; 9285 85 00                    ..
         lda     #$00                            ; 9287 A9 00                    ..
         ldx     $75D3                           ; 9289 AE D3 75                 ..u
         cpx     #$18                            ; 928C E0 18                    ..
-        bne     BattlePresentation_Branch_9294  ; 928E D0 04                    ..
+        bne     BattleAi_Branch_9294            ; 928E D0 04                    ..
         lda     #$04                            ; 9290 A9 04                    ..
-        bne     BattlePresentation_Branch_929A  ; 9292 D0 06                    ..
-BattlePresentation_Branch_9294:
+        bne     BattleAi_Branch_929A            ; 9292 D0 06                    ..
+BattleAi_Branch_9294:
         cpx     #$1F                            ; 9294 E0 1F                    ..
-        bne     BattlePresentation_Branch_929A  ; 9296 D0 02                    ..
+        bne     BattleAi_Branch_929A            ; 9296 D0 02                    ..
         lda     #$04                            ; 9298 A9 04                    ..
-BattlePresentation_Branch_929A:
+BattleAi_Branch_929A:
         clc                                     ; 929A 18                       .
         adc     $00                           ; 929B 65 00                    e.
         sta     $00                           ; 929D 85 00                    ..
         ldx     $81                             ; 929F A6 81                    ..
-        jsr     GetBattleCharacterRecordPointer ; 92A1 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; 92A1 20 9C 89                  ..
         ldy     #$0D                            ; 92A4 A0 0D                    ..
         lda     ($86),y                       ; 92A6 B1 86                    ..
         and     #$03                            ; 92A8 29 03                    ).
@@ -2662,13 +2662,13 @@ BattlePresentation_Branch_929A:
         adc     $01                             ; 92D6 65 01                    e.
         lsr     a                               ; 92D8 4A                       J
         cmp     #$10                            ; 92D9 C9 10                    ..
-        bcc     BattlePresentation_Branch_92DF  ; 92DB 90 02                    ..
+        bcc     BattleAi_Branch_92DF            ; 92DB 90 02                    ..
         lda     #$10                            ; 92DD A9 10                    ..
-BattlePresentation_Branch_92DF:
+BattleAi_Branch_92DF:
         sta     $8C                             ; 92DF 85 8C                    ..
         rts                                     ; 92E1 60                       `
 ; ----------------------------------------------------------------------------
-ExtractBattlePresentationSubfield:
+ExtractBattleAiSubfield:
         pha                                     ; 92E2 48                       H
         and     #$03                            ; 92E3 29 03                    ).
         sta     $00                           ; 92E5 85 00                    ..
@@ -2684,30 +2684,30 @@ ExtractBattlePresentationSubfield:
         tay                                     ; 92F4 A8                       .
         lda     $754B,y                         ; 92F5 B9 4B 75                 .Ku
         ldx     $00                           ; 92F8 A6 00                    ..
-        beq     BattlePresentation_Branch_9301  ; 92FA F0 05                    ..
-BattlePresentation_Branch_92FC:
+        beq     BattleAi_Branch_9301            ; 92FA F0 05                    ..
+BattleAi_Branch_92FC:
         lsr     a                               ; 92FC 4A                       J
         lsr     a                               ; 92FD 4A                       J
         dex                                     ; 92FE CA                       .
-        bne     BattlePresentation_Branch_92FC  ; 92FF D0 FB                    ..
-BattlePresentation_Branch_9301:
+        bne     BattleAi_Branch_92FC            ; 92FF D0 FB                    ..
+BattleAi_Branch_9301:
         and     #$03                            ; 9301 29 03                    ).
         rts                                     ; 9303 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattlePresentationAccumulator:
+BuildBattleAiAccumulator:
         sta     $02                           ; 9304 85 02                    ..
         lda     #$00                            ; 9306 A9 00                    ..
         sta     $03                             ; 9308 85 03                    ..
         lda     #$07                            ; 930A A9 07                    ..
-BattlePresentation_Branch_930C:
-        jsr     BuildBattlePresentationAccumulatorStep; 930C 20 14 93            ..
+BattleAi_Branch_930C:
+        jsr     BuildBattleAiAccumulatorStep    ; 930C 20 14 93                  ..
         dec     $81                             ; 930F C6 81                    ..
-        bpl     BattlePresentation_Branch_930C  ; 9311 10 F9                    ..
+        bpl     BattleAi_Branch_930C            ; 9311 10 F9                    ..
         rts                                     ; 9313 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattlePresentationAccumulatorStep:
+BuildBattleAiAccumulatorStep:
         ldx     $02                           ; 9314 A6 02                    ..
-        lda     Bank13_BattlePresentationLookup,x; 9316 BD 0B B8                ...
+        lda     Bank13_BattleAiActionLookup,x   ; 9316 BD 0B B8                 ...
         and     #$1F                            ; 9319 29 1F                    ).
         tax                                     ; 931B AA                       .
         lda     $94CC,x                         ; 931C BD CC 94                 ...
@@ -2726,13 +2726,13 @@ BuildBattlePresentationAccumulatorStep:
         tay                                     ; 9331 A8                       .
         lda     $754B,y                         ; 9332 B9 4B 75                 .Ku
         ldx     $00                           ; 9335 A6 00                    ..
-        beq     BattlePresentation_Branch_933E  ; 9337 F0 05                    ..
-BattlePresentation_Branch_9339:
+        beq     BattleAi_Branch_933E            ; 9337 F0 05                    ..
+BattleAi_Branch_9339:
         lsr     a                               ; 9339 4A                       J
         lsr     a                               ; 933A 4A                       J
         dex                                     ; 933B CA                       .
-        bne     BattlePresentation_Branch_9339  ; 933C D0 FB                    ..
-BattlePresentation_Branch_933E:
+        bne     BattleAi_Branch_9339            ; 933C D0 FB                    ..
+BattleAi_Branch_933E:
         and     #$03                            ; 933E 29 03                    ).
         tax                                     ; 9340 AA                       .
         lda     $94DB,x                         ; 9341 BD DB 94                 ...
@@ -2741,9 +2741,9 @@ BattlePresentation_Branch_933E:
         sta     $03                             ; 9347 85 03                    ..
         rts                                     ; 9349 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationIndex:
+LoadBattleAiIndex:
         lda     $75D3                           ; 934A AD D3 75                 ..u
-        jsr     MapPresentationIndex            ; 934D 20 20 B6                   .
+        jsr     MapActionEffectRollIndex        ; 934D 20 20 B6                   .
         asl     a                               ; 9350 0A                       .
         tax                                     ; 9351 AA                       .
         lda     $B7E3,x                         ; 9352 BD E3 B7                 ...
@@ -2752,16 +2752,16 @@ LoadBattlePresentationIndex:
         lsr     a                               ; 935A 4A                       J
         clc                                     ; 935B 18                       .
         adc     $8A                             ; 935C 65 8A                    e.
-        bcc     BattlePresentation_Branch_9362  ; 935E 90 02                    ..
+        bcc     BattleAi_Branch_9362            ; 935E 90 02                    ..
         lda     #$FF                            ; 9360 A9 FF                    ..
-BattlePresentation_Branch_9362:
+BattleAi_Branch_9362:
         sta     $8A                             ; 9362 85 8A                    ..
         rts                                     ; 9364 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationValueA:
+LoadBattleAiValueA:
         txa                                     ; 9365 8A                       .
         pha                                     ; 9366 48                       H
-        jsr     ResolveBattlePresentationValueIndex; 9367 20 8B 93               ..
+        jsr     ResolveBattleAiValueIndex       ; 9367 20 8B 93                  ..
         lda     $BAA5,x                         ; 936A BD A5 BA                 ...
         sta     $6E11                           ; 936D 8D 11 6E                 ..n
         pla                                     ; 9370 68                       h
@@ -2771,10 +2771,10 @@ LoadBattlePresentationValueA:
 ; ----------------------------------------------------------------------------
         db   $AD,$68,$73,$60                 ; 9376 AD 68 73 60              .hs`
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationValueB:
+LoadBattleAiValueB:
         txa                                     ; 937A 8A                       .
         pha                                     ; 937B 48                       H
-        jsr     ResolveBattlePresentationValueIndex; 937C 20 8B 93               ..
+        jsr     ResolveBattleAiValueIndex       ; 937C 20 8B 93                  ..
         lda     $BAD5,x                         ; 937F BD D5 BA                 ...
         sta     $6E11                           ; 9382 8D 11 6E                 ..n
         pla                                     ; 9385 68                       h
@@ -2782,7 +2782,7 @@ LoadBattlePresentationValueB:
         lda     $6E11                           ; 9387 AD 11 6E                 ..n
         rts                                     ; 938A 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattlePresentationValueIndex:
+ResolveBattleAiValueIndex:
         lda     $6E80                           ; 938B AD 80 6E                 ..n
         asl     a                               ; 938E 0A                       .
         asl     a                               ; 938F 0A                       .
@@ -2793,10 +2793,10 @@ ResolveBattlePresentationValueIndex:
         tax                                     ; 9398 AA                       .
         rts                                     ; 9399 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationValueC:
+LoadBattleAiValueC:
         txa                                     ; 939A 8A                       .
         pha                                     ; 939B 48                       H
-        jsr     ResolveBattlePresentationValueIndex; 939C 20 8B 93               ..
+        jsr     ResolveBattleAiValueIndex       ; 939C 20 8B 93                  ..
         lda     $BA74,x                         ; 939F BD 74 BA                 .t.
         sta     $6E11                           ; 93A2 8D 11 6E                 ..n
         pla                                     ; 93A5 68                       h
@@ -2804,64 +2804,64 @@ LoadBattlePresentationValueC:
         lda     $6E11                           ; 93A7 AD 11 6E                 ..n
         rts                                     ; 93AA 60                       `
 ; ----------------------------------------------------------------------------
-SetActionStateFrom81WithBit80:
+SetBattleAiActionStateFromPrimaryFlags:
         lda     $81                             ; 93AB A5 81                    ..
         ora     #$80                            ; 93AD 09 80                    ..
         sta     $75D2                           ; 93AF 8D D2 75                 ..u
         bne     SetBattleActionStateFromFlag    ; 93B2 D0 0E                    ..
-SetActionStateFrom8DWithBits88:
+SetBattleAiActionStateFromAlternateFlags:
         lda     $8D                             ; 93B4 A5 8D                    ..
         ora     #$88                            ; 93B6 09 88                    ..
         sta     $75D2                           ; 93B8 8D D2 75                 ..u
         bne     SetBattleActionStateFromFlag    ; 93BB D0 05                    ..
-SetActionStateBit80:
+SetDefaultBattleAiActionState:
         lda     #$80                            ; 93BD A9 80                    ..
         sta     $75D2                           ; 93BF 8D D2 75                 ..u
 SetBattleActionStateFromFlag:
         lda     $75F0                           ; 93C2 AD F0 75                 ..u
-        bpl     BattlePresentation_Branch_93CF  ; 93C5 10 08                    ..
+        bpl     BattleAi_Branch_93CF            ; 93C5 10 08                    ..
         lda     $75D2                           ; 93C7 AD D2 75                 ..u
         ora     #$20                            ; 93CA 09 20                    .
         sta     $75D2                           ; 93CC 8D D2 75                 ..u
-BattlePresentation_Branch_93CF:
+BattleAi_Branch_93CF:
         rts                                     ; 93CF 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleSlotThreshold:
         jsr     HasActiveBattleSlot             ; 93D0 20 E1 93                  ..
-        bcc     BattlePresentation_Branch_93DF  ; 93D3 90 0A                    ..
+        bcc     BattleAi_Branch_93DF            ; 93D3 90 0A                    ..
         lda     $735B                           ; 93D5 AD 5B 73                 .[s
         cmp     $7348,x                         ; 93D8 DD 48 73                 .Hs
-        bcc     BattlePresentation_Branch_93DF  ; 93DB 90 02                    ..
+        bcc     BattleAi_Branch_93DF            ; 93DB 90 02                    ..
         clc                                     ; 93DD 18                       .
         rts                                     ; 93DE 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_93DF:
+BattleAi_Branch_93DF:
         sec                                     ; 93DF 38                       8
         rts                                     ; 93E0 60                       `
 ; ----------------------------------------------------------------------------
 HasActiveBattleSlot:
         ldx     #$03                            ; 93E1 A2 03                    ..
-BattlePresentation_Branch_93E3:
+BattleAi_Branch_93E3:
         lda     BattleSlotDescriptors,x         ; 93E3 BD F4 72                 ..r
-        bmi     BattlePresentation_Branch_93FF  ; 93E6 30 17                    0.
+        bmi     BattleAi_Branch_93FF            ; 93E6 30 17                    0.
         and     #$70                            ; 93E8 29 70                    )p
         cmp     #$02                            ; 93EA C9 02                    ..
-        bcs     BattlePresentation_Branch_93FF  ; 93EC B0 11                    ..
+        bcs     BattleAi_Branch_93FF            ; 93EC B0 11                    ..
         lda     BattleSlotDescriptors,x         ; 93EE BD F4 72                 ..r
         and     #$0F                            ; 93F1 29 0F                    ).
         tay                                     ; 93F3 A8                       .
         lda     $72EA,y                         ; 93F4 B9 EA 72                 ..r
         and     #$7F                            ; 93F7 29 7F                    ).
-        beq     BattlePresentation_Branch_9404  ; 93F9 F0 09                    ..
+        beq     BattleAi_Branch_9404            ; 93F9 F0 09                    ..
         cmp     #$08                            ; 93FB C9 08                    ..
-        beq     BattlePresentation_Branch_9404  ; 93FD F0 05                    ..
-BattlePresentation_Branch_93FF:
+        beq     BattleAi_Branch_9404            ; 93FD F0 05                    ..
+BattleAi_Branch_93FF:
         dex                                     ; 93FF CA                       .
-        bpl     BattlePresentation_Branch_93E3  ; 9400 10 E1                    ..
+        bpl     BattleAi_Branch_93E3            ; 9400 10 E1                    ..
         clc                                     ; 9402 18                       .
         rts                                     ; 9403 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9404:
+BattleAi_Branch_9404:
         sec                                     ; 9404 38                       8
         rts                                     ; 9405 60                       `
 ; ----------------------------------------------------------------------------
@@ -2869,67 +2869,67 @@ ClassifyBattleAction:
         ldy     #$00                            ; 9406 A0 00                    ..
         lda     $75DB                           ; 9408 AD DB 75                 ..u
         cmp     #$FF                            ; 940B C9 FF                    ..
-        beq     BattlePresentation_Branch_944D  ; 940D F0 3E                    .>
+        beq     BattleAi_Branch_944D            ; 940D F0 3E                    .>
         cmp     #$15                            ; 940F C9 15                    ..
-        bcc     BattlePresentation_Branch_9455  ; 9411 90 42                    .B
+        bcc     BattleAi_Branch_9455            ; 9411 90 42                    .B
         cmp     #$17                            ; 9413 C9 17                    ..
-        bcc     BattlePresentation_Branch_944D  ; 9415 90 36                    .6
+        bcc     BattleAi_Branch_944D            ; 9415 90 36                    .6
         cmp     #$1C                            ; 9417 C9 1C                    ..
-        bcc     BattlePresentation_Branch_945F  ; 9419 90 44                    .D
+        bcc     BattleAi_Branch_945F            ; 9419 90 44                    .D
         cmp     #$1E                            ; 941B C9 1E                    ..
-        beq     BattlePresentation_Branch_945F  ; 941D F0 40                    .@
+        beq     BattleAi_Branch_945F            ; 941D F0 40                    .@
         cmp     #$29                            ; 941F C9 29                    .)
-        bcc     BattlePresentation_Branch_9463  ; 9421 90 40                    .@
+        bcc     BattleAi_Branch_9463            ; 9421 90 40                    .@
         cmp     #$2E                            ; 9423 C9 2E                    ..
-        bcc     BattlePresentation_Branch_9457  ; 9425 90 30                    .0
+        bcc     BattleAi_Branch_9457            ; 9425 90 30                    .0
         cmp     #$33                            ; 9427 C9 33                    .3
-        bcc     BattlePresentation_Branch_945B  ; 9429 90 30                    .0
+        bcc     BattleAi_Branch_945B            ; 9429 90 30                    .0
         cmp     #$3C                            ; 942B C9 3C                    .<
-        bcc     BattlePresentation_Branch_944D  ; 942D 90 1E                    ..
+        bcc     BattleAi_Branch_944D            ; 942D 90 1E                    ..
         ldy     #$80                            ; 942F A0 80                    ..
         cmp     #$43                            ; 9431 C9 43                    .C
-        beq     BattlePresentation_Branch_9455  ; 9433 F0 20                    .
+        beq     BattleAi_Branch_9455            ; 9433 F0 20                    .
         cmp     #$41                            ; 9435 C9 41                    .A
-        beq     BattlePresentation_Branch_944D  ; 9437 F0 14                    ..
+        beq     BattleAi_Branch_944D            ; 9437 F0 14                    ..
         lda     $75DA                           ; 9439 AD DA 75                 ..u
         and     #$70                            ; 943C 29 70                    )p
-        beq     BattlePresentation_Branch_944D  ; 943E F0 0D                    ..
+        beq     BattleAi_Branch_944D            ; 943E F0 0D                    ..
         ldx     #$11                            ; 9440 A2 11                    ..
-BattlePresentation_Branch_9442:
+BattleAi_Branch_9442:
         lda     Bank13_SpecialBattleActionIds,x ; 9442 BD A9 91                 ...
         cmp     $75F2                           ; 9445 CD F2 75                 ..u
-        beq     BattlePresentation_Branch_9451  ; 9448 F0 07                    ..
+        beq     BattleAi_Branch_9451            ; 9448 F0 07                    ..
         dex                                     ; 944A CA                       .
-        bpl     BattlePresentation_Branch_9442  ; 944B 10 F5                    ..
-BattlePresentation_Branch_944D:
+        bpl     BattleAi_Branch_9442            ; 944B 10 F5                    ..
+BattleAi_Branch_944D:
         tya                                     ; 944D 98                       .
         ora     #$05                            ; 944E 09 05                    ..
         rts                                     ; 9450 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9451:
+BattleAi_Branch_9451:
         lda     $91BB,x                         ; 9451 BD BB 91                 ...
         rts                                     ; 9454 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9455:
+BattleAi_Branch_9455:
         tya                                     ; 9455 98                       .
         rts                                     ; 9456 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9457:
+BattleAi_Branch_9457:
         tya                                     ; 9457 98                       .
         ora     #$01                            ; 9458 09 01                    ..
         rts                                     ; 945A 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_945B:
+BattleAi_Branch_945B:
         tya                                     ; 945B 98                       .
         ora     #$02                            ; 945C 09 02                    ..
         rts                                     ; 945E 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_945F:
+BattleAi_Branch_945F:
         tya                                     ; 945F 98                       .
         ora     #$03                            ; 9460 09 03                    ..
         rts                                     ; 9462 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9463:
+BattleAi_Branch_9463:
         tya                                     ; 9463 98                       .
         ora     #$04                            ; 9464 09 04                    ..
         rts                                     ; 9466 60                       `
@@ -2968,7 +2968,7 @@ DivideTripleWordByWord:
         sta     $16                             ; 9493 85 16                    ..
         sta     $17                             ; 9495 85 17                    ..
         sta     $18                             ; 9497 85 18                    ..
-BattlePresentation_Branch_9499:
+BattleAi_Branch_9499:
         asl     $00,x                         ; 9499 16 00                    ..
         rol     $01,x                           ; 949B 36 01                    6.
         rol     $02,x                         ; 949D 36 02                    6.
@@ -2985,20 +2985,20 @@ BattlePresentation_Branch_9499:
         pha                                     ; 94B1 48                       H
         lda     $18                             ; 94B2 A5 18                    ..
         sbc     $1B                             ; 94B4 E5 1B                    ..
-        bcs     BattlePresentation_Branch_94BE  ; 94B6 B0 06                    ..
+        bcs     BattleAi_Branch_94BE            ; 94B6 B0 06                    ..
         dec     $00,x                         ; 94B8 D6 00                    ..
         pla                                     ; 94BA 68                       h
         pla                                     ; 94BB 68                       h
-        bcc     BattlePresentation_Branch_94C6  ; 94BC 90 08                    ..
-BattlePresentation_Branch_94BE:
+        bcc     BattleAi_Branch_94C6            ; 94BC 90 08                    ..
+BattleAi_Branch_94BE:
         sta     $18                             ; 94BE 85 18                    ..
         pla                                     ; 94C0 68                       h
         sta     $17                             ; 94C1 85 17                    ..
         pla                                     ; 94C3 68                       h
         sta     $16                             ; 94C4 85 16                    ..
-BattlePresentation_Branch_94C6:
+BattleAi_Branch_94C6:
         dey                                     ; 94C6 88                       .
-        bne     BattlePresentation_Branch_9499  ; 94C7 D0 D0                    ..
+        bne     BattleAi_Branch_9499            ; 94C7 D0 D0                    ..
         pla                                     ; 94C9 68                       h
         tay                                     ; 94CA A8                       .
         rts                                     ; 94CB 60                       `
@@ -3016,63 +3016,63 @@ BattlePresentation_Branch_94C6:
         db   $00,$80,$00,$5A,$00,$00,$00     ; 9514 00 80 00 5A 00 00 00     ...Z...
 ; ----------------------------------------------------------------------------
 RunEightStateEffectTotalPassesWithLimit:
-        jsr     LoadBattlePresentationStateLimit; 951B 20 EF 91                  ..
-        jsr     LoadBattlePresentationStateMask ; 951E 20 01 92                  ..
+        jsr     LoadBattleAiStateLimit          ; 951B 20 EF 91                  ..
+        jsr     LoadBattleAiStateMask           ; 951E 20 01 92                  ..
         lda     #$07                            ; 9521 A9 07                    ..
         sta     $81                             ; 9523 85 81                    ..
-BattlePresentation_Branch_9525:
-        jsr     ConvertBattlePresentationByte   ; 9525 20 76 92                  v.
-        jsr     SetActionStateFrom81WithBit80   ; 9528 20 AB 93                  ..
-        jsr     AccumulateBattleEffectTotalsA   ; 952B 20 B8 95                  ..
+BattleAi_Branch_9525:
+        jsr     ConvertBattleAiByte             ; 9525 20 76 92                  v.
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 9528 20 AB 93            ..
+        jsr     AccumulateActionScoreTotalsA    ; 952B 20 B8 95                  ..
         dec     $81                             ; 952E C6 81                    ..
-        bpl     BattlePresentation_Branch_9525  ; 9530 10 F3                    ..
+        bpl     BattleAi_Branch_9525            ; 9530 10 F3                    ..
         rts                                     ; 9532 60                       `
 ; ----------------------------------------------------------------------------
 RunFourGroupedEffectTotalPassesWithLimit:
-        jsr     LoadBattlePresentationStateLimit; 9533 20 EF 91                  ..
-        jsr     LoadBattlePresentationStateMask ; 9536 20 01 92                  ..
+        jsr     LoadBattleAiStateLimit          ; 9533 20 EF 91                  ..
+        jsr     LoadBattleAiStateMask           ; 9536 20 01 92                  ..
         lda     #$03                            ; 9539 A9 03                    ..
         sta     $8D                             ; 953B 85 8D                    ..
-BattlePresentation_Branch_953D:
-        jsr     SetActionStateFrom8DWithBits88  ; 953D 20 B4 93                  ..
-        jsr     AccumulateBattleEffectTotalsB   ; 9540 20 11 96                  ..
+BattleAi_Branch_953D:
+        jsr     SetBattleAiActionStateFromAlternateFlags; 953D 20 B4 93          ..
+        jsr     AccumulateActionScoreTotalsB    ; 9540 20 11 96                  ..
         dec     $8D                             ; 9543 C6 8D                    ..
-        bpl     BattlePresentation_Branch_953D  ; 9545 10 F6                    ..
+        bpl     BattleAi_Branch_953D            ; 9545 10 F6                    ..
         rts                                     ; 9547 60                       `
 ; ----------------------------------------------------------------------------
 RunSingleStateEffectTotalsWithLimit:
-        jsr     LoadBattlePresentationStateLimit; 9548 20 EF 91                  ..
-        jsr     LoadBattlePresentationStateMask ; 954B 20 01 92                  ..
-        jsr     SetActionStateBit80             ; 954E 20 BD 93                  ..
-        jmp     AccumulateAllBattleEffectContributions; 9551 4C 37 96           L7.
+        jsr     LoadBattleAiStateLimit          ; 9548 20 EF 91                  ..
+        jsr     LoadBattleAiStateMask           ; 954B 20 01 92                  ..
+        jsr     SetDefaultBattleAiActionState   ; 954E 20 BD 93                  ..
+        jmp     AccumulateAllActionScoreContributions; 9551 4C 37 96            L7.
 ; ----------------------------------------------------------------------------
 RunEightStateEffectPhaseA:
-        jsr     LoadBattlePresentationStateMask ; 9554 20 01 92                  ..
+        jsr     LoadBattleAiStateMask           ; 9554 20 01 92                  ..
         lda     #$07                            ; 9557 A9 07                    ..
         sta     $81                             ; 9559 85 81                    ..
-BattlePresentation_Branch_955B:
-        jsr     ConvertBattlePresentationByte   ; 955B 20 76 92                  v.
-        jsr     SetActionStateFrom81WithBit80   ; 955E 20 AB 93                  ..
-        jsr     InitializeBattleEffectPhaseA    ; 9561 20 A0 96                  ..
+BattleAi_Branch_955B:
+        jsr     ConvertBattleAiByte             ; 955B 20 76 92                  v.
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 955E 20 AB 93            ..
+        jsr     InitializeActionScorePhaseA     ; 9561 20 A0 96                  ..
         dec     $81                             ; 9564 C6 81                    ..
-        bpl     BattlePresentation_Branch_955B  ; 9566 10 F3                    ..
+        bpl     BattleAi_Branch_955B            ; 9566 10 F3                    ..
         rts                                     ; 9568 60                       `
 ; ----------------------------------------------------------------------------
 RunFourStateEffectPhaseB:
-        jsr     LoadBattlePresentationStateMask ; 9569 20 01 92                  ..
+        jsr     LoadBattleAiStateMask           ; 9569 20 01 92                  ..
         lda     #$03                            ; 956C A9 03                    ..
         sta     $8D                             ; 956E 85 8D                    ..
-BattlePresentation_Branch_9570:
-        jsr     SetActionStateFrom8DWithBits88  ; 9570 20 B4 93                  ..
-        jsr     RunBattleEffectPhaseB           ; 9573 20 F3 96                  ..
+BattleAi_Branch_9570:
+        jsr     SetBattleAiActionStateFromAlternateFlags; 9570 20 B4 93          ..
+        jsr     RunActionScorePhaseB            ; 9573 20 F3 96                  ..
         dec     $8D                             ; 9576 C6 8D                    ..
-        bpl     BattlePresentation_Branch_9570  ; 9578 10 F6                    ..
+        bpl     BattleAi_Branch_9570            ; 9578 10 F6                    ..
         rts                                     ; 957A 60                       `
 ; ----------------------------------------------------------------------------
 RunSingleStateEffectPhaseC:
-        jsr     LoadBattlePresentationStateMask ; 957B 20 01 92                  ..
-        jsr     SetActionStateBit80             ; 957E 20 BD 93                  ..
-        jmp     RunBattleEffectPhaseC           ; 9581 4C 1C 97                 L..
+        jsr     LoadBattleAiStateMask           ; 957B 20 01 92                  ..
+        jsr     SetDefaultBattleAiActionState   ; 957E 20 BD 93                  ..
+        jmp     RunActionScorePhaseC            ; 9581 4C 1C 97                 L..
 ; ----------------------------------------------------------------------------
 InitializePhase43AndScanEightEffectTargets:
         lda     $75F0                           ; 9584 AD F0 75                 ..u
@@ -3086,30 +3086,30 @@ InitializePhase43AndScanEightEffectTargets:
         sta     $8C                             ; 9597 85 8C                    ..
         lda     #$07                            ; 9599 A9 07                    ..
         sta     $81                             ; 959B 85 81                    ..
-BattlePresentation_Branch_959D:
-        jsr     SetActionStateFrom81WithBit80   ; 959D 20 AB 93                  ..
+BattleAi_Branch_959D:
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 959D 20 AB 93            ..
         ldx     $81                             ; 95A0 A6 81                    ..
         lda     #$40                            ; 95A2 A9 40                    .@
         jsr     TestBattleRecordFlag06          ; 95A4 20 F2 85                  ..
-        beq     BattlePresentation_Branch_95B3  ; 95A7 F0 0A                    ..
+        beq     BattleAi_Branch_95B3            ; 95A7 F0 0A                    ..
         iny                                     ; 95A9 C8                       .
         lda     #$02                            ; 95AA A9 02                    ..
         and     ($86),y                       ; 95AC 31 86                    1.
-        bne     BattlePresentation_Branch_95B3  ; 95AE D0 03                    ..
-        jsr     ResolveBattleEffectTarget       ; 95B0 20 36 97                  6.
-BattlePresentation_Branch_95B3:
+        bne     BattleAi_Branch_95B3            ; 95AE D0 03                    ..
+        jsr     ResolveActionScoreTarget        ; 95B0 20 36 97                  6.
+BattleAi_Branch_95B3:
         dec     $81                             ; 95B3 C6 81                    ..
-        bpl     BattlePresentation_Branch_959D  ; 95B5 10 E6                    ..
+        bpl     BattleAi_Branch_959D            ; 95B5 10 E6                    ..
         rts                                     ; 95B7 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattleEffectTotalsA:
-        jsr     ClearBattleEffectAccumulator    ; 95B8 20 58 96                  X.
-        jsr     InitializeBattleEffectAccumulator; 95BB 20 C5 95                 ..
+AccumulateActionScoreTotalsA:
+        jsr     ClearActionScoreAccumulator     ; 95B8 20 58 96                  X.
+        jsr     InitializeActionScoreAccumulator; 95BB 20 C5 95                  ..
         lda     $0F                             ; 95BE A5 0F                    ..
-        bpl     BattlePresentation_Branch_95FC  ; 95C0 10 3A                    .:
-        jmp     EvaluateBattlePresentationBounds; 95C2 4C C2 A9                 L..
+        bpl     BattleAi_Branch_95FC            ; 95C0 10 3A                    .:
+        jmp     EvaluateBattleAiBounds          ; 95C2 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-InitializeBattleEffectAccumulator:
+InitializeActionScoreAccumulator:
         lda     #$00                            ; 95C5 A9 00                    ..
         sta     $00                           ; 95C7 85 00                    ..
         sta     $01                             ; 95C9 85 01                    ..
@@ -3117,79 +3117,79 @@ InitializeBattleEffectAccumulator:
         ldx     $81                             ; 95CD A6 81                    ..
         lda     #$40                            ; 95CF A9 40                    .@
         jsr     TestBattleRecordFlag06          ; 95D1 20 F2 85                  ..
-        beq     BattlePresentation_Branch_95FC  ; 95D4 F0 26                    .&
+        beq     BattleAi_Branch_95FC            ; 95D4 F0 26                    .&
         dey                                     ; 95D6 88                       .
         lda     $75F0                           ; 95D7 AD F0 75                 ..u
-        bmi     BattlePresentation_Branch_95E2  ; 95DA 30 06                    0.
+        bmi     BattleAi_Branch_95E2            ; 95DA 30 06                    0.
         lda     #$C0                            ; 95DC A9 C0                    ..
         and     ($86),y                       ; 95DE 31 86                    1.
-        bne     BattlePresentation_Branch_95FD  ; 95E0 D0 1B                    ..
-BattlePresentation_Branch_95E2:
+        bne     BattleAi_Branch_95FD            ; 95E0 D0 1B                    ..
+BattleAi_Branch_95E2:
         iny                                     ; 95E2 C8                       .
         iny                                     ; 95E3 C8                       .
         lda     #$02                            ; 95E4 A9 02                    ..
         and     ($86),y                       ; 95E6 31 86                    1.
-        bne     BattlePresentation_Branch_95FC  ; 95E8 D0 12                    ..
+        bne     BattleAi_Branch_95FC            ; 95E8 D0 12                    ..
         lda     $8C                             ; 95EA A5 8C                    ..
-        beq     BattlePresentation_Branch_95FC  ; 95EC F0 0E                    ..
+        beq     BattleAi_Branch_95FC            ; 95EC F0 0E                    ..
         dec     $0F                             ; 95EE C6 0F                    ..
-        jsr     ComputeBattleEffectRatio        ; 95F0 20 66 97                  f.
-        jsr     AddBattleEffectPointerToFrame   ; 95F3 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 95F6 20 C0 97                  ..
-        jsr     LoadBattleEffectLimit           ; 95F9 20 00 98                  ..
-BattlePresentation_Branch_95FC:
+        jsr     ComputeActionScoreRatio         ; 95F0 20 66 97                  f.
+        jsr     AddActionScorePointerToFrame    ; 95F3 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 95F6 20 C0 97                  ..
+        jsr     LoadActionScoreLimit            ; 95F9 20 00 98                  ..
+BattleAi_Branch_95FC:
         rts                                     ; 95FC 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_95FD:
+BattleAi_Branch_95FD:
         lda     ($86),y                       ; 95FD B1 86                    ..
         asl     a                               ; 95FF 0A                       .
-        bpl     BattlePresentation_Branch_95FC  ; 9600 10 FA                    ..
+        bpl     BattleAi_Branch_95FC            ; 9600 10 FA                    ..
         lda     $8A                             ; 9602 A5 8A                    ..
         clc                                     ; 9604 18                       .
         adc     $75E1                           ; 9605 6D E1 75                 m.u
         sta     $75E1                           ; 9608 8D E1 75                 ..u
-        bcc     BattlePresentation_Branch_9610  ; 960B 90 03                    ..
+        bcc     BattleAi_Branch_9610            ; 960B 90 03                    ..
         inc     $75E2                           ; 960D EE E2 75                 ..u
-BattlePresentation_Branch_9610:
+BattleAi_Branch_9610:
         rts                                     ; 9610 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattleEffectTotalsB:
-        jsr     ClearBattleEffectAccumulator    ; 9611 20 58 96                  X.
+AccumulateActionScoreTotalsB:
+        jsr     ClearActionScoreAccumulator     ; 9611 20 58 96                  X.
         lda     #$07                            ; 9614 A9 07                    ..
         sta     $81                             ; 9616 85 81                    ..
-BattlePresentation_Branch_9618:
+BattleAi_Branch_9618:
         jsr     TestBattleRecordModeField       ; 9618 20 02 86                  ..
-        bne     BattlePresentation_Branch_962D  ; 961B D0 10                    ..
-        jsr     ConvertBattlePresentationByte   ; 961D 20 76 92                  v.
-        jsr     InitializeBattleEffectAccumulator; 9620 20 C5 95                 ..
+        bne     BattleAi_Branch_962D            ; 961B D0 10                    ..
+        jsr     ConvertBattleAiByte             ; 961D 20 76 92                  v.
+        jsr     InitializeActionScoreAccumulator; 9620 20 C5 95                  ..
         lda     $0F                             ; 9623 A5 0F                    ..
-        beq     BattlePresentation_Branch_962D  ; 9625 F0 06                    ..
-        jsr     AddBattleEffectContribution     ; 9627 20 6B 96                  k.
-        jsr     ApplyBattleEffectAdjustment     ; 962A 20 7D 96                  }.
-BattlePresentation_Branch_962D:
+        beq     BattleAi_Branch_962D            ; 9625 F0 06                    ..
+        jsr     AddActionScoreContribution      ; 9627 20 6B 96                  k.
+        jsr     ApplyActionScoreAdjustment      ; 962A 20 7D 96                  }.
+BattleAi_Branch_962D:
         dec     $81                             ; 962D C6 81                    ..
-        bpl     BattlePresentation_Branch_9618  ; 962F 10 E7                    ..
-        jsr     CopyBattleEffectAccumulator     ; 9631 20 95 96                  ..
-        jmp     EvaluateBattlePresentationBounds; 9634 4C C2 A9                 L..
+        bpl     BattleAi_Branch_9618            ; 962F 10 E7                    ..
+        jsr     CopyActionScoreAccumulator      ; 9631 20 95 96                  ..
+        jmp     EvaluateBattleAiBounds          ; 9634 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-AccumulateAllBattleEffectContributions:
-        jsr     ClearBattleEffectAccumulator    ; 9637 20 58 96                  X.
+AccumulateAllActionScoreContributions:
+        jsr     ClearActionScoreAccumulator     ; 9637 20 58 96                  X.
         lda     #$07                            ; 963A A9 07                    ..
         sta     $81                             ; 963C 85 81                    ..
-BattlePresentation_Branch_963E:
-        jsr     ConvertBattlePresentationByte   ; 963E 20 76 92                  v.
-        jsr     InitializeBattleEffectAccumulator; 9641 20 C5 95                 ..
+BattleAi_Branch_963E:
+        jsr     ConvertBattleAiByte             ; 963E 20 76 92                  v.
+        jsr     InitializeActionScoreAccumulator; 9641 20 C5 95                  ..
         lda     $0F                             ; 9644 A5 0F                    ..
-        beq     BattlePresentation_Branch_964E  ; 9646 F0 06                    ..
-        jsr     AddBattleEffectContribution     ; 9648 20 6B 96                  k.
-        jsr     ApplyBattleEffectAdjustment     ; 964B 20 7D 96                  }.
-BattlePresentation_Branch_964E:
+        beq     BattleAi_Branch_964E            ; 9646 F0 06                    ..
+        jsr     AddActionScoreContribution      ; 9648 20 6B 96                  k.
+        jsr     ApplyActionScoreAdjustment      ; 964B 20 7D 96                  }.
+BattleAi_Branch_964E:
         dec     $81                             ; 964E C6 81                    ..
-        bpl     BattlePresentation_Branch_963E  ; 9650 10 EC                    ..
-        jsr     CopyBattleEffectAccumulator     ; 9652 20 95 96                  ..
-        jmp     EvaluateBattlePresentationBounds; 9655 4C C2 A9                 L..
+        bpl     BattleAi_Branch_963E            ; 9650 10 EC                    ..
+        jsr     CopyActionScoreAccumulator      ; 9652 20 95 96                  ..
+        jmp     EvaluateBattleAiBounds          ; 9655 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-ClearBattleEffectAccumulator:
+ClearActionScoreAccumulator:
         lda     #$00                            ; 9658 A9 00                    ..
         sta     $75DF                           ; 965A 8D DF 75                 ..u
         sta     $75E0                           ; 965D 8D E0 75                 ..u
@@ -3199,7 +3199,7 @@ ClearBattleEffectAccumulator:
         sta     $03                             ; 9668 85 03                    ..
         rts                                     ; 966A 60                       `
 ; ----------------------------------------------------------------------------
-AddBattleEffectContribution:
+AddActionScoreContribution:
         clc                                     ; 966B 18                       .
         lda     $00                           ; 966C A5 00                    ..
         adc     $75DF                           ; 966E 6D DF 75                 m.u
@@ -3209,49 +3209,49 @@ AddBattleEffectContribution:
         sta     $75E0                           ; 9679 8D E0 75                 ..u
         rts                                     ; 967C 60                       `
 ; ----------------------------------------------------------------------------
-ApplyBattleEffectAdjustment:
+ApplyActionScoreAdjustment:
         lda     $75D1                           ; 967D AD D1 75                 ..u
         adc     $02                           ; 9680 65 02                    e.
         sta     $02                           ; 9682 85 02                    ..
-        bcc     BattlePresentation_Branch_9688  ; 9684 90 02                    ..
+        bcc     BattleAi_Branch_9688            ; 9684 90 02                    ..
         inc     $03                             ; 9686 E6 03                    ..
-BattlePresentation_Branch_9688:
+BattleAi_Branch_9688:
         lda     $75DF                           ; 9688 AD DF 75                 ..u
         ora     $75E0                           ; 968B 0D E0 75                 ..u
-        beq     BattlePresentation_Branch_9694  ; 968E F0 04                    ..
+        beq     BattleAi_Branch_9694            ; 968E F0 04                    ..
         lsr     $03                             ; 9690 46 03                    F.
         ror     $02                           ; 9692 66 02                    f.
-BattlePresentation_Branch_9694:
+BattleAi_Branch_9694:
         rts                                     ; 9694 60                       `
 ; ----------------------------------------------------------------------------
-CopyBattleEffectAccumulator:
+CopyActionScoreAccumulator:
         lda     $75DF                           ; 9695 AD DF 75                 ..u
         sta     $00                           ; 9698 85 00                    ..
         lda     $75E0                           ; 969A AD E0 75                 ..u
         sta     $01                             ; 969D 85 01                    ..
         rts                                     ; 969F 60                       `
 ; ----------------------------------------------------------------------------
-InitializeBattleEffectPhaseA:
-        jsr     ClearBattleEffectAccumulator    ; 96A0 20 58 96                  X.
-        jsr     RunBattleEffectPhaseA           ; 96A3 20 AD 96                  ..
+InitializeActionScorePhaseA:
+        jsr     ClearActionScoreAccumulator     ; 96A0 20 58 96                  X.
+        jsr     RunActionScorePhaseA            ; 96A3 20 AD 96                  ..
         lda     $0F                             ; 96A6 A5 0F                    ..
-        bpl     BattlePresentation_Branch_96C5  ; 96A8 10 1B                    ..
-        jmp     EvaluateBattlePresentationBounds; 96AA 4C C2 A9                 L..
+        bpl     BattleAi_Branch_96C5            ; 96A8 10 1B                    ..
+        jmp     EvaluateBattleAiBounds          ; 96AA 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-RunBattleEffectPhaseA:
-        jsr     CheckBattleEffectGate           ; 96AD 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_96C5  ; 96B0 90 13                    ..
+RunActionScorePhaseA:
+        jsr     CheckActionScoreGate            ; 96AD 20 C6 96                  ..
+        bcc     BattleAi_Branch_96C5            ; 96B0 90 13                    ..
         dec     $0F                             ; 96B2 C6 0F                    ..
         lda     #$10                            ; 96B4 A9 10                    ..
         sta     $75D1                           ; 96B6 8D D1 75                 ..u
-        jsr     AddBattleEffectPointerToFrame   ; 96B9 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 96BC 20 C0 97                  ..
-        jsr     LoadBattleEffectLimit           ; 96BF 20 00 98                  ..
-        jsr     UpdateBattleEffectAccumulator   ; 96C2 20 D7 97                  ..
-BattlePresentation_Branch_96C5:
+        jsr     AddActionScorePointerToFrame    ; 96B9 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 96BC 20 C0 97                  ..
+        jsr     LoadActionScoreLimit            ; 96BF 20 00 98                  ..
+        jsr     UpdateActionScoreAccumulator    ; 96C2 20 D7 97                  ..
+BattleAi_Branch_96C5:
         rts                                     ; 96C5 60                       `
 ; ----------------------------------------------------------------------------
-CheckBattleEffectGate:
+CheckActionScoreGate:
         lda     #$00                            ; 96C6 A9 00                    ..
         sta     $00                           ; 96C8 85 00                    ..
         sta     $01                             ; 96CA 85 01                    ..
@@ -3259,66 +3259,66 @@ CheckBattleEffectGate:
         ldx     $81                             ; 96CE A6 81                    ..
         lda     #$40                            ; 96D0 A9 40                    .@
         jsr     TestBattleRecordFlag06          ; 96D2 20 F2 85                  ..
-        beq     BattlePresentation_Branch_96F1  ; 96D5 F0 1A                    ..
+        beq     BattleAi_Branch_96F1            ; 96D5 F0 1A                    ..
         dey                                     ; 96D7 88                       .
         lda     $75F0                           ; 96D8 AD F0 75                 ..u
-        bmi     BattlePresentation_Branch_96E3  ; 96DB 30 06                    0.
+        bmi     BattleAi_Branch_96E3            ; 96DB 30 06                    0.
         lda     #$C0                            ; 96DD A9 C0                    ..
         and     ($86),y                       ; 96DF 31 86                    1.
-        bne     BattlePresentation_Branch_96F1  ; 96E1 D0 0E                    ..
-BattlePresentation_Branch_96E3:
+        bne     BattleAi_Branch_96F1            ; 96E1 D0 0E                    ..
+BattleAi_Branch_96E3:
         iny                                     ; 96E3 C8                       .
         iny                                     ; 96E4 C8                       .
         lda     #$02                            ; 96E5 A9 02                    ..
         and     ($86),y                       ; 96E7 31 86                    1.
-        bne     BattlePresentation_Branch_96F1  ; 96E9 D0 06                    ..
+        bne     BattleAi_Branch_96F1            ; 96E9 D0 06                    ..
         lda     $8C                             ; 96EB A5 8C                    ..
-        beq     BattlePresentation_Branch_96F1  ; 96ED F0 02                    ..
+        beq     BattleAi_Branch_96F1            ; 96ED F0 02                    ..
         sec                                     ; 96EF 38                       8
         rts                                     ; 96F0 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_96F1:
+BattleAi_Branch_96F1:
         clc                                     ; 96F1 18                       .
         rts                                     ; 96F2 60                       `
 ; ----------------------------------------------------------------------------
-RunBattleEffectPhaseB:
-        jsr     ClearBattleEffectAccumulator    ; 96F3 20 58 96                  X.
+RunActionScorePhaseB:
+        jsr     ClearActionScoreAccumulator     ; 96F3 20 58 96                  X.
         lda     #$07                            ; 96F6 A9 07                    ..
         sta     $81                             ; 96F8 85 81                    ..
-BattlePresentation_Branch_96FA:
+BattleAi_Branch_96FA:
         jsr     TestBattleRecordModeField       ; 96FA 20 02 86                  ..
-        bne     BattlePresentation_Branch_9711  ; 96FD D0 12                    ..
+        bne     BattleAi_Branch_9711            ; 96FD D0 12                    ..
         ldx     $81                             ; 96FF A6 81                    ..
         lda     #$40                            ; 9701 A9 40                    .@
         jsr     TestBattleRecordFlag05          ; 9703 20 EE 85                  ..
-        bne     BattlePresentation_Branch_971B  ; 9706 D0 13                    ..
-        jsr     ConvertBattlePresentationByte   ; 9708 20 76 92                  v.
-        jsr     RunBattleEffectPhaseA           ; 970B 20 AD 96                  ..
-        jsr     AddBattleEffectContribution     ; 970E 20 6B 96                  k.
-BattlePresentation_Branch_9711:
+        bne     BattleAi_Branch_971B            ; 9706 D0 13                    ..
+        jsr     ConvertBattleAiByte             ; 9708 20 76 92                  v.
+        jsr     RunActionScorePhaseA            ; 970B 20 AD 96                  ..
+        jsr     AddActionScoreContribution      ; 970E 20 6B 96                  k.
+BattleAi_Branch_9711:
         dec     $81                             ; 9711 C6 81                    ..
-        bpl     BattlePresentation_Branch_96FA  ; 9713 10 E5                    ..
-        jsr     CopyBattleEffectAccumulator     ; 9715 20 95 96                  ..
-        jmp     EvaluateBattlePresentationBounds; 9718 4C C2 A9                 L..
+        bpl     BattleAi_Branch_96FA            ; 9713 10 E5                    ..
+        jsr     CopyActionScoreAccumulator      ; 9715 20 95 96                  ..
+        jmp     EvaluateBattleAiBounds          ; 9718 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_971B:
+BattleAi_Branch_971B:
         rts                                     ; 971B 60                       `
 ; ----------------------------------------------------------------------------
-RunBattleEffectPhaseC:
-        jsr     ClearBattleEffectAccumulator    ; 971C 20 58 96                  X.
+RunActionScorePhaseC:
+        jsr     ClearActionScoreAccumulator     ; 971C 20 58 96                  X.
         lda     #$07                            ; 971F A9 07                    ..
         sta     $81                             ; 9721 85 81                    ..
-BattlePresentation_Branch_9723:
-        jsr     ConvertBattlePresentationByte   ; 9723 20 76 92                  v.
-        jsr     RunBattleEffectPhaseA           ; 9726 20 AD 96                  ..
-        jsr     AddBattleEffectContribution     ; 9729 20 6B 96                  k.
+BattleAi_Branch_9723:
+        jsr     ConvertBattleAiByte             ; 9723 20 76 92                  v.
+        jsr     RunActionScorePhaseA            ; 9726 20 AD 96                  ..
+        jsr     AddActionScoreContribution      ; 9729 20 6B 96                  k.
         dec     $81                             ; 972C C6 81                    ..
-        bpl     BattlePresentation_Branch_9723  ; 972E 10 F3                    ..
-        jsr     CopyBattleEffectAccumulator     ; 9730 20 95 96                  ..
-        jmp     EvaluateBattlePresentationBounds; 9733 4C C2 A9                 L..
+        bpl     BattleAi_Branch_9723            ; 972E 10 F3                    ..
+        jsr     CopyActionScoreAccumulator      ; 9730 20 95 96                  ..
+        jmp     EvaluateBattleAiBounds          ; 9733 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-ResolveBattleEffectTarget:
-        jsr     ClearBattleEffectAccumulator    ; 9736 20 58 96                  X.
+ResolveActionScoreTarget:
+        jsr     ClearActionScoreAccumulator     ; 9736 20 58 96                  X.
         lda     $75E8                           ; 9739 AD E8 75                 ..u
         jsr     LoadBattleRecordPairAndMaybeScale; 973C 20 20 87                  .
         ldx     $81                             ; 973F A6 81                    ..
@@ -3326,56 +3326,56 @@ ResolveBattleEffectTarget:
         jsr     ComputeHalfDifference           ; 9744 20 23 88                  #.
         lda     $94                             ; 9747 A5 94                    ..
         ora     $95                             ; 9749 05 95                    ..
-        bne     BattlePresentation_Branch_974F  ; 974B D0 02                    ..
+        bne     BattleAi_Branch_974F            ; 974B D0 02                    ..
         inc     $94                             ; 974D E6 94                    ..
-BattlePresentation_Branch_974F:
+BattleAi_Branch_974F:
         lda     $94                             ; 974F A5 94                    ..
         sta     $02                           ; 9751 85 02                    ..
         lda     $95                             ; 9753 A5 95                    ..
         sta     $03                             ; 9755 85 03                    ..
-        jsr     ComputeBattleEffectRatioWithOffset; 9757 20 7C 97                |.
-        jsr     AddBattleEffectPointerToFrame   ; 975A 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 975D 20 C0 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9760 20 00 98                  ..
-        jmp     EvaluateBattlePresentationBounds; 9763 4C C2 A9                 L..
+        jsr     ComputeActionScoreRatioWithOffset; 9757 20 7C 97                 |.
+        jsr     AddActionScorePointerToFrame    ; 975A 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 975D 20 C0 97                  ..
+        jsr     LoadActionScoreLimit            ; 9760 20 00 98                  ..
+        jmp     EvaluateBattleAiBounds          ; 9763 4C C2 A9                 L..
 ; ----------------------------------------------------------------------------
-ComputeBattleEffectRatio:
-        jsr     LoadBattleEffectPointer         ; 9766 20 87 97                  ..
+ComputeActionScoreRatio:
+        jsr     LoadActionScorePointer          ; 9766 20 87 97                  ..
         lda     $8A                             ; 9769 A5 8A                    ..
         jsr     DividePointerWord               ; 976B 20 51 C8                  Q.
-StoreClampedBattleEffectRatio:
+StoreClampedActionScoreRatio:
         lda     $01                             ; 976E A5 01                    ..
-        beq     BattlePresentation_Branch_9776  ; 9770 F0 04                    ..
+        beq     BattleAi_Branch_9776            ; 9770 F0 04                    ..
         lda     #$FF                            ; 9772 A9 FF                    ..
         sta     $00                           ; 9774 85 00                    ..
-BattlePresentation_Branch_9776:
+BattleAi_Branch_9776:
         lda     $00                           ; 9776 A5 00                    ..
         sta     $75D1                           ; 9778 8D D1 75                 ..u
         rts                                     ; 977B 60                       `
 ; ----------------------------------------------------------------------------
-ComputeBattleEffectRatioWithOffset:
-        jsr     LoadBattleEffectPointer         ; 977C 20 87 97                  ..
+ComputeActionScoreRatioWithOffset:
+        jsr     LoadActionScorePointer          ; 977C 20 87 97                  ..
         ldy     #$02                            ; 977F A0 02                    ..
         jsr     DivideIndexedWordByWord         ; 9781 20 AA 83                  ..
-        jmp     StoreClampedBattleEffectRatio   ; 9784 4C 6E 97                 Ln.
+        jmp     StoreClampedActionScoreRatio    ; 9784 4C 6E 97                 Ln.
 ; ----------------------------------------------------------------------------
-LoadBattleEffectPointer:
+LoadActionScorePointer:
         ldx     $81                             ; 9787 A6 81                    ..
         jsr     LoadBattleSlotRecordPointer     ; 9789 20 C7 86                  ..
         lda     $6E80                           ; 978C AD 80 6E                 ..n
         cmp     #$06                            ; 978F C9 06                    ..
-        bne     BattlePresentation_Branch_979E  ; 9791 D0 0B                    ..
+        bne     BattleAi_Branch_979E            ; 9791 D0 0B                    ..
         clc                                     ; 9793 18                       .
         lda     $00                           ; 9794 A5 00                    ..
         adc     #$64                            ; 9796 69 64                    id
         sta     $00                           ; 9798 85 00                    ..
-        bcc     BattlePresentation_Branch_979E  ; 979A 90 02                    ..
+        bcc     BattleAi_Branch_979E            ; 979A 90 02                    ..
         inc     $01                             ; 979C E6 01                    ..
-BattlePresentation_Branch_979E:
+BattleAi_Branch_979E:
         ldx     #$00                            ; 979E A2 00                    ..
         jmp     ShiftIndexedWordLeftBy4         ; 97A0 4C 76 81                 Lv.
 ; ----------------------------------------------------------------------------
-AddBattleEffectPointerToFrame:
+AddActionScorePointerToFrame:
         jsr     LoadBattleRecordBasePointer     ; 97A3 20 77 8D                  w.
         ldy     #$36                            ; 97A6 A0 36                    .6
         lda     ($88),y                       ; 97A8 B1 88                    ..
@@ -3393,23 +3393,23 @@ AddBattleEffectPointerToFrame:
         ldx     #$00                            ; 97BB A2 00                    ..
         jmp     AddWordToPointer                ; 97BD 4C 1D C8                 L..
 ; ----------------------------------------------------------------------------
-DivideBattleEffectPointerByState:
+DivideActionScorePointerByState:
         ldx     #$00                            ; 97C0 A2 00                    ..
         jsr     ShiftIndexedWordLeftBy4         ; 97C2 20 76 81                  v.
         lda     $75D1                           ; 97C5 AD D1 75                 ..u
         and     #$F0                            ; 97C8 29 F0                    ).
-        bne     BattlePresentation_Branch_97D0  ; 97CA D0 04                    ..
+        bne     BattleAi_Branch_97D0            ; 97CA D0 04                    ..
         lda     #$10                            ; 97CC A9 10                    ..
-        bne     BattlePresentation_Branch_97D3  ; 97CE D0 03                    ..
-BattlePresentation_Branch_97D0:
+        bne     BattleAi_Branch_97D3            ; 97CE D0 03                    ..
+BattleAi_Branch_97D0:
         lda     $75D1                           ; 97D0 AD D1 75                 ..u
-BattlePresentation_Branch_97D3:
+BattleAi_Branch_97D3:
         jmp     DividePointerWord               ; 97D3 4C 51 C8                 LQ.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_97D6:
+BattleAi_Branch_97D6:
         rts                                     ; 97D6 60                       `
 ; ----------------------------------------------------------------------------
-UpdateBattleEffectAccumulator:
+UpdateActionScoreAccumulator:
         lda     $00                           ; 97D7 A5 00                    ..
         pha                                     ; 97D9 48                       H
         lda     $01                             ; 97DA A5 01                    ..
@@ -3433,10 +3433,10 @@ UpdateBattleEffectAccumulator:
         lda     $02                           ; 97FB A5 02                    ..
         jmp     ScalePointerWordByNibbleBody    ; 97FD 4C 9A 81                 L..
 ; ----------------------------------------------------------------------------
-LoadBattleEffectLimit:
+LoadActionScoreLimit:
         lda     $8C                             ; 9800 A5 8C                    ..
         cmp     #$10                            ; 9802 C9 10                    ..
-        bcs     BattlePresentation_Branch_97D6  ; 9804 B0 D0                    ..
+        bcs     BattleAi_Branch_97D6            ; 9804 B0 D0                    ..
         ldx     #$00                            ; 9806 A2 00                    ..
         jmp     ScalePointerWordByNibbleBody    ; 9808 4C 9A 81                 L..
 ; ----------------------------------------------------------------------------
@@ -3446,14 +3446,14 @@ InitializeBattleActionScan:
         jsr     InitializeBattleActionMask      ; 9810 20 C5 99                  ..
         lda     #$00                            ; 9813 A9 00                    ..
         sta     $82                             ; 9815 85 82                    ..
-BattlePresentation_Branch_9817:
+BattleAi_Branch_9817:
         lda     $7B                             ; 9817 A5 7B                    .{
         and     #$03                            ; 9819 29 03                    ).
-        beq     BattlePresentation_Branch_9820  ; 981B F0 03                    ..
-        jsr     ResolveBattlePresentationWindow ; 981D 20 26 AD                  &.
-BattlePresentation_Branch_9820:
-        jsr     LoadBattlePresentationIndex     ; 9820 20 4A 93                  J.
-        jsr     LoadBattlePresentationStateMask ; 9823 20 01 92                  ..
+        beq     BattleAi_Branch_9820            ; 981B F0 03                    ..
+        jsr     ResolveBattleAiWindow           ; 981D 20 26 AD                  &.
+BattleAi_Branch_9820:
+        jsr     LoadBattleAiIndex               ; 9820 20 4A 93                  J.
+        jsr     LoadBattleAiStateMask           ; 9823 20 01 92                  ..
         jsr     FindBattleSlotByStateId         ; 9826 20 B5 8A                  ..
         sta     $75D2                           ; 9829 8D D2 75                 ..u
         jsr     SetBattleActionStateFromFlag    ; 982C 20 C2 93                  ..
@@ -3461,7 +3461,7 @@ BattlePresentation_Branch_9820:
         lsr     $7B                             ; 9831 46 7B                    F{
         lsr     $7B                             ; 9833 46 7B                    F{
         and     #$03                            ; 9835 29 03                    ).
-        beq     BattlePresentation_Branch_9844  ; 9837 F0 0B                    ..
+        beq     BattleAi_Branch_9844            ; 9837 F0 0B                    ..
         asl     a                               ; 9839 0A                       .
         asl     a                               ; 983A 0A                       .
         asl     a                               ; 983B 0A                       .
@@ -3469,11 +3469,11 @@ BattlePresentation_Branch_9820:
         ora     $8D                             ; 983D 05 8D                    ..
         sta     $8D                             ; 983F 85 8D                    ..
         jsr     UpdateBattleActionMetrics       ; 9841 20 48 99                  H.
-BattlePresentation_Branch_9844:
+BattleAi_Branch_9844:
         inc     $82                             ; 9844 E6 82                    ..
         lda     $82                             ; 9846 A5 82                    ..
         cmp     #$04                            ; 9848 C9 04                    ..
-        bcc     BattlePresentation_Branch_9817  ; 984A 90 CB                    ..
+        bcc     BattleAi_Branch_9817            ; 984A 90 CB                    ..
         rts                                     ; 984C 60                       `
 ; ----------------------------------------------------------------------------
 EvaluateBattleActionScan:
@@ -3483,19 +3483,19 @@ EvaluateBattleActionScan:
         jsr     InitializeBattleActionMask      ; 9855 20 C5 99                  ..
         lda     $6E80                           ; 9858 AD 80 6E                 ..n
         cmp     #$01                            ; 985B C9 01                    ..
-        beq     BattlePresentation_Branch_98AB  ; 985D F0 4C                    .L
+        beq     BattleAi_Branch_98AB            ; 985D F0 4C                    .L
         lda     $7C                             ; 985F A5 7C                    .|
         cmp     #$03                            ; 9861 C9 03                    ..
-        bcc     BattlePresentation_Branch_98AB  ; 9863 90 46                    .F
+        bcc     BattleAi_Branch_98AB            ; 9863 90 46                    .F
         lda     #$00                            ; 9865 A9 00                    ..
         sta     $82                             ; 9867 85 82                    ..
         sta     $8A                             ; 9869 85 8A                    ..
-BattlePresentation_Branch_986B:
+BattleAi_Branch_986B:
         lda     $7B                             ; 986B A5 7B                    .{
         and     #$03                            ; 986D 29 03                    ).
-        beq     BattlePresentation_Branch_9896  ; 986F F0 25                    .%
+        beq     BattleAi_Branch_9896            ; 986F F0 25                    .%
         jsr     LoadBattleRecordPairIfAllowed   ; 9871 20 10 86                  ..
-        bcc     BattlePresentation_Branch_9896  ; 9874 90 20                    .
+        bcc     BattleAi_Branch_9896            ; 9874 90 20                    .
         jsr     LoadBattleRecordPairIfAllowedExtended; 9876 20 1C 86             ..
         sec                                     ; 9879 38                       8
         lda     $02                           ; 987A A5 02                    ..
@@ -3505,112 +3505,112 @@ BattlePresentation_Branch_986B:
         sbc     $01                             ; 9882 E5 01                    ..
         sta     $03                             ; 9884 85 03                    ..
         lda     $03                             ; 9886 A5 03                    ..
-        bne     BattlePresentation_Branch_9894  ; 9888 D0 0A                    ..
+        bne     BattleAi_Branch_9894            ; 9888 D0 0A                    ..
         lda     $02                           ; 988A A5 02                    ..
         cmp     #$46                            ; 988C C9 46                    .F
-        bcc     BattlePresentation_Branch_9896  ; 988E 90 06                    ..
+        bcc     BattleAi_Branch_9896            ; 988E 90 06                    ..
         cmp     #$6E                            ; 9890 C9 6E                    .n
-        bcs     BattlePresentation_Branch_9896  ; 9892 B0 02                    ..
-BattlePresentation_Branch_9894:
+        bcs     BattleAi_Branch_9896            ; 9892 B0 02                    ..
+BattleAi_Branch_9894:
         inc     $8A                             ; 9894 E6 8A                    ..
-BattlePresentation_Branch_9896:
+BattleAi_Branch_9896:
         lsr     $7B                             ; 9896 46 7B                    F{
         lsr     $7B                             ; 9898 46 7B                    F{
         inc     $82                             ; 989A E6 82                    ..
         lda     $82                             ; 989C A5 82                    ..
         cmp     #$04                            ; 989E C9 04                    ..
-        bcc     BattlePresentation_Branch_986B  ; 98A0 90 C9                    ..
+        bcc     BattleAi_Branch_986B            ; 98A0 90 C9                    ..
         lda     #$FF                            ; 98A2 A9 FF                    ..
         sta     $8C                             ; 98A4 85 8C                    ..
         sta     $8D                             ; 98A6 85 8D                    ..
-        jmp     CommitBattleEffectState         ; 98A8 4C CA AB                 L..
+        jmp     CommitActionScoreState          ; 98A8 4C CA AB                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_98AB:
+BattleAi_Branch_98AB:
         rts                                     ; 98AB 60                       `
 ; ----------------------------------------------------------------------------
 StartActionScanUnlessSelector1ExcludesId29:
         jsr     LoadBattleActionSelector        ; 98AC 20 33 99                  3.
-        bne     BattlePresentation_Branch_98B8  ; 98AF D0 07                    ..
+        bne     BattleAi_Branch_98B8            ; 98AF D0 07                    ..
         lda     $75DB                           ; 98B1 AD DB 75                 ..u
         cmp     #$29                            ; 98B4 C9 29                    .)
-        bne     BattlePresentation_Branch_98BB  ; 98B6 D0 03                    ..
-BattlePresentation_Branch_98B8:
+        bne     BattleAi_Branch_98BB            ; 98B6 D0 03                    ..
+BattleAi_Branch_98B8:
         jmp     InitializeBattleActionScan      ; 98B8 4C 0B 98                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_98BB:
+BattleAi_Branch_98BB:
         rts                                     ; 98BB 60                       `
 ; ----------------------------------------------------------------------------
 GateActionScanForIds29To2BAnd94:
         jsr     LoadBattleActionSelector        ; 98BC 20 33 99                  3.
-        bne     BattlePresentation_Branch_98E6  ; 98BF D0 25                    .%
+        bne     BattleAi_Branch_98E6            ; 98BF D0 25                    .%
         lda     $75DB                           ; 98C1 AD DB 75                 ..u
         cmp     #$29                            ; 98C4 C9 29                    .)
-        beq     BattlePresentation_Branch_98DB  ; 98C6 F0 13                    ..
+        beq     BattleAi_Branch_98DB            ; 98C6 F0 13                    ..
         cmp     #$2A                            ; 98C8 C9 2A                    .*
-        beq     BattlePresentation_Branch_98DB  ; 98CA F0 0F                    ..
+        beq     BattleAi_Branch_98DB            ; 98CA F0 0F                    ..
         cmp     #$2B                            ; 98CC C9 2B                    .+
-        beq     BattlePresentation_Branch_98D5  ; 98CE F0 05                    ..
+        beq     BattleAi_Branch_98D5            ; 98CE F0 05                    ..
         cmp     #$94                            ; 98D0 C9 94                    ..
-        bne     BattlePresentation_Branch_98DB  ; 98D2 D0 07                    ..
-BattlePresentation_Branch_98D4:
+        bne     BattleAi_Branch_98DB            ; 98D2 D0 07                    ..
+BattleAi_Branch_98D4:
         rts                                     ; 98D4 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_98D5:
+BattleAi_Branch_98D5:
         ldx     $6E80                           ; 98D5 AE 80 6E                 ..n
         dex                                     ; 98D8 CA                       .
-        bne     BattlePresentation_Branch_98D4  ; 98D9 D0 F9                    ..
-BattlePresentation_Branch_98DB:
+        bne     BattleAi_Branch_98D4            ; 98D9 D0 F9                    ..
+BattleAi_Branch_98DB:
         lda     $75DA                           ; 98DB AD DA 75                 ..u
         and     #$0F                            ; 98DE 29 0F                    ).
         jsr     GetBattleSlotStateId            ; 98E0 20 AB 8A                  ..
         cmp     $75E8                           ; 98E3 CD E8 75                 ..u
-BattlePresentation_Branch_98E6:
+BattleAi_Branch_98E6:
         jmp     InitializeBattleActionScan      ; 98E6 4C 0B 98                 L..
 ; ----------------------------------------------------------------------------
 GateActionScanForFlag60OrIds2B2C:
         jsr     LoadBattleActionSelector        ; 98E9 20 33 99                  3.
-        bne     BattlePresentation_Branch_98F9  ; 98EC D0 0B                    ..
+        bne     BattleAi_Branch_98F9            ; 98EC D0 0B                    ..
         lda     $00                           ; 98EE A5 00                    ..
-        bpl     BattlePresentation_Branch_98FC  ; 98F0 10 0A                    ..
+        bpl     BattleAi_Branch_98FC            ; 98F0 10 0A                    ..
         lda     $75F2                           ; 98F2 AD F2 75                 ..u
         cmp     #$60                            ; 98F5 C9 60                    .`
-        beq     BattlePresentation_Branch_990D  ; 98F7 F0 14                    ..
-BattlePresentation_Branch_98F9:
+        beq     BattleAi_Branch_990D            ; 98F7 F0 14                    ..
+BattleAi_Branch_98F9:
         jmp     InitializeBattleActionScan      ; 98F9 4C 0B 98                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_98FC:
+BattleAi_Branch_98FC:
         ldx     $6E80                           ; 98FC AE 80 6E                 ..n
         dex                                     ; 98FF CA                       .
-        beq     BattlePresentation_Branch_98F9  ; 9900 F0 F7                    ..
+        beq     BattleAi_Branch_98F9            ; 9900 F0 F7                    ..
         lda     $75DB                           ; 9902 AD DB 75                 ..u
         cmp     #$2B                            ; 9905 C9 2B                    .+
-        beq     BattlePresentation_Branch_990D  ; 9907 F0 04                    ..
+        beq     BattleAi_Branch_990D            ; 9907 F0 04                    ..
         cmp     #$2C                            ; 9909 C9 2C                    .,
-        bne     BattlePresentation_Branch_98F9  ; 990B D0 EC                    ..
-BattlePresentation_Branch_990D:
+        bne     BattleAi_Branch_98F9            ; 990B D0 EC                    ..
+BattleAi_Branch_990D:
         rts                                     ; 990D 60                       `
 ; ----------------------------------------------------------------------------
 GateActionState20Dispatch:
         jsr     LoadBattleActionSelector        ; 990E 20 33 99                  3.
-        bne     BattlePresentation_Branch_9926  ; 9911 D0 13                    ..
+        bne     BattleAi_Branch_9926            ; 9911 D0 13                    ..
         lda     $00                           ; 9913 A5 00                    ..
-        bmi     BattlePresentation_Branch_992B  ; 9915 30 14                    0.
+        bmi     BattleAi_Branch_992B            ; 9915 30 14                    0.
         lda     $75DB                           ; 9917 AD DB 75                 ..u
         cmp     #$2B                            ; 991A C9 2B                    .+
-        bne     BattlePresentation_Branch_992B  ; 991C D0 0D                    ..
+        bne     BattleAi_Branch_992B            ; 991C D0 0D                    ..
         jsr     LoadBattleActionState           ; 991E 20 3D 99                  =.
         cmp     #$02                            ; 9921 C9 02                    ..
-        bcs     BattlePresentation_Branch_992B  ; 9923 B0 06                    ..
-BattlePresentation_Branch_9925:
+        bcs     BattleAi_Branch_992B            ; 9923 B0 06                    ..
+BattleAi_Branch_9925:
         rts                                     ; 9925 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9926:
+BattleAi_Branch_9926:
         jsr     LoadBattleActionState           ; 9926 20 3D 99                  =.
-        beq     BattlePresentation_Branch_9925  ; 9929 F0 FA                    ..
-BattlePresentation_Branch_992B:
+        beq     BattleAi_Branch_9925            ; 9929 F0 FA                    ..
+BattleAi_Branch_992B:
         lda     #$20                            ; 992B A9 20                    .
         sta     $75D2                           ; 992D 8D D2 75                 ..u
-        jmp     CommitBattleEffectState         ; 9930 4C CA AB                 L..
+        jmp     CommitActionScoreState          ; 9930 4C CA AB                 L..
 ; ----------------------------------------------------------------------------
 LoadBattleActionSelector:
         jsr     ClassifyBattleAction            ; 9933 20 06 94                  ..
@@ -3637,7 +3637,7 @@ UpdateBattleActionMetrics:
         jsr     AdjustBattleActionBounds        ; 9958 20 9F 99                  ..
         lda     $8A                             ; 995B A5 8A                    ..
         cmp     #$FF                            ; 995D C9 FF                    ..
-        beq     BattlePresentation_Branch_9994  ; 995F F0 33                    .3
+        beq     BattleAi_Branch_9994            ; 995F F0 33                    .3
         ldx     #$00                            ; 9961 A2 00                    ..
         jsr     AddByteToPointer                ; 9963 20 13 C8                  ..
         lda     $82                             ; 9966 A5 82                    ..
@@ -3649,25 +3649,25 @@ UpdateBattleActionMetrics:
         lda     $00                           ; 9975 A5 00                    ..
         and     #$F0                            ; 9977 29 F0                    ).
         ora     $01                             ; 9979 05 01                    ..
-        bne     BattlePresentation_Branch_9994  ; 997B D0 17                    ..
+        bne     BattleAi_Branch_9994            ; 997B D0 17                    ..
         lda     $00                           ; 997D A5 00                    ..
         sta     $01                             ; 997F 85 01                    ..
         lda     #$00                            ; 9981 A9 00                    ..
         sta     $00                           ; 9983 85 00                    ..
-        jsr     LoadBattlePresentationValueA    ; 9985 20 65 93                  e.
+        jsr     LoadBattleAiValueA              ; 9985 20 65 93                  e.
         cmp     $01                             ; 9988 C5 01                    ..
-        bcc     BattlePresentation_Branch_9994  ; 998A 90 08                    ..
-        beq     BattlePresentation_Branch_9994  ; 998C F0 06                    ..
+        bcc     BattleAi_Branch_9994            ; 998A 90 08                    ..
+        beq     BattleAi_Branch_9994            ; 998C F0 06                    ..
         jsr     DividePointerWord               ; 998E 20 51 C8                  Q.
-        jmp     BattlePresentation_Branch_9998  ; 9991 4C 98 99                 L..
+        jmp     BattleAi_Branch_9998            ; 9991 4C 98 99                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9994:
+BattleAi_Branch_9994:
         lda     #$FF                            ; 9994 A9 FF                    ..
         sta     $00                           ; 9996 85 00                    ..
-BattlePresentation_Branch_9998:
+BattleAi_Branch_9998:
         lda     #$00                            ; 9998 A9 00                    ..
         sta     $01                             ; 999A 85 01                    ..
-        jmp     UpdateBattleEffectStateIfImproved; 999C 4C 92 AB                L..
+        jmp     UpdateActionScoreStateIfImproved; 999C 4C 92 AB                 L..
 ; ----------------------------------------------------------------------------
 AdjustBattleActionBounds:
         sec                                     ; 999F 38                       8
@@ -3679,18 +3679,18 @@ AdjustBattleActionBounds:
         sta     $05                             ; 99AA 85 05                    ..
         lda     $8A                             ; 99AC A5 8A                    ..
         cmp     #$FF                            ; 99AE C9 FF                    ..
-        beq     BattlePresentation_Branch_99C4  ; 99B0 F0 12                    ..
+        beq     BattleAi_Branch_99C4            ; 99B0 F0 12                    ..
         lda     $05                             ; 99B2 A5 05                    ..
-        bne     BattlePresentation_Branch_99BC  ; 99B4 D0 06                    ..
+        bne     BattleAi_Branch_99BC            ; 99B4 D0 06                    ..
         lda     $04                             ; 99B6 A5 04                    ..
         cmp     $8A                             ; 99B8 C5 8A                    ..
-        bcc     BattlePresentation_Branch_99C4  ; 99BA 90 08                    ..
-BattlePresentation_Branch_99BC:
+        bcc     BattleAi_Branch_99C4            ; 99BA 90 08                    ..
+BattleAi_Branch_99BC:
         lda     $8A                             ; 99BC A5 8A                    ..
         sta     $04                             ; 99BE 85 04                    ..
         lda     #$00                            ; 99C0 A9 00                    ..
         sta     $05                             ; 99C2 85 05                    ..
-BattlePresentation_Branch_99C4:
+BattleAi_Branch_99C4:
         rts                                     ; 99C4 60                       `
 ; ----------------------------------------------------------------------------
 InitializeBattleActionMask:
@@ -3699,33 +3699,33 @@ InitializeBattleActionMask:
         sta     $7C                             ; 99CA 85 7C                    .|
         sta     $7B                             ; 99CC 85 7B                    .{
         sta     $82                             ; 99CE 85 82                    ..
-BattlePresentation_Branch_99D0:
+BattleAi_Branch_99D0:
         lda     $82                             ; 99D0 A5 82                    ..
-        jsr     SelectBattlePresentationAction  ; 99D2 20 0D 9B                  ..
-        bcc     BattlePresentation_Branch_99FA  ; 99D5 90 23                    .#
+        jsr     SelectBattleAiAction            ; 99D2 20 0D 9B                  ..
+        bcc     BattleAi_Branch_99FA            ; 99D5 90 23                    .#
         lda     $75D3                           ; 99D7 AD D3 75                 ..u
         cmp     #$8F                            ; 99DA C9 8F                    ..
-        bne     BattlePresentation_Branch_99E6  ; 99DC D0 08                    ..
+        bne     BattleAi_Branch_99E6            ; 99DC D0 08                    ..
         jsr     SelectBattleSlotIndex           ; 99DE 20 66 88                  f.
         cmp     $75E8                           ; 99E1 CD E8 75                 ..u
-        bne     BattlePresentation_Branch_99FA  ; 99E4 D0 14                    ..
-BattlePresentation_Branch_99E6:
+        bne     BattleAi_Branch_99FA            ; 99E4 D0 14                    ..
+BattleAi_Branch_99E6:
         jsr     LoadBattleSlotBitmap            ; 99E6 20 03 9A                  ..
         ora     $7B                             ; 99E9 05 7B                    .{
         sta     $7B                             ; 99EB 85 7B                    .{
         dey                                     ; 99ED 88                       .
-        bmi     BattlePresentation_Branch_99F8  ; 99EE 30 08                    0.
+        bmi     BattleAi_Branch_99F8            ; 99EE 30 08                    0.
         jsr     LoadBattleSlotBitmap            ; 99F0 20 03 9A                  ..
         clc                                     ; 99F3 18                       .
         adc     $7B                             ; 99F4 65 7B                    e{
         sta     $7B                             ; 99F6 85 7B                    .{
-BattlePresentation_Branch_99F8:
+BattleAi_Branch_99F8:
         inc     $7C                             ; 99F8 E6 7C                    .|
-BattlePresentation_Branch_99FA:
+BattleAi_Branch_99FA:
         inc     $82                             ; 99FA E6 82                    ..
         lda     $82                             ; 99FC A5 82                    ..
         cmp     #$04                            ; 99FE C9 04                    ..
-        bcc     BattlePresentation_Branch_99D0  ; 9A00 90 CE                    ..
+        bcc     BattleAi_Branch_99D0            ; 9A00 90 CE                    ..
         rts                                     ; 9A02 60                       `
 ; ----------------------------------------------------------------------------
 LoadBattleSlotBitmap:
@@ -3758,25 +3758,25 @@ ClearWindowAccumulatorsAndSeedEightSlotScan:
 AccumulateRecordWindows00_08_10AcrossEightSlots:
         jsr     LoadBattleRecordBasePointer     ; 9A39 20 77 8D                  w.
         ldy     #$00                            ; 9A3C A0 00                    ..
-        jsr     AccumulateBattlePresentationWindow; 9A3E 20 50 9A                P.
+        jsr     AccumulateBattleAiWindow        ; 9A3E 20 50 9A                  P.
         ldy     #$08                            ; 9A41 A0 08                    ..
-        jsr     AccumulateBattlePresentationWindow; 9A43 20 50 9A                P.
+        jsr     AccumulateBattleAiWindow        ; 9A43 20 50 9A                  P.
         ldy     #$10                            ; 9A46 A0 10                    ..
-        jsr     AccumulateBattlePresentationWindow; 9A48 20 50 9A                P.
+        jsr     AccumulateBattleAiWindow        ; 9A48 20 50 9A                  P.
         dec     $81                             ; 9A4B C6 81                    ..
         bpl     AccumulateRecordWindows00_08_10AcrossEightSlots; 9A4D 10 EA     ..
         rts                                     ; 9A4F 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationWindow:
+AccumulateBattleAiWindow:
         lda     #$00                            ; 9A50 A9 00                    ..
         sta     $82                             ; 9A52 85 82                    ..
-BattlePresentation_Branch_9A54:
+BattleAi_Branch_9A54:
         jsr     CheckBattleSlotAvailability     ; 9A54 20 AA 9A                  ..
         iny                                     ; 9A57 C8                       .
         ldx     $81                             ; 9A58 A6 81                    ..
         lda     $FF5E,x                         ; 9A5A BD 5E FF                 .^.
         and     $7B                             ; 9A5D 25 7B                    %{
-        beq     BattlePresentation_Branch_9AA0  ; 9A5F F0 3F                    .?
+        beq     BattleAi_Branch_9AA0            ; 9A5F F0 3F                    .?
         dey                                     ; 9A61 88                       .
         lda     ($88),y                       ; 9A62 B1 88                    ..
         sta     $01                             ; 9A64 85 01                    ..
@@ -3785,10 +3785,10 @@ BattlePresentation_Branch_9A54:
         lda     ($88),y                       ; 9A69 B1 88                    ..
         sta     $02                           ; 9A6B 85 02                    ..
         sta     $04                             ; 9A6D 85 04                    ..
-        jsr     LoadBattlePresentationValueC    ; 9A6F 20 9A 93                  ..
+        jsr     LoadBattleAiValueC              ; 9A6F 20 9A 93                  ..
         ldx     #$01                            ; 9A72 A2 01                    ..
         jsr     ScalePointerWordByNibbleBody    ; 9A74 20 9A 81                  ..
-        jsr     LoadBattlePresentationValueB    ; 9A77 20 7A 93                  z.
+        jsr     LoadBattleAiValueB              ; 9A77 20 7A 93                  z.
         ldx     #$03                            ; 9A7A A2 03                    ..
         jsr     MultiplyIndexedWordByA          ; 9A7C 20 30 83                  0.
         lda     $82                             ; 9A7F A5 82                    ..
@@ -3807,12 +3807,12 @@ BattlePresentation_Branch_9A54:
         lda     $75C2,x                         ; 9A98 BD C2 75                 ..u
         adc     $19                             ; 9A9B 65 19                    e.
         sta     $75C2,x                         ; 9A9D 9D C2 75                 ..u
-BattlePresentation_Branch_9AA0:
+BattleAi_Branch_9AA0:
         iny                                     ; 9AA0 C8                       .
         inc     $82                             ; 9AA1 E6 82                    ..
         lda     $82                             ; 9AA3 A5 82                    ..
         cmp     #$04                            ; 9AA5 C9 04                    ..
-        bcc     BattlePresentation_Branch_9A54  ; 9AA7 90 AB                    ..
+        bcc     BattleAi_Branch_9A54            ; 9AA7 90 AB                    ..
         rts                                     ; 9AA9 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleSlotAvailability:
@@ -3825,95 +3825,95 @@ CheckBattleSlotAvailability:
 ; ----------------------------------------------------------------------------
 EvaluateBattleSlotAgainstMarkers:
         jsr     CheckBattleSlotThreshold        ; 9AB2 20 D0 93                  ..
-        bcc     BattlePresentation_Branch_9AD6  ; 9AB5 90 1F                    ..
+        bcc     BattleAi_Branch_9AD6            ; 9AB5 90 1F                    ..
         lda     $7348,x                         ; 9AB7 BD 48 73                 .Hs
         sta     $00                           ; 9ABA 85 00                    ..
         ldx     $75EA                           ; 9ABC AE EA 75                 ..u
         lda     $75EB                           ; 9ABF AD EB 75                 ..u
-        bmi     BattlePresentation_Branch_9AD6  ; 9AC2 30 12                    0.
+        bmi     BattleAi_Branch_9AD6            ; 9AC2 30 12                    0.
         and     #$70                            ; 9AC4 29 70                    )p
         cmp     #$20                            ; 9AC6 C9 20                    .
-        beq     BattlePresentation_Branch_9ADC  ; 9AC8 F0 12                    ..
+        beq     BattleAi_Branch_9ADC            ; 9AC8 F0 12                    ..
         cmp     #$10                            ; 9ACA C9 10                    ..
-        beq     BattlePresentation_Branch_9AD6  ; 9ACC F0 08                    ..
+        beq     BattleAi_Branch_9AD6            ; 9ACC F0 08                    ..
         cpx     #$29                            ; 9ACE E0 29                    .)
-        bcc     BattlePresentation_Branch_9AD6  ; 9AD0 90 04                    ..
+        bcc     BattleAi_Branch_9AD6            ; 9AD0 90 04                    ..
         cpx     #$2C                            ; 9AD2 E0 2C                    .,
-        bcc     BattlePresentation_Branch_9AE4  ; 9AD4 90 0E                    ..
-BattlePresentation_Branch_9AD6:
+        bcc     BattleAi_Branch_9AE4            ; 9AD4 90 0E                    ..
+BattleAi_Branch_9AD6:
         lda     #$FF                            ; 9AD6 A9 FF                    ..
         sta     $7B                             ; 9AD8 85 7B                    .{
-        bne     BattlePresentation_Branch_9B09  ; 9ADA D0 2D                    .-
-BattlePresentation_Branch_9ADC:
+        bne     BattleAi_Branch_9B09            ; 9ADA D0 2D                    .-
+BattleAi_Branch_9ADC:
         cpx     #$53                            ; 9ADC E0 53                    .S
-        beq     BattlePresentation_Branch_9AE4  ; 9ADE F0 04                    ..
+        beq     BattleAi_Branch_9AE4            ; 9ADE F0 04                    ..
         cpx     #$40                            ; 9AE0 E0 40                    .@
-        bne     BattlePresentation_Branch_9AD6  ; 9AE2 D0 F2                    ..
-BattlePresentation_Branch_9AE4:
+        bne     BattleAi_Branch_9AD6            ; 9AE2 D0 F2                    ..
+BattleAi_Branch_9AE4:
         lda     $75EB                           ; 9AE4 AD EB 75                 ..u
         and     #$0F                            ; 9AE7 29 0F                    ).
         cmp     $82                             ; 9AE9 C5 82                    ..
-        bne     BattlePresentation_Branch_9AD6  ; 9AEB D0 E9                    ..
+        bne     BattleAi_Branch_9AD6            ; 9AEB D0 E9                    ..
         lda     #$00                            ; 9AED A9 00                    ..
         sta     $7B                             ; 9AEF 85 7B                    .{
         ldx     #$07                            ; 9AF1 A2 07                    ..
-BattlePresentation_Branch_9AF3:
+BattleAi_Branch_9AF3:
         lda     $734C,x                         ; 9AF3 BD 4C 73                 .Ls
         cmp     $735B                           ; 9AF6 CD 5B 73                 .[s
-        bcc     BattlePresentation_Branch_9B06  ; 9AF9 90 0B                    ..
+        bcc     BattleAi_Branch_9B06            ; 9AF9 90 0B                    ..
         cmp     $00                           ; 9AFB C5 00                    ..
-        bcs     BattlePresentation_Branch_9B06  ; 9AFD B0 07                    ..
+        bcs     BattleAi_Branch_9B06            ; 9AFD B0 07                    ..
         lda     $FF5E,x                         ; 9AFF BD 5E FF                 .^.
         ora     $7B                             ; 9B02 05 7B                    .{
         sta     $7B                             ; 9B04 85 7B                    .{
-BattlePresentation_Branch_9B06:
+BattleAi_Branch_9B06:
         dex                                     ; 9B06 CA                       .
-        bpl     BattlePresentation_Branch_9AF3  ; 9B07 10 EA                    ..
-BattlePresentation_Branch_9B09:
+        bpl     BattleAi_Branch_9AF3            ; 9B07 10 EA                    ..
+BattleAi_Branch_9B09:
         lda     $7B                             ; 9B09 A5 7B                    .{
         rts                                     ; 9B0B 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9B0C:
+BattleAi_Branch_9B0C:
         rts                                     ; 9B0C 60                       `
 ; ----------------------------------------------------------------------------
-SelectBattlePresentationAction:
+SelectBattleAiAction:
         lda     $82                             ; 9B0D A5 82                    ..
         jsr     LoadBattleRecordPairIfAllowedExtended; 9B0F 20 1C 86             ..
-        bcc     BattlePresentation_Branch_9B0C  ; 9B12 90 F8                    ..
+        bcc     BattleAi_Branch_9B0C            ; 9B12 90 F8                    ..
         ldy     #$00                            ; 9B14 A0 00                    ..
         lda     ($79),y                         ; 9B16 B1 79                    .y
-        bpl     BattlePresentation_Branch_9B95  ; 9B18 10 7B                    .{
+        bpl     BattleAi_Branch_9B95            ; 9B18 10 7B                    .{
         lda     $75D2                           ; 9B1A AD D2 75                 ..u
         and     #$70                            ; 9B1D 29 70                    )p
-        beq     BattlePresentation_Branch_9B39  ; 9B1F F0 18                    ..
+        beq     BattleAi_Branch_9B39            ; 9B1F F0 18                    ..
         jsr     SelectBattleSlotIndex           ; 9B21 20 66 88                  f.
         cmp     $75E8                           ; 9B24 CD E8 75                 ..u
-        beq     BattlePresentation_Branch_9B39  ; 9B27 F0 10                    ..
+        beq     BattleAi_Branch_9B39            ; 9B27 F0 10                    ..
         jsr     FindBattleSlotByCharacterId     ; 9B29 20 F5 89                  ..
         lda     $75F0                           ; 9B2C AD F0 75                 ..u
-        bmi     BattlePresentation_Branch_9B39  ; 9B2F 30 08                    0.
+        bmi     BattleAi_Branch_9B39            ; 9B2F 30 08                    0.
         ldy     #$05                            ; 9B31 A0 05                    ..
         lda     ($79),y                         ; 9B33 B1 79                    .y
         and     #$C0                            ; 9B35 29 C0                    ).
-        bne     BattlePresentation_Branch_9B95  ; 9B37 D0 5C                    .\
-BattlePresentation_Branch_9B39:
+        bne     BattleAi_Branch_9B95            ; 9B37 D0 5C                    .\
+BattleAi_Branch_9B39:
         lda     $82                             ; 9B39 A5 82                    ..
         jsr     SelectBattleSlotIndex           ; 9B3B 20 66 88                  f.
         jsr     FindBattleSlotByCharacterId     ; 9B3E 20 F5 89                  ..
         ldy     #$05                            ; 9B41 A0 05                    ..
         lda     ($79),y                         ; 9B43 B1 79                    .y
         and     #$04                            ; 9B45 29 04                    ).
-        bne     BattlePresentation_Branch_9B95  ; 9B47 D0 4C                    .L
+        bne     BattleAi_Branch_9B95            ; 9B47 D0 4C                    .L
         lda     $82                             ; 9B49 A5 82                    ..
         jsr     LoadBattleRecordPairIfAllowed   ; 9B4B 20 10 86                  ..
-        jsr     CheckBattlePresentationWindow   ; 9B4E 20 97 9B                  ..
-        bcc     BattlePresentation_Branch_9B95  ; 9B51 90 42                    .B
+        jsr     CheckBattleAiWindow             ; 9B4E 20 97 9B                  ..
+        bcc     BattleAi_Branch_9B95            ; 9B51 90 42                    .B
         lda     #$03                            ; 9B53 A9 03                    ..
         ldx     $6E80                           ; 9B55 AE 80 6E                 ..n
         cpx     #$03                            ; 9B58 E0 03                    ..
-        beq     BattlePresentation_Branch_9B5E  ; 9B5A F0 02                    ..
+        beq     BattleAi_Branch_9B5E            ; 9B5A F0 02                    ..
         lda     #$04                            ; 9B5C A9 04                    ..
-BattlePresentation_Branch_9B5E:
+BattleAi_Branch_9B5E:
         ldx     #$02                            ; 9B5E A2 02                    ..
         jsr     DividePointerWord               ; 9B60 20 51 C8                  Q.
         lda     $82                             ; 9B63 A5 82                    ..
@@ -3929,26 +3929,26 @@ BattlePresentation_Branch_9B5E:
         sbc     $8B,x                           ; 9B75 F5 8B                    ..
         sta     $05                             ; 9B77 85 05                    ..
         ldy     #$01                            ; 9B79 A0 01                    ..
-        bcc     BattlePresentation_Branch_9B93  ; 9B7B 90 16                    ..
+        bcc     BattleAi_Branch_9B93            ; 9B7B 90 16                    ..
         lda     $04                             ; 9B7D A5 04                    ..
         sbc     $02                           ; 9B7F E5 02                    ..
         lda     $05                             ; 9B81 A5 05                    ..
         sbc     $03                             ; 9B83 E5 03                    ..
-        bcs     BattlePresentation_Branch_9B95  ; 9B85 B0 0E                    ..
+        bcs     BattleAi_Branch_9B95            ; 9B85 B0 0E                    ..
         lda     $82                             ; 9B87 A5 82                    ..
         jsr     LoadBattleRecordPairIfAllowedExtended; 9B89 20 1C 86             ..
-        jsr     CheckBattlePresentationWindow   ; 9B8C 20 97 9B                  ..
-        bcc     BattlePresentation_Branch_9B95  ; 9B8F 90 04                    ..
+        jsr     CheckBattleAiWindow             ; 9B8C 20 97 9B                  ..
+        bcc     BattleAi_Branch_9B95            ; 9B8F 90 04                    ..
         ldy     #$00                            ; 9B91 A0 00                    ..
-BattlePresentation_Branch_9B93:
+BattleAi_Branch_9B93:
         sec                                     ; 9B93 38                       8
         rts                                     ; 9B94 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9B95:
+BattleAi_Branch_9B95:
         clc                                     ; 9B95 18                       .
         rts                                     ; 9B96 60                       `
 ; ----------------------------------------------------------------------------
-CheckBattlePresentationWindow:
+CheckBattleAiWindow:
         ldx     #$00                            ; 9B97 A2 00                    ..
         ldy     #$02                            ; 9B99 A0 02                    ..
         jsr     ShiftIndexedWordLeftBy4         ; 9B9B 20 76 81                  v.
@@ -3958,38 +3958,38 @@ CheckBattlePresentationWindow:
         rts                                     ; 9BA5 60                       `
 ; ----------------------------------------------------------------------------
 RunEightConvertedActionsThroughEffectBit0:
-        jsr     LoadBattlePresentationStateMask ; 9BA6 20 01 92                  ..
+        jsr     LoadBattleAiStateMask           ; 9BA6 20 01 92                  ..
         lda     #$07                            ; 9BA9 A9 07                    ..
         sta     $81                             ; 9BAB 85 81                    ..
-BattlePresentation_Branch_9BAD:
-        jsr     ConvertBattlePresentationByte   ; 9BAD 20 76 92                  v.
-        jsr     SetActionStateFrom81WithBit80   ; 9BB0 20 AB 93                  ..
+BattleAi_Branch_9BAD:
+        jsr     ConvertBattleAiByte             ; 9BAD 20 76 92                  v.
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 9BB0 20 AB 93            ..
         jsr     RunEffectBit0PathAndDispatchOnNegativeCount; 9BB3 20 A8 9C       ..
         dec     $81                             ; 9BB6 C6 81                    ..
-        bpl     BattlePresentation_Branch_9BAD  ; 9BB8 10 F3                    ..
+        bpl     BattleAi_Branch_9BAD            ; 9BB8 10 F3                    ..
         rts                                     ; 9BBA 60                       `
 ; ----------------------------------------------------------------------------
 ClearEffectTotalsForFourActionStates:
-        jsr     LoadBattlePresentationStateMask ; 9BBB 20 01 92                  ..
+        jsr     LoadBattleAiStateMask           ; 9BBB 20 01 92                  ..
         lda     #$03                            ; 9BBE A9 03                    ..
         sta     $8D                             ; 9BC0 85 8D                    ..
-BattlePresentation_Branch_9BC2:
-        jsr     SetActionStateFrom8DWithBits88  ; 9BC2 20 B4 93                  ..
-        jsr     ClearBattleEffectTotals         ; 9BC5 20 3A 9C                  :.
+BattleAi_Branch_9BC2:
+        jsr     SetBattleAiActionStateFromAlternateFlags; 9BC2 20 B4 93          ..
+        jsr     ClearActionScoreTotals          ; 9BC5 20 3A 9C                  :.
         dec     $8D                             ; 9BC8 C6 8D                    ..
-        bpl     BattlePresentation_Branch_9BC2  ; 9BCA 10 F6                    ..
+        bpl     BattleAi_Branch_9BC2            ; 9BCA 10 F6                    ..
         rts                                     ; 9BCC 60                       `
 ; ----------------------------------------------------------------------------
 RunEightConvertedActionsThroughEffectBit2:
-        jsr     LoadBattlePresentationStateMask ; 9BCD 20 01 92                  ..
+        jsr     LoadBattleAiStateMask           ; 9BCD 20 01 92                  ..
         lda     #$07                            ; 9BD0 A9 07                    ..
         sta     $81                             ; 9BD2 85 81                    ..
-BattlePresentation_Branch_9BD4:
-        jsr     ConvertBattlePresentationByte   ; 9BD4 20 76 92                  v.
-        jsr     SetActionStateFrom81WithBit80   ; 9BD7 20 AB 93                  ..
+BattleAi_Branch_9BD4:
+        jsr     ConvertBattleAiByte             ; 9BD4 20 76 92                  v.
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 9BD7 20 AB 93            ..
         jsr     RunEffectBit2PathAndDispatchOnNegativeCount; 9BDA 20 4B 9D       K.
         dec     $81                             ; 9BDD C6 81                    ..
-        bpl     BattlePresentation_Branch_9BD4  ; 9BDF 10 F3                    ..
+        bpl     BattleAi_Branch_9BD4            ; 9BDF 10 F3                    ..
         rts                                     ; 9BE1 60                       `
 ; ----------------------------------------------------------------------------
 AverageEightRecordExtentGroups:
@@ -3998,14 +3998,14 @@ AverageEightRecordExtentGroups:
         ldy     #$05                            ; 9BE8 A0 05                    ..
         lda     ($79),y                         ; 9BEA B1 79                    .y
         and     #$C0                            ; 9BEC 29 C0                    ).
-        bne     BattlePresentation_Branch_9C39  ; 9BEE D0 49                    .I
-        jsr     LoadBattlePresentationStateMask ; 9BF0 20 01 92                  ..
+        bne     BattleAi_Branch_9C39            ; 9BEE D0 49                    .I
+        jsr     LoadBattleAiStateMask           ; 9BF0 20 01 92                  ..
         lda     #$07                            ; 9BF3 A9 07                    ..
         sta     $81                             ; 9BF5 85 81                    ..
         lda     #$00                            ; 9BF7 A9 00                    ..
         sta     $00                           ; 9BF9 85 00                    ..
         sta     $01                             ; 9BFB 85 01                    ..
-BattlePresentation_Branch_9BFD:
+BattleAi_Branch_9BFD:
         jsr     LoadBattleRecordBasePointer     ; 9BFD 20 77 8D                  w.
         ldy     #$08                            ; 9C00 A0 08                    ..
         jsr     AddBattleWordToIndexedPairFromX ; 9C02 20 77 94                  w.
@@ -4016,7 +4016,7 @@ BattlePresentation_Branch_9BFD:
         ldy     #$20                            ; 9C0F A0 20                    .
         jsr     AddBattleWordToIndexedPairFromX ; 9C11 20 77 94                  w.
         dec     $81                             ; 9C14 C6 81                    ..
-        bpl     BattlePresentation_Branch_9BFD  ; 9C16 10 E5                    ..
+        bpl     BattleAi_Branch_9BFD            ; 9C16 10 E5                    ..
         ldx     #$00                            ; 9C18 A2 00                    ..
         jsr     DivideIndexedBattleWordBySmallPowerOfTwo; 9C1A 20 16 82          ..
         lda     #$10                            ; 9C1D A9 10                    ..
@@ -4025,37 +4025,37 @@ BattlePresentation_Branch_9BFD:
         lda     #$00                            ; 9C24 A9 00                    ..
         sta     $75D2                           ; 9C26 8D D2 75                 ..u
         lda     $75F0                           ; 9C29 AD F0 75                 ..u
-        bpl     BattlePresentation_Branch_9C36  ; 9C2C 10 08                    ..
+        bpl     BattleAi_Branch_9C36            ; 9C2C 10 08                    ..
         lda     $75D2                           ; 9C2E AD D2 75                 ..u
         ora     #$20                            ; 9C31 09 20                    .
         sta     $75D2                           ; 9C33 8D D2 75                 ..u
-BattlePresentation_Branch_9C36:
-        jmp     ClearBattleEffectTotalsAndValidate; 9C36 4C A3 AC               L..
+BattleAi_Branch_9C36:
+        jmp     ClearActionScoreTotalsAndValidate; 9C36 4C A3 AC                L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9C39:
+BattleAi_Branch_9C39:
         rts                                     ; 9C39 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleEffectTotals:
+ClearActionScoreTotals:
         lda     #$00                            ; 9C3A A9 00                    ..
         sta     $75DF                           ; 9C3C 8D DF 75                 ..u
         sta     $75E0                           ; 9C3F 8D E0 75                 ..u
         lda     #$07                            ; 9C42 A9 07                    ..
         sta     $81                             ; 9C44 85 81                    ..
-BattlePresentation_Branch_9C46:
+BattleAi_Branch_9C46:
         jsr     TestBattleRecordModeField       ; 9C46 20 02 86                  ..
-        bne     BattlePresentation_Branch_9C77  ; 9C49 D0 2C                    .,
+        bne     BattleAi_Branch_9C77            ; 9C49 D0 2C                    .,
         lda     $75F0                           ; 9C4B AD F0 75                 ..u
-        bmi     BattlePresentation_Branch_9C60  ; 9C4E 30 10                    0.
+        bmi     BattleAi_Branch_9C60            ; 9C4E 30 10                    0.
         lda     $75D3                           ; 9C50 AD D3 75                 ..u
         cmp     #$19                            ; 9C53 C9 19                    ..
-        bne     BattlePresentation_Branch_9C60  ; 9C55 D0 09                    ..
+        bne     BattleAi_Branch_9C60            ; 9C55 D0 09                    ..
         ldx     $81                             ; 9C57 A6 81                    ..
         lda     #$40                            ; 9C59 A9 40                    .@
         jsr     TestBattleRecordFlag05          ; 9C5B 20 EE 85                  ..
-        bne     BattlePresentation_Branch_9C88  ; 9C5E D0 28                    .(
-BattlePresentation_Branch_9C60:
-        jsr     ConvertBattlePresentationByte   ; 9C60 20 76 92                  v.
-        jsr     EvaluateBattleEffectGate        ; 9C63 20 89 9C                  ..
+        bne     BattleAi_Branch_9C88            ; 9C5E D0 28                    .(
+BattleAi_Branch_9C60:
+        jsr     ConvertBattleAiByte             ; 9C60 20 76 92                  v.
+        jsr     EvaluateActionScoreGate         ; 9C63 20 89 9C                  ..
         clc                                     ; 9C66 18                       .
         lda     $00                           ; 9C67 A5 00                    ..
         adc     $75DF                           ; 9C69 6D DF 75                 m.u
@@ -4063,19 +4063,19 @@ BattlePresentation_Branch_9C60:
         lda     $01                             ; 9C6F A5 01                    ..
         adc     $75E0                           ; 9C71 6D E0 75                 m.u
         sta     $75E0                           ; 9C74 8D E0 75                 ..u
-BattlePresentation_Branch_9C77:
+BattleAi_Branch_9C77:
         dec     $81                             ; 9C77 C6 81                    ..
-        bpl     BattlePresentation_Branch_9C46  ; 9C79 10 CB                    ..
+        bpl     BattleAi_Branch_9C46            ; 9C79 10 CB                    ..
         lda     $75DF                           ; 9C7B AD DF 75                 ..u
         sta     $00                           ; 9C7E 85 00                    ..
         lda     $75E0                           ; 9C80 AD E0 75                 ..u
         sta     $01                             ; 9C83 85 01                    ..
-        jmp     ClearBattleEffectTotalsAndValidate; 9C85 4C A3 AC               L..
+        jmp     ClearActionScoreTotalsAndValidate; 9C85 4C A3 AC                L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9C88:
+BattleAi_Branch_9C88:
         rts                                     ; 9C88 60                       `
 ; ----------------------------------------------------------------------------
-EvaluateBattleEffectGate:
+EvaluateActionScoreGate:
         lda     $75D3                           ; 9C89 AD D3 75                 ..u
         cmp     #$17                            ; 9C8C C9 17                    ..
         beq     AccumulateEffectPointerWhenRecordBit0Clear; 9C8E F0 22          ."
@@ -4088,70 +4088,70 @@ EvaluateBattleEffectGate:
         cmp     #$8D                            ; 9C9C C9 8D                    ..
         beq     AccumulateEffectPointerWhenBit0AndHighNibbleClear; 9C9E F0 3C   .<
         cmp     #$1A                            ; 9CA0 C9 1A                    ..
-        beq     BattlePresentation_Branch_9CA5  ; 9CA2 F0 01                    ..
+        beq     BattleAi_Branch_9CA5            ; 9CA2 F0 01                    ..
         rts                                     ; 9CA4 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9CA5:
+BattleAi_Branch_9CA5:
         jmp     AccumulateRecordWordsWhenBit4Clear; 9CA5 4C 2D 9D               L-.
 ; ----------------------------------------------------------------------------
 RunEffectBit0PathAndDispatchOnNegativeCount:
         jsr     AccumulateEffectPointerWhenRecordBit0Clear; 9CA8 20 B2 9C        ..
         lda     $0F                             ; 9CAB A5 0F                    ..
-        bpl     BattlePresentation_Branch_9CD1  ; 9CAD 10 22                    ."
-        jmp     ClearBattleEffectTotalsAndValidate; 9CAF 4C A3 AC               L..
+        bpl     BattleAi_Branch_9CD1            ; 9CAD 10 22                    ."
+        jmp     ClearActionScoreTotalsAndValidate; 9CAF 4C A3 AC                L..
 ; ----------------------------------------------------------------------------
 AccumulateEffectPointerWhenRecordBit0Clear:
-        jsr     CheckBattleEffectGate           ; 9CB2 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9CD1  ; 9CB5 90 1A                    ..
+        jsr     CheckActionScoreGate            ; 9CB2 20 C6 96                  ..
+        bcc     BattleAi_Branch_9CD1            ; 9CB5 90 1A                    ..
         ldy     #$05                            ; 9CB7 A0 05                    ..
         lda     ($86),y                       ; 9CB9 B1 86                    ..
         lsr     a                               ; 9CBB 4A                       J
-        bcs     BattlePresentation_Branch_9CD1  ; 9CBC B0 13                    ..
+        bcs     BattleAi_Branch_9CD1            ; 9CBC B0 13                    ..
         dec     $0F                             ; 9CBE C6 0F                    ..
         lda     #$20                            ; 9CC0 A9 20                    .
         sta     $75D1                           ; 9CC2 8D D1 75                 ..u
-        jsr     AddBattleEffectPointerToFrame   ; 9CC5 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 9CC8 20 C0 97                  ..
-        jsr     UpdateBattleEffectAccumulator   ; 9CCB 20 D7 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9CCE 20 00 98                  ..
-BattlePresentation_Branch_9CD1:
+        jsr     AddActionScorePointerToFrame    ; 9CC5 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 9CC8 20 C0 97                  ..
+        jsr     UpdateActionScoreAccumulator    ; 9CCB 20 D7 97                  ..
+        jsr     LoadActionScoreLimit            ; 9CCE 20 00 98                  ..
+BattleAi_Branch_9CD1:
         rts                                     ; 9CD1 60                       `
 ; ----------------------------------------------------------------------------
 RunRestrictedBit0PathAndDispatchOnNegativeCount:
         jsr     AccumulateEffectPointerWhenBit0AndHighNibbleClear; 9CD2 20 DC 9C ..
         lda     $0F                             ; 9CD5 A5 0F                    ..
-        bpl     BattlePresentation_Branch_9D03  ; 9CD7 10 2A                    .*
-        jmp     ClearBattleEffectTotalsAndValidate; 9CD9 4C A3 AC               L..
+        bpl     BattleAi_Branch_9D03            ; 9CD7 10 2A                    .*
+        jmp     ClearActionScoreTotalsAndValidate; 9CD9 4C A3 AC                L..
 ; ----------------------------------------------------------------------------
 AccumulateEffectPointerWhenBit0AndHighNibbleClear:
-        jsr     CheckBattleEffectGate           ; 9CDC 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9D03  ; 9CDF 90 22                    ."
+        jsr     CheckActionScoreGate            ; 9CDC 20 C6 96                  ..
+        bcc     BattleAi_Branch_9D03            ; 9CDF 90 22                    ."
         ldy     #$05                            ; 9CE1 A0 05                    ..
         lda     ($86),y                       ; 9CE3 B1 86                    ..
         lsr     a                               ; 9CE5 4A                       J
-        bcs     BattlePresentation_Branch_9D03  ; 9CE6 B0 1B                    ..
+        bcs     BattleAi_Branch_9D03            ; 9CE6 B0 1B                    ..
         iny                                     ; 9CE8 C8                       .
         iny                                     ; 9CE9 C8                       .
         lda     ($86),y                       ; 9CEA B1 86                    ..
         and     #$F0                            ; 9CEC 29 F0                    ).
-        bne     BattlePresentation_Branch_9D03  ; 9CEE D0 13                    ..
+        bne     BattleAi_Branch_9D03            ; 9CEE D0 13                    ..
         dec     $0F                             ; 9CF0 C6 0F                    ..
         lda     #$60                            ; 9CF2 A9 60                    .`
         sta     $75D1                           ; 9CF4 8D D1 75                 ..u
-        jsr     AddBattleEffectPointerToFrame   ; 9CF7 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 9CFA 20 C0 97                  ..
-        jsr     UpdateBattleEffectAccumulator   ; 9CFD 20 D7 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9D00 20 00 98                  ..
-BattlePresentation_Branch_9D03:
+        jsr     AddActionScorePointerToFrame    ; 9CF7 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 9CFA 20 C0 97                  ..
+        jsr     UpdateActionScoreAccumulator    ; 9CFD 20 D7 97                  ..
+        jsr     LoadActionScoreLimit            ; 9D00 20 00 98                  ..
+BattleAi_Branch_9D03:
         rts                                     ; 9D03 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateRecordOffset36WhenBit3Clear:
-        jsr     CheckBattleEffectGate           ; 9D04 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9D2C  ; 9D07 90 23                    .#
+        jsr     CheckActionScoreGate            ; 9D04 20 C6 96                  ..
+        bcc     BattleAi_Branch_9D2C            ; 9D07 90 23                    .#
         ldy     #$05                            ; 9D09 A0 05                    ..
         lda     ($86),y                       ; 9D0B B1 86                    ..
         and     #$08                            ; 9D0D 29 08                    ).
-        bne     BattlePresentation_Branch_9D2C  ; 9D0F D0 1B                    ..
+        bne     BattleAi_Branch_9D2C            ; 9D0F D0 1B                    ..
         dec     $0F                             ; 9D11 C6 0F                    ..
         lda     #$10                            ; 9D13 A9 10                    ..
         sta     $75D1                           ; 9D15 8D D1 75                 ..u
@@ -4162,58 +4162,58 @@ AccumulateRecordOffset36WhenBit3Clear:
         iny                                     ; 9D21 C8                       .
         lda     ($88),y                       ; 9D22 B1 88                    ..
         sta     $01                             ; 9D24 85 01                    ..
-        jsr     UpdateBattleEffectAccumulator   ; 9D26 20 D7 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9D29 20 00 98                  ..
-BattlePresentation_Branch_9D2C:
+        jsr     UpdateActionScoreAccumulator    ; 9D26 20 D7 97                  ..
+        jsr     LoadActionScoreLimit            ; 9D29 20 00 98                  ..
+BattleAi_Branch_9D2C:
         rts                                     ; 9D2C 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateRecordWordsWhenBit4Clear:
-        jsr     CheckBattleEffectGate           ; 9D2D 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9D4A  ; 9D30 90 18                    ..
+        jsr     CheckActionScoreGate            ; 9D2D 20 C6 96                  ..
+        bcc     BattleAi_Branch_9D4A            ; 9D30 90 18                    ..
         ldy     #$05                            ; 9D32 A0 05                    ..
         lda     ($86),y                       ; 9D34 B1 86                    ..
         and     #$10                            ; 9D36 29 10                    ).
-        bne     BattlePresentation_Branch_9D4A  ; 9D38 D0 10                    ..
+        bne     BattleAi_Branch_9D4A            ; 9D38 D0 10                    ..
         dec     $0F                             ; 9D3A C6 0F                    ..
         lda     #$10                            ; 9D3C A9 10                    ..
         sta     $75D1                           ; 9D3E 8D D1 75                 ..u
-        jsr     AccumulateBattleEffectWord      ; 9D41 20 76 9D                  v.
-        jsr     UpdateBattleEffectAccumulator   ; 9D44 20 D7 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9D47 20 00 98                  ..
-BattlePresentation_Branch_9D4A:
+        jsr     AccumulateActionScoreWord       ; 9D41 20 76 9D                  v.
+        jsr     UpdateActionScoreAccumulator    ; 9D44 20 D7 97                  ..
+        jsr     LoadActionScoreLimit            ; 9D47 20 00 98                  ..
+BattleAi_Branch_9D4A:
         rts                                     ; 9D4A 60                       `
 ; ----------------------------------------------------------------------------
 RunEffectBit2PathAndDispatchOnNegativeCount:
         jsr     AccumulateEffectPointerWhenRecordBit2Clear; 9D4B 20 55 9D        U.
         lda     $0F                             ; 9D4E A5 0F                    ..
-        bpl     BattlePresentation_Branch_9D75  ; 9D50 10 23                    .#
-        jmp     ClearBattleEffectTotalsAndValidate; 9D52 4C A3 AC               L..
+        bpl     BattleAi_Branch_9D75            ; 9D50 10 23                    .#
+        jmp     ClearActionScoreTotalsAndValidate; 9D52 4C A3 AC                L..
 ; ----------------------------------------------------------------------------
 AccumulateEffectPointerWhenRecordBit2Clear:
-        jsr     CheckBattleEffectGate           ; 9D55 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9D75  ; 9D58 90 1B                    ..
+        jsr     CheckActionScoreGate            ; 9D55 20 C6 96                  ..
+        bcc     BattleAi_Branch_9D75            ; 9D58 90 1B                    ..
         ldy     #$05                            ; 9D5A A0 05                    ..
         lda     ($86),y                       ; 9D5C B1 86                    ..
         and     #$04                            ; 9D5E 29 04                    ).
-        bne     BattlePresentation_Branch_9D75  ; 9D60 D0 13                    ..
+        bne     BattleAi_Branch_9D75            ; 9D60 D0 13                    ..
         dec     $0F                             ; 9D62 C6 0F                    ..
         lda     #$10                            ; 9D64 A9 10                    ..
         sta     $75D1                           ; 9D66 8D D1 75                 ..u
-        jsr     AddBattleEffectPointerToFrame   ; 9D69 20 A3 97                  ..
-        jsr     DivideBattleEffectPointerByState; 9D6C 20 C0 97                  ..
-        jsr     UpdateBattleEffectAccumulator   ; 9D6F 20 D7 97                  ..
-        jsr     LoadBattleEffectLimit           ; 9D72 20 00 98                  ..
-BattlePresentation_Branch_9D75:
+        jsr     AddActionScorePointerToFrame    ; 9D69 20 A3 97                  ..
+        jsr     DivideActionScorePointerByState ; 9D6C 20 C0 97                  ..
+        jsr     UpdateActionScoreAccumulator    ; 9D6F 20 D7 97                  ..
+        jsr     LoadActionScoreLimit            ; 9D72 20 00 98                  ..
+BattleAi_Branch_9D75:
         rts                                     ; 9D75 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattleEffectWord:
+AccumulateActionScoreWord:
         jsr     LoadBattleRecordBasePointer     ; 9D76 20 77 8D                  w.
         lda     #$00                            ; 9D79 A9 00                    ..
         sta     $00                           ; 9D7B 85 00                    ..
         sta     $01                             ; 9D7D 85 01                    ..
         ldx     #$03                            ; 9D7F A2 03                    ..
         ldy     #$00                            ; 9D81 A0 00                    ..
-BattlePresentation_Branch_9D83:
+BattleAi_Branch_9D83:
         clc                                     ; 9D83 18                       .
         lda     ($88),y                       ; 9D84 B1 88                    ..
         adc     $00                           ; 9D86 65 00                    e.
@@ -4224,7 +4224,7 @@ BattlePresentation_Branch_9D83:
         sta     $01                             ; 9D8F 85 01                    ..
         iny                                     ; 9D91 C8                       .
         dex                                     ; 9D92 CA                       .
-        bpl     BattlePresentation_Branch_9D83  ; 9D93 10 EE                    ..
+        bpl     BattleAi_Branch_9D83            ; 9D93 10 EE                    ..
         lda     #$0A                            ; 9D95 A9 0A                    ..
         ldx     #$00                            ; 9D97 A2 00                    ..
         jmp     ScalePointerWordByNibbleBody    ; 9D99 4C 9A 81                 L..
@@ -4234,72 +4234,72 @@ InitializeBattleActionResolution:
         sta     $75D2                           ; 9D9E 8D D2 75                 ..u
         jsr     ResolveBattleSlotsForAction     ; 9DA1 20 B0 9D                  ..
         lda     $8A                             ; 9DA4 A5 8A                    ..
-        beq     BattlePresentation_Branch_9DAF  ; 9DA6 F0 07                    ..
+        beq     BattleAi_Branch_9DAF            ; 9DA6 F0 07                    ..
         lda     #$02                            ; 9DA8 A9 02                    ..
         sta     $8C                             ; 9DAA 85 8C                    ..
-        jsr     UpdateBattlePresentationRangeLimit; 9DAC 20 63 AC                c.
-BattlePresentation_Branch_9DAF:
+        jsr     UpdateBattleAiRangeLimit        ; 9DAC 20 63 AC                  c.
+BattleAi_Branch_9DAF:
         rts                                     ; 9DAF 60                       `
 ; ----------------------------------------------------------------------------
 ResolveBattleSlotsForAction:
         lda     #$00                            ; 9DB0 A9 00                    ..
         sta     $82                             ; 9DB2 85 82                    ..
         sta     $8A                             ; 9DB4 85 8A                    ..
-BattlePresentation_Branch_9DB6:
+BattleAi_Branch_9DB6:
         jsr     LoadBattleRecordSlotWithStatus  ; 9DB6 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_9DE3  ; 9DB9 90 28                    .(
+        bcc     BattleAi_Branch_9DE3            ; 9DB9 90 28                    .(
         pha                                     ; 9DBB 48                       H
         ldy     #$00                            ; 9DBC A0 00                    ..
         lda     ($79),y                         ; 9DBE B1 79                    .y
-        bpl     BattlePresentation_Branch_9DE2  ; 9DC0 10 20                    .
+        bpl     BattleAi_Branch_9DE2            ; 9DC0 10 20                    .
         asl     a                               ; 9DC2 0A                       .
-        bpl     BattlePresentation_Branch_9DE2  ; 9DC3 10 1D                    ..
+        bpl     BattleAi_Branch_9DE2            ; 9DC3 10 1D                    ..
         pla                                     ; 9DC5 68                       h
         lda     $75D2                           ; 9DC6 AD D2 75                 ..u
         and     #$70                            ; 9DC9 29 70                    )p
         cmp     #$20                            ; 9DCB C9 20                    .
-        beq     BattlePresentation_Branch_9DDA  ; 9DCD F0 0B                    ..
+        beq     BattleAi_Branch_9DDA            ; 9DCD F0 0B                    ..
         jsr     FindBattleSlotByCharacterId     ; 9DCF 20 F5 89                  ..
         ldy     #$05                            ; 9DD2 A0 05                    ..
         lda     ($79),y                         ; 9DD4 B1 79                    .y
         and     #$C0                            ; 9DD6 29 C0                    ).
-        bne     BattlePresentation_Branch_9DE3  ; 9DD8 D0 09                    ..
-BattlePresentation_Branch_9DDA:
+        bne     BattleAi_Branch_9DE3            ; 9DD8 D0 09                    ..
+BattleAi_Branch_9DDA:
         lda     $82                             ; 9DDA A5 82                    ..
         sta     $7B                             ; 9DDC 85 7B                    .{
         inc     $8A                             ; 9DDE E6 8A                    ..
-        bpl     BattlePresentation_Branch_9DE3  ; 9DE0 10 01                    ..
-BattlePresentation_Branch_9DE2:
+        bpl     BattleAi_Branch_9DE3            ; 9DE0 10 01                    ..
+BattleAi_Branch_9DE2:
         pla                                     ; 9DE2 68                       h
-BattlePresentation_Branch_9DE3:
+BattleAi_Branch_9DE3:
         inc     $82                             ; 9DE3 E6 82                    ..
         lda     $82                             ; 9DE5 A5 82                    ..
         cmp     #$04                            ; 9DE7 C9 04                    ..
-        bcc     BattlePresentation_Branch_9DB6  ; 9DE9 90 CB                    ..
+        bcc     BattleAi_Branch_9DB6            ; 9DE9 90 CB                    ..
         rts                                     ; 9DEB 60                       `
 ; ----------------------------------------------------------------------------
 ResolveNonClass1ActionSlotAndUpdateRange:
         lda     $75DB                           ; 9DEC AD DB 75                 ..u
         cmp     #$98                            ; 9DEF C9 98                    ..
-        beq     BattlePresentation_Branch_9E30  ; 9DF1 F0 3D                    .=
+        beq     BattleAi_Branch_9E30            ; 9DF1 F0 3D                    .=
         jsr     ClassifyBattleAction            ; 9DF3 20 06 94                  ..
         and     #$7F                            ; 9DF6 29 7F                    ).
         cmp     #$01                            ; 9DF8 C9 01                    ..
-        beq     BattlePresentation_Branch_9E30  ; 9DFA F0 34                    .4
+        beq     BattleAi_Branch_9E30            ; 9DFA F0 34                    .4
         pha                                     ; 9DFC 48                       H
         lda     #$20                            ; 9DFD A9 20                    .
         sta     $75D2                           ; 9DFF 8D D2 75                 ..u
         jsr     ResolveBattleSlotsForAction     ; 9E02 20 B0 9D                  ..
         pla                                     ; 9E05 68                       h
         cmp     #$02                            ; 9E06 C9 02                    ..
-        bne     BattlePresentation_Branch_9E12  ; 9E08 D0 08                    ..
+        bne     BattleAi_Branch_9E12            ; 9E08 D0 08                    ..
         lda     $8A                             ; 9E0A A5 8A                    ..
-        beq     BattlePresentation_Branch_9E30  ; 9E0C F0 22                    ."
+        beq     BattleAi_Branch_9E30            ; 9E0C F0 22                    ."
         cmp     #$02                            ; 9E0E C9 02                    ..
-        bcs     BattlePresentation_Branch_9E29  ; 9E10 B0 17                    ..
-BattlePresentation_Branch_9E12:
+        bcs     BattleAi_Branch_9E29            ; 9E10 B0 17                    ..
+BattleAi_Branch_9E12:
         lda     $8A                             ; 9E12 A5 8A                    ..
-        beq     BattlePresentation_Branch_9E30  ; 9E14 F0 1A                    ..
+        beq     BattleAi_Branch_9E30            ; 9E14 F0 1A                    ..
         lda     $7B                             ; 9E16 A5 7B                    .{
         sta     $82                             ; 9E18 85 82                    ..
         jsr     FindBattleSlotByStateId         ; 9E1A 20 B5 8A                  ..
@@ -4307,13 +4307,13 @@ BattlePresentation_Branch_9E12:
         sta     $75D2                           ; 9E1F 8D D2 75                 ..u
         lda     #$02                            ; 9E22 A9 02                    ..
         sta     $8C                             ; 9E24 85 8C                    ..
-        jmp     UpdateBattlePresentationRangeLimit; 9E26 4C 63 AC               Lc.
+        jmp     UpdateBattleAiRangeLimit        ; 9E26 4C 63 AC                 Lc.
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_9E29:
+BattleAi_Branch_9E29:
         lda     $75DB                           ; 9E29 AD DB 75                 ..u
         cmp     #$2E                            ; 9E2C C9 2E                    ..
-        bne     BattlePresentation_Branch_9E12  ; 9E2E D0 E2                    ..
-BattlePresentation_Branch_9E30:
+        bne     BattleAi_Branch_9E12            ; 9E2E D0 E2                    ..
+BattleAi_Branch_9E30:
         rts                                     ; 9E30 60                       `
 ; ----------------------------------------------------------------------------
 EnterMinimumEligibleSlotSelection:
@@ -4328,12 +4328,12 @@ SelectMinimumEligibleSlotAcrossFourRecords:
         sta     $75D2                           ; 9E3F 8D D2 75                 ..u
         sta     $00                           ; 9E42 85 00                    ..
         sta     $01                             ; 9E44 85 01                    ..
-BattlePresentation_Branch_9E46:
+BattleAi_Branch_9E46:
         jsr     LoadBattleRecordSlotWithStatus  ; 9E46 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_9E7B  ; 9E49 90 30                    .0
+        bcc     BattleAi_Branch_9E7B            ; 9E49 90 30                    .0
         ldy     #$00                            ; 9E4B A0 00                    ..
         lda     ($79),y                         ; 9E4D B1 79                    .y
-        bmi     BattlePresentation_Branch_9E7B  ; 9E4F 30 2A                    0*
+        bmi     BattleAi_Branch_9E7B            ; 9E4F 30 2A                    0*
         lda     $82                             ; 9E51 A5 82                    ..
         jsr     LoadBattleRecordPairIfAllowedExtended; 9E53 20 1C 86             ..
         sec                                     ; 9E56 38                       8
@@ -4341,7 +4341,7 @@ BattlePresentation_Branch_9E46:
         sbc     $02                           ; 9E59 E5 02                    ..
         lda     $01                             ; 9E5B A5 01                    ..
         sbc     $03                             ; 9E5D E5 03                    ..
-        bcs     BattlePresentation_Branch_9E79  ; 9E5F B0 18                    ..
+        bcs     BattleAi_Branch_9E79            ; 9E5F B0 18                    ..
         lda     $02                           ; 9E61 A5 02                    ..
         sta     $00                           ; 9E63 85 00                    ..
         lda     $03                             ; 9E65 A5 03                    ..
@@ -4349,57 +4349,57 @@ BattlePresentation_Branch_9E46:
         jsr     FindBattleSlotByStateId         ; 9E69 20 B5 8A                  ..
         sta     $75D2                           ; 9E6C 8D D2 75                 ..u
         ldx     $75F0                           ; 9E6F AE F0 75                 ..u
-        bpl     BattlePresentation_Branch_9E79  ; 9E72 10 05                    ..
+        bpl     BattleAi_Branch_9E79            ; 9E72 10 05                    ..
         ora     #$20                            ; 9E74 09 20                    .
         sta     $75D2                           ; 9E76 8D D2 75                 ..u
-BattlePresentation_Branch_9E79:
+BattleAi_Branch_9E79:
         inc     $8A                             ; 9E79 E6 8A                    ..
-BattlePresentation_Branch_9E7B:
+BattleAi_Branch_9E7B:
         inc     $82                             ; 9E7B E6 82                    ..
         lda     $82                             ; 9E7D A5 82                    ..
         cmp     #$04                            ; 9E7F C9 04                    ..
-        bcc     BattlePresentation_Branch_9E46  ; 9E81 90 C3                    ..
+        bcc     BattleAi_Branch_9E46            ; 9E81 90 C3                    ..
         lda     $8A                             ; 9E83 A5 8A                    ..
-        beq     BattlePresentation_Branch_9E8A  ; 9E85 F0 03                    ..
-        jsr     UpdateBattlePresentationRangeLimit; 9E87 20 63 AC                c.
-BattlePresentation_Branch_9E8A:
+        beq     BattleAi_Branch_9E8A            ; 9E85 F0 03                    ..
+        jsr     UpdateBattleAiRangeLimit        ; 9E87 20 63 AC                  c.
+BattleAi_Branch_9E8A:
         rts                                     ; 9E8A 60                       `
 ; ----------------------------------------------------------------------------
 ResolveBattleActionModeThree:
         lda     $6E80                           ; 9E8B AD 80 6E                 ..n
         cmp     #$03                            ; 9E8E C9 03                    ..
-        bne     BattlePresentation_Branch_9EC2  ; 9E90 D0 30                    .0
+        bne     BattleAi_Branch_9EC2            ; 9E90 D0 30                    .0
         lda     $75DC                           ; 9E92 AD DC 75                 ..u
         cmp     #$0C                            ; 9E95 C9 0C                    ..
-        bcs     BattlePresentation_Branch_9EC2  ; 9E97 B0 29                    .)
+        bcs     BattleAi_Branch_9EC2            ; 9E97 B0 29                    .)
         lda     #$00                            ; 9E99 A9 00                    ..
         sta     $75D2                           ; 9E9B 8D D2 75                 ..u
         sta     $82                             ; 9E9E 85 82                    ..
         sta     $8A                             ; 9EA0 85 8A                    ..
-BattlePresentation_Branch_9EA2:
+BattleAi_Branch_9EA2:
         jsr     LoadBattleRecordSlotWithStatus  ; 9EA2 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_9EAF  ; 9EA5 90 08                    ..
+        bcc     BattleAi_Branch_9EAF            ; 9EA5 90 08                    ..
         ldy     #$00                            ; 9EA7 A0 00                    ..
         lda     ($79),y                         ; 9EA9 B1 79                    .y
-        bmi     BattlePresentation_Branch_9EAF  ; 9EAB 30 02                    0.
+        bmi     BattleAi_Branch_9EAF            ; 9EAB 30 02                    0.
         inc     $8A                             ; 9EAD E6 8A                    ..
-BattlePresentation_Branch_9EAF:
+BattleAi_Branch_9EAF:
         inc     $82                             ; 9EAF E6 82                    ..
         lda     $82                             ; 9EB1 A5 82                    ..
         cmp     #$04                            ; 9EB3 C9 04                    ..
-        bcc     BattlePresentation_Branch_9EA2  ; 9EB5 90 EB                    ..
+        bcc     BattleAi_Branch_9EA2            ; 9EB5 90 EB                    ..
         lda     $8A                             ; 9EB7 A5 8A                    ..
         cmp     #$03                            ; 9EB9 C9 03                    ..
-        bne     BattlePresentation_Branch_9EC2  ; 9EBB D0 05                    ..
+        bne     BattleAi_Branch_9EC2            ; 9EBB D0 05                    ..
         sta     $8C                             ; 9EBD 85 8C                    ..
-        jsr     UpdateBattlePresentationRangeLimit; 9EBF 20 63 AC                c.
-BattlePresentation_Branch_9EC2:
+        jsr     UpdateBattleAiRangeLimit        ; 9EBF 20 63 AC                  c.
+BattleAi_Branch_9EC2:
         rts                                     ; 9EC2 60                       `
 ; ----------------------------------------------------------------------------
 SelectBattleActionByWeight:
         lda     $75DC                           ; 9EC3 AD DC 75                 ..u
         cmp     #$14                            ; 9EC6 C9 14                    ..
-        bcs     BattlePresentation_Branch_9F23  ; 9EC8 B0 59                    .Y
+        bcs     BattleAi_Branch_9F23            ; 9EC8 B0 59                    .Y
         sta     $00                           ; 9ECA 85 00                    ..
         lda     #$14                            ; 9ECC A9 14                    ..
         jsr     PrepareBattleActionWeightDelta  ; 9ECE 20 4E 9F                  N.
@@ -4408,7 +4408,7 @@ SelectBattleActionByWeight:
         lda     $00                           ; 9ED6 A5 00                    ..
         jsr     NextRandomByte                  ; 9ED8 20 91 C8                  ..
         cmp     $00                           ; 9EDB C5 00                    ..
-        bcs     BattlePresentation_Branch_9F23  ; 9EDD B0 44                    .D
+        bcs     BattleAi_Branch_9F23            ; 9EDD B0 44                    .D
         ldx     #$FF                            ; 9EDF A2 FF                    ..
         stx     $75D2                           ; 9EE1 8E D2 75                 ..u
         inx                                     ; 9EE4 E8                       .
@@ -4416,58 +4416,58 @@ SelectBattleActionByWeight:
         stx     $95                             ; 9EE7 86 95                    ..
         lda     #$07                            ; 9EE9 A9 07                    ..
         sta     $81                             ; 9EEB 85 81                    ..
-BattlePresentation_Branch_9EED:
+BattleAi_Branch_9EED:
         jsr     ComputeBattleActionWeight       ; 9EED 20 24 9F                  $.
         lda     $00                           ; 9EF0 A5 00                    ..
         ora     $01                             ; 9EF2 05 01                    ..
-        beq     BattlePresentation_Branch_9F0D  ; 9EF4 F0 17                    ..
+        beq     BattleAi_Branch_9F0D            ; 9EF4 F0 17                    ..
         lda     $00                           ; 9EF6 A5 00                    ..
         sbc     $94                             ; 9EF8 E5 94                    ..
         lda     $01                             ; 9EFA A5 01                    ..
         sbc     $95                             ; 9EFC E5 95                    ..
-        bcc     BattlePresentation_Branch_9F0D  ; 9EFE 90 0D                    ..
+        bcc     BattleAi_Branch_9F0D            ; 9EFE 90 0D                    ..
         lda     $00                           ; 9F00 A5 00                    ..
         sta     $94                             ; 9F02 85 94                    ..
         lda     $01                             ; 9F04 A5 01                    ..
         sta     $94                             ; 9F06 85 94                    ..
         lda     $81                             ; 9F08 A5 81                    ..
         sta     $75D2                           ; 9F0A 8D D2 75                 ..u
-BattlePresentation_Branch_9F0D:
+BattleAi_Branch_9F0D:
         dec     $81                             ; 9F0D C6 81                    ..
-        bpl     BattlePresentation_Branch_9EED  ; 9F0F 10 DC                    ..
+        bpl     BattleAi_Branch_9EED            ; 9F0F 10 DC                    ..
         lda     $75D2                           ; 9F11 AD D2 75                 ..u
         cmp     #$FF                            ; 9F14 C9 FF                    ..
-        beq     BattlePresentation_Branch_9F23  ; 9F16 F0 0B                    ..
+        beq     BattleAi_Branch_9F23            ; 9F16 F0 0B                    ..
         ora     #$80                            ; 9F18 09 80                    ..
         sta     $75DA                           ; 9F1A 8D DA 75                 ..u
         lda     $75D3                           ; 9F1D AD D3 75                 ..u
         sta     $75DB                           ; 9F20 8D DB 75                 ..u
-BattlePresentation_Branch_9F23:
+BattleAi_Branch_9F23:
         rts                                     ; 9F23 60                       `
 ; ----------------------------------------------------------------------------
 ComputeBattleActionWeight:
-        jsr     CheckBattleEffectGate           ; 9F24 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_9F4D  ; 9F27 90 24                    .$
+        jsr     CheckActionScoreGate            ; 9F24 20 C6 96                  ..
+        bcc     BattleAi_Branch_9F4D            ; 9F27 90 24                    .$
         ldy     #$0C                            ; 9F29 A0 0C                    ..
         lda     ($86),y                       ; 9F2B B1 86                    ..
-        beq     BattlePresentation_Branch_9F4D  ; 9F2D F0 1E                    ..
+        beq     BattleAi_Branch_9F4D            ; 9F2D F0 1E                    ..
         lda     ($86),y                       ; 9F2F B1 86                    ..
         sta     $00                           ; 9F31 85 00                    ..
         cmp     #$FF                            ; 9F33 C9 FF                    ..
-        bne     BattlePresentation_Branch_9F3B  ; 9F35 D0 04                    ..
+        bne     BattleAi_Branch_9F3B            ; 9F35 D0 04                    ..
         lda     #$F0                            ; 9F37 A9 F0                    ..
         sta     $00                           ; 9F39 85 00                    ..
-BattlePresentation_Branch_9F3B:
+BattleAi_Branch_9F3B:
         sec                                     ; 9F3B 38                       8
         lda     #$FF                            ; 9F3C A9 FF                    ..
         sbc     $00                           ; 9F3E E5 00                    ..
         pha                                     ; 9F40 48                       H
-        jsr     ConvertBattlePresentationByte   ; 9F41 20 76 92                  v.
+        jsr     ConvertBattleAiByte             ; 9F41 20 76 92                  v.
         jsr     PrepareBattleActionWeightDelta  ; 9F44 20 4E 9F                  N.
         pla                                     ; 9F47 68                       h
         ldx     #$00                            ; 9F48 A2 00                    ..
         jsr     MultiplyPointerWord             ; 9F4A 20 27 C8                  '.
-BattlePresentation_Branch_9F4D:
+BattleAi_Branch_9F4D:
         rts                                     ; 9F4D 60                       `
 ; ----------------------------------------------------------------------------
 PrepareBattleActionWeightDelta:
@@ -4481,44 +4481,44 @@ PrepareBattleActionWeightDelta:
 ; ----------------------------------------------------------------------------
 RunBattleActionStateASelection:
         jsr     IsBattleActionClassFourExceptSpecialIds; 9F5A 20 D9 A3           ..
-        bcc     BattlePresentation_Branch_9F75  ; 9F5D 90 16                    ..
+        bcc     BattleAi_Branch_9F75            ; 9F5D 90 16                    ..
         jsr     SelectHighestBattleSlotPair     ; 9F5F 20 F1 A3                  ..
         lda     #$07                            ; 9F62 A9 07                    ..
         sta     $81                             ; 9F64 85 81                    ..
-BattlePresentation_Branch_9F66:
-        jsr     LoadEligibleBattlePresentationValue; 9F66 20 B2 A3               ..
-        bcc     BattlePresentation_Branch_9F71  ; 9F69 90 06                    ..
-        jsr     SetActionStateFrom81WithBit80   ; 9F6B 20 AB 93                  ..
-        jsr     ComputeBattlePresentationRatio  ; 9F6E 20 B1 AC                  ..
-BattlePresentation_Branch_9F71:
+BattleAi_Branch_9F66:
+        jsr     LoadEligibleBattleAiValue       ; 9F66 20 B2 A3                  ..
+        bcc     BattleAi_Branch_9F71            ; 9F69 90 06                    ..
+        jsr     SetBattleAiActionStateFromPrimaryFlags; 9F6B 20 AB 93            ..
+        jsr     ComputeBattleAiRatio            ; 9F6E 20 B1 AC                  ..
+BattleAi_Branch_9F71:
         dec     $81                             ; 9F71 C6 81                    ..
-        bpl     BattlePresentation_Branch_9F66  ; 9F73 10 F1                    ..
-BattlePresentation_Branch_9F75:
+        bpl     BattleAi_Branch_9F66            ; 9F73 10 F1                    ..
+BattleAi_Branch_9F75:
         rts                                     ; 9F75 60                       `
 ; ----------------------------------------------------------------------------
 RunBattleActionStateBSelection:
         jsr     IsBattleActionClassFourExceptSpecialIds; 9F76 20 D9 A3           ..
-        bcc     BattlePresentation_Branch_9F8C  ; 9F79 90 11                    ..
+        bcc     BattleAi_Branch_9F8C            ; 9F79 90 11                    ..
         jsr     SelectHighestBattleSlotPair     ; 9F7B 20 F1 A3                  ..
         lda     #$03                            ; 9F7E A9 03                    ..
         sta     $8D                             ; 9F80 85 8D                    ..
-BattlePresentation_Branch_9F82:
-        jsr     SetActionStateFrom8DWithBits88  ; 9F82 20 B4 93                  ..
-        jsr     SumBattlePresentationTotals     ; 9F85 20 66 A3                  f.
+BattleAi_Branch_9F82:
+        jsr     SetBattleAiActionStateFromAlternateFlags; 9F82 20 B4 93          ..
+        jsr     SumBattleAiTotals               ; 9F85 20 66 A3                  f.
         dec     $8D                             ; 9F88 C6 8D                    ..
-        bpl     BattlePresentation_Branch_9F82  ; 9F8A 10 F6                    ..
-BattlePresentation_Branch_9F8C:
+        bpl     BattleAi_Branch_9F82            ; 9F8A 10 F6                    ..
+BattleAi_Branch_9F8C:
         rts                                     ; 9F8C 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleActionGateA:
         jsr     ClassifyBattleAction            ; 9F8D 20 06 94                  ..
         and     #$7F                            ; 9F90 29 7F                    ).
         cmp     #$04                            ; 9F92 C9 04                    ..
-        beq     BattlePresentation_Branch_9F9E  ; 9F94 F0 08                    ..
+        beq     BattleAi_Branch_9F9E            ; 9F94 F0 08                    ..
         jsr     CheckBattleRecordPairThreshold  ; 9F96 20 E7 A2                  ..
-        bcc     BattlePresentation_Branch_9F9E  ; 9F99 90 03                    ..
+        bcc     BattleAi_Branch_9F9E            ; 9F99 90 03                    ..
         jsr     ResetBattleActionStateSelection ; 9F9B 20 DC A4                  ..
-BattlePresentation_Branch_9F9E:
+BattleAi_Branch_9F9E:
         rts                                     ; 9F9E 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleActionGateB:
@@ -4526,107 +4526,107 @@ CheckBattleActionGateB:
         and     #$7F                            ; 9FA2 29 7F                    ).
         ldx     $6E80                           ; 9FA4 AE 80 6E                 ..n
         cpx     #$03                            ; 9FA7 E0 03                    ..
-        beq     BattlePresentation_Branch_9FAF  ; 9FA9 F0 04                    ..
+        beq     BattleAi_Branch_9FAF            ; 9FA9 F0 04                    ..
         cmp     #$04                            ; 9FAB C9 04                    ..
-        beq     BattlePresentation_Branch_9FB7  ; 9FAD F0 08                    ..
-BattlePresentation_Branch_9FAF:
+        beq     BattleAi_Branch_9FB7            ; 9FAD F0 08                    ..
+BattleAi_Branch_9FAF:
         jsr     CheckBattleActionCountThreshold ; 9FAF 20 76 A2                  v.
-        bcc     BattlePresentation_Branch_9FB7  ; 9FB2 90 03                    ..
+        bcc     BattleAi_Branch_9FB7            ; 9FB2 90 03                    ..
         jsr     ResetBattleActionStateSelection ; 9FB4 20 DC A4                  ..
-BattlePresentation_Branch_9FB7:
+BattleAi_Branch_9FB7:
         rts                                     ; 9FB7 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleActionGateC:
         ldx     $6E80                           ; 9FB8 AE 80 6E                 ..n
         dex                                     ; 9FBB CA                       .
-        beq     BattlePresentation_Branch_9FC6  ; 9FBC F0 08                    ..
+        beq     BattleAi_Branch_9FC6            ; 9FBC F0 08                    ..
         jsr     CheckBattleActionSpecialRange   ; 9FBE 20 F2 A1                  ..
-        bcc     BattlePresentation_Branch_9FC6  ; 9FC1 90 03                    ..
+        bcc     BattleAi_Branch_9FC6            ; 9FC1 90 03                    ..
         jsr     ResetBattleActionStateSelection ; 9FC3 20 DC A4                  ..
-BattlePresentation_Branch_9FC6:
+BattleAi_Branch_9FC6:
         rts                                     ; 9FC6 60                       `
 ; ----------------------------------------------------------------------------
 SelectBattleActionSlot:
         jsr     BuildBattleActionGateMask       ; 9FC7 20 E5 A0                  ..
-        bcc     BattlePresentation_Branch_9FE1  ; 9FCA 90 15                    ..
+        bcc     BattleAi_Branch_9FE1            ; 9FCA 90 15                    ..
         jsr     SelectBestBattleSlotPair        ; 9FCC 20 13 A1                  ..
         lda     $7D                             ; 9FCF A5 7D                    .}
-        bmi     BattlePresentation_Branch_9FE1  ; 9FD1 30 0E                    0.
+        bmi     BattleAi_Branch_9FE1            ; 9FD1 30 0E                    0.
         sta     $82                             ; 9FD3 85 82                    ..
         jsr     FindBattleSlotByStateId         ; 9FD5 20 B5 8A                  ..
         sta     $75DA                           ; 9FD8 8D DA 75                 ..u
         lda     $75D3                           ; 9FDB AD D3 75                 ..u
         sta     $75DB                           ; 9FDE 8D DB 75                 ..u
-BattlePresentation_Branch_9FE1:
+BattleAi_Branch_9FE1:
         rts                                     ; 9FE1 60                       `
 ; ----------------------------------------------------------------------------
 SelectEligibleFallbackSlotAcrossFourRecords:
         jsr     ClassifyBattleAction            ; 9FE2 20 06 94                  ..
         and     #$7F                            ; 9FE5 29 7F                    ).
         cmp     #$04                            ; 9FE7 C9 04                    ..
-        beq     BattlePresentation_Branch_A00C  ; 9FE9 F0 21                    .!
+        beq     BattleAi_Branch_A00C            ; 9FE9 F0 21                    .!
         jsr     CheckBattleActionScoreThreshold ; 9FEB 20 85 A0                  ..
-        bcc     BattlePresentation_Branch_A00C  ; 9FEE 90 1C                    ..
+        bcc     BattleAi_Branch_A00C            ; 9FEE 90 1C                    ..
         lda     #$00                            ; 9FF0 A9 00                    ..
         sta     $82                             ; 9FF2 85 82                    ..
-BattlePresentation_Branch_9FF4:
+BattleAi_Branch_9FF4:
         jsr     CheckBattleSlotEligibleForStateSelection; 9FF4 20 43 A0          C.
-        bcc     BattlePresentation_Branch_A004  ; 9FF7 90 0B                    ..
+        bcc     BattleAi_Branch_A004            ; 9FF7 90 0B                    ..
         jsr     FindBattleSlotByStateId         ; 9FF9 20 B5 8A                  ..
         sta     $75D2                           ; 9FFC 8D D2 75                 ..u
-        bcc     BattlePresentation_Branch_A004  ; 9FFF 90 03                    ..
-        jsr     ClampBattlePresentationTarget   ; A001 20 0E AD                  ..
-BattlePresentation_Branch_A004:
+        bcc     BattleAi_Branch_A004            ; 9FFF 90 03                    ..
+        jsr     ClampBattleAiTarget             ; A001 20 0E AD                  ..
+BattleAi_Branch_A004:
         inc     $82                             ; A004 E6 82                    ..
         lda     $82                             ; A006 A5 82                    ..
         cmp     #$04                            ; A008 C9 04                    ..
-        bcc     BattlePresentation_Branch_9FF4  ; A00A 90 E8                    ..
-BattlePresentation_Branch_A00C:
+        bcc     BattleAi_Branch_9FF4            ; A00A 90 E8                    ..
+BattleAi_Branch_A00C:
         rts                                     ; A00C 60                       `
 ; ----------------------------------------------------------------------------
 ResetState21SelectionWhenTwoSlotsQualify:
         lda     $75DB                           ; A00D AD DB 75                 ..u
         cmp     #$21                            ; A010 C9 21                    .!
-        bne     BattlePresentation_Branch_A042  ; A012 D0 2E                    ..
+        bne     BattleAi_Branch_A042            ; A012 D0 2E                    ..
         lda     #$00                            ; A014 A9 00                    ..
         sta     $7B                             ; A016 85 7B                    .{
         sta     $82                             ; A018 85 82                    ..
-BattlePresentation_Branch_A01A:
+BattleAi_Branch_A01A:
         jsr     CheckBattleSlotEligibleForStateSelection; A01A 20 43 A0          C.
-        bcc     BattlePresentation_Branch_A029  ; A01D 90 0A                    ..
+        bcc     BattleAi_Branch_A029            ; A01D 90 0A                    ..
         jsr     FindBattleSlotByStateId         ; A01F 20 B5 8A                  ..
         sta     $75D2                           ; A022 8D D2 75                 ..u
-        bcc     BattlePresentation_Branch_A029  ; A025 90 02                    ..
+        bcc     BattleAi_Branch_A029            ; A025 90 02                    ..
         inc     $7B                             ; A027 E6 7B                    .{
-BattlePresentation_Branch_A029:
+BattleAi_Branch_A029:
         inc     $82                             ; A029 E6 82                    ..
         lda     $82                             ; A02B A5 82                    ..
         cmp     #$04                            ; A02D C9 04                    ..
-        bcc     BattlePresentation_Branch_A01A  ; A02F 90 E9                    ..
+        bcc     BattleAi_Branch_A01A            ; A02F 90 E9                    ..
         lda     $7B                             ; A031 A5 7B                    .{
         cmp     #$02                            ; A033 C9 02                    ..
-        bcc     BattlePresentation_Branch_A042  ; A035 90 0B                    ..
+        bcc     BattleAi_Branch_A042            ; A035 90 0B                    ..
         lda     $75D3                           ; A037 AD D3 75                 ..u
         sta     $75DB                           ; A03A 8D DB 75                 ..u
         lda     #$00                            ; A03D A9 00                    ..
         sta     $75DA                           ; A03F 8D DA 75                 ..u
-BattlePresentation_Branch_A042:
+BattleAi_Branch_A042:
         rts                                     ; A042 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleSlotEligibleForStateSelection:
         jsr     SelectBattleSlotIndex           ; A043 20 66 88                  f.
-        bcc     BattlePresentation_Branch_A083  ; A046 90 3B                    .;
+        bcc     BattleAi_Branch_A083            ; A046 90 3B                    .;
         sta     $00                           ; A048 85 00                    ..
         jsr     ResolveBattleSlotRecordPointer  ; A04A 20 B6 89                  ..
         ldy     #$00                            ; A04D A0 00                    ..
         lda     ($79),y                         ; A04F B1 79                    .y
-        bpl     BattlePresentation_Branch_A083  ; A051 10 30                    .0
+        bpl     BattleAi_Branch_A083            ; A051 10 30                    .0
         lda     $00                           ; A053 A5 00                    ..
         jsr     FindBattleSlotByCharacterId     ; A055 20 F5 89                  ..
         ldy     #$05                            ; A058 A0 05                    ..
         lda     ($79),y                         ; A05A B1 79                    .y
         and     #$C4                            ; A05C 29 C4                    ).
-        bne     BattlePresentation_Branch_A083  ; A05E D0 23                    .#
+        bne     BattleAi_Branch_A083            ; A05E D0 23                    .#
         jsr     SumBattleRecordBasePointers     ; A060 20 C0 A0                  ..
         lda     $82                             ; A063 A5 82                    ..
         jsr     LoadBattleRecordPairIfAllowedExtended; A065 20 1C 86             ..
@@ -4635,21 +4635,21 @@ CheckBattleSlotEligibleForStateSelection:
         jsr     ShiftIndexedWordLeftBy4         ; A06C 20 76 81                  v.
         jsr     DivideIndexedWordByWord         ; A06F 20 AA 83                  ..
         lda     $01                             ; A072 A5 01                    ..
-        beq     BattlePresentation_Branch_A07A  ; A074 F0 04                    ..
+        beq     BattleAi_Branch_A07A            ; A074 F0 04                    ..
         lda     #$FF                            ; A076 A9 FF                    ..
         sta     $00                           ; A078 85 00                    ..
-BattlePresentation_Branch_A07A:
+BattleAi_Branch_A07A:
         lda     $00                           ; A07A A5 00                    ..
         ldx     $6E80                           ; A07C AE 80 6E                 ..n
         cmp     $BB76,x                         ; A07F DD 76 BB                 .v.
         rts                                     ; A082 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A083:
+BattleAi_Branch_A083:
         clc                                     ; A083 18                       .
         rts                                     ; A084 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleActionScoreThreshold:
-        jsr     SumBattleEffectWords            ; A085 20 A5 A0                  ..
+        jsr     SumActionScoreWords             ; A085 20 A5 A0                  ..
         lda     $77D0                           ; A088 AD D0 77                 ..w
         sta     $00                           ; A08B 85 00                    ..
         lda     $77D1                           ; A08D AD D1 77                 ..w
@@ -4663,20 +4663,20 @@ CheckBattleActionScoreThreshold:
         cmp     $BB6F,x                         ; A0A1 DD 6F BB                 .o.
         rts                                     ; A0A4 60                       `
 ; ----------------------------------------------------------------------------
-SumBattleEffectWords:
+SumActionScoreWords:
         lda     #$00                            ; A0A5 A9 00                    ..
         sta     $94                             ; A0A7 85 94                    ..
         sta     $95                             ; A0A9 85 95                    ..
         lda     #$07                            ; A0AB A9 07                    ..
         sta     $81                             ; A0AD 85 81                    ..
-BattlePresentation_Branch_A0AF:
-        jsr     AccumulateBattleEffectWord      ; A0AF 20 76 9D                  v.
+BattleAi_Branch_A0AF:
+        jsr     AccumulateActionScoreWord       ; A0AF 20 76 9D                  v.
         lda     $00                           ; A0B2 A5 00                    ..
         ldy     $01                             ; A0B4 A4 01                    ..
         ldx     #$94                            ; A0B6 A2 94                    ..
         jsr     AddWordToPointer                ; A0B8 20 1D C8                  ..
         dec     $81                             ; A0BB C6 81                    ..
-        bpl     BattlePresentation_Branch_A0AF  ; A0BD 10 F0                    ..
+        bpl     BattleAi_Branch_A0AF            ; A0BD 10 F0                    ..
         rts                                     ; A0BF 60                       `
 ; ----------------------------------------------------------------------------
 SumBattleRecordBasePointers:
@@ -4685,7 +4685,7 @@ SumBattleRecordBasePointers:
         sta     $01                             ; A0C4 85 01                    ..
         lda     #$07                            ; A0C6 A9 07                    ..
         sta     $81                             ; A0C8 85 81                    ..
-BattlePresentation_Branch_A0CA:
+BattleAi_Branch_A0CA:
         jsr     LoadBattleRecordBasePointer     ; A0CA 20 77 8D                  w.
         lda     $82                             ; A0CD A5 82                    ..
         asl     a                               ; A0CF 0A                       .
@@ -4699,7 +4699,7 @@ BattlePresentation_Branch_A0CA:
         adc     $01                             ; A0DC 65 01                    e.
         sta     $01                             ; A0DE 85 01                    ..
         dec     $81                             ; A0E0 C6 81                    ..
-        bpl     BattlePresentation_Branch_A0CA  ; A0E2 10 E6                    ..
+        bpl     BattleAi_Branch_A0CA            ; A0E2 10 E6                    ..
         rts                                     ; A0E4 60                       `
 ; ----------------------------------------------------------------------------
 BuildBattleActionGateMask:
@@ -4707,22 +4707,22 @@ BuildBattleActionGateMask:
         sta     $7C                             ; A0E7 85 7C                    .|
         lda     #$07                            ; A0E9 A9 07                    ..
         sta     $81                             ; A0EB 85 81                    ..
-BattlePresentation_Branch_A0ED:
-        jsr     CheckBattleEffectGate           ; A0ED 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_A0FB  ; A0F0 90 09                    ..
+BattleAi_Branch_A0ED:
+        jsr     CheckActionScoreGate            ; A0ED 20 C6 96                  ..
+        bcc     BattleAi_Branch_A0FB            ; A0F0 90 09                    ..
         ldx     $81                             ; A0F2 A6 81                    ..
         lda     $FF5E,x                         ; A0F4 BD 5E FF                 .^.
         ora     $7C                             ; A0F7 05 7C                    .|
         sta     $7C                             ; A0F9 85 7C                    .|
-BattlePresentation_Branch_A0FB:
+BattleAi_Branch_A0FB:
         dec     $81                             ; A0FB C6 81                    ..
-        bpl     BattlePresentation_Branch_A0ED  ; A0FD 10 EE                    ..
+        bpl     BattleAi_Branch_A0ED            ; A0FD 10 EE                    ..
         lda     #$30                            ; A0FF A9 30                    .0
         sta     $94                             ; A101 85 94                    ..
         lda     $7C                             ; A103 A5 7C                    .|
-        beq     BattlePresentation_Branch_A10A  ; A105 F0 03                    ..
+        beq     BattleAi_Branch_A10A            ; A105 F0 03                    ..
         jsr     InitializeBattleActionProjection; A107 20 2F A4                  /.
-BattlePresentation_Branch_A10A:
+BattleAi_Branch_A10A:
         lda     $94                             ; A10A A5 94                    ..
         ldx     $6E80                           ; A10C AE 80 6E                 ..n
         cmp     $BB68,x                         ; A10F DD 68 BB                 .h.
@@ -4736,46 +4736,46 @@ SelectBestBattleSlotPair:
         stx     $82                             ; A11B 86 82                    ..
         stx     $7B                             ; A11D 86 7B                    .{
         stx     $7C                             ; A11F 86 7C                    .|
-BattlePresentation_Branch_A121:
+BattleAi_Branch_A121:
         jsr     SelectBattleSlotIndex           ; A121 20 66 88                  f.
         sta     $8A                             ; A124 85 8A                    ..
-        bcc     BattlePresentation_Branch_A190  ; A126 90 68                    .h
+        bcc     BattleAi_Branch_A190            ; A126 90 68                    .h
         jsr     ResolveBattleSlotRecordPointer  ; A128 20 B6 89                  ..
         ldy     #$00                            ; A12B A0 00                    ..
         lda     ($79),y                         ; A12D B1 79                    .y
-        bpl     BattlePresentation_Branch_A190  ; A12F 10 5F                    ._
+        bpl     BattleAi_Branch_A190            ; A12F 10 5F                    ._
         asl     a                               ; A131 0A                       .
-        bmi     BattlePresentation_Branch_A190  ; A132 30 5C                    0\
+        bmi     BattleAi_Branch_A190            ; A132 30 5C                    0\
         lda     $8A                             ; A134 A5 8A                    ..
         jsr     FindBattleSlotByCharacterId     ; A136 20 F5 89                  ..
         ldy     #$05                            ; A139 A0 05                    ..
         lda     ($79),y                         ; A13B B1 79                    .y
         and     #$34                            ; A13D 29 34                    )4
-        bne     BattlePresentation_Branch_A190  ; A13F D0 4F                    .O
+        bne     BattleAi_Branch_A190            ; A13F D0 4F                    .O
         lda     ($79),y                         ; A141 B1 79                    .y
         and     #$C0                            ; A143 29 C0                    ).
-        beq     BattlePresentation_Branch_A14E  ; A145 F0 07                    ..
+        beq     BattleAi_Branch_A14E            ; A145 F0 07                    ..
         lda     $8A                             ; A147 A5 8A                    ..
         cmp     $75E8                           ; A149 CD E8 75                 ..u
-        bne     BattlePresentation_Branch_A190  ; A14C D0 42                    .B
-BattlePresentation_Branch_A14E:
+        bne     BattleAi_Branch_A190            ; A14C D0 42                    .B
+BattleAi_Branch_A14E:
         jsr     ComputeBattleSlotPairHalfDifference; A14E 20 99 A1               ..
         ora     $02                           ; A151 05 02                    ..
-        beq     BattlePresentation_Branch_A190  ; A153 F0 3B                    .;
+        beq     BattleAi_Branch_A190            ; A153 F0 3B                    .;
         ldx     #$02                            ; A155 A2 02                    ..
         ldy     #$94                            ; A157 A0 94                    ..
         jsr     ShiftIndexedWordLeftBy4         ; A159 20 76 81                  v.
         jsr     DivideIndexedWordByWord         ; A15C 20 AA 83                  ..
         lda     $03                             ; A15F A5 03                    ..
-        bne     BattlePresentation_Branch_A190  ; A161 D0 2D                    .-
+        bne     BattleAi_Branch_A190            ; A161 D0 2D                    .-
         lda     $BB99                           ; A163 AD 99 BB                 ...
         asl     a                               ; A166 0A                       .
         cmp     $02                           ; A167 C5 02                    ..
-        bcc     BattlePresentation_Branch_A190  ; A169 90 25                    .%
+        bcc     BattleAi_Branch_A190            ; A169 90 25                    .%
         lda     $02                           ; A16B A5 02                    ..
         ldx     $6E80                           ; A16D AE 80 6E                 ..n
         cmp     $BB7D,x                         ; A170 DD 7D BB                 .}.
-        bcc     BattlePresentation_Branch_A190  ; A173 90 1B                    ..
+        bcc     BattleAi_Branch_A190            ; A173 90 1B                    ..
         ldy     #$01                            ; A175 A0 01                    ..
         sec                                     ; A177 38                       8
         lda     ($79),y                         ; A178 B1 79                    .y
@@ -4783,7 +4783,7 @@ BattlePresentation_Branch_A14E:
         iny                                     ; A17C C8                       .
         lda     ($79),y                         ; A17D B1 79                    .y
         sbc     $7C                             ; A17F E5 7C                    .|
-        bcc     BattlePresentation_Branch_A190  ; A181 90 0D                    ..
+        bcc     BattleAi_Branch_A190            ; A181 90 0D                    ..
         lda     ($79),y                         ; A183 B1 79                    .y
         sta     $7C                             ; A185 85 7C                    .|
         dey                                     ; A187 88                       .
@@ -4791,11 +4791,11 @@ BattlePresentation_Branch_A14E:
         sta     $7B                             ; A18A 85 7B                    .{
         lda     $82                             ; A18C A5 82                    ..
         sta     $7D                             ; A18E 85 7D                    .}
-BattlePresentation_Branch_A190:
+BattleAi_Branch_A190:
         inc     $82                             ; A190 E6 82                    ..
         lda     $82                             ; A192 A5 82                    ..
         cmp     #$04                            ; A194 C9 04                    ..
-        bcc     BattlePresentation_Branch_A121  ; A196 90 89                    ..
+        bcc     BattleAi_Branch_A121            ; A196 90 89                    ..
         rts                                     ; A198 60                       `
 ; ----------------------------------------------------------------------------
 ComputeBattleSlotPairHalfDifference:
@@ -4820,21 +4820,21 @@ SelectStrongestBattleSlotPair:
         ldx     #$00                            ; A1B8 A2 00                    ..
         stx     $8D                             ; A1BA 86 8D                    ..
         stx     $8E                             ; A1BC 86 8E                    ..
-BattlePresentation_Branch_A1BE:
+BattleAi_Branch_A1BE:
         txa                                     ; A1BE 8A                       .
         pha                                     ; A1BF 48                       H
         jsr     LoadBattleSlotRecordPointer     ; A1C0 20 C7 86                  ..
         ldy     #$06                            ; A1C3 A0 06                    ..
         lda     ($86),y                       ; A1C5 B1 86                    ..
-        bpl     BattlePresentation_Branch_A1EA  ; A1C7 10 21                    .!
+        bpl     BattleAi_Branch_A1EA            ; A1C7 10 21                    .!
         asl     a                               ; A1C9 0A                       .
-        bpl     BattlePresentation_Branch_A1EA  ; A1CA 10 1E                    ..
+        bpl     BattleAi_Branch_A1EA            ; A1CA 10 1E                    ..
         sec                                     ; A1CC 38                       8
         lda     $8D                             ; A1CD A5 8D                    ..
         sbc     $00                           ; A1CF E5 00                    ..
         lda     $8E                             ; A1D1 A5 8E                    ..
         sbc     $01                             ; A1D3 E5 01                    ..
-        bcs     BattlePresentation_Branch_A1EA  ; A1D5 B0 13                    ..
+        bcs     BattleAi_Branch_A1EA            ; A1D5 B0 13                    ..
         lda     $00                           ; A1D7 A5 00                    ..
         sta     $8D                             ; A1D9 85 8D                    ..
         lda     $01                             ; A1DB A5 01                    ..
@@ -4845,91 +4845,91 @@ BattlePresentation_Branch_A1BE:
         iny                                     ; A1E5 C8                       .
         lda     ($86),y                       ; A1E6 B1 86                    ..
         sta     $8C                             ; A1E8 85 8C                    ..
-BattlePresentation_Branch_A1EA:
+BattleAi_Branch_A1EA:
         pla                                     ; A1EA 68                       h
         tax                                     ; A1EB AA                       .
         inx                                     ; A1EC E8                       .
         cpx     #$08                            ; A1ED E0 08                    ..
-        bcc     BattlePresentation_Branch_A1BE  ; A1EF 90 CD                    ..
+        bcc     BattleAi_Branch_A1BE            ; A1EF 90 CD                    ..
         rts                                     ; A1F1 60                       `
 ; ----------------------------------------------------------------------------
 CheckBattleActionSpecialRange:
         lda     $7206                           ; A1F2 AD 06 72                 ..r
         cmp     #$D2                            ; A1F5 C9 D2                    ..
-        bne     BattlePresentation_Branch_A208  ; A1F7 D0 0F                    ..
+        bne     BattleAi_Branch_A208            ; A1F7 D0 0F                    ..
         ldx     #$00                            ; A1F9 A2 00                    ..
         stx     $81                             ; A1FB 86 81                    ..
-        jsr     GetBattleCharacterRecordPointer ; A1FD 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; A1FD 20 9C 89                  ..
         ldy     #$05                            ; A200 A0 05                    ..
         lda     ($86),y                       ; A202 B1 86                    ..
         and     #$C0                            ; A204 29 C0                    ).
-        bne     BattlePresentation_Branch_A23B  ; A206 D0 33                    .3
-BattlePresentation_Branch_A208:
+        bne     BattleAi_Branch_A23B            ; A206 D0 33                    .3
+BattleAi_Branch_A208:
         lda     #$00                            ; A208 A9 00                    ..
         sta     $7B                             ; A20A 85 7B                    .{
         sta     $7C                             ; A20C 85 7C                    .|
         sta     $7D                             ; A20E 85 7D                    .}
         ldx     #$03                            ; A210 A2 03                    ..
-BattlePresentation_Branch_A212:
+BattleAi_Branch_A212:
         lda     $6E45,x                         ; A212 BD 45 6E                 .En
         cmp     #$5C                            ; A215 C9 5C                    .\
-        beq     BattlePresentation_Branch_A23D  ; A217 F0 24                    .$
+        beq     BattleAi_Branch_A23D            ; A217 F0 24                    .$
         cmp     #$75                            ; A219 C9 75                    .u
-        beq     BattlePresentation_Branch_A241  ; A21B F0 24                    .$
+        beq     BattleAi_Branch_A241            ; A21B F0 24                    .$
         cmp     #$A8                            ; A21D C9 A8                    ..
-        beq     BattlePresentation_Branch_A245  ; A21F F0 24                    .$
+        beq     BattleAi_Branch_A245            ; A21F F0 24                    .$
 FinishSpecialBattleActionScan:
         dex                                     ; A221 CA                       .
-        bpl     BattlePresentation_Branch_A212  ; A222 10 EE                    ..
+        bpl     BattleAi_Branch_A212            ; A222 10 EE                    ..
         lda     $7D                             ; A224 A5 7D                    .}
-        bne     BattlePresentation_Branch_A23B  ; A226 D0 13                    ..
+        bne     BattleAi_Branch_A23B            ; A226 D0 13                    ..
         ldx     $6E80                           ; A228 AE 80 6E                 ..n
         lda     $7B                             ; A22B A5 7B                    .{
         cmp     $BB5A,x                         ; A22D DD 5A BB                 .Z.
-        bcs     BattlePresentation_Branch_A23B  ; A230 B0 09                    ..
+        bcs     BattleAi_Branch_A23B            ; A230 B0 09                    ..
         lda     $7C                             ; A232 A5 7C                    .|
         cmp     $BB61,x                         ; A234 DD 61 BB                 .a.
-        bcs     BattlePresentation_Branch_A23B  ; A237 B0 02                    ..
+        bcs     BattleAi_Branch_A23B            ; A237 B0 02                    ..
         clc                                     ; A239 18                       .
         rts                                     ; A23A 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A23B:
+BattleAi_Branch_A23B:
         sec                                     ; A23B 38                       8
         rts                                     ; A23C 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A23D:
+BattleAi_Branch_A23D:
         ldy     #$7B                            ; A23D A0 7B                    .{
-        bne     BattlePresentation_Branch_A247  ; A23F D0 06                    ..
-BattlePresentation_Branch_A241:
+        bne     BattleAi_Branch_A247            ; A23F D0 06                    ..
+BattleAi_Branch_A241:
         ldy     #$7C                            ; A241 A0 7C                    .|
-        bne     BattlePresentation_Branch_A247  ; A243 D0 02                    ..
-BattlePresentation_Branch_A245:
+        bne     BattleAi_Branch_A247            ; A243 D0 02                    ..
+BattleAi_Branch_A245:
         ldy     #$7D                            ; A245 A0 7D                    .}
-BattlePresentation_Branch_A247:
+BattleAi_Branch_A247:
         txa                                     ; A247 8A                       .
         pha                                     ; A248 48                       H
         sty     $01                             ; A249 84 01                    ..
         sta     $00                           ; A24B 85 00                    ..
         ldx     #$07                            ; A24D A2 07                    ..
         stx     $81                             ; A24F 86 81                    ..
-BattlePresentation_Branch_A251:
+BattleAi_Branch_A251:
         ldx     $81                             ; A251 A6 81                    ..
-        jsr     GetBattleCharacterRecordPointer ; A253 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; A253 20 9C 89                  ..
         ldy     #$06                            ; A256 A0 06                    ..
         lda     ($86),y                       ; A258 B1 86                    ..
-        bpl     BattlePresentation_Branch_A26D  ; A25A 10 11                    ..
+        bpl     BattleAi_Branch_A26D            ; A25A 10 11                    ..
         asl     a                               ; A25C 0A                       .
-        bpl     BattlePresentation_Branch_A26D  ; A25D 10 0E                    ..
+        bpl     BattleAi_Branch_A26D            ; A25D 10 0E                    ..
         ldy     #$0D                            ; A25F A0 0D                    ..
         lda     ($86),y                       ; A261 B1 86                    ..
         and     #$03                            ; A263 29 03                    ).
         cmp     $00                           ; A265 C5 00                    ..
-        bne     BattlePresentation_Branch_A26D  ; A267 D0 04                    ..
+        bne     BattleAi_Branch_A26D            ; A267 D0 04                    ..
         ldx     $01                             ; A269 A6 01                    ..
         inc     $00,x                         ; A26B F6 00                    ..
-BattlePresentation_Branch_A26D:
+BattleAi_Branch_A26D:
         dec     $81                             ; A26D C6 81                    ..
-        bpl     BattlePresentation_Branch_A251  ; A26F 10 E0                    ..
+        bpl     BattleAi_Branch_A251            ; A26F 10 E0                    ..
         pla                                     ; A271 68                       h
         tax                                     ; A272 AA                       .
         jmp     FinishSpecialBattleActionScan   ; A273 4C 21 A2                 L!.
@@ -4937,7 +4937,7 @@ BattlePresentation_Branch_A26D:
 CheckBattleActionCountThreshold:
         lda     BattleActionFlags               ; A276 AD E7 72                 ..r
         and     #$10                            ; A279 29 10                    ).
-        bne     BattlePresentation_Branch_A2E5  ; A27B D0 68                    .h
+        bne     BattleAi_Branch_A2E5            ; A27B D0 68                    .h
         lda     #$00                            ; A27D A9 00                    ..
         sta     $00                           ; A27F 85 00                    ..
         sta     $01                             ; A281 85 01                    ..
@@ -4945,16 +4945,16 @@ CheckBattleActionCountThreshold:
         sta     $03                             ; A285 85 03                    ..
         lda     #$07                            ; A287 A9 07                    ..
         sta     $81                             ; A289 85 81                    ..
-BattlePresentation_Branch_A28B:
+BattleAi_Branch_A28B:
         ldx     $81                             ; A28B A6 81                    ..
-        jsr     GetBattleCharacterRecordPointer ; A28D 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; A28D 20 9C 89                  ..
         ldy     #$06                            ; A290 A0 06                    ..
         lda     ($86),y                       ; A292 B1 86                    ..
-        bpl     BattlePresentation_Branch_A2C8  ; A294 10 32                    .2
+        bpl     BattleAi_Branch_A2C8            ; A294 10 32                    .2
         asl     a                               ; A296 0A                       .
-        bpl     BattlePresentation_Branch_A2C8  ; A297 10 2F                    ./
+        bpl     BattleAi_Branch_A2C8            ; A297 10 2F                    ./
         asl     a                               ; A299 0A                       .
-        bmi     BattlePresentation_Branch_A2C8  ; A29A 30 2C                    0,
+        bmi     BattleAi_Branch_A2C8            ; A29A 30 2C                    0,
         inc     $03                             ; A29C E6 03                    ..
         lda     $81                             ; A29E A5 81                    ..
         asl     a                               ; A2A0 0A                       .
@@ -4963,43 +4963,43 @@ BattlePresentation_Branch_A28B:
         adc     $04                             ; A2A4 65 04                    e.
         tay                                     ; A2A6 A8                       .
         ldx     #$05                            ; A2A7 A2 05                    ..
-BattlePresentation_Branch_A2A9:
+BattleAi_Branch_A2A9:
         lda     BattleActionIds,y               ; A2A9 B9 8C 6D                 ..m
         cmp     #$3C                            ; A2AC C9 3C                    .<
-        bcc     BattlePresentation_Branch_A2C4  ; A2AE 90 14                    ..
+        bcc     BattleAi_Branch_A2C4            ; A2AE 90 14                    ..
         cmp     #$42                            ; A2B0 C9 42                    .B
-        bcs     BattlePresentation_Branch_A2C4  ; A2B2 B0 10                    ..
+        bcs     BattleAi_Branch_A2C4            ; A2B2 B0 10                    ..
         lda     BattleActionWeights,y           ; A2B4 B9 C2 6D                 ..m
-        beq     BattlePresentation_Branch_A2C4  ; A2B7 F0 0B                    ..
+        beq     BattleAi_Branch_A2C4            ; A2B7 F0 0B                    ..
         clc                                     ; A2B9 18                       .
         adc     $00                           ; A2BA 65 00                    e.
         sta     $00                           ; A2BC 85 00                    ..
         lda     $01                             ; A2BE A5 01                    ..
         adc     #$00                            ; A2C0 69 00                    i.
         sta     $01                             ; A2C2 85 01                    ..
-BattlePresentation_Branch_A2C4:
+BattleAi_Branch_A2C4:
         iny                                     ; A2C4 C8                       .
         dex                                     ; A2C5 CA                       .
-        bpl     BattlePresentation_Branch_A2A9  ; A2C6 10 E1                    ..
-BattlePresentation_Branch_A2C8:
+        bpl     BattleAi_Branch_A2A9            ; A2C6 10 E1                    ..
+BattleAi_Branch_A2C8:
         dec     $81                             ; A2C8 C6 81                    ..
-        bpl     BattlePresentation_Branch_A28B  ; A2CA 10 BF                    ..
+        bpl     BattleAi_Branch_A28B            ; A2CA 10 BF                    ..
         ldx     #$00                            ; A2CC A2 00                    ..
         ldy     #$02                            ; A2CE A0 02                    ..
         jsr     ShiftIndexedWordLeftBy4         ; A2D0 20 76 81                  v.
         jsr     DivideIndexedWordByWord         ; A2D3 20 AA 83                  ..
         lda     $01                             ; A2D6 A5 01                    ..
-        bne     BattlePresentation_Branch_A2E3  ; A2D8 D0 09                    ..
+        bne     BattleAi_Branch_A2E3            ; A2D8 D0 09                    ..
         lda     $00                           ; A2DA A5 00                    ..
         ldx     $6E80                           ; A2DC AE 80 6E                 ..n
         cmp     $BB53,x                         ; A2DF DD 53 BB                 .S.
         rts                                     ; A2E2 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A2E3:
+BattleAi_Branch_A2E3:
         sec                                     ; A2E3 38                       8
         rts                                     ; A2E4 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A2E5:
+BattleAi_Branch_A2E5:
         clc                                     ; A2E5 18                       .
         rts                                     ; A2E6 60                       `
 ; ----------------------------------------------------------------------------
@@ -5010,85 +5010,85 @@ CheckBattleRecordPairThreshold:
         sta     $7C                             ; A2ED 85 7C                    .|
         sta     $7D                             ; A2EF 85 7D                    .}
         sta     $7E                             ; A2F1 85 7E                    .~
-BattlePresentation_Branch_A2F3:
+BattleAi_Branch_A2F3:
         jsr     LoadBattleRecordHighPairIfPresent; A2F3 20 42 88                 B.
-        bcc     BattlePresentation_Branch_A319  ; A2F6 90 21                    .!
+        bcc     BattleAi_Branch_A319            ; A2F6 90 21                    .!
         lda     $82                             ; A2F8 A5 82                    ..
         jsr     LoadBattleRecordSlotWithStatus  ; A2FA 20 6B 8A                  k.
         ldy     #$00                            ; A2FD A0 00                    ..
         lda     ($79),y                         ; A2FF B1 79                    .y
-        bpl     BattlePresentation_Branch_A319  ; A301 10 16                    ..
+        bpl     BattleAi_Branch_A319            ; A301 10 16                    ..
         asl     a                               ; A303 0A                       .
-        bmi     BattlePresentation_Branch_A319  ; A304 30 13                    0.
+        bmi     BattleAi_Branch_A319            ; A304 30 13                    0.
         sec                                     ; A306 38                       8
         lda     $7B                             ; A307 A5 7B                    .{
         sbc     $0C                             ; A309 E5 0C                    ..
         lda     $7C                             ; A30B A5 7C                    .|
         sbc     $0D                             ; A30D E5 0D                    ..
-        bcs     BattlePresentation_Branch_A319  ; A30F B0 08                    ..
+        bcs     BattleAi_Branch_A319            ; A30F B0 08                    ..
         lda     $0C                             ; A311 A5 0C                    ..
         sta     $7B                             ; A313 85 7B                    .{
         lda     $0D                             ; A315 A5 0D                    ..
         sta     $7C                             ; A317 85 7C                    .|
-BattlePresentation_Branch_A319:
+BattleAi_Branch_A319:
         inc     $82                             ; A319 E6 82                    ..
         lda     $82                             ; A31B A5 82                    ..
         cmp     #$04                            ; A31D C9 04                    ..
-        bcc     BattlePresentation_Branch_A2F3  ; A31F 90 D2                    ..
+        bcc     BattleAi_Branch_A2F3            ; A31F 90 D2                    ..
         lda     #$07                            ; A321 A9 07                    ..
         sta     $81                             ; A323 85 81                    ..
-BattlePresentation_Branch_A325:
+BattleAi_Branch_A325:
         ldx     $81                             ; A325 A6 81                    ..
         jsr     LoadBattleRecordMaximumValue    ; A327 20 56 88                  V.
         ldy     #$06                            ; A32A A0 06                    ..
         lda     ($86),y                       ; A32C B1 86                    ..
-        bpl     BattlePresentation_Branch_A349  ; A32E 10 19                    ..
+        bpl     BattleAi_Branch_A349            ; A32E 10 19                    ..
         asl     a                               ; A330 0A                       .
-        bpl     BattlePresentation_Branch_A349  ; A331 10 16                    ..
+        bpl     BattleAi_Branch_A349            ; A331 10 16                    ..
         asl     a                               ; A333 0A                       .
-        bmi     BattlePresentation_Branch_A349  ; A334 30 13                    0.
+        bmi     BattleAi_Branch_A349            ; A334 30 13                    0.
         sec                                     ; A336 38                       8
         lda     $7D                             ; A337 A5 7D                    .}
         sbc     $0E                             ; A339 E5 0E                    ..
         lda     $7E                             ; A33B A5 7E                    .~
         sbc     $0F                             ; A33D E5 0F                    ..
-        bcs     BattlePresentation_Branch_A349  ; A33F B0 08                    ..
+        bcs     BattleAi_Branch_A349            ; A33F B0 08                    ..
         lda     $0E                             ; A341 A5 0E                    ..
         sta     $7D                             ; A343 85 7D                    .}
         lda     $0F                             ; A345 A5 0F                    ..
         sta     $7E                             ; A347 85 7E                    .~
-BattlePresentation_Branch_A349:
+BattleAi_Branch_A349:
         dec     $81                             ; A349 C6 81                    ..
-        bpl     BattlePresentation_Branch_A325  ; A34B 10 D8                    ..
+        bpl     BattleAi_Branch_A325            ; A34B 10 D8                    ..
         ldx     #$7D                            ; A34D A2 7D                    .}
         ldy     #$7B                            ; A34F A0 7B                    .{
         jsr     DivideIndexedWordByWord         ; A351 20 AA 83                  ..
         lda     $7E                             ; A354 A5 7E                    .~
-        bne     BattlePresentation_Branch_A364  ; A356 D0 0C                    ..
+        bne     BattleAi_Branch_A364            ; A356 D0 0C                    ..
         lda     $7D                             ; A358 A5 7D                    .}
         cmp     #$04                            ; A35A C9 04                    ..
-        bcc     BattlePresentation_Branch_A364  ; A35C 90 06                    ..
+        bcc     BattleAi_Branch_A364            ; A35C 90 06                    ..
         cmp     #$08                            ; A35E C9 08                    ..
-        bcs     BattlePresentation_Branch_A364  ; A360 B0 02                    ..
+        bcs     BattleAi_Branch_A364            ; A360 B0 02                    ..
         sec                                     ; A362 38                       8
         rts                                     ; A363 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A364:
+BattleAi_Branch_A364:
         clc                                     ; A364 18                       .
         rts                                     ; A365 60                       `
 ; ----------------------------------------------------------------------------
-SumBattlePresentationTotals:
+SumBattleAiTotals:
         lda     #$00                            ; A366 A9 00                    ..
         sta     $75E1                           ; A368 8D E1 75                 ..u
         sta     $75E2                           ; A36B 8D E2 75                 ..u
         sta     $75E3                           ; A36E 8D E3 75                 ..u
         lda     #$07                            ; A371 A9 07                    ..
         sta     $81                             ; A373 85 81                    ..
-BattlePresentation_Branch_A375:
+BattleAi_Branch_A375:
         jsr     TestBattleRecordModeField       ; A375 20 02 86                  ..
-        bne     BattlePresentation_Branch_A393  ; A378 D0 19                    ..
-        jsr     LoadEligibleBattlePresentationValue; A37A 20 B2 A3               ..
-        bcc     BattlePresentation_Branch_A393  ; A37D 90 14                    ..
+        bne     BattleAi_Branch_A393            ; A378 D0 19                    ..
+        jsr     LoadEligibleBattleAiValue       ; A37A 20 B2 A3                  ..
+        bcc     BattleAi_Branch_A393            ; A37D 90 14                    ..
         clc                                     ; A37F 18                       .
         lda     $0E                             ; A380 A5 0E                    ..
         adc     $75E1                           ; A382 6D E1 75                 m.u
@@ -5096,10 +5096,10 @@ BattlePresentation_Branch_A375:
         lda     $0F                             ; A388 A5 0F                    ..
         adc     $75E2                           ; A38A 6D E2 75                 m.u
         sta     $75E2                           ; A38D 8D E2 75                 ..u
-        jsr     AccumulateBattlePresentationScore; A390 20 C8 A4                 ..
-BattlePresentation_Branch_A393:
+        jsr     AccumulateBattleAiScore         ; A390 20 C8 A4                  ..
+BattleAi_Branch_A393:
         dec     $81                             ; A393 C6 81                    ..
-        bpl     BattlePresentation_Branch_A375  ; A395 10 DE                    ..
+        bpl     BattleAi_Branch_A375            ; A395 10 DE                    ..
         lda     $75E2                           ; A397 AD E2 75                 ..u
         lsr     a                               ; A39A 4A                       J
         sta     $0F                             ; A39B 85 0F                    ..
@@ -5107,34 +5107,34 @@ BattlePresentation_Branch_A393:
         ror     a                               ; A3A0 6A                       j
         sta     $0E                             ; A3A1 85 0E                    ..
         ora     $0F                             ; A3A3 05 0F                    ..
-        beq     BattlePresentation_Branch_A3B1  ; A3A5 F0 0A                    ..
+        beq     BattleAi_Branch_A3B1            ; A3A5 F0 0A                    ..
         lda     $75E3                           ; A3A7 AD E3 75                 ..u
-        beq     BattlePresentation_Branch_A3B1  ; A3AA F0 05                    ..
+        beq     BattleAi_Branch_A3B1            ; A3AA F0 05                    ..
         sta     $8C                             ; A3AC 85 8C                    ..
-        jsr     ComputeBattlePresentationRatio  ; A3AE 20 B1 AC                  ..
-BattlePresentation_Branch_A3B1:
+        jsr     ComputeBattleAiRatio            ; A3AE 20 B1 AC                  ..
+BattleAi_Branch_A3B1:
         rts                                     ; A3B1 60                       `
 ; ----------------------------------------------------------------------------
-LoadEligibleBattlePresentationValue:
-        jsr     ConvertBattlePresentationByte   ; A3B2 20 76 92                  v.
-        jsr     CheckBattleEffectGate           ; A3B5 20 C6 96                  ..
-        bcc     BattlePresentation_Branch_A3D7  ; A3B8 90 1D                    ..
+LoadEligibleBattleAiValue:
+        jsr     ConvertBattleAiByte             ; A3B2 20 76 92                  v.
+        jsr     CheckActionScoreGate            ; A3B5 20 C6 96                  ..
+        bcc     BattleAi_Branch_A3D7            ; A3B8 90 1D                    ..
         ldx     $81                             ; A3BA A6 81                    ..
         lda     $FF5E,x                         ; A3BC BD 5E FF                 .^.
         sta     $7C                             ; A3BF 85 7C                    .|
         jsr     InitializeBattleActionProjection; A3C1 20 2F A4                  /.
         lda     $94                             ; A3C4 A5 94                    ..
         cmp     #$18                            ; A3C6 C9 18                    ..
-        bcc     BattlePresentation_Branch_A3D7  ; A3C8 90 0D                    ..
+        bcc     BattleAi_Branch_A3D7            ; A3C8 90 0D                    ..
         ldx     $81                             ; A3CA A6 81                    ..
         jsr     CopyBattleRecordMaximumValue    ; A3CC 20 11 88                  ..
         lda     $0E                             ; A3CF A5 0E                    ..
         ora     $0F                             ; A3D1 05 0F                    ..
-        beq     BattlePresentation_Branch_A3D7  ; A3D3 F0 02                    ..
+        beq     BattleAi_Branch_A3D7            ; A3D3 F0 02                    ..
         sec                                     ; A3D5 38                       8
         rts                                     ; A3D6 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A3D7:
+BattleAi_Branch_A3D7:
         clc                                     ; A3D7 18                       .
         rts                                     ; A3D8 60                       `
 ; ----------------------------------------------------------------------------
@@ -5142,17 +5142,17 @@ IsBattleActionClassFourExceptSpecialIds:
         jsr     ClassifyBattleAction            ; A3D9 20 06 94                  ..
         and     #$7F                            ; A3DC 29 7F                    ).
         cmp     #$04                            ; A3DE C9 04                    ..
-        bne     BattlePresentation_Branch_A3ED  ; A3E0 D0 0B                    ..
+        bne     BattleAi_Branch_A3ED            ; A3E0 D0 0B                    ..
         lda     $75D3                           ; A3E2 AD D3 75                 ..u
         cmp     #$1F                            ; A3E5 C9 1F                    ..
-        beq     BattlePresentation_Branch_A3ED  ; A3E7 F0 04                    ..
+        beq     BattleAi_Branch_A3ED            ; A3E7 F0 04                    ..
         cmp     #$20                            ; A3E9 C9 20                    .
-        bne     BattlePresentation_Branch_A3EF  ; A3EB D0 02                    ..
-BattlePresentation_Branch_A3ED:
+        bne     BattleAi_Branch_A3EF            ; A3EB D0 02                    ..
+BattleAi_Branch_A3ED:
         sec                                     ; A3ED 38                       8
         rts                                     ; A3EE 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A3EF:
+BattleAi_Branch_A3EF:
         clc                                     ; A3EF 18                       .
         rts                                     ; A3F0 60                       `
 ; ----------------------------------------------------------------------------
@@ -5161,31 +5161,31 @@ SelectHighestBattleSlotPair:
         stx     $82                             ; A3F3 86 82                    ..
         stx     $75DF                           ; A3F5 8E DF 75                 ..u
         stx     $75E0                           ; A3F8 8E E0 75                 ..u
-BattlePresentation_Branch_A3FB:
+BattleAi_Branch_A3FB:
         jsr     SelectBattleSlotIndex           ; A3FB 20 66 88                  f.
-        bcc     BattlePresentation_Branch_A426  ; A3FE 90 26                    .&
+        bcc     BattleAi_Branch_A426            ; A3FE 90 26                    .&
         jsr     ResolveBattleSlotRecordPointer  ; A400 20 B6 89                  ..
         ldy     #$00                            ; A403 A0 00                    ..
         lda     ($79),y                         ; A405 B1 79                    .y
-        bpl     BattlePresentation_Branch_A426  ; A407 10 1D                    ..
+        bpl     BattleAi_Branch_A426            ; A407 10 1D                    ..
         asl     a                               ; A409 0A                       .
-        bmi     BattlePresentation_Branch_A426  ; A40A 30 1A                    0.
+        bmi     BattleAi_Branch_A426            ; A40A 30 1A                    0.
         jsr     SumPartyCharacterOffsetPairIfVisible; A40C 20 19 87              ..
         sec                                     ; A40F 38                       8
         lda     $75DF                           ; A410 AD DF 75                 ..u
         sbc     $0C                             ; A413 E5 0C                    ..
         lda     $75E0                           ; A415 AD E0 75                 ..u
         sbc     $0D                             ; A418 E5 0D                    ..
-        bcs     BattlePresentation_Branch_A426  ; A41A B0 0A                    ..
+        bcs     BattleAi_Branch_A426            ; A41A B0 0A                    ..
         lda     $0C                             ; A41C A5 0C                    ..
         sta     $75DF                           ; A41E 8D DF 75                 ..u
         lda     $0D                             ; A421 A5 0D                    ..
         sta     $75E0                           ; A423 8D E0 75                 ..u
-BattlePresentation_Branch_A426:
+BattleAi_Branch_A426:
         inc     $82                             ; A426 E6 82                    ..
         lda     $82                             ; A428 A5 82                    ..
         cmp     #$04                            ; A42A C9 04                    ..
-        bcc     BattlePresentation_Branch_A3FB  ; A42C 90 CD                    ..
+        bcc     BattleAi_Branch_A3FB            ; A42C 90 CD                    ..
         rts                                     ; A42E 60                       `
 ; ----------------------------------------------------------------------------
 InitializeBattleActionProjection:
@@ -5195,9 +5195,9 @@ InitializeBattleActionProjection:
         lda     #$30                            ; A435 A9 30                    .0
         sta     $94                             ; A437 85 94                    ..
         lda     $7B                             ; A439 A5 7B                    .{
-        beq     BattlePresentation_Branch_A440  ; A43B F0 03                    ..
-        jsr     AccumulateBattlePresentationBitfields; A43D 20 88 A4             ..
-BattlePresentation_Branch_A440:
+        beq     BattleAi_Branch_A440            ; A43B F0 03                    ..
+        jsr     AccumulateBattleAiBitfields     ; A43D 20 88 A4                  ..
+BattleAi_Branch_A440:
         pla                                     ; A440 68                       h
         sta     $81                             ; A441 85 81                    ..
         rts                                     ; A443 60                       `
@@ -5206,24 +5206,24 @@ SelectBattleActionMask:
         lda     #$00                            ; A444 A9 00                    ..
         sta     $7B                             ; A446 85 7B                    .{
         sta     $82                             ; A448 85 82                    ..
-BattlePresentation_Branch_A44A:
+BattleAi_Branch_A44A:
         jsr     SelectBattleSlotIndex           ; A44A 20 66 88                  f.
-        bcc     BattlePresentation_Branch_A47F  ; A44D 90 30                    .0
+        bcc     BattleAi_Branch_A47F            ; A44D 90 30                    .0
         sta     $0C                             ; A44F 85 0C                    ..
         jsr     ResolveBattleSlotRecordPointer  ; A451 20 B6 89                  ..
         ldy     #$00                            ; A454 A0 00                    ..
         lda     ($79),y                         ; A456 B1 79                    .y
-        bpl     BattlePresentation_Branch_A47F  ; A458 10 25                    .%
+        bpl     BattleAi_Branch_A47F            ; A458 10 25                    .%
         asl     a                               ; A45A 0A                       .
-        bmi     BattlePresentation_Branch_A47F  ; A45B 30 22                    0"
+        bmi     BattleAi_Branch_A47F            ; A45B 30 22                    0"
         lda     #$0B                            ; A45D A9 0B                    ..
         sta     $0D                             ; A45F 85 0D                    ..
-BattlePresentation_Branch_A461:
-        jsr     CheckBattlePresentationStateMatch; A461 20 AA A5                 ..
-        bcc     BattlePresentation_Branch_A47B  ; A464 90 15                    ..
+BattleAi_Branch_A461:
+        jsr     CheckBattleAiStateMatch         ; A461 20 AA A5                  ..
+        bcc     BattleAi_Branch_A47B            ; A464 90 15                    ..
         cpy     #$15                            ; A466 C0 15                    ..
-        bcs     BattlePresentation_Branch_A47B  ; A468 B0 11                    ..
-        lda     Bank13_BattlePresentationLookup,y; A46A B9 0B B8                ...
+        bcs     BattleAi_Branch_A47B            ; A468 B0 11                    ..
+        lda     Bank13_BattleAiActionLookup,y   ; A46A B9 0B B8                 ...
         and     #$1F                            ; A46D 29 1F                    ).
         tax                                     ; A46F AA                       .
         lda     $94CC,x                         ; A470 BD CC 94                 ...
@@ -5231,33 +5231,33 @@ BattlePresentation_Branch_A461:
         lda     $FF5E,x                         ; A474 BD 5E FF                 .^.
         ora     $7B                             ; A477 05 7B                    .{
         sta     $7B                             ; A479 85 7B                    .{
-BattlePresentation_Branch_A47B:
+BattleAi_Branch_A47B:
         dec     $0D                             ; A47B C6 0D                    ..
-        bpl     BattlePresentation_Branch_A461  ; A47D 10 E2                    ..
-BattlePresentation_Branch_A47F:
+        bpl     BattleAi_Branch_A461            ; A47D 10 E2                    ..
+BattleAi_Branch_A47F:
         inc     $82                             ; A47F E6 82                    ..
         lda     $82                             ; A481 A5 82                    ..
         cmp     #$04                            ; A483 C9 04                    ..
-        bcc     BattlePresentation_Branch_A44A  ; A485 90 C3                    ..
+        bcc     BattleAi_Branch_A44A            ; A485 90 C3                    ..
         rts                                     ; A487 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationBitfields:
+AccumulateBattleAiBitfields:
         lda     #$00                            ; A488 A9 00                    ..
         sta     $94                             ; A48A 85 94                    ..
         lda     #$07                            ; A48C A9 07                    ..
         sta     $81                             ; A48E 85 81                    ..
-BattlePresentation_Branch_A490:
+BattleAi_Branch_A490:
         asl     $7C                             ; A490 06 7C                    .|
-        bcc     BattlePresentation_Branch_A4C3  ; A492 90 2F                    ./
+        bcc     BattleAi_Branch_A4C3            ; A492 90 2F                    ./
         lda     $7B                             ; A494 A5 7B                    .{
         sta     $02                           ; A496 85 02                    ..
         lda     #$00                            ; A498 A9 00                    ..
         sta     $95                             ; A49A 85 95                    ..
-BattlePresentation_Branch_A49C:
+BattleAi_Branch_A49C:
         lsr     $02                           ; A49C 46 02                    F.
-        bcc     BattlePresentation_Branch_A4BB  ; A49E 90 1B                    ..
+        bcc     BattleAi_Branch_A4BB            ; A49E 90 1B                    ..
         lda     $95                             ; A4A0 A5 95                    ..
-        jsr     ExtractBattlePresentationSubfield; A4A2 20 E2 92                 ..
+        jsr     ExtractBattleAiSubfield         ; A4A2 20 E2 92                  ..
         asl     a                               ; A4A5 0A                       .
         asl     a                               ; A4A6 0A                       .
         asl     a                               ; A4A7 0A                       .
@@ -5270,21 +5270,21 @@ BattlePresentation_Branch_A49C:
         sta     $94                             ; A4B1 85 94                    ..
         tax                                     ; A4B3 AA                       .
         pla                                     ; A4B4 68                       h
-        beq     BattlePresentation_Branch_A4BB  ; A4B5 F0 04                    ..
+        beq     BattleAi_Branch_A4BB            ; A4B5 F0 04                    ..
         txa                                     ; A4B7 8A                       .
         lsr     a                               ; A4B8 4A                       J
         sta     $94                             ; A4B9 85 94                    ..
-BattlePresentation_Branch_A4BB:
+BattleAi_Branch_A4BB:
         inc     $95                             ; A4BB E6 95                    ..
         lda     $95                             ; A4BD A5 95                    ..
         cmp     #$07                            ; A4BF C9 07                    ..
-        bcc     BattlePresentation_Branch_A49C  ; A4C1 90 D9                    ..
-BattlePresentation_Branch_A4C3:
+        bcc     BattleAi_Branch_A49C            ; A4C1 90 D9                    ..
+BattleAi_Branch_A4C3:
         dec     $81                             ; A4C3 C6 81                    ..
-        bpl     BattlePresentation_Branch_A490  ; A4C5 10 C9                    ..
+        bpl     BattleAi_Branch_A490            ; A4C5 10 C9                    ..
         rts                                     ; A4C7 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationScore:
+AccumulateBattleAiScore:
         lda     $75E3                           ; A4C8 AD E3 75                 ..u
         pha                                     ; A4CB 48                       H
         clc                                     ; A4CC 18                       .
@@ -5292,9 +5292,9 @@ AccumulateBattlePresentationScore:
         adc     $75E3                           ; A4CF 6D E3 75                 m.u
         sta     $75E3                           ; A4D2 8D E3 75                 ..u
         pla                                     ; A4D5 68                       h
-        beq     BattlePresentation_Branch_A4DB  ; A4D6 F0 03                    ..
+        beq     BattleAi_Branch_A4DB            ; A4D6 F0 03                    ..
         lsr     $75E3                           ; A4D8 4E E3 75                 N.u
-BattlePresentation_Branch_A4DB:
+BattleAi_Branch_A4DB:
         rts                                     ; A4DB 60                       `
 ; ----------------------------------------------------------------------------
 ResetBattleActionStateSelection:
@@ -5307,25 +5307,25 @@ ResetBattleActionStateSelection:
 ScaleTwentyFieldPairsAcrossEightRecords:
         ldx     #$07                            ; A4E8 A2 07                    ..
         stx     $81                             ; A4EA 86 81                    ..
-BattlePresentation_Branch_A4EC:
+BattleAi_Branch_A4EC:
         ldx     $81                             ; A4EC A6 81                    ..
         lda     $7579,x                         ; A4EE BD 79 75                 .yu
         cmp     #$10                            ; A4F1 C9 10                    ..
-        beq     BattlePresentation_Branch_A504  ; A4F3 F0 0F                    ..
+        beq     BattleAi_Branch_A504            ; A4F3 F0 0F                    ..
         sta     $00                           ; A4F5 85 00                    ..
         jsr     LoadBattleRecordBasePointer     ; A4F7 20 77 8D                  w.
         jsr     ScaleBattleFieldOffsets         ; A4FA 20 09 A5                  ..
         lda     $00                           ; A4FD A5 00                    ..
-        beq     BattlePresentation_Branch_A504  ; A4FF F0 03                    ..
+        beq     BattleAi_Branch_A504            ; A4FF F0 03                    ..
         jsr     AdvanceBattleRecordPointer      ; A501 20 16 8F                  ..
-BattlePresentation_Branch_A504:
+BattleAi_Branch_A504:
         dec     $81                             ; A504 C6 81                    ..
-        bpl     BattlePresentation_Branch_A4EC  ; A506 10 E4                    ..
+        bpl     BattleAi_Branch_A4EC            ; A506 10 E4                    ..
         rts                                     ; A508 60                       `
 ; ----------------------------------------------------------------------------
 ScaleBattleFieldOffsets:
         ldx     #$13                            ; A509 A2 13                    ..
-BattlePresentation_Branch_A50B:
+BattleAi_Branch_A50B:
         ldy     Bank13_BattleFieldOffsets,x     ; A50B BC EC 90                 ...
         lda     ($88),y                       ; A50E B1 88                    ..
         sta     $94                             ; A510 85 94                    ..
@@ -5342,16 +5342,16 @@ BattlePresentation_Branch_A50B:
         php                                     ; A524 08                       .
         jsr     ShiftScaledPointerWordRightBy4  ; A525 20 A5 81                  ..
         plp                                     ; A528 28                       (
-        beq     BattlePresentation_Branch_A530  ; A529 F0 05                    ..
+        beq     BattleAi_Branch_A530            ; A529 F0 05                    ..
         lda     #$01                            ; A52B A9 01                    ..
         jsr     AddByteToPointer                ; A52D 20 13 C8                  ..
-BattlePresentation_Branch_A530:
+BattleAi_Branch_A530:
         lda     $19                             ; A530 A5 19                    ..
-        beq     BattlePresentation_Branch_A53A  ; A532 F0 06                    ..
+        beq     BattleAi_Branch_A53A            ; A532 F0 06                    ..
         lda     #$FF                            ; A534 A9 FF                    ..
         sta     $94                             ; A536 85 94                    ..
         sta     $95                             ; A538 85 95                    ..
-BattlePresentation_Branch_A53A:
+BattleAi_Branch_A53A:
         pla                                     ; A53A 68                       h
         tax                                     ; A53B AA                       .
         ldy     Bank13_BattleFieldOffsets,x     ; A53C BC EC 90                 ...
@@ -5361,19 +5361,19 @@ BattlePresentation_Branch_A53A:
         lda     $95                             ; A544 A5 95                    ..
         sta     ($88),y                       ; A546 91 88                    ..
         dex                                     ; A548 CA                       .
-        bpl     BattlePresentation_Branch_A50B  ; A549 10 C0                    ..
+        bpl     BattleAi_Branch_A50B            ; A549 10 C0                    ..
         rts                                     ; A54B 60                       `
 ; ----------------------------------------------------------------------------
-EmptyBattlePresentationCallback:
+EmptyBattleAiCallback:
         rts                                     ; A54C 60                       `
 ; ----------------------------------------------------------------------------
-DispatchBattlePresentationCallback:
+DispatchBattleAiCallback:
         pha                                     ; A54D 48                       H
-        jsr     CanUseBattlePresentationSlot    ; A54E 20 FC A5                  ..
+        jsr     CanUseBattleAiSlot              ; A54E 20 FC A5                  ..
         pla                                     ; A551 68                       h
-        bcc     EmptyBattlePresentationCallback ; A552 90 F8                    ..
-        jsr     CheckBattlePresentationStateThreshold; A554 20 8D A5             ..
-        bcc     EmptyBattlePresentationCallback ; A557 90 F3                    ..
+        bcc     EmptyBattleAiCallback           ; A552 90 F8                    ..
+        jsr     CheckBattleAiStateThreshold     ; A554 20 8D A5                  ..
+        bcc     EmptyBattleAiCallback           ; A557 90 F3                    ..
         lda     $75E8                           ; A559 AD E8 75                 ..u
         asl     a                               ; A55C 0A                       .
         tax                                     ; A55D AA                       .
@@ -5396,33 +5396,33 @@ DispatchBattlePresentationCallback:
         sta     $75D3                           ; A57F 8D D3 75                 ..u
         ldy     $6E80                           ; A582 AC 80 6E                 ..n
         cpy     #$04                            ; A585 C0 04                    ..
-        beq     BattlePresentation_Branch_A58C  ; A587 F0 03                    ..
+        beq     BattleAi_Branch_A58C            ; A587 F0 03                    ..
         jmp     ($0088)                         ; A589 6C 88 00                 l..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A58C:
+BattleAi_Branch_A58C:
         rts                                     ; A58C 60                       `
 ; ----------------------------------------------------------------------------
-CheckBattlePresentationStateThreshold:
+CheckBattleAiStateThreshold:
         sta     $0D                             ; A58D 85 0D                    ..
         lda     $75E8                           ; A58F AD E8 75                 ..u
         sta     $0C                             ; A592 85 0C                    ..
-        jsr     CheckBattlePresentationStateMatch; A594 20 AA A5                 ..
-        bcc     BattlePresentation_Branch_A5A8  ; A597 90 0F                    ..
-        lda     Bank13_BattlePresentationStateLookup,y; A599 B9 67 B9           .g.
+        jsr     CheckBattleAiStateMatch         ; A594 20 AA A5                  ..
+        bcc     BattleAi_Branch_A5A8            ; A597 90 0F                    ..
+        lda     Bank13_BattleAiStateLookup,y    ; A599 B9 67 B9                 .g.
         and     #$1F                            ; A59C 29 1F                    ).
         sec                                     ; A59E 38                       8
         sbc     $75DC                           ; A59F ED DC 75                 ..u
-        beq     BattlePresentation_Branch_A5A6  ; A5A2 F0 02                    ..
-        bcs     BattlePresentation_Branch_A5A8  ; A5A4 B0 02                    ..
-BattlePresentation_Branch_A5A6:
+        beq     BattleAi_Branch_A5A6            ; A5A2 F0 02                    ..
+        bcs     BattleAi_Branch_A5A8            ; A5A4 B0 02                    ..
+BattleAi_Branch_A5A6:
         sec                                     ; A5A6 38                       8
         rts                                     ; A5A7 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A5A8:
+BattleAi_Branch_A5A8:
         clc                                     ; A5A8 18                       .
         rts                                     ; A5A9 60                       `
 ; ----------------------------------------------------------------------------
-CheckBattlePresentationStateMatch:
+CheckBattleAiStateMatch:
         jsr     MultiplyBattleStateIndexByTwelve; A5AA 20 1A A6                  ..
         clc                                     ; A5AD 18                       .
         adc     $0D                             ; A5AE 65 0D                    e.
@@ -5445,49 +5445,49 @@ CheckBattlePresentationStateMatch:
         lda     ($79),y                         ; A5D4 B1 79                    .y
         sta     $01                             ; A5D6 85 01                    ..
         ldy     #$00                            ; A5D8 A0 00                    ..
-BattlePresentation_Branch_A5DA:
+BattleAi_Branch_A5DA:
         lsr     $01                             ; A5DA 46 01                    F.
         ror     $00                           ; A5DC 66 00                    f.
-        bcc     BattlePresentation_Branch_A5E6  ; A5DE 90 06                    ..
+        bcc     BattleAi_Branch_A5E6            ; A5DE 90 06                    ..
         lda     ($86),y                       ; A5E0 B1 86                    ..
         cmp     $0F                             ; A5E2 C5 0F                    ..
-        beq     BattlePresentation_Branch_A5ED  ; A5E4 F0 07                    ..
-BattlePresentation_Branch_A5E6:
+        beq     BattleAi_Branch_A5ED            ; A5E4 F0 07                    ..
+BattleAi_Branch_A5E6:
         iny                                     ; A5E6 C8                       .
         cpy     #$0C                            ; A5E7 C0 0C                    ..
-        bcc     BattlePresentation_Branch_A5DA  ; A5E9 90 EF                    ..
+        bcc     BattleAi_Branch_A5DA            ; A5E9 90 EF                    ..
         clc                                     ; A5EB 18                       .
         rts                                     ; A5EC 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A5ED:
+BattleAi_Branch_A5ED:
         ldy     $0F                             ; A5ED A4 0F                    ..
         cpy     #$32                            ; A5EF C0 32                    .2
-        bne     BattlePresentation_Branch_A5FA  ; A5F1 D0 07                    ..
+        bne     BattleAi_Branch_A5FA            ; A5F1 D0 07                    ..
         lda     $75DC                           ; A5F3 AD DC 75                 ..u
-        bne     BattlePresentation_Branch_A5FA  ; A5F6 D0 02                    ..
+        bne     BattleAi_Branch_A5FA            ; A5F6 D0 02                    ..
         clc                                     ; A5F8 18                       .
         rts                                     ; A5F9 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A5FA:
+BattleAi_Branch_A5FA:
         sec                                     ; A5FA 38                       8
         rts                                     ; A5FB 60                       `
 ; ----------------------------------------------------------------------------
-CanUseBattlePresentationSlot:
+CanUseBattleAiSlot:
         lda     $6E80                           ; A5FC AD 80 6E                 ..n
         cmp     #$05                            ; A5FF C9 05                    ..
-        beq     BattlePresentation_Branch_A618  ; A601 F0 15                    ..
+        beq     BattleAi_Branch_A618            ; A601 F0 15                    ..
         lda     BattleModeFlags                 ; A603 AD E4 72                 ..r
-        bmi     BattlePresentation_Branch_A618  ; A606 30 10                    0.
+        bmi     BattleAi_Branch_A618            ; A606 30 10                    0.
         lda     $75E8                           ; A608 AD E8 75                 ..u
         jsr     FindBattleSlotByCharacterId     ; A60B 20 F5 89                  ..
         ldy     #$05                            ; A60E A0 05                    ..
         lda     ($79),y                         ; A610 B1 79                    .y
         and     #$08                            ; A612 29 08                    ).
-        bne     BattlePresentation_Branch_A618  ; A614 D0 02                    ..
+        bne     BattleAi_Branch_A618            ; A614 D0 02                    ..
         sec                                     ; A616 38                       8
         rts                                     ; A617 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A618:
+BattleAi_Branch_A618:
         clc                                     ; A618 18                       .
         rts                                     ; A619 60                       `
 ; ----------------------------------------------------------------------------
@@ -5525,25 +5525,25 @@ MultiplyBattleStateIndexByTwelve:
         db   $08,$1C,$1F,$28,$09,$0A,$0B,$0C ; A6B6 08 1C 1F 28 09 0A 0B 0C  ...(....
         db   $1B,$1C,$1E,$1F,$20,$23,$25,$33 ; A6BE 1B 1C 1E 1F 20 23 25 33  .... #%3
 ; ----------------------------------------------------------------------------
-ScanBattleEffectRecordsFromZero:
+ScanActionScoreRecordsFromZero:
         ldx     #$00                            ; A6C6 A2 00                    ..
-        beq     BattlePresentation_Branch_A6D4  ; A6C8 F0 0A                    ..
-ScanBattleEffectRecordsFromTwo:
+        beq     BattleAi_Branch_A6D4            ; A6C8 F0 0A                    ..
+ScanActionScoreRecordsFromTwo:
         ldx     #$02                            ; A6CA A2 02                    ..
-        bne     BattlePresentation_Branch_A6D4  ; A6CC D0 06                    ..
-ScanBattleEffectRecordsFromFour:
+        bne     BattleAi_Branch_A6D4            ; A6CC D0 06                    ..
+ScanActionScoreRecordsFromFour:
         ldx     #$04                            ; A6CE A2 04                    ..
-        bne     BattlePresentation_Branch_A6D4  ; A6D0 D0 02                    ..
-ScanBattleEffectRecordsFromSix:
+        bne     BattleAi_Branch_A6D4            ; A6D0 D0 02                    ..
+ScanActionScoreRecordsFromSix:
         ldx     #$06                            ; A6D2 A2 06                    ..
-BattlePresentation_Branch_A6D4:
+BattleAi_Branch_A6D4:
         stx     $75F1                           ; A6D4 8E F1 75                 ..u
         lda     $75E8                           ; A6D7 AD E8 75                 ..u
         cmp     #$08                            ; A6DA C9 08                    ..
-        bcs     BattlePresentation_Branch_A702  ; A6DC B0 24                    .$
+        bcs     BattleAi_Branch_A702            ; A6DC B0 24                    .$
         jsr     ResolveBattleSlotRecordPointer  ; A6DE 20 B6 89                  ..
         ldy     #$13                            ; A6E1 A0 13                    ..
-BattlePresentation_Branch_A6E3:
+BattleAi_Branch_A6E3:
         tya                                     ; A6E3 98                       .
         pha                                     ; A6E4 48                       H
         lda     $79                             ; A6E5 A5 79                    .y
@@ -5551,10 +5551,10 @@ BattlePresentation_Branch_A6E3:
         lda     $7A                             ; A6E8 A5 7A                    .z
         pha                                     ; A6EA 48                       H
         lda     ($79),y                         ; A6EB B1 79                    .y
-        jsr     FindBattleEffectRecordById      ; A6ED 20 03 A7                  ..
-        bcc     BattlePresentation_Branch_A6F5  ; A6F0 90 03                    ..
-        jsr     DispatchBattleEffectRecordHandler; A6F2 20 3C A7                 <.
-BattlePresentation_Branch_A6F5:
+        jsr     FindActionScoreRecordById       ; A6ED 20 03 A7                  ..
+        bcc     BattleAi_Branch_A6F5            ; A6F0 90 03                    ..
+        jsr     DispatchActionScoreRecordHandler; A6F2 20 3C A7                  <.
+BattleAi_Branch_A6F5:
         pla                                     ; A6F5 68                       h
         sta     $7A                             ; A6F6 85 7A                    .z
         pla                                     ; A6F8 68                       h
@@ -5563,35 +5563,35 @@ BattlePresentation_Branch_A6F5:
         tay                                     ; A6FC A8                       .
         iny                                     ; A6FD C8                       .
         cpy     #$1B                            ; A6FE C0 1B                    ..
-        bcc     BattlePresentation_Branch_A6E3  ; A700 90 E1                    ..
-BattlePresentation_Branch_A702:
+        bcc     BattleAi_Branch_A6E3            ; A700 90 E1                    ..
+BattleAi_Branch_A702:
         rts                                     ; A702 60                       `
 ; ----------------------------------------------------------------------------
-FindBattleEffectRecordById:
+FindActionScoreRecordById:
         and     #$7F                            ; A703 29 7F                    ).
         sta     $7355                           ; A705 8D 55 73                 .Us
         ldx     $75F1                           ; A708 AE F1 75                 ..u
-        lda     Bank13_BattleEffectRecordPointers,x; A70B BD 47 A7              .G.
+        lda     Bank13_ActionScoreRecordPointers,x; A70B BD 47 A7               .G.
         sta     $00                           ; A70E 85 00                    ..
         lda     $A748,x                         ; A710 BD 48 A7                 .H.
         sta     $01                             ; A713 85 01                    ..
         ldy     #$00                            ; A715 A0 00                    ..
-BattlePresentation_Branch_A717:
+BattleAi_Branch_A717:
         lda     ($00),y                       ; A717 B1 00                    ..
         cmp     #$FF                            ; A719 C9 FF                    ..
-        beq     BattlePresentation_Branch_A728  ; A71B F0 0B                    ..
+        beq     BattleAi_Branch_A728            ; A71B F0 0B                    ..
         cmp     $7355                           ; A71D CD 55 73                 .Us
-        beq     BattlePresentation_Branch_A72A  ; A720 F0 08                    ..
+        beq     BattleAi_Branch_A72A            ; A720 F0 08                    ..
         iny                                     ; A722 C8                       .
         iny                                     ; A723 C8                       .
         iny                                     ; A724 C8                       .
         iny                                     ; A725 C8                       .
-        bne     BattlePresentation_Branch_A717  ; A726 D0 EF                    ..
-BattlePresentation_Branch_A728:
+        bne     BattleAi_Branch_A717            ; A726 D0 EF                    ..
+BattleAi_Branch_A728:
         clc                                     ; A728 18                       .
         rts                                     ; A729 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A72A:
+BattleAi_Branch_A72A:
         iny                                     ; A72A C8                       .
         lda     ($00),y                       ; A72B B1 00                    ..
         sta     $75D3                           ; A72D 8D D3 75                 ..u
@@ -5604,16 +5604,16 @@ BattlePresentation_Branch_A72A:
         sec                                     ; A73A 38                       8
         rts                                     ; A73B 60                       `
 ; ----------------------------------------------------------------------------
-DispatchBattleEffectRecordHandler:
+DispatchActionScoreRecordHandler:
         lda     $75F0                           ; A73C AD F0 75                 ..u
         ora     #$80                            ; A73F 09 80                    ..
         sta     $75F0                           ; A741 8D F0 75                 ..u
         jmp     ($0086)                         ; A744 6C 86 00                 l..
 ; ----------------------------------------------------------------------------
-Bank13_BattleEffectRecordPointers:
+Bank13_ActionScoreRecordPointers:
         db   $4F                             ; A747 4F                       O
         db   $A7,$7C,$A7,$8D,$A7,$92,$A7     ; A748 A7 7C A7 8D A7 92 A7     .|.....
-Bank13_BattleEffectRecords:
+Bank13_ActionScoreRecords:
         db   $11,$83,$33,$95,$17,$84,$33,$95 ; A74F 11 83 33 95 17 84 33 95  ..3...3.
         db   $18,$85,$A6,$9B,$1A,$86,$1B,$95 ; A757 18 85 A6 9B 1A 86 1B 95  ........
         db   $1B,$87,$33,$95,$1D,$88,$BB,$9B ; A75F 1B 87 33 95 1D 88 BB 9B  ..3.....
@@ -5624,27 +5624,27 @@ Bank13_BattleEffectRecords:
         db   $98,$60,$A0,$0E,$99,$FF,$58,$98 ; A787 98 60 A0 0E 99 FF 58 98  .`....X.
         db   $EC,$9D,$FF,$1F,$8A,$76,$9F,$FF ; A78F EC 9D FF 1F 8A 76 9F FF  .....v..
 ; ----------------------------------------------------------------------------
-EvaluateBattlePresentationState:
+EvaluateBattleAiState:
         pha                                     ; A797 48                       H
         txa                                     ; A798 8A                       .
         pha                                     ; A799 48                       H
         tya                                     ; A79A 98                       .
         pha                                     ; A79B 48                       H
         sty     $01                             ; A79C 84 01                    ..
-        lda     Bank13_BattlePresentationStateLookup,x; A79E BD 67 B9           .g.
+        lda     Bank13_BattleAiStateLookup,x    ; A79E BD 67 B9                 .g.
         pha                                     ; A7A1 48                       H
         and     #$80                            ; A7A2 29 80                    ).
         sta     $00                           ; A7A4 85 00                    ..
         pla                                     ; A7A6 68                       h
         and     #$60                            ; A7A7 29 60                    )`
-        beq     BattlePresentation_Branch_A7B7  ; A7A9 F0 0C                    ..
+        beq     BattleAi_Branch_A7B7            ; A7A9 F0 0C                    ..
         cmp     #$60                            ; A7AB C9 60                    .`
-        beq     BattlePresentation_Branch_A7B7  ; A7AD F0 08                    ..
+        beq     BattleAi_Branch_A7B7            ; A7AD F0 08                    ..
         cmp     #$20                            ; A7AF C9 20                    .
-        beq     BattlePresentation_Branch_A7BF  ; A7B1 F0 0C                    ..
+        beq     BattleAi_Branch_A7BF            ; A7B1 F0 0C                    ..
         cmp     #$40                            ; A7B3 C9 40                    .@
-        beq     BattlePresentation_Branch_A828  ; A7B5 F0 71                    .q
-BattlePresentation_Branch_A7B7:
+        beq     BattleAi_Branch_A828            ; A7B5 F0 71                    .q
+BattleAi_Branch_A7B7:
         pla                                     ; A7B7 68                       h
         tay                                     ; A7B8 A8                       .
         pla                                     ; A7B9 68                       h
@@ -5653,13 +5653,13 @@ BattlePresentation_Branch_A7B7:
         lda     $00                           ; A7BC A5 00                    ..
         rts                                     ; A7BE 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A7BF:
+BattleAi_Branch_A7BF:
         lda     $00                           ; A7BF A5 00                    ..
-        bpl     BattlePresentation_Branch_A7D7  ; A7C1 10 14                    ..
+        bpl     BattleAi_Branch_A7D7            ; A7C1 10 14                    ..
         lda     #$00                            ; A7C3 A9 00                    ..
         sta     $02                           ; A7C5 85 02                    ..
         ldx     #$07                            ; A7C7 A2 07                    ..
-BattlePresentation_Branch_A7C9:
+BattleAi_Branch_A7C9:
         txa                                     ; A7C9 8A                       .
         pha                                     ; A7CA 48                       H
         jsr     LoadBattleCharacterRecordPattern; A7CB 20 AA A8                  ..
@@ -5667,17 +5667,17 @@ BattlePresentation_Branch_A7C9:
         pla                                     ; A7D0 68                       h
         tax                                     ; A7D1 AA                       .
         dex                                     ; A7D2 CA                       .
-        bpl     BattlePresentation_Branch_A7C9  ; A7D3 10 F4                    ..
-        bmi     BattlePresentation_Branch_A810  ; A7D5 30 39                    09
-BattlePresentation_Branch_A7D7:
+        bpl     BattleAi_Branch_A7C9            ; A7D3 10 F4                    ..
+        bmi     BattleAi_Branch_A810            ; A7D5 30 39                    09
+BattleAi_Branch_A7D7:
         lda     #$00                            ; A7D7 A9 00                    ..
         sta     $02                           ; A7D9 85 02                    ..
         ldx     #$03                            ; A7DB A2 03                    ..
-BattlePresentation_Branch_A7DD:
+BattleAi_Branch_A7DD:
         txa                                     ; A7DD 8A                       .
         pha                                     ; A7DE 48                       H
         jsr     LoadBattleRecordSlotWithStatus  ; A7DF 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_A809  ; A7E2 90 25                    .%
+        bcc     BattleAi_Branch_A809            ; A7E2 90 25                    .%
         pha                                     ; A7E4 48                       H
         ldy     #$00                            ; A7E5 A0 00                    ..
         lda     ($79),y                         ; A7E7 B1 79                    .y
@@ -5698,38 +5698,38 @@ BattlePresentation_Branch_A7DD:
         lda     ($79),y                         ; A802 B1 79                    .y
         sta     $05                             ; A804 85 05                    ..
         jsr     TestBattleCharacterRecordPattern; A806 20 5B A8                  [.
-BattlePresentation_Branch_A809:
+BattleAi_Branch_A809:
         rol     $02                           ; A809 26 02                    &.
         pla                                     ; A80B 68                       h
         tax                                     ; A80C AA                       .
         dex                                     ; A80D CA                       .
-        bpl     BattlePresentation_Branch_A7DD  ; A80E 10 CD                    ..
-BattlePresentation_Branch_A810:
+        bpl     BattleAi_Branch_A7DD            ; A80E 10 CD                    ..
+BattleAi_Branch_A810:
         lda     $02                           ; A810 A5 02                    ..
         brk                                     ; A812 00                       .
         db   $2B,$0F                         ; A813 2B 0F                    +.
 ; ----------------------------------------------------------------------------
         ora     $00                           ; A815 05 00                    ..
         sta     $00                           ; A817 85 00                    ..
-        bmi     BattlePresentation_Branch_A825  ; A819 30 0A                    0.
+        bmi     BattleAi_Branch_A825            ; A819 30 0A                    0.
         jsr     FindBattleSlotForCurrentState   ; A81B 20 76 8A                  v.
-        bcc     BattlePresentation_Branch_A825  ; A81E 90 05                    ..
+        bcc     BattleAi_Branch_A825            ; A81E 90 05                    ..
         jsr     FindBattleSlotByStateIdBody     ; A820 20 BA 8A                  ..
         sta     $00                           ; A823 85 00                    ..
-BattlePresentation_Branch_A825:
-        jmp     BattlePresentation_Branch_A7B7  ; A825 4C B7 A7                 L..
+BattleAi_Branch_A825:
+        jmp     BattleAi_Branch_A7B7            ; A825 4C B7 A7                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A828:
+BattleAi_Branch_A828:
         lda     $00                           ; A828 A5 00                    ..
-        bpl     BattlePresentation_Branch_A825  ; A82A 10 F9                    ..
+        bpl     BattleAi_Branch_A825            ; A82A 10 F9                    ..
         lda     #$00                            ; A82C A9 00                    ..
         sta     $02                           ; A82E 85 02                    ..
         ldx     #$07                            ; A830 A2 07                    ..
-BattlePresentation_Branch_A832:
+BattleAi_Branch_A832:
         txa                                     ; A832 8A                       .
         pha                                     ; A833 48                       H
         jsr     LoadBattleCharacterRecordPattern; A834 20 AA A8                  ..
-        bcc     BattlePresentation_Branch_A847  ; A837 90 0E                    ..
+        bcc     BattleAi_Branch_A847            ; A837 90 0E                    ..
         ldy     #$0D                            ; A839 A0 0D                    ..
         lda     ($86),y                       ; A83B B1 86                    ..
         and     #$03                            ; A83D 29 03                    ).
@@ -5737,11 +5737,11 @@ BattlePresentation_Branch_A832:
         lda     $FF5E,x                         ; A840 BD 5E FF                 .^.
         ora     $02                           ; A843 05 02                    ..
         sta     $02                           ; A845 85 02                    ..
-BattlePresentation_Branch_A847:
+BattleAi_Branch_A847:
         pla                                     ; A847 68                       h
         tax                                     ; A848 AA                       .
         dex                                     ; A849 CA                       .
-        bpl     BattlePresentation_Branch_A832  ; A84A 10 E6                    ..
+        bpl     BattleAi_Branch_A832            ; A84A 10 E6                    ..
         lda     $02                           ; A84C A5 02                    ..
         brk                                     ; A84E 00                       .
         db   $2A,$0F                         ; A84F 2A 0F                    *.
@@ -5750,11 +5750,11 @@ BattlePresentation_Branch_A847:
         adc     #$08                            ; A852 69 08                    i.
         ora     $00                           ; A854 05 00                    ..
         sta     $00                           ; A856 85 00                    ..
-        jmp     BattlePresentation_Branch_A7B7  ; A858 4C B7 A7                 L..
+        jmp     BattleAi_Branch_A7B7            ; A858 4C B7 A7                 L..
 ; ----------------------------------------------------------------------------
 TestBattleCharacterRecordPattern:
         lda     $04                             ; A85B A5 04                    ..
-        bpl     BattlePresentation_Branch_A898  ; A85D 10 39                    .9
+        bpl     BattleAi_Branch_A898            ; A85D 10 39                    .9
         lda     $01                             ; A85F A5 01                    ..
         sta     $06                             ; A861 85 06                    ..
         lda     $00                           ; A863 A5 00                    ..
@@ -5764,7 +5764,7 @@ TestBattleCharacterRecordPattern:
         lsr     a                               ; A868 4A                       J
         and     #$08                            ; A869 29 08                    ).
         tax                                     ; A86B AA                       .
-BattlePresentation_Branch_A86C:
+BattleAi_Branch_A86C:
         lda     $A89A,x                         ; A86C BD 9A A8                 ...
         pha                                     ; A86F 48                       H
         and     #$07                            ; A870 29 07                    ).
@@ -5773,10 +5773,10 @@ BattlePresentation_Branch_A86C:
         sta     $07                             ; A876 85 07                    ..
         sta     $08                             ; A878 85 08                    ..
         asl     $06                             ; A87A 06 06                    ..
-        bcs     BattlePresentation_Branch_A882  ; A87C B0 04                    ..
+        bcs     BattleAi_Branch_A882            ; A87C B0 04                    ..
         lda     #$00                            ; A87E A9 00                    ..
         sta     $07                             ; A880 85 07                    ..
-BattlePresentation_Branch_A882:
+BattleAi_Branch_A882:
         pla                                     ; A882 68                       h
         lsr     a                               ; A883 4A                       J
         lsr     a                               ; A884 4A                       J
@@ -5785,15 +5785,15 @@ BattlePresentation_Branch_A882:
         lda     $03,y                           ; A887 B9 03 00                 ...
         eor     $08                             ; A88A 45 08                    E.
         and     $07                             ; A88C 25 07                    %.
-        bne     BattlePresentation_Branch_A898  ; A88E D0 08                    ..
+        bne     BattleAi_Branch_A898            ; A88E D0 08                    ..
         inx                                     ; A890 E8                       .
         txa                                     ; A891 8A                       .
         and     #$07                            ; A892 29 07                    ).
-        bne     BattlePresentation_Branch_A86C  ; A894 D0 D6                    ..
+        bne     BattleAi_Branch_A86C            ; A894 D0 D6                    ..
         sec                                     ; A896 38                       8
         rts                                     ; A897 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A898:
+BattleAi_Branch_A898:
         clc                                     ; A898 18                       .
         rts                                     ; A899 60                       `
 ; ----------------------------------------------------------------------------
@@ -5801,7 +5801,7 @@ BattlePresentation_Branch_A898:
         db   $0E,$11,$02,$07,$06,$0D,$0F,$0F ; A8A2 0E 11 02 07 06 0D 0F 0F  ........
 ; ----------------------------------------------------------------------------
 LoadBattleCharacterRecordPattern:
-        jsr     GetBattleCharacterRecordPointer ; A8AA 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; A8AA 20 9C 89                  ..
         ldy     #$05                            ; A8AD A0 05                    ..
         lda     ($86),y                       ; A8AF B1 86                    ..
         sta     $03                             ; A8B1 85 03                    ..
@@ -5818,76 +5818,76 @@ TestBattleModeBelowFour:
         cmp     #$04                            ; A8C3 C9 04                    ..
         rts                                     ; A8C5 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A8C6:
-        jsr     ClearBattlePresentationCounters ; A8C6 20 D5 A8                  ..
-        jsr     BuildBattlePresentationBitfieldPair; A8C9 20 E1 A8               ..
-        jsr     BuildBattlePresentationStatusBits; A8CC 20 06 A9                 ..
-        jsr     RotateBattlePresentationStateBits; A8CF 20 2E A9                 ..
+BattleAi_Branch_A8C6:
+        jsr     ClearBattleAiCounters           ; A8C6 20 D5 A8                  ..
+        jsr     BuildBattleAiBitfieldPair       ; A8C9 20 E1 A8                  ..
+        jsr     BuildBattleAiStatusBits         ; A8CC 20 06 A9                  ..
+        jsr     RotateBattleAiStateBits         ; A8CF 20 2E A9                  ..
         jmp     CommitResolvedBattleActionState ; A8D2 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-ClearBattlePresentationCounters:
+ClearBattleAiCounters:
         lda     #$00                            ; A8D5 A9 00                    ..
         sta     $75F3                           ; A8D7 8D F3 75                 ..u
         sta     $75F5                           ; A8DA 8D F5 75                 ..u
         sta     $75F4                           ; A8DD 8D F4 75                 ..u
         rts                                     ; A8E0 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattlePresentationBitfieldPair:
+BuildBattleAiBitfieldPair:
         ldx     #$0B                            ; A8E1 A2 0B                    ..
-BattlePresentation_Branch_A8E3:
+BattleAi_Branch_A8E3:
         txa                                     ; A8E3 8A                       .
         pha                                     ; A8E4 48                       H
-        jsr     CheckBattlePresentationStateThreshold; A8E5 20 8D A5             ..
-        bcc     BattlePresentation_Branch_A8F0  ; A8E8 90 06                    ..
+        jsr     CheckBattleAiStateThreshold     ; A8E5 20 8D A5                  ..
+        bcc     BattleAi_Branch_A8F0            ; A8E8 90 06                    ..
         cpy     #$32                            ; A8EA C0 32                    .2
         clc                                     ; A8EC 18                       .
-        beq     BattlePresentation_Branch_A8F0  ; A8ED F0 01                    ..
+        beq     BattleAi_Branch_A8F0            ; A8ED F0 01                    ..
         sec                                     ; A8EF 38                       8
-BattlePresentation_Branch_A8F0:
+BattleAi_Branch_A8F0:
         rol     $75F3                           ; A8F0 2E F3 75                 ..u
         rol     $75F4                           ; A8F3 2E F4 75                 ..u
         pla                                     ; A8F6 68                       h
         tax                                     ; A8F7 AA                       .
         dex                                     ; A8F8 CA                       .
-        bpl     BattlePresentation_Branch_A8E3  ; A8F9 10 E8                    ..
+        bpl     BattleAi_Branch_A8E3            ; A8F9 10 E8                    ..
         lda     #$30                            ; A8FB A9 30                    .0
         ora     $75F4                           ; A8FD 0D F4 75                 ..u
         and     #$3F                            ; A900 29 3F                    )?
         sta     $75F4                           ; A902 8D F4 75                 ..u
         rts                                     ; A905 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattlePresentationStatusBits:
+BuildBattleAiStatusBits:
         lda     $75E8                           ; A906 AD E8 75                 ..u
         jsr     ResolveBattleSlotRecordPointer  ; A909 20 B6 89                  ..
         ldy     #$13                            ; A90C A0 13                    ..
-BattlePresentation_Branch_A90E:
+BattleAi_Branch_A90E:
         lda     ($79),y                         ; A90E B1 79                    .y
         and     #$7F                            ; A910 29 7F                    ).
         brk                                     ; A912 00                       .
         db   $15,$0F                         ; A913 15 0F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_A91C  ; A915 90 05                    ..
+        bcc     BattleAi_Branch_A91C            ; A915 90 05                    ..
         cmp     #$7F                            ; A917 C9 7F                    ..
-        jmp     BattlePresentation_Branch_A91D  ; A919 4C 1D A9                 L..
+        jmp     BattleAi_Branch_A91D            ; A919 4C 1D A9                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A91C:
+BattleAi_Branch_A91C:
         sec                                     ; A91C 38                       8
-BattlePresentation_Branch_A91D:
+BattleAi_Branch_A91D:
         ror     $75F5                           ; A91D 6E F5 75                 n.u
         iny                                     ; A920 C8                       .
         cpy     #$1B                            ; A921 C0 1B                    ..
-        bcc     BattlePresentation_Branch_A90E  ; A923 90 E9                    ..
+        bcc     BattleAi_Branch_A90E            ; A923 90 E9                    ..
         lda     $75F5                           ; A925 AD F5 75                 ..u
         eor     #$FF                            ; A928 49 FF                    I.
         sta     $75F5                           ; A92A 8D F5 75                 ..u
         rts                                     ; A92D 60                       `
 ; ----------------------------------------------------------------------------
-RotateBattlePresentationStateBits:
+RotateBattleAiStateBits:
         lda     $75F0                           ; A92E AD F0 75                 ..u
         and     #$7F                            ; A931 29 7F                    ).
         sta     $75F0                           ; A933 8D F0 75                 ..u
         ldx     #$02                            ; A936 A2 02                    ..
-BattlePresentation_Branch_A938:
+BattleAi_Branch_A938:
         lda     $75F3,x                         ; A938 BD F3 75                 ..u
         brk                                     ; A93B 00                       .
         db   $2B,$0F                         ; A93C 2B 0F                    +.
@@ -5895,7 +5895,7 @@ BattlePresentation_Branch_A938:
         rol     $75DA                           ; A93E 2E DA 75                 ..u
         sta     $75F3,x                         ; A941 9D F3 75                 ..u
         dex                                     ; A944 CA                       .
-        bpl     BattlePresentation_Branch_A938  ; A945 10 F1                    ..
+        bpl     BattleAi_Branch_A938            ; A945 10 F1                    ..
         lda     $75DA                           ; A947 AD DA 75                 ..u
         and     #$07                            ; A94A 29 07                    ).
         brk                                     ; A94C 00                       .
@@ -5904,14 +5904,14 @@ BattlePresentation_Branch_A938:
         tax                                     ; A94F AA                       .
         lda     $75F3,x                         ; A950 BD F3 75                 ..u
         cpx     #$02                            ; A953 E0 02                    ..
-        bcs     BattlePresentation_Branch_A979  ; A955 B0 22                    ."
+        bcs     BattleAi_Branch_A979            ; A955 B0 22                    ."
         cpx     #$01                            ; A957 E0 01                    ..
-        bne     BattlePresentation_Branch_A962  ; A959 D0 07                    ..
+        bne     BattleAi_Branch_A962            ; A959 D0 07                    ..
         clc                                     ; A95B 18                       .
         adc     #$08                            ; A95C 69 08                    i.
         cmp     #$0C                            ; A95E C9 0C                    ..
-        bcs     BattlePresentation_Branch_A99A  ; A960 B0 38                    .8
-BattlePresentation_Branch_A962:
+        bcs     BattleAi_Branch_A99A            ; A960 B0 38                    .8
+BattleAi_Branch_A962:
         sta     $00                           ; A962 85 00                    ..
         ldx     $75E8                           ; A964 AE E8 75                 ..u
         dex                                     ; A967 CA                       .
@@ -5924,9 +5924,9 @@ BattlePresentation_Branch_A962:
         adc     $00                           ; A970 65 00                    e.
         tax                                     ; A972 AA                       .
         lda     $A696,x                         ; A973 BD 96 A6                 ...
-        jmp     BattlePresentation_Branch_A99E  ; A976 4C 9E A9                 L..
+        jmp     BattleAi_Branch_A99E            ; A976 4C 9E A9                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A979:
+BattleAi_Branch_A979:
         pha                                     ; A979 48                       H
         lda     $75F0                           ; A97A AD F0 75                 ..u
         ora     #$80                            ; A97D 09 80                    ..
@@ -5943,42 +5943,42 @@ BattlePresentation_Branch_A979:
         brk                                     ; A994 00                       .
         db   $17,$1F                         ; A995 17 1F                    ..
 ; ----------------------------------------------------------------------------
-        jmp     BattlePresentation_Branch_A99E  ; A997 4C 9E A9                 L..
+        jmp     BattleAi_Branch_A99E            ; A997 4C 9E A9                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_A99A:
+BattleAi_Branch_A99A:
         tax                                     ; A99A AA                       .
         lda     $A9B4,x                         ; A99B BD B4 A9                 ...
-BattlePresentation_Branch_A99E:
+BattleAi_Branch_A99E:
         sta     $75DB                           ; A99E 8D DB 75                 ..u
         tax                                     ; A9A1 AA                       .
         ldy     #$00                            ; A9A2 A0 00                    ..
         cpx     #$30                            ; A9A4 E0 30                    .0
-        beq     BattlePresentation_Branch_A9B2  ; A9A6 F0 0A                    ..
+        beq     BattleAi_Branch_A9B2            ; A9A6 F0 0A                    ..
         cpx     #$31                            ; A9A8 E0 31                    .1
-        beq     BattlePresentation_Branch_A9B2  ; A9AA F0 06                    ..
+        beq     BattleAi_Branch_A9B2            ; A9AA F0 06                    ..
         cpx     #$97                            ; A9AC E0 97                    ..
-        beq     BattlePresentation_Branch_A9B2  ; A9AE F0 02                    ..
+        beq     BattleAi_Branch_A9B2            ; A9AE F0 02                    ..
         ldy     #$80                            ; A9B0 A0 80                    ..
-BattlePresentation_Branch_A9B2:
+BattleAi_Branch_A9B2:
 LA9B4 = $+ 2
-        jsr     EvaluateBattlePresentationState ; A9B2 20 97 A7                  ..
+        jsr     EvaluateBattleAiState           ; A9B2 20 97 A7                  ..
         ldx     $75F0                           ; A9B5 AE F0 75                 ..u
-        bpl     BattlePresentation_Branch_A9BC  ; A9B8 10 02                    ..
+        bpl     BattleAi_Branch_A9BC            ; A9B8 10 02                    ..
         ora     #$20                            ; A9BA 09 20                    .
-BattlePresentation_Branch_A9BC:
+BattleAi_Branch_A9BC:
         sta     $75DA                           ; A9BC 8D DA 75                 ..u
         rts                                     ; A9BF 60                       `
 ; ----------------------------------------------------------------------------
         db   $43,$41                         ; A9C0 43 41                    CA
 ; ----------------------------------------------------------------------------
-EvaluateBattlePresentationBounds:
+EvaluateBattleAiBounds:
         lda     $00                           ; A9C2 A5 00                    ..
         ora     $01                             ; A9C4 05 01                    ..
-        beq     BattlePresentation_Branch_A9F9  ; A9C6 F0 31                    .1
-        jsr     ComputeBattlePresentationCoordinate; A9C8 20 67 AA               g.
+        beq     BattleAi_Branch_A9F9            ; A9C6 F0 31                    .1
+        jsr     ComputeBattleAiCoordinate       ; A9C8 20 67 AA                  g.
         lda     $75DB                           ; A9CB AD DB 75                 ..u
         cmp     #$FF                            ; A9CE C9 FF                    ..
-        beq     BattlePresentation_Branch_AA12  ; A9D0 F0 40                    .@
+        beq     BattleAi_Branch_AA12            ; A9D0 F0 40                    .@
         sec                                     ; A9D2 38                       8
         lda     $75D4                           ; A9D3 AD D4 75                 ..u
         sbc     $0A                             ; A9D6 E5 0A                    ..
@@ -5990,40 +5990,40 @@ EvaluateBattlePresentationBounds:
         lda     $75D6                           ; A9E3 AD D6 75                 ..u
         sbc     $0C                             ; A9E6 E5 0C                    ..
         ora     $0F                             ; A9E8 05 0F                    ..
-        beq     BattlePresentation_Branch_A9F0  ; A9EA F0 04                    ..
-        bcs     BattlePresentation_Branch_AA52  ; A9EC B0 64                    .d
-        bcc     BattlePresentation_Branch_AA12  ; A9EE 90 22                    ."
-BattlePresentation_Branch_A9F0:
+        beq     BattleAi_Branch_A9F0            ; A9EA F0 04                    ..
+        bcs     BattleAi_Branch_AA52            ; A9EC B0 64                    .d
+        bcc     BattleAi_Branch_AA12            ; A9EE 90 22                    ."
+BattleAi_Branch_A9F0:
         lda     $8B                             ; A9F0 A5 8B                    ..
-        bne     BattlePresentation_Branch_A9FB  ; A9F2 D0 07                    ..
+        bne     BattleAi_Branch_A9FB            ; A9F2 D0 07                    ..
         lda     $75DB                           ; A9F4 AD DB 75                 ..u
         cmp     #$43                            ; A9F7 C9 43                    .C
-BattlePresentation_Branch_A9F9:
-        beq     BattlePresentation_Branch_AA52  ; A9F9 F0 57                    .W
-BattlePresentation_Branch_A9FB:
+BattleAi_Branch_A9F9:
+        beq     BattleAi_Branch_AA52            ; A9F9 F0 57                    .W
+BattleAi_Branch_A9FB:
         lda     $6E80                           ; A9FB AD 80 6E                 ..n
         cmp     #$06                            ; A9FE C9 06                    ..
-        bne     BattlePresentation_Branch_AA0B  ; AA00 D0 09                    ..
+        bne     BattleAi_Branch_AA0B            ; AA00 D0 09                    ..
         lda     $8B                             ; AA02 A5 8B                    ..
         cmp     $75E5                           ; AA04 CD E5 75                 ..u
-        bcc     BattlePresentation_Branch_AA52  ; AA07 90 49                    .I
-        bcs     BattlePresentation_Branch_AA12  ; AA09 B0 07                    ..
-BattlePresentation_Branch_AA0B:
+        bcc     BattleAi_Branch_AA52            ; AA07 90 49                    .I
+        bcs     BattleAi_Branch_AA12            ; AA09 B0 07                    ..
+BattleAi_Branch_AA0B:
         lda     $75E5                           ; AA0B AD E5 75                 ..u
         cmp     $8B                             ; AA0E C5 8B                    ..
-        bcc     BattlePresentation_Branch_AA52  ; AA10 90 40                    .@
-BattlePresentation_Branch_AA12:
+        bcc     BattleAi_Branch_AA52            ; AA10 90 40                    .@
+BattleAi_Branch_AA12:
         lda     $6E80                           ; AA12 AD 80 6E                 ..n
         cmp     #$02                            ; AA15 C9 02                    ..
-        bcs     BattlePresentation_Branch_AA23  ; AA17 B0 0A                    ..
+        bcs     BattleAi_Branch_AA23            ; AA17 B0 0A                    ..
         lda     $8B                             ; AA19 A5 8B                    ..
-        beq     BattlePresentation_Branch_AA23  ; AA1B F0 06                    ..
+        beq     BattleAi_Branch_AA23            ; AA1B F0 06                    ..
         lda     $8C                             ; AA1D A5 8C                    ..
         cmp     #$07                            ; AA1F C9 07                    ..
-        bcc     BattlePresentation_Branch_AA52  ; AA21 90 2F                    ./
-BattlePresentation_Branch_AA23:
+        bcc     BattleAi_Branch_AA52            ; AA21 90 2F                    ./
+BattleAi_Branch_AA23:
         jsr     CheckBattleSlotDistance         ; AA23 20 59 AB                  Y.
-        bcc     BattlePresentation_Branch_AA52  ; AA26 90 2A                    .*
+        bcc     BattleAi_Branch_AA52            ; AA26 90 2A                    .*
         lda     $0A                             ; AA28 A5 0A                    ..
         sta     $75D4                           ; AA2A 8D D4 75                 ..u
         lda     $0B                             ; AA2D A5 0B                    ..
@@ -6038,26 +6038,26 @@ BattlePresentation_Branch_AA23:
         sta     $75EC                           ; AA44 8D EC 75                 ..u
         lda     $75D3                           ; AA47 AD D3 75                 ..u
         sta     $75DB                           ; AA4A 8D DB 75                 ..u
-        jsr     RefreshBattlePresentationState  ; AA4D 20 54 AA                  T.
+        jsr     RefreshBattleAiState            ; AA4D 20 54 AA                  T.
         sec                                     ; AA50 38                       8
         rts                                     ; AA51 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_AA52:
+BattleAi_Branch_AA52:
         clc                                     ; AA52 18                       .
         rts                                     ; AA53 60                       `
 ; ----------------------------------------------------------------------------
-RefreshBattlePresentationState:
+RefreshBattleAiState:
         lda     $75D2                           ; AA54 AD D2 75                 ..u
         sta     $75DA                           ; AA57 8D DA 75                 ..u
         and     #$70                            ; AA5A 29 70                    )p
         cmp     #$20                            ; AA5C C9 20                    .
-        bne     BattlePresentation_Branch_AA66  ; AA5E D0 06                    ..
+        bne     BattleAi_Branch_AA66            ; AA5E D0 06                    ..
         lda     $7355                           ; AA60 AD 55 73                 .Us
         sta     $75F2                           ; AA63 8D F2 75                 ..u
-BattlePresentation_Branch_AA66:
+BattleAi_Branch_AA66:
         rts                                     ; AA66 60                       `
 ; ----------------------------------------------------------------------------
-ComputeBattlePresentationCoordinate:
+ComputeBattleAiCoordinate:
         lda     #$00                            ; AA67 A9 00                    ..
         sta     $0A                             ; AA69 85 0A                    ..
         sta     $0E                             ; AA6B 85 0E                    ..
@@ -6080,12 +6080,12 @@ ComputeBattlePresentationCoordinate:
         lda     $0F                             ; AA8F A5 0F                    ..
         adc     #$00                            ; AA91 69 00                    i.
         sta     $0F                             ; AA93 85 0F                    ..
-        bcc     BattlePresentation_Branch_AA9F  ; AA95 90 08                    ..
+        bcc     BattleAi_Branch_AA9F            ; AA95 90 08                    ..
         lda     #$FF                            ; AA97 A9 FF                    ..
         sta     $0D                             ; AA99 85 0D                    ..
         sta     $0E                             ; AA9B 85 0E                    ..
         sta     $0F                             ; AA9D 85 0F                    ..
-BattlePresentation_Branch_AA9F:
+BattleAi_Branch_AA9F:
         ldx     #$0A                            ; AA9F A2 0A                    ..
         ldy     #$0D                            ; AAA1 A0 0D                    ..
         jsr     DivideIndexedLongByWordAtOffset2; AAA3 20 54 84                  T.
@@ -6144,8 +6144,8 @@ BattlePresentation_Branch_AA9F:
         sbc     #$00                            ; AB10 E9 00                    ..
         sta     $0B                             ; AB12 85 0B                    ..
         ora     $0A                             ; AB14 05 0A                    ..
-        beq     BattlePresentation_Branch_AB4C  ; AB16 F0 34                    .4
-        bcc     BattlePresentation_Branch_AB4C  ; AB18 90 32                    .2
+        beq     BattleAi_Branch_AB4C            ; AB16 F0 34                    .4
+        bcc     BattleAi_Branch_AB4C            ; AB18 90 32                    .2
         lda     #$08                            ; AB1A A9 08                    ..
         ldx     #$0A                            ; AB1C A2 0A                    ..
         jsr     AddByteToPointer                ; AB1E 20 13 C8                  ..
@@ -6155,12 +6155,12 @@ BattlePresentation_Branch_AA9F:
         ldy     #$0A                            ; AB27 A0 0A                    ..
         jsr     DivideIndexedWordByWord         ; AB29 20 AA 83                  ..
         lda     $09                             ; AB2C A5 09                    ..
-        beq     BattlePresentation_Branch_AB38  ; AB2E F0 08                    ..
+        beq     BattleAi_Branch_AB38            ; AB2E F0 08                    ..
         lda     #$00                            ; AB30 A9 00                    ..
         sta     $09                             ; AB32 85 09                    ..
         lda     #$FF                            ; AB34 A9 FF                    ..
         sta     $08                             ; AB36 85 08                    ..
-BattlePresentation_Branch_AB38:
+BattleAi_Branch_AB38:
         lda     $08                             ; AB38 A5 08                    ..
         ldx     #$0D                            ; AB3A A2 0D                    ..
         jsr     MultiplyIndexedLongByA          ; AB3C 20 66 83                  f.
@@ -6172,7 +6172,7 @@ BattlePresentation_Branch_AB38:
         sta     $0C                             ; AB49 85 0C                    ..
         rts                                     ; AB4B 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_AB4C:
+BattleAi_Branch_AB4C:
         lda     $0D                             ; AB4C A5 0D                    ..
         sta     $0A                             ; AB4E 85 0A                    ..
         lda     $0E                             ; AB50 A5 0E                    ..
@@ -6201,44 +6201,44 @@ CheckBattleSlotDistance:
         jsr     DivideIndexedLongByWord         ; AB7C 20 F4 83                  ..
         lda     $0E                             ; AB7F A5 0E                    ..
         ora     $0F                             ; AB81 05 0F                    ..
-        beq     BattlePresentation_Branch_AB89  ; AB83 F0 04                    ..
+        beq     BattleAi_Branch_AB89            ; AB83 F0 04                    ..
         lda     #$FF                            ; AB85 A9 FF                    ..
         sta     $0D                             ; AB87 85 0D                    ..
-BattlePresentation_Branch_AB89:
+BattleAi_Branch_AB89:
         ldx     $6E80                           ; AB89 AE 80 6E                 ..n
         lda     $BB92,x                         ; AB8C BD 92 BB                 ...
         cmp     $0D                             ; AB8F C5 0D                    ..
         rts                                     ; AB91 60                       `
 ; ----------------------------------------------------------------------------
-UpdateBattleEffectStateIfImproved:
+UpdateActionScoreStateIfImproved:
         lda     $00                           ; AB92 A5 00                    ..
         ora     $01                             ; AB94 05 01                    ..
-        beq     BattlePresentation_Branch_ABF6  ; AB96 F0 5E                    .^
+        beq     BattleAi_Branch_ABF6            ; AB96 F0 5E                    .^
         lda     $75DB                           ; AB98 AD DB 75                 ..u
         cmp     #$FF                            ; AB9B C9 FF                    ..
-        beq     CommitBattleEffectState         ; AB9D F0 2B                    .+
+        beq     CommitActionScoreState          ; AB9D F0 2B                    .+
         jsr     SubtractBattleRecordBaseOffset  ; AB9F 20 09 AC                  ..
-        bcc     BattlePresentation_Branch_ABF6  ; ABA2 90 52                    .R
+        bcc     BattleAi_Branch_ABF6            ; ABA2 90 52                    .R
         jsr     SubtractBattleSlotRangeOffset   ; ABA4 20 F7 AB                  ..
-        bcc     BattlePresentation_Branch_ABF6  ; ABA7 90 4D                    .M
-        jsr     LoadBattlePresentationWord      ; ABA9 20 19 AC                  ..
-        jsr     LoadZeroExtendedBase75D4        ; ABAC 20 3C AC                  <.
+        bcc     BattleAi_Branch_ABF6            ; ABA7 90 4D                    .M
+        jsr     LoadBattleAiWord                ; ABA9 20 19 AC                  ..
+        jsr     LoadBattleAiBaseScore           ; ABAC 20 3C AC                  <.
         sec                                     ; ABAF 38                       8
         lda     $0C                             ; ABB0 A5 0C                    ..
         sbc     $0A                             ; ABB2 E5 0A                    ..
         sta     $0E                             ; ABB4 85 0E                    ..
         lda     $0D                             ; ABB6 A5 0D                    ..
         sbc     $0B                             ; ABB8 E5 0B                    ..
-        bcc     CommitBattleEffectState         ; ABBA 90 0E                    ..
+        bcc     CommitActionScoreState          ; ABBA 90 0E                    ..
         ora     $0E                             ; ABBC 05 0E                    ..
-        beq     BattlePresentation_Branch_ABC2  ; ABBE F0 02                    ..
-        bcs     BattlePresentation_Branch_ABF6  ; ABC0 B0 34                    .4
-BattlePresentation_Branch_ABC2:
+        beq     BattleAi_Branch_ABC2            ; ABBE F0 02                    ..
+        bcs     BattleAi_Branch_ABF6            ; ABC0 B0 34                    .4
+BattleAi_Branch_ABC2:
         lda     $75E5                           ; ABC2 AD E5 75                 ..u
         sec                                     ; ABC5 38                       8
         sbc     $8B                             ; ABC6 E5 8B                    ..
-        bcc     BattlePresentation_Branch_ABF6  ; ABC8 90 2C                    .,
-CommitBattleEffectState:
+        bcc     BattleAi_Branch_ABF6            ; ABC8 90 2C                    .,
+CommitActionScoreState:
         lda     $00                           ; ABCA A5 00                    ..
         sta     $75D4                           ; ABCC 8D D4 75                 ..u
         lda     $01                             ; ABCF A5 01                    ..
@@ -6255,20 +6255,20 @@ CommitBattleEffectState:
         sta     $75E7                           ; ABEA 8D E7 75                 ..u
         lda     $75D3                           ; ABED AD D3 75                 ..u
         sta     $75DB                           ; ABF0 8D DB 75                 ..u
-        jsr     RefreshBattlePresentationState  ; ABF3 20 54 AA                  T.
-BattlePresentation_Branch_ABF6:
+        jsr     RefreshBattleAiState            ; ABF3 20 54 AA                  T.
+BattleAi_Branch_ABF6:
         rts                                     ; ABF6 60                       `
 ; ----------------------------------------------------------------------------
 SubtractBattleSlotRangeOffset:
         lda     $7C                             ; ABF7 A5 7C                    .|
         cmp     #$01                            ; ABF9 C9 01                    ..
-        beq     BattlePresentation_Branch_AC08  ; ABFB F0 0B                    ..
+        beq     BattleAi_Branch_AC08            ; ABFB F0 0B                    ..
         sec                                     ; ABFD 38                       8
         lda     $8C                             ; ABFE A5 8C                    ..
         sbc     $75E6                           ; AC00 ED E6 75                 ..u
         lda     $8D                             ; AC03 A5 8D                    ..
         sbc     $75E7                           ; AC05 ED E7 75                 ..u
-BattlePresentation_Branch_AC08:
+BattleAi_Branch_AC08:
         rts                                     ; AC08 60                       `
 ; ----------------------------------------------------------------------------
 SubtractBattleRecordBaseOffset:
@@ -6282,14 +6282,14 @@ SubtractBattleRecordBaseOffset:
         sbc     $75C2,x                         ; AC15 FD C2 75                 ..u
         rts                                     ; AC18 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattlePresentationWord:
+LoadBattleAiWord:
         lda     $00                           ; AC19 A5 00                    ..
         sta     $0A                             ; AC1B 85 0A                    ..
         lda     #$00                            ; AC1D A9 00                    ..
         sta     $0B                             ; AC1F 85 0B                    ..
         rts                                     ; AC21 60                       `
 ; ----------------------------------------------------------------------------
-ScaleBattlePresentationWord:
+ScaleBattleAiWord:
         lda     $02                           ; AC22 A5 02                    ..
         sta     $0A                             ; AC24 85 0A                    ..
         lda     $03                             ; AC26 A5 03                    ..
@@ -6303,14 +6303,14 @@ ScaleBattlePresentationWord:
         sta     $0B                             ; AC37 85 0B                    ..
         jmp     ShiftIndexedWordRightBy4        ; AC39 4C 87 81                 L..
 ; ----------------------------------------------------------------------------
-LoadZeroExtendedBase75D4:
+LoadBattleAiBaseScore:
         lda     $75D4                           ; AC3C AD D4 75                 ..u
         sta     $0C                             ; AC3F 85 0C                    ..
         lda     #$00                            ; AC41 A9 00                    ..
         sta     $0D                             ; AC43 85 0D                    ..
         rts                                     ; AC45 60                       `
 ; ----------------------------------------------------------------------------
-LoadScaledBase75D7:
+LoadScaledBattleAiBaseScore:
         lda     $75D7                           ; AC46 AD D7 75                 ..u
         sta     $0C                             ; AC49 85 0C                    ..
         lda     $75D8                           ; AC4B AD D8 75                 ..u
@@ -6324,25 +6324,25 @@ LoadScaledBase75D7:
         sta     $0D                             ; AC5E 85 0D                    ..
         jmp     ShiftIndexedWordRightBy4        ; AC60 4C 87 81                 L..
 ; ----------------------------------------------------------------------------
-UpdateBattlePresentationRangeLimit:
+UpdateBattleAiRangeLimit:
         lda     $75DB                           ; AC63 AD DB 75                 ..u
         cmp     #$29                            ; AC66 C9 29                    .)
-        bcc     BattlePresentation_Branch_AC6E  ; AC68 90 04                    ..
+        bcc     BattleAi_Branch_AC6E            ; AC68 90 04                    ..
         cmp     #$2D                            ; AC6A C9 2D                    .-
-        bcc     BattlePresentation_Branch_ACA2  ; AC6C 90 34                    .4
-BattlePresentation_Branch_AC6E:
+        bcc     BattleAi_Branch_ACA2            ; AC6C 90 34                    .4
+BattleAi_Branch_AC6E:
         lda     $75DB                           ; AC6E AD DB 75                 ..u
         cmp     #$2E                            ; AC71 C9 2E                    ..
-        bcc     BattlePresentation_Branch_AC79  ; AC73 90 04                    ..
+        bcc     BattleAi_Branch_AC79            ; AC73 90 04                    ..
         cmp     #$33                            ; AC75 C9 33                    .3
-        bcc     BattlePresentation_Branch_AC7E  ; AC77 90 05                    ..
-BattlePresentation_Branch_AC79:
+        bcc     BattleAi_Branch_AC7E            ; AC77 90 05                    ..
+BattleAi_Branch_AC79:
         lda     #$00                            ; AC79 A9 00                    ..
         sta     $75E6                           ; AC7B 8D E6 75                 ..u
-BattlePresentation_Branch_AC7E:
+BattleAi_Branch_AC7E:
         lda     $8C                             ; AC7E A5 8C                    ..
         cmp     $75E6                           ; AC80 CD E6 75                 ..u
-        bcc     BattlePresentation_Branch_ACA2  ; AC83 90 1D                    ..
+        bcc     BattleAi_Branch_ACA2            ; AC83 90 1D                    ..
         lda     $00                           ; AC85 A5 00                    ..
         sta     $75D4                           ; AC87 8D D4 75                 ..u
         lda     $01                             ; AC8A A5 01                    ..
@@ -6353,20 +6353,20 @@ BattlePresentation_Branch_AC7E:
         sta     $75E6                           ; AC96 8D E6 75                 ..u
         lda     $75D3                           ; AC99 AD D3 75                 ..u
         sta     $75DB                           ; AC9C 8D DB 75                 ..u
-        jsr     RefreshBattlePresentationState  ; AC9F 20 54 AA                  T.
-BattlePresentation_Branch_ACA2:
+        jsr     RefreshBattleAiState            ; AC9F 20 54 AA                  T.
+BattleAi_Branch_ACA2:
         rts                                     ; ACA2 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleEffectTotalsAndValidate:
+ClearActionScoreTotalsAndValidate:
         lda     #$00                            ; ACA3 A9 00                    ..
         sta     $75E1                           ; ACA5 8D E1 75                 ..u
         sta     $75E2                           ; ACA8 8D E2 75                 ..u
-        jsr     EvaluateBattlePresentationBounds; ACAB 20 C2 A9                  ..
-        bcs     BattlePresentation_Branch_ACB0  ; ACAE B0 00                    ..
-BattlePresentation_Branch_ACB0:
+        jsr     EvaluateBattleAiBounds          ; ACAB 20 C2 A9                  ..
+        bcs     BattleAi_Branch_ACB0            ; ACAE B0 00                    ..
+BattleAi_Branch_ACB0:
         rts                                     ; ACB0 60                       `
 ; ----------------------------------------------------------------------------
-ComputeBattlePresentationRatio:
+ComputeBattleAiRatio:
         lda     $0E                             ; ACB1 A5 0E                    ..
         sta     $0A                             ; ACB3 85 0A                    ..
         lda     $0F                             ; ACB5 A5 0F                    ..
@@ -6381,9 +6381,9 @@ ComputeBattlePresentationRatio:
         jsr     DivideIndexedWordByWord         ; ACCA 20 AA 83                  ..
         lda     $0A                             ; ACCD A5 0A                    ..
         ldy     $0B                             ; ACCF A4 0B                    ..
-        beq     BattlePresentation_Branch_ACD5  ; ACD1 F0 02                    ..
+        beq     BattleAi_Branch_ACD5            ; ACD1 F0 02                    ..
         lda     #$1F                            ; ACD3 A9 1F                    ..
-BattlePresentation_Branch_ACD5:
+BattleAi_Branch_ACD5:
         sta     $0A                             ; ACD5 85 0A                    ..
         lda     #$00                            ; ACD7 A9 00                    ..
         sta     $0B                             ; ACD9 85 0B                    ..
@@ -6391,7 +6391,7 @@ BattlePresentation_Branch_ACD5:
         jsr     ScalePointerWordByNibbleBody    ; ACDD 20 9A 81                  ..
         lda     $0A                             ; ACE0 A5 0A                    ..
         cmp     #$18                            ; ACE2 C9 18                    ..
-        bcc     BattlePresentation_Branch_AD0D  ; ACE4 90 27                    .'
+        bcc     BattleAi_Branch_AD0D            ; ACE4 90 27                    .'
         ldx     #$0E                            ; ACE6 A2 0E                    ..
         lda     $8C                             ; ACE8 A5 8C                    ..
         jsr     ScalePointerWordByNibbleBody    ; ACEA 20 9A 81                  ..
@@ -6400,35 +6400,35 @@ BattlePresentation_Branch_ACD5:
         sbc     $75D4                           ; ACF0 ED D4 75                 ..u
         lda     $0F                             ; ACF3 A5 0F                    ..
         sbc     $75D5                           ; ACF5 ED D5 75                 ..u
-        bcc     BattlePresentation_Branch_AD0D  ; ACF8 90 13                    ..
+        bcc     BattleAi_Branch_AD0D            ; ACF8 90 13                    ..
         lda     $0E                             ; ACFA A5 0E                    ..
         sta     $75D4                           ; ACFC 8D D4 75                 ..u
         lda     $0F                             ; ACFF A5 0F                    ..
         sta     $75D5                           ; AD01 8D D5 75                 ..u
         lda     $75D3                           ; AD04 AD D3 75                 ..u
         sta     $75DB                           ; AD07 8D DB 75                 ..u
-        jsr     RefreshBattlePresentationState  ; AD0A 20 54 AA                  T.
-BattlePresentation_Branch_AD0D:
+        jsr     RefreshBattleAiState            ; AD0A 20 54 AA                  T.
+BattleAi_Branch_AD0D:
         rts                                     ; AD0D 60                       `
 ; ----------------------------------------------------------------------------
-ClampBattlePresentationTarget:
+ClampBattleAiTarget:
         lda     $00                           ; AD0E A5 00                    ..
         cmp     $75D4                           ; AD10 CD D4 75                 ..u
-        bcc     BattlePresentation_Branch_AD24  ; AD13 90 0F                    ..
+        bcc     BattleAi_Branch_AD24            ; AD13 90 0F                    ..
         sta     $75D4                           ; AD15 8D D4 75                 ..u
         lda     $75D2                           ; AD18 AD D2 75                 ..u
         sta     $75DA                           ; AD1B 8D DA 75                 ..u
         lda     $75D3                           ; AD1E AD D3 75                 ..u
         sta     $75DB                           ; AD21 8D DB 75                 ..u
-BattlePresentation_Branch_AD24:
+BattleAi_Branch_AD24:
         rts                                     ; AD24 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_AD25:
+BattleAi_Branch_AD25:
         rts                                     ; AD25 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattlePresentationWindow:
+ResolveBattleAiWindow:
         jsr     SumPartyCharacterOffsetPairIfVisible; AD26 20 19 87              ..
-        bcc     BattlePresentation_Branch_AD25  ; AD29 90 FA                    ..
+        bcc     BattleAi_Branch_AD25            ; AD29 90 FA                    ..
         jsr     AccumulateBattleSlotRanges      ; AD2B 20 D9 87                  ..
         lda     $75E9                           ; AD2E AD E9 75                 ..u
         ldx     #$0E                            ; AD31 A2 0E                    ..
@@ -6437,56 +6437,56 @@ ResolveBattlePresentationWindow:
         ldy     #$05                            ; AD39 A0 05                    ..
         lda     ($79),y                         ; AD3B B1 79                    .y
         and     #$10                            ; AD3D 29 10                    ).
-        beq     BattlePresentation_Branch_AD46  ; AD3F F0 05                    ..
+        beq     BattleAi_Branch_AD46            ; AD3F F0 05                    ..
         lda     #$06                            ; AD41 A9 06                    ..
         jsr     ScalePointerWordByNibble        ; AD43 20 98 81                  ..
-BattlePresentation_Branch_AD46:
+BattleAi_Branch_AD46:
         lda     BattleModeFlags                 ; AD46 AD E4 72                 ..r
-        bmi     BattlePresentation_Branch_AD8B  ; AD49 30 40                    0@
+        bmi     BattleAi_Branch_AD8B            ; AD49 30 40                    0@
         ldy     #$05                            ; AD4B A0 05                    ..
         lda     ($79),y                         ; AD4D B1 79                    .y
         and     #$08                            ; AD4F 29 08                    ).
-        bne     BattlePresentation_Branch_AD8B  ; AD51 D0 38                    .8
+        bne     BattleAi_Branch_AD8B            ; AD51 D0 38                    .8
         jsr     SelectBattleSlotIndex           ; AD53 20 66 88                  f.
         cmp     #$05                            ; AD56 C9 05                    ..
-        bcs     BattlePresentation_Branch_AD8B  ; AD58 B0 31                    .1
+        bcs     BattleAi_Branch_AD8B            ; AD58 B0 31                    .1
         sta     $0C                             ; AD5A 85 0C                    ..
         ldx     #$0B                            ; AD5C A2 0B                    ..
-BattlePresentation_Branch_AD5E:
+BattleAi_Branch_AD5E:
         txa                                     ; AD5E 8A                       .
         pha                                     ; AD5F 48                       H
         sta     $0D                             ; AD60 85 0D                    ..
-        jsr     CheckBattlePresentationStateMatch; AD62 20 AA A5                 ..
-        bcc     BattlePresentation_Branch_AD86  ; AD65 90 1F                    ..
+        jsr     CheckBattleAiStateMatch         ; AD62 20 AA A5                  ..
+        bcc     BattleAi_Branch_AD86            ; AD65 90 1F                    ..
         cpy     #$12                            ; AD67 C0 12                    ..
-        bcs     BattlePresentation_Branch_AD86  ; AD69 B0 1B                    ..
-        lda     Bank13_BattlePresentationStateLookup,y; AD6B B9 67 B9           .g.
+        bcs     BattleAi_Branch_AD86            ; AD69 B0 1B                    ..
+        lda     Bank13_BattleAiStateLookup,y    ; AD6B B9 67 B9                 .g.
         and     #$1F                            ; AD6E 29 1F                    ).
         pha                                     ; AD70 48                       H
         jsr     CopyBattleRecordPairIfMatch     ; AD71 20 D6 86                  ..
         lda     $01                             ; AD74 A5 01                    ..
-        beq     BattlePresentation_Branch_AD7C  ; AD76 F0 04                    ..
+        beq     BattleAi_Branch_AD7C            ; AD76 F0 04                    ..
         lda     #$FF                            ; AD78 A9 FF                    ..
         sta     $00                           ; AD7A 85 00                    ..
-BattlePresentation_Branch_AD7C:
+BattleAi_Branch_AD7C:
         pla                                     ; AD7C 68                       h
         cmp     $00                           ; AD7D C5 00                    ..
-        beq     BattlePresentation_Branch_AD83  ; AD7F F0 02                    ..
-        bcs     BattlePresentation_Branch_AD86  ; AD81 B0 03                    ..
-BattlePresentation_Branch_AD83:
-        jsr     UpdateBattlePresentationProjection; AD83 20 C0 AD                ..
-BattlePresentation_Branch_AD86:
+        beq     BattleAi_Branch_AD83            ; AD7F F0 02                    ..
+        bcs     BattleAi_Branch_AD86            ; AD81 B0 03                    ..
+BattleAi_Branch_AD83:
+        jsr     UpdateBattleAiProjection        ; AD83 20 C0 AD                  ..
+BattleAi_Branch_AD86:
         pla                                     ; AD86 68                       h
         tax                                     ; AD87 AA                       .
         dex                                     ; AD88 CA                       .
-        bpl     BattlePresentation_Branch_AD5E  ; AD89 10 D3                    ..
-BattlePresentation_Branch_AD8B:
+        bpl     BattleAi_Branch_AD5E            ; AD89 10 D3                    ..
+BattleAi_Branch_AD8B:
         lda     $95                             ; AD8B A5 95                    ..
         and     #$0F                            ; AD8D 29 0F                    ).
-        beq     BattlePresentation_Branch_AD95  ; AD8F F0 04                    ..
+        beq     BattleAi_Branch_AD95            ; AD8F F0 04                    ..
         lda     #$FF                            ; AD91 A9 FF                    ..
         sta     $95                             ; AD93 85 95                    ..
-BattlePresentation_Branch_AD95:
+BattleAi_Branch_AD95:
         lda     $94                             ; AD95 A5 94                    ..
         sta     $8C                             ; AD97 85 8C                    ..
         lda     $95                             ; AD99 A5 95                    ..
@@ -6501,50 +6501,50 @@ TestBattleSlotStateTag:
         lda     ($79),y                         ; ADA7 B1 79                    .y
         and     #$7F                            ; ADA9 29 7F                    ).
         cmp     #$7F                            ; ADAB C9 7F                    ..
-        beq     BattlePresentation_Branch_ADBE  ; ADAD F0 0F                    ..
+        beq     BattleAi_Branch_ADBE            ; ADAD F0 0F                    ..
         ldx     #$09                            ; ADAF A2 09                    ..
-BattlePresentation_Branch_ADB1:
+BattleAi_Branch_ADB1:
         cmp     $ADBF,x                         ; ADB1 DD BF AD                 ...
-        beq     BattlePresentation_Branch_ADBB  ; ADB4 F0 05                    ..
+        beq     BattleAi_Branch_ADBB            ; ADB4 F0 05                    ..
         dex                                     ; ADB6 CA                       .
-        bpl     BattlePresentation_Branch_ADB1  ; ADB7 10 F8                    ..
-        bmi     BattlePresentation_Branch_ADBE  ; ADB9 30 03                    0.
-BattlePresentation_Branch_ADBB:
-        jsr     UpdateBattlePresentationProjection; ADBB 20 C0 AD                ..
-BattlePresentation_Branch_ADBE:
+        bpl     BattleAi_Branch_ADB1            ; ADB7 10 F8                    ..
+        bmi     BattleAi_Branch_ADBE            ; ADB9 30 03                    0.
+BattleAi_Branch_ADBB:
+        jsr     UpdateBattleAiProjection        ; ADBB 20 C0 AD                  ..
+BattleAi_Branch_ADBE:
         rts                                     ; ADBE 60                       `
 ; ----------------------------------------------------------------------------
         db   $00                             ; ADBF 00                       .
 ; ----------------------------------------------------------------------------
-UpdateBattlePresentationProjection:
+UpdateBattleAiProjection:
         lda     $0D                             ; ADC0 A5 0D                    ..
         cmp     #$12                            ; ADC2 C9 12                    ..
-        bcs     BattlePresentation_Branch_ADD2  ; ADC4 B0 0C                    ..
+        bcs     BattleAi_Branch_ADD2            ; ADC4 B0 0C                    ..
         asl     a                               ; ADC6 0A                       .
         lda     $B74D,x                         ; ADC7 BD 4D B7                 .M.
         sta     $8A                             ; ADCA 85 8A                    ..
         lda     #$00                            ; ADCC A9 00                    ..
         sta     $8B                             ; ADCE 85 8B                    ..
-        beq     BattlePresentation_Branch_ADDA  ; ADD0 F0 08                    ..
-BattlePresentation_Branch_ADD2:
+        beq     BattleAi_Branch_ADDA            ; ADD0 F0 08                    ..
+BattleAi_Branch_ADD2:
         lda     #$F4                            ; ADD2 A9 F4                    ..
         sta     $8A                             ; ADD4 85 8A                    ..
         lda     #$01                            ; ADD6 A9 01                    ..
         sta     $8B                             ; ADD8 85 8B                    ..
-BattlePresentation_Branch_ADDA:
+BattleAi_Branch_ADDA:
         lda     $0D                             ; ADDA A5 0D                    ..
-        jsr     BuildBattlePresentationAccumulator; ADDC 20 04 93                ..
+        jsr     BuildBattleAiAccumulator        ; ADDC 20 04 93                  ..
         ldx     $0D                             ; ADDF A6 0D                    ..
-        lda     Bank13_BattlePresentationStateLookup,x; ADE1 BD 67 B9           .g.
+        lda     Bank13_BattleAiStateLookup,x    ; ADE1 BD 67 B9                 .g.
         and     #$60                            ; ADE4 29 60                    )`
         cmp     #$40                            ; ADE6 C9 40                    .@
-        bcs     BattlePresentation_Branch_ADF6  ; ADE8 B0 0C                    ..
+        bcs     BattleAi_Branch_ADF6            ; ADE8 B0 0C                    ..
         lda     #$00                            ; ADEA A9 00                    ..
         sta     $04                             ; ADEC 85 04                    ..
         ldx     #$03                            ; ADEE A2 03                    ..
         lda     $75E9                           ; ADF0 AD E9 75                 ..u
         jsr     DividePointerWord               ; ADF3 20 51 C8                  Q.
-BattlePresentation_Branch_ADF6:
+BattleAi_Branch_ADF6:
         ldx     #$8A                            ; ADF6 A2 8A                    ..
         lda     $03                             ; ADF8 A5 03                    ..
         jsr     ScalePointerWordByNibbleBody    ; ADFA 20 9A 81                  ..
@@ -6553,54 +6553,54 @@ BattlePresentation_Branch_ADF6:
         sbc     $8A                             ; AE00 E5 8A                    ..
         lda     $95                             ; AE02 A5 95                    ..
         sbc     $8B                             ; AE04 E5 8B                    ..
-        bcs     BattlePresentation_Branch_AE10  ; AE06 B0 08                    ..
+        bcs     BattleAi_Branch_AE10            ; AE06 B0 08                    ..
         lda     $8A                             ; AE08 A5 8A                    ..
         sta     $94                             ; AE0A 85 94                    ..
         lda     $8B                             ; AE0C A5 8B                    ..
         sta     $95                             ; AE0E 85 95                    ..
-BattlePresentation_Branch_AE10:
+BattleAi_Branch_AE10:
         rts                                     ; AE10 60                       `
 ; ----------------------------------------------------------------------------
-AccumulateBattlePresentationSlots:
+AccumulateBattleAiSlots:
         lda     #$00                            ; AE11 A9 00                    ..
         sta     $82                             ; AE13 85 82                    ..
         sta     $94                             ; AE15 85 94                    ..
         sta     $95                             ; AE17 85 95                    ..
-BattlePresentation_Branch_AE19:
+BattleAi_Branch_AE19:
         lda     #$00                            ; AE19 A9 00                    ..
         sta     $8B                             ; AE1B 85 8B                    ..
         sta     $8C                             ; AE1D 85 8C                    ..
         lda     $82                             ; AE1F A5 82                    ..
         jsr     LoadBattleRecordSlotWithStatus  ; AE21 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_AE5A  ; AE24 90 34                    .4
+        bcc     BattleAi_Branch_AE5A            ; AE24 90 34                    .4
         sta     $8A                             ; AE26 85 8A                    ..
         ldy     #$00                            ; AE28 A0 00                    ..
         lda     ($79),y                         ; AE2A B1 79                    .y
         asl     a                               ; AE2C 0A                       .
-        bcc     BattlePresentation_Branch_AE5A  ; AE2D 90 2B                    .+
-        bmi     BattlePresentation_Branch_AE5A  ; AE2F 30 29                    0)
+        bcc     BattleAi_Branch_AE5A            ; AE2D 90 2B                    .+
+        bmi     BattleAi_Branch_AE5A            ; AE2F 30 29                    0)
         lda     $8A                             ; AE31 A5 8A                    ..
         jsr     FindBattleSlotByCharacterId     ; AE33 20 F5 89                  ..
         ldy     #$05                            ; AE36 A0 05                    ..
         lda     ($79),y                         ; AE38 B1 79                    .y
         and     #$04                            ; AE3A 29 04                    ).
-        bne     BattlePresentation_Branch_AE5A  ; AE3C D0 1C                    ..
+        bne     BattleAi_Branch_AE5A            ; AE3C D0 1C                    ..
         inc     $8C                             ; AE3E E6 8C                    ..
         lda     ($79),y                         ; AE40 B1 79                    .y
         and     #$08                            ; AE42 29 08                    ).
-        beq     BattlePresentation_Branch_AE49  ; AE44 F0 03                    ..
+        beq     BattleAi_Branch_AE49            ; AE44 F0 03                    ..
         jsr     SubtractBattleSlotMetricFromTableA; AE46 20 A6 AE                ..
-BattlePresentation_Branch_AE49:
+BattleAi_Branch_AE49:
         lda     ($79),y                         ; AE49 B1 79                    .y
         and     #$10                            ; AE4B 29 10                    ).
-        beq     BattlePresentation_Branch_AE52  ; AE4D F0 03                    ..
+        beq     BattleAi_Branch_AE52            ; AE4D F0 03                    ..
         jsr     SubtractBattleSlotMetricFromTableB; AE4F 20 B4 AE                ..
-BattlePresentation_Branch_AE52:
+BattleAi_Branch_AE52:
         lda     ($79),y                         ; AE52 B1 79                    .y
         lsr     a                               ; AE54 4A                       J
-        bcc     BattlePresentation_Branch_AE5A  ; AE55 90 03                    ..
+        bcc     BattleAi_Branch_AE5A            ; AE55 90 03                    ..
         jsr     HalveBattleSlotMetric           ; AE57 20 AF AE                  ..
-BattlePresentation_Branch_AE5A:
+BattleAi_Branch_AE5A:
         lda     $8B                             ; AE5A A5 8B                    ..
         ldy     $8C                             ; AE5C A4 8C                    ..
         ldx     #$94                            ; AE5E A2 94                    ..
@@ -6608,7 +6608,7 @@ BattlePresentation_Branch_AE5A:
         inc     $82                             ; AE63 E6 82                    ..
         lda     $82                             ; AE65 A5 82                    ..
         cmp     #$04                            ; AE67 C9 04                    ..
-        bcc     BattlePresentation_Branch_AE19  ; AE69 90 AE                    ..
+        bcc     BattleAi_Branch_AE19            ; AE69 90 AE                    ..
         sec                                     ; AE6B 38                       8
         lda     #$00                            ; AE6C A9 00                    ..
         sbc     $94                             ; AE6E E5 94                    ..
@@ -6617,9 +6617,9 @@ BattlePresentation_Branch_AE5A:
         sbc     $95                             ; AE74 E5 95                    ..
         sta     $8C                             ; AE76 85 8C                    ..
         lda     $75E8                           ; AE78 AD E8 75                 ..u
-        beq     BattlePresentation_Branch_AE9E  ; AE7B F0 21                    .!
+        beq     BattleAi_Branch_AE9E            ; AE7B F0 21                    .!
         cmp     #$05                            ; AE7D C9 05                    ..
-        bcs     BattlePresentation_Branch_AE9E  ; AE7F B0 1D                    ..
+        bcs     BattleAi_Branch_AE9E            ; AE7F B0 1D                    ..
         lda     $6E80                           ; AE81 AD 80 6E                 ..n
         asl     a                               ; AE84 0A                       .
         asl     a                               ; AE85 0A                       .
@@ -6629,14 +6629,14 @@ BattlePresentation_Branch_AE5A:
         ldx     #$8B                            ; AE8D A2 8B                    ..
         jsr     MultiplyIndexedWordByA          ; AE8F 20 30 83                  0.
         lda     $19                             ; AE92 A5 19                    ..
-        bne     BattlePresentation_Branch_AE9E  ; AE94 D0 08                    ..
+        bne     BattleAi_Branch_AE9E            ; AE94 D0 08                    ..
         lda     $8C                             ; AE96 A5 8C                    ..
         clc                                     ; AE98 18                       .
         adc     $BB22,y                         ; AE99 79 22 BB                 y".
-        bcc     BattlePresentation_Branch_AEA0  ; AE9C 90 02                    ..
-BattlePresentation_Branch_AE9E:
+        bcc     BattleAi_Branch_AEA0            ; AE9C 90 02                    ..
+BattleAi_Branch_AE9E:
         lda     #$FF                            ; AE9E A9 FF                    ..
-BattlePresentation_Branch_AEA0:
+BattleAi_Branch_AEA0:
         sta     $7368                           ; AEA0 8D 68 73                 .hs
         jmp     ComputeMaximumBattleStateContribution; AEA3 4C CA AE            L..
 ; ----------------------------------------------------------------------------
@@ -6661,9 +6661,9 @@ SubtractFromBattleSlotMetric:
 ClampBattleStateIndexToEight:
         ldx     $75E8                           ; AEC0 AE E8 75                 ..u
         cpx     #$08                            ; AEC3 E0 08                    ..
-        bcc     BattlePresentation_Branch_AEC9  ; AEC5 90 02                    ..
+        bcc     BattleAi_Branch_AEC9            ; AEC5 90 02                    ..
         ldx     #$08                            ; AEC7 A2 08                    ..
-BattlePresentation_Branch_AEC9:
+BattleAi_Branch_AEC9:
         rts                                     ; AEC9 60                       `
 ; ----------------------------------------------------------------------------
 ComputeMaximumBattleStateContribution:
@@ -6673,17 +6673,17 @@ ComputeMaximumBattleStateContribution:
         sta     $0D                             ; AED0 85 0D                    ..
         lda     $75E8                           ; AED2 AD E8 75                 ..u
         sta     $0C                             ; AED5 85 0C                    ..
-BattlePresentation_Branch_AED7:
-        jsr     CheckBattlePresentationStateMatch; AED7 20 AA A5                 ..
-        bcc     BattlePresentation_Branch_AEE7  ; AEDA 90 0B                    ..
-        lda     Bank13_BattlePresentationStateLookup,y; AEDC B9 67 B9           .g.
+BattleAi_Branch_AED7:
+        jsr     CheckBattleAiStateMatch         ; AED7 20 AA A5                  ..
+        bcc     BattleAi_Branch_AEE7            ; AEDA 90 0B                    ..
+        lda     Bank13_BattleAiStateLookup,y    ; AEDC B9 67 B9                 .g.
         and     #$1F                            ; AEDF 29 1F                    ).
         cmp     $7B                             ; AEE1 C5 7B                    .{
-        bcc     BattlePresentation_Branch_AEE7  ; AEE3 90 02                    ..
+        bcc     BattleAi_Branch_AEE7            ; AEE3 90 02                    ..
         sta     $7B                             ; AEE5 85 7B                    .{
-BattlePresentation_Branch_AEE7:
+BattleAi_Branch_AEE7:
         dec     $0D                             ; AEE7 C6 0D                    ..
-        bpl     BattlePresentation_Branch_AED7  ; AEE9 10 EC                    ..
+        bpl     BattleAi_Branch_AED7            ; AEE9 10 EC                    ..
         lda     $7368                           ; AEEB AD 68 73                 .hs
         sta     $00                           ; AEEE 85 00                    ..
         lda     #$00                            ; AEF0 A9 00                    ..
@@ -6695,184 +6695,184 @@ BattlePresentation_Branch_AEE7:
         lsr     $01                             ; AEFE 46 01                    F.
         ror     $00                           ; AF00 66 00                    f.
         lda     $01                             ; AF02 A5 01                    ..
-        beq     BattlePresentation_Branch_AF0A  ; AF04 F0 04                    ..
+        beq     BattleAi_Branch_AF0A            ; AF04 F0 04                    ..
         lda     #$FF                            ; AF06 A9 FF                    ..
         sta     $00                           ; AF08 85 00                    ..
-BattlePresentation_Branch_AF0A:
+BattleAi_Branch_AF0A:
         lda     $00                           ; AF0A A5 00                    ..
         sta     $75EF                           ; AF0C 8D EF 75                 ..u
         rts                                     ; AF0F 60                       `
 ; ----------------------------------------------------------------------------
-RunCallbacks8To0Then9To11:
+EvaluateDescendingThenFinalActionScores:
         jsr     InitializePhase43AndScanEightEffectTargets; AF10 20 84 95        ..
-        jsr     ScanBattleEffectRecordsFromZero ; AF13 20 C6 A6                  ..
+        jsr     ScanActionScoreRecordsFromZero  ; AF13 20 C6 A6                  ..
         ldx     #$08                            ; AF16 A2 08                    ..
-BattlePresentation_Branch_AF18:
+BattleAi_Branch_AF18:
         txa                                     ; AF18 8A                       .
         pha                                     ; AF19 48                       H
-        jsr     DispatchBattlePresentationCallback; AF1A 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF1A 20 4D A5                  M.
         pla                                     ; AF1D 68                       h
         tax                                     ; AF1E AA                       .
         dex                                     ; AF1F CA                       .
-        bpl     BattlePresentation_Branch_AF18  ; AF20 10 F6                    ..
-        jsr     ScanBattleEffectRecordsFromTwo  ; AF22 20 CA A6                  ..
-        jsr     ScanBattleEffectRecordsFromFour ; AF25 20 CE A6                  ..
+        bpl     BattleAi_Branch_AF18            ; AF20 10 F6                    ..
+        jsr     ScanActionScoreRecordsFromTwo   ; AF22 20 CA A6                  ..
+        jsr     ScanActionScoreRecordsFromFour  ; AF25 20 CE A6                  ..
         jsr     DispatchSpecialBattleAction     ; AF28 20 35 91                  5.
-        bcc     BattlePresentation_Branch_AF3D  ; AF2B 90 10                    ..
+        bcc     BattleAi_Branch_AF3D            ; AF2B 90 10                    ..
         jsr     ClearBattleActionState          ; AF2D 20 A0 91                  ..
         lda     #$09                            ; AF30 A9 09                    ..
-        jsr     DispatchBattlePresentationCallback; AF32 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF32 20 4D A5                  M.
         lda     #$0A                            ; AF35 A9 0A                    ..
-        jsr     DispatchBattlePresentationCallback; AF37 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromSix  ; AF3A 20 D2 A6                  ..
-BattlePresentation_Branch_AF3D:
+        jsr     DispatchBattleAiCallback        ; AF37 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromSix   ; AF3A 20 D2 A6                  ..
+BattleAi_Branch_AF3D:
         lda     #$0B                            ; AF3D A9 0B                    ..
-        jsr     DispatchBattlePresentationCallback; AF3F 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF3F 20 4D A5                  M.
         jsr     UpdateBattleStateFlags          ; AF42 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; AF45 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-RunCallbacks0To4And6Then7To10:
+EvaluatePrimaryAndLateActionScores:
         jsr     InitializePhase43AndScanEightEffectTargets; AF48 20 84 95        ..
-        jsr     ScanBattleEffectRecordsFromZero ; AF4B 20 C6 A6                  ..
+        jsr     ScanActionScoreRecordsFromZero  ; AF4B 20 C6 A6                  ..
         lda     #$00                            ; AF4E A9 00                    ..
-        jsr     DispatchBattlePresentationCallback; AF50 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF50 20 4D A5                  M.
         lda     #$01                            ; AF53 A9 01                    ..
-        jsr     DispatchBattlePresentationCallback; AF55 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF55 20 4D A5                  M.
         lda     #$02                            ; AF58 A9 02                    ..
-        jsr     DispatchBattlePresentationCallback; AF5A 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF5A 20 4D A5                  M.
         lda     #$03                            ; AF5D A9 03                    ..
-        jsr     DispatchBattlePresentationCallback; AF5F 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF5F 20 4D A5                  M.
         lda     #$04                            ; AF62 A9 04                    ..
-        jsr     DispatchBattlePresentationCallback; AF64 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF64 20 4D A5                  M.
         lda     #$06                            ; AF67 A9 06                    ..
-        jsr     DispatchBattlePresentationCallback; AF69 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromTwo  ; AF6C 20 CA A6                  ..
-        jsr     ScanBattleEffectRecordsFromFour ; AF6F 20 CE A6                  ..
+        jsr     DispatchBattleAiCallback        ; AF69 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromTwo   ; AF6C 20 CA A6                  ..
+        jsr     ScanActionScoreRecordsFromFour  ; AF6F 20 CE A6                  ..
         jsr     DispatchSpecialBattleAction     ; AF72 20 35 91                  5.
-        bcc     BattlePresentation_Branch_AF91  ; AF75 90 1A                    ..
+        bcc     BattleAi_Branch_AF91            ; AF75 90 1A                    ..
         jsr     ClearBattleActionState          ; AF77 20 A0 91                  ..
         lda     #$07                            ; AF7A A9 07                    ..
-        jsr     DispatchBattlePresentationCallback; AF7C 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF7C 20 4D A5                  M.
         lda     #$08                            ; AF7F A9 08                    ..
-        jsr     DispatchBattlePresentationCallback; AF81 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF81 20 4D A5                  M.
         lda     #$09                            ; AF84 A9 09                    ..
-        jsr     DispatchBattlePresentationCallback; AF86 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF86 20 4D A5                  M.
         lda     #$0A                            ; AF89 A9 0A                    ..
-        jsr     DispatchBattlePresentationCallback; AF8B 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromSix  ; AF8E 20 D2 A6                  ..
-BattlePresentation_Branch_AF91:
+        jsr     DispatchBattleAiCallback        ; AF8B 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromSix   ; AF8E 20 D2 A6                  ..
+BattleAi_Branch_AF91:
         jsr     UpdateBattleStateFlags          ; AF91 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; AF94 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-RunCallbacks0To4And6To11Then5:
+EvaluatePrimaryLateThenDeferredActionScore:
         jsr     InitializePhase43AndScanEightEffectTargets; AF97 20 84 95        ..
-        jsr     ScanBattleEffectRecordsFromZero ; AF9A 20 C6 A6                  ..
+        jsr     ScanActionScoreRecordsFromZero  ; AF9A 20 C6 A6                  ..
         lda     #$00                            ; AF9D A9 00                    ..
-        jsr     DispatchBattlePresentationCallback; AF9F 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AF9F 20 4D A5                  M.
         lda     #$01                            ; AFA2 A9 01                    ..
-        jsr     DispatchBattlePresentationCallback; AFA4 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFA4 20 4D A5                  M.
         lda     #$02                            ; AFA7 A9 02                    ..
-        jsr     DispatchBattlePresentationCallback; AFA9 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFA9 20 4D A5                  M.
         lda     #$03                            ; AFAC A9 03                    ..
-        jsr     DispatchBattlePresentationCallback; AFAE 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFAE 20 4D A5                  M.
         lda     #$04                            ; AFB1 A9 04                    ..
-        jsr     DispatchBattlePresentationCallback; AFB3 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFB3 20 4D A5                  M.
         lda     #$06                            ; AFB6 A9 06                    ..
-        jsr     DispatchBattlePresentationCallback; AFB8 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFB8 20 4D A5                  M.
         lda     #$07                            ; AFBB A9 07                    ..
-        jsr     DispatchBattlePresentationCallback; AFBD 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFBD 20 4D A5                  M.
         lda     #$08                            ; AFC0 A9 08                    ..
-        jsr     DispatchBattlePresentationCallback; AFC2 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromTwo  ; AFC5 20 CA A6                  ..
+        jsr     DispatchBattleAiCallback        ; AFC2 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromTwo   ; AFC5 20 CA A6                  ..
         lda     #$09                            ; AFC8 A9 09                    ..
-        jsr     DispatchBattlePresentationCallback; AFCA 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFCA 20 4D A5                  M.
         lda     #$0A                            ; AFCD A9 0A                    ..
-        jsr     DispatchBattlePresentationCallback; AFCF 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFCF 20 4D A5                  M.
         lda     #$0B                            ; AFD2 A9 0B                    ..
-        jsr     DispatchBattlePresentationCallback; AFD4 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromFour ; AFD7 20 CE A6                  ..
+        jsr     DispatchBattleAiCallback        ; AFD4 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromFour  ; AFD7 20 CE A6                  ..
         jsr     DispatchSpecialBattleAction     ; AFDA 20 35 91                  5.
-        bcc     BattlePresentation_Branch_AFEA  ; AFDD 90 0B                    ..
+        bcc     BattleAi_Branch_AFEA            ; AFDD 90 0B                    ..
         jsr     ClearBattleActionState          ; AFDF 20 A0 91                  ..
         lda     #$05                            ; AFE2 A9 05                    ..
-        jsr     DispatchBattlePresentationCallback; AFE4 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromSix  ; AFE7 20 D2 A6                  ..
-BattlePresentation_Branch_AFEA:
+        jsr     DispatchBattleAiCallback        ; AFE4 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromSix   ; AFE7 20 D2 A6                  ..
+BattleAi_Branch_AFEA:
         jsr     UpdateBattleStateFlags          ; AFEA 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; AFED 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-RunCallbacks0To3And6To11Then4To5:
+EvaluateOuterThenMiddleActionScores:
         jsr     InitializePhase43AndScanEightEffectTargets; AFF0 20 84 95        ..
-        jsr     ScanBattleEffectRecordsFromZero ; AFF3 20 C6 A6                  ..
+        jsr     ScanActionScoreRecordsFromZero  ; AFF3 20 C6 A6                  ..
         lda     #$00                            ; AFF6 A9 00                    ..
-        jsr     DispatchBattlePresentationCallback; AFF8 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFF8 20 4D A5                  M.
         lda     #$01                            ; AFFB A9 01                    ..
-        jsr     DispatchBattlePresentationCallback; AFFD 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; AFFD 20 4D A5                  M.
         lda     #$02                            ; B000 A9 02                    ..
-        jsr     DispatchBattlePresentationCallback; B002 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B002 20 4D A5                  M.
         lda     #$03                            ; B005 A9 03                    ..
-        jsr     DispatchBattlePresentationCallback; B007 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B007 20 4D A5                  M.
         lda     #$06                            ; B00A A9 06                    ..
-        jsr     DispatchBattlePresentationCallback; B00C 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B00C 20 4D A5                  M.
         lda     #$07                            ; B00F A9 07                    ..
-        jsr     DispatchBattlePresentationCallback; B011 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B011 20 4D A5                  M.
         lda     #$08                            ; B014 A9 08                    ..
-        jsr     DispatchBattlePresentationCallback; B016 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B016 20 4D A5                  M.
         lda     #$09                            ; B019 A9 09                    ..
-        jsr     DispatchBattlePresentationCallback; B01B 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromTwo  ; B01E 20 CA A6                  ..
+        jsr     DispatchBattleAiCallback        ; B01B 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromTwo   ; B01E 20 CA A6                  ..
         lda     #$0A                            ; B021 A9 0A                    ..
-        jsr     DispatchBattlePresentationCallback; B023 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B023 20 4D A5                  M.
         lda     #$0B                            ; B026 A9 0B                    ..
-        jsr     DispatchBattlePresentationCallback; B028 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromFour ; B02B 20 CE A6                  ..
+        jsr     DispatchBattleAiCallback        ; B028 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromFour  ; B02B 20 CE A6                  ..
         jsr     DispatchSpecialBattleAction     ; B02E 20 35 91                  5.
-        bcc     BattlePresentation_Branch_B043  ; B031 90 10                    ..
+        bcc     BattleAi_Branch_B043            ; B031 90 10                    ..
         jsr     ClearBattleActionState          ; B033 20 A0 91                  ..
         lda     #$04                            ; B036 A9 04                    ..
-        jsr     DispatchBattlePresentationCallback; B038 20 4D A5                M.
+        jsr     DispatchBattleAiCallback        ; B038 20 4D A5                  M.
         lda     #$05                            ; B03B A9 05                    ..
-        jsr     DispatchBattlePresentationCallback; B03D 20 4D A5                M.
-        jsr     ScanBattleEffectRecordsFromSix  ; B040 20 D2 A6                  ..
-BattlePresentation_Branch_B043:
+        jsr     DispatchBattleAiCallback        ; B03D 20 4D A5                  M.
+        jsr     ScanActionScoreRecordsFromSix   ; B040 20 D2 A6                  ..
+BattleAi_Branch_B043:
         jsr     UpdateBattleStateFlags          ; B043 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; B046 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
-RunBattlePresentationSetup:
+RunBattleAiSetup:
         jsr     InitializePhase43AndScanEightEffectTargets; B049 20 84 95        ..
-        jsr     ScanBattleEffectRecordsFromZero ; B04C 20 C6 A6                  ..
-        jsr     ScanBattleEffectRecordsFromTwo  ; B04F 20 CA A6                  ..
-        jsr     ScanBattleEffectRecordsFromFour ; B052 20 CE A6                  ..
+        jsr     ScanActionScoreRecordsFromZero  ; B04C 20 C6 A6                  ..
+        jsr     ScanActionScoreRecordsFromTwo   ; B04F 20 CA A6                  ..
+        jsr     ScanActionScoreRecordsFromFour  ; B052 20 CE A6                  ..
         jsr     DispatchSpecialBattleAction     ; B055 20 35 91                  5.
-        bcc     BattlePresentation_Branch_B060  ; B058 90 06                    ..
+        bcc     BattleAi_Branch_B060            ; B058 90 06                    ..
         jsr     ClearBattleActionState          ; B05A 20 A0 91                  ..
-        jsr     ScanBattleEffectRecordsFromSix  ; B05D 20 D2 A6                  ..
-BattlePresentation_Branch_B060:
+        jsr     ScanActionScoreRecordsFromSix   ; B05D 20 D2 A6                  ..
+BattleAi_Branch_B060:
         jsr     UpdateBattleStateFlags          ; B060 20 E0 B0                  ..
         jmp     CommitResolvedBattleActionState ; B063 4C 10 91                 L..
 ; ----------------------------------------------------------------------------
 ProcessChapterFiveBattleSlots:
         lda     SaveCurrentChapterMinus1        ; B066 AD 5A 61                 .Za
         cmp     #$04                            ; B069 C9 04                    ..
-        bne     BattlePresentation_Branch_B0B3  ; B06B D0 46                    .F
+        bne     BattleAi_Branch_B0B3            ; B06B D0 46                    .F
         lda     $6E44                           ; B06D AD 44 6E                 .Dn
         lsr     a                               ; B070 4A                       J
-        bcs     BattlePresentation_Branch_B0B3  ; B071 B0 40                    .@
+        bcs     BattleAi_Branch_B0B3            ; B071 B0 40                    .@
         ldx     #$03                            ; B073 A2 03                    ..
-BattlePresentation_Branch_B075:
+BattleAi_Branch_B075:
         txa                                     ; B075 8A                       .
         pha                                     ; B076 48                       H
         lda     $6E49,x                         ; B077 BD 49 6E                 .In
-        beq     BattlePresentation_Branch_B086  ; B07A F0 0A                    ..
+        beq     BattleAi_Branch_B086            ; B07A F0 0A                    ..
         lda     $7206,x                         ; B07C BD 06 72                 ..r
         cmp     #$FF                            ; B07F C9 FF                    ..
-        beq     BattlePresentation_Branch_B086  ; B081 F0 03                    ..
+        beq     BattleAi_Branch_B086            ; B081 F0 03                    ..
         jsr     ApplySlotChanceMask             ; B083 20 8C B0                  ..
-BattlePresentation_Branch_B086:
+BattleAi_Branch_B086:
         pla                                     ; B086 68                       h
         tax                                     ; B087 AA                       .
         dex                                     ; B088 CA                       .
-        bpl     BattlePresentation_Branch_B075  ; B089 10 EA                    ..
+        bpl     BattleAi_Branch_B075            ; B089 10 EA                    ..
         rts                                     ; B08B 60                       `
 ; ----------------------------------------------------------------------------
 ApplySlotChanceMask:
@@ -6882,10 +6882,10 @@ ApplySlotChanceMask:
         jsr     NextRandomByte                  ; B091 20 91 C8                  ..
         cmp     $B0DC,x                         ; B094 DD DC B0                 ...
         pla                                     ; B097 68                       h
-        bcs     BattlePresentation_Branch_B0B3  ; B098 B0 19                    ..
+        bcs     BattleAi_Branch_B0B3            ; B098 B0 19                    ..
         jsr     AndSlotChanceMask               ; B09A 20 BD B0                  ..
         cmp     $00                           ; B09D C5 00                    ..
-        beq     BattlePresentation_Branch_B0B3  ; B09F F0 12                    ..
+        beq     BattleAi_Branch_B0B3            ; B09F F0 12                    ..
         clc                                     ; B0A1 18                       .
         adc     $FF5E,y                         ; B0A2 79 5E FF                 y^.
         sta     $01                             ; B0A5 85 01                    ..
@@ -6894,16 +6894,16 @@ ApplySlotChanceMask:
         and     $619B,x                         ; B0AB 3D 9B 61                 =.a
         ora     $01                             ; B0AE 05 01                    ..
         sta     $619B,x                         ; B0B0 9D 9B 61                 ..a
-BattlePresentation_Branch_B0B3:
+BattleAi_Branch_B0B3:
         rts                                     ; B0B3 60                       `
 ; ----------------------------------------------------------------------------
 SelectSlotChanceBit:
         jsr     AndSlotChanceMask               ; B0B4 20 BD B0                  ..
         asl     a                               ; B0B7 0A                       .
-BattlePresentation_Branch_B0B8:
+BattleAi_Branch_B0B8:
         ror     a                               ; B0B8 6A                       j
         dey                                     ; B0B9 88                       .
-        bpl     BattlePresentation_Branch_B0B8  ; B0BA 10 FC                    ..
+        bpl     BattleAi_Branch_B0B8            ; B0BA 10 FC                    ..
         rts                                     ; B0BC 60                       `
 ; ----------------------------------------------------------------------------
 AndSlotChanceMask:
@@ -6933,12 +6933,12 @@ LoadSlotChanceMask:
 UpdateBattleStateFlags:
         lda     $75DB                           ; B0E0 AD DB 75                 ..u
         cmp     #$43                            ; B0E3 C9 43                    .C
-        bne     BattlePresentation_Branch_B131  ; B0E5 D0 4A                    .J
+        bne     BattleAi_Branch_B131            ; B0E5 D0 4A                    .J
         lda     $75EC                           ; B0E7 AD EC 75                 ..u
         cmp     $BB99                           ; B0EA CD 99 BB                 ...
-        bcc     BattlePresentation_Branch_B131  ; B0ED 90 42                    .B
+        bcc     BattleAi_Branch_B131            ; B0ED 90 42                    .B
         jsr     FindAvailableBattleSlot         ; B0EF 20 32 B1                  2.
-        bcc     BattlePresentation_Branch_B131  ; B0F2 90 3D                    .=
+        bcc     BattleAi_Branch_B131            ; B0F2 90 3D                    .=
         lda     $75E8                           ; B0F4 AD E8 75                 ..u
         jsr     ResolveBattleSlotRecordPointer  ; B0F7 20 B6 89                  ..
         ldy     #$01                            ; B0FA A0 01                    ..
@@ -6960,74 +6960,74 @@ UpdateBattleStateFlags:
         jsr     DivideIndexedLongByWord         ; B118 20 F4 83                  ..
         lda     $01                             ; B11B A5 01                    ..
         ora     $02                           ; B11D 05 02                    ..
-        bne     BattlePresentation_Branch_B131  ; B11F D0 10                    ..
+        bne     BattleAi_Branch_B131            ; B11F D0 10                    ..
         lda     $00                           ; B121 A5 00                    ..
         cmp     #$55                            ; B123 C9 55                    .U
-        bcs     BattlePresentation_Branch_B131  ; B125 B0 0A                    ..
+        bcs     BattleAi_Branch_B131            ; B125 B0 0A                    ..
         lda     #$41                            ; B127 A9 41                    .A
         sta     $75DB                           ; B129 8D DB 75                 ..u
         lda     #$00                            ; B12C A9 00                    ..
         sta     $75DA                           ; B12E 8D DA 75                 ..u
-BattlePresentation_Branch_B131:
+BattleAi_Branch_B131:
         rts                                     ; B131 60                       `
 ; ----------------------------------------------------------------------------
 FindAvailableBattleSlot:
         ldy     $735B                           ; B132 AC 5B 73                 .[s
         dey                                     ; B135 88                       .
-BattlePresentation_Branch_B136:
+BattleAi_Branch_B136:
         jsr     FindBattleSlotOrdinal           ; B136 20 4B B1                  K.
         lda     BattleSlotDescriptors,x         ; B139 BD F4 72                 ..r
-        bpl     BattlePresentation_Branch_B142  ; B13C 10 04                    ..
+        bpl     BattleAi_Branch_B142            ; B13C 10 04                    ..
         and     #$70                            ; B13E 29 70                    )p
-        beq     BattlePresentation_Branch_B149  ; B140 F0 07                    ..
-BattlePresentation_Branch_B142:
+        beq     BattleAi_Branch_B149            ; B140 F0 07                    ..
+BattleAi_Branch_B142:
         iny                                     ; B142 C8                       .
         cpy     #$0C                            ; B143 C0 0C                    ..
-        bcc     BattlePresentation_Branch_B136  ; B145 90 EF                    ..
+        bcc     BattleAi_Branch_B136            ; B145 90 EF                    ..
         clc                                     ; B147 18                       .
         rts                                     ; B148 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B149:
+BattleAi_Branch_B149:
         sec                                     ; B149 38                       8
         rts                                     ; B14A 60                       `
 ; ----------------------------------------------------------------------------
 FindBattleSlotOrdinal:
         sty     $00                           ; B14B 84 00                    ..
         ldx     #$00                            ; B14D A2 00                    ..
-BattlePresentation_Branch_B14F:
+BattleAi_Branch_B14F:
         lda     $7348,x                         ; B14F BD 48 73                 .Hs
         and     #$0F                            ; B152 29 0F                    ).
         cmp     $00                           ; B154 C5 00                    ..
-        beq     BattlePresentation_Branch_B15E  ; B156 F0 06                    ..
+        beq     BattleAi_Branch_B15E            ; B156 F0 06                    ..
         inx                                     ; B158 E8                       .
         cpx     #$0C                            ; B159 E0 0C                    ..
-        bne     BattlePresentation_Branch_B14F  ; B15B D0 F2                    ..
+        bne     BattleAi_Branch_B14F            ; B15B D0 F2                    ..
         clc                                     ; B15D 18                       .
-BattlePresentation_Branch_B15E:
+BattleAi_Branch_B15E:
         rts                                     ; B15E 60                       `
 ; ----------------------------------------------------------------------------
 AddScaledOffsetToAccumulatorGFromWindowCC0:
         jsr     AccumulateBattleSlotWindowCC0   ; B15F 20 75 88                  u.
         lda     #$12                            ; B162 A9 12                    ..
         jsr     ScalePointerWordByNibble        ; B164 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B1; B167 4C C9 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreC ; B167 4C C9 82                 L..
 ; ----------------------------------------------------------------------------
 AddScaledOffsetToAccumulatorCFromBattleMask:
         jsr     LoadBattleOffsetFromFilteredPartyD4; B16A 20 E5 B1               ..
         lda     #$12                            ; B16D A9 12                    ..
         jsr     ScalePointerWordByNibble        ; B16F 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B5; B172 4C 75 82                 Lu.
+        jmp     AddScaledOffsetToBattleAiScoreE ; B172 4C 75 82                 Lu.
 ; ----------------------------------------------------------------------------
 AccumulateWindowCC0WithScore:
         jsr     LoadBattleOffsetFromFilteredPartyD4; B175 20 E5 B1               ..
         jsr     ScaleBattlePointerByTwelve      ; B178 20 90 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B5; B17B 20 75 82                  u.
+        jsr     AddScaledOffsetToBattleAiScoreE ; B17B 20 75 82                  u.
         jsr     AccumulateBattleSlotWindowCC0   ; B17E 20 75 88                  u.
         jsr     ScaleBattlePointerByTwelve      ; B181 20 90 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B1; B184 20 C9 82                  ..
-        jsr     AccumulateBattlePresentationScoreMaskC4; B187 20 30 89           0.
+        jsr     AddScaledOffsetToBattleAiScoreC ; B184 20 C9 82                  ..
+        jsr     AccumulateBattleAiScoreMaskC4   ; B187 20 30 89                  0.
         jsr     ScaleBattlePointerByTwelve      ; B18A 20 90 B1                  ..
-        jmp     AddScaledOffsetToAccumulator75B9; B18D 4C 9F 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreG ; B18D 4C 9F 82                 L..
 ; ----------------------------------------------------------------------------
 ScaleBattlePointerByTwelve:
         lda     #$0C                            ; B190 A9 0C                    ..
@@ -7036,13 +7036,13 @@ ScaleBattlePointerByTwelve:
 AccumulateBattleMaskAndWindowWithScore:
         jsr     LoadBattleOffsetFromFilteredPartyD4; B195 20 E5 B1               ..
         jsr     ScaleBattlePointerByTwentyFour  ; B198 20 B0 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B5; B19B 20 75 82                  u.
+        jsr     AddScaledOffsetToBattleAiScoreE ; B19B 20 75 82                  u.
         jsr     AccumulateBattleSlotWindowCC0   ; B19E 20 75 88                  u.
         jsr     ScaleBattlePointerByTwentyFour  ; B1A1 20 B0 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B1; B1A4 20 C9 82                  ..
-        jsr     AccumulateBattlePresentationScoreMaskC4; B1A7 20 30 89           0.
+        jsr     AddScaledOffsetToBattleAiScoreC ; B1A4 20 C9 82                  ..
+        jsr     AccumulateBattleAiScoreMaskC4   ; B1A7 20 30 89                  0.
         jsr     ScaleBattlePointerByTwentyFour  ; B1AA 20 B0 B1                  ..
-        jmp     AddScaledOffsetToAccumulator75B9; B1AD 4C 9F 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreG ; B1AD 4C 9F 82                 L..
 ; ----------------------------------------------------------------------------
 ScaleBattlePointerByTwentyFour:
         lda     #$18                            ; B1B0 A9 18                    ..
@@ -7054,17 +7054,17 @@ AccumulateBattleWindowTriplet:
         asl     $94                             ; B1BB 06 94                    ..
         rol     $95                             ; B1BD 26 95                    &.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B1BF 20 E0 81          ..
-        jsr     AddScaledOffsetToAccumulator75B5; B1C2 20 75 82                  u.
+        jsr     AddScaledOffsetToBattleAiScoreE ; B1C2 20 75 82                  u.
         jsr     AccumulateBattleSlotWindowCC0   ; B1C5 20 75 88                  u.
         asl     $94                             ; B1C8 06 94                    ..
         rol     $95                             ; B1CA 26 95                    &.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B1CC 20 E0 81          ..
-        jsr     AddScaledOffsetToAccumulator75B1; B1CF 20 C9 82                  ..
-        jsr     AccumulateBattlePresentationScoreMaskC4; B1D2 20 30 89           0.
+        jsr     AddScaledOffsetToBattleAiScoreC ; B1CF 20 C9 82                  ..
+        jsr     AccumulateBattleAiScoreMaskC4   ; B1D2 20 30 89                  0.
         asl     $94                             ; B1D5 06 94                    ..
         rol     $95                             ; B1D7 26 95                    &.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B1D9 20 E0 81          ..
-        jmp     AddScaledOffsetToAccumulator75B9; B1DC 4C 9F 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreG ; B1DC 4C 9F 82                 L..
 ; ----------------------------------------------------------------------------
 LoadBattleOffsetFromFilteredParty14:
         jsr     AccumulateFilteredPartySecondaryValue; B1DF 20 3B 87             ;.
@@ -7079,24 +7079,24 @@ ComputeFilteredPartyBattleExtent:
 AccumulateBattleWindowPrimaryValue:
         jsr     LoadBattleOffsetFromFilteredParty14; B1EE 20 DF B1               ..
         jsr     ScaleBattlePointerByTwelve      ; B1F1 20 90 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B7; B1F4 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B1F4 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B1F7 20 79 88                  y.
         jsr     ScaleBattlePointerByTwelve      ; B1FA 20 90 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B3; B1FD 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B200 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreD ; B1FD 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B200 20 34 89                  4.
         jsr     ScaleBattlePointerByTwelve      ; B203 20 90 B1                  ..
-        jmp     AddScaledOffsetToAccumulator75BB; B206 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B206 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateFilteredPartyWindowScaledBySix:
         jsr     LoadBattleOffsetFromFilteredParty14; B209 20 DF B1               ..
         jsr     ScaleBattlePointerBySix         ; B20C 20 24 B2                  $.
-        jsr     AddScaledOffsetToAccumulator75B7; B20F 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B20F 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B212 20 79 88                  y.
         jsr     ScaleBattlePointerBySix         ; B215 20 24 B2                  $.
-        jsr     AddScaledOffsetToAccumulator75B3; B218 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B21B 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreD ; B218 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B21B 20 34 89                  4.
         jsr     ScaleBattlePointerBySix         ; B21E 20 24 B2                  $.
-        jmp     AddScaledOffsetToAccumulator75BB; B221 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B221 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 ScaleBattlePointerBySix:
         lda     #$06                            ; B224 A9 06                    ..
@@ -7104,84 +7104,84 @@ ScaleBattlePointerBySix:
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowBaseValue:
         jsr     LoadBattleOffsetFromFilteredParty14; B229 20 DF B1               ..
-        jsr     AddScaledOffsetToAccumulator75B7; B22C 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B22C 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B22F 20 79 88                  y.
-        jsr     AddScaledOffsetToAccumulator75B3; B232 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B235 20 34 89           4.
-        jmp     AddScaledOffsetToAccumulator75BB; B238 4C B4 82                 L..
+        jsr     AddScaledOffsetToBattleAiScoreD ; B232 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B235 20 34 89                  4.
+        jmp     AddScaledOffsetToBattleAiScoreH ; B238 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowIfStatusClear:
         lda     BattleModeFlags                 ; B23B AD E4 72                 ..r
-        bmi     BattlePresentation_Branch_B24B  ; B23E 30 0B                    0.
+        bmi     BattleAi_Branch_B24B            ; B23E 30 0B                    0.
         jsr     AccumulateBattleSlotWindow0C00  ; B240 20 79 88                  y.
         lda     #$30                            ; B243 A9 30                    .0
         jsr     ScalePointerWordByNibble        ; B245 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B3; B248 4C DE 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreD ; B248 4C DE 82                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B24B:
+BattleAi_Branch_B24B:
         rts                                     ; B24B 60                       `
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowExpandedValue:
         jsr     AccumulateBattleSlotWindow0C80  ; B24C 20 6B 88                  k.
         lda     #$28                            ; B24F A9 28                    .(
         jsr     ScalePointerWordByNibble        ; B251 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B1; B254 4C C9 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreC ; B254 4C C9 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowSecondaryValue:
         jsr     AccumulateBattleSlotWindow0C80  ; B257 20 6B 88                  k.
         lda     #$18                            ; B25A A9 18                    ..
         jsr     ScalePointerWordByNibble        ; B25C 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B1; B25F 4C C9 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreC ; B25F 4C C9 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattlePointerTriple:
         jsr     LoadBattleOffsetFromFilteredParty14; B262 20 DF B1               ..
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B265 20 E0 81          ..
         lda     #$0C                            ; B268 A9 0C                    ..
         jsr     ScalePointerWordByNibble        ; B26A 20 98 81                  ..
-        jsr     AddScaledOffsetToAccumulator75B7; B26D 20 8A 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B270 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreF ; B26D 20 8A 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B270 20 34 89                  4.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B273 20 E0 81          ..
         asl     $94                             ; B276 06 94                    ..
         rol     $95                             ; B278 26 95                    &.
-        jmp     AddScaledOffsetToAccumulator75BB; B27A 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B27A 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateFilteredPartyWindowScaledByTwentyFour:
 LB27F = $+ 2
         jsr     LoadBattleOffsetFromFilteredParty14; B27D 20 DF B1               ..
         jsr     ScaleBattlePointerByTwentyFour  ; B280 20 B0 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B7; B283 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B283 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B286 20 79 88                  y.
         jsr     ScaleBattlePointerByTwentyFour  ; B289 20 B0 B1                  ..
-        jsr     AddScaledOffsetToAccumulator75B3; B28C 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B28F 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreD ; B28C 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B28F 20 34 89                  4.
         jsr     ScaleBattlePointerByTwentyFour  ; B292 20 B0 B1                  ..
-        jmp     AddScaledOffsetToAccumulator75BB; B295 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B295 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleWindowCarryValue:
         jsr     AccumulateBattleSlotWindow0C00  ; B298 20 79 88                  y.
         lda     #$12                            ; B29B A9 12                    ..
         jsr     ScalePointerWordByNibble        ; B29D 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75B3; B2A0 4C DE 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreD ; B2A0 4C DE 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleScorePrimaryTotal:
         lda     #$07                            ; B2A3 A9 07                    ..
-        jsr     ResolveBattlePresentationScore  ; B2A5 20 BA B2                  ..
-        jmp     AddScaledOffsetToAccumulator75B1; B2A8 4C C9 82                 L..
+        jsr     ResolveBattleAiScore            ; B2A5 20 BA B2                  ..
+        jmp     AddScaledOffsetToBattleAiScoreC ; B2A8 4C C9 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleScoreSecondaryTotal:
         ldx     $7599                           ; B2AB AE 99 75                 ..u
         lda     $B27F,x                         ; B2AE BD 7F B2                 ...
-        jsr     ResolveBattlePresentationScore  ; B2B1 20 BA B2                  ..
-        jmp     AddScaledOffsetToAccumulator75B3; B2B4 4C DE 82                 L..
+        jsr     ResolveBattleAiScore            ; B2B1 20 BA B2                  ..
+        jmp     AddScaledOffsetToBattleAiScoreD ; B2B4 4C DE 82                 L..
 ; ----------------------------------------------------------------------------
         db   $02,$05,$07                     ; B2B7 02 05 07                 ...
 ; ----------------------------------------------------------------------------
-ResolveBattlePresentationScore:
+ResolveBattleAiScore:
         sta     $0F                             ; B2BA 85 0F                    ..
         jsr     SumPartyCharacterOffsetPairFiltered; B2BC 20 E5 86               ..
         lda     $00                           ; B2BF A5 00                    ..
         ora     $01                             ; B2C1 05 01                    ..
-        beq     BattlePresentation_Branch_B321  ; B2C3 F0 5C                    .\
+        beq     BattleAi_Branch_B321            ; B2C3 F0 5C                    .\
         ldx     #$00                            ; B2C5 A2 00                    ..
         lda     $92                             ; B2C7 A5 92                    ..
         jsr     DividePointerWord               ; B2C9 20 51 C8                  Q.
@@ -7189,16 +7189,16 @@ ResolveBattlePresentationScore:
         jsr     AddByteToPointer                ; B2CE 20 13 C8                  ..
         ldx     $00                           ; B2D1 A6 00                    ..
         lda     $01                             ; B2D3 A5 01                    ..
-        beq     BattlePresentation_Branch_B2D9  ; B2D5 F0 02                    ..
+        beq     BattleAi_Branch_B2D9            ; B2D5 F0 02                    ..
         ldx     #$FF                            ; B2D7 A2 FF                    ..
-BattlePresentation_Branch_B2D9:
+BattleAi_Branch_B2D9:
         stx     $00                           ; B2D9 86 00                    ..
         lda     $0F                             ; B2DB A5 0F                    ..
         asl     a                               ; B2DD 0A                       .
         asl     a                               ; B2DE 0A                       .
         asl     a                               ; B2DF 0A                       .
         cmp     $00                           ; B2E0 C5 00                    ..
-        bcs     BattlePresentation_Branch_B2F9  ; B2E2 B0 15                    ..
+        bcs     BattleAi_Branch_B2F9            ; B2E2 B0 15                    ..
         sta     $0F                             ; B2E4 85 0F                    ..
         lda     #$00                            ; B2E6 A9 00                    ..
         sta     $0E                             ; B2E8 85 0E                    ..
@@ -7210,33 +7210,33 @@ BattlePresentation_Branch_B2D9:
         lsr     a                               ; B2F4 4A                       J
         lsr     a                               ; B2F5 4A                       J
         lsr     a                               ; B2F6 4A                       J
-        bpl     BattlePresentation_Branch_B2F9  ; B2F7 10 00                    ..
-BattlePresentation_Branch_B2F9:
+        bpl     BattleAi_Branch_B2F9            ; B2F7 10 00                    ..
+BattleAi_Branch_B2F9:
         lda     #$10                            ; B2F9 A9 10                    ..
         pha                                     ; B2FB 48                       H
         ldx     #$00                            ; B2FC A2 00                    ..
         stx     $94                             ; B2FE 86 94                    ..
         stx     $95                             ; B300 86 95                    ..
-BattlePresentation_Branch_B302:
-        lda     Bank13_BattlePresentationStateLookup,x; B302 BD 67 B9           .g.
+BattleAi_Branch_B302:
+        lda     Bank13_BattleAiStateLookup,x    ; B302 BD 67 B9                 .g.
         and     #$1F                            ; B305 29 1F                    ).
         cmp     $00                           ; B307 C5 00                    ..
-        beq     BattlePresentation_Branch_B30D  ; B309 F0 02                    ..
-        bcs     BattlePresentation_Branch_B318  ; B30B B0 0B                    ..
-BattlePresentation_Branch_B30D:
-        lda     Bank13_BattlePresentationValuesA,x; B30D BD EF 8A               ...
+        beq     BattleAi_Branch_B30D            ; B309 F0 02                    ..
+        bcs     BattleAi_Branch_B318            ; B30B B0 0B                    ..
+BattleAi_Branch_B30D:
+        lda     Bank13_BattleAiValuesA,x        ; B30D BD EF 8A                 ...
         adc     $94                             ; B310 65 94                    e.
         sta     $94                             ; B312 85 94                    ..
-        bcc     BattlePresentation_Branch_B318  ; B314 90 02                    ..
+        bcc     BattleAi_Branch_B318            ; B314 90 02                    ..
         inc     $95                             ; B316 E6 95                    ..
-BattlePresentation_Branch_B318:
+BattleAi_Branch_B318:
         inx                                     ; B318 E8                       .
         cpx     #$35                            ; B319 E0 35                    .5
-        bcc     BattlePresentation_Branch_B302  ; B31B 90 E5                    ..
+        bcc     BattleAi_Branch_B302            ; B31B 90 E5                    ..
         pla                                     ; B31D 68                       h
         jmp     ScalePointerWordByNibble        ; B31E 4C 98 81                 L..
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B321:
+BattleAi_Branch_B321:
         lda     #$00                            ; B321 A9 00                    ..
         sta     $94                             ; B323 85 94                    ..
         sta     $95                             ; B325 85 95                    ..
@@ -7260,7 +7260,7 @@ BattlePresentation_Branch_B321:
 AccumulatePerSlotLowBattleExtents:
         jsr     LoadBattleCharacterClassBits    ; B392 20 EB B3                  ..
         ldx     #$00                            ; B395 A2 00                    ..
-BattlePresentation_Branch_B397:
+BattleAi_Branch_B397:
         txa                                     ; B397 8A                       .
         pha                                     ; B398 48                       H
         jsr     SelectBattleExtentLow           ; B399 20 84 87                  ..
@@ -7273,7 +7273,7 @@ BattlePresentation_Branch_B397:
         jsr     AddBattleExtentPair             ; B3A9 20 D7 B3                  ..
         inx                                     ; B3AC E8                       .
         cpx     #$04                            ; B3AD E0 04                    ..
-        bcc     BattlePresentation_Branch_B397  ; B3AF 90 E6                    ..
+        bcc     BattleAi_Branch_B397            ; B3AF 90 E6                    ..
         rts                                     ; B3B1 60                       `
 ; ----------------------------------------------------------------------------
 AddScaledClassExtentToAllSlots:
@@ -7285,11 +7285,11 @@ AddClassBattleExtentToAllSlots:
         sta     $95                             ; B3BB 85 95                    ..
         jsr     LoadScaledBattleRecordOffset    ; B3BD 20 36 82                  6.
         ldx     #$03                            ; B3C0 A2 03                    ..
-BattlePresentation_Branch_B3C2:
+BattleAi_Branch_B3C2:
         txa                                     ; B3C2 8A                       .
         jsr     AddBattleExtentPair             ; B3C3 20 D7 B3                  ..
         dex                                     ; B3C6 CA                       .
-        bpl     BattlePresentation_Branch_B3C2  ; B3C7 10 F9                    ..
+        bpl     BattleAi_Branch_B3C2            ; B3C7 10 F9                    ..
         rts                                     ; B3C9 60                       `
 ; ----------------------------------------------------------------------------
 AddFivefoldClassExtentToAllSlots:
@@ -7313,7 +7313,7 @@ AddBattleExtentPair:
 ; ----------------------------------------------------------------------------
 LoadBattleCharacterClassBits:
         ldx     $93                             ; B3EB A6 93                    ..
-        jsr     GetBattleCharacterRecordPointer ; B3ED 20 9C 89                  ..
+        jsr     GetCombatantRecordPointer       ; B3ED 20 9C 89                  ..
         ldy     #$0D                            ; B3F0 A0 0D                    ..
         lda     ($86),y                       ; B3F2 B1 86                    ..
         and     #$03                            ; B3F4 29 03                    ).
@@ -7327,13 +7327,13 @@ AccumulateBattleExtentWindowAWithScore:
         jsr     AccumulatePerSlotLowBattleExtents; B3FB 20 92 B3                 ..
         jsr     LoadBattleOffsetFromFilteredParty14; B3FE 20 DF B1               ..
         jsr     ScaleBattlePointerByTwelveAndDivide; B401 20 19 B4               ..
-        jsr     AddScaledOffsetToAccumulator75B7; B404 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B404 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B407 20 79 88                  y.
         jsr     ScaleBattlePointerByTwelveAndDivide; B40A 20 19 B4               ..
-        jsr     AddScaledOffsetToAccumulator75B3; B40D 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B410 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreD ; B40D 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B410 20 34 89                  4.
         jsr     ScaleBattlePointerByTwelveAndDivide; B413 20 19 B4               ..
-        jmp     AddScaledOffsetToAccumulator75BB; B416 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B416 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 ScaleBattlePointerByTwelveAndDivide:
         lda     #$0C                            ; B419 A9 0C                    ..
@@ -7347,18 +7347,18 @@ AccumulateBattleExtentWindowAWithDivision:
         jsr     AccumulatePerSlotLowBattleExtents; B424 20 92 B3                 ..
         jsr     LoadBattleOffsetFromFilteredParty14; B427 20 DF B1               ..
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B42A 20 E0 81          ..
-        jsr     AddScaledOffsetToAccumulator75B7; B42D 20 8A 82                  ..
+        jsr     AddScaledOffsetToBattleAiScoreF ; B42D 20 8A 82                  ..
         jsr     AccumulateBattleSlotWindow0C00  ; B430 20 79 88                  y.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B433 20 E0 81          ..
-        jsr     AddScaledOffsetToAccumulator75B3; B436 20 DE 82                  ..
-        jsr     AccumulateBattlePresentationScoreMask04; B439 20 34 89           4.
+        jsr     AddScaledOffsetToBattleAiScoreD ; B436 20 DE 82                  ..
+        jsr     AccumulateBattleAiScoreMask04   ; B439 20 34 89                  4.
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B43C 20 E0 81          ..
-        jmp     AddScaledOffsetToAccumulator75BB; B43F 4C B4 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreH ; B43F 4C B4 82                 L..
 ; ----------------------------------------------------------------------------
 AddHalfBattleExtentToFinalTotal:
         jsr     SumBattleExtents                ; B442 20 B9 87                  ..
         jsr     DivideBattlePointerWordBySmallPowerOfTwo; B445 20 E0 81          ..
-        jmp     AddScaledOffsetToAccumulator75BD; B448 4C F3 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreI ; B448 4C F3 82                 L..
 ; ----------------------------------------------------------------------------
 AccumulateBattleExtentWindowIWithBias:
         jsr     SumBattleExtents                ; B44B 20 B9 87                  ..
@@ -7369,7 +7369,7 @@ AccumulateBattleExtentWindowIWithBias:
         jsr     AddByteToPointer                ; B456 20 13 C8                  ..
         lda     #$06                            ; B459 A9 06                    ..
         jsr     ScalePointerWordByNibble        ; B45B 20 98 81                  ..
-        jmp     AddScaledOffsetToAccumulator75BD; B45E 4C F3 82                 L..
+        jmp     AddScaledOffsetToBattleAiScoreI ; B45E 4C F3 82                 L..
 ; ----------------------------------------------------------------------------
 ReturnZeroBattleExtent:
         rts                                     ; B461 60                       `
@@ -7383,17 +7383,17 @@ ResolveBattleStatusBitfield:
         sta     $6E                             ; B469 85 6E                    .n
         lda     #$03                            ; B46B A9 03                    ..
         sta     $82                             ; B46D 85 82                    ..
-BattlePresentation_Branch_B46F:
+BattleAi_Branch_B46F:
         lda     $82                             ; B46F A5 82                    ..
         jsr     LoadBattleRecordSlotWithStatus  ; B471 20 6B 8A                  k.
-        bcc     BattlePresentation_Branch_B47B  ; B474 90 05                    ..
+        bcc     BattleAi_Branch_B47B            ; B474 90 05                    ..
         ldy     #$00                            ; B476 A0 00                    ..
         lda     ($79),y                         ; B478 B1 79                    .y
         asl     a                               ; B47A 0A                       .
-BattlePresentation_Branch_B47B:
+BattleAi_Branch_B47B:
         rol     $6E                             ; B47B 26 6E                    &n
         dec     $82                             ; B47D C6 82                    ..
-        bpl     BattlePresentation_Branch_B46F  ; B47F 10 EE                    ..
+        bpl     BattleAi_Branch_B46F            ; B47F 10 EE                    ..
         pla                                     ; B481 68                       h
         sta     $82                             ; B482 85 82                    ..
         pla                                     ; B484 68                       h
@@ -7401,129 +7401,129 @@ BattlePresentation_Branch_B47B:
         lda     $6E                             ; B486 A5 6E                    .n
         rts                                     ; B488 60                       `
 ; ----------------------------------------------------------------------------
-SelectBattlePresentationBranch:
-        jsr     ResolvePresentationPointer      ; B489 20 73 B5                  s.
-        jsr     ApplyPresentationGateA          ; B48C 20 96 B4                  ..
-        jsr     ApplyPresentationGateB          ; B48F 20 BA B4                  ..
-        jsr     ResolvePresentationMode         ; B492 20 E8 B4                  ..
+RollActionEffectAmount:
+        jsr     ResolveActionEffectRollTablePointer; B489 20 73 B5               s.
+        jsr     ApplyActionDamageModifierA      ; B48C 20 96 B4                  ..
+        jsr     ApplyActionDamageModifierB      ; B48F 20 BA B4                  ..
+        jsr     ResolveActionEffectRollMode     ; B492 20 E8 B4                  ..
         rts                                     ; B495 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPresentationGateA:
+ApplyActionDamageModifierA:
         pha                                     ; B496 48                       H
         lda     #$00                            ; B497 A9 00                    ..
         sta     $04                             ; B499 85 04                    ..
         pla                                     ; B49B 68                       h
         pha                                     ; B49C 48                       H
         cmp     #$13                            ; B49D C9 13                    ..
-        bcc     BattlePresentation_Branch_B4B8  ; B49F 90 17                    ..
+        bcc     BattleAi_Branch_B4B8            ; B49F 90 17                    ..
         cmp     #$19                            ; B4A1 C9 19                    ..
-        bcs     BattlePresentation_Branch_B4B8  ; B4A3 B0 13                    ..
+        bcs     BattleAi_Branch_B4B8            ; B4A3 B0 13                    ..
         lda     BattleTargetSelector            ; B4A5 AD 63 73                 .cs
-        bmi     BattlePresentation_Branch_B4B8  ; B4A8 30 0E                    0.
+        bmi     BattleAi_Branch_B4B8            ; B4A8 30 0E                    0.
         lda     BattleActionFlags               ; B4AA AD E7 72                 ..r
         and     #$10                            ; B4AD 29 10                    ).
-        beq     BattlePresentation_Branch_B4B8  ; B4AF F0 07                    ..
+        beq     BattleAi_Branch_B4B8            ; B4AF F0 07                    ..
         lda     #$80                            ; B4B1 A9 80                    ..
         sta     $04                             ; B4B3 85 04                    ..
-        jsr     StorePresentationPair           ; B4B5 20 53 B5                  S.
-BattlePresentation_Branch_B4B8:
+        jsr     StoreRolledActionEffectAmount   ; B4B5 20 53 B5                  S.
+BattleAi_Branch_B4B8:
         pla                                     ; B4B8 68                       h
         rts                                     ; B4B9 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPresentationGateB:
+ApplyActionDamageModifierB:
         pha                                     ; B4BA 48                       H
         ldx     #$02                            ; B4BB A2 02                    ..
         cmp     #$13                            ; B4BD C9 13                    ..
-        bcc     BattlePresentation_Branch_B4E6  ; B4BF 90 25                    .%
+        bcc     BattleAi_Branch_B4E6            ; B4BF 90 25                    .%
         cmp     #$16                            ; B4C1 C9 16                    ..
-        bcc     BattlePresentation_Branch_B4CB  ; B4C3 90 06                    ..
+        bcc     BattleAi_Branch_B4CB            ; B4C3 90 06                    ..
         cmp     #$19                            ; B4C5 C9 19                    ..
-        bcs     BattlePresentation_Branch_B4E6  ; B4C7 B0 1D                    ..
+        bcs     BattleAi_Branch_B4E6            ; B4C7 B0 1D                    ..
         ldx     #$05                            ; B4C9 A2 05                    ..
-BattlePresentation_Branch_B4CB:
+BattleAi_Branch_B4CB:
         stx     $00                           ; B4CB 86 00                    ..
         brk                                     ; B4CD 00                       .
         db   $07,$1F                         ; B4CE 07 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_B4E6  ; B4D0 90 14                    ..
+        bcc     BattleAi_Branch_B4E6            ; B4D0 90 14                    ..
         lda     $00                           ; B4D2 A5 00                    ..
         brk                                     ; B4D4 00                       .
         db   $22,$B3                         ; B4D5 22 B3                    ".
 ; ----------------------------------------------------------------------------
         tax                                     ; B4D7 AA                       .
         lda     $B749,x                         ; B4D8 BD 49 B7                 .I.
-        jsr     StorePresentationPair           ; B4DB 20 53 B5                  S.
+        jsr     StoreRolledActionEffectAmount   ; B4DB 20 53 B5                  S.
         inc     BattleDamageAmountLow           ; B4DE EE 61 73                 .as
-        bne     BattlePresentation_Branch_B4E6  ; B4E1 D0 03                    ..
+        bne     BattleAi_Branch_B4E6            ; B4E1 D0 03                    ..
         inc     BattleDamageAmountHigh          ; B4E3 EE 62 73                 .bs
-BattlePresentation_Branch_B4E6:
+BattleAi_Branch_B4E6:
         pla                                     ; B4E6 68                       h
         rts                                     ; B4E7 60                       `
 ; ----------------------------------------------------------------------------
-ResolvePresentationMode:
+ResolveActionEffectRollMode:
         sta     $03                             ; B4E8 85 03                    ..
         brk                                     ; B4EA 00                       .
         db   $07,$1F                         ; B4EB 07 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_B53F  ; B4ED B0 50                    .P
+        bcs     BattleAi_Branch_B53F            ; B4ED B0 50                    .P
         lda     #$01                            ; B4EF A9 01                    ..
         brk                                     ; B4F1 00                       .
         db   $3B,$73                         ; B4F2 3B 73                    ;s
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_B504  ; B4F4 B0 0E                    ..
+        bcs     BattleAi_Branch_B504            ; B4F4 B0 0E                    ..
         lda     #$02                            ; B4F6 A9 02                    ..
         brk                                     ; B4F8 00                       .
         db   $3B,$73                         ; B4F9 3B 73                    ;s
 ; ----------------------------------------------------------------------------
-        bcs     BattlePresentation_Branch_B504  ; B4FB B0 07                    ..
+        bcs     BattleAi_Branch_B504            ; B4FB B0 07                    ..
         lda     #$03                            ; B4FD A9 03                    ..
         brk                                     ; B4FF 00                       .
         db   $3B,$73                         ; B500 3B 73                    ;s
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_B53F  ; B502 90 3B                    .;
-BattlePresentation_Branch_B504:
+        bcc     BattleAi_Branch_B53F            ; B502 90 3B                    .;
+BattleAi_Branch_B504:
         and     #$7F                            ; B504 29 7F                    ).
         ldx     #$06                            ; B506 A2 06                    ..
-BattlePresentation_Branch_B508:
+BattleAi_Branch_B508:
         cmp     $B540,x                         ; B508 DD 40 B5                 .@.
-        beq     BattlePresentation_Branch_B511  ; B50B F0 04                    ..
+        beq     BattleAi_Branch_B511            ; B50B F0 04                    ..
         dex                                     ; B50D CA                       .
-        bpl     BattlePresentation_Branch_B508  ; B50E 10 F8                    ..
+        bpl     BattleAi_Branch_B508            ; B50E 10 F8                    ..
         rts                                     ; B510 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B511:
+BattleAi_Branch_B511:
         txa                                     ; B511 8A                       .
         lsr     a                               ; B512 4A                       J
         tax                                     ; B513 AA                       .
         lda     $B547,x                         ; B514 BD 47 B5                 .G.
-        bcc     BattlePresentation_Branch_B51D  ; B517 90 04                    ..
+        bcc     BattleAi_Branch_B51D            ; B517 90 04                    ..
         lsr     a                               ; B519 4A                       J
         lsr     a                               ; B51A 4A                       J
         lsr     a                               ; B51B 4A                       J
         lsr     a                               ; B51C 4A                       J
-BattlePresentation_Branch_B51D:
+BattleAi_Branch_B51D:
         and     #$0F                            ; B51D 29 0F                    ).
         sta     $04                             ; B51F 85 04                    ..
         ldx     #$00                            ; B521 A2 00                    ..
-BattlePresentation_Branch_B523:
+BattleAi_Branch_B523:
         lsr     $04                             ; B523 46 04                    F.
-        bcc     BattlePresentation_Branch_B533  ; B525 90 0C                    ..
+        bcc     BattleAi_Branch_B533            ; B525 90 0C                    ..
         lda     $03                             ; B527 A5 03                    ..
         cmp     $B54B,x                         ; B529 DD 4B B5                 .K.
-        bcc     BattlePresentation_Branch_B533  ; B52C 90 05                    ..
+        bcc     BattleAi_Branch_B533            ; B52C 90 05                    ..
         cmp     $B54C,x                         ; B52E DD 4C B5                 .L.
-        bcc     BattlePresentation_Branch_B53A  ; B531 90 07                    ..
-BattlePresentation_Branch_B533:
+        bcc     BattleAi_Branch_B53A            ; B531 90 07                    ..
+BattleAi_Branch_B533:
         inx                                     ; B533 E8                       .
         inx                                     ; B534 E8                       .
         cpx     #$08                            ; B535 E0 08                    ..
-        bne     BattlePresentation_Branch_B523  ; B537 D0 EA                    ..
+        bne     BattleAi_Branch_B523            ; B537 D0 EA                    ..
         rts                                     ; B539 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B53A:
+BattleAi_Branch_B53A:
         lda     #$AA                            ; B53A A9 AA                    ..
-        jsr     StorePresentationPair           ; B53C 20 53 B5                  S.
-BattlePresentation_Branch_B53F:
+        jsr     StoreRolledActionEffectAmount   ; B53C 20 53 B5                  S.
+BattleAi_Branch_B53F:
         rts                                     ; B53F 60                       `
 ; ----------------------------------------------------------------------------
         db   $32,$34,$35,$37,$3C,$41,$43     ; B540 32 34 35 37 3C 41 43     2457<AC
@@ -7531,7 +7531,7 @@ BattlePresentation_Branch_B53F:
         db   $00                             ; B54B 00                       .
         db   $09,$09,$0D,$0D,$10,$13,$19     ; B54C 09 09 0D 0D 10 13 19     .......
 ; ----------------------------------------------------------------------------
-StorePresentationPair:
+StoreRolledActionEffectAmount:
         pha                                     ; B553 48                       H
         lda     BattleDamageAmountLow           ; B554 AD 61 73                 .as
         sta     $00                           ; B557 85 00                    ..
@@ -7550,28 +7550,28 @@ StorePresentationPair:
         sta     BattleDamageAmountHigh          ; B56F 8D 62 73                 .bs
         rts                                     ; B572 60                       `
 ; ----------------------------------------------------------------------------
-ResolvePresentationPointer:
+ResolveActionEffectRollTablePointer:
         sta     $00                           ; B573 85 00                    ..
-        jsr     ResolvePresentationCode         ; B575 20 AD B5                  ..
+        jsr     ResolveActionEffectRollCode     ; B575 20 AD B5                  ..
         pha                                     ; B578 48                       H
         asl     a                               ; B579 0A                       .
         asl     $00                           ; B57A 06 00                    ..
-        bcc     BattlePresentation_Branch_B580  ; B57C 90 02                    ..
+        bcc     BattleAi_Branch_B580            ; B57C 90 02                    ..
         adc     #$37                            ; B57E 69 37                    i7
-BattlePresentation_Branch_B580:
+BattleAi_Branch_B580:
         tax                                     ; B580 AA                       .
         lda     #$00                            ; B581 A9 00                    ..
         sta     $01                             ; B583 85 01                    ..
         cpx     #$24                            ; B585 E0 24                    .$
-        bne     BattlePresentation_Branch_B591  ; B587 D0 08                    ..
+        bne     BattleAi_Branch_B591            ; B587 D0 08                    ..
         lda     #$4A                            ; B589 A9 4A                    .J
         sta     $00                           ; B58B 85 00                    ..
         inc     $01                             ; B58D E6 01                    ..
-        bne     BattlePresentation_Branch_B596  ; B58F D0 05                    ..
-BattlePresentation_Branch_B591:
+        bne     BattleAi_Branch_B596            ; B58F D0 05                    ..
+BattleAi_Branch_B591:
         lda     $B74D,x                         ; B591 BD 4D B7                 .M.
         sta     $00                           ; B594 85 00                    ..
-BattlePresentation_Branch_B596:
+BattleAi_Branch_B596:
         lda     $B74E,x                         ; B596 BD 4E B7                 .N.
         brk                                     ; B599 00                       .
         db   $17,$0F                         ; B59A 17 0F                    ..
@@ -7585,32 +7585,32 @@ BattlePresentation_Branch_B596:
         pla                                     ; B5AB 68                       h
         rts                                     ; B5AC 60                       `
 ; ----------------------------------------------------------------------------
-ResolvePresentationCode:
+ResolveActionEffectRollCode:
         brk                                     ; B5AD 00                       .
         db   $03,$1F                         ; B5AE 03 1F                    ..
 ; ----------------------------------------------------------------------------
         cmp     #$4D                            ; B5B0 C9 4D                    .M
-        bcc     BattlePresentation_Branch_B5CD  ; B5B2 90 19                    ..
+        bcc     BattleAi_Branch_B5CD            ; B5B2 90 19                    ..
         cmp     #$67                            ; B5B4 C9 67                    .g
-        beq     MapPresentationCode             ; B5B6 F0 04                    ..
+        beq     MapActionEffectRollCode         ; B5B6 F0 04                    ..
         cmp     #$6D                            ; B5B8 C9 6D                    .m
-        bcc     BattlePresentation_Branch_B5CB  ; B5BA 90 0F                    ..
-MapPresentationCode:
+        bcc     BattleAi_Branch_B5CB            ; B5BA 90 0F                    ..
+MapActionEffectRollCode:
         ldx     #$0A                            ; B5BC A2 0A                    ..
-BattlePresentation_Branch_B5BE:
+BattleAi_Branch_B5BE:
         cmp     $B5CE,x                         ; B5BE DD CE B5                 ...
-        beq     BattlePresentation_Branch_B5C7  ; B5C1 F0 04                    ..
+        beq     BattleAi_Branch_B5C7            ; B5C1 F0 04                    ..
         dex                                     ; B5C3 CA                       .
-        bpl     BattlePresentation_Branch_B5BE  ; B5C4 10 F8                    ..
+        bpl     BattleAi_Branch_B5BE            ; B5C4 10 F8                    ..
         rts                                     ; B5C6 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B5C7:
+BattleAi_Branch_B5C7:
         lda     $B5D9,x                         ; B5C7 BD D9 B5                 ...
         rts                                     ; B5CA 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B5CB:
+BattleAi_Branch_B5CB:
         sbc     #$39                            ; B5CB E9 39                    .9
-BattlePresentation_Branch_B5CD:
+BattleAi_Branch_B5CD:
         rts                                     ; B5CD 60                       `
 ; ----------------------------------------------------------------------------
         db   $6D,$80,$83,$84,$86,$87,$89,$8E ; B5CE 6D 80 83 84 86 87 89 8E  m.......
@@ -7618,60 +7618,60 @@ BattlePresentation_Branch_B5CD:
         db   $19,$1A,$04,$0E,$04,$0A,$06,$03 ; B5D9 19 1A 04 0E 04 0A 06 03  ........
         db   $1B,$04,$14                     ; B5E1 1B 04 14                 ...
 ; ----------------------------------------------------------------------------
-LoadPresentationWindow:
+LoadActionEffectRollWindow:
         txa                                     ; B5E4 8A                       .
         pha                                     ; B5E5 48                       H
         lda     #$00                            ; B5E6 A9 00                    ..
         sta     $70                             ; B5E8 85 70                    .p
         sta     $7D                             ; B5EA 85 7D                    .}
-        jsr     ResolvePresentationIndex        ; B5EC 20 1D B6                  ..
+        jsr     ResolveActionEffectRollIndex    ; B5EC 20 1D B6                  ..
         asl     a                               ; B5EF 0A                       .
         tax                                     ; B5F0 AA                       .
         lda     $B7E3,x                         ; B5F1 BD E3 B7                 ...
         sta     $00                           ; B5F4 85 00                    ..
         lda     $B7E4,x                         ; B5F6 BD E4 B7                 ...
         cmp     #$FF                            ; B5F9 C9 FF                    ..
-        beq     BattlePresentation_Branch_B607  ; B5FB F0 0A                    ..
+        beq     BattleAi_Branch_B607            ; B5FB F0 0A                    ..
         brk                                     ; B5FD 00                       .
         db   $17,$0F                         ; B5FE 17 0F                    ..
 ; ----------------------------------------------------------------------------
         clc                                     ; B600 18                       .
         adc     $00                           ; B601 65 00                    e.
         sta     $00                           ; B603 85 00                    ..
-        bcc     BattlePresentation_Branch_B60B  ; B605 90 04                    ..
-BattlePresentation_Branch_B607:
+        bcc     BattleAi_Branch_B60B            ; B605 90 04                    ..
+BattleAi_Branch_B607:
         dec     $70                             ; B607 C6 70                    .p
         dec     $7D                             ; B609 C6 7D                    .}
-BattlePresentation_Branch_B60B:
+BattleAi_Branch_B60B:
         brk                                     ; B60B 00                       .
         db   $0D,$1F                         ; B60C 0D 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_B618  ; B60E 90 08                    ..
+        bcc     BattleAi_Branch_B618            ; B60E 90 08                    ..
         asl     $00                           ; B610 06 00                    ..
         php                                     ; B612 08                       .
         rol     $70                             ; B613 26 70                    &p
         plp                                     ; B615 28                       (
         rol     $7D                             ; B616 26 7D                    &}
-BattlePresentation_Branch_B618:
+BattleAi_Branch_B618:
         pla                                     ; B618 68                       h
         tax                                     ; B619 AA                       .
         lda     $00                           ; B61A A5 00                    ..
         rts                                     ; B61C 60                       `
 ; ----------------------------------------------------------------------------
-ResolvePresentationIndex:
+ResolveActionEffectRollIndex:
         brk                                     ; B61D 00                       .
         db   $03,$1F                         ; B61E 03 1F                    ..
 ; ----------------------------------------------------------------------------
-MapPresentationIndex:
+MapActionEffectRollIndex:
         ldx     #$1D                            ; B620 A2 1D                    ..
-BattlePresentation_Branch_B622:
+BattleAi_Branch_B622:
         cmp     $B62F,x                         ; B622 DD 2F B6                 ./.
-        beq     BattlePresentation_Branch_B62B  ; B625 F0 04                    ..
+        beq     BattleAi_Branch_B62B            ; B625 F0 04                    ..
         dex                                     ; B627 CA                       .
-        bpl     BattlePresentation_Branch_B622  ; B628 10 F8                    ..
+        bpl     BattleAi_Branch_B622            ; B628 10 F8                    ..
         rts                                     ; B62A 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B62B:
+BattleAi_Branch_B62B:
         lda     $B64D,x                         ; B62B BD 4D B6                 .M.
         rts                                     ; B62E 60                       `
 ; ----------------------------------------------------------------------------
@@ -7684,37 +7684,37 @@ BattlePresentation_Branch_B62B:
         db   $09,$0A,$0B,$0C,$0D,$0E,$0F,$0F ; B65D 09 0A 0B 0C 0D 0E 0F 0F  ........
         db   $01,$03,$0C,$02,$02,$02         ; B665 01 03 0C 02 02 02        ......
 ; ----------------------------------------------------------------------------
-ResolvePresentationFlag:
+ResolveTargetResistanceLevel:
         lda     BattleActionFlags               ; B66B AD E7 72                 ..r
         and     #$02                            ; B66E 29 02                    ).
         lda     BattleSetupModeFlags            ; B670 AD E9 72                 ..r
-        bmi     BattlePresentation_Branch_B67A  ; B673 30 05                    0.
+        bmi     BattleAi_Branch_B67A            ; B673 30 05                    0.
         brk                                     ; B675 00                       .
         db   $0E,$1F                         ; B676 0E 1F                    ..
 ; ----------------------------------------------------------------------------
-        bmi     BattlePresentation_Branch_B6C9  ; B678 30 4F                    0O
-BattlePresentation_Branch_B67A:
+        bmi     BattleAi_Branch_B6C9            ; B678 30 4F                    0O
+BattleAi_Branch_B67A:
         brk                                     ; B67A 00                       .
         db   $03,$1F                         ; B67B 03 1F                    ..
 ; ----------------------------------------------------------------------------
         tax                                     ; B67D AA                       .
         lda     BattleTargetSelector            ; B67E AD 63 73                 .cs
-        bmi     BattlePresentation_Branch_B693  ; B681 30 10                    0.
-        lda     Bank13_BattlePresentationLookup,x; B683 BD 0B B8                ...
+        bmi     BattleAi_Branch_B693            ; B681 30 10                    0.
+        lda     Bank13_BattleAiActionLookup,x   ; B683 BD 0B B8                 ...
         and     #$E0                            ; B686 29 E0                    ).
         cmp     #$E0                            ; B688 C9 E0                    ..
-        beq     BattlePresentation_Branch_B6C9  ; B68A F0 3D                    .=
-        jsr     ClampPresentationFlag           ; B68C 20 CB B6                  ..
-        jsr     StorePresentationFlag           ; B68F 20 DD B6                  ..
+        beq     BattleAi_Branch_B6C9            ; B68A F0 3D                    .=
+        jsr     ClampTargetResistanceLevel      ; B68C 20 CB B6                  ..
+        jsr     StoreTargetResistanceLevel      ; B68F 20 DD B6                  ..
         rts                                     ; B692 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B693:
-        lda     Bank13_BattlePresentationLookup,x; B693 BD 0B B8                ...
+BattleAi_Branch_B693:
+        lda     Bank13_BattleAiActionLookup,x   ; B693 BD 0B B8                 ...
         and     #$1F                            ; B696 29 1F                    ).
         tax                                     ; B698 AA                       .
         lda     $B736,x                         ; B699 BD 36 B7                 .6.
         cpx     #$10                            ; B69C E0 10                    ..
-        bcs     ClampPresentationFlag           ; B69E B0 2B                    .+
+        bcs     ClampTargetResistanceLevel      ; B69E B0 2B                    .+
         pha                                     ; B6A0 48                       H
         lda     BattleTargetSelector            ; B6A1 AD 63 73                 .cs
         and     #$07                            ; B6A4 29 07                    ).
@@ -7729,44 +7729,44 @@ BattlePresentation_Branch_B693:
 ; ----------------------------------------------------------------------------
         ldx     #$00                            ; B6AF A2 00                    ..
         cmp     #$18                            ; B6B1 C9 18                    ..
-        beq     BattlePresentation_Branch_B6B9  ; B6B3 F0 04                    ..
+        beq     BattleAi_Branch_B6B9            ; B6B3 F0 04                    ..
         cmp     #$1F                            ; B6B5 C9 1F                    ..
-        bne     BattlePresentation_Branch_B6BB  ; B6B7 D0 02                    ..
-BattlePresentation_Branch_B6B9:
+        bne     BattleAi_Branch_B6BB            ; B6B7 D0 02                    ..
+BattleAi_Branch_B6B9:
         ldx     #$04                            ; B6B9 A2 04                    ..
-BattlePresentation_Branch_B6BB:
+BattleAi_Branch_B6BB:
         stx     $00                           ; B6BB 86 00                    ..
         pla                                     ; B6BD 68                       h
         clc                                     ; B6BE 18                       .
         adc     $00                           ; B6BF 65 00                    e.
         tax                                     ; B6C1 AA                       .
         lda     $B803,x                         ; B6C2 BD 03 B8                 ...
-        jsr     ClampPresentationFlag           ; B6C5 20 CB B6                  ..
+        jsr     ClampTargetResistanceLevel      ; B6C5 20 CB B6                  ..
         rts                                     ; B6C8 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B6C9:
+BattleAi_Branch_B6C9:
         lda     #$FF                            ; B6C9 A9 FF                    ..
-ClampPresentationFlag:
+ClampTargetResistanceLevel:
         sta     $00                           ; B6CB 85 00                    ..
         brk                                     ; B6CD 00                       .
         db   $0D,$1F                         ; B6CE 0D 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     BattlePresentation_Branch_B6DA  ; B6D0 90 08                    ..
+        bcc     BattleAi_Branch_B6DA            ; B6D0 90 08                    ..
         asl     $00                           ; B6D2 06 00                    ..
-        bcc     BattlePresentation_Branch_B6DA  ; B6D4 90 04                    ..
+        bcc     BattleAi_Branch_B6DA            ; B6D4 90 04                    ..
         lda     #$FF                            ; B6D6 A9 FF                    ..
         sta     $00                           ; B6D8 85 00                    ..
-BattlePresentation_Branch_B6DA:
+BattleAi_Branch_B6DA:
         lda     $00                           ; B6DA A5 00                    ..
         rts                                     ; B6DC 60                       `
 ; ----------------------------------------------------------------------------
-StorePresentationFlag:
+StoreTargetResistanceLevel:
         sta     $00                           ; B6DD 85 00                    ..
         rts                                     ; B6DF 60                       `
 ; ----------------------------------------------------------------------------
-ComputePresentationRatio:
+ComputeTargetResistanceChance:
         lda     BattleTargetSelector            ; B6E0 AD 63 73                 .cs
-        bmi     BattlePresentation_Branch_B715  ; B6E3 30 30                    00
+        bmi     BattleAi_Branch_B715            ; B6E3 30 30                    00
         brk                                     ; B6E5 00                       .
         db   $67,$73                         ; B6E6 67 73                    gs
 ; ----------------------------------------------------------------------------
@@ -7790,34 +7790,34 @@ ComputePresentationRatio:
         jsr     DividePointerWord               ; B706 20 51 C8                  Q.
         asl     $01                             ; B709 06 01                    ..
         rol     $02                           ; B70B 26 02                    &.
-        bcs     BattlePresentation_Branch_B712  ; B70D B0 03                    ..
+        bcs     BattleAi_Branch_B712            ; B70D B0 03                    ..
         lda     $02                           ; B70F A5 02                    ..
         rts                                     ; B711 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B712:
+BattleAi_Branch_B712:
         lda     #$FF                            ; B712 A9 FF                    ..
         rts                                     ; B714 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B715:
+BattleAi_Branch_B715:
         lda     $00                           ; B715 A5 00                    ..
         rts                                     ; B717 60                       `
 ; ----------------------------------------------------------------------------
-IsPresentationFlagSet:
-        jsr     ResolvePresentationFlag         ; B718 20 6B B6                  k.
+RollTargetResistsAction:
+        jsr     ResolveTargetResistanceLevel    ; B718 20 6B B6                  k.
         sta     $00                           ; B71B 85 00                    ..
         lda     $00                           ; B71D A5 00                    ..
-        beq     BattlePresentation_Branch_B72A  ; B71F F0 09                    ..
+        beq     BattleAi_Branch_B72A            ; B71F F0 09                    ..
         brk                                     ; B721 00                       .
         db   $1B,$0F                         ; B722 1B 0F                    ..
 ; ----------------------------------------------------------------------------
         cmp     $00                           ; B724 C5 00                    ..
-        beq     BattlePresentation_Branch_B72C  ; B726 F0 04                    ..
-        bcc     BattlePresentation_Branch_B72C  ; B728 90 02                    ..
-BattlePresentation_Branch_B72A:
+        beq     BattleAi_Branch_B72C            ; B726 F0 04                    ..
+        bcc     BattleAi_Branch_B72C            ; B728 90 02                    ..
+BattleAi_Branch_B72A:
         clc                                     ; B72A 18                       .
         rts                                     ; B72B 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B72C:
+BattleAi_Branch_B72C:
         sec                                     ; B72C 38                       8
         rts                                     ; B72D 60                       `
 ; ----------------------------------------------------------------------------
@@ -7860,7 +7860,7 @@ LoadPresentationTableByteB:
         db   $03,$03,$03,$01,$02,$03,$05,$05 ; B7F4 03 03 03 01 02 03 05 05  ........
         db   $06,$0F,$06,$64,$15,$32,$0B     ; B7FC 06 0F 06 64 15 32 0B     ...d.2.
         db   $FF,$D8,$66,$00,$FF,$FF,$B2,$00 ; B803 FF D8 66 00 FF FF B2 00  ..f.....
-Bank13_BattlePresentationLookup:
+Bank13_BattleAiActionLookup:
         db   $E2,$E2,$E2,$E1,$E1,$E1,$E0,$E0 ; B80B E2 E2 E2 E1 E1 E1 E0 E0  ........
         db   $E0,$E5,$E5,$E5,$E5,$E4,$E4,$E4 ; B813 E0 E5 E5 E5 E5 E4 E4 E4  ........
         db   $E3,$E3,$E3,$68,$68,$EE,$E9,$67 ; B81B E3 E3 E3 68 68 EE E9 67  ...hh..g
@@ -7894,58 +7894,58 @@ Bank13_BattlePresentationLookup:
         db   $F2,$F2,$F2,$F2,$F2,$F2,$F2,$F2 ; B8FB F2 F2 F2 F2 F2 F2 F2 F2  ........
         db   $92,$09,$F2,$F2,$F2,$E6,$F2,$F2 ; B903 92 09 F2 F2 F2 E6 F2 F2  ........
 ; ----------------------------------------------------------------------------
-CheckStateLookupLowFiveBitsAtLeast1E:
+CheckActionTypeAtLeastTerminal:
         pha                                     ; B90B 48                       H
-        jsr     LoadStateLookupValue            ; B90C 20 53 B9                  S.
+        jsr     LoadActionAttributes            ; B90C 20 53 B9                  S.
         and     #$1F                            ; B90F 29 1F                    ).
         cmp     #$1E                            ; B911 C9 1E                    ..
         pla                                     ; B913 68                       h
         rts                                     ; B914 60                       `
 ; ----------------------------------------------------------------------------
-ResolveStateLookupValueOrZero:
-        jsr     CheckStateLookupLowFiveBitsAtLeast1E; B915 20 0B B9              ..
-        bcs     BattlePresentation_Branch_B92C  ; B918 B0 12                    ..
+ResolveActionTypeOrZero:
+        jsr     CheckActionTypeAtLeastTerminal  ; B915 20 0B B9                  ..
+        bcs     BattleAi_Branch_B92C            ; B918 B0 12                    ..
         sta     $6E10                           ; B91A 8D 10 6E                 ..n
-        jsr     LoadStateLookupValue            ; B91D 20 53 B9                  S.
+        jsr     LoadActionAttributes            ; B91D 20 53 B9                  S.
         and     #$1F                            ; B920 29 1F                    ).
         cmp     #$19                            ; B922 C9 19                    ..
-        bcc     BattlePresentation_Branch_B92A  ; B924 90 04                    ..
+        bcc     BattleAi_Branch_B92A            ; B924 90 04                    ..
         tax                                     ; B926 AA                       .
         lda     $BA4E,x                         ; B927 BD 4E BA                 .N.
-BattlePresentation_Branch_B92A:
+BattleAi_Branch_B92A:
         sec                                     ; B92A 38                       8
         rts                                     ; B92B 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B92C:
+BattleAi_Branch_B92C:
         lda     #$00                            ; B92C A9 00                    ..
         clc                                     ; B92E 18                       .
         rts                                     ; B92F 60                       `
 ; ----------------------------------------------------------------------------
-RotateStateLookupValueThroughCarry:
+RotateActionAttributesThroughCarry:
         pha                                     ; B930 48                       H
-        jsr     LoadStateLookupValue            ; B931 20 53 B9                  S.
+        jsr     LoadActionAttributes            ; B931 20 53 B9                  S.
         rol     a                               ; B934 2A                       *
         pla                                     ; B935 68                       h
         rts                                     ; B936 60                       `
 ; ----------------------------------------------------------------------------
-CheckStateLookupHighBitsAre00Or60:
+CheckActionTargetClassIsZeroOrThree:
         pha                                     ; B937 48                       H
-        jsr     LoadStateLookupValue            ; B938 20 53 B9                  S.
+        jsr     LoadActionAttributes            ; B938 20 53 B9                  S.
         and     #$60                            ; B93B 29 60                    )`
-        beq     BattlePresentation_Branch_B946  ; B93D F0 07                    ..
+        beq     BattleAi_Branch_B946            ; B93D F0 07                    ..
         cmp     #$60                            ; B93F C9 60                    .`
-        beq     BattlePresentation_Branch_B946  ; B941 F0 03                    ..
+        beq     BattleAi_Branch_B946            ; B941 F0 03                    ..
         pla                                     ; B943 68                       h
         sec                                     ; B944 38                       8
         rts                                     ; B945 60                       `
 ; ----------------------------------------------------------------------------
-BattlePresentation_Branch_B946:
+BattleAi_Branch_B946:
         pla                                     ; B946 68                       h
         clc                                     ; B947 18                       .
         rts                                     ; B948 60                       `
 ; ----------------------------------------------------------------------------
-MapStateLookupHighBitsToOrdinal:
-        jsr     LoadStateLookupValue            ; B949 20 53 B9                  S.
+MapActionTargetClassToOrdinal:
+        jsr     LoadActionAttributes            ; B949 20 53 B9                  S.
         and     #$60                            ; B94C 29 60                    )`
         asl     a                               ; B94E 0A                       .
         rol     a                               ; B94F 2A                       *
@@ -7953,19 +7953,19 @@ MapStateLookupHighBitsToOrdinal:
         rol     a                               ; B951 2A                       *
         rts                                     ; B952 60                       `
 ; ----------------------------------------------------------------------------
-LoadStateLookupValue:
+LoadActionAttributes:
         sta     $6E10                           ; B953 8D 10 6E                 ..n
         txa                                     ; B956 8A                       .
         pha                                     ; B957 48                       H
         ldx     $6E10                           ; B958 AE 10 6E                 ..n
-        lda     Bank13_BattlePresentationStateLookup,x; B95B BD 67 B9           .g.
+        lda     Bank13_BattleAiStateLookup,x    ; B95B BD 67 B9                 .g.
         sta     $6E10                           ; B95E 8D 10 6E                 ..n
         pla                                     ; B961 68                       h
         tax                                     ; B962 AA                       .
         lda     $6E10                           ; B963 AD 10 6E                 ..n
         rts                                     ; B966 60                       `
 ; ----------------------------------------------------------------------------
-Bank13_BattlePresentationStateLookup:
+Bank13_BattleAiStateLookup:
         db   $A2,$A4,$AA,$C4,$C6,$CA,$E5,$E8 ; B967 A2 A4 AA C4 C6 CA E5 E8  ........
         db   $EF,$A2,$C5,$E8,$CB,$C2,$C4,$C8 ; B96F EF A2 C5 E8 CB C2 C4 C8  ........
         db   $A4,$EF,$AF,$A4,$C7,$E1,$C3,$C3 ; B977 A4 EF AF A4 C7 E1 C3 C3  ........
@@ -8050,7 +8050,7 @@ Bank13_BattlePresentationStateLookup:
         db   $FF,$FF,$FF,$FF,$80,$80,$80,$80 ; BBB9 FF FF FF FF 80 80 80 80  ........
         db   $80,$80,$80,$C8,$C8,$C8,$C8,$C8 ; BBC1 80 80 80 C8 C8 C8 C8 C8  ........
         db   $C8,$C8                         ; BBC9 C8 C8                    ..
-Bank13_BattlePresentationCommands:
+Bank13_MusicSequenceData:
         db   $6C,$E1,$44,$EE,$F0,$FB,$00,$FE ; BBCB 6C E1 44 EE F0 FB 00 FE  l.D.....
         db   $D4,$BC,$FE,$87,$BC,$ED,$B3,$EE ; BBD3 D4 BC FE 87 BC ED B3 EE  ........
         db   $F0,$75,$8C,$0B,$C0,$06,$EE,$D0 ; BBDB F0 75 8C 0B C0 06 EE D0  .u......
@@ -8175,7 +8175,7 @@ Bank13_BattlePresentationCommands:
         db   $FE,$65,$BF,$6A,$98,$08,$B8,$0E ; BF93 FE 65 BF 6A 98 08 B8 0E  .e.j....
         db   $FA,$05,$F8,$B5,$08,$49,$B7,$06 ; BF9B FA 05 F8 B5 08 49 B7 06  .....I..
         db   $1B,$1A,$15,$FD                 ; BFA3 1B 1A 15 FD              ....
-Bank13_BattlePresentationPadding:
+Bank13_MusicSequencePadding:
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFA7 FF FF FF FF FF FF FF FF  ........
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFAF FF FF FF FF FF FF FF FF  ........
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BFB7 FF FF FF FF FF FF FF FF  ........

@@ -1,5 +1,6 @@
 # Name<TAB>Start<TAB>EndExclusive<TAB>Initialization<TAB>Persistence<TAB>Evidence
-SaveWorkArea	610E	6157	Cleared by InitializeChapterSaveState	Direct battery SRAM	Bounded loop at bank $12:$8EB4 writes $610E-$6156
+SaveCharacterRecords	6001	610F	Initialized per chapter and updated by party progression	Direct battery SRAM	Nine 30-byte character records addressed by pointers $6001-$60F1 in bank $10 table $9F83; inventory occupies fields $13-$1A
+SaveGuestCharacterRecords	610F	6157	Cleared by InitializeChapterSaveState and populated for guest characters	Direct battery SRAM	Twelve 6-byte guest-character records addressed by pointers $610F-$6151 in bank $10 table $9F83
 SaveTotalGold	6157	6159	Set by chapter initialization	Direct battery SRAM	Read/write arithmetic uses the little-endian pair $6157-$6158
 SaveCurrentChapterMinus1	615A	615B	Caller-selected before chapter initialization	Direct battery SRAM	Chapter branches across banks $08/$10-$12/$18/$19
 SaveHeroGender	615C	615D	Initialized from chapter record	Direct battery SRAM	Read by map and battle presentation code
@@ -7,6 +8,7 @@ SaveHeroName	615D	6165	Initialized from chapter record	Direct battery SRAM	Eight
 SavePartyCharacters	616A	616E	Initialized from chapter-specific ROM tables	Direct battery SRAM	Four party identifiers written by bank $12:$8ECA
 SaveGameStateFlags	618E	618F	Cleared then conditionally set by chapter initialization	Direct battery SRAM	BIT-tested by bank $10 and written by bank $12
 SavePlayerWorldPosition	6197	6199	Updated by map position logic	Direct battery SRAM	Compared with PlayerWorldX/PlayerWorldY by fixed-bank map logic
+SaveVaultGoldThousands	625B	625D	Vault deposit and withdrawal updates	Direct battery SRAM	Bank $15:$B4B9-$B4ED stores deposited gold in 1000-gold increments
 SaveStoryFlags	625D	625E	Game-event updates	Direct battery SRAM	Bit-field operations in bank $1E
 SaveVehicleFlags	628E	628F	Game-event updates	Direct battery SRAM	BIT-tested by bank $1E movement logic
 SaveJoinedCharacterFlags	6292	6293	Party-event updates	Direct battery SRAM	Read by bank $19 map-music selection

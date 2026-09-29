@@ -177,7 +177,7 @@ BattlePartyServices_Branch_8161:
         lda     $6E0A                           ; 8167 AD 0A 6E                 ..n
         pha                                     ; 816A 48                       H
         jsr     ResolveBattlePartyTargetFromIndex; 816B 20 96 81                 ..
-        jsr     LoadPartyMemberBattleRecordPointer; 816E 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 816E 20 01 83         ..
         jsr     CopyBattleServiceInputsToWorkValues; 8171 20 14 82               ..
         jsr     ClearBattleServiceResult        ; 8174 20 13 83                  ..
         jsr     ResolveBattleActionRecordDescriptor; 8177 20 1E 83               ..
@@ -213,16 +213,16 @@ ResolveNextEligibleBattlePartyTarget:
         beq     BattlePartyServices_Branch_81B5 ; 81A9 F0 0A                    ..
 BattlePartyServices_Branch_81AB:
         jsr     SelectSecondaryBattlePartyRoster; 81AB 20 5F 82                  _.
-        bcc     HandleInvalidBattlePartyTarget  ; 81AE 90 09                    ..
+        bcc     ShowInvalidBattleTargetDebugScreen; 81AE 90 09                  ..
         jsr     FindOrdinalEligiblePartyMember  ; 81B0 20 78 82                  x.
-        bne     HandleInvalidBattlePartyTarget  ; 81B3 D0 04                    ..
+        bne     ShowInvalidBattleTargetDebugScreen; 81B3 D0 04                  ..
 BattlePartyServices_Branch_81B5:
         sty     $6E0C                           ; 81B5 8C 0C 6E                 ..n
 BattlePartyServices_Branch_81B8:
         rts                                     ; 81B8 60                       `
 ; ----------------------------------------------------------------------------
-HandleInvalidBattlePartyTarget:
-        lda     $C000                           ; 81B9 AD 00 C0                 ...
+ShowInvalidBattleTargetDebugScreen:
+        lda     DebugFeatureFlags               ; 81B9 AD 00 C0                 ...
         bne     BattlePartyServices_Branch_8212 ; 81BC D0 54                    .T
         lda     $6BDE                           ; 81BE AD DE 6B                 ..k
         pha                                     ; 81C1 48                       H
@@ -248,7 +248,7 @@ HandleInvalidBattlePartyTarget:
 ; ----------------------------------------------------------------------------
         jsr     WaitForFreshButtonPress         ; 81E8 20 CC C8                  ..
         pla                                     ; 81EB 68                       h
-        sta     $FD                             ; 81EC 85 FD                    ..
+        sta     MessageNumberArgument           ; 81EC 85 FD                    ..
         lda     #$00                            ; 81EE A9 00                    ..
         sta     $FE                             ; 81F0 85 FE                    ..
         sta     $FF                             ; 81F2 85 FF                    ..
@@ -256,12 +256,12 @@ HandleInvalidBattlePartyTarget:
         db   $CD,$1B                         ; 81F5 CD 1B                    ..
 ; ----------------------------------------------------------------------------
         lda     $6E0B                           ; 81F7 AD 0B 6E                 ..n
-        sta     $FD                             ; 81FA 85 FD                    ..
+        sta     MessageNumberArgument           ; 81FA 85 FD                    ..
         brk                                     ; 81FC 00                       .
         db   $CE,$1B                         ; 81FD CE 1B                    ..
 ; ----------------------------------------------------------------------------
         lda     $6E                             ; 81FF A5 6E                    .n
-        sta     $FD                             ; 8201 85 FD                    ..
+        sta     MessageNumberArgument           ; 8201 85 FD                    ..
         brk                                     ; 8203 00                       .
         db   $CF,$1B                         ; 8204 CF 1B                    ..
 ; ----------------------------------------------------------------------------
@@ -298,7 +298,7 @@ DispatchResolvedBattleAction:
         jmp     ($0000)                         ; 823B 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_823E:
-        jmp     HandleInvalidBattlePartyTarget  ; 823E 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 823E 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 SelectPrimaryBattlePartyRoster:
         ldy     #$00                            ; 8241 A0 00                    ..
@@ -356,7 +356,7 @@ BattlePartyServices_Branch_8286:
         lda     SavePartyCharacter1,y           ; 8288 B9 6A 61                 .ja
         sta     $01                             ; 828B 85 01                    ..
         bpl     BattlePartyServices_Branch_82DF ; 828D 10 50                    .P
-        jsr     LoadPartyMemberBattleRecordPointer; 828F 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 828F 20 01 83         ..
         lda     $6E0A                           ; 8292 AD 0A 6E                 ..n
         beq     BattlePartyServices_Branch_82DA ; 8295 F0 43                    .C
         sta     $02                             ; 8297 85 02                    ..
@@ -430,13 +430,13 @@ BattlePartyServices_Branch_82FF:
         sec                                     ; 82FF 38                       8
         rts                                     ; 8300 60                       `
 ; ----------------------------------------------------------------------------
-LoadPartyMemberBattleRecordPointer:
+LoadCharacterRecordPointerByPartyMemberId:
         lda     SavePartyCharacter1,y           ; 8301 B9 6A 61                 .ja
         and     #$1F                            ; 8304 29 1F                    ).
-LoadBattleRecordPointerByCharacterId:
+LoadCharacterRecordPointerByCharacterId:
         asl     a                               ; 8306 0A                       .
         tax                                     ; 8307 AA                       .
-        lda     $9F83,x                         ; 8308 BD 83 9F                 ...
+        lda     Bank10_CharacterRecordPointers,x; 8308 BD 83 9F                 ...
         sta     $79                             ; 830B 85 79                    .y
         lda     $9F84,x                         ; 830D BD 84 9F                 ...
         sta     $7A                             ; 8310 85 7A                    .z
@@ -462,7 +462,7 @@ ResolveBattleActionRecordDescriptor:
         bcc     BattlePartyServices_Branch_8357 ; 8330 90 25                    .%
         lda     $6BDE                           ; 8332 AD DE 6B                 ..k
         bpl     BattlePartyServices_Branch_833C ; 8335 10 05                    ..
-        jsr     ResolveCurrentPartyMemberBattleRecordPointer; 8337 20 5C 83      \.
+        jsr     ResolveCurrentBattlePartyRecordPointer; 8337 20 5C 83            \.
         bcs     BattlePartyServices_Branch_8357 ; 833A B0 1B                    ..
 BattlePartyServices_Branch_833C:
         clc                                     ; 833C 18                       .
@@ -487,7 +487,7 @@ BattlePartyServices_Branch_8357:
         sec                                     ; 835A 38                       8
         rts                                     ; 835B 60                       `
 ; ----------------------------------------------------------------------------
-ResolveCurrentPartyMemberBattleRecordPointer:
+ResolveCurrentBattlePartyRecordPointer:
         ldx     $6E0C                           ; 835C AE 0C 6E                 ..n
         lda     SavePartyCharacter1,x           ; 835F BD 6A 61                 .ja
         and     #$1F                            ; 8362 29 1F                    ).
@@ -509,7 +509,7 @@ BattlePartyServices_Branch_8378:
         txa                                     ; 8378 8A                       .
         asl     a                               ; 8379 0A                       .
         tax                                     ; 837A AA                       .
-        lda     $9FAD,x                         ; 837B BD AD 9F                 ...
+        lda     Bank10_BattlePartyRecordPointers,x; 837B BD AD 9F               ...
         sta     $79                             ; 837E 85 79                    .y
         lda     $9FAE,x                         ; 8380 BD AE 9F                 ...
         sta     $7A                             ; 8383 85 7A                    .z
@@ -597,7 +597,7 @@ BattlePartyServices_Branch_83F1:
         jmp     BattlePartyServices_Branch_8410 ; 83FD 4C 10 84                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8400:
-        jmp     HandleInvalidBattlePartyTarget  ; 8400 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 8400 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 CopyBattleResultTripletToPrimaryBuffer:
         lda     $72                             ; 8403 A5 72                    .r
@@ -618,9 +618,9 @@ BattlePartyServices_Branch_8410:
         sta     $74                             ; 841B 85 74                    .t
         rts                                     ; 841D 60                       `
 ; ----------------------------------------------------------------------------
-LoadAndSubtractPrimaryBattleRecordValue:
+LoadCapAndAddToPartyRecordValue:
         jsr     LoadPrimaryBattleSpanFromInlineOrSpecialSource; 841E 20 CF 83    ..
-SubtractBattleRecordValue:
+AddToPartyRecordValueCapped:
         jsr     PrimeBattleWorkSpanForSubtraction; 8421 20 BD 83                 ..
 BattlePartyServices_Branch_8424:
         lda     $03,x                           ; 8424 B5 03                    ..
@@ -761,18 +761,18 @@ LoadClassGatedRecordField0F:
         jsr     CheckPartyMemberClassAtLeastNine; 84EA 20 D7 87                  ..
         bcc     BattlePartyServices_Branch_84F6 ; 84ED 90 07                    ..
         lda     #$0F                            ; 84EF A9 0F                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 84F1 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 84F1 20 0C 87            ..
         sta     $72                             ; 84F4 85 72                    .r
 BattlePartyServices_Branch_84F6:
         rts                                     ; 84F6 60                       `
 ; ----------------------------------------------------------------------------
-FindBattleRecordValueForSelector:
+FindPartyRecordValueForSelector:
         sta     $76                             ; 84F7 85 76                    .v
         lda     $72                             ; 84F9 A5 72                    .r
         pha                                     ; 84FB 48                       H
         lda     $73                             ; 84FC A5 73                    .s
         pha                                     ; 84FE 48                       H
-        jsr     FindBattleRosterOrdinalForMatchingValue; 84FF 20 BF 88           ..
+        jsr     FindInventoryOrdinalForMatchingItem; 84FF 20 BF 88               ..
         ldx     $73                             ; 8502 A6 73                    .s
         pla                                     ; 8504 68                       h
         sta     $73                             ; 8505 85 73                    .s
@@ -786,7 +786,7 @@ AdjustBattleValue50ForEligibleTarget:
         jsr     CheckPartyMemberClassAtLeastNine; 850F 20 D7 87                  ..
         bcs     BattlePartyServices_Branch_8528 ; 8512 B0 14                    ..
         lda     #$50                            ; 8514 A9 50                    .P
-        jsr     FindBattleRecordValueForSelector; 8516 20 F7 84                  ..
+        jsr     FindPartyRecordValueForSelector ; 8516 20 F7 84                  ..
         bcc     BattlePartyServices_Branch_8528 ; 8519 90 0D                    ..
         bpl     BattlePartyServices_Branch_8528 ; 851B 10 0B                    ..
         lda     $72                             ; 851D A5 72                    .r
@@ -797,9 +797,9 @@ AdjustBattleValue50ForEligibleTarget:
         sta     $72                             ; 8526 85 72                    .r
 BattlePartyServices_Branch_8528:
         lda     #$3C                            ; 8528 A9 3C                    .<
-        jmp     LoadBattleRosterValueOrZero     ; 852A 4C 32 86                 L2.
+        jmp     LoadInventoryItemOrZero         ; 852A 4C 32 86                 L2.
 ; ----------------------------------------------------------------------------
-MapBattleRecordClassByte:
+MapPartyRecordClassByte:
         jsr     CheckPartyMemberClassAtLeastNine; 852D 20 D7 87                  ..
         bcc     ReturnFromRecordByteMapping     ; 8530 90 0D                    ..
         ldy     #$05                            ; 8532 A0 05                    ..
@@ -817,7 +817,7 @@ ReturnFromRecordByteMapping:
 ValidateBattleTargetOrAbort:
         jsr     CheckPartyMemberClassAtLeastNine; 8548 20 D7 87                  ..
         bcc     BattlePartyServices_Branch_8550 ; 854B 90 03                    ..
-        jsr     HandleInvalidBattlePartyTarget  ; 854D 20 B9 81                  ..
+        jsr     ShowInvalidBattleTargetDebugScreen; 854D 20 B9 81                ..
 BattlePartyServices_Branch_8550:
         rts                                     ; 8550 60                       `
 ; ----------------------------------------------------------------------------
@@ -898,7 +898,7 @@ AccumulateBattleValueWithFallbackScan:
         lda     #$00                            ; 85C4 A9 00                    ..
         sta     $73                             ; 85C6 85 73                    .s
         sta     $76                             ; 85C8 85 76                    .v
-        jsr     FindBattleRosterEntryByBucket   ; 85CA 20 25 8A                  %.
+        jsr     FindInventoryItemByEquipmentType; 85CA 20 25 8A                  %.
         bcc     BattlePartyServices_Branch_85DE ; 85CD 90 0F                    ..
         lda     $72                             ; 85CF A5 72                    .r
         jsr     LoadBattleClassAdjustmentByte   ; 85D1 20 04 8C                  ..
@@ -917,7 +917,7 @@ BattlePartyServices_Branch_85DE:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_85E3:
         lda     #$13                            ; 85E3 A9 13                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 85E5 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 85E5 20 0C 87            ..
         sta     $72                             ; 85E8 85 72                    .r
         ldx     #$02                            ; 85EA A2 02                    ..
         ldy     #$10                            ; 85EC A0 10                    ..
@@ -941,7 +941,7 @@ AccumulateFourBattleValuesWithFallbackScan:
         inx                                     ; 860C E8                       .
         stx     $76                             ; 860D 86 76                    .v
 BattlePartyServices_Branch_860F:
-        jsr     FindBattleRosterEntryByBucket   ; 860F 20 25 8A                  %.
+        jsr     FindInventoryItemByEquipmentType; 860F 20 25 8A                  %.
         bcc     BattlePartyServices_Branch_8620 ; 8612 90 0C                    ..
         jsr     LoadBattleClassAdjustmentByte   ; 8614 20 04 8C                  ..
         clc                                     ; 8617 18                       .
@@ -959,8 +959,8 @@ BattlePartyServices_Branch_8620:
         lda     $01                             ; 862C A5 01                    ..
         sta     $73                             ; 862E 85 73                    .s
         lda     #$1F                            ; 8630 A9 1F                    ..
-LoadBattleRosterValueOrZero:
-        jsr     FindBattleRecordValueForSelector; 8632 20 F7 84                  ..
+LoadInventoryItemOrZero:
+        jsr     FindPartyRecordValueForSelector ; 8632 20 F7 84                  ..
         bcc     BattlePartyServices_Branch_863F ; 8635 90 08                    ..
         bpl     BattlePartyServices_Branch_863F ; 8637 10 06                    ..
         lda     #$00                            ; 8639 A9 00                    ..
@@ -971,7 +971,7 @@ BattlePartyServices_Branch_863F:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8640:
         lda     #$17                            ; 8640 A9 17                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 8642 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 8642 20 0C 87            ..
         sta     $72                             ; 8645 85 72                    .r
         lda     #$18                            ; 8647 A9 18                    ..
         ldy     #$11                            ; 8649 A0 11                    ..
@@ -984,29 +984,29 @@ BattlePartyServices_Branch_8640:
         sta     $75                             ; 8658 85 75                    .u
         rts                                     ; 865A 60                       `
 ; ----------------------------------------------------------------------------
-SubtractBattleRecordCurrentValue:
+SubtractPartyRecordCurrentValue:
         ldy     #$0C                            ; 865B A0 0C                    ..
-        jmp     LoadAndSubtractPrimaryBattleRecordValue; 865D 4C 1E 84          L..
+        jmp     LoadCapAndAddToPartyRecordValue ; 865D 4C 1E 84                 L..
 ; ----------------------------------------------------------------------------
-SubtractBattleRecordMaximumValue:
+AddToPartyRecordValueCappedAtMaximum:
         lda     #$00                            ; 8660 A9 00                    ..
         sta     $77                             ; 8662 85 77                    .w
         ldy     #$0E                            ; 8664 A0 0E                    ..
-        jmp     LoadAndSubtractPrimaryBattleRecordValue; 8666 4C 1E 84          L..
+        jmp     LoadCapAndAddToPartyRecordValue ; 8666 4C 1E 84                 L..
 ; ----------------------------------------------------------------------------
-CompareBattleSpanAgainstFFThreshold:
+AddToBattleValueCappedAt255:
         lda     #$FF                            ; 8669 A9 FF                    ..
         bne     BattlePartyServices_Branch_8673 ; 866B D0 06                    ..
-CompareBattleValueAgainst99:
+AddToBattleValueCappedAt99:
         lda     #$01                            ; 866D A9 01                    ..
         sta     $76                             ; 866F 85 76                    .v
         lda     #$63                            ; 8671 A9 63                    .c
 BattlePartyServices_Branch_8673:
         sta     $03                             ; 8673 85 03                    ..
         ldy     $6E0E                           ; 8675 AC 0E 6E                 ..n
-        jmp     SubtractBattleRecordValue       ; 8678 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 8678 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-CompareBattleSpanAgainstTenMillion:
+AddExperienceCappedBelowTenMillion:
         lda     #$80                            ; 867B A9 80                    ..
         sta     $03                             ; 867D 85 03                    ..
         lda     #$96                            ; 867F A9 96                    ..
@@ -1014,9 +1014,9 @@ CompareBattleSpanAgainstTenMillion:
         lda     #$98                            ; 8683 A9 98                    ..
         sta     $05                             ; 8685 85 05                    ..
         ldy     $6E0E                           ; 8687 AC 0E 6E                 ..n
-        jmp     SubtractBattleRecordValue       ; 868A 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 868A 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-CompareTotalGoldAgainst99999:
+AddGoldCappedAt99999:
         lda     #$9F                            ; 868D A9 9F                    ..
         sta     $03                             ; 868F 85 03                    ..
         lda     #$86                            ; 8691 A9 86                    ..
@@ -1030,7 +1030,7 @@ CompareTotalGoldAgainst99999:
         lda     $6159                           ; 86A3 AD 59 61                 .Ya
         sta     $74                             ; 86A6 85 74                    .t
         ldy     #$00                            ; 86A8 A0 00                    ..
-        jmp     SubtractBattleRecordValue       ; 86AA 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 86AA 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 SubtractBattleValueWithoutBorrowMode:
         lda     #$00                            ; 86AD A9 00                    ..
@@ -1068,7 +1068,7 @@ LoadTwoBitBattleValueFromBankedTable:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_86DB:
         lda     #$01                            ; 86DB A9 01                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 86DD 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 86DD 20 0C 87            ..
         sta     $72                             ; 86E0 85 72                    .r
         ldy     #$0F                            ; 86E2 A0 0F                    ..
         ldx     #$02                            ; 86E4 A2 02                    ..
@@ -1088,7 +1088,7 @@ LoadBattleValueZeroExtendedFromBankedTable:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_86FC:
         lda     #$08                            ; 86FC A9 08                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 86FE 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 86FE 20 0C 87            ..
         sta     $72                             ; 8701 85 72                    .r
         lda     #$00                            ; 8703 A9 00                    ..
         sta     $73                             ; 8705 85 73                    .s
@@ -1096,7 +1096,7 @@ BattlePartyServices_Branch_86FC:
         sta     $75                             ; 8709 85 75                    .u
         rts                                     ; 870B 60                       `
 ; ----------------------------------------------------------------------------
-DispatchBattleRecordByteThroughSelector:
+DispatchPartyRecordByteThroughSelector:
         sta     $6E59                           ; 870C 8D 59 6E                 .Yn
         ldy     #$05                            ; 870F A0 05                    ..
         lda     ($79),y                         ; 8711 B1 79                    .y
@@ -1107,7 +1107,7 @@ CompareBattleValueAgainstScratchRecord:
         lda     #$00                            ; 8717 A9 00                    ..
         sta     $77                             ; 8719 85 77                    .w
         jsr     PointBattleOperandToComparisonBuffer; 871B 20 C6 83              ..
-        jmp     SubtractBattleRecordValue       ; 871E 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 871E 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 CompareHeroBattleValueAgainstScratch:
         ldy     $6E0C                           ; 8721 AC 0C 6E                 ..n
@@ -1117,7 +1117,7 @@ CompareHeroBattleValueAgainstScratch:
         bcc     CompareBattleValueAgainstScratchRecord; 872B 90 EA              ..
         rts                                     ; 872D 60                       `
 ; ----------------------------------------------------------------------------
-LoadOrDeriveBattleRecordPair:
+LoadOrDerivePartyRecordPair:
         jsr     CheckPartyMemberClassAtLeastNine; 872E 20 D7 87                  ..
         bcc     BattlePartyServices_Branch_8739 ; 8731 90 06                    ..
         jsr     LoadSelector1RecordByteAndTwoBitFlag; 8733 20 4E 87              N.
@@ -1141,7 +1141,7 @@ BattlePartyServices_Branch_8741:
 ; ----------------------------------------------------------------------------
 LoadSelector1RecordByteAndTwoBitFlag:
         lda     #$01                            ; 874E A9 01                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 8750 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 8750 20 0C 87            ..
         sta     $72                             ; 8753 85 72                    .r
         ldy     #$0F                            ; 8755 A0 0F                    ..
         ldx     #$02                            ; 8757 A2 02                    ..
@@ -1151,7 +1151,7 @@ LoadSelector1RecordByteAndTwoBitFlag:
         ldx     $72                             ; 8760 A6 72                    .r
         rts                                     ; 8762 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattleRecordTailPairWithFallback:
+LoadPartyRecordTailPairWithFallback:
         jsr     CheckPartyMemberClassAtLeastNine; 8763 20 D7 87                  ..
         bcc     BattlePartyServices_Branch_876E ; 8766 90 06                    ..
         jsr     LoadSelector8RecordByteIntoX    ; 8768 20 7F 87                  ..
@@ -1173,13 +1173,13 @@ BattlePartyServices_Branch_8776:
 ; ----------------------------------------------------------------------------
 LoadSelector8RecordByteIntoX:
         lda     #$08                            ; 877F A9 08                    ..
-        jsr     DispatchBattleRecordByteThroughSelector; 8781 20 0C 87           ..
+        jsr     DispatchPartyRecordByteThroughSelector; 8781 20 0C 87            ..
         tax                                     ; 8784 AA                       .
         lda     #$00                            ; 8785 A9 00                    ..
         rts                                     ; 8787 60                       `
 ; ----------------------------------------------------------------------------
-HalveLoadedBattleRecordPair:
-        jsr     LoadOrDeriveBattleRecordPair    ; 8788 20 2E 87                  ..
+HalveLoadedPartyRecordPair:
+        jsr     LoadOrDerivePartyRecordPair     ; 8788 20 2E 87                  ..
         lsr     $01                             ; 878B 46 01                    F.
         ror     $00                           ; 878D 66 00                    f.
         ldy     #$01                            ; 878F A0 01                    ..
@@ -1195,7 +1195,7 @@ CacheBattleSelectionByte:
         sta     $615B                           ; 879D 8D 5B 61                 .[a
         rts                                     ; 87A0 60                       `
 ; ----------------------------------------------------------------------------
-SubtractBattleRecordWordFromWorkByte:
+SubtractPartyRecordWordFromWorkByte:
         ldy     #$03                            ; 87A1 A0 03                    ..
         sec                                     ; 87A3 38                       8
         lda     ($79),y                         ; 87A4 B1 79                    .y
@@ -1205,7 +1205,7 @@ SubtractBattleRecordWordFromWorkByte:
         sbc     #$00                            ; 87AB E9 00                    ..
         rts                                     ; 87AD 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleRecordPairAtSelection:
+ClearPartyRecordPairAtSelection:
         ldy     $6E0E                           ; 87AE AC 0E 6E                 ..n
         lda     #$00                            ; 87B1 A9 00                    ..
         sta     ($79),y                         ; 87B3 91 79                    .y
@@ -1306,7 +1306,7 @@ ResolveCurrentMemberClassNibbleIntoResult:
         rts                                     ; 883A 60                       `
 ; ----------------------------------------------------------------------------
 ResolveNthActiveBattleRosterEntryValue:
-        jsr     CountNonEmptyBattleRosterSlots  ; 883B 20 D7 8A                  ..
+        jsr     CountNonemptyInventorySlots     ; 883B 20 D7 8A                  ..
         stx     $75                             ; 883E 86 75                    .u
         ldx     $76                             ; 8840 A6 76                    .v
         cpx     #$08                            ; 8842 E0 08                    ..
@@ -1315,7 +1315,7 @@ ResolveNthActiveBattleRosterEntryValue:
         bcs     BattlePartyServices_Branch_8859 ; 8848 B0 0F                    ..
         ldy     #$13                            ; 884A A0 13                    ..
 BattlePartyServices_Branch_884C:
-        jsr     IsRawBattleRosterSlotEmpty      ; 884C 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 884C 20 97 8A                  ..
         beq     BattlePartyServices_Branch_8854 ; 884F F0 03                    ..
         dex                                     ; 8851 CA                       .
         bmi     BattlePartyServices_Branch_885B ; 8852 30 07                    0.
@@ -1331,7 +1331,7 @@ BattlePartyServices_Branch_885B:
         jsr     CheckPartyMemberClassAtLeastNine; 885B 20 D7 87                  ..
         bcs     BattlePartyServices_Branch_886D ; 885E B0 0D                    ..
         lda     ($79),y                         ; 8860 B1 79                    .y
-StoreResolvedBattleRosterValue:
+StoreResolvedInventoryItem:
         sta     $73                             ; 8862 85 73                    .s
         and     #$7F                            ; 8864 29 7F                    ).
         sta     $72                             ; 8866 85 72                    .r
@@ -1339,21 +1339,21 @@ StoreResolvedBattleRosterValue:
         rts                                     ; 8869 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_886A:
-        jmp     HandleInvalidBattlePartyTarget  ; 886A 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 886A 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_886D:
-        jsr     LookupBattleRecordByteFromClassOffset; 886D 20 A6 8A             ..
-        jmp     StoreResolvedBattleRosterValue  ; 8870 4C 62 88                 Lb.
+        jsr     LookupItemClassByteFromCharacterClass; 886D 20 A6 8A             ..
+        jmp     StoreResolvedInventoryItem      ; 8870 4C 62 88                 Lb.
 ; ----------------------------------------------------------------------------
-CountOccupiedBattleRosterSlots:
-        jsr     CountNonEmptyBattleRosterSlots  ; 8873 20 D7 8A                  ..
+CountInventoryItems:
+        jsr     CountNonemptyInventorySlots     ; 8873 20 D7 8A                  ..
         stx     $72                             ; 8876 86 72                    .r
         rts                                     ; 8878 60                       `
 ; ----------------------------------------------------------------------------
-StoreValueInFirstEmptyBattleRosterSlot:
+StoreItemInFirstEmptyInventorySlot:
         ldy     #$13                            ; 8879 A0 13                    ..
 BattlePartyServices_Branch_887B:
-        jsr     IsRawBattleRosterSlotEmpty      ; 887B 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 887B 20 97 8A                  ..
         beq     BattlePartyServices_Branch_8887 ; 887E F0 07                    ..
         iny                                     ; 8880 C8                       .
         cpy     #$1B                            ; 8881 C0 1B                    ..
@@ -1367,27 +1367,27 @@ BattlePartyServices_Branch_8887:
         sec                                     ; 888B 38                       8
         rts                                     ; 888C 60                       `
 ; ----------------------------------------------------------------------------
-RemoveBattleRosterEntryIfClassChecksPass:
+RemoveInventoryItemIfEquipmentChecksPass:
         jsr     ResolveNthActiveBattleRosterEntryValue; 888D 20 3B 88            ;.
         bcc     BattlePartyServices_Branch_88B7 ; 8890 90 25                    .%
         lda     $72                             ; 8892 A5 72                    .r
-        jsr     TestBattleRecordField2ByClassMask; 8894 20 63 8B                 c.
+        jsr     TestPartyRecordField2ByClassMask; 8894 20 63 8B                  c.
         bcs     BattlePartyServices_Branch_88B7 ; 8897 B0 1E                    ..
-        jsr     TestBattleRecordField3ByClassMask; 8899 20 68 8B                 h.
+        jsr     TestPartyRecordField3ByClassMask; 8899 20 68 8B                  h.
         bcs     BattlePartyServices_Branch_88B7 ; 889C B0 19                    ..
 BattlePartyServices_Branch_889E:
         clc                                     ; 889E 18                       .
         lda     $76                             ; 889F A5 76                    .v
         adc     #$13                            ; 88A1 69 13                    i.
         tay                                     ; 88A3 A8                       .
-ShiftBattleRosterBytesLeftFromCurrentSlot:
+CompactInventoryFromCurrentSlot:
         iny                                     ; 88A4 C8                       .
         lda     ($79),y                         ; 88A5 B1 79                    .y
         dey                                     ; 88A7 88                       .
         sta     ($79),y                         ; 88A8 91 79                    .y
         iny                                     ; 88AA C8                       .
         cpy     #$1B                            ; 88AB C0 1B                    ..
-        bcc     ShiftBattleRosterBytesLeftFromCurrentSlot; 88AD 90 F5           ..
+        bcc     CompactInventoryFromCurrentSlot ; 88AD 90 F5                    ..
         lda     #$FF                            ; 88AF A9 FF                    ..
         ldy     #$1A                            ; 88B1 A0 1A                    ..
         sta     ($79),y                         ; 88B3 91 79                    .y
@@ -1398,12 +1398,12 @@ BattlePartyServices_Branch_88B7:
         clc                                     ; 88B7 18                       .
         rts                                     ; 88B8 60                       `
 ; ----------------------------------------------------------------------------
-RemoveBattleRosterEntryAndCompactTail:
+RemoveInventoryItemAndCompact:
         jsr     ResolveNthActiveBattleRosterEntryValue; 88B9 20 3B 88            ;.
         bcs     BattlePartyServices_Branch_889E ; 88BC B0 E0                    ..
         rts                                     ; 88BE 60                       `
 ; ----------------------------------------------------------------------------
-FindBattleRosterOrdinalForMatchingValue:
+FindInventoryOrdinalForMatchingItem:
         lda     #$FF                            ; 88BF A9 FF                    ..
         sta     $08                             ; 88C1 85 08                    ..
         lda     $76                             ; 88C3 A5 76                    .v
@@ -1435,7 +1435,7 @@ BattlePartyServices_Branch_88E3:
         ldx     #$00                            ; 88F0 A2 00                    ..
         ldy     #$13                            ; 88F2 A0 13                    ..
 BattlePartyServices_Branch_88F4:
-        jsr     IsRawBattleRosterSlotEmpty      ; 88F4 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 88F4 20 97 8A                  ..
         beq     BattlePartyServices_Branch_88FE ; 88F7 F0 05                    ..
         cpy     $09                             ; 88F9 C4 09                    ..
         beq     BattlePartyServices_Branch_8905 ; 88FB F0 08                    ..
@@ -1454,12 +1454,12 @@ BattlePartyServices_Branch_8905:
         rts                                     ; 8908 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8909:
-        jmp     HandleInvalidBattlePartyTarget  ; 8909 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 8909 4C B9 81               L..
 ; ----------------------------------------------------------------------------
-ReconcileBattleRosterEntryHighBitByBucket:
+ReconcileInventoryItemEquippedBitByType:
         jsr     ResolveNthActiveBattleRosterEntryValue; 890C 20 3B 88            ;.
         bcc     BattlePartyServices_Branch_8909 ; 890F 90 F8                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8911 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 8911 20 E7 8A                  ..
         stx     $07                             ; 8914 86 07                    ..
         cpx     #$04                            ; 8916 E0 04                    ..
         bcs     BattlePartyServices_Branch_8934 ; 8918 B0 1A                    ..
@@ -1469,14 +1469,14 @@ ReconcileBattleRosterEntryHighBitByBucket:
         pha                                     ; 891E 48                       H
         lda     $07                             ; 891F A5 07                    ..
         sta     $76                             ; 8921 85 76                    .v
-        jsr     FindBattleRosterEntryByBucket   ; 8923 20 25 8A                  %.
+        jsr     FindInventoryItemByEquipmentType; 8923 20 25 8A                  %.
         pla                                     ; 8926 68                       h
         tay                                     ; 8927 A8                       .
         pla                                     ; 8928 68                       h
         sta     $76                             ; 8929 85 76                    .v
         bcc     BattlePartyServices_Branch_8934 ; 892B 90 07                    ..
         lda     $72                             ; 892D A5 72                    .r
-        jsr     TestBattleRecordField1ByClassMask; 892F 20 59 8B                 Y.
+        jsr     TestPartyRecordField1ByClassMask; 892F 20 59 8B                  Y.
         bcs     BattlePartyServices_Branch_89A4 ; 8932 B0 70                    .p
 BattlePartyServices_Branch_8934:
         jsr     CheckCurrentIndexedPartyMemberClassAtLeastNine; 8934 20 87 83    ..
@@ -1485,11 +1485,11 @@ BattlePartyServices_Branch_8934:
         lda     ($79),y                         ; 893A B1 79                    .y
         jsr     TestBattleClassMaskAgainstRosterByte; 893C 20 04 8B              ..
         bcc     BattlePartyServices_Branch_8960 ; 893F 90 1F                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8941 20 E7 8A       ..
-        jsr     ClearBattleRosterHighBitForBucketMatch; 8944 20 AA 89            ..
+        jsr     ClassifyItemEquipmentType       ; 8941 20 E7 8A                  ..
+        jsr     ClearEquippedBitForMatchingItemType; 8944 20 AA 89               ..
         ora     #$80                            ; 8947 09 80                    ..
         sta     ($79),y                         ; 8949 91 79                    .y
-        jsr     TestBattleRecordField1ByClassMask; 894B 20 59 8B                 Y.
+        jsr     TestPartyRecordField1ByClassMask; 894B 20 59 8B                  Y.
         bcc     BattlePartyServices_Branch_8958 ; 894E 90 08                    ..
         lda     $72                             ; 8950 A5 72                    .r
         and     #$7F                            ; 8952 29 7F                    ).
@@ -1510,16 +1510,16 @@ BattlePartyServices_Branch_8960:
         clc                                     ; 8964 18                       .
         rts                                     ; 8965 60                       `
 ; ----------------------------------------------------------------------------
-ReflagBattleRosterEntryByBucketMode0:
+ReconcileEquippedWeapon:
         lda     #$00                            ; 8966 A9 00                    ..
         beq     BattlePartyServices_Branch_8974 ; 8968 F0 0A                    ..
-ReflagBattleRosterEntryByBucketMode1:
+ReconcileEquippedArmor:
         lda     #$01                            ; 896A A9 01                    ..
         bne     BattlePartyServices_Branch_8974 ; 896C D0 06                    ..
-ReflagBattleRosterEntryByBucketMode2:
+ReconcileEquippedShield:
         lda     #$02                            ; 896E A9 02                    ..
         bne     BattlePartyServices_Branch_8974 ; 8970 D0 02                    ..
-ReflagBattleRosterEntryByBucketMode3:
+ReconcileEquippedHelmet:
         lda     #$03                            ; 8972 A9 03                    ..
 BattlePartyServices_Branch_8974:
         sta     $07                             ; 8974 85 07                    ..
@@ -1527,25 +1527,25 @@ BattlePartyServices_Branch_8974:
         pha                                     ; 8978 48                       H
         lda     $07                             ; 8979 A5 07                    ..
         sta     $76                             ; 897B 85 76                    .v
-        jsr     FindBattleRosterEntryByBucket   ; 897D 20 25 8A                  %.
+        jsr     FindInventoryItemByEquipmentType; 897D 20 25 8A                  %.
         pla                                     ; 8980 68                       h
         sta     $76                             ; 8981 85 76                    .v
         lda     $72                             ; 8983 A5 72                    .r
         bcc     BattlePartyServices_Branch_898C ; 8985 90 05                    ..
-        jsr     TestBattleRecordField1ByClassMask; 8987 20 59 8B                 Y.
+        jsr     TestPartyRecordField1ByClassMask; 8987 20 59 8B                  Y.
         bcs     BattlePartyServices_Branch_89A4 ; 898A B0 18                    ..
 BattlePartyServices_Branch_898C:
-        jsr     FindNthRawBattleRosterEntryByBucket; 898C 20 5D 8A               ].
+        jsr     FindNthRawInventoryItemByEquipmentType; 898C 20 5D 8A            ].
         bcs     BattlePartyServices_Branch_899C ; 898F B0 0B                    ..
         ldx     $07                             ; 8991 A6 07                    ..
-        jsr     ClearBattleRosterHighBitForBucketMatch; 8993 20 AA 89            ..
+        jsr     ClearEquippedBitForMatchingItemType; 8993 20 AA 89               ..
         sec                                     ; 8996 38                       8
         lda     #$80                            ; 8997 A9 80                    ..
         sta     $72                             ; 8999 85 72                    .r
         rts                                     ; 899B 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_899C:
-        jsr     IsRawBattleRosterSlotEmpty      ; 899C 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 899C 20 97 8A                  ..
         sta     $72                             ; 899F 85 72                    .r
         jmp     BattlePartyServices_Branch_8934 ; 89A1 4C 34 89                 L4.
 ; ----------------------------------------------------------------------------
@@ -1555,7 +1555,7 @@ BattlePartyServices_Branch_89A4:
         clc                                     ; 89A8 18                       .
         rts                                     ; 89A9 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleRosterHighBitForBucketMatch:
+ClearEquippedBitForMatchingItemType:
         pha                                     ; 89AA 48                       H
         tya                                     ; 89AB 98                       .
         pha                                     ; 89AC 48                       H
@@ -1565,7 +1565,7 @@ ClearBattleRosterHighBitForBucketMatch:
         ldy     #$13                            ; 89B3 A0 13                    ..
 BattlePartyServices_Branch_89B5:
         lda     ($79),y                         ; 89B5 B1 79                    .y
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 89B7 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 89B7 20 E7 8A                  ..
         cpx     $07                             ; 89BA E4 07                    ..
         bne     BattlePartyServices_Branch_89C2 ; 89BC D0 04                    ..
         and     #$7F                            ; 89BE 29 7F                    ).
@@ -1581,16 +1581,16 @@ BattlePartyServices_Branch_89C7:
         pla                                     ; 89CB 68                       h
         rts                                     ; 89CC 60                       `
 ; ----------------------------------------------------------------------------
-CountBattleRosterMatchesMode0:
+CountEquippedWeapons:
         lda     #$00                            ; 89CD A9 00                    ..
         beq     BattlePartyServices_Branch_89DB ; 89CF F0 0A                    ..
-CountBattleRosterMatchesMode1:
+CountEquippedArmor:
         lda     #$01                            ; 89D1 A9 01                    ..
         bne     BattlePartyServices_Branch_89DB ; 89D3 D0 06                    ..
-CountBattleRosterMatchesMode2:
+CountEquippedShields:
         lda     #$02                            ; 89D5 A9 02                    ..
         bne     BattlePartyServices_Branch_89DB ; 89D7 D0 02                    ..
-CountBattleRosterMatchesMode3:
+CountEquippedHelmets:
         lda     #$03                            ; 89D9 A9 03                    ..
 BattlePartyServices_Branch_89DB:
         sta     $07                             ; 89DB 85 07                    ..
@@ -1600,8 +1600,8 @@ BattlePartyServices_Branch_89DB:
         bcs     BattlePartyServices_Branch_8A05 ; 89E4 B0 1F                    ..
         ldy     #$13                            ; 89E6 A0 13                    ..
 BattlePartyServices_Branch_89E8:
-        jsr     IsRawBattleRosterSlotEmpty      ; 89E8 20 97 8A                  ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 89EB 20 E7 8A       ..
+        jsr     IsRawInventorySlotEmpty         ; 89E8 20 97 8A                  ..
+        jsr     ClassifyItemEquipmentType       ; 89EB 20 E7 8A                  ..
         cpx     $07                             ; 89EE E4 07                    ..
         bne     BattlePartyServices_Branch_89F4 ; 89F0 D0 02                    ..
         inc     $08                             ; 89F2 E6 08                    ..
@@ -1611,7 +1611,7 @@ BattlePartyServices_Branch_89F4:
         bcc     BattlePartyServices_Branch_89E8 ; 89F7 90 EF                    ..
         lda     $08                             ; 89F9 A5 08                    ..
         sta     $75                             ; 89FB 85 75                    .u
-        jsr     FindNthRawBattleRosterEntryByBucket; 89FD 20 5D 8A               ].
+        jsr     FindNthRawInventoryItemByEquipmentType; 89FD 20 5D 8A            ].
         lda     ($79),y                         ; 8A00 B1 79                    .y
         sta     $72                             ; 8A02 85 72                    .r
         rts                                     ; 8A04 60                       `
@@ -1619,8 +1619,8 @@ BattlePartyServices_Branch_89F4:
 BattlePartyServices_Branch_8A05:
         ldy     #$00                            ; 8A05 A0 00                    ..
 BattlePartyServices_Branch_8A07:
-        jsr     IsResolvedBattleRosterSlotEmpty ; 8A07 20 9E 8A                  ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8A0A 20 E7 8A       ..
+        jsr     IsResolvedInventorySlotEmpty    ; 8A07 20 9E 8A                  ..
+        jsr     ClassifyItemEquipmentType       ; 8A0A 20 E7 8A                  ..
         cpx     $07                             ; 8A0D E4 07                    ..
         bne     BattlePartyServices_Branch_8A13 ; 8A0F D0 02                    ..
         inc     $08                             ; 8A11 E6 08                    ..
@@ -1630,19 +1630,19 @@ BattlePartyServices_Branch_8A13:
         bcc     BattlePartyServices_Branch_8A07 ; 8A16 90 EF                    ..
         lda     $08                             ; 8A18 A5 08                    ..
         sta     $75                             ; 8A1A 85 75                    .u
-        jsr     FindNthResolvedBattleRosterEntryByBucket; 8A1C 20 7A 8A          z.
-        jsr     LookupBattleRecordByteFromClassOffset; 8A1F 20 A6 8A             ..
+        jsr     FindNthResolvedInventoryItemByEquipmentType; 8A1C 20 7A 8A       z.
+        jsr     LookupItemClassByteFromCharacterClass; 8A1F 20 A6 8A             ..
         sta     $72                             ; 8A22 85 72                    .r
         rts                                     ; 8A24 60                       `
 ; ----------------------------------------------------------------------------
-FindBattleRosterEntryByBucket:
+FindInventoryItemByEquipmentType:
         jsr     CheckPartyMemberClassAtLeastNine; 8A25 20 D7 87                  ..
         bcs     BattlePartyServices_Branch_8A42 ; 8A28 B0 18                    ..
         ldy     #$13                            ; 8A2A A0 13                    ..
 BattlePartyServices_Branch_8A2C:
         lda     ($79),y                         ; 8A2C B1 79                    .y
         bpl     BattlePartyServices_Branch_8A37 ; 8A2E 10 07                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8A30 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 8A30 20 E7 8A                  ..
         cpx     $76                             ; 8A33 E4 76                    .v
         beq     BattlePartyServices_Branch_8A3E ; 8A35 F0 07                    ..
 BattlePartyServices_Branch_8A37:
@@ -1660,10 +1660,10 @@ BattlePartyServices_Branch_8A3E:
 BattlePartyServices_Branch_8A42:
         ldy     #$00                            ; 8A42 A0 00                    ..
 BattlePartyServices_Branch_8A44:
-        jsr     LookupBattleRecordByteFromClassOffset; 8A44 20 A6 8A             ..
+        jsr     LookupItemClassByteFromCharacterClass; 8A44 20 A6 8A             ..
         and     #$FF                            ; 8A47 29 FF                    ).
         bpl     BattlePartyServices_Branch_8A52 ; 8A49 10 07                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8A4B 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 8A4B 20 E7 8A                  ..
         cpx     $76                             ; 8A4E E4 76                    .v
         beq     BattlePartyServices_Branch_8A59 ; 8A50 F0 07                    ..
 BattlePartyServices_Branch_8A52:
@@ -1678,13 +1678,13 @@ BattlePartyServices_Branch_8A59:
         sec                                     ; 8A5B 38                       8
         rts                                     ; 8A5C 60                       `
 ; ----------------------------------------------------------------------------
-FindNthRawBattleRosterEntryByBucket:
+FindNthRawInventoryItemByEquipmentType:
         ldx     $76                             ; 8A5D A6 76                    .v
         ldy     #$13                            ; 8A5F A0 13                    ..
 BattlePartyServices_Branch_8A61:
-        jsr     IsRawBattleRosterSlotEmpty      ; 8A61 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 8A61 20 97 8A                  ..
         beq     BattlePartyServices_Branch_8A71 ; 8A64 F0 0B                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8A66 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 8A66 20 E7 8A                  ..
         cpx     $07                             ; 8A69 E4 07                    ..
         bne     BattlePartyServices_Branch_8A71 ; 8A6B D0 04                    ..
         dec     $76                             ; 8A6D C6 76                    .v
@@ -1700,13 +1700,13 @@ BattlePartyServices_Branch_8A78:
         sec                                     ; 8A78 38                       8
         rts                                     ; 8A79 60                       `
 ; ----------------------------------------------------------------------------
-FindNthResolvedBattleRosterEntryByBucket:
+FindNthResolvedInventoryItemByEquipmentType:
         ldx     $76                             ; 8A7A A6 76                    .v
         ldy     #$00                            ; 8A7C A0 00                    ..
 BattlePartyServices_Branch_8A7E:
-        jsr     IsResolvedBattleRosterSlotEmpty ; 8A7E 20 9E 8A                  ..
+        jsr     IsResolvedInventorySlotEmpty    ; 8A7E 20 9E 8A                  ..
         beq     BattlePartyServices_Branch_8A8E ; 8A81 F0 0B                    ..
-        jsr     ClassifyBattleRosterByteIntoThresholdBucket; 8A83 20 E7 8A       ..
+        jsr     ClassifyItemEquipmentType       ; 8A83 20 E7 8A                  ..
         cpx     $07                             ; 8A86 E4 07                    ..
         bne     BattlePartyServices_Branch_8A8E ; 8A88 D0 04                    ..
         dec     $76                             ; 8A8A C6 76                    .v
@@ -1722,19 +1722,19 @@ BattlePartyServices_Branch_8A95:
         sec                                     ; 8A95 38                       8
         rts                                     ; 8A96 60                       `
 ; ----------------------------------------------------------------------------
-IsRawBattleRosterSlotEmpty:
+IsRawInventorySlotEmpty:
         lda     ($79),y                         ; 8A97 B1 79                    .y
         and     #$7F                            ; 8A99 29 7F                    ).
         cmp     #$7F                            ; 8A9B C9 7F                    ..
         rts                                     ; 8A9D 60                       `
 ; ----------------------------------------------------------------------------
-IsResolvedBattleRosterSlotEmpty:
-        jsr     LookupBattleRecordByteFromClassOffset; 8A9E 20 A6 8A             ..
+IsResolvedInventorySlotEmpty:
+        jsr     LookupItemClassByteFromCharacterClass; 8A9E 20 A6 8A             ..
         and     #$7F                            ; 8AA1 29 7F                    ).
         cmp     #$7F                            ; 8AA3 C9 7F                    ..
         rts                                     ; 8AA5 60                       `
 ; ----------------------------------------------------------------------------
-LookupBattleRecordByteFromClassOffset:
+LookupItemClassByteFromCharacterClass:
         tya                                     ; 8AA6 98                       .
         pha                                     ; 8AA7 48                       H
         txa                                     ; 8AA8 8A                       .
@@ -1766,11 +1766,11 @@ LookupBattleRecordByteFromClassOffset:
         db   $F5                             ; 8AD5 F5                       .
         db   $9F                             ; 8AD6 9F                       .
 ; ----------------------------------------------------------------------------
-CountNonEmptyBattleRosterSlots:
+CountNonemptyInventorySlots:
         ldx     #$00                            ; 8AD7 A2 00                    ..
         ldy     #$13                            ; 8AD9 A0 13                    ..
 BattlePartyServices_Branch_8ADB:
-        jsr     IsRawBattleRosterSlotEmpty      ; 8ADB 20 97 8A                  ..
+        jsr     IsRawInventorySlotEmpty         ; 8ADB 20 97 8A                  ..
         beq     BattlePartyServices_Branch_8AE1 ; 8ADE F0 01                    ..
         inx                                     ; 8AE0 E8                       .
 BattlePartyServices_Branch_8AE1:
@@ -1779,7 +1779,7 @@ BattlePartyServices_Branch_8AE1:
         bne     BattlePartyServices_Branch_8ADB ; 8AE4 D0 F5                    ..
         rts                                     ; 8AE6 60                       `
 ; ----------------------------------------------------------------------------
-ClassifyBattleRosterByteIntoThresholdBucket:
+ClassifyItemEquipmentType:
         pha                                     ; 8AE7 48                       H
         and     #$7F                            ; 8AE8 29 7F                    ).
         cmp     #$7F                            ; 8AEA C9 7F                    ..
@@ -1855,38 +1855,38 @@ BattlePartyServices_Branch_8B54:
         clc                                     ; 8B57 18                       .
         rts                                     ; 8B58 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField1ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B59 20 18 8C           ..
+TestPartyRecordField1ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B59 20 18 8C            ..
         db   $01                             ; 8B5C 01                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B5D 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField0ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B5E 20 18 8C           ..
+TestPartyRecordField0ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B5E 20 18 8C            ..
         db   $00                             ; 8B61 00                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B62 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField2ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B63 20 18 8C           ..
+TestPartyRecordField2ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B63 20 18 8C            ..
         db   $02                             ; 8B66 02                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B67 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField3ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B68 20 18 8C           ..
+TestPartyRecordField3ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B68 20 18 8C            ..
         db   $03                             ; 8B6B 03                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B6C 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField4ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B6D 20 18 8C           ..
+TestPartyRecordField4ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B6D 20 18 8C            ..
         db   $04                             ; 8B70 04                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B71 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordField5ByClassMask:
-        jsr     TestBattleRecordFieldMaskByInlineOffset; 8B72 20 18 8C           ..
+TestPartyRecordField5ByClassMask:
+        jsr     TestPartyRecordFieldMaskByInlineOffset; 8B72 20 18 8C            ..
         db   $05                             ; 8B75 05                       .
 ; ----------------------------------------------------------------------------
         rts                                     ; 8B76 60                       `
@@ -1991,7 +1991,7 @@ LoadBattleClassAdjustmentByte:
         lda     $6E0F                           ; 8C14 AD 0F 6E                 ..n
         rts                                     ; 8C17 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordFieldMaskByInlineOffset:
+TestPartyRecordFieldMaskByInlineOffset:
         sta     $6E0F                           ; 8C18 8D 0F 6E                 ..n
         txa                                     ; 8C1B 8A                       .
         pha                                     ; 8C1C 48                       H
@@ -2167,7 +2167,7 @@ BattlePartyServices_Branch_8F16:
         rts                                     ; 8F1F 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8F20:
-        jmp     HandleInvalidBattlePartyTarget  ; 8F20 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 8F20 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8F23:
         lda     #$00                            ; 8F23 A9 00                    ..
@@ -2292,7 +2292,7 @@ BattlePartyServices_Branch_8FE0:
         rts                                     ; 8FE1 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_8FE2:
-        jmp     HandleInvalidBattlePartyTarget  ; 8FE2 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 8FE2 4C B9 81               L..
 ; ----------------------------------------------------------------------------
         db   $29,$00,$00,$00,$29,$03,$17,$00 ; 8FE5 29 00 00 00 29 03 17 00  )...)...
         db   $17,$00,$00,$00,$2B,$20,$1A,$00 ; 8FED 17 00 00 00 2B 20 1A 00  ....+ ..
@@ -2357,7 +2357,7 @@ BattlePartyServices_Branch_904D:
         rts                                     ; 904E 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_904F:
-        jmp     HandleInvalidBattlePartyTarget  ; 904F 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 904F 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 SelectRosterBitWindowBase:
         ldx     #$10                            ; 9052 A2 10                    ..
@@ -2743,7 +2743,7 @@ TestNextPrimaryRosterMemberExists:
 BattlePartyServices_Branch_92F6:
         rts                                     ; 92F6 60                       `
 ; ----------------------------------------------------------------------------
-RemoveSavePartySlotAndCopyBattleRecord:
+RemoveSavePartySlotAndCopyPartyRecord:
         ldy     $6E0C                           ; 92F7 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; 92FA B9 6A 61                 .ja
         pha                                     ; 92FD 48                       H
@@ -2763,7 +2763,7 @@ BattlePartyServices_Branch_9314:
 BattlePartyServices_Branch_9315:
         pla                                     ; 9315 68                       h
         sta     $6E0A                           ; 9316 8D 0A 6E                 ..n
-        jmp     HandleInvalidBattlePartyTarget  ; 9319 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 9319 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 InsertSavePartyMemberIntoRoster:
         lda     $6E0A                           ; 931C AD 0A 6E                 ..n
@@ -2835,7 +2835,7 @@ BattlePartyServices_Branch_9385:
         ora     #$80                            ; 9391 09 80                    ..
         sta     SavePartyCharacter1,y           ; 9393 99 6A 61                 .ja
         sty     $6E0C                           ; 9396 8C 0C 6E                 ..n
-        jsr     LoadPartyMemberBattleRecordPointer; 9399 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 9399 20 01 83         ..
 InitializeJoinedPartyMemberBattleState:
         lda     $6E0C                           ; 939C AD 0C 6E                 ..n
         pha                                     ; 939F 48                       H
@@ -2881,7 +2881,7 @@ BattlePartyServices_Branch_93E2:
         txa                                     ; 93E2 8A                       .
         sta     SavePartyCharacter1,y           ; 93E3 99 6A 61                 .ja
         sty     $6E0C                           ; 93E6 8C 0C 6E                 ..n
-        jsr     LoadPartyMemberBattleRecordPointer; 93E9 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 93E9 20 01 83         ..
         ldy     #$05                            ; 93EC A0 05                    ..
         lda     $6F                             ; 93EE A5 6F                    .o
         cmp     #$08                            ; 93F0 C9 08                    ..
@@ -2889,11 +2889,11 @@ BattlePartyServices_Branch_93E2:
         clc                                     ; 93F4 18                       .
         adc     #$BC                            ; 93F5 69 BC                    i.
         sta     ($79),y                         ; 93F7 91 79                    .y
-        jsr     LoadOrDeriveBattleRecordPair    ; 93F9 20 2E 87                  ..
-        jsr     LoadBattleRecordTailPairWithFallback; 93FC 20 63 87              c.
+        jsr     LoadOrDerivePartyRecordPair     ; 93F9 20 2E 87                  ..
+        jsr     LoadPartyRecordTailPairWithFallback; 93FC 20 63 87               c.
         lda     #$07                            ; 93FF A9 07                    ..
         sta     $76                             ; 9401 85 76                    .v
-        jsr     WriteBattleRecordPackedBits     ; 9403 20 60 96                  `.
+        jsr     WritePartyRecordPackedBits      ; 9403 20 60 96                  `.
         jmp     InitializeJoinedPartyMemberBattleState; 9406 4C 9C 93           L..
 ; ----------------------------------------------------------------------------
 StashRemovedPartyMemberAndMarkSaveState:
@@ -2909,7 +2909,7 @@ StashRemovedPartyMemberAndMarkSaveState:
         rts                                     ; 9421 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9422:
-        jmp     HandleInvalidBattlePartyTarget  ; 9422 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 9422 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9425:
         rts                                     ; 9425 60                       `
@@ -3005,7 +3005,7 @@ BattlePartyServices_Branch_94B2:
         txs                                     ; 94C8 9A                       .
         pla                                     ; 94C9 68                       h
         sta     $6E0A                           ; 94CA 8D 0A 6E                 ..n
-        jmp     HandleInvalidBattlePartyTarget  ; 94CD 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 94CD 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 SelectSaveRosterParityBit:
         lda     SaveGameStateFlags              ; 94D0 AD 8E 61                 ..a
@@ -3018,7 +3018,7 @@ SelectSaveRosterParityBit:
         db   $65,$61                         ; 94DA 65 61                    ea
 ; ----------------------------------------------------------------------------
 ResolveChapterRosterMemberByOrdinal:
-        lda     $C000                           ; 94DC AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; 94DC AD 00 C0                 ...
         and     #$10                            ; 94DF 29 10                    ).
         bne     BattlePartyServices_Branch_94EC ; 94E1 D0 09                    ..
         lda     #$42                            ; 94E3 A9 42                    .B
@@ -3081,7 +3081,7 @@ BattlePartyServices_Branch_9532:
         rts                                     ; 953C 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_953D:
-        jmp     HandleInvalidBattlePartyTarget  ; 953D 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 953D 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 TestChapterRosterBitWindow:
         lda     $76                             ; 9540 A5 76                    .v
@@ -3178,7 +3178,7 @@ ReturnNoBattleAction:
 ; ----------------------------------------------------------------------------
 CompareBattleValueAgainstScratch:
         jsr     PointBattleOperandToComparisonBuffer; 9602 20 C6 83              ..
-        jmp     SubtractBattleRecordValue       ; 9605 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 9605 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 SubtractBattleWorkSpanIntoInlineRecordEntry:
         jsr     SubtractBattleWorkSpanIntoInlineRecord; 9608 20 60 84            `.
@@ -3187,12 +3187,12 @@ SubtractBattleWorkSpanIntoInlineRecordEntry:
 CompareBattleSpanAgainstFFThresholdEntry:
         lda     #$FF                            ; 960C A9 FF                    ..
         sta     $03                             ; 960E 85 03                    ..
-        jmp     SubtractBattleRecordValue       ; 9610 4C 21 84                 L!.
+        jmp     AddToPartyRecordValueCapped     ; 9610 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 CountMatchingBattleValuesAcrossSixSlots:
         lda     #$07                            ; 9613 A9 07                    ..
         sta     $76                             ; 9615 85 76                    .v
-        jsr     ResolveBattleRecordPackedSelector; 9617 20 31 97                 1.
+        jsr     ResolvePartyRecordPackedSelector; 9617 20 31 97                  1.
         ldx     #$00                            ; 961A A2 00                    ..
         bcc     BattlePartyServices_Branch_9640 ; 961C 90 22                    ."
 BattlePartyServices_Branch_961E:
@@ -3208,7 +3208,7 @@ BattlePartyServices_Branch_961E:
 BattlePartyServices_Branch_962D:
         lda     $9644,x                         ; 962D BD 44 96                 .D.
         sta     $76                             ; 9630 85 76                    .v
-        jsr     ResolveBattleRecordPackedSelector; 9632 20 31 97                 1.
+        jsr     ResolvePartyRecordPackedSelector; 9632 20 31 97                  1.
 BattlePartyServices_Branch_9635:
         pla                                     ; 9635 68                       h
         tax                                     ; 9636 AA                       .
@@ -3230,9 +3230,9 @@ ClearBattleSpanIfEligibleAndZeroed:
         bne     BattlePartyServices_Branch_965E ; 964E D0 0E                    ..
         lda     #$07                            ; 9650 A9 07                    ..
         sta     $76                             ; 9652 85 76                    .v
-        jsr     ResolveBattleRecordPackedSelector; 9654 20 31 97                 1.
+        jsr     ResolvePartyRecordPackedSelector; 9654 20 31 97                  1.
         bcc     BattlePartyServices_Branch_965E ; 9657 90 05                    ..
-        jsr     ClearBattleRecordPackedBits     ; 9659 20 E4 96                  ..
+        jsr     ClearPartyRecordPackedBits      ; 9659 20 E4 96                  ..
         sec                                     ; 965C 38                       8
         rts                                     ; 965D 60                       `
 ; ----------------------------------------------------------------------------
@@ -3240,13 +3240,13 @@ BattlePartyServices_Branch_965E:
         clc                                     ; 965E 18                       .
         rts                                     ; 965F 60                       `
 ; ----------------------------------------------------------------------------
-WriteBattleRecordPackedBits:
+WritePartyRecordPackedBits:
         lda     $76                             ; 9660 A5 76                    .v
         cmp     #$04                            ; 9662 C9 04                    ..
         beq     BattlePartyServices_Branch_968C ; 9664 F0 26                    .&
         cmp     #$80                            ; 9666 C9 80                    ..
         beq     BattlePartyServices_Branch_968E ; 9668 F0 24                    .$
-        jsr     TestBattleRecordBitBySelector   ; 966A 20 EA 97                  ..
+        jsr     TestPartyRecordBitBySelector    ; 966A 20 EA 97                  ..
         pha                                     ; 966D 48                       H
         rol     a                               ; 966E 2A                       *
         eor     #$01                            ; 966F 49 01                    I.
@@ -3333,11 +3333,11 @@ BattlePartyServices_Branch_96CF:
         plp                                     ; 96E2 28                       (
         rts                                     ; 96E3 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleRecordPackedBits:
+ClearPartyRecordPackedBits:
         lda     $76                             ; 96E4 A5 76                    .v
         cmp     #$04                            ; 96E6 C9 04                    ..
         beq     BattlePartyServices_Branch_9721 ; 96E8 F0 37                    .7
-        jsr     TestBattleRecordBitBySelector   ; 96EA 20 EA 97                  ..
+        jsr     TestPartyRecordBitBySelector    ; 96EA 20 EA 97                  ..
         eor     #$FF                            ; 96ED 49 FF                    I.
         and     ($79),y                         ; 96EF 31 79                    1y
         sta     ($79),y                         ; 96F1 91 79                    .y
@@ -3356,7 +3356,7 @@ ClearBattleRecordPackedBits:
         bpl     BattlePartyServices_Branch_971F ; 970A 10 13                    ..
         lda     #$10                            ; 970C A9 10                    ..
         sta     $76                             ; 970E 85 76                    .v
-        jsr     TestBattleRecordBitBySelector   ; 9710 20 EA 97                  ..
+        jsr     TestPartyRecordBitBySelector    ; 9710 20 EA 97                  ..
         lda     #$00                            ; 9713 A9 00                    ..
         ldy     #$05                            ; 9715 A0 05                    ..
         sta     ($79),y                         ; 9717 91 79                    .y
@@ -3369,26 +3369,26 @@ BattlePartyServices_Branch_971F:
         rts                                     ; 9720 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9721:
-        jsr     FindFirstEligibleBattleRecordSlot; 9721 20 65 97                 e.
+        jsr     FindFirstEligiblePartyRecordSlot; 9721 20 65 97                  e.
         bcc     BattlePartyServices_Branch_9730 ; 9724 90 0A                    ..
         lda     $73                             ; 9726 A5 73                    .s
         clc                                     ; 9728 18                       .
         adc     #$13                            ; 9729 69 13                    i.
         tay                                     ; 972B A8                       .
-        jsr     ShiftBattleRosterBytesLeftFromCurrentSlot; 972C 20 A4 88         ..
+        jsr     CompactInventoryFromCurrentSlot ; 972C 20 A4 88                  ..
         sec                                     ; 972F 38                       8
 BattlePartyServices_Branch_9730:
         rts                                     ; 9730 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattleRecordPackedSelector:
+ResolvePartyRecordPackedSelector:
         lda     $76                             ; 9731 A5 76                    .v
         cmp     #$04                            ; 9733 C9 04                    ..
-        beq     FindFirstEligibleBattleRecordSlot; 9735 F0 2E                   ..
-        jsr     TestBattleRecordBitBySelector   ; 9737 20 EA 97                  ..
+        beq     FindFirstEligiblePartyRecordSlot; 9735 F0 2E                    ..
+        jsr     TestPartyRecordBitBySelector    ; 9737 20 EA 97                  ..
         bcc     BattlePartyServices_Branch_9760 ; 973A 90 24                    .$
         lda     $76                             ; 973C A5 76                    .v
         cmp     #$04                            ; 973E C9 04                    ..
-        beq     FindFirstEligibleBattleRecordSlot; 9740 F0 23                   .#
+        beq     FindFirstEligiblePartyRecordSlot; 9740 F0 23                    .#
         cmp     #$10                            ; 9742 C9 10                    ..
         beq     BattlePartyServices_Branch_9782 ; 9744 F0 3C                    .<
         cmp     #$1C                            ; 9746 C9 1C                    ..
@@ -3402,7 +3402,7 @@ ResolveBattleRecordPackedSelector:
         cmp     #$20                            ; 9756 C9 20                    .
         beq     BattlePartyServices_Branch_97AE ; 9758 F0 54                    .T
         lda     $76                             ; 975A A5 76                    .v
-        jsr     TestBattleRecordBitBySelector   ; 975C 20 EA 97                  ..
+        jsr     TestPartyRecordBitBySelector    ; 975C 20 EA 97                  ..
 BattlePartyServices_Branch_975F:
         rts                                     ; 975F 60                       `
 ; ----------------------------------------------------------------------------
@@ -3411,14 +3411,14 @@ BattlePartyServices_Branch_9760:
         sta     $73                             ; 9762 85 73                    .s
         rts                                     ; 9764 60                       `
 ; ----------------------------------------------------------------------------
-FindFirstEligibleBattleRecordSlot:
+FindFirstEligiblePartyRecordSlot:
         ldy     #$13                            ; 9765 A0 13                    ..
 BattlePartyServices_Branch_9767:
         lda     ($79),y                         ; 9767 B1 79                    .y
         bpl     BattlePartyServices_Branch_9774 ; 9769 10 09                    ..
         cmp     #$FF                            ; 976B C9 FF                    ..
         beq     BattlePartyServices_Branch_9774 ; 976D F0 05                    ..
-        jsr     TestBattleRecordField1ByClassMask; 976F 20 59 8B                 Y.
+        jsr     TestPartyRecordField1ByClassMask; 976F 20 59 8B                  Y.
         bcs     BattlePartyServices_Branch_977B ; 9772 B0 07                    ..
 BattlePartyServices_Branch_9774:
         iny                                     ; 9774 C8                       .
@@ -3436,7 +3436,7 @@ BattlePartyServices_Branch_977B:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9782:
         php                                     ; 9782 08                       .
-        jsr     ReadBattleRecordField8Value     ; 9783 20 BC 97                  ..
+        jsr     ReadPartyRecordField8Value      ; 9783 20 BC 97                  ..
         and     #$60                            ; 9786 29 60                    )`
         asl     a                               ; 9788 0A                       .
         rol     a                               ; 9789 2A                       *
@@ -3454,7 +3454,7 @@ BattlePartyServices_Branch_9790:
         rts                                     ; 9798 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9799:
-        jsr     ReadBattleRecordField8Value     ; 9799 20 BC 97                  ..
+        jsr     ReadPartyRecordField8Value      ; 9799 20 BC 97                  ..
         and     #$8F                            ; 979C 29 8F                    ).
         sta     $73                             ; 979E 85 73                    .s
         rts                                     ; 97A0 60                       `
@@ -3482,13 +3482,13 @@ BattlePartyServices_Branch_97AE:
         plp                                     ; 97BA 28                       (
         rts                                     ; 97BB 60                       `
 ; ----------------------------------------------------------------------------
-ReadBattleRecordField8Value:
+ReadPartyRecordField8Value:
         ldy     #$08                            ; 97BC A0 08                    ..
         lda     ($79),y                         ; 97BE B1 79                    .y
         rts                                     ; 97C0 60                       `
 ; ----------------------------------------------------------------------------
-AdvanceBattleRecordPackedSelector:
-        jsr     TestBattleRecordBitBySelector   ; 97C1 20 EA 97                  ..
+AdvancePartyRecordPackedSelector:
+        jsr     TestPartyRecordBitBySelector    ; 97C1 20 EA 97                  ..
         lda     $76                             ; 97C4 A5 76                    .v
         cmp     #$10                            ; 97C6 C9 10                    ..
         beq     BattlePartyServices_Branch_97D0 ; 97C8 F0 06                    ..
@@ -3498,7 +3498,7 @@ AdvanceBattleRecordPackedSelector:
         rts                                     ; 97CF 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_97D0:
-        jsr     ReadBattleRecordField8Value     ; 97D0 20 BC 97                  ..
+        jsr     ReadPartyRecordField8Value      ; 97D0 20 BC 97                  ..
         and     #$60                            ; 97D3 29 60                    )`
         beq     BattlePartyServices_Branch_97E8 ; 97D5 F0 11                    ..
         sec                                     ; 97D7 38                       8
@@ -3519,9 +3519,9 @@ BattlePartyServices_Branch_97E8:
         clc                                     ; 97E8 18                       .
         rts                                     ; 97E9 60                       `
 ; ----------------------------------------------------------------------------
-TestBattleRecordBitBySelector:
+TestPartyRecordBitBySelector:
         ldy     $6E0C                           ; 97EA AC 0C 6E                 ..n
-        jsr     LoadPartyMemberBattleRecordPointer; 97ED 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 97ED 20 01 83         ..
         lda     $76                             ; 97F0 A5 76                    .v
         cmp     #$10                            ; 97F2 C9 10                    ..
         bcs     BattlePartyServices_Branch_9805 ; 97F4 B0 0F                    ..
@@ -3537,7 +3537,7 @@ TestBattleRecordBitBySelector:
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_9805:
         pha                                     ; 9805 48                       H
-        jsr     ResolveCurrentPartyMemberBattleRecordPointer; 9806 20 5C 83      \.
+        jsr     ResolveCurrentBattlePartyRecordPointer; 9806 20 5C 83            \.
         pla                                     ; 9809 68                       h
         sbc     #$10                            ; 980A E9 10                    ..
         sta     $00                           ; 980C 85 00                    ..
@@ -3610,7 +3610,7 @@ BattlePartyServices_Branch_9879:
 BattlePartyServices_Branch_9883:
         sty     $6E0C                           ; 9883 8C 0C 6E                 ..n
 BattlePartyServices_Branch_9886:
-        jsr     LoadPartyMemberBattleRecordPointer; 9886 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 9886 20 01 83         ..
         jsr     ResolveBattleActionRecordDescriptor; 9889 20 1E 83               ..
         jsr     ResolveCurrentMemberClassCodeIntoResult; 988C 20 15 88           ..
         lda     $72                             ; 988F A5 72                    .r
@@ -3670,7 +3670,7 @@ BattlePartyServices_Branch_98DE:
         rts                                     ; 98DF 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_98E0:
-        jsr     LoadPartyMemberBattleRecordPointer; 98E0 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; 98E0 20 01 83         ..
         ldy     #$05                            ; 98E3 A0 05                    ..
         lda     ($79),y                         ; 98E5 B1 79                    .y
         cmp     #$C5                            ; 98E7 C9 C5                    ..
@@ -3731,7 +3731,7 @@ FindFirstEligibleMemberWithFreeRosterSpace:
 BattlePartyServices_Branch_994A:
         ldx     $0A                             ; 994A A6 0A                    ..
         jsr     ResolveNextEligibleBattlePartyTarget; 994C 20 98 81              ..
-        jsr     CountNonEmptyBattleRosterSlots  ; 994F 20 D7 8A                  ..
+        jsr     CountNonemptyInventorySlots     ; 994F 20 D7 8A                  ..
         cpx     #$08                            ; 9952 E0 08                    ..
         bcc     BattlePartyServices_Branch_9962 ; 9954 90 0C                    ..
         inc     $0A                             ; 9956 E6 0A                    ..
@@ -3821,7 +3821,7 @@ BattlePartyServices_Branch_99D2:
 BattlePartyServices_Branch_99DB:
         pla                                     ; 99DB 68                       h
         sta     $6E0A                           ; 99DC 8D 0A 6E                 ..n
-        jmp     HandleInvalidBattlePartyTarget  ; 99DF 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 99DF 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_99E2:
         jsr     CheckCurrentMapBattleRestrictionGate; 99E2 20 98 84              ..
@@ -4070,7 +4070,7 @@ BattlePartyServices_Branch_9B62:
         sta     $6E0C                           ; 9B63 8D 0C 6E                 ..n
         pla                                     ; 9B66 68                       h
         sta     $6E0A                           ; 9B67 8D 0A 6E                 ..n
-        jmp     HandleInvalidBattlePartyTarget  ; 9B6A 4C B9 81                 L..
+        jmp     ShowInvalidBattleTargetDebugScreen; 9B6A 4C B9 81               L..
 ; ----------------------------------------------------------------------------
 RemoveSelectedMemberAndRepackRoster:
         lda     $6E0A                           ; 9B6D AD 0A 6E                 ..n
@@ -4409,13 +4409,13 @@ BattlePartyServices_Branch_9D90:
         rts                                     ; 9D91 60                       `
 ; ----------------------------------------------------------------------------
 ResolveCurrentMemberRosterIndex:
-        jsr     ResolveCurrentPartyMemberBattleRecordPointer; 9D92 20 5C 83      \.
-        bcc     ReturnAfterCurrentBattleRecordLookup; 9D95 90 05                ..
+        jsr     ResolveCurrentBattlePartyRecordPointer; 9D92 20 5C 83            \.
+        bcc     ReturnAfterCurrentPartyRecordLookup; 9D95 90 05                 ..
         txa                                     ; 9D97 8A                       .
         lsr     a                               ; 9D98 4A                       J
         sta     $72                             ; 9D99 85 72                    .r
         sec                                     ; 9D9B 38                       8
-ReturnAfterCurrentBattleRecordLookup:
+ReturnAfterCurrentPartyRecordLookup:
         rts                                     ; 9D9C 60                       `
 ; ----------------------------------------------------------------------------
 ResolveTargetAndTestMemberClassBelowNine:
@@ -4529,6 +4529,7 @@ Bank10_BattleActionHandlerPointers:
         db   $22,$18,$18,$18,$18,$18,$18,$18 ; 9F72 22 18 18 18 18 18 18 18  ".......
         db   $02,$06,$18,$09,$00,$0E,$0E,$18 ; 9F7A 02 06 18 09 00 0E 0E 18  ........
         db   $02                             ; 9F82 02                       .
+Bank10_CharacterRecordPointers:
         db   $01                             ; 9F83 01                       .
         db   $60,$1F,$60,$3D,$60,$5B,$60,$79 ; 9F84 60 1F 60 3D 60 5B 60 79  `.`=`[`y
         db   $60,$97,$60,$B5,$60,$D3,$60,$F1 ; 9F8C 60 97 60 B5 60 D3 60 F1  `.`.`.`.
@@ -4536,6 +4537,7 @@ Bank10_BattleActionHandlerPointers:
         db   $61,$27,$61,$2D,$61,$33,$61,$39 ; 9F9C 61 27 61 2D 61 33 61 39  a'a-a3a9
         db   $61,$3F,$61,$45,$61,$4B,$61,$51 ; 9FA4 61 3F 61 45 61 4B 61 51  a?aEaKaQ
         db   $61                             ; 9FAC 61                       a
+Bank10_BattlePartyRecordPointers:
         db   $10                             ; 9FAD 10                       .
         db   $72,$1A,$72,$24,$72,$2E,$72,$38 ; 9FAE 72 1A 72 24 72 2E 72 38  r.r$r.r8
         db   $72,$42,$72,$4C,$72,$56,$72,$60 ; 9FB6 72 42 72 4C 72 56 72 60  rBrLrVr`
@@ -4601,7 +4603,7 @@ DispatchBattleActionThroughResolvedTarget:
         and     #$20                            ; A085 29 20                    )
         beq     RestoreBattleOperationRegisters ; A087 F0 7E                    .~
         ldy     $6E0C                           ; A089 AC 0C 6E                 ..n
-        jsr     LoadPartyMemberBattleRecordPointer; A08C 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; A08C 20 01 83         ..
         lda     $6E0C                           ; A08F AD 0C 6E                 ..n
         jsr     TranslatePartyIndexToBattleSlotOffset; A092 20 9E A1             ..
         tax                                     ; A095 AA                       .
@@ -4653,7 +4655,7 @@ BattlePartyServices_Branch_A0DB:
         pha                                     ; A0E6 48                       H
         tya                                     ; A0E7 98                       .
         jsr     TranslatePartyIndexToBattleSlotOffset; A0E8 20 9E A1             ..
-        jsr     LoadPartyMemberBattleRecordPointer; A0EB 20 01 83                ..
+        jsr     LoadCharacterRecordPointerByPartyMemberId; A0EB 20 01 83         ..
         jsr     AccumulateRosterMatchFlagsIntoMemberState; A0EE 20 64 A1         d.
         jsr     MergeRosterByteIntoBattleMemberFlags; A0F1 20 29 A1              ).
         jsr     MarkBattleMemberPromotedFlag    ; A0F4 20 14 A1                  ..
@@ -4973,21 +4975,21 @@ BattlePartyServices_Branch_A2AE:
         db   $31,$32,$29,$2A,$2B,$29,$2A,$2B ; A2D1 31 32 29 2A 2B 29 2A 2B  12)*+)*+
         db   $2C,$2D                         ; A2D9 2C 2D                    ,-
 ; ----------------------------------------------------------------------------
-FindPartyMemberByBattleRosterValue:
+FindPartyMemberCarryingItem:
         and     #$7F                            ; A2DB 29 7F                    ).
         sta     $72                             ; A2DD 85 72                    .r
         txa                                     ; A2DF 8A                       .
         pha                                     ; A2E0 48                       H
         tya                                     ; A2E1 98                       .
         pha                                     ; A2E2 48                       H
-        jsr     ScanPartyBattleRecordsForValue  ; A2E3 20 EB A2                  ..
+        jsr     ScanPartyInventoriesForItem     ; A2E3 20 EB A2                  ..
         pla                                     ; A2E6 68                       h
         tay                                     ; A2E7 A8                       .
         pla                                     ; A2E8 68                       h
         tax                                     ; A2E9 AA                       .
         rts                                     ; A2EA 60                       `
 ; ----------------------------------------------------------------------------
-ScanPartyBattleRecordsForValue:
+ScanPartyInventoriesForItem:
         ldx     #$1B                            ; A2EB A2 1B                    ..
 BattlePartyServices_Branch_A2ED:
         txa                                     ; A2ED 8A                       .
@@ -4997,7 +4999,7 @@ BattlePartyServices_Branch_A2ED:
         and     #$7F                            ; A2F4 29 7F                    ).
         cmp     #$08                            ; A2F6 C9 08                    ..
         bcs     BattlePartyServices_Branch_A30C ; A2F8 B0 12                    ..
-        jsr     LoadBattleRecordPointerByCharacterId; A2FA 20 06 83              ..
+        jsr     LoadCharacterRecordPointerByCharacterId; A2FA 20 06 83           ..
         ldy     #$13                            ; A2FD A0 13                    ..
 BattlePartyServices_Branch_A2FF:
         lda     ($79),y                         ; A2FF B1 79                    .y
@@ -5106,7 +5108,7 @@ ClearBattleWorkAreaAndScanGroupSlots:
         ldx     #$70                            ; A393 A2 70                    .p
         lda     #$00                            ; A395 A9 00                    ..
 BattlePartyServices_Branch_A397:
-        sta     $7274,x                         ; A397 9D 74 72                 .tr
+        sta     CombatantRecordBase,x           ; A397 9D 74 72                 .tr
         dex                                     ; A39A CA                       .
         bne     BattlePartyServices_Branch_A397 ; A39B D0 FA                    ..
         ldx     #$00                            ; A39D A2 00                    ..
@@ -6082,7 +6084,7 @@ LoadTailBitsAndDispatchBattleSpanUpdate:
         lda     #$05                            ; A969 A9 05                    ..
         jmp     AddAndClampBattleRecordValue    ; A96B 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-SeedFF00AndDispatchBattleSpanUpdate:
+AddPackedPartyStatCappedAt255:
         lda     #$FF                            ; A96E A9 FF                    ..
         sta     $82                             ; A970 85 82                    ..
 LoadPackedByteAndDispatchBattleSpanUpdate:
@@ -6092,7 +6094,7 @@ LoadPackedByteAndDispatchBattleSpanUpdate:
         lda     #$06                            ; A979 A9 06                    ..
         jmp     AddAndClampBattleRecordValue    ; A97B 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-ClampBattleRecordValueTo255:
+AddToSelectedBattleRecordValueCappedAt255:
         ldy     #$FF                            ; A97E A0 FF                    ..
         sty     $7E                             ; A980 84 7E                    .~
         iny                                     ; A982 C8                       .
@@ -6101,13 +6103,13 @@ ClampBattleRecordValueTo255:
         lda     #$00                            ; A987 A9 00                    ..
         jmp     AddAndClampBattleRecordValue    ; A989 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-ClampPrimaryBattleStatTo999:
+AddToPrimaryBattleStatCappedAt999:
         ldy     #$01                            ; A98C A0 01                    ..
-        jmp     ClampBattleRecordValueTo999     ; A98E 4C 93 A9                 L..
+        jmp     AddToBattleRecordValueCappedAt999; A98E 4C 93 A9                L..
 ; ----------------------------------------------------------------------------
-ClampSecondaryBattleStatTo999:
+AddToSecondaryBattleStatCappedAt999:
         ldy     #$02                            ; A991 A0 02                    ..
-ClampBattleRecordValueTo999:
+AddToBattleRecordValueCappedAt999:
         lda     #$E7                            ; A993 A9 E7                    ..
         sta     $7E                             ; A995 85 7E                    .~
         lda     #$03                            ; A997 A9 03                    ..
@@ -6152,7 +6154,7 @@ SetBattleSlotHpToHalfMaximum:
         sta     ($84),y                         ; A9D2 91 84                    ..
         rts                                     ; A9D4 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleRecordControlByte0C:
+ClearMaximumHpLowByte:
         ldy     #$0C                            ; A9D5 A0 0C                    ..
         lda     #$00                            ; A9D7 A9 00                    ..
         sta     ($84),y                         ; A9D9 91 84                    ..
@@ -6771,7 +6773,7 @@ BattlePartyServices_Branch_ADEE:
         jsr     FlipBattleSlotHighBitFlag       ; ADFB 20 66 B2                  f.
         jsr     LoadBattleActionGateByte        ; ADFE 20 72 B2                  r.
         jsr     StoreBattleActionSelectionMask  ; AE01 20 11 B3                  ..
-        jsr     IntersectBattleSelectionMaskByDualSourcePairs; AE04 20 4E B8     N.
+        jsr     IntersectCandidatesByDualStatePairs; AE04 20 4E B8               N.
         ldx     #$03                            ; AE07 A2 03                    ..
 BattlePartyServices_Branch_AE09:
         txa                                     ; AE09 8A                       .
@@ -6807,7 +6809,7 @@ BattlePartyServices_Branch_AE2D:
 BattlePartyServices_Branch_AE33:
         pla                                     ; AE33 68                       h
         pha                                     ; AE34 48                       H
-        jsr     ClearIndexedBattleSelectionBit  ; AE35 20 C5 BB                  ..
+        jsr     ClearCandidateBitByIndex        ; AE35 20 C5 BB                  ..
 BattlePartyServices_Branch_AE38:
         pla                                     ; AE38 68                       h
         tax                                     ; AE39 AA                       .
@@ -7574,7 +7576,7 @@ BattlePartyServices_Branch_B308:
         rol     a                               ; B308 2A                       *
         dex                                     ; B309 CA                       .
         bpl     BattlePartyServices_Branch_B308 ; B30A 10 FC                    ..
-        jmp     SucceedAndIntersectBattleSelectionMask; B30C 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B30C 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B30F:
         clc                                     ; B30F 18                       .
@@ -7604,7 +7606,7 @@ BattlePartyServices_Branch_B32C:
         brk                                     ; B331 00                       .
         db   $29,$C3,$0E                     ; B332 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
-        jmp     SucceedAndIntersectBattleSelectionMask; B335 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B335 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B338:
         pha                                     ; B338 48                       H
@@ -7939,19 +7941,19 @@ MergeBattleEffectSelectionSources:
         tay                                     ; B5CD A8                       .
         bmi     BattlePartyServices_Branch_B5D7 ; B5CE 30 07                    0.
         lda     #$04                            ; B5D0 A9 04                    ..
-        jsr     SeedCurrentBattleSlotMask       ; B5D2 20 4F B7                  O.
+        jsr     SeedCurrentSlotSelectorAndMask  ; B5D2 20 4F B7                  O.
         bcs     BattlePartyServices_Branch_B5DF ; B5D5 B0 08                    ..
 BattlePartyServices_Branch_B5D7:
         lda     #$04                            ; B5D7 A9 04                    ..
-        jsr     BuildBattleSelectionMaskFromEnabledSlots; B5D9 20 57 B9          W.
-        jsr     PruneBattleSelectionMaskByGroupMask; B5DC 20 DA B8               ..
+        jsr     BuildCandidateMaskFromEnabledSlots; B5D9 20 57 B9                W.
+        jsr     PruneCandidateMaskByTacticGroup ; B5DC 20 DA B8                  ..
 BattlePartyServices_Branch_B5DF:
         pla                                     ; B5DF 68                       h
         ldx     #$13                            ; B5E0 A2 13                    ..
         stx     $0D                             ; B5E2 86 0D                    ..
         ldx     #$03                            ; B5E4 A2 03                    ..
         stx     $0E                             ; B5E6 86 0E                    ..
-        jmp     ApplyBattleTargetGroupMask      ; B5E8 4C B8 B8                 L..
+        jmp     ApplyTacticGroupMaskToTargetSelection; B5E8 4C B8 B8            L..
 ; ----------------------------------------------------------------------------
 RequireHighBattleSlotIndex:
         lda     $96                             ; B5EB A5 96                    ..
@@ -7987,7 +7989,7 @@ BattlePartyServices_Branch_B614:
         rol     a                               ; B614 2A                       *
         dey                                     ; B615 88                       .
         bpl     BattlePartyServices_Branch_B614 ; B616 10 FC                    ..
-        jsr     SucceedAndIntersectBattleSelectionMask; B618 20 1B B9            ..
+        jsr     AcceptAndIntersectCandidateMask ; B618 20 1B B9                  ..
 BattlePartyServices_Branch_B61B:
         dex                                     ; B61B CA                       .
         bpl     BattlePartyServices_Branch_B5FD ; B61C 10 DF                    ..
@@ -8014,7 +8016,7 @@ BuildBattleEffectAvailabilityMask:
         dey                                     ; B635 88                       .
         beq     BattlePartyServices_Branch_B63D ; B636 F0 05                    ..
         pha                                     ; B638 48                       H
-        jsr     IntersectBattleSelectionMaskByDualSourcePairs; B639 20 4E B8     N.
+        jsr     IntersectCandidatesByDualStatePairs; B639 20 4E B8               N.
         pla                                     ; B63C 68                       h
 BattlePartyServices_Branch_B63D:
         tay                                     ; B63D A8                       .
@@ -8034,7 +8036,7 @@ BattlePartyServices_Branch_B64E:
         dex                                     ; B650 CA                       .
         bpl     BattlePartyServices_Branch_B646 ; B651 10 F3                    ..
         lda     $0D                             ; B653 A5 0D                    ..
-        jmp     SucceedAndIntersectBattleSelectionMask; B655 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B655 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B658:
         lda     #$FF                            ; B658 A9 FF                    ..
@@ -8052,13 +8054,13 @@ BattlePartyServices_Branch_B665:
         dex                                     ; B667 CA                       .
         bpl     BattlePartyServices_Branch_B65E ; B668 10 F4                    ..
         lda     $0D                             ; B66A A5 0D                    ..
-        jmp     SucceedAndIntersectBattleSelectionMask; B66C 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B66C 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-RequireBattleEffectGroupEntriesNonzero:
+RequireTacticGroupValuesNonzero:
         cpy     #$03                            ; B66F C0 03                    ..
         bne     BattlePartyServices_Branch_B67A ; B671 D0 07                    ..
         pha                                     ; B673 48                       H
-        jsr     RequireGroupPrunedBattleSelectionSurvivor; B674 20 75 B8         u.
+        jsr     RequireTacticFilteredCandidateSurvives; B674 20 75 B8            u.
         pla                                     ; B677 68                       h
         bcc     BattlePartyServices_Branch_B688 ; B678 90 0E                    ..
 BattlePartyServices_Branch_B67A:
@@ -8091,9 +8093,9 @@ BattlePartyServices_Branch_B697:
         rol     $0D                             ; B697 26 0D                    &.
         dex                                     ; B699 CA                       .
         bpl     BattlePartyServices_Branch_B690 ; B69A 10 F4                    ..
-        jmp     PruneBattleSelectionMaskByGroupMask; B69C 4C DA B8              L..
+        jmp     PruneCandidateMaskByTacticGroup ; B69C 4C DA B8                 L..
 ; ----------------------------------------------------------------------------
-BuildInvertedBattleEffectThresholdMask:
+BuildInvertedHpThresholdMask:
         bmi     BattlePartyServices_Branch_B6BF ; B69F 30 1E                    0.
         lda     #$FF                            ; B6A1 A9 FF                    ..
         sta     $0D                             ; B6A3 85 0D                    ..
@@ -8112,7 +8114,7 @@ BattlePartyServices_Branch_B6B3:
         bpl     BattlePartyServices_Branch_B6A7 ; B6B6 10 EF                    ..
         lda     $0D                             ; B6B8 A5 0D                    ..
         eor     #$0F                            ; B6BA 49 0F                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B6BC 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B6BC 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B6BF:
         lda     #$FF                            ; B6BF A9 FF                    ..
@@ -8132,9 +8134,9 @@ BattlePartyServices_Branch_B6D0:
         bpl     BattlePartyServices_Branch_B6C5 ; B6D3 10 F0                    ..
         lda     $0D                             ; B6D5 A5 0D                    ..
         eor     #$FF                            ; B6D7 49 FF                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B6D9 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B6D9 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-RequireBattleEffectGroupThreshold:
+RequireTacticGroupHpThreshold:
         tay                                     ; B6DC A8                       .
         bmi     BattlePartyServices_Branch_B6F6 ; B6DD 30 17                    0.
         ldx     $D6                             ; B6DF A6 D6                    ..
@@ -8184,7 +8186,7 @@ BattlePartyServices_Branch_B710:
 BattlePartyServices_Branch_B714:
         sec                                     ; B714 38                       8
         bcs     BattlePartyServices_Branch_B710 ; B715 B0 F9                    ..
-RequireBattleEffectGroupValueNotFF:
+RequireTacticGroupValueNotFF:
         tay                                     ; B717 A8                       .
         bmi     BattlePartyServices_Branch_B729 ; B718 30 0F                    0.
         ldx     $D6                             ; B71A A6 D6                    ..
@@ -8225,15 +8227,15 @@ BattlePartyServices_Branch_B73E:
 ; ----------------------------------------------------------------------------
 BuildCurrentBattleEffectGroupMask:
         dey                                     ; B742 88                       .
-        beq     BuildDefaultBattleEffectGroupMask; B743 F0 05                   ..
+        beq     BuildDefaultTacticGroupMask     ; B743 F0 05                    ..
         pha                                     ; B745 48                       H
-        jsr     IntersectBattleSelectionMaskByDualSourcePairs; B746 20 4E B8     N.
+        jsr     IntersectCandidatesByDualStatePairs; B746 20 4E B8               N.
         pla                                     ; B749 68                       h
-BuildDefaultBattleEffectGroupMask:
+BuildDefaultTacticGroupMask:
         tay                                     ; B74A A8                       .
         bmi     BattlePartyServices_Branch_B765 ; B74B 30 18                    0.
         lda     #$01                            ; B74D A9 01                    ..
-SeedCurrentBattleSlotMask:
+SeedCurrentSlotSelectorAndMask:
         sta     $6F                             ; B74F 85 6F                    .o
         lda     #$00                            ; B751 A9 00                    ..
         sta     $0D                             ; B753 85 0D                    ..
@@ -8246,18 +8248,18 @@ BattlePartyServices_Branch_B757:
         dex                                     ; B75D CA                       .
         bpl     BattlePartyServices_Branch_B757 ; B75E 10 F7                    ..
         lda     $0D                             ; B760 A5 0D                    ..
-        jmp     SucceedAndIntersectBattleSelectionMask; B762 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B762 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B765:
         lda     #$01                            ; B765 A9 01                    ..
-        jsr     BuildBattleSelectionMaskFromEnabledSlots; B767 20 57 B9          W.
+        jsr     BuildCandidateMaskFromEnabledSlots; B767 20 57 B9                W.
         lda     $0D                             ; B76A A5 0D                    ..
-        jmp     SucceedAndIntersectBattleSelectionMask; B76C 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B76C 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-TestBattleSlotDescriptorBitGate:
+TestSlotDescriptorBitGate:
         cpy     #$01                            ; B76F C0 01                    ..
         beq     BattlePartyServices_Branch_B779 ; B771 F0 06                    ..
-        jsr     ValidateAdditionalBattleTarget  ; B773 20 21 B9                  !.
+        jsr     RequireAdditionalValidBattleTarget; B773 20 21 B9                !.
         bcs     BattlePartyServices_Branch_B779 ; B776 B0 01                    ..
         rts                                     ; B778 60                       `
 ; ----------------------------------------------------------------------------
@@ -8287,30 +8289,30 @@ BattlePartyServices_Branch_B78E:
         clc                                     ; B797 18                       .
         rts                                     ; B798 60                       `
 ; ----------------------------------------------------------------------------
-RequireSingleBattleEffectSelector:
+RequireSingleSlotSelector:
         cpy     #$01                            ; B799 C0 01                    ..
         bne     BattlePartyServices_Branch_B7D5 ; B79B D0 38                    .8
 BattlePartyServices_Branch_B79D:
         sec                                     ; B79D 38                       8
         rts                                     ; B79E 60                       `
 ; ----------------------------------------------------------------------------
-TestGroup10Index0ThroughMaskBuilder:
+TestTactic10CandidateIndex0WithMaskBuilder:
         ldx     #$10                            ; B79F A2 10                    ..
         stx     $0D                             ; B7A1 86 0D                    ..
         ldx     #$00                            ; B7A3 A2 00                    ..
         beq     BattlePartyServices_Branch_B7F9 ; B7A5 F0 52                    .R
-TestGroup10Index0ThroughSlotScan:
+TestTactic10CandidateIndex0WithSlotScan:
         ldx     #$10                            ; B7A7 A2 10                    ..
         stx     $0D                             ; B7A9 86 0D                    ..
         ldx     #$00                            ; B7AB A2 00                    ..
         beq     BattlePartyServices_Branch_B7B5 ; B7AD F0 06                    ..
-TestGroup11Index1ThroughSlotScan:
+TestTactic11CandidateIndex1WithSlotScan:
         ldx     #$11                            ; B7AF A2 11                    ..
         stx     $0D                             ; B7B1 86 0D                    ..
         ldx     #$01                            ; B7B3 A2 01                    ..
 BattlePartyServices_Branch_B7B5:
         stx     $0E                             ; B7B5 86 0E                    ..
-        jsr     IntersectBattleSelectionMaskBySignedSourceMask; B7B7 20 03 B9    ..
+        jsr     IntersectCandidatesBySignedStateComplement; B7B7 20 03 B9        ..
         lda     $09                             ; B7BA A5 09                    ..
         sec                                     ; B7BC 38                       8
         bne     BattlePartyServices_Branch_B7C0 ; B7BD D0 01                    ..
@@ -8318,7 +8320,7 @@ BattlePartyServices_Branch_B7B5:
 BattlePartyServices_Branch_B7C0:
         rts                                     ; B7C0 60                       `
 ; ----------------------------------------------------------------------------
-FilterBattleEffectByDescriptorMask:
+ApplySlotDescriptorFilterToCandidates:
         pha                                     ; B7C1 48                       H
         jsr     ReadBattleSlotDescriptorLowNibble; B7C2 20 4E AD                 N.
         brk                                     ; B7C5 00                       .
@@ -8329,18 +8331,18 @@ FilterBattleEffectByDescriptorMask:
         cpy     #$01                            ; B7CC C0 01                    ..
         beq     BattlePartyServices_Branch_B7D5 ; B7CE F0 05                    ..
         pha                                     ; B7D0 48                       H
-        jsr     ValidateAdditionalBattleTarget  ; B7D1 20 21 B9                  !.
+        jsr     RequireAdditionalValidBattleTarget; B7D1 20 21 B9                !.
         pla                                     ; B7D4 68                       h
 BattlePartyServices_Branch_B7D5:
-        bcs     IntersectBattleSelectionMaskByDualSourcePairs; B7D5 B0 77       .w
+        bcs     IntersectCandidatesByDualStatePairs; B7D5 B0 77                 .w
         rts                                     ; B7D7 60                       `
 ; ----------------------------------------------------------------------------
-RequireThirdSelectorThroughGroupTest:
+RequireThirdSlotSelectorWithTacticTest:
         cpy     #$03                            ; B7D8 C0 03                    ..
         bne     BattlePartyServices_Branch_B79D ; B7DA D0 C1                    ..
-        jmp     RequireGroupPrunedBattleSelectionSurvivor; B7DC 4C 75 B8        Lu.
+        jmp     RequireTacticFilteredCandidateSurvives; B7DC 4C 75 B8           Lu.
 ; ----------------------------------------------------------------------------
-RequireThirdSelectorThroughSignedGroupTest:
+RequireThirdSlotSelectorWithSignedTacticTest:
         cpy     #$03                            ; B7DF C0 03                    ..
         bne     BattlePartyServices_Branch_B79D ; B7E1 D0 BA                    ..
         tay                                     ; B7E3 A8                       .
@@ -8357,20 +8359,20 @@ BattlePartyServices_Branch_B7F1:
         clc                                     ; B7F1 18                       .
         rts                                     ; B7F2 60                       `
 ; ----------------------------------------------------------------------------
-TestGroup14Index4ThroughMaskBuilder:
+TestTactic14CandidateIndex4WithMaskBuilder:
         ldx     #$14                            ; B7F3 A2 14                    ..
         stx     $0D                             ; B7F5 86 0D                    ..
         ldx     #$04                            ; B7F7 A2 04                    ..
 BattlePartyServices_Branch_B7F9:
         stx     $0E                             ; B7F9 86 0E                    ..
-        jmp     ApplyGroupedBattleTargetFilter  ; B7FB 4C 31 B8                 L1.
+        jmp     ApplyTacticFilteredTargetMask   ; B7FB 4C 31 B8                 L1.
 ; ----------------------------------------------------------------------------
-IntersectBattleSelectionMaskByGroup10Index0:
+IntersectCandidatesByTactic10Index0AndState:
         ldx     #$10                            ; B7FE A2 10                    ..
         stx     $0D                             ; B800 86 0D                    ..
         ldx     #$00                            ; B802 A2 00                    ..
         beq     BattlePartyServices_Branch_B80C ; B804 F0 06                    ..
-IntersectBattleSelectionMaskByAlternateSourcePair:
+IntersectCandidatesByAlternateStatePair:
         ldx     #$12                            ; B806 A2 12                    ..
         stx     $0D                             ; B808 86 0D                    ..
         ldx     #$02                            ; B80A A2 02                    ..
@@ -8379,7 +8381,7 @@ BattlePartyServices_Branch_B80C:
         dey                                     ; B80E 88                       .
         beq     BattlePartyServices_Branch_B816 ; B80F F0 05                    ..
         pha                                     ; B811 48                       H
-        jsr     IntersectBattleSelectionMaskByDualSourcePairs; B812 20 4E B8     N.
+        jsr     IntersectCandidatesByDualStatePairs; B812 20 4E B8               N.
         pla                                     ; B815 68                       h
 BattlePartyServices_Branch_B816:
         tay                                     ; B816 A8                       .
@@ -8389,7 +8391,7 @@ BattlePartyServices_Branch_B816:
         db   $2C,$0F                         ; B81C 2C 0F                    ,.
 ; ----------------------------------------------------------------------------
         eor     #$0F                            ; B81E 49 0F                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B820 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B820 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B823:
         ldx     #$FF                            ; B823 A2 FF                    ..
@@ -8399,9 +8401,9 @@ BattlePartyServices_Branch_B823:
         db   $29,$A3                         ; B82A 29 A3                    ).
 ; ----------------------------------------------------------------------------
         eor     #$FF                            ; B82C 49 FF                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B82E 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B82E 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-ApplyGroupedBattleTargetFilter:
+ApplyTacticFilteredTargetMask:
         cpy     #$03                            ; B831 C0 03                    ..
         bne     BattlePartyServices_Branch_B84B ; B833 D0 16                    ..
         pha                                     ; B835 48                       H
@@ -8411,7 +8413,7 @@ ApplyGroupedBattleTargetFilter:
         lda     $0E                             ; B83A A5 0E                    ..
         pha                                     ; B83C 48                       H
         txa                                     ; B83D 8A                       .
-        jsr     RequireGroupPrunedBattleSelectionSurvivor; B83E 20 75 B8         u.
+        jsr     RequireTacticFilteredCandidateSurvives; B83E 20 75 B8            u.
         pla                                     ; B841 68                       h
         sta     $0E                             ; B842 85 0E                    ..
         pla                                     ; B844 68                       h
@@ -8421,9 +8423,9 @@ ApplyGroupedBattleTargetFilter:
         rts                                     ; B84A 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B84B:
-        jmp     ApplyBattleTargetGroupMask      ; B84B 4C B8 B8                 L..
+        jmp     ApplyTacticGroupMaskToTargetSelection; B84B 4C B8 B8            L..
 ; ----------------------------------------------------------------------------
-IntersectBattleSelectionMaskByDualSourcePairs:
+IntersectCandidatesByDualStatePairs:
         tax                                     ; B84E AA                       .
         lda     $0D                             ; B84F A5 0D                    ..
         pha                                     ; B851 48                       H
@@ -8435,20 +8437,20 @@ IntersectBattleSelectionMaskByDualSourcePairs:
         ldx     #$06                            ; B85A A2 06                    ..
         stx     $0E                             ; B85C 86 0E                    ..
         pha                                     ; B85E 48                       H
-        jsr     IntersectBattleSelectionMaskBySignedSourceMask; B85F 20 03 B9    ..
+        jsr     IntersectCandidatesBySignedStateComplement; B85F 20 03 B9        ..
         pla                                     ; B862 68                       h
         ldx     #$17                            ; B863 A2 17                    ..
         stx     $0D                             ; B865 86 0D                    ..
         ldx     #$07                            ; B867 A2 07                    ..
         stx     $0E                             ; B869 86 0E                    ..
-        jsr     IntersectBattleSelectionMaskBySignedSourceMask; B86B 20 03 B9    ..
+        jsr     IntersectCandidatesBySignedStateComplement; B86B 20 03 B9        ..
         pla                                     ; B86E 68                       h
         sta     $0E                             ; B86F 85 0E                    ..
         pla                                     ; B871 68                       h
         sta     $0D                             ; B872 85 0D                    ..
         rts                                     ; B874 60                       `
 ; ----------------------------------------------------------------------------
-RequireGroupPrunedBattleSelectionSurvivor:
+RequireTacticFilteredCandidateSurvives:
         tay                                     ; B875 A8                       .
         bmi     BattlePartyServices_Branch_B882 ; B876 30 0A                    0.
 BattlePartyServices_Branch_B878:
@@ -8501,7 +8503,7 @@ BattlePartyServices_Branch_B8B6:
         sec                                     ; B8B6 38                       8
         rts                                     ; B8B7 60                       `
 ; ----------------------------------------------------------------------------
-ApplyBattleTargetGroupMask:
+ApplyTacticGroupMaskToTargetSelection:
         tay                                     ; B8B8 A8                       .
         bmi     BattlePartyServices_Branch_B8C5 ; B8B9 30 0A                    0.
         lda     $0D                             ; B8BB A5 0D                    ..
@@ -8509,7 +8511,7 @@ ApplyBattleTargetGroupMask:
         db   $2C,$0F                         ; B8BE 2C 0F                    ,.
 ; ----------------------------------------------------------------------------
         eor     #$0F                            ; B8C0 49 0F                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B8C2 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B8C2 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B8C5:
         ldx     #$FF                            ; B8C5 A2 FF                    ..
@@ -8525,7 +8527,7 @@ BattlePartyServices_Branch_B8C5:
 ; ----------------------------------------------------------------------------
         and     $0D                             ; B8D6 25 0D                    %.
         sta     $0D                             ; B8D8 85 0D                    ..
-PruneBattleSelectionMaskByGroupMask:
+PruneCandidateMaskByTacticGroup:
         lda     $09                             ; B8DA A5 09                    ..
         sta     $0E                             ; B8DC 85 0E                    ..
         lda     #$00                            ; B8DE A9 00                    ..
@@ -8545,7 +8547,7 @@ BattlePartyServices_Branch_B8F2:
         rol     a                               ; B8F2 2A                       *
         dey                                     ; B8F3 88                       .
         bpl     BattlePartyServices_Branch_B8F2 ; B8F4 10 FC                    ..
-        jsr     IntersectBattleSelectionMaskWithAccumulator; B8F6 20 1C B9       ..
+        jsr     IntersectCandidateMaskWithAccumulator; B8F6 20 1C B9             ..
 BattlePartyServices_Branch_B8F9:
         inc     $7C                             ; B8F9 E6 7C                    .|
         lda     $7C                             ; B8FB A5 7C                    .|
@@ -8554,7 +8556,7 @@ BattlePartyServices_Branch_B8F9:
         sec                                     ; B901 38                       8
         rts                                     ; B902 60                       `
 ; ----------------------------------------------------------------------------
-IntersectBattleSelectionMaskBySignedSourceMask:
+IntersectCandidatesBySignedStateComplement:
         tay                                     ; B903 A8                       .
         bmi     BattlePartyServices_Branch_B910 ; B904 30 0A                    0.
         lda     $0D                             ; B906 A5 0D                    ..
@@ -8562,7 +8564,7 @@ IntersectBattleSelectionMaskBySignedSourceMask:
         db   $2C,$0F                         ; B909 2C 0F                    ,.
 ; ----------------------------------------------------------------------------
         eor     #$0F                            ; B90B 49 0F                    I.
-        jmp     SucceedAndIntersectBattleSelectionMask; B90D 4C 1B B9           L..
+        jmp     AcceptAndIntersectCandidateMask ; B90D 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B910:
         ldx     #$FF                            ; B910 A2 FF                    ..
@@ -8572,16 +8574,16 @@ BattlePartyServices_Branch_B910:
         db   $29,$B3                         ; B917 29 B3                    ).
 ; ----------------------------------------------------------------------------
         eor     #$FF                            ; B919 49 FF                    I.
-SucceedAndIntersectBattleSelectionMask:
+AcceptAndIntersectCandidateMask:
         sec                                     ; B91B 38                       8
-IntersectBattleSelectionMaskWithAccumulator:
+IntersectCandidateMaskWithAccumulator:
         and     $09                             ; B91C 25 09                    %.
         sta     $09                             ; B91E 85 09                    ..
         rts                                     ; B920 60                       `
 ; ----------------------------------------------------------------------------
-ValidateAdditionalBattleTarget:
+RequireAdditionalValidBattleTarget:
         jsr     ReadShiftedBattleSlotDescriptorBit; B921 20 57 AD                W.
-        bcc     RequireScannedBattleSelectionMaskNonzero; B924 90 26            .&
+        bcc     RequireEnabledSlotScanNonzero   ; B924 90 26                    .&
         jsr     ReadBattleSlotHighBitFlag       ; B926 20 26 AD                  &.
         bcs     BattlePartyServices_Branch_B940 ; B929 B0 15                    ..
         ldx     $D6                             ; B92B A6 D6                    ..
@@ -8602,23 +8604,23 @@ BattlePartyServices_Branch_B93E:
         rts                                     ; B93F 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B940:
-        jsr     RequireScannedBattleSelectionMaskNonzero; B940 20 4C B9          L.
+        jsr     RequireEnabledSlotScanNonzero   ; B940 20 4C B9                  L.
         lda     $09                             ; B943 A5 09                    ..
         eor     #$FF                            ; B945 49 FF                    I.
         and     $0D                             ; B947 25 0D                    %.
         beq     BattlePartyServices_Branch_B93E ; B949 F0 F3                    ..
         rts                                     ; B94B 60                       `
 ; ----------------------------------------------------------------------------
-RequireScannedBattleSelectionMaskNonzero:
+RequireEnabledSlotScanNonzero:
         lda     #$01                            ; B94C A9 01                    ..
-        jsr     BuildBattleSelectionMaskFromEnabledSlots; B94E 20 57 B9          W.
+        jsr     BuildCandidateMaskFromEnabledSlots; B94E 20 57 B9                W.
         lda     $0D                             ; B951 A5 0D                    ..
         beq     BattlePartyServices_Branch_B93E ; B953 F0 E9                    ..
 BattlePartyServices_Branch_B955:
         sec                                     ; B955 38                       8
         rts                                     ; B956 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattleSelectionMaskFromEnabledSlots:
+BuildCandidateMaskFromEnabledSlots:
         ldx     #$07                            ; B957 A2 07                    ..
 BattlePartyServices_Branch_B959:
         pha                                     ; B959 48                       H
@@ -8638,7 +8640,7 @@ BattlePartyServices_Branch_B966:
         bpl     BattlePartyServices_Branch_B959 ; B969 10 EE                    ..
         rts                                     ; B96B 60                       `
 ; ----------------------------------------------------------------------------
-BuildFilteredBattleSelectionWindowMask:
+BuildWindowMaskByCandidateRange:
         tay                                     ; B96C A8                       .
         bmi     BattlePartyServices_Branch_B985 ; B96D 30 16                    0.
         brk                                     ; B96F 00                       .
@@ -8674,8 +8676,8 @@ IntersectBattleTargetMask:
         sta     $09                             ; B996 85 09                    ..
         rts                                     ; B998 60                       `
 ; ----------------------------------------------------------------------------
-RequireMultipleFilteredBattleTargets:
-        jsr     BuildFilteredBattleSelectionWindowMask; B999 20 6C B9            l.
+RequireMultipleRangeFilteredTargets:
+        jsr     BuildWindowMaskByCandidateRange ; B999 20 6C B9                  l.
         ldx     #$02                            ; B99C A2 02                    ..
         lda     $09                             ; B99E A5 09                    ..
 BattlePartyServices_Branch_B9A0:
@@ -8692,42 +8694,42 @@ BattlePartyServices_Branch_B9AA:
         sec                                     ; B9AA 38                       8
         rts                                     ; B9AB 60                       `
 ; ----------------------------------------------------------------------------
-BuildEarlyRangeBattleSlotPriorityMask:
+BuildSlotPriorityMaskByEarlyRange:
         pha                                     ; B9AC 48                       H
         lda     #$22                            ; B9AD A9 22                    ."
         sta     $0A                             ; B9AF 85 0A                    ..
         pla                                     ; B9B1 68                       h
-BuildBattleSlotPriorityMaskByActionRange:
+BuildSlotMaskByActionRangeCategory:
         bmi     BattlePartyServices_Branch_BA1F ; B9B2 30 6B                    0k
         lda     $0A                             ; B9B4 A5 0A                    ..
         cmp     #$25                            ; B9B6 C9 25                    .%
         bcs     BattlePartyServices_Branch_B9CF ; B9B8 B0 15                    ..
         tya                                     ; B9BA 98                       .
         bne     BattlePartyServices_Branch_B9C0 ; B9BB D0 03                    ..
-        jmp     BuildBattleSelectionPrefixMask  ; B9BD 4C E4 B9                 L..
+        jmp     BuildLowBitPrefixMaskThroughSlot; B9BD 4C E4 B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B9C0:
-        jsr     BuildBattleSelectionPrefixMask  ; B9C0 20 E4 B9                  ..
-        jsr     FilterBattleSelectionMaskByRule02Scan; B9C3 20 02 BA             ..
+        jsr     BuildLowBitPrefixMaskThroughSlot; B9C0 20 E4 B9                  ..
+        jsr     FilterCandidatesByHpRatioThreshold; B9C3 20 02 BA                ..
         bcs     BattlePartyServices_Branch_B9AA ; B9C6 B0 E2                    ..
-        jsr     BuildBattleSelectionSuffixMask  ; B9C8 20 F5 B9                  ..
-        jsr     FilterBattleSelectionMaskByRule02Scan; B9CB 20 02 BA             ..
+        jsr     BuildHighBitSuffixMaskFromAllowedSlots; B9C8 20 F5 B9            ..
+        jsr     FilterCandidatesByHpRatioThreshold; B9CB 20 02 BA                ..
         rts                                     ; B9CE 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B9CF:
         tya                                     ; B9CF 98                       .
         bne     BattlePartyServices_Branch_B9D5 ; B9D0 D0 03                    ..
-        jmp     BuildBattleSelectionSuffixMask  ; B9D2 4C F5 B9                 L..
+        jmp     BuildHighBitSuffixMaskFromAllowedSlots; B9D2 4C F5 B9           L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B9D5:
-        jsr     BuildBattleSelectionSuffixMask  ; B9D5 20 F5 B9                  ..
-        jsr     FilterBattleSelectionMaskByRule02Scan; B9D8 20 02 BA             ..
+        jsr     BuildHighBitSuffixMaskFromAllowedSlots; B9D5 20 F5 B9            ..
+        jsr     FilterCandidatesByHpRatioThreshold; B9D8 20 02 BA                ..
         bcs     BattlePartyServices_Branch_B9AA ; B9DB B0 CD                    ..
-        jsr     BuildBattleSelectionPrefixMask  ; B9DD 20 E4 B9                  ..
-        jsr     FilterBattleSelectionMaskByRule02Scan; B9E0 20 02 BA             ..
+        jsr     BuildLowBitPrefixMaskThroughSlot; B9DD 20 E4 B9                  ..
+        jsr     FilterCandidatesByHpRatioThreshold; B9E0 20 02 BA                ..
         rts                                     ; B9E3 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattleSelectionPrefixMask:
+BuildLowBitPrefixMaskThroughSlot:
         jsr     ReadBattleSlotDescriptorLowNibble; B9E4 20 4E AD                 N.
         brk                                     ; B9E7 00                       .
         db   $67,$73                         ; B9E8 67 73                    gs
@@ -8742,8 +8744,8 @@ BattlePartyServices_Branch_B9EE:
         sta     $09                             ; B9F2 85 09                    ..
         rts                                     ; B9F4 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattleSelectionSuffixMask:
-        jsr     BuildBattleSelectionPrefixMask  ; B9F5 20 E4 B9                  ..
+BuildHighBitSuffixMaskFromAllowedSlots:
+        jsr     BuildLowBitPrefixMaskThroughSlot; B9F5 20 E4 B9                  ..
         eor     #$FF                            ; B9F8 49 FF                    I.
         sta     $09                             ; B9FA 85 09                    ..
         brk                                     ; B9FC 00                       .
@@ -8751,7 +8753,7 @@ BuildBattleSelectionSuffixMask:
 ; ----------------------------------------------------------------------------
         jmp     IntersectBattleTargetMask       ; B9FF 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
-FilterBattleSelectionMaskByRule02Scan:
+FilterCandidatesByHpRatioThreshold:
         clc                                     ; BA02 18                       .
         ldx     #$08                            ; BA03 A2 08                    ..
 BattlePartyServices_Branch_BA05:
@@ -8782,24 +8784,24 @@ BattlePartyServices_Branch_BA1F:
         bcs     BattlePartyServices_Branch_BA4E ; BA23 B0 29                    .)
         tya                                     ; BA25 98                       .
         bne     BattlePartyServices_Branch_BA2E ; BA26 D0 06                    ..
-KeepOnlyCurrentBattleSlotInSelectionMask:
+KeepOnlyCurrentSlotInCandidateMask:
         jsr     BuildOneHotBattleSlotSetMask    ; BA28 20 43 AD                  C.
         jmp     IntersectBattleTargetMask       ; BA2B 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_BA2E:
-        jsr     ExcludeRule02MatchedSlotsFromSelection; BA2E 20 97 BA            ..
+        jsr     ExcludeHpThresholdMatchesFromCandidateMask; BA2E 20 97 BA        ..
         beq     BattlePartyServices_Branch_BA4A ; BA31 F0 17                    ..
         pha                                     ; BA33 48                       H
-        jsr     KeepOnlyCurrentBattleSlotInSelectionMask; BA34 20 28 BA          (.
+        jsr     KeepOnlyCurrentSlotInCandidateMask; BA34 20 28 BA                (.
         bne     BattlePartyServices_Branch_BA4C ; BA37 D0 13                    ..
         pla                                     ; BA39 68                       h
         sta     $09                             ; BA3A 85 09                    ..
         pha                                     ; BA3C 48                       H
-        jsr     KeepPairedSelectionBitsExcludingCurrentSlot; BA3D 20 7E BA       ~.
+        jsr     KeepOnlyPairedSlotBitsExcludingCurrent; BA3D 20 7E BA            ~.
         bne     BattlePartyServices_Branch_BA4C ; BA40 D0 0A                    ..
         pla                                     ; BA42 68                       h
         sta     $09                             ; BA43 85 09                    ..
-        jsr     KeepSelectionBitsOutsidePairedSlotMask; BA45 20 76 BA            v.
+        jsr     RemovePairedSlotBitsFromCandidateMask; BA45 20 76 BA             v.
         bne     BattlePartyServices_Branch_BA4D ; BA48 D0 03                    ..
 BattlePartyServices_Branch_BA4A:
         clc                                     ; BA4A 18                       .
@@ -8817,20 +8819,20 @@ BattlePartyServices_Branch_BA4E:
         jmp     BattlePartyServices_Branch_BA5B ; BA53 4C 5B BA                 L[.
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_BA56:
-        jsr     ExcludeRule02MatchedSlotsFromSelection; BA56 20 97 BA            ..
+        jsr     ExcludeHpThresholdMatchesFromCandidateMask; BA56 20 97 BA        ..
         beq     BattlePartyServices_Branch_BA72 ; BA59 F0 17                    ..
 BattlePartyServices_Branch_BA5B:
         pha                                     ; BA5B 48                       H
-        jsr     KeepSelectionBitsOutsidePairedSlotMask; BA5C 20 76 BA            v.
+        jsr     RemovePairedSlotBitsFromCandidateMask; BA5C 20 76 BA             v.
         bne     BattlePartyServices_Branch_BA74 ; BA5F D0 13                    ..
         pla                                     ; BA61 68                       h
         sta     $09                             ; BA62 85 09                    ..
         pha                                     ; BA64 48                       H
-        jsr     KeepPairedSelectionBitsExcludingCurrentSlot; BA65 20 7E BA       ~.
+        jsr     KeepOnlyPairedSlotBitsExcludingCurrent; BA65 20 7E BA            ~.
         bne     BattlePartyServices_Branch_BA74 ; BA68 D0 0A                    ..
         pla                                     ; BA6A 68                       h
         sta     $09                             ; BA6B 85 09                    ..
-        jsr     KeepOnlyCurrentBattleSlotInSelectionMask; BA6D 20 28 BA          (.
+        jsr     KeepOnlyCurrentSlotInCandidateMask; BA6D 20 28 BA                (.
         bne     BattlePartyServices_Branch_BA75 ; BA70 D0 03                    ..
 BattlePartyServices_Branch_BA72:
         clc                                     ; BA72 18                       .
@@ -8841,18 +8843,18 @@ BattlePartyServices_Branch_BA74:
 BattlePartyServices_Branch_BA75:
         rts                                     ; BA75 60                       `
 ; ----------------------------------------------------------------------------
-KeepSelectionBitsOutsidePairedSlotMask:
-        jsr     SeedPairedBattleSlotMaskState   ; BA76 20 89 BA                  ..
+RemovePairedSlotBitsFromCandidateMask:
+        jsr     SeedAndReturnPairedSlotMasks    ; BA76 20 89 BA                  ..
         eor     #$FF                            ; BA79 49 FF                    I.
         jmp     IntersectBattleTargetMask       ; BA7B 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
-KeepPairedSelectionBitsExcludingCurrentSlot:
-        jsr     SeedPairedBattleSlotMaskState   ; BA7E 20 89 BA                  ..
+KeepOnlyPairedSlotBitsExcludingCurrent:
+        jsr     SeedAndReturnPairedSlotMasks    ; BA7E 20 89 BA                  ..
         jsr     BuildOneHotBattleSlotClearMask  ; BA81 20 32 AD                  2.
         and     $7E                             ; BA84 25 7E                    %~
         jmp     IntersectBattleTargetMask       ; BA86 4C 93 B9                 L..
 ; ----------------------------------------------------------------------------
-SeedPairedBattleSlotMaskState:
+SeedAndReturnPairedSlotMasks:
         jsr     ReadBattleSlotDescriptorLowNibble; BA89 20 4E AD                 N.
         brk                                     ; BA8C 00                       .
         db   $2D,$B3                         ; BA8D 2D B3                    -.
@@ -8864,7 +8866,7 @@ SeedPairedBattleSlotMaskState:
 ; ----------------------------------------------------------------------------
         rts                                     ; BA96 60                       `
 ; ----------------------------------------------------------------------------
-ExcludeRule02MatchedSlotsFromSelection:
+ExcludeHpThresholdMatchesFromCandidateMask:
         ldx     #$FF                            ; BA97 A2 FF                    ..
         brk                                     ; BA99 00                       .
         db   $04,$C3,$02                     ; BA9A 04 C3 02                 ...
@@ -8874,7 +8876,7 @@ ExcludeRule02MatchedSlotsFromSelection:
         sta     $09                             ; BAA1 85 09                    ..
         rts                                     ; BAA3 60                       `
 ; ----------------------------------------------------------------------------
-RequireMultipleRule02Candidates:
+RequireMultipleHpThresholdCandidates:
         bmi     BattlePartyServices_Branch_BABB ; BAA4 30 15                    0.
         ldx     $D6                             ; BAA6 A6 D6                    ..
         ldy     #$00                            ; BAA8 A0 00                    ..
@@ -8916,7 +8918,7 @@ BattlePartyServices_Branch_BAD6:
 BattlePartyServices_Branch_BAD7:
         rts                                     ; BAD7 60                       `
 ; ----------------------------------------------------------------------------
-RequireDescriptorSpecificGateClear:
+RequireSlotDescriptorSpecificGateClear:
         jsr     ReadShiftedBattleSlotDescriptorBit; BAD8 20 57 AD                W.
         bcs     BattlePartyServices_Branch_BAE8 ; BADB B0 0B                    ..
         jsr     ReadBattleSlotDescriptorLowNibble; BADD 20 4E AD                 N.
@@ -8937,7 +8939,7 @@ BattlePartyServices_Branch_BAF1:
         sec                                     ; BAF1 38                       8
         rts                                     ; BAF2 60                       `
 ; ----------------------------------------------------------------------------
-FilterSelectionMaskBySource05Complement:
+FilterCandidatesByInvertedStateFive:
         bmi     BattlePartyServices_Branch_BAD6 ; BAF3 30 E1                    0.
         lda     #$05                            ; BAF5 A9 05                    ..
         brk                                     ; BAF7 00                       .
@@ -8952,7 +8954,7 @@ LoadInvertedBattleStateBitsShiftedLeft:
         asl     a                               ; BB04 0A                       .
         rts                                     ; BB05 60                       `
 ; ----------------------------------------------------------------------------
-SelectBattleSlotByExtremeValuePair:
+SelectSlotByExtremeStatPair:
         pha                                     ; BB06 48                       H
         tya                                     ; BB07 98                       .
         pha                                     ; BB08 48                       H
@@ -9031,11 +9033,11 @@ BattlePartyServices_Branch_BB70:
         sec                                     ; BB76 38                       8
         rts                                     ; BB77 60                       `
 ; ----------------------------------------------------------------------------
-RequireAllFilteredSelectionBitsSet:
+RequireAllCandidateBitsSetAfterGating:
         lda     #$08                            ; BB78 A9 08                    ..
         sta     $0D                             ; BB7A 85 0D                    ..
         bne     BattlePartyServices_Branch_BB82 ; BB7C D0 04                    ..
-RequireAtLeastTwoFilteredSelectionBits:
+RequireAtLeastTwoCandidatesAfterGating:
         lda     #$02                            ; BB7E A9 02                    ..
         sta     $0D                             ; BB80 85 0D                    ..
 BattlePartyServices_Branch_BB82:
@@ -9085,7 +9087,7 @@ BattlePartyServices_Branch_BBC3:
         clc                                     ; BBC3 18                       .
         rts                                     ; BBC4 60                       `
 ; ----------------------------------------------------------------------------
-ClearIndexedBattleSelectionBit:
+ClearCandidateBitByIndex:
         tay                                     ; BBC5 A8                       .
         clc                                     ; BBC6 18                       .
         lda     #$FF                            ; BBC7 A9 FF                    ..
@@ -9097,7 +9099,7 @@ BattlePartyServices_Branch_BBC9:
         sta     $09                             ; BBCF 85 09                    ..
         rts                                     ; BBD1 60                       `
 ; ----------------------------------------------------------------------------
-TestNegativeDescriptorOffsetAgainstStoredBase:
+TestNegativeSlotOffsetAgainstBaseline:
         ldx     $96                             ; BBD2 A6 96                    ..
         lda     BattleSlotDescriptors,x         ; BBD4 BD F4 72                 ..r
         bmi     BattlePartyServices_Branch_BBDB ; BBD7 30 02                    0.
@@ -9127,7 +9129,7 @@ BattlePartyServices_Branch_BBEB:
 BattlePartyServices_Branch_BBF5:
         rts                                     ; BBF5 60                       `
 ; ----------------------------------------------------------------------------
-SelectCurrentBattleSlotFromLookup:
+SelectSlotFromBattleContextLookup:
         jsr     ReadShiftedBattleSlotDescriptorBit; BBF6 20 57 AD                W.
         bcc     BattlePartyServices_Branch_BC33 ; BBF9 90 38                    .8
         brk                                     ; BBFB 00                       .
@@ -9173,7 +9175,7 @@ BattlePartyServices_Branch_BC2C:
 BattlePartyServices_Branch_BC33:
         rts                                     ; BC33 60                       `
 ; ----------------------------------------------------------------------------
-SelectBattleSlotFromActionLookup:
+SelectSlotFromActionTargetLookup:
         jsr     ReadShiftedBattleSlotDescriptorBit; BC34 20 57 AD                W.
         bcc     BattlePartyServices_Branch_BC33 ; BC37 90 FA                    ..
         brk                                     ; BC39 00                       .
@@ -9219,16 +9221,16 @@ SelectBattleSlotFromActionLookup:
         sec                                     ; BC73 38                       8
         rts                                     ; BC74 60                       `
 ; ----------------------------------------------------------------------------
-AcceptBattleEffectUnconditionally:
+AlwaysAcceptBattlePredicate:
         sec                                     ; BC75 38                       8
         rts                                     ; BC76 60                       `
 ; ----------------------------------------------------------------------------
-AcceptNonnegativeEffectOrRequireDescriptorHighBit:
-        bpl     AcceptBattleEffectUnconditionally; BC77 10 FC                   ..
-ReturnBattleSlotDescriptorHighBit:
+AcceptNonnegativeOrRequireDescriptorHigh:
+        bpl     AlwaysAcceptBattlePredicate     ; BC77 10 FC                    ..
+ReturnSlotDescriptorHighBitAsResult:
         jmp     ReadShiftedBattleSlotDescriptorBit; BC79 4C 57 AD               LW.
 ; ----------------------------------------------------------------------------
-RejectBattleEffectUnconditionally:
+AlwaysRejectBattlePredicate:
         clc                                     ; BC7C 18                       .
         rts                                     ; BC7D 60                       `
 ; ----------------------------------------------------------------------------

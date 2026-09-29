@@ -178,18 +178,18 @@ CasinoSystem_Branch_8179:
         brk                                     ; 8179 00                       .
         db   $85,$FB                         ; 817A 85 FB                    ..
 ; ----------------------------------------------------------------------------
-Bank17_MapGameEntry:
+EnterPokerDoubleOrNothing:
         jsr     RestorePokerResultDisplay       ; 817C 20 44 82                  D.
         jsr     HidePokerSelectionCursor        ; 817F 20 37 8F                  7.
         jsr     RenderPokerLayoutAt91           ; 8182 20 B4 92                  ..
         lda     $0203                           ; 8185 AD 03 02                 ...
         cmp     #$50                            ; 8188 C9 50                    .P
         bne     CasinoSystem_Branch_8174        ; 818A D0 E8                    ..
-        jmp     Bank17_MapGameInitialize        ; 818C 4C 54 86                 LT.
+        jmp     InitializePokerDoubleOrNothing  ; 818C 4C 54 86                 LT.
 ; ----------------------------------------------------------------------------
 DisplayPokerWagerValue:
         lda     $36                             ; 818F A5 36                    .6
-        sta     $FD                             ; 8191 85 FD                    ..
+        sta     MessageNumberArgument           ; 8191 85 FD                    ..
         lda     $37                             ; 8193 A5 37                    .7
         sta     $FE                             ; 8195 85 FE                    ..
         lda     $38                             ; 8197 A5 38                    .8
@@ -203,7 +203,7 @@ ReturnAfterPokerWagerDisplay:
 DisplayDoubledPokerWager:
         lda     $36                             ; 819F A5 36                    .6
         asl     a                               ; 81A1 0A                       .
-        sta     $FD                             ; 81A2 85 FD                    ..
+        sta     MessageNumberArgument           ; 81A2 85 FD                    ..
         lda     $37                             ; 81A4 A5 37                    .7
         rol     a                               ; 81A6 2A                       *
         sta     $FE                             ; 81A7 85 FE                    ..
@@ -218,11 +218,11 @@ ReturnAfterPokerPayoutDisplay:
 ; ----------------------------------------------------------------------------
 DisplayPokerRoundCounter:
         lda     $82                             ; 81B2 A5 82                    ..
-        sta     $FD                             ; 81B4 85 FD                    ..
+        sta     MessageNumberArgument           ; 81B4 85 FD                    ..
         lda     #$00                            ; 81B6 A9 00                    ..
         sta     $FE                             ; 81B8 85 FE                    ..
         sta     $FF                             ; 81BA 85 FF                    ..
-        inc     $FD                             ; 81BC E6 FD                    ..
+        inc     MessageNumberArgument           ; 81BC E6 FD                    ..
         brk                                     ; 81BE 00                       .
         db   $77,$4B                         ; 81BF 77 4B                    wK
 ; ----------------------------------------------------------------------------
@@ -256,7 +256,7 @@ CasinoSystem_Branch_81EB:
         db   $03,$9F                         ; 81EC 03 9F                    ..
 ; ----------------------------------------------------------------------------
 RunPokerUiService:
-        jsr     Bank17_UiService                ; 81EE 20 46 94                  F.
+        jsr     ResumeMapMusicAfterCasinoWait   ; 81EE 20 46 94                  F.
         rts                                     ; 81F1 60                       `
 ; ----------------------------------------------------------------------------
 ClassifyPokerHand:
@@ -437,14 +437,14 @@ Bank17_UiPointersAlternate:
         db   $06,$1B,$07,$1B,$08,$0D,$07,$0D ; 83C4 06 1B 07 1B 08 0D 07 0D  ........
         db   $08                             ; 83CC 08                       .
 ; ----------------------------------------------------------------------------
-Bank17_UiUpdate:
+ShowPokerStatistics:
         jsr     ScrollPokerStatisticsIntoView   ; 83CD 20 7C 84                  |.
-        jsr     Bank17_UiUpdateAlternate        ; 83D0 20 DA 83                  ..
+        jsr     RenderPokerStatisticsCounters   ; 83D0 20 DA 83                  ..
         jsr     WaitForFreshButtonPress         ; 83D3 20 CC C8                  ..
         jsr     ScrollPokerStatisticsOutOfView  ; 83D6 20 8E 84                  ..
         rts                                     ; 83D9 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_UiUpdateAlternate:
+RenderPokerStatisticsCounters:
         jsr     RenderPokerCategoryCounters     ; 83DA 20 E1 83                  ..
         jsr     RenderPokerTotalCounter         ; 83DD 20 34 84                  4.
         rts                                     ; 83E0 60                       `
@@ -900,7 +900,7 @@ CasinoSystem_Branch_8652:
         sec                                     ; 8652 38                       8
         rts                                     ; 8653 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapGameInitialize:
+InitializePokerDoubleOrNothing:
         lda     #$00                            ; 8654 A9 00                    ..
         sta     $82                             ; 8656 85 82                    ..
         jsr     NextRandomByte                  ; 8658 20 91 C8                  ..
@@ -1088,7 +1088,7 @@ RunPokerCardSelectionLoop:
         sta     $29                             ; 8787 85 29                    .)
         ldx     #$00                            ; 8789 A2 00                    ..
 CasinoSystem_Branch_878B:
-        lda     Bank17_MapGameOamTemplate,x     ; 878B BD E9 87                 ...
+        lda     Bank17_PokerDoubleOrNothingOamTemplate,x; 878B BD E9 87         ...
         sta     $0200,x                         ; 878E 9D 00 02                 ...
         inx                                     ; 8791 E8                       .
         cpx     #$08                            ; 8792 E0 08                    ..
@@ -1098,7 +1098,7 @@ CasinoSystem_Branch_878B:
         sta     $8A                             ; 879B 85 8A                    ..
 RunPokerCardSelectionFrame:
         jsr     UpdatePokerHoldCursorOam        ; 879D 20 30 8E                  0.
-        jsr     ApplyPokerSelectionInputRepeat  ; 87A0 20 C4 8D                  ..
+        jsr     ApplyCasinoInputRepeat          ; 87A0 20 C4 8D                  ..
         jsr     ConfirmPokerCardSelection       ; 87A3 20 D1 87                  ..
         jsr     UpdatePokerCardSelection        ; 87A6 20 B2 87                  ..
         jsr     AdvancePokerResultReveal        ; 87A9 20 37 82                  7.
@@ -1145,7 +1145,7 @@ ConfirmPokerCardSelection:
 CasinoSystem_Branch_87E8:
         rts                                     ; 87E8 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapGameOamTemplate:
+Bank17_PokerDoubleOrNothingOamTemplate:
         db   $88,$01,$00,$40,$88,$02,$00,$48 ; 87E9 88 01 00 40 88 02 00 48  ...@...H
 ; ----------------------------------------------------------------------------
 RenderPokerCardsOneThroughFour:
@@ -1264,7 +1264,7 @@ HandlePokerComparisonResult:
         pla                                     ; 88A2 68                       h
         cmp     #$30                            ; 88A3 C9 30                    .0
         beq     CasinoSystem_Branch_88AD        ; 88A5 F0 06                    ..
-        jsr     Bank17_UiService                ; 88A7 20 46 94                  F.
+        jsr     ResumeMapMusicAfterCasinoWait   ; 88A7 20 46 94                  F.
         jmp     FinishPokerComparisonUi         ; 88AA 4C B6 88                 L..
 ; ----------------------------------------------------------------------------
 CasinoSystem_Branch_88AD:
@@ -1400,7 +1400,7 @@ CasinoSystem_Branch_896E:
         db   $11,$FB                         ; 8972 11 FB                    ..
 ; ----------------------------------------------------------------------------
 CollectPokerWinnings:
-        jsr     AddPokerWagerToCasinoCoins      ; 8974 20 A7 89                  ..
+        jsr     AddToCasinoCoinsCapped          ; 8974 20 A7 89                  ..
         lda     $36                             ; 8977 A5 36                    .6
         clc                                     ; 8979 18                       .
         adc     $62C9                           ; 897A 6D C9 62                 m.b
@@ -1418,12 +1418,12 @@ CollectPokerWinnings:
         jsr     RenderCasinoCoinBalance         ; 8998 20 04 8C                  ..
         jsr     ConvertPokerWagerToDigits       ; 899B 20 39 8C                  9.
         jsr     RequestPpuUpdateAndWait         ; 899E 20 2D C6                  -.
-        jsr     Bank17_UiService                ; 89A1 20 46 94                  F.
+        jsr     ResumeMapMusicAfterCasinoWait   ; 89A1 20 46 94                  F.
         pla                                     ; 89A4 68                       h
         pla                                     ; 89A5 68                       h
         rts                                     ; 89A6 60                       `
 ; ----------------------------------------------------------------------------
-AddPokerWagerToCasinoCoins:
+AddToCasinoCoinsCapped:
         lda     $36                             ; 89A7 A5 36                    .6
         clc                                     ; 89A9 18                       .
         adc     SaveCasinoCoins                 ; 89AA 6D AD 62                 m.b
@@ -1530,47 +1530,47 @@ ExitPokerWagerChoice:
         beq     CasinoSystem_Branch_8A68        ; 8A5B F0 0B                    ..
 CasinoSystem_Branch_8A5D:
         jsr     FadePaletteToBlack              ; 8A5D 20 C5 C5                  ..
-        jsr     Bank17_CasinoSetupServices      ; 8A60 20 69 8A                  i.
+        jsr     RestoreFieldDisplayAfterCasino  ; 8A60 20 69 8A                  i.
         jsr     FadePaletteFromBlack            ; 8A63 20 BF C5                  ..
         pla                                     ; 8A66 68                       h
         pla                                     ; 8A67 68                       h
 CasinoSystem_Branch_8A68:
         rts                                     ; 8A68 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_CasinoSetupServices:
+RestoreFieldDisplayAfterCasino:
         ldx     #$00                            ; 8A69 A2 00                    ..
         brk                                     ; 8A6B 00                       .
         db   $23,$EF                         ; 8A6C 23 EF                    #.
 ; ----------------------------------------------------------------------------
-RunCasinoEntitySetup0D:
+RestoreCasinoExitEntitySetup:
         ldx     #$00                            ; 8A6E A2 00                    ..
         brk                                     ; 8A70 00                       .
         db   $0D,$87                         ; 8A71 0D 87                    ..
 ; ----------------------------------------------------------------------------
-RunCasinoDisplayReset08:
+RestoreCasinoExitDisplayState:
         brk                                     ; 8A73 00                       .
         db   $08,$8F                         ; 8A74 08 8F                    ..
 ; ----------------------------------------------------------------------------
-SuspendCasinoRenderingAndRun1D:
+SuspendRenderingForCasinoExit:
         jsr     SuspendRenderingUpdates         ; 8A76 20 AF C5                  ..
         brk                                     ; 8A79 00                       .
         db   $1D,$EF                         ; 8A7A 1D EF                    ..
 ; ----------------------------------------------------------------------------
-LoadCasinoMapConfiguration:
+RestoreMapConfigurationAfterCasino:
         lda     $28                             ; 8A7C A5 28                    .(
         brk                                     ; 8A7E 00                       .
         db   $02,$87                         ; 8A7F 02 87                    ..
 ; ----------------------------------------------------------------------------
-LoadCasinoTrackedEntity:
+ReloadTrackedMapEntityAfterCasino:
         lda     $0572                           ; 8A81 AD 72 05                 .r.
         brk                                     ; 8A84 00                       .
         db   $11,$87                         ; 8A85 11 87                    ..
 ; ----------------------------------------------------------------------------
-RunCasinoEntityRefresh07:
+RefreshMapEntitiesAfterCasino:
         brk                                     ; 8A87 00                       .
         db   $07,$87                         ; 8A88 07 87                    ..
 ; ----------------------------------------------------------------------------
-ClearCasinoEntityStateBit10:
+ClearEntityHiddenFlagsAfterCasino:
         ldx     #$00                            ; 8A8A A2 00                    ..
 CasinoSystem_Branch_8A8C:
         lda     $7020,x                         ; 8A8C BD 20 70                 . p
@@ -1585,7 +1585,7 @@ CasinoSystem_Branch_8A9D:
         brk                                     ; 8A9D 00                       .
         db   $03,$EF                         ; 8A9E 03 EF                    ..
 ; ----------------------------------------------------------------------------
-ClearCasinoRenderingMode:
+FinishCasinoExitRendering:
         lda     $1F                             ; 8AA0 A5 1F                    ..
         and     #$F7                            ; 8AA2 29 F7                    ).
         sta     $1F                             ; 8AA4 85 1F                    ..
@@ -1635,7 +1635,7 @@ CasinoSystem_Branch_8AE7:
         brk                                     ; 8AFA 00                       .
         db   $73,$4B                         ; 8AFB 73 4B                    sK
 ; ----------------------------------------------------------------------------
-Bank17_CasinoLoop:
+RunPokerWagerInputLoop:
         jsr     ApplyCasinoInputRepeatDelay     ; 8AFD 20 15 8B                  ..
         jsr     AdjustPokerWagerFromInput       ; 8B00 20 3E 8B                  >.
         jsr     ConfirmPokerWager               ; 8B03 20 A0 8B                  ..
@@ -1643,7 +1643,7 @@ Bank17_CasinoLoop:
         jsr     RenderCasinoCoinBalance         ; 8B09 20 04 8C                  ..
         jsr     AdvancePokerWagerDigitAnimation ; 8B0C 20 24 8C                  $.
         jsr     RequestPpuUpdateAndWait         ; 8B0F 20 2D C6                  -.
-        jmp     Bank17_CasinoLoop               ; 8B12 4C FD 8A                 L..
+        jmp     RunPokerWagerInputLoop          ; 8B12 4C FD 8A                 L..
 ; ----------------------------------------------------------------------------
 ApplyCasinoInputRepeatDelay:
         inc     $9E                             ; 8B15 E6 9E                    ..
@@ -1670,7 +1670,7 @@ OpenPokerStatisticsOnButtonChord:
         and     #$0E                            ; 8B34 29 0E                    ).
         cmp     #$0E                            ; 8B36 C9 0E                    ..
         bne     CasinoSystem_Branch_8B3D        ; 8B38 D0 03                    ..
-        jsr     Bank17_UiUpdate                 ; 8B3A 20 CD 83                  ..
+        jsr     ShowPokerStatistics             ; 8B3A 20 CD 83                  ..
 CasinoSystem_Branch_8B3D:
         rts                                     ; 8B3D 60                       `
 ; ----------------------------------------------------------------------------
@@ -2057,7 +2057,7 @@ RunPokerHoldSelectionLoop:
 RunPokerHoldSelectionFrame:
         jsr     UpdatePokerHoldCursorOam        ; 8D8B 20 30 8E                  0.
         jsr     AdvancePokerResultReveal        ; 8D8E 20 37 82                  7.
-        jsr     ApplyPokerSelectionInputRepeat  ; 8D91 20 C4 8D                  ..
+        jsr     ApplyCasinoInputRepeat          ; 8D91 20 C4 8D                  ..
         jsr     ToggleSelectedPokerCardHold     ; 8D94 20 A0 8D                  ..
         jsr     HandlePokerHoldDirectionalInput ; 8D97 20 E5 8D                  ..
         jsr     WaitForNmi                      ; 8D9A 20 74 FF                  t.
@@ -2091,7 +2091,7 @@ FinishPokerHoldSelection:
         pla                                     ; 8DC2 68                       h
         rts                                     ; 8DC3 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPokerSelectionInputRepeat:
+ApplyCasinoInputRepeat:
         jsr     ReadControllers                 ; 8DC4 20 EC C8                  ..
         ldy     ButtonsPressed                  ; 8DC7 A4 14                    ..
         beq     CasinoSystem_Branch_8DD8        ; 8DC9 F0 0D                    ..
@@ -2943,7 +2943,7 @@ Bank17_PpuUploadDescriptors:
         db   $94                             ; 943F 94                       .
         db   $73,$10,$00,$DA,$9B,$02         ; 9440 73 10 00 DA 9B 02        s.....
 ; ----------------------------------------------------------------------------
-Bank17_UiService:
+ResumeMapMusicAfterCasinoWait:
         ldx     #$0A                            ; 9446 A2 0A                    ..
         jsr     WaitFrames                      ; 9448 20 0C C9                  ..
         jsr     WaitForAudioCompletionOrButton  ; 944B 20 C7 F0                  ..
@@ -3208,7 +3208,7 @@ StartFiveSlotCasinoInterface:
         brk                                     ; 9C03 00                       .
         db   $07,$6F,$3D                     ; 9C04 07 6F 3D                 .o=
 ; ----------------------------------------------------------------------------
-Bank17_MapUiEntry:
+SetUpSlotMachineDisplay:
         jsr     ResetFiveSlotCasinoDisplayState ; 9C07 20 7E 9C                  ~.
         jsr     ResetDisplayState               ; 9C0A 20 4E C5                  N.
         jsr     LoadFiveSlotCasinoPpuSetup      ; 9C0D 20 75 A8                  u.
@@ -3285,7 +3285,7 @@ ExitFiveSlotCasinoInterface:
 RunCasinoBinaryChoiceLoop:
         ldx     #$05                            ; 9C9A A2 05                    ..
         jsr     WaitFrames                      ; 9C9C 20 0C C9                  ..
-        lda     $C000                           ; 9C9F AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; 9C9F AD 00 C0                 ...
         beq     CasinoSystem_Branch_9CAB        ; 9CA2 F0 07                    ..
 CasinoSystem_Branch_9CA4:
         jsr     ReadControllers                 ; 9CA4 20 EC C8                  ..
@@ -3298,7 +3298,7 @@ CasinoSystem_Branch_9CAD:
         jsr     RenderCasinoBinaryChoice        ; 9CAF 20 D8 9C                  ..
         jsr     WaitForNmi                      ; 9CB2 20 74 FF                  t.
 CasinoSystem_Branch_9CB5:
-        jsr     ApplyPokerSelectionInputRepeat  ; 9CB5 20 C4 8D                  ..
+        jsr     ApplyCasinoInputRepeat          ; 9CB5 20 C4 8D                  ..
         lda     ButtonsPressed                  ; 9CB8 A5 14                    ..
         lsr     a                               ; 9CBA 4A                       J
         bcs     CasinoSystem_Branch_9CD1        ; 9CBB B0 14                    ..
@@ -3328,7 +3328,7 @@ RenderCasinoBinaryChoice:
         lda     #$4A                            ; 9CDC A9 4A                    .J
         sta     $1D                             ; 9CDE 85 1D                    ..
         ldy     $5A                             ; 9CE0 A4 5A                    .Z
-        lda     Bank17_MapUiPointers,y          ; 9CE2 B9 FB 9C                 ...
+        lda     Bank17_SlotMachineUiPointers,y  ; 9CE2 B9 FB 9C                 ...
         sta     $1E                             ; 9CE5 85 1E                    ..
         jsr     QueuePpuWriteByte               ; 9CE7 20 36 C6                  6.
         lda     #$50                            ; 9CEA A9 50                    .P
@@ -3339,7 +3339,7 @@ RenderCasinoBinaryChoice:
         jsr     QueuePpuWriteByte               ; 9CF5 20 36 C6                  6.
         jmp     RequestPpuUpdate                ; 9CF8 4C 26 C6                 L&.
 ; ----------------------------------------------------------------------------
-Bank17_MapUiPointers:
+Bank17_SlotMachineUiPointers:
         db   $81                             ; 9CFB 81                       .
         db   $00,$81                         ; 9CFC 00 81                    ..
 ; ----------------------------------------------------------------------------
@@ -3355,7 +3355,7 @@ ProcessFiveSlotCasinoRound:
 ; ----------------------------------------------------------------------------
 ShowFiveSlotCasinoRoundResult:
         jsr     PlayCasinoPayoutJingle          ; 9D11 20 23 9D                  #.
-        jsr     Bank17_UiService                ; 9D14 20 46 94                  F.
+        jsr     ResumeMapMusicAfterCasinoWait   ; 9D14 20 46 94                  F.
         jsr     AwardFiveSlotCasinoPayouts      ; 9D17 20 E6 9D                  ..
         jmp     WaitForButtonStateOneEightyFrames; 9D1A 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
@@ -3381,7 +3381,7 @@ ReturnAfterCasinoResult2E:
         rts                                     ; 9D32 60                       `
 ; ----------------------------------------------------------------------------
 CasinoSystem_Branch_9D33:
-        lda     $FD                             ; 9D33 A5 FD                    ..
+        lda     MessageNumberArgument           ; 9D33 A5 FD                    ..
         cmp     #$F4                            ; 9D35 C9 F4                    ..
         bcc     CasinoSystem_Branch_9D2F        ; 9D37 90 F6                    ..
 CasinoSystem_Branch_9D39:
@@ -3486,7 +3486,7 @@ RenderCasinoSymbolPhaseHalf:
 ; ----------------------------------------------------------------------------
 SumCasinoLinePayoutValues:
         ldy     #$00                            ; 9DD0 A0 00                    ..
-        sty     $FD                             ; 9DD2 84 FD                    ..
+        sty     MessageNumberArgument           ; 9DD2 84 FD                    ..
         sty     $FE                             ; 9DD4 84 FE                    ..
         sty     $FF                             ; 9DD6 84 FF                    ..
 CasinoSystem_Branch_9DD8:
@@ -3518,7 +3518,7 @@ CasinoSystem_Branch_9DEE:
         sta     $83                             ; 9E04 85 83                    ..
         sta     $59                             ; 9E06 85 59                    .Y
 CasinoSystem_Branch_9E08:
-        jsr     AddPokerWagerToCasinoCoins      ; 9E08 20 A7 89                  ..
+        jsr     AddToCasinoCoinsCapped          ; 9E08 20 A7 89                  ..
         bcs     CasinoSystem_Branch_9E28        ; 9E0B B0 1B                    ..
         jsr     BuildCasinoCoinDigitSprites     ; 9E0D 20 FC 9F                  ..
         jsr     RenderCasinoCoinSpritesAtOamZero; 9E10 20 22 A0                  ".
@@ -3548,8 +3548,8 @@ LoadCasinoSymbolPayoutValue:
         tax                                     ; 9E36 AA                       .
         lda     Bank17_MapValues,x              ; 9E37 BD 58 9E                 .X.
         sta     $32                             ; 9E3A 85 32                    .2
-        adc     $FD                             ; 9E3C 65 FD                    e.
-        sta     $FD                             ; 9E3E 85 FD                    ..
+        adc     MessageNumberArgument           ; 9E3C 65 FD                    e.
+        sta     MessageNumberArgument           ; 9E3E 85 FD                    ..
         lda     $9E59,x                         ; 9E40 BD 59 9E                 .Y.
         sta     $33                             ; 9E43 85 33                    .3
         adc     $FE                             ; 9E45 65 FE                    e.
@@ -3683,7 +3683,7 @@ CasinoSystem_Branch_9F14:
         ora     $62AF                           ; 9F1F 0D AF 62                 ..b
         beq     CasinoSystem_Branch_9F4C        ; 9F22 F0 28                    .(
 CasinoSystem_Branch_9F24:
-        jsr     ApplyPokerSelectionInputRepeat  ; 9F24 20 C4 8D                  ..
+        jsr     ApplyCasinoInputRepeat          ; 9F24 20 C4 8D                  ..
         lda     ButtonsPressed                  ; 9F27 A5 14                    ..
         lsr     a                               ; 9F29 4A                       J
         bcs     CasinoSystem_Branch_9F4C        ; 9F2A B0 20                    .
@@ -3880,7 +3880,7 @@ WaitForCasinoConfirmRelease:
         lda     ButtonsPressed                  ; A053 A5 14                    ..
         and     #$01                            ; A055 29 01                    ).
         bne     WaitForCasinoConfirmRelease     ; A057 D0 F7                    ..
-        lda     $C000                           ; A059 AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A059 AD 00 C0                 ...
         bne     RunFiveSlotCasinoSpinLoop       ; A05C D0 06                    ..
 OpenFiveSlotCasinoPrompt:
         jsr     RefreshCasinoInterface          ; A05E 20 42 92                  B.
@@ -3910,7 +3910,7 @@ CasinoSystem_Branch_A067:
         beq     CasinoSystem_Branch_A094        ; A08F F0 03                    ..
         jsr     AdvanceStoppingCasinoReels      ; A091 20 F3 A0                  ..
 CasinoSystem_Branch_A094:
-        lda     $C000                           ; A094 AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A094 AD 00 C0                 ...
         bne     CasinoSystem_Branch_A067        ; A097 D0 CE                    ..
 HandleCasinoReelStopInput:
         jsr     ReadControllers                 ; A099 20 EC C8                  ..
@@ -3979,7 +3979,7 @@ CasinoSystem_Branch_A0F5:
         lda     $32,x                           ; A0FB B5 32                    .2
         bpl     MapSystem_Branch_A145           ; A0FD 10 46                    .F
         dec     $2C,x                           ; A0FF D6 2C                    .,
-        lda     $C000                           ; A101 AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A101 AD 00 C0                 ...
         beq     MapSystem_Branch_A10E           ; A104 F0 08                    ..
         lda     $2C,x                           ; A106 B5 2C                    .,
         cmp     #$03                            ; A108 C9 03                    ..
@@ -3988,7 +3988,7 @@ CasinoSystem_Branch_A0F5:
 MapSystem_Branch_A10E:
         lda     $2C,x                           ; A10E B5 2C                    .,
         beq     MapSystem_Branch_A127           ; A110 F0 15                    ..
-        ldy     $C000                           ; A112 AC 00 C0                 ...
+        ldy     DebugFeatureFlags               ; A112 AC 00 C0                 ...
         beq     $A119                           ; A115 F0 02                    ..
         ora     #$08                            ; A117 09 08                    ..
         tay                                     ; A119 A8                       .
@@ -4031,7 +4031,7 @@ Bank17_MapTimingTable:
         db   $00,$10,$18,$00,$20,$00,$30,$00 ; A153 00 10 18 00 20 00 30 00  .... .0.
 ; ----------------------------------------------------------------------------
 SelectCasinoReelDecelerationDelay:
-        lda     $C000                           ; A15B AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A15B AD 00 C0                 ...
         bne     MapSystem_Branch_A1B3           ; A15E D0 53                    .S
 SelectCasinoReelDelayByIndex:
         cpx     #$01                            ; A160 E0 01                    ..
@@ -4091,7 +4091,7 @@ MapSystem_Branch_A1B3:
         rts                                     ; A1B8 60                       `
 ; ----------------------------------------------------------------------------
 InitializeCasinoReelStopDelay:
-        lda     $C000                           ; A1B9 AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A1B9 AD 00 C0                 ...
         bne     MapSystem_Branch_A1F7           ; A1BC D0 39                    .9
 InitializeCasinoReelDelayByIndex:
         cpx     #$01                            ; A1BE E0 01                    ..
@@ -4185,7 +4185,7 @@ MapSystem_Branch_A22A:
         lda     PlayerLocalX                    ; A248 A5 44                    .D
         and     #$0F                            ; A24A 29 0F                    ).
         sta     $04FF                           ; A24C 8D FF 04                 ...
-        lda     $C000                           ; A24F AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A24F AD 00 C0                 ...
         bne     MapSystem_Branch_A258           ; A252 D0 04                    ..
 InitializeFastCasinoAutoStopTimer:
         lda     #$0A                            ; A254 A9 0A                    ..
@@ -5158,11 +5158,11 @@ Bank17_MapInfo:
         db   $5C,$48,$88,$5C,$45,$89,$5C,$AF ; B499 5C 48 88 5C 45 89 5C AF  \H.\E.\.
         db   $89,$5C,$5B,$8A,$1C,$46,$8B,$5C ; B4A1 89 5C 5B 8A 1C 46 8B 5C  .\[..F.\
         db   $DC,$8B,$5B,$49,$8C,$FF         ; B4A9 DC 8B 5B 49 8C FF        ..[I..
-Bank17_MapAnimationSetup:
+Bank17_MusicSequenceDirectory:
         db   $0C,$00,$0C,$80,$0C,$FF,$3C,$FF ; B4AF 0C 00 0C 80 0C FF 3C FF  ......<.
         db   $00,$0C,$00,$0C,$80,$0C,$FF,$0C ; B4B7 00 0C 00 0C 80 0C FF 0C  ........
         db   $FF,$00                         ; B4BF FF 00                    ..
-Bank17_MapAnimationCommands:
+Bank17_MusicSequenceData:
         db   $4B,$F0,$04,$E1,$5C,$EE,$E0,$57 ; B4C1 4B F0 04 E1 5C EE E0 57  K...\..W
         db   $E0,$00,$0C,$EE,$C0,$E1,$5E,$F3 ; B4C9 E0 00 0C EE C0 E1 5E F3  ......^.
         db   $AF,$B4,$0C,$13,$1A,$18,$09,$13 ; B4D1 AF B4 0C 13 1A 18 09 13  ........
@@ -5488,7 +5488,7 @@ Bank17_MapAnimationCommands:
         db   $FF,$23,$94,$00,$F7,$2D,$28,$2A ; BED1 FF 23 94 00 F7 2D 28 2A  .#...-(*
         db   $49,$F8,$94,$0C,$B5,$07,$23,$26 ; BED9 49 F8 94 0C B5 07 23 26  I.....#&
         db   $2B,$94,$00,$FF                 ; BEE1 2B 94 00 FF              +...
-Bank17_AnimationPadding:
+Bank17_MusicSequencePadding:
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BEE5 FF FF FF FF FF FF FF FF  ........
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BEED FF FF FF FF FF FF FF FF  ........
         db   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; BEF5 FF FF FF FF FF FF FF FF  ........

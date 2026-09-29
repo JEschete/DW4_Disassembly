@@ -26,7 +26,7 @@ Bank1E_MapInteractionDirectory:
         db   $E9,$BB,$2F,$B0,$AD,$B0,$83,$90 ; 8080 E9 BB 2F B0 AD B0 83 90  ../.....
         db   $D9,$83,$32,$A2,$22,$B7,$1E,$BC ; 8088 D9 83 32 A2 22 B7 1E BC  ..2."...
 ; ----------------------------------------------------------------------------
-Bank1E_MapInteractionServices:
+RunFieldCommandMenu:
         brk                                     ; 8090 00                       .
         db   $27,$0F                         ; 8091 27 0F                    '.
 ; ----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ MapInteractionSystem_Branch_80A7:
         db   $80,$CC,$81,$D0,$81,$60,$82,$64 ; 80AB 80 CC 81 D0 81 60 82 64  .....`.d
         db   $82,$FD,$83,$42,$83,$3F,$83     ; 80B3 82 FD 83 42 83 3F 83     ...B.?.
 ; ----------------------------------------------------------------------------
-InteractWithFacingObjectOrTile:
+RunTalkCommand:
         bit     $41                             ; 80BA 24 41                    $A
         bpl     MapInteractionSystem_Branch_80EA; 80BC 10 2C                    .,
         jsr     GetCoordinatesInFrontOfPlayer   ; 80BE 20 AE 81                  ..
@@ -225,13 +225,13 @@ OffsetCoordinatesByFacing:
         sta     $52                             ; 81CA 85 52                    .R
         rts                                     ; 81CC 60                       `
 ; ----------------------------------------------------------------------------
-RunPrimaryMapInteraction:
+RunSpellCommand:
         brk                                     ; 81CD 00                       .
         db   $0B,$2F                         ; 81CE 0B 2F                    ./
 ; ----------------------------------------------------------------------------
         rts                                     ; 81D0 60                       `
 ; ----------------------------------------------------------------------------
-RunMapInteractionSelectionDialogue:
+RunStatusCommand:
         brk                                     ; 81D1 00                       .
         db   $07,$6F,$07                     ; 81D2 07 6F 07                 .o.
 ; ----------------------------------------------------------------------------
@@ -331,13 +331,13 @@ MapInteractionSystem_Branch_825A:
 ; ----------------------------------------------------------------------------
         db   $43,$06,$12,$00                 ; 825D 43 06 12 00              C...
 ; ----------------------------------------------------------------------------
-RunSecondaryMapInteraction:
+RunItemCommand:
         brk                                     ; 8261 00                       .
         db   $14,$2F                         ; 8262 14 2F                    ./
 ; ----------------------------------------------------------------------------
         rts                                     ; 8264 60                       `
 ; ----------------------------------------------------------------------------
-RunIndexedMapInteractionSequence:
+RunEquipCommand:
         brk                                     ; 8265 00                       .
         db   $07,$6F,$17                     ; 8266 07 6F 17                 .o.
 ; ----------------------------------------------------------------------------
@@ -379,10 +379,10 @@ MapInteractionSystem_Branch_8295:
         brk                                     ; 8298 00                       .
         db   $33,$73                         ; 8299 33 73                    3s
 ; ----------------------------------------------------------------------------
-        jsr     PlayInteractionJingleAndShowResult; 829B 20 08 83                ..
+        jsr     PlayEquipJingleAndShowResult    ; 829B 20 08 83                  ..
         bpl     MapInteractionSystem_Branch_82A8; 829E 10 08                    ..
         bcs     MapInteractionSystem_Branch_82A8; 82A0 B0 06                    ..
-        jsr     DisplayMapInteractionFailureAndWait; 82A2 20 2D 83               -.
+        jsr     ShowCannotEquipMessageAndWait   ; 82A2 20 2D 83                  -.
         jmp     MapInteractionSystem_Branch_8286; 82A5 4C 86 82                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82A8:
@@ -398,10 +398,10 @@ MapInteractionSystem_Branch_82A8:
         brk                                     ; 82B7 00                       .
         db   $34,$73                         ; 82B8 34 73                    4s
 ; ----------------------------------------------------------------------------
-        jsr     PlayInteractionJingleAndShowResult; 82BA 20 08 83                ..
+        jsr     PlayEquipJingleAndShowResult    ; 82BA 20 08 83                  ..
         bpl     MapInteractionSystem_Branch_82C7; 82BD 10 08                    ..
         bcs     MapInteractionSystem_Branch_82C7; 82BF B0 06                    ..
-        jsr     DisplayMapInteractionFailureAndWait; 82C1 20 2D 83               -.
+        jsr     ShowCannotEquipMessageAndWait   ; 82C1 20 2D 83                  -.
         jmp     MapInteractionSystem_Branch_82A8; 82C4 4C A8 82                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82C7:
@@ -417,10 +417,10 @@ MapInteractionSystem_Branch_82C7:
         brk                                     ; 82D6 00                       .
         db   $35,$73                         ; 82D7 35 73                    5s
 ; ----------------------------------------------------------------------------
-        jsr     PlayInteractionJingleAndShowResult; 82D9 20 08 83                ..
+        jsr     PlayEquipJingleAndShowResult    ; 82D9 20 08 83                  ..
         bpl     MapInteractionSystem_Branch_82E6; 82DC 10 08                    ..
         bcs     MapInteractionSystem_Branch_82E6; 82DE B0 06                    ..
-        jsr     DisplayMapInteractionFailureAndWait; 82E0 20 2D 83               -.
+        jsr     ShowCannotEquipMessageAndWait   ; 82E0 20 2D 83                  -.
         jmp     MapInteractionSystem_Branch_82C7; 82E3 4C C7 82                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_82E6:
@@ -436,16 +436,16 @@ MapInteractionSystem_Branch_82E6:
         brk                                     ; 82F5 00                       .
         db   $36,$73                         ; 82F6 36 73                    6s
 ; ----------------------------------------------------------------------------
-        jsr     PlayInteractionJingleAndShowResult; 82F8 20 08 83                ..
+        jsr     PlayEquipJingleAndShowResult    ; 82F8 20 08 83                  ..
         bpl     MapInteractionSystem_Branch_8305; 82FB 10 08                    ..
         bcs     MapInteractionSystem_Branch_8305; 82FD B0 06                    ..
-        jsr     DisplayMapInteractionFailureAndWait; 82FF 20 2D 83               -.
+        jsr     ShowCannotEquipMessageAndWait   ; 82FF 20 2D 83                  -.
         jmp     MapInteractionSystem_Branch_82E6; 8302 4C E6 82                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8305:
         jmp     CloseFieldMessageWindow         ; 8305 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-PlayInteractionJingleAndShowResult:
+PlayEquipJingleAndShowResult:
         php                                     ; 8308 08                       .
         pha                                     ; 8309 48                       H
         bmi     MapInteractionSystem_Branch_832A; 830A 30 1E                    0.
@@ -478,7 +478,7 @@ MapInteractionSystem_Branch_832A:
         plp                                     ; 832B 28                       (
         rts                                     ; 832C 60                       `
 ; ----------------------------------------------------------------------------
-DisplayMapInteractionFailureAndWait:
+ShowCannotEquipMessageAndWait:
         and     #$7F                            ; 832D 29 7F                    ).
         sta     $FA                             ; 832F 85 FA                    ..
         lda     $07B9                           ; 8331 AD B9 07                 ...
@@ -491,10 +491,10 @@ DisplayMapInteractionFailureAndWait:
 ; ----------------------------------------------------------------------------
         jmp     WaitForFreshButtonPress         ; 833D 4C CC C8                 L..
 ; ----------------------------------------------------------------------------
-InteractWithFacingTileAndWaitForInput:
+RunSearchCommand:
         jmp     HandleFacingTileActionAndWait   ; 8340 4C F3 B3                 L..
 ; ----------------------------------------------------------------------------
-InteractWithFacingTileBehavior:
+RunDoorCommand:
         jmp     HandleFacingTileInteraction     ; 8343 4C A6 B2                 L..
 ; ----------------------------------------------------------------------------
 TryInstallFacingTileOverride:
@@ -613,7 +613,7 @@ MapInteractionSystem_Branch_83EE:
 MapInteractionSystem_Branch_83FD:
         rts                                     ; 83FD 60                       `
 ; ----------------------------------------------------------------------------
-RunMapOverrideSelectionSequence:
+RunTacticsCommand:
         brk                                     ; 83FE 00                       .
         db   $07,$6F,$1E                     ; 83FF 07 6F 1E                 .o.
 ; ----------------------------------------------------------------------------
@@ -839,10 +839,10 @@ MapInteractionSystem_Branch_854C:
         bne     MapInteractionSystem_Branch_854C; 854E D0 FC                    ..
         and     $3C                             ; 8550 25 3C                    %<
         bne     MapInteractionSystem_Branch_8576; 8552 D0 22                    ."
-RunTrampolines05And02ThenHideEntity:
-        jsr     FixedTrampoline05               ; 8554 20 10 C0                  ..
-RunTrampoline02ThenHideEntity:
-        jsr     FixedTrampoline02               ; 8557 20 07 C0                  ..
+SyncFollowerFacingPropagateOffsetsAndHideEntity:
+        jsr     SynchronizeFollowerFacingStateTrampoline; 8554 20 10 C0          ..
+PropagateFollowerOffsetsAndHideEntity:
+        jsr     PropagatePartyFollowerOffsetsTrampoline; 8557 20 07 C0           ..
 SelectMapEntityForVisibility:
         lda     $058E                           ; 855A AD 8E 05                 ...
         eor     #$03                            ; 855D 49 03                    I.
@@ -878,10 +878,10 @@ InitializeMapEntityTransition:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_8587:
         inc     $3C                             ; 8587 E6 3C                    .<
-RunTrampolines02And06ThenResetMap:
-        jsr     FixedTrampoline02               ; 8589 20 07 C0                  ..
-RunTrampoline06ThenResetMap:
-        jsr     FixedTrampoline06               ; 858C 20 13 C0                  ..
+PropagateOffsetsReconcilePartyAndResetMap:
+        jsr     PropagatePartyFollowerOffsetsTrampoline; 8589 20 07 C0           ..
+ReconcilePartyEntitiesAndResetMap:
+        jsr     ReconcilePartyEntitySlotsTrampoline; 858C 20 13 C0               ..
         ldx     #$00                            ; 858F A2 00                    ..
         jsr     SetMapEntityHidden              ; 8591 20 6E 85                  n.
         jsr     AnimateMapEntityVisibility      ; 8594 20 F3 84                  ..
@@ -1046,7 +1046,7 @@ MapInteractionSystem_Branch_86CE:
         pla                                     ; 86CE 68                       h
         ora     #$80                            ; 86CF 09 80                    ..
         jsr     RunMapSceneTransition           ; 86D1 20 EA 8E                  ..
-        jmp     AnimateMapEntityOamSweepFromF3To6B; 86D4 4C 48 8C               LH.
+        jmp     AnimateMapEntityOamSweepFirstPass; 86D4 4C 48 8C                LH.
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_86D7:
         jsr     FadePaletteToBlack              ; 86D7 20 C5 C5                  ..
@@ -1066,13 +1066,13 @@ MapInteractionSystem_Branch_86EB:
         bne     MapInteractionSystem_Branch_86EB; 86ED D0 FC                    ..
         and     $3C                             ; 86EF 25 3C                    %<
         bne     MapInteractionSystem_Branch_86FF; 86F1 D0 0C                    ..
-RunTrampolines05And02ThenSelectEntity:
-        jsr     FixedTrampoline05               ; 86F3 20 10 C0                  ..
-RunTrampoline02ThenSelectEntity:
-        jsr     FixedTrampoline02               ; 86F6 20 07 C0                  ..
+SyncFollowerFacingPropagateOffsetsAndSelectEntity:
+        jsr     SynchronizeFollowerFacingStateTrampoline; 86F3 20 10 C0          ..
+PropagateFollowerOffsetsAndSelectEntity:
+        jsr     PropagatePartyFollowerOffsetsTrampoline; 86F6 20 07 C0           ..
         jsr     SelectMapEntityForVisibility    ; 86F9 20 5A 85                  Z.
-RunMapInteractionTrampoline06:
-        jsr     FixedTrampoline06               ; 86FC 20 13 C0                  ..
+ReconcilePartyEntitiesForTransition:
+        jsr     ReconcilePartyEntitySlotsTrampoline; 86FC 20 13 C0               ..
 MapInteractionSystem_Branch_86FF:
         rts                                     ; 86FF 60                       `
 ; ----------------------------------------------------------------------------
@@ -1100,8 +1100,8 @@ MapInteractionSystem_Branch_8726:
         lda     $7E                             ; 8726 A5 7E                    .~
         pha                                     ; 8728 48                       H
         jsr     FinalizeMapTransitionGraphics   ; 8729 20 0D 8A                  ..
-RunMapTransitionWithTrampoline07:
-        jsr     FixedTrampoline07               ; 872C 20 16 C0                  ..
+InitializeMapDecoderAndRunTransition:
+        jsr     InitializeCurrentMapDecoderTrampoline; 872C 20 16 C0             ..
         clc                                     ; 872F 18                       .
 RunMapTransitionRefreshSequence:
         jsr     LoadCurrentMapDataTrampoline    ; 8730 20 04 C0                  ..
@@ -1400,7 +1400,7 @@ MapInteractionSystem_Branch_8916:
 MapInteractionSystem_Branch_8919:
         jsr     ClampAndShiftOamXByTransitionDelta; 8919 20 28 89                (.
 RunMapTransitionFrame:
-        jsr     FixedTrampoline00               ; 891C 20 01 C0                  ..
+        jsr     AdvanceMapScrollStepTrampoline  ; 891C 20 01 C0                  ..
         jsr     WaitForNmi                      ; 891F 20 74 FF                  t.
         pla                                     ; 8922 68                       h
         tax                                     ; 8923 AA                       .
@@ -1806,13 +1806,13 @@ MapInteractionSystem_Branch_8BB6:
         db   $02,$02,$04,$05,$06,$07,$08,$09 ; 8C38 02 02 04 05 06 07 08 09  ........
         db   $0A,$0B,$0D,$0D,$0F,$0F,$11,$12 ; 8C40 0A 0B 0D 0D 0F 0F 11 12  ........
 ; ----------------------------------------------------------------------------
-AnimateMapEntityOamSweepFromF3To6B:
+AnimateMapEntityOamSweepFirstPass:
         lda     #$F3                            ; 8C48 A9 F3                    ..
         sta     $54                             ; 8C4A 85 54                    .T
         lda     #$6B                            ; 8C4C A9 6B                    .k
         clc                                     ; 8C4E 18                       .
         bne     MapInteractionSystem_Branch_8C57; 8C4F D0 06                    ..
-AnimateMapEntityOamSweepFromF7To6F:
+AnimateMapEntityOamSweepSecondPass:
         lda     #$F7                            ; 8C51 A9 F7                    ..
         sta     $54                             ; 8C53 85 54                    .T
         lda     #$6F                            ; 8C55 A9 6F                    .o
@@ -2152,7 +2152,7 @@ RunMapSceneTransitionForValue:
 ; ----------------------------------------------------------------------------
         pla                                     ; 8EDB 68                       h
         jsr     RunAlternateMapSceneTransition  ; 8EDC 20 E5 8E                  ..
-        jsr     ApplyRandomTransformUpdatesToPartyEntities; 8EDF 20 25 98        %.
+        jsr     ClearAllPartyTransformFlags     ; 8EDF 20 25 98                  %.
         jmp     FadePaletteFromBlack            ; 8EE2 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
 RunAlternateMapSceneTransition:
@@ -2191,7 +2191,7 @@ MapInteractionSystem_Branch_8F02:
         ldy     PlayerLocalY                    ; 8F1A A4 45                    .E
         jsr     GetMapTileAtCoordinates         ; 8F1C 20 E6 D3                  ..
         and     #$1F                            ; 8F1F 29 1F                    ).
-        jsr     CheckTileBehavior20To23         ; 8F21 20 6B 8F                  k.
+        jsr     CheckTileBehaviorWallCodes      ; 8F21 20 6B 8F                  k.
         bcc     MapInteractionSystem_Branch_8F2C; 8F24 90 06                    ..
         dec     $053E                           ; 8F26 CE 3E 05                 .>.
         dec     $0541                           ; 8F29 CE 41 05                 .A.
@@ -2235,7 +2235,7 @@ LoadTileBehaviorAtCoordinates:
         jsr     GetMapTileAtCoordinates         ; 8F63 20 E6 D3                  ..
         and     #$1F                            ; 8F66 29 1F                    ).
         sta     $0541                           ; 8F68 8D 41 05                 .A.
-CheckTileBehavior20To23:
+CheckTileBehaviorWallCodes:
         tax                                     ; 8F6B AA                       .
         lda     $6F40,x                         ; 8F6C BD 40 6F                 .@o
         and     #$7F                            ; 8F6F 29 7F                    ).
@@ -2427,7 +2427,7 @@ PrepareMapSceneForDirection:
         rts                                     ; 908F 60                       `
 ; ----------------------------------------------------------------------------
 PrepareMapSceneWithTrampoline07:
-        jsr     FixedTrampoline07               ; 9090 20 16 C0                  ..
+        jsr     InitializeCurrentMapDecoderTrampoline; 9090 20 16 C0             ..
         jsr     SuspendRenderingUpdates         ; 9093 20 AF C5                  ..
         sec                                     ; 9096 38                       8
 PrepareMapSceneWithTrampoline01:
@@ -2444,7 +2444,7 @@ MapInteractionSystem_Branch_90A2:
 LoadCurrentMapTileClassAfterNmi:
         jsr     WaitForNmi                      ; 90A8 20 74 FF                  t.
 LoadCurrentMapTileClassWithTrampoline07:
-        jsr     FixedTrampoline07               ; 90AB 20 16 C0                  ..
+        jsr     InitializeCurrentMapDecoderTrampoline; 90AB 20 16 C0             ..
         clc                                     ; 90AE 18                       .
 LoadCurrentMapTileClass:
         jsr     LoadCurrentMapDataTrampoline    ; 90AF 20 04 C0                  ..
@@ -2995,11 +2995,11 @@ RunChapter3LaurentDeparture:
         db   $46,$93,$07                     ; 94B8 46 93 07                 F..
 ; ----------------------------------------------------------------------------
         bcc     MapInteractionSystem_Branch_94D6; 94BB 90 19                    ..
-        jsr     RefreshMapInteractionState      ; 94BD 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 94BD 20 46 98              F.
         brk                                     ; 94C0 00                       .
         db   $79,$3B                         ; 94C1 79 3B                    y;
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEventSelector0A           ; 94C3 20 5F 95                  _.
+        jsr     RemoveLaurentFromParty          ; 94C3 20 5F 95                  _.
         brk                                     ; 94C6 00                       .
         db   $0B,$EB,$04                     ; 94C7 0B EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3029,11 +3029,11 @@ RunChapter3StromDeparture:
         db   $46,$93,$07                     ; 94EA 46 93 07                 F..
 ; ----------------------------------------------------------------------------
         bcc     MapInteractionSystem_Branch_94FB; 94ED 90 0C                    ..
-        jsr     RefreshMapInteractionState      ; 94EF 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 94EF 20 46 98              F.
         brk                                     ; 94F2 00                       .
         db   $78,$3B                         ; 94F3 78 3B                    x;
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEventSelector0B           ; 94F5 20 67 95                  g.
+        jsr     RemoveStromFromParty            ; 94F5 20 67 95                  g.
         jsr     WaitThenCloseFieldMessage       ; 94F8 20 0A D2                  ..
 MapInteractionSystem_Branch_94FB:
         rts                                     ; 94FB 60                       `
@@ -3045,7 +3045,7 @@ RunChapter5PanonDeparture:
         db   $1A,$EB,$04                     ; 9502 1A EB 04                 ...
 ; ----------------------------------------------------------------------------
         beq     MapInteractionSystem_Branch_951B; 9505 F0 14                    ..
-        jsr     RefreshMapInteractionState      ; 9507 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 9507 20 46 98              F.
         jsr     ResolveChapterMapServiceIndex   ; 950A 20 3F 9E                  ?.
         sta     $F9                             ; 950D 85 F9                    ..
         brk                                     ; 950F 00                       .
@@ -3054,7 +3054,7 @@ RunChapter5PanonDeparture:
         brk                                     ; 9512 00                       .
         db   $22,$4B                         ; 9513 22 4B                    "K
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEventSelector0D           ; 9515 20 6F 95                  o.
+        jsr     RemovePanonFromParty            ; 9515 20 6F 95                  o.
         jsr     WaitThenCloseFieldMessage       ; 9518 20 0A D2                  ..
 MapInteractionSystem_Branch_951B:
         rts                                     ; 951B 60                       `
@@ -3103,28 +3103,28 @@ MapInteractionSystem_Branch_9540:
         db   $26,$EB,$10                     ; 954D 26 EB 10                 &..
 ; ----------------------------------------------------------------------------
         bne     MapInteractionSystem_Branch_955E; 9550 D0 0C                    ..
-        jsr     RefreshMapInteractionState      ; 9552 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 9552 20 46 98              F.
         brk                                     ; 9555 00                       .
         db   $AF,$4B                         ; 9556 AF 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     RunMapEventSelector0C           ; 9558 20 82 95                  ..
+        jsr     RemoveHectorFromParty           ; 9558 20 82 95                  ..
         jsr     WaitThenCloseFieldMessage       ; 955B 20 0A D2                  ..
 MapInteractionSystem_Branch_955E:
         rts                                     ; 955E 60                       `
 ; ----------------------------------------------------------------------------
-RunMapEventSelector0A:
+RemoveLaurentFromParty:
         brk                                     ; 955F 00                       .
         db   $13,$DB,$BF                     ; 9560 13 DB BF                 ...
 ; ----------------------------------------------------------------------------
         lda     #$0A                            ; 9563 A9 0A                    ..
         bne     MapInteractionSystem_Branch_9575; 9565 D0 0E                    ..
-RunMapEventSelector0B:
+RemoveStromFromParty:
         brk                                     ; 9567 00                       .
         db   $13,$DB,$7F                     ; 9568 13 DB 7F                 ...
 ; ----------------------------------------------------------------------------
         lda     #$0B                            ; 956B A9 0B                    ..
         bne     MapInteractionSystem_Branch_9575; 956D D0 06                    ..
-RunMapEventSelector0D:
+RemovePanonFromParty:
         brk                                     ; 956F 00                       .
         db   $20,$DB,$7F                     ; 9570 20 DB 7F                  ..
 ; ----------------------------------------------------------------------------
@@ -3140,7 +3140,7 @@ MapInteractionSystem_Branch_9575:
         jsr     RefreshActiveMapPartyEntities   ; 957C 20 B8 97                  ..
         jmp     BuildMapPresentationMask        ; 957F 4C 32 A2                 L2.
 ; ----------------------------------------------------------------------------
-RunMapEventSelector0C:
+RemoveHectorFromParty:
         brk                                     ; 9582 00                       .
         db   $26,$CB,$10                     ; 9583 26 CB 10                 &..
 ; ----------------------------------------------------------------------------
@@ -3151,7 +3151,7 @@ ResetMapDisplayAndMotionState:
         sta     $0539                           ; 958C 8D 39 05                 .9.
         jsr     ResetDisplayState               ; 958F 20 4E C5                  N.
 RunTrampoline03AndResetMapMotion:
-        jsr     FixedTrampoline03               ; 9592 20 0A C0                  ..
+        jsr     RebuildViewportWithRenderingSuspendedTrampoline; 9592 20 0A C0   ..
         jsr     ResetMapEntityMotionState       ; 9595 20 01 E5                  ..
         jmp     InitializeMapEntityRendering    ; 9598 4C F1 DF                 L..
 ; ----------------------------------------------------------------------------
@@ -3532,7 +3532,7 @@ ClearTransformStateAndRefreshPartyEntities:
 MapInteractionSystem_Branch_9824:
         rts                                     ; 9824 60                       `
 ; ----------------------------------------------------------------------------
-ApplyRandomTransformUpdatesToPartyEntities:
+ClearAllPartyTransformFlags:
         lda     $07BA                           ; 9825 AD BA 07                 ...
         and     #$7F                            ; 9828 29 7F                    ).
         cmp     #$02                            ; 982A C9 02                    ..
@@ -3555,7 +3555,7 @@ MapInteractionSystem_Branch_9840:
 MapInteractionSystem_Branch_9845:
         rts                                     ; 9845 60                       `
 ; ----------------------------------------------------------------------------
-RefreshMapInteractionState:
+OpenFieldMessageWindowForInteraction:
         brk                                     ; 9846 00                       .
         db   $07,$6F,$43                     ; 9847 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -4033,7 +4033,7 @@ MapInteractionSystem_Branch_9B68:
         brk                                     ; 9B6B 00                       .
         db   $27,$0F                         ; 9B6C 27 0F                    '.
 ; ----------------------------------------------------------------------------
-        jsr     RefreshMapInteractionState      ; 9B6E 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 9B6E 20 46 98              F.
         jsr     BuildMapPresentationMask        ; 9B71 20 32 A2                  2.
         lda     SaveCurrentChapterMinus1        ; 9B74 AD 5A 61                 .Za
         cmp     #$04                            ; 9B77 C9 04                    ..
@@ -4143,7 +4143,7 @@ MapInteractionSystem_Branch_9C01:
         jsr     FadePaletteToBlack              ; 9C0A 20 C5 C5                  ..
         ldx     #$FF                            ; 9C0D A2 FF                    ..
         txs                                     ; 9C0F 9A                       .
-        jmp     UpperFixedEngine_Branch_C977    ; 9C10 4C 77 C9                 Lw.
+        jmp     ResumeFieldAfterDefeatOrLoad    ; 9C10 4C 77 C9                 Lw.
 ; ----------------------------------------------------------------------------
 UpdateSpecialTilesetCandidateAtWorldRegion:
         lda     $41                             ; 9C13 A5 41                    .A
@@ -4306,7 +4306,7 @@ MapInteractionSystem_Branch_9D0D:
         brk                                     ; 9D6E 00                       .
         db   $06,$DF                         ; 9D6F 06 DF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     RefreshMapInteractionState      ; 9D71 20 46 98                  F.
+        jsr     OpenFieldMessageWindowForInteraction; 9D71 20 46 98              F.
         brk                                     ; 9D74 00                       .
         db   $0A,$3B                         ; 9D75 0A 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -5189,14 +5189,14 @@ InitializeChapterMapState:
         brk                                     ; A358 00                       .
         db   $26,$0F                         ; A359 26 0F                    &.
 ; ----------------------------------------------------------------------------
-        lda     $C000                           ; A35B AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A35B AD 00 C0                 ...
         and     #$08                            ; A35E 29 08                    ).
         bne     MapInteractionSystem_Branch_A372; A360 D0 10                    ..
         brk                                     ; A362 00                       .
         db   $08,$8F                         ; A363 08 8F                    ..
 ; ----------------------------------------------------------------------------
         jsr     FadePaletteFromBlack            ; A365 20 BF C5                  ..
-        jsr     InitializeChapterSelectionMenu  ; A368 20 04 F1                  ..
+        jsr     DebugOnly_InitializeChapterSelectionMenu; A368 20 04 F1          ..
         sta     SaveCurrentChapterMinus1        ; A36B 8D 5A 61                 .Za
         cmp     #$04                            ; A36E C9 04                    ..
         bcc     MapInteractionSystem_Branch_A372; A370 90 00                    ..
@@ -5253,7 +5253,7 @@ MapInteractionSystem_Branch_A3A1:
         lda     #$00                            ; A3B7 A9 00                    ..
         rts                                     ; A3B9 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter2TournamentRecoveryDialogue:
+EnterFieldAndShowResumeMessage:
         pha                                     ; A3BA 48                       H
         txa                                     ; A3BB 8A                       .
         pha                                     ; A3BC 48                       H
@@ -5579,7 +5579,7 @@ ClearMapSessionState:
         sta     $0532                           ; A5BC 8D 32 05                 .2.
         sta     $0539                           ; A5BF 8D 39 05                 .9.
         sta     $6E42                           ; A5C2 8D 42 6E                 .Bn
-        sta     $6E41                           ; A5C5 8D 41 6E                 .An
+        sta     RepelStepCounter                ; A5C5 8D 41 6E                 .An
         sta     $6BEB                           ; A5C8 8D EB 6B                 ..k
         sta     $6E05                           ; A5CB 8D 05 6E                 ..n
         lda     #$FF                            ; A5CE A9 FF                    ..
@@ -6307,12 +6307,12 @@ SetPrimaryEntityDirectionAndSyncPartyCoordinates:
         ora     $3D                             ; AAB9 05 3D                    .=
 StorePrimaryEntityDirectionAndSyncPartyCoordinates:
         sta     $7000                           ; AABB 8D 00 70                 ..p
-RunTrampoline05ThreeTimesAndSyncParty:
-        jsr     FixedTrampoline05               ; AABE 20 10 C0                  ..
-RunTrampoline05TwiceAndSyncParty:
-        jsr     FixedTrampoline05               ; AAC1 20 10 C0                  ..
-RunTrampoline05AndSyncParty:
-        jsr     FixedTrampoline05               ; AAC4 20 10 C0                  ..
+SynchronizeFollowerFacingAndPartyThreeTimes:
+        jsr     SynchronizeFollowerFacingStateTrampoline; AABE 20 10 C0          ..
+SynchronizeFollowerFacingAndPartyTwice:
+        jsr     SynchronizeFollowerFacingStateTrampoline; AAC1 20 10 C0          ..
+SynchronizeFollowerFacingAndParty:
+        jsr     SynchronizeFollowerFacingStateTrampoline; AAC4 20 10 C0          ..
         ldx     #$05                            ; AAC7 A2 05                    ..
 MapInteractionSystem_Branch_AAC9:
         lda     $6F60                           ; AAC9 AD 60 6F                 .`o
@@ -6732,7 +6732,7 @@ MapInteractionSystem_Branch_ADB9:
 ; ----------------------------------------------------------------------------
         lda     #$82                            ; ADC4 A9 82                    ..
         jsr     RunAlternateMapSceneTransition  ; ADC6 20 E5 8E                  ..
-        jsr     AnimateMapEntityOamSweepFromF3To6B; ADC9 20 48 8C                H.
+        jsr     AnimateMapEntityOamSweepFirstPass; ADC9 20 48 8C                 H.
         sec                                     ; ADCC 38                       8
         rts                                     ; ADCD 60                       `
 ; ----------------------------------------------------------------------------
@@ -6899,7 +6899,7 @@ MapInteractionSystem_Branch_AEC6:
         jsr     ResetMapStateAfterTransition    ; AED7 20 EC 92                  ..
         pla                                     ; AEDA 68                       h
         cmp     #$FF                            ; AEDB C9 FF                    ..
-        jsr     AnimateMapEntityOamSweepFromF7To6F; AEDD 20 51 8C                Q.
+        jsr     AnimateMapEntityOamSweepSecondPass; AEDD 20 51 8C                Q.
         jsr     RunChapter3And5WorldMapEvents   ; AEE0 20 85 94                  ..
         sec                                     ; AEE3 38                       8
         rts                                     ; AEE4 60                       `
@@ -7613,28 +7613,28 @@ MapInteractionSystem_Branch_B3C6:
         db   $71,$72,$73,$28,$68,$68,$4C,$2A ; B3D8 71 72 73 28 68 68 4C 2A  qrs(hhL*
         db   $B3                             ; B3E0 B3                       .
 ; ----------------------------------------------------------------------------
-RunMapInteractionWithModeZero:
+GiveFoundItemWithModeZero:
         ldx     #$00                            ; B3E1 A2 00                    ..
         beq     MapInteractionSystem_Branch_B3E7; B3E3 F0 02                    ..
-RunMapInteractionWithModeForty:
+GiveFoundItemWithModeForty:
         ldx     #$40                            ; B3E5 A2 40                    .@
 MapInteractionSystem_Branch_B3E7:
         stx     $6279                           ; B3E7 8E 79 62                 .yb
-DispatchMapInteractionId:
-        jmp     DispatchMapInteractionService   ; B3EA 4C A3 B5                 L..
+GiveFoundItemById:
+        jmp     GiveFoundItemToParty            ; B3EA 4C A3 B5                 L..
 ; ----------------------------------------------------------------------------
 PrepareAndUseMapInteractionSelection:
         jsr     ResolveCurrentMapStoryFlagPosition; B3ED 20 31 B7                1.
         jmp     TestCurrentMapStoryFlag         ; B3F0 4C 91 B7                 L..
 ; ----------------------------------------------------------------------------
 HandleFacingTileActionAndWait:
-        jsr     HandleFacingTileAction          ; B3F3 20 FE B3                  ..
+        jsr     DispatchFacingTileCommand       ; B3F3 20 FE B3                  ..
         bcs     MapInteractionSystem_Branch_B3FB; B3F6 B0 03                    ..
         jsr     WaitForFreshButtonPress         ; B3F8 20 CC C8                  ..
 MapInteractionSystem_Branch_B3FB:
         jmp     CloseFieldMessageWindow         ; B3FB 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-HandleFacingTileAction:
+DispatchFacingTileCommand:
         brk                                     ; B3FE 00                       .
         db   $07,$6F,$43                     ; B3FF 07 6F 43                 .oC
 ; ----------------------------------------------------------------------------
@@ -7666,7 +7666,7 @@ MapInteractionSystem_Branch_B423:
         jsr     TestPartyInventoryForStoredItem ; B42F 20 20 BC                   .
         bcs     MapInteractionSystem_Branch_B43B; B432 B0 07                    ..
         lda     #$57                            ; B434 A9 57                    .W
-        jsr     DispatchMapInteractionService   ; B436 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B436 20 A3 B5                  ..
         clc                                     ; B439 18                       .
         rts                                     ; B43A 60                       `
 ; ----------------------------------------------------------------------------
@@ -7693,7 +7693,7 @@ MapInteractionSystem_Branch_B447:
         jsr     SetCurrentMapStoryFlag          ; B455 20 9C B7                  ..
         jsr     LoadCurrentMapInteractionValue  ; B458 20 B2 B7                  ..
         bmi     MapInteractionSystem_Branch_B462; B45B 30 05                    0.
-        jsr     DispatchMapInteractionId        ; B45D 20 EA B3                  ..
+        jsr     GiveFoundItemById               ; B45D 20 EA B3                  ..
         clc                                     ; B460 18                       .
         rts                                     ; B461 60                       `
 ; ----------------------------------------------------------------------------
@@ -7732,7 +7732,7 @@ RunMapInteractionScriptByIndex:
         sta     $FE                             ; B498 85 FE                    ..
         sta     $70                             ; B49A 85 70                    .p
         lda     $00                           ; B49C A5 00                    ..
-        sta     $FD                             ; B49E 85 FD                    ..
+        sta     MessageNumberArgument           ; B49E 85 FD                    ..
         sta     $6F                             ; B4A0 85 6F                    .o
         brk                                     ; B4A2 00                       .
         db   $4B,$33                         ; B4A3 4B 33                    K3
@@ -7761,23 +7761,23 @@ MapInteractionSystem_Branch_B4B6:
 ; ----------------------------------------------------------------------------
         lda     CurrentMapNumber                ; B4B9 A5 63                    .c
         cmp     #$31                            ; B4BB C9 31                    .1
-        bne     RejectUnavailableMapInteraction ; B4BD D0 0F                    ..
+        bne     ShowChestEmpty                  ; B4BD D0 0F                    ..
         lda     CurrentSubmapNumber             ; B4BF A5 64                    .d
         cmp     #$03                            ; B4C1 C9 03                    ..
-        bne     RejectUnavailableMapInteraction ; B4C3 D0 09                    ..
+        bne     ShowChestEmpty                  ; B4C3 D0 09                    ..
         lda     PlayerLocalY                    ; B4C5 A5 45                    .E
         cmp     #$10                            ; B4C7 C9 10                    ..
-        bne     RejectUnavailableMapInteraction ; B4C9 D0 03                    ..
+        bne     ShowChestEmpty                  ; B4C9 D0 03                    ..
         jmp     MapInteractionSystem_Branch_BA04; B4CB 4C 04 BA                 L..
 ; ----------------------------------------------------------------------------
-RejectUnavailableMapInteraction:
+ShowChestEmpty:
         brk                                     ; B4CE 00                       .
         db   $97,$2B                         ; B4CF 97 2B                    .+
 ; ----------------------------------------------------------------------------
         clc                                     ; B4D1 18                       .
         rts                                     ; B4D2 60                       `
 ; ----------------------------------------------------------------------------
-RejectFacingMapInteractionWithMessages:
+ShowSearchFailureMessages:
         brk                                     ; B4D3 00                       .
         db   $A7,$2B                         ; B4D4 A7 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -7803,7 +7803,7 @@ MapInteractionSystem_Branch_B4E1:
         cmp     #$FF                            ; B4E9 C9 FF                    ..
         bne     MapInteractionSystem_Branch_B4F4; B4EB D0 07                    ..
         jsr     DispatchFacingLocalMapBehavior  ; B4ED 20 0D BB                  ..
-        bcc     RejectFacingMapInteractionWithMessages; B4F0 90 E1              ..
+        bcc     ShowSearchFailureMessages       ; B4F0 90 E1                    ..
         bcs     MapInteractionSystem_Branch_B4D9; B4F2 B0 E5                    ..
 MapInteractionSystem_Branch_B4F4:
         cmp     CurrentMapNumber                ; B4F4 C5 63                    .c
@@ -7843,7 +7843,7 @@ MapInteractionSystem_Branch_B529:
         jmp     MapInteractionSystem_Branch_B4D6; B52C 4C D6 B4                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B52F:
-        bpl     ShowMapInteractionPromptAndDispatch; B52F 10 6D                 .m
+        bpl     ShowFoundItemPromptAndDispatch  ; B52F 10 6D                    .m
         cmp     #$A0                            ; B531 C9 A0                    ..
         bcc     MapInteractionSystem_Branch_B539; B533 90 04                    ..
         cmp     #$AB                            ; B535 C9 AB                    ..
@@ -7866,7 +7866,7 @@ MapInteractionSystem_Branch_B550:
         inx                                     ; B550 E8                       .
         cpx     $BC55                           ; B551 EC 55 BC                 .U.
         bcc     MapInteractionSystem_Branch_B53B; B554 90 E5                    ..
-        jmp     RejectFacingMapInteractionWithMessages; B556 4C D3 B4           L..
+        jmp     ShowSearchFailureMessages       ; B556 4C D3 B4                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B559:
         sta     $0E                             ; B559 85 0E                    ..
@@ -7882,7 +7882,7 @@ MapInteractionSystem_Branch_B559:
         lda     $BDAB,y                         ; B566 B9 AB BD                 ...
         and     $6272,x                         ; B569 3D 72 62                 =rb
         beq     MapInteractionSystem_Branch_B571; B56C F0 03                    ..
-        jmp     RejectFacingMapInteractionWithMessages; B56E 4C D3 B4           L..
+        jmp     ShowSearchFailureMessages       ; B56E 4C D3 B4                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B571:
         tya                                     ; B571 98                       .
@@ -7903,7 +7903,7 @@ MapInteractionSystem_Branch_B571:
         clc                                     ; B587 18                       .
         bcc     MapInteractionSystem_Branch_B58D; B588 90 03                    ..
 MapInteractionSystem_Branch_B58A:
-        jsr     DispatchMapInteractionService   ; B58A 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B58A 20 A3 B5                  ..
 MapInteractionSystem_Branch_B58D:
         pla                                     ; B58D 68                       h
         tax                                     ; B58E AA                       .
@@ -7917,13 +7917,13 @@ MapInteractionSystem_Branch_B59C:
         clc                                     ; B59C 18                       .
         rts                                     ; B59D 60                       `
 ; ----------------------------------------------------------------------------
-ShowMapInteractionPromptAndDispatch:
+ShowFoundItemPromptAndDispatch:
         pha                                     ; B59E 48                       H
         brk                                     ; B59F 00                       .
         db   $A7,$2B                         ; B5A0 A7 2B                    .+
 ; ----------------------------------------------------------------------------
         pla                                     ; B5A2 68                       h
-DispatchMapInteractionService:
+GiveFoundItemToParty:
         and     #$7F                            ; B5A3 29 7F                    ).
         sta     $627A                           ; B5A5 8D 7A 62                 .zb
         sta     $F9                             ; B5A8 85 F9                    ..
@@ -7936,7 +7936,7 @@ MapInteractionSystem_Branch_B5B2:
         brk                                     ; B5B2 00                       .
         db   $65,$23,$09                     ; B5B3 65 23 09                 e#.
 ; ----------------------------------------------------------------------------
-RunMapInteractionSelectionSequence:
+PromptInventorySpaceForFoundItem:
         lda     $72                             ; B5B6 A5 72                    .r
         bcs     MapInteractionSystem_Branch_B5C2; B5B8 B0 08                    ..
         brk                                     ; B5BA 00                       .
@@ -8048,7 +8048,7 @@ MapInteractionSystem_Branch_B632:
 ; ----------------------------------------------------------------------------
         jmp     MapInteractionSystem_Branch_B632; B64D 4C 32 B6                 L2.
 ; ----------------------------------------------------------------------------
-ShowMapInteractionSelectionMessage:
+PromptDiscardForFoundItem:
         brk                                     ; B650 00                       .
         db   $D2,$2B                         ; B651 D2 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -8348,9 +8348,9 @@ SetMapTileEntityIndex:
         and     #$1F                            ; B802 29 1F                    ).
         jmp     SetMapTileAndRefreshRegion      ; B804 4C 8C 9E                 L..
 ; ----------------------------------------------------------------------------
-HandleMapInteractionId52:
+SearchForBaronsHorn:
         lda     #$52                            ; B807 A9 52                    .R
-        jsr     DispatchMapInteractionId        ; B809 20 EA B3                  ..
+        jsr     GiveFoundItemById               ; B809 20 EA B3                  ..
         jsr     TestCurrentMapStoryFlag         ; B80C 20 91 B7                  ..
         bcc     MapInteractionSystem_Branch_B819; B80F 90 08                    ..
         lda     #$01                            ; B811 A9 01                    ..
@@ -8360,9 +8360,9 @@ MapInteractionSystem_Branch_B819:
         clc                                     ; B819 18                       .
         rts                                     ; B81A 60                       `
 ; ----------------------------------------------------------------------------
-HandleMapInteractionId6B:
+SearchForIronSafe:
         lda     #$6B                            ; B81B A9 6B                    .k
-        jsr     DispatchMapInteractionId        ; B81D 20 EA B3                  ..
+        jsr     GiveFoundItemById               ; B81D 20 EA B3                  ..
         jsr     TestCurrentMapStoryFlag         ; B820 20 91 B7                  ..
         bcc     MapInteractionSystem_Branch_B82E; B823 90 09                    ..
         brk                                     ; B825 00                       .
@@ -8374,7 +8374,7 @@ MapInteractionSystem_Branch_B82E:
         clc                                     ; B82E 18                       .
         rts                                     ; B82F 60                       `
 ; ----------------------------------------------------------------------------
-CompleteMapInteractionId6B:
+CompleteIronSafeSearch:
         brk                                     ; B830 00                       .
         db   $A7,$2B                         ; B831 A7 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -8465,7 +8465,7 @@ ReplaceCompletedEventTile:
         rts                                     ; B8A9 60                       `
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B8AA:
-        jmp     RejectFacingMapInteractionWithMessages; B8AA 4C D3 B4           L..
+        jmp     ShowSearchFailureMessages       ; B8AA 4C D3 B4                 L..
 ; ----------------------------------------------------------------------------
 AnimateAndReplaceEventTile:
         lda     $3D                             ; B8AD A5 3D                    .=
@@ -8504,7 +8504,7 @@ ShowMapInteractionMessage2C:
         sec                                     ; B8DB 38                       8
         rts                                     ; B8DC 60                       `
 ; ----------------------------------------------------------------------------
-HandleConditionalMapInteractionId75:
+SearchForBirdsongNectar:
         brk                                     ; B8DD 00                       .
         db   $0B,$EB,$02                     ; B8DE 0B EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -8519,17 +8519,17 @@ HandleConditionalMapInteractionId75:
 ; ----------------------------------------------------------------------------
         bne     MapInteractionSystem_Branch_B948; B8EE D0 58                    .X
         lda     #$75                            ; B8F0 A9 75                    .u
-        jsr     ShowMapInteractionPromptAndDispatch; B8F2 20 9E B5               ..
+        jsr     ShowFoundItemPromptAndDispatch  ; B8F2 20 9E B5                  ..
         clc                                     ; B8F5 18                       .
         rts                                     ; B8F6 60                       `
 ; ----------------------------------------------------------------------------
-HandleConditionalMapInteractionId7E:
+SearchForPadequiaSeed:
         brk                                     ; B8F7 00                       .
         db   $18,$EB,$01                     ; B8F8 18 EB 01                 ...
 ; ----------------------------------------------------------------------------
         bne     MapInteractionSystem_Branch_B945; B8FB D0 48                    .H
         lda     #$7E                            ; B8FD A9 7E                    .~
-        jsr     DispatchMapInteractionService   ; B8FF 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B8FF 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B908; B902 B0 04                    ..
         brk                                     ; B904 00                       .
         db   $18,$CB,$01                     ; B905 18 CB 01                 ...
@@ -8538,9 +8538,9 @@ MapInteractionSystem_Branch_B908:
         clc                                     ; B908 18                       .
         rts                                     ; B909 60                       `
 ; ----------------------------------------------------------------------------
-HandleMapInteractionId6F:
+SearchForSymbolOfFaith:
         lda     #$6F                            ; B90A A9 6F                    .o
-        jsr     DispatchMapInteractionService   ; B90C 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B90C 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B915; B90F B0 04                    ..
         brk                                     ; B911 00                       .
         db   $18,$CB,$80                     ; B912 18 CB 80                 ...
@@ -8549,7 +8549,7 @@ MapInteractionSystem_Branch_B915:
         clc                                     ; B915 18                       .
         rts                                     ; B916 60                       `
 ; ----------------------------------------------------------------------------
-HandleMapInteractionId62:
+SearchForAgilitySeed:
         lda     $3D                             ; B917 A5 3D                    .=
         bne     MapInteractionSystem_Branch_B948; B919 D0 2D                    .-
         brk                                     ; B91B 00                       .
@@ -8559,11 +8559,11 @@ HandleMapInteractionId62:
         and     #$08                            ; B921 29 08                    ).
         bne     MapInteractionSystem_Branch_B945; B923 D0 20                    .
         lda     #$62                            ; B925 A9 62                    .b
-        jsr     DispatchMapInteractionService   ; B927 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B927 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B915; B92A B0 E9                    ..
         lda     #$08                            ; B92C A9 08                    ..
         bne     MapInteractionSystem_Branch_B9A9; B92E D0 79                    .y
-HandleMapInteractionId6A:
+SearchForStoneOfDrought:
         brk                                     ; B930 00                       .
         db   $A7,$2B                         ; B931 A7 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -8571,7 +8571,7 @@ HandleMapInteractionId6A:
         and     #$10                            ; B936 29 10                    ).
         bne     MapInteractionSystem_Branch_B945; B938 D0 0B                    ..
         lda     #$6A                            ; B93A A9 6A                    .j
-        jsr     DispatchMapInteractionService   ; B93C 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B93C 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B915; B93F B0 D4                    ..
         lda     #$10                            ; B941 A9 10                    ..
         bne     MapInteractionSystem_Branch_B9A9; B943 D0 64                    .d
@@ -8579,9 +8579,9 @@ MapInteractionSystem_Branch_B945:
         jmp     MapInteractionSystem_Branch_B4D6; B945 4C D6 B4                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B948:
-        jmp     RejectFacingMapInteractionWithMessages; B948 4C D3 B4           L..
+        jmp     ShowSearchFailureMessages       ; B948 4C D3 B4                 L..
 ; ----------------------------------------------------------------------------
-HandleMapInteractionId26:
+SearchForLeatherArmor:
         lda     $3D                             ; B94B A5 3D                    .=
         bne     MapInteractionSystem_Branch_B948; B94D D0 F9                    ..
         brk                                     ; B94F 00                       .
@@ -8591,11 +8591,11 @@ HandleMapInteractionId26:
         and     #$04                            ; B955 29 04                    ).
         bne     MapInteractionSystem_Branch_B945; B957 D0 EC                    ..
         lda     #$26                            ; B959 A9 26                    .&
-        jsr     DispatchMapInteractionService   ; B95B 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B95B 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B9AF; B95E B0 4F                    .O
         lda     #$04                            ; B960 A9 04                    ..
         bne     MapInteractionSystem_Branch_B9A3; B962 D0 3F                    .?
-HandleMapInteractionId53:
+SearchForMedicalHerb:
         lda     $3D                             ; B964 A5 3D                    .=
         bne     MapInteractionSystem_Branch_B948; B966 D0 E0                    ..
         brk                                     ; B968 00                       .
@@ -8606,7 +8606,7 @@ HandleMapInteractionId53:
 MapInteractionSystem_Branch_B970:
         bne     MapInteractionSystem_Branch_B945; B970 D0 D3                    ..
         lda     #$53                            ; B972 A9 53                    .S
-        jsr     DispatchMapInteractionService   ; B974 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B974 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B9AF; B977 B0 36                    .6
         lda     #$02                            ; B979 A9 02                    ..
         bne     MapInteractionSystem_Branch_B9A3; B97B D0 26                    .&
@@ -8626,7 +8626,7 @@ HandleMapEventFlag01:
         sta     $FF                             ; B993 85 FF                    ..
         lda     #$32                            ; B995 A9 32                    .2
         sta     $6F                             ; B997 85 6F                    .o
-        sta     $FD                             ; B999 85 FD                    ..
+        sta     MessageNumberArgument           ; B999 85 FD                    ..
         brk                                     ; B99B 00                       .
         db   $4B,$33                         ; B99C 4B 33                    K3
 ; ----------------------------------------------------------------------------
@@ -8669,7 +8669,7 @@ HandleTwoTileMapEvent:
         clc                                     ; B9CF 18                       .
         rts                                     ; B9D0 60                       `
 ; ----------------------------------------------------------------------------
-HandleChapterFiveMapInteractionId65:
+SearchForMysticAcorns:
         brk                                     ; B9D1 00                       .
         db   $A7,$2B                         ; B9D2 A7 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -8680,20 +8680,20 @@ HandleChapterFiveMapInteractionId65:
         and     #$20                            ; B9DE 29 20                    )
         bne     MapInteractionSystem_Branch_B970; B9E0 D0 8E                    ..
         lda     #$65                            ; B9E2 A9 65                    .e
-        jsr     DispatchMapInteractionService   ; B9E4 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; B9E4 20 A3 B5                  ..
         bcs     MapInteractionSystem_Branch_B9AF; B9E7 B0 C6                    ..
         lda     #$20                            ; B9E9 A9 20                    .
         bne     MapInteractionSystem_Branch_B9A9; B9EB D0 BC                    ..
-HandleChapterMapInteractionId67:
+SearchForLampOfDarkness:
         lda     SaveCurrentChapterMinus1        ; B9ED AD 5A 61                 .Za
         cmp     #$04                            ; B9F0 C9 04                    ..
         beq     MapInteractionSystem_Branch_B9F9; B9F2 F0 05                    ..
         lda     #$67                            ; B9F4 A9 67                    .g
-        jmp     DispatchMapInteractionId        ; B9F6 4C EA B3                 L..
+        jmp     GiveFoundItemById               ; B9F6 4C EA B3                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_B9F9:
         lda     #$67                            ; B9F9 A9 67                    .g
-        jsr     DispatchMapInteractionId        ; B9FB 20 EA B3                  ..
+        jsr     GiveFoundItemById               ; B9FB 20 EA B3                  ..
         brk                                     ; B9FE 00                       .
         db   $EB,$3B                         ; B9FF EB 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -8703,7 +8703,7 @@ MapInteractionSystem_Branch_BA04:
         lda     SaveCurrentChapterMinus1        ; BA04 AD 5A 61                 .Za
         cmp     #$04                            ; BA07 C9 04                    ..
         beq     MapInteractionSystem_Branch_BA0E; BA09 F0 03                    ..
-        jmp     RejectUnavailableMapInteraction ; BA0B 4C CE B4                 L..
+        jmp     ShowChestEmpty                  ; BA0B 4C CE B4                 L..
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_BA0E:
         brk                                     ; BA0E 00                       .
@@ -9116,7 +9116,7 @@ MapInteractionSystem_Branch_BCD3:
         txa                                     ; BCD3 8A                       .
         pha                                     ; BCD4 48                       H
         lda     $BCF1,x                         ; BCD5 BD F1 BC                 ...
-        jsr     DispatchMapInteractionService   ; BCD8 20 A3 B5                  ..
+        jsr     GiveFoundItemToParty            ; BCD8 20 A3 B5                  ..
         pla                                     ; BCDB 68                       h
         bcs     MapInteractionSystem_Branch_BCEB; BCDC B0 0D                    ..
         tax                                     ; BCDE AA                       .

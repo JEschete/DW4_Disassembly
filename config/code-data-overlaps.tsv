@@ -1,6 +1,4 @@
 # Bank<TAB>Start<TAB>EndExclusive<TAB>Reason
-13	8C59	8C5B	Final battle-action table value $2060 shares the RTS at $8C59 and JSR opcode at $8C5A; the entry report retains it as a reviewed non-code value.
-13	91EF	91F1	Final special-action pointer $D3AD shares the LDA opcode and low operand at $91EF-$91F0; the entry report retains it as a reviewed unsupported target.
 17	A14A	A14B	First map-timing byte intentionally shares the preceding RTS opcode at $A14A.
 18	BE7D	BE81	Directory-selected record bytes intentionally double as the entry $BE7D routine selected by directory entry $1B.
 1B	8020	8074	Compressed text group $55 intentionally overlaps map-event service code.

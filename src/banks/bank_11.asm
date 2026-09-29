@@ -1446,7 +1446,7 @@ RunBattleActionResolutionPipeline:
         jsr     ShouldAbortMatchedTargetFollowupOnState06AndMask0A; 88BA 20 ED BB ..
         bcc     BattleActionServices_Branch_88C6; 88BD 90 07                    ..
         jsr     WalkBattleActionResolutionLoop  ; 88BF 20 CA 88                  ..
-        jsr     QueueBattleActionInterruptionIfEligible; 88C2 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; 88C2 20 F7 A3                  ..
         rts                                     ; 88C5 60                       `
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_88C6:
@@ -1484,7 +1484,7 @@ BattleActionServices_Branch_88D7:
         jsr     ResolveMouthCoverInterruption   ; 8907 20 F5 B2                  ..
         bcc     BattleActionServices_Branch_8924; 890A 90 18                    ..
         jsr     RunBattleActionTargetingLoop    ; 890C 20 3A 89                  :.
-        jsr     RejectBattleActionIds3E3FF3F4   ; 890F 20 3A AC                  :.
+        jsr     RejectUnsupportedBattleActions  ; 890F 20 3A AC                  :.
         jsr     IsBattleActionBusy              ; 8912 20 C4 80                  ..
         bcc     BattleActionServices_Branch_8924; 8915 90 0D                    ..
         inc     $735C                           ; 8917 EE 5C 73                 .\s
@@ -1555,7 +1555,7 @@ BattleActionServices_Branch_895C:
         jsr     ResolveMpDrainBattleAction      ; 8980 20 73 A8                  s.
         jsr     ResolveLowRangeBattleAction     ; 8983 20 BC A8                  ..
 BattleActionServices_Branch_8986:
-        jsr     QueueBattleActionInterruptionIfEligible; 8986 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; 8986 20 F7 A3                  ..
 BattleActionServices_Branch_8989:
         jsr     IsBattleActionBusy              ; 8989 20 C4 80                  ..
         bcc     BattleActionServices_Branch_89A1; 898C 90 13                    ..
@@ -1572,7 +1572,7 @@ BattleActionServices_Branch_8999:
         cmp     $735E                           ; 899C CD 5E 73                 .^s
         bne     BattleActionServices_Branch_895C; 899F D0 BB                    ..
 BattleActionServices_Branch_89A1:
-        jsr     QueueBattleActionInterruptionIfEligible; 89A1 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; 89A1 20 F7 A3                  ..
         jmp     BattleActionServices_Branch_8CAF; 89A4 4C AF 8C                 L..
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_89A7:
@@ -1615,7 +1615,7 @@ BattleActionServices_Branch_89CE:
         jsr     ResolveMpDrainBattleAction      ; 89E5 20 73 A8                  s.
         jsr     ResolveLowRangeBattleAction     ; 89E8 20 BC A8                  ..
 BattleActionServices_Branch_89EB:
-        jsr     QueueBattleActionInterruptionIfEligible; 89EB 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; 89EB 20 F7 A3                  ..
         jmp     BattleActionServices_Branch_8CAF; 89EE 4C AF 8C                 L..
 ; ----------------------------------------------------------------------------
 RestartTimeAndUpdateCountdown:
@@ -2498,7 +2498,7 @@ BattleActionServices_Branch_8E4E:
         brk                                     ; 8E4E 00                       .
         db   $03,$4F                         ; 8E4F 03 4F                    .O
 ; ----------------------------------------------------------------------------
-        jmp     ResetBattleActionSoundState     ; 8E51 4C 96 8E                 L..
+        jmp     PrintActionMessageStep0         ; 8E51 4C 96 8E                 L..
 ; ----------------------------------------------------------------------------
 PlayBattleSound89Or8B:
         ldy     #$89                            ; 8E54 A0 89                    ..
@@ -2544,19 +2544,19 @@ PlayBattleSound9C:
         brk                                     ; 8E8C 00                       .
         db   $03,$4F                         ; 8E8D 03 4F                    .O
 ; ----------------------------------------------------------------------------
-        jmp     ResetBattleActionSoundState     ; 8E8F 4C 96 8E                 L..
+        jmp     PrintActionMessageStep0         ; 8E8F 4C 96 8E                 L..
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_8E92:
         tya                                     ; 8E92 98                       .
         jsr     PlayBattleSoundFromAccumulator  ; 8E93 20 55 BF                  U.
-ResetBattleActionSoundState:
+PrintActionMessageStep0:
         brk                                     ; 8E96 00                       .
         db   $E2,$D3,$00                     ; 8E97 E2 D3 00                 ...
 ; ----------------------------------------------------------------------------
         rts                                     ; 8E9A 60                       `
 ; ----------------------------------------------------------------------------
-ResetBattleActionSoundStateAndAdvance:
-        jsr     ResetBattleActionSoundState     ; 8E9B 20 96 8E                  ..
+PrintActionMessageStep4AndAdvance:
+        jsr     PrintActionMessageStep0         ; 8E9B 20 96 8E                  ..
 BattleActionServices_Branch_8E9E:
         brk                                     ; 8E9E 00                       .
         db   $F2,$D3,$04                     ; 8E9F F2 D3 04                 ...
@@ -2573,7 +2573,7 @@ PlayBattleSound9DForAlternateEffect:
         bne     BattleActionServices_Branch_8EAF; 8EAD D0 00                    ..
 BattleActionServices_Branch_8EAF:
         pha                                     ; 8EAF 48                       H
-        jsr     ResetBattleActionSoundState     ; 8EB0 20 96 8E                  ..
+        jsr     PrintActionMessageStep0         ; 8EB0 20 96 8E                  ..
         jsr     PlayInlineBattleSound           ; 8EB3 20 2E BF                  ..
         db   $9D                             ; 8EB6 9D                       .
 ; ----------------------------------------------------------------------------
@@ -2586,7 +2586,7 @@ BattleActionServices_Branch_8EB9:
         jmp     BattleActionServices_Branch_8E9E; 8EBC 4C 9E 8E                 L..
 ; ----------------------------------------------------------------------------
 PlayBattleSound91AndAdvance:
-        jsr     ResetBattleActionSoundState     ; 8EBF 20 96 8E                  ..
+        jsr     PrintActionMessageStep0         ; 8EBF 20 96 8E                  ..
         jsr     PlayInlineBattleSound           ; 8EC2 20 2E BF                  ..
         db   $91                             ; 8EC5 91                       .
 ; ----------------------------------------------------------------------------
@@ -2603,7 +2603,7 @@ PlayBattleSound8EAndReset:
         brk                                     ; 8ED4 00                       .
         db   $03,$4F                         ; 8ED5 03 4F                    .O
 ; ----------------------------------------------------------------------------
-        jmp     FinalizeBattleSoundState        ; 8ED7 4C E9 8E                 L..
+        jmp     PrintActionMessageStep0AndFinish; 8ED7 4C E9 8E                 L..
 ; ----------------------------------------------------------------------------
 PlayBattleSound8FAndReset:
         jsr     PlayInlineBattleSound           ; 8EDA 20 2E BF                  ..
@@ -2612,13 +2612,13 @@ PlayBattleSound8FAndReset:
         brk                                     ; 8EDE 00                       .
         db   $02,$4F                         ; 8EDF 02 4F                    .O
 ; ----------------------------------------------------------------------------
-        jmp     FinalizeBattleSoundState        ; 8EE1 4C E9 8E                 L..
+        jmp     PrintActionMessageStep0AndFinish; 8EE1 4C E9 8E                 L..
 ; ----------------------------------------------------------------------------
 PlayBattleSound83:
         lda     #$83                            ; 8EE4 A9 83                    ..
 BattleActionServices_Branch_8EE6:
         jsr     PlayBattleSoundFromAccumulator  ; 8EE6 20 55 BF                  U.
-FinalizeBattleSoundState:
+PrintActionMessageStep0AndFinish:
         brk                                     ; 8EE9 00                       .
         db   $F2,$D3,$00                     ; 8EEA F2 D3 00                 ...
 ; ----------------------------------------------------------------------------
@@ -2676,9 +2676,9 @@ PlayBattleSound9CAndAdvance:
         jsr     PlayInlineBattleSound           ; 8F1F 20 2E BF                  ..
         db   $9C                             ; 8F22 9C                       .
 ; ----------------------------------------------------------------------------
-        jmp     ResetBattleActionSoundStateAndAdvance; 8F23 4C 9B 8E            L..
+        jmp     PrintActionMessageStep4AndAdvance; 8F23 4C 9B 8E                L..
 ; ----------------------------------------------------------------------------
-AbortBattleSoundSequence:
+PrintActionStep4AndAbortSequence:
         brk                                     ; 8F26 00                       .
         db   $F2,$D3,$04                     ; 8F27 F2 D3 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3014,7 +3014,7 @@ BattleActionServices_Branch_91A4:
         pla                                     ; 91A8 68                       h
         tax                                     ; 91A9 AA                       .
         pha                                     ; 91AA 48                       H
-        jsr     WriteBattleResultParameter1     ; 91AB 20 86 92                  ..
+        jsr     BlinkCombatantDisplaySlot       ; 91AB 20 86 92                  ..
         brk                                     ; 91AE 00                       .
         db   $07,$2F                         ; 91AF 07 2F                    ./
 ; ----------------------------------------------------------------------------
@@ -3086,7 +3086,7 @@ AdvanceBattlePhaseRecord:
         bne     BattleActionServices_Branch_9235; 9210 D0 23                    .#
         inc     $6E7E                           ; 9212 EE 7E 6E                 .~n
 BattleActionServices_Branch_9215:
-        jsr     WriteBattleResultParameter0     ; 9215 20 7C 92                  |.
+        jsr     RemoveCombatantFromBattleDisplay; 9215 20 7C 92                  |.
         jsr     ResetBattleTargetIndex          ; 9218 20 C7 92                  ..
         brk                                     ; 921B 00                       .
         db   $2B,$C3,$0E                     ; 921C 2B C3 0E                 +..
@@ -3148,7 +3148,7 @@ DispatchBattlePhaseUpdate:
 ; ----------------------------------------------------------------------------
         jmp     ResolveBattleModeFlags          ; 9279 4C CF 92                 L..
 ; ----------------------------------------------------------------------------
-WriteBattleResultParameter0:
+RemoveCombatantFromBattleDisplay:
         txa                                     ; 927C 8A                       .
         pha                                     ; 927D 48                       H
         sta     $C7                             ; 927E 85 C7                    ..
@@ -3159,7 +3159,7 @@ WriteBattleResultParameter0:
         tax                                     ; 9284 AA                       .
         rts                                     ; 9285 60                       `
 ; ----------------------------------------------------------------------------
-WriteBattleResultParameter1:
+BlinkCombatantDisplaySlot:
         txa                                     ; 9286 8A                       .
         pha                                     ; 9287 48                       H
         sta     $C7                             ; 9288 85 C7                    ..
@@ -3925,7 +3925,7 @@ BattleActionServices_Branch_96D4:
 BattleActionServices_Branch_96DA:
         rts                                     ; 96DA 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleModeBitZero:
+RunPhysicalAttack:
         lsr     BattleActionFlags               ; 96DB 4E E7 72                 N.r
         asl     BattleActionFlags               ; 96DE 0E E7 72                 ..r
         brk                                     ; 96E1 00                       .
@@ -4285,7 +4285,7 @@ ApplyPackedBattleDamageOrResetMode:
 ; ----------------------------------------------------------------------------
         and     #$03                            ; 98E8 29 03                    ).
         beq     BattleActionServices_Branch_98EF; 98EA F0 03                    ..
-        jmp     ClearBattleModeBitZero          ; 98EC 4C DB 96                 L..
+        jmp     RunPhysicalAttack               ; 98EC 4C DB 96                 L..
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_98EF:
         jsr     PlayInlineBattleSound           ; 98EF 20 2E BF                  ..
@@ -4353,21 +4353,21 @@ StorePackedWordToBattleDamageAmount:
         rts                                     ; 9944 60                       `
 ; ----------------------------------------------------------------------------
 QueueDefaultBattleResultWhenPriorityAllows:
-        jsr     ClearBattleModeBitZero          ; 9945 20 DB 96                  ..
+        jsr     RunPhysicalAttack               ; 9945 20 DB 96                  ..
         lda     #$60                            ; 9948 A9 60                    .`
         jsr     IsBattleModePriorityBelowThreshold; 994A 20 6D 99                m.
         bcc     BattleActionServices_Branch_996C; 994D 90 1D                    ..
-        jmp     QueueBattleResult10Index00      ; 994F 4C C3 9C                 L..
+        jmp     ApplyStrengthEffect             ; 994F 4C C3 9C                 L..
 ; ----------------------------------------------------------------------------
 QueueBattleResultFiveWhenPriorityAllows:
-        jsr     ClearBattleModeBitZero          ; 9952 20 DB 96                  ..
+        jsr     RunPhysicalAttack               ; 9952 20 DB 96                  ..
         lda     #$60                            ; 9955 A9 60                    .`
         jsr     IsBattleModePriorityBelowThreshold; 9957 20 6D 99                m.
         bcc     BattleActionServices_Branch_996C; 995A 90 10                    ..
         jmp     QueueBattleResult05WhenAllowed  ; 995C 4C EA AF                 L..
 ; ----------------------------------------------------------------------------
 QueueBattleResultPairWhenPriorityAllows:
-        jsr     ClearBattleModeBitZero          ; 995F 20 DB 96                  ..
+        jsr     RunPhysicalAttack               ; 995F 20 DB 96                  ..
         lda     #$20                            ; 9962 A9 20                    .
         jsr     IsBattleModePriorityBelowThreshold; 9964 20 6D 99                m.
         bcc     BattleActionServices_Branch_996C; 9967 90 03                    ..
@@ -4794,7 +4794,7 @@ BattleActionServices_Branch_9B92:
 ; ----------------------------------------------------------------------------
         pla                                     ; 9BC1 68                       h
         tax                                     ; 9BC2 AA                       .
-        jsr     WriteBattleResultParameter1     ; 9BC3 20 86 92                  ..
+        jsr     BlinkCombatantDisplaySlot       ; 9BC3 20 86 92                  ..
         brk                                     ; 9BC6 00                       .
         db   $07,$2F                         ; 9BC7 07 2F                    ./
 ; ----------------------------------------------------------------------------
@@ -4922,7 +4922,7 @@ BattleActionServices_Branch_9C69:
         brk                                     ; 9C6C 00                       .
         db   $E8,$D3,$15                     ; 9C6D E8 D3 15                 ...
 ; ----------------------------------------------------------------------------
-        jsr     QueueBattleActionInterruptionIfEligible; 9C70 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; 9C70 20 F7 A3                  ..
         rts                                     ; 9C73 60                       `
 ; ----------------------------------------------------------------------------
 ResolveBattleOutcomeAndRewards:
@@ -4968,31 +4968,31 @@ PlayBattleSoundForNonzeroResult:
 BattleActionServices_Branch_9CAC:
         rts                                     ; 9CAC 60                       `
 ; ----------------------------------------------------------------------------
-QueueBattleResult13Index03WhenEligible:
+ApplyAgilityEffectForSpecialTarget:
         brk                                     ; 9CAD 00                       .
         db   $07,$1F                         ; 9CAE 07 1F                    ..
 ; ----------------------------------------------------------------------------
-        bcc     QueueBattleResult13Index00      ; 9CB0 90 0A                    ..
+        bcc     ApplyAgilityEffect              ; 9CB0 90 0A                    ..
         lda     $6E45                           ; 9CB2 AD 45 6E                 .En
         cmp     #$B4                            ; 9CB5 C9 B4                    ..
-        bne     QueueBattleResult13Index00      ; 9CB7 D0 03                    ..
+        bne     ApplyAgilityEffect              ; 9CB7 D0 03                    ..
         brk                                     ; 9CB9 00                       .
         db   $19,$4F                         ; 9CBA 19 4F                    .O
 ; ----------------------------------------------------------------------------
-QueueBattleResult13Index00:
+ApplyAgilityEffect:
         lda     #$13                            ; 9CBC A9 13                    ..
         ldx     #$03                            ; 9CBE A2 03                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9CC0 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9CC0 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-QueueBattleResult10Index00:
+ApplyStrengthEffect:
         lda     #$10                            ; 9CC3 A9 10                    ..
         ldx     #$00                            ; 9CC5 A2 00                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9CC7 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9CC7 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-QueueBattleResult14Index04:
+ApplyAlternateTargetStatusEffect:
         lda     #$14                            ; 9CCA A9 14                    ..
         ldx     #$04                            ; 9CCC A2 04                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9CCE 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9CCE 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 ResolveBattleResultByEffectCeiling:
         brk                                     ; 9CD1 00                       .
@@ -5024,7 +5024,7 @@ BattleActionServices_Branch_9CEE:
 BattleActionServices_Branch_9CF7:
         lda     #$12                            ; 9CF7 A9 12                    ..
         ldx     #$02                            ; 9CF9 A2 02                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9CFB 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9CFB 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_9CFE:
         brk                                     ; 9CFE 00                       .
@@ -5032,26 +5032,26 @@ BattleActionServices_Branch_9CFE:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9D02 60                       `
 ; ----------------------------------------------------------------------------
-QueueBattleResult16Index06:
+ApplySecondaryTargetStatusEffect:
         lda     #$16                            ; 9D03 A9 16                    ..
         ldx     #$06                            ; 9D05 A2 06                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9D07 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9D07 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-QueueBattleResult17Index07:
+ApplyStrengthEffectWithAlternateTargeting:
         lda     #$17                            ; 9D0A A9 17                    ..
         ldx     #$07                            ; 9D0C A2 07                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9D0E 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9D0E 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-ResetBattleResultSequenceAfterAdvance:
+PrintActionStep4ThenResetResultSequence:
         brk                                     ; 9D11 00                       .
         db   $F2,$D3,$04                     ; 9D12 F2 D3 04                 ...
 ; ----------------------------------------------------------------------------
-QueueBattleResult15Index05:
+ApplySelectedTargetStatusEffect:
         lda     #$15                            ; 9D15 A9 15                    ..
         ldx     #$05                            ; 9D17 A2 05                    ..
-        jmp     QueueBattleResultPairAndResolve ; 9D19 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; 9D19 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-QueueBattleResult06Index0DWhenAllowed:
+ApplyMaximumHpEffectWhenAllowed:
         brk                                     ; 9D1C 00                       .
         db   $07,$1F                         ; 9D1D 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5060,28 +5060,28 @@ QueueBattleResult06Index0DWhenAllowed:
 BattleActionServices_Branch_9D23:
         lda     #$06                            ; 9D23 A9 06                    ..
         ldx     #$0D                            ; 9D25 A2 0D                    ..
-        jmp     ResolveBattleResultWithTargetCheck; 9D27 4C 6E 9D               Ln.
+        jmp     ApplyBattleEffectWithAlternateTargetCheck; 9D27 4C 6E 9D        Ln.
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_9D2A:
         rts                                     ; 9D2A 60                       `
 ; ----------------------------------------------------------------------------
-ResolveDefaultBattleResultWithTargetCheck:
+ApplyDefaultTargetEffectWithValidation:
         lda     #$10                            ; 9D2B A9 10                    ..
         ldx     #$00                            ; 9D2D A2 00                    ..
-        jmp     ResolveBattleResultWithTargetCheck; 9D2F 4C 6E 9D               Ln.
+        jmp     ApplyBattleEffectWithAlternateTargetCheck; 9D2F 4C 6E 9D        Ln.
 ; ----------------------------------------------------------------------------
-QueueBattleResult18AndResolveSoundCue:
+ApplyTargetEffectAndResolveSoundCue:
         brk                                     ; 9D32 00                       .
         db   $07,$1F                         ; 9D33 07 1F                    ..
 ; ----------------------------------------------------------------------------
         bcs     BattleActionServices_Branch_9D2A; 9D35 B0 F3                    ..
         lda     #$18                            ; 9D37 A9 18                    ..
-        jsr     QueueBattleResultPairAndResolve ; 9D39 20 4F 9D                  O.
+        jsr     ApplyBattleEffectOperationAndPrintResult; 9D39 20 4F 9D          O.
         lda     #$4F                            ; 9D3C A9 4F                    .O
         jsr     RunBattleResolutionLoopWithInjectedActionId; 9D3E 20 08 B8       ..
         rts                                     ; 9D41 60                       `
 ; ----------------------------------------------------------------------------
-SetBattleActionDispatchBit4:
+SetDispatchBit4AndPrintActionStep1:
         lda     BattleActionFlags               ; 9D42 AD E7 72                 ..r
         ora     #$10                            ; 9D45 09 10                    ..
         sta     BattleActionFlags               ; 9D47 8D E7 72                 ..r
@@ -5090,7 +5090,7 @@ SetBattleActionDispatchBit4:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9D4E 60                       `
 ; ----------------------------------------------------------------------------
-QueueBattleResultPairAndResolve:
+ApplyBattleEffectOperationAndPrintResult:
         sta     $6F                             ; 9D4F 85 6F                    .o
         stx     $7C                             ; 9D51 86 7C                    .|
         brk                                     ; 9D53 00                       .
@@ -5118,7 +5118,7 @@ BattleActionServices_Branch_9D62:
 BattleActionServices_Branch_9D6D:
         rts                                     ; 9D6D 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattleResultWithTargetCheck:
+ApplyBattleEffectWithAlternateTargetCheck:
         sta     $6F                             ; 9D6E 85 6F                    .o
         stx     $7C                             ; 9D70 86 7C                    .|
         brk                                     ; 9D72 00                       .
@@ -5150,7 +5150,7 @@ BattleActionServices_Branch_9D8B:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9D8F 60                       `
 ; ----------------------------------------------------------------------------
-QueueBattleResult11ByTargetState:
+ApplyStrengthEffectByTargetState:
         brk                                     ; 9D90 00                       .
         db   $07,$1F                         ; 9D91 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5231,7 +5231,7 @@ BattleActionServices_Branch_9DE7:
         brk                                     ; 9DEE 00                       .
         db   $2A,$C3,$0C                     ; 9DEF 2A C3 0C                 *..
 ; ----------------------------------------------------------------------------
-        jsr     BuildAlternateBattleResultSequence; 9DF2 20 5C 9E                \.
+        jsr     BuildAlternateTargetEffectAmountSequence; 9DF2 20 5C 9E          \.
         rts                                     ; 9DF5 60                       `
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_9DF6:
@@ -5292,7 +5292,7 @@ BattleActionServices_Branch_9E3B:
         brk                                     ; 9E3B 00                       .
         db   $44,$93,$1C                     ; 9E3C 44 93 1C                 D..
 ; ----------------------------------------------------------------------------
-        jsr     BuildPrimaryBattleResultSequence; 9E3F 20 91 9E                  ..
+        jsr     BuildPrimaryTargetEffectAmountSequence; 9E3F 20 91 9E            ..
         brk                                     ; 9E42 00                       .
         db   $E6,$D3,$01                     ; 9E43 E6 D3 01                 ...
 ; ----------------------------------------------------------------------------
@@ -5322,7 +5322,7 @@ ConditionallyScaleSelectionByteByEight:
 BattleActionServices_Branch_9E5B:
         rts                                     ; 9E5B 60                       `
 ; ----------------------------------------------------------------------------
-BuildAlternateBattleResultSequence:
+BuildAlternateTargetEffectAmountSequence:
         lda     $7D                             ; 9E5C A5 7D                    .}
         pha                                     ; 9E5E 48                       H
         lda     #$FF                            ; 9E5F A9 FF                    ..
@@ -5346,27 +5346,27 @@ BuildAlternateBattleResultSequence:
         brk                                     ; 9E75 00                       .
         db   $18,$73                         ; 9E76 18 73                    .s
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo7D     ; 9E78 20 D6 9E                  ..
+        jsr     CopyBattleEffectAmountToAlternateTarget; 9E78 20 D6 9E           ..
         brk                                     ; 9E7B 00                       .
         db   $14,$B3                         ; 9E7C 14 B3                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; 9E7E 00                       .
         db   $1C,$33                         ; 9E7F 1C 33                    .3
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo7D     ; 9E81 20 D6 9E                  ..
+        jsr     CopyBattleEffectAmountToAlternateTarget; 9E81 20 D6 9E           ..
         brk                                     ; 9E84 00                       .
         db   $18,$B3                         ; 9E85 18 B3                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; 9E87 00                       .
         db   $14,$33                         ; 9E88 14 33                    .3
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo7D     ; 9E8A 20 D6 9E                  ..
+        jsr     CopyBattleEffectAmountToAlternateTarget; 9E8A 20 D6 9E           ..
         brk                                     ; 9E8D 00                       .
         db   $10,$B3                         ; 9E8E 10 B3                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; 9E90 60                       `
 ; ----------------------------------------------------------------------------
-BuildPrimaryBattleResultSequence:
+BuildPrimaryTargetEffectAmountSequence:
         lda     $70                             ; 9E91 A5 70                    .p
         pha                                     ; 9E93 48                       H
         lda     #$FF                            ; 9E94 A9 FF                    ..
@@ -5393,7 +5393,7 @@ BuildPrimaryBattleResultSequence:
         brk                                     ; 9EAF 00                       .
         db   $18,$53                         ; 9EB0 18 53                    .S
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo70     ; 9EB2 20 CF 9E                  ..
+        jsr     CopyBattleEffectAmountToPrimaryTarget; 9EB2 20 CF 9E             ..
         brk                                     ; 9EB5 00                       .
         db   $19,$73                         ; 9EB6 19 73                    .s
 ; ----------------------------------------------------------------------------
@@ -5401,7 +5401,7 @@ BuildPrimaryBattleResultSequence:
         brk                                     ; 9EBA 00                       .
         db   $1C,$53                         ; 9EBB 1C 53                    .S
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo70     ; 9EBD 20 CF 9E                  ..
+        jsr     CopyBattleEffectAmountToPrimaryTarget; 9EBD 20 CF 9E             ..
         brk                                     ; 9EC0 00                       .
         db   $1D,$73                         ; 9EC1 1D 73                    .s
 ; ----------------------------------------------------------------------------
@@ -5409,25 +5409,25 @@ BuildPrimaryBattleResultSequence:
         brk                                     ; 9EC5 00                       .
         db   $14,$53                         ; 9EC6 14 53                    .S
 ; ----------------------------------------------------------------------------
-        jsr     CopyBattleSelectionByteTo70     ; 9EC8 20 CF 9E                  ..
+        jsr     CopyBattleEffectAmountToPrimaryTarget; 9EC8 20 CF 9E             ..
         brk                                     ; 9ECB 00                       .
         db   $15,$73                         ; 9ECC 15 73                    .s
 ; ----------------------------------------------------------------------------
         rts                                     ; 9ECE 60                       `
 ; ----------------------------------------------------------------------------
-CopyBattleSelectionByteTo70:
+CopyBattleEffectAmountToPrimaryTarget:
         ldx     $73                             ; 9ECF A6 73                    .s
         stx     $70                             ; 9ED1 86 70                    .p
         ldx     $00                           ; 9ED3 A6 00                    ..
         rts                                     ; 9ED5 60                       `
 ; ----------------------------------------------------------------------------
-CopyBattleSelectionByteTo7D:
+CopyBattleEffectAmountToAlternateTarget:
         ldx     $73                             ; 9ED6 A6 73                    .s
         stx     $7D                             ; 9ED8 86 7D                    .}
         ldx     $7B                             ; 9EDA A6 7B                    .{
         rts                                     ; 9EDC 60                       `
 ; ----------------------------------------------------------------------------
-EmitBattleResultForActiveTarget:
+ApplyBattleEffectToActiveTarget:
         brk                                     ; 9EDD 00                       .
         db   $07,$1F                         ; 9EDE 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5479,7 +5479,7 @@ BattleActionServices_Branch_9F10:
 BattleActionServices_Branch_9F13:
         rts                                     ; 9F13 60                       `
 ; ----------------------------------------------------------------------------
-EmitBattleResultFromAlternateMagnitude:
+ApplyAlternateTargetEffectAmount:
         brk                                     ; 9F14 00                       .
         db   $07,$1F                         ; 9F15 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5496,7 +5496,7 @@ BattleActionServices_Branch_9F1F:
 ; ----------------------------------------------------------------------------
         jmp     BattleActionServices_Branch_9F53; 9F24 4C 53 9F                 LS.
 ; ----------------------------------------------------------------------------
-EmitBattleResultFromPrimaryMagnitude:
+ApplyPrimaryTargetEffectAmount:
         brk                                     ; 9F27 00                       .
         db   $07,$1F                         ; 9F28 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5512,7 +5512,7 @@ BattleActionServices_Branch_9F36:
         sta     $7C                             ; 9F36 85 7C                    .|
         lda     $7F                             ; 9F38 A5 7F                    ..
         sta     $7D                             ; 9F3A 85 7D                    .}
-        jsr     AdvanceAlternateBattleResultMagnitude; 9F3C 20 1F A0             ..
+        jsr     DoubleAlternateTargetEffectAmount; 9F3C 20 1F A0                 ..
         brk                                     ; 9F3F 00                       .
         db   $19,$A3                         ; 9F40 19 A3                    ..
 ; ----------------------------------------------------------------------------
@@ -5534,7 +5534,7 @@ BattleActionServices_Branch_9F53:
         sta     $6F                             ; 9F53 85 6F                    .o
         lda     $73                             ; 9F55 A5 73                    .s
         sta     $70                             ; 9F57 85 70                    .p
-        jsr     AdvancePrimaryBattleResultMagnitude; 9F59 20 11 A0               ..
+        jsr     DoublePrimaryTargetEffectAmount ; 9F59 20 11 A0                  ..
         brk                                     ; 9F5C 00                       .
         db   $1E,$53                         ; 9F5D 1E 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5544,7 +5544,7 @@ BattleActionServices_Branch_9F53:
 BattleActionServices_Branch_9F63:
         rts                                     ; 9F63 60                       `
 ; ----------------------------------------------------------------------------
-EmitScaledBattleResultForActiveTarget:
+ApplyScaledEffectAmountToActiveTarget:
         brk                                     ; 9F64 00                       .
         db   $07,$1F                         ; 9F65 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5555,7 +5555,7 @@ EmitScaledBattleResultForActiveTarget:
         txa                                     ; 9F6C 8A                       .
         pha                                     ; 9F6D 48                       H
         ldx     #$7E                            ; 9F6E A2 7E                    .~
-        jsr     ScaleBattleSelectionWordByThreeHalves; 9F70 20 89 9F             ..
+        jsr     ScaleActiveTargetDamageAmountByThreeHalves; 9F70 20 89 9F        ..
         pla                                     ; 9F73 68                       h
         tax                                     ; 9F74 AA                       .
         jmp     BattleActionServices_Branch_9F9B; 9F75 4C 9B 9F                 L..
@@ -5568,18 +5568,18 @@ BattleActionServices_Branch_9F78:
         txa                                     ; 9F7D 8A                       .
         pha                                     ; 9F7E 48                       H
         ldx     #$72                            ; 9F7F A2 72                    .r
-        jsr     ScaleBattleSelectionWordByThreeHalves; 9F81 20 89 9F             ..
+        jsr     ScaleActiveTargetDamageAmountByThreeHalves; 9F81 20 89 9F        ..
         pla                                     ; 9F84 68                       h
         tax                                     ; 9F85 AA                       .
         jmp     BattleActionServices_Branch_9FB3; 9F86 4C B3 9F                 L..
 ; ----------------------------------------------------------------------------
-ScaleBattleSelectionWordByThreeHalves:
+ScaleActiveTargetDamageAmountByThreeHalves:
         lda     #$03                            ; 9F89 A9 03                    ..
         jsr     MultiplyPointerWord             ; 9F8B 20 27 C8                  '.
         lda     #$02                            ; 9F8E A9 02                    ..
         jmp     DividePointerWord               ; 9F90 4C 51 C8                 LQ.
 ; ----------------------------------------------------------------------------
-EmitScaledAlternateBattleResult:
+ApplyScaledAlternateTargetEffectAmount:
         brk                                     ; 9F93 00                       .
         db   $07,$1F                         ; 9F94 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5592,7 +5592,7 @@ BattleActionServices_Branch_9F9B:
         sta     $7C                             ; 9F9D 85 7C                    .|
         lda     $7F                             ; 9F9F A5 7F                    ..
         sta     $7D                             ; 9FA1 85 7D                    .}
-        jsr     AdvanceAlternateBattleResultMagnitude; 9FA3 20 1F A0             ..
+        jsr     DoubleAlternateTargetEffectAmount; 9FA3 20 1F A0                 ..
         brk                                     ; 9FA6 00                       .
         db   $18,$A3                         ; 9FA7 18 A3                    ..
 ; ----------------------------------------------------------------------------
@@ -5611,7 +5611,7 @@ BattleActionServices_Branch_9FB3:
         sta     $6F                             ; 9FB5 85 6F                    .o
         lda     $73                             ; 9FB7 A5 73                    .s
         sta     $70                             ; 9FB9 85 70                    .p
-        jsr     AdvancePrimaryBattleResultMagnitude; 9FBB 20 11 A0               ..
+        jsr     DoublePrimaryTargetEffectAmount ; 9FBB 20 11 A0                  ..
         brk                                     ; 9FBE 00                       .
         db   $1D,$53                         ; 9FBF 1D 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5620,7 +5620,7 @@ BattleActionServices_Branch_9FB3:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9FC5 60                       `
 ; ----------------------------------------------------------------------------
-EmitBattleResultFromResolvedValue:
+ApplyResolvedBattleEffectAmount:
         brk                                     ; 9FC6 00                       .
         db   $07,$1F                         ; 9FC7 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5629,7 +5629,7 @@ EmitBattleResultFromResolvedValue:
         db   $0F,$B3                         ; 9FCC 0F B3                    ..
 ; ----------------------------------------------------------------------------
         sta     $7C                             ; 9FCE 85 7C                    .|
-        jsr     AdvanceAlternateBattleResultMagnitude; 9FD0 20 1F A0             ..
+        jsr     DoubleAlternateTargetEffectAmount; 9FD0 20 1F A0                 ..
         brk                                     ; 9FD3 00                       .
         db   $10,$A3                         ; 9FD4 10 A3                    ..
 ; ----------------------------------------------------------------------------
@@ -5644,7 +5644,7 @@ BattleActionServices_Branch_9FDB:
         db   $12,$73                         ; 9FDE 12 73                    .s
 ; ----------------------------------------------------------------------------
         sta     $6F                             ; 9FE0 85 6F                    .o
-        jsr     AdvancePrimaryBattleResultMagnitude; 9FE2 20 11 A0               ..
+        jsr     DoublePrimaryTargetEffectAmount ; 9FE2 20 11 A0                  ..
         brk                                     ; 9FE5 00                       .
         db   $15,$53                         ; 9FE6 15 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5654,7 +5654,7 @@ BattleActionServices_Branch_9FDB:
 BattleActionServices_Branch_9FEC:
         rts                                     ; 9FEC 60                       `
 ; ----------------------------------------------------------------------------
-EmitBattleResultWithFallback:
+ApplyBattleEffectAmountWithFallback:
         brk                                     ; 9FED 00                       .
         db   $07,$1F                         ; 9FEE 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -5689,7 +5689,7 @@ BattleActionServices_Branch_9FFF:
 BattleActionServices_Branch_A010:
         rts                                     ; A010 60                       `
 ; ----------------------------------------------------------------------------
-AdvancePrimaryBattleResultMagnitude:
+DoublePrimaryTargetEffectAmount:
         txa                                     ; A011 8A                       .
         pha                                     ; A012 48                       H
         jsr     PreserveBattlePointerPairAroundProbe; A013 20 5C AC              \.
@@ -5701,7 +5701,7 @@ BattleActionServices_Branch_A01C:
         tax                                     ; A01D AA                       .
         rts                                     ; A01E 60                       `
 ; ----------------------------------------------------------------------------
-AdvanceAlternateBattleResultMagnitude:
+DoubleAlternateTargetEffectAmount:
         txa                                     ; A01F 8A                       .
         pha                                     ; A020 48                       H
         jsr     PreserveBattlePointerPairAroundProbe; A021 20 5C AC              \.
@@ -5712,7 +5712,7 @@ AdvanceAlternateBattleResultMagnitude:
         tax                                     ; A02B AA                       .
         rts                                     ; A02C 60                       `
 ; ----------------------------------------------------------------------------
-ResolveNoEffectWithPath06:
+ResolveNoEffectOutcomeAndContinue:
         lda     #$06                            ; A02D A9 06                    ..
         sta     $71                             ; A02F 85 71                    .q
         jsr     CheckBattleActionGate           ; A031 20 B7 A0                  ..
@@ -5734,7 +5734,7 @@ BattleActionServices_Branch_A03B:
 ; ----------------------------------------------------------------------------
         rts                                     ; A046 60                       `
 ; ----------------------------------------------------------------------------
-SetBattleRouteByte71To05:
+ResolveTargetWithAbortRouteAndPrintStep1:
         lda     #$05                            ; A047 A9 05                    ..
         sta     $71                             ; A049 85 71                    .q
         jsr     CheckBattleActionGate           ; A04B 20 B7 A0                  ..
@@ -5802,7 +5802,7 @@ RouteBattleActionOnTargetMismatch:
         brk                                     ; A09B 00                       .
         db   $46,$93,$07                     ; A09C 46 93 07                 F..
 ; ----------------------------------------------------------------------------
-        bcc     SetBattleRouteByte71To05        ; A09F 90 A6                    ..
+        bcc     ResolveTargetWithAbortRouteAndPrintStep1; A09F 90 A6            ..
         brk                                     ; A0A1 00                       .
         db   $05,$73                         ; A0A2 05 73                    .s
 ; ----------------------------------------------------------------------------
@@ -5816,7 +5816,7 @@ BattleActionServices_Branch_A0A9:
         brk                                     ; A0A9 00                       .
         db   $29,$C3,$0E                     ; A0AA 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
-        bcc     SetBattleRouteByte71To05        ; A0AD 90 98                    ..
+        bcc     ResolveTargetWithAbortRouteAndPrintStep1; A0AD 90 98            ..
         brk                                     ; A0AF 00                       .
         db   $05,$A3                         ; A0B0 05 A3                    ..
 ; ----------------------------------------------------------------------------
@@ -5907,10 +5907,10 @@ CheckBattleActionGateOnce:
 ; ----------------------------------------------------------------------------
 CheckBattleActionGateAndReturn:
         jsr     ResolveCurrentBattleSlotAction  ; A10E 20 1A A1                  ..
-        bcs     ConfirmBattleSlotSelection      ; A111 B0 39                    .9
+        bcs     PrintActionStep1AndConfirmTarget; A111 B0 39                    .9
         rts                                     ; A113 60                       `
 ; ----------------------------------------------------------------------------
-CheckBattleActionGateAndSaveResolution:
+ResolveActionTargetAndPrintStep1OnMatch:
         jsr     ResolveCurrentBattleSlotAction  ; A114 20 1A A1                  ..
         bcs     BattleActionServices_Branch_A15A; A117 B0 41                    .A
         rts                                     ; A119 60                       `
@@ -5942,7 +5942,7 @@ BattleActionServices_Branch_A13B:
 ; ----------------------------------------------------------------------------
 CheckBattleSlotTargetEligibility:
         jsr     ResolveBattleSlotMatchAndStore  ; A13C 20 61 A1                  a.
-        bcs     ConfirmBattleSlotSelection      ; A13F B0 0B                    ..
+        bcs     PrintActionStep1AndConfirmTarget; A13F B0 0B                    ..
 BattleActionServices_Branch_A141:
         brk                                     ; A141 00                       .
         db   $E8,$D3,$1A                     ; A142 E8 D3 1A                 ...
@@ -5953,7 +5953,7 @@ BattleActionServices_Branch_A141:
 SetCarryAfterBattleSlotSelectionCheck:
         jsr     ResolveBattleSlotMatchAndStore  ; A147 20 61 A1                  a.
         bcc     BattleActionServices_Branch_A154; A14A 90 08                    ..
-ConfirmBattleSlotSelection:
+PrintActionStep1AndConfirmTarget:
         jsr     ReturnBattleTargetModeWhenAllowed; A14C 20 EF A0                 ..
         brk                                     ; A14F 00                       .
         db   $E6,$D3,$01                     ; A150 E6 D3 01                 ...
@@ -5962,7 +5962,7 @@ ConfirmBattleSlotSelection:
 BattleActionServices_Branch_A154:
         rts                                     ; A154 60                       `
 ; ----------------------------------------------------------------------------
-JumpToBattleSlotCommitOnSelection:
+ResolveTargetPrintStep1AndCommitAction:
         jsr     ResolveBattleSlotMatchAndStore  ; A155 20 61 A1                  a.
         bcc     BattleActionServices_Branch_A154; A158 90 FA                    ..
 BattleActionServices_Branch_A15A:
@@ -6015,7 +6015,7 @@ BattleActionServices_Branch_A198:
 BattleActionServices_Branch_A199:
         rts                                     ; A199 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattleSlotForQueuedAction84:
+ResolveForcedQueuedActionTarget:
         jsr     ScanBattleSlotsForMatchingMask  ; A19A 20 B4 A1                  ..
         bcc     BattleActionServices_Branch_A1A8; A19D 90 09                    ..
         stx     $C7                             ; A19F 86 C7                    ..
@@ -6027,11 +6027,11 @@ ResolveBattleSlotForQueuedAction84:
 BattleActionServices_Branch_A1A8:
         rts                                     ; A1A8 60                       `
 ; ----------------------------------------------------------------------------
-ResolveAndCommitQueuedAction84:
-        jsr     ResolveBattleSlotForQueuedAction84; A1A9 20 9A A1                ..
+ResolveAndCommitForcedQueuedAction:
+        jsr     ResolveForcedQueuedActionTarget ; A1A9 20 9A A1                  ..
         bcc     BattleActionServices_Branch_A141; A1AC 90 93                    ..
         jsr     CommitBattleSlotMatchAndAction  ; A1AE 20 7C A1                  |.
-        jmp     ConfirmBattleSlotSelection      ; A1B1 4C 4C A1                 LL.
+        jmp     PrintActionStep1AndConfirmTarget; A1B1 4C 4C A1                 LL.
 ; ----------------------------------------------------------------------------
 ScanBattleSlotsForMatchingMask:
         ldx     #$00                            ; A1B4 A2 00                    ..
@@ -6200,9 +6200,9 @@ AdjustBattleActionByteForCurrentGroup:
 ; ----------------------------------------------------------------------------
         pla                                     ; A289 68                       h
         sta     $7206,y                         ; A28A 99 06 72                 ..r
-        jsr     ClearBattleScratchByte06AndSetCarry; A28D 20 93 A2               ..
+        jsr     FinalizeBattleTargetChoice      ; A28D 20 93 A2                  ..
         jsr     SaveBattleActionStateAroundResolution; A290 20 D0 A1             ..
-ClearBattleScratchByte06AndSetCarry:
+FinalizeBattleTargetChoice:
         lda     #$00                            ; A293 A9 00                    ..
         sta     $06                             ; A295 85 06                    ..
         brk                                     ; A297 00                       .
@@ -6447,7 +6447,7 @@ CompareBattleSlotKeyAgainstComputedIndex:
         sta     $00                           ; A3F4 85 00                    ..
         rts                                     ; A3F6 60                       `
 ; ----------------------------------------------------------------------------
-QueueBattleActionInterruptionIfEligible:
+RedrawBattleUiRecords2BAnd4D:
         lda     BattleSetupModeFlags            ; A3F7 AD E9 72                 ..r
         bmi     BattleActionServices_Branch_A409; A3FA 30 0D                    0.
         brk                                     ; A3FC 00                       .
@@ -6740,7 +6740,7 @@ BattleActionServices_Branch_A75F:
         brk                                     ; A75F 00                       .
         db   $0B,$33                         ; A760 0B 33                    .3
 ; ----------------------------------------------------------------------------
-        jsr     QueueBattleActionInterruptionIfEligible; A762 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; A762 20 F7 A3                  ..
         clc                                     ; A765 18                       .
         rts                                     ; A766 60                       `
 ; ----------------------------------------------------------------------------
@@ -6874,7 +6874,7 @@ BattleActionServices_Branch_A817:
         brk                                     ; A820 00                       .
         db   $0A,$1F                         ; A821 0A 1F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     QueueBattleResult10Index00      ; A823 20 C3 9C                  ..
+        jsr     ApplyStrengthEffect             ; A823 20 C3 9C                  ..
         jmp     BattleActionServices_Branch_A84F; A826 4C 4F A8                 LO.
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_A829:
@@ -6885,7 +6885,7 @@ BattleActionServices_Branch_A829:
         brk                                     ; A832 00                       .
         db   $0A,$1F                         ; A833 0A 1F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EmitBattleResultForActiveTarget ; A835 20 DD 9E                  ..
+        jsr     ApplyBattleEffectToActiveTarget ; A835 20 DD 9E                  ..
         jmp     BattleActionServices_Branch_A84F; A838 4C 4F A8                 LO.
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_A83B:
@@ -7042,7 +7042,7 @@ BattleActionServices_Branch_A8EE:
         bpl     BattleActionServices_Branch_A904; A8F8 10 0A                    ..
         jsr     CullBattleSlotsExcludedBySelectionMask; A8FA 20 7A A9            z.
 LoadBattleSelectionForRefreshSlot:
-        jsr     LoadBattleSelectionForSlot41Or42; A8FD 20 F0 A9                  ..
+        jsr     LoadSelectionForPrimaryBattleCommands; A8FD 20 F0 A9             ..
         dex                                     ; A900 CA                       .
         bpl     BattleActionServices_Branch_A8EE; A901 10 EB                    ..
         rts                                     ; A903 60                       `
@@ -7196,7 +7196,7 @@ BattleActionServices_Branch_A9E8:
         sta     $7324,x                         ; A9EC 9D 24 73                 .$s
         rts                                     ; A9EF 60                       `
 ; ----------------------------------------------------------------------------
-LoadBattleSelectionForSlot41Or42:
+LoadSelectionForPrimaryBattleCommands:
         txa                                     ; A9F0 8A                       .
         pha                                     ; A9F1 48                       H
         lda     $7300,x                         ; A9F2 BD 00 73                 ..s
@@ -7269,9 +7269,9 @@ RefreshBattleSlotSelectionState:
         jsr     SweepBattleSlotsAndApplyHooks   ; AA4F 20 62 AA                  b.
         jsr     ClearBattleModeLowBits          ; AA52 20 8C AA                  ..
         jsr     RestartTimeWhenBattleIdle       ; AA55 20 95 AA                  ..
-        jsr     DecrementBattleSelectionNibbleAndReset; AA58 20 B1 AA            ..
-        jsr     ResolveBattleActionBBSelection  ; AA5B 20 EE AA                  ..
-        jsr     HandleBattleActionBATargetCue   ; AA5E 20 E0 AA                  ..
+        jsr     ExpireBattlePhaseCountdownAndPrintMessage; AA58 20 B1 AA         ..
+        jsr     ResolveChapterFourSpecialActionTarget; AA5B 20 EE AA             ..
+        jsr     QueueSpecialActionTargetCue     ; AA5E 20 E0 AA                  ..
         rts                                     ; AA61 60                       `
 ; ----------------------------------------------------------------------------
 SweepBattleSlotsAndApplyHooks:
@@ -7329,7 +7329,7 @@ RestartTimeWhenBattleIdle:
 BattleActionServices_Branch_AAB0:
         rts                                     ; AAB0 60                       `
 ; ----------------------------------------------------------------------------
-DecrementBattleSelectionNibbleAndReset:
+ExpireBattlePhaseCountdownAndPrintMessage:
         lda     BattlePhaseFlags                ; AAB1 AD E6 72                 ..r
         and     #$30                            ; AAB4 29 30                    )0
         beq     BattleActionServices_Branch_AADF; AAB6 F0 27                    .'
@@ -7361,7 +7361,7 @@ BattleActionServices_Branch_AAD0:
 BattleActionServices_Branch_AADF:
         rts                                     ; AADF 60                       `
 ; ----------------------------------------------------------------------------
-HandleBattleActionBATargetCue:
+QueueSpecialActionTargetCue:
         lda     $6E45                           ; AAE0 AD 45 6E                 .En
         cmp     #$BA                            ; AAE3 C9 BA                    ..
         bne     BattleActionServices_Branch_AAED; AAE5 D0 06                    ..
@@ -7374,7 +7374,7 @@ HandleBattleActionBATargetCue:
 BattleActionServices_Branch_AAED:
         rts                                     ; AAED 60                       `
 ; ----------------------------------------------------------------------------
-ResolveBattleActionBBSelection:
+ResolveChapterFourSpecialActionTarget:
         lda     $6E45                           ; AAEE AD 45 6E                 .En
         cmp     #$BB                            ; AAF1 C9 BB                    ..
         bne     BattleActionServices_Branch_AB06; AAF3 D0 11                    ..
@@ -7432,7 +7432,7 @@ BattleActionServices_Branch_AB2E:
         tax                                     ; AB3A AA                       .
         dey                                     ; AB3B 88                       .
         bpl     BattleActionServices_Branch_AB2E; AB3C 10 F0                    ..
-        jmp     QueueBattleActionInterruptionIfEligible; AB3E 4C F7 A3          L..
+        jmp     RedrawBattleUiRecords2BAnd4D    ; AB3E 4C F7 A3                 L..
 ; ----------------------------------------------------------------------------
         db   $00                             ; AB41 00                       .
         db   $00,$08,$10,$0C,$2C,$14,$5A     ; AB42 00 08 10 0C 2C 14 5A     ....,.Z
@@ -7631,7 +7631,7 @@ BattleActionServices_Branch_AC34:
         clc                                     ; AC38 18                       .
         rts                                     ; AC39 60                       `
 ; ----------------------------------------------------------------------------
-RejectBattleActionIds3E3FF3F4:
+RejectUnsupportedBattleActions:
         brk                                     ; AC3A 00                       .
         db   $03,$1F                         ; AC3B 03 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -7997,7 +7997,7 @@ BattleActionServices_Branch_AE2A:
         sta     $7D                             ; AE2C 85 7D                    .}
         lda     #$19                            ; AE2E A9 19                    ..
         ldx     #$09                            ; AE30 A2 09                    ..
-        jmp     QueueBattleResultPairAndResolve ; AE32 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; AE32 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 FinalizeBattleResultForTargetSide:
         brk                                     ; AE35 00                       .
@@ -8028,7 +8028,7 @@ BattleActionServices_Branch_AE49:
 QueueBattleResult11Index01:
         lda     #$11                            ; AE4E A9 11                    ..
         ldx     #$01                            ; AE50 A2 01                    ..
-        jmp     QueueBattleResultPairAndResolve ; AE52 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; AE52 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 SetBattleActionModeBit7:
         lda     BattleModeFlags                 ; AE55 AD E4 72                 ..r
@@ -8039,7 +8039,7 @@ SetBattleActionModeBit7:
 QueueBattleResult1BIndex0B:
         lda     #$1B                            ; AE5E A9 1B                    ..
         ldx     #$0B                            ; AE60 A2 0B                    ..
-        jmp     QueueBattleResultPairAndResolve ; AE62 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; AE62 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 AdvanceBattlePhaseForPrimaryResult:
         jsr     PlayInlineBattleSound           ; AE65 20 2E BF                  ..
@@ -8103,7 +8103,7 @@ AdvanceAlternateBattleResultBy101:
 ; ----------------------------------------------------------------------------
         ldx     #$7C                            ; AEAA A2 7C                    .|
         jsr     AddByteToPointer                ; AEAC 20 13 C8                  ..
-        jsr     AdvanceAlternateBattleResultMagnitude; AEAF 20 1F A0             ..
+        jsr     DoubleAlternateTargetEffectAmount; AEAF 20 1F A0                 ..
         brk                                     ; AEB2 00                       .
         db   $07,$1F                         ; AEB3 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -8356,12 +8356,12 @@ QueueBattleResult05WhenAllowed:
 ; ----------------------------------------------------------------------------
         bcs     BattleActionServices_Branch_AFFE; AFED B0 0F                    ..
         lda     #$05                            ; AFEF A9 05                    ..
-        jmp     QueueBattleResultPairAndResolve ; AFF1 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; AFF1 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 QueueBattleResultAndRefreshModes:
         lda     #$06                            ; AFF4 A9 06                    ..
         ldx     #$0D                            ; AFF6 A2 0D                    ..
-        jsr     QueueBattleResultPairAndResolve ; AFF8 20 4F 9D                  O.
+        jsr     ApplyBattleEffectOperationAndPrintResult; AFF8 20 4F 9D          O.
         jmp     ResolveBattleModeFlags          ; AFFB 4C CF 92                 L..
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_AFFE:
@@ -8413,7 +8413,7 @@ CopyPendingBattleActionBytes:
 BattleActionServices_Branch_B033:
         rts                                     ; B033 60                       `
 ; ----------------------------------------------------------------------------
-SignalBattleActionCommit:
+PrintActionStep1Message:
         brk                                     ; B034 00                       .
         db   $E6,$D3,$01                     ; B035 E6 D3 01                 ...
 ; ----------------------------------------------------------------------------
@@ -8523,7 +8523,7 @@ QueueNoEffectForActiveTarget:
         lda     BattleTargetSelector            ; B0A4 AD 63 73                 .cs
         bmi     BattleActionServices_Branch_B0AE; B0A7 30 05                    0.
         lda     #$05                            ; B0A9 A9 05                    ..
-        jmp     ResolveBattleResultWithTargetCheck; B0AB 4C 6E 9D               Ln.
+        jmp     ApplyBattleEffectWithAlternateTargetCheck; B0AB 4C 6E 9D        Ln.
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_B0AE:
         brk                                     ; B0AE 00                       .
@@ -8534,27 +8534,27 @@ BattleActionServices_Branch_B0AE:
 QueueBattleResult23Index14:
         lda     #$23                            ; B0B3 A9 23                    .#
         ldx     #$14                            ; B0B5 A2 14                    ..
-        jmp     QueueBattleResultPairAndResolve ; B0B7 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; B0B7 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-DisplayBattleActionNarration:
+ApplyStrengthIncreaseAndPrintResult:
         lda     #$11                            ; B0BA A9 11                    ..
-        jmp     DisplayBattleActionMessage      ; B0BC 4C D0 B0                 L..
+        jmp     ApplyBattleStatIncreaseAndPrintResult; B0BC 4C D0 B0            L..
 ; ----------------------------------------------------------------------------
-DisplayBattleActionMessage13:
+ApplyAgilityIncreaseAndPrintResult:
         lda     #$13                            ; B0BF A9 13                    ..
-        jmp     DisplayBattleActionMessage      ; B0C1 4C D0 B0                 L..
+        jmp     ApplyBattleStatIncreaseAndPrintResult; B0C1 4C D0 B0            L..
 ; ----------------------------------------------------------------------------
-DisplayBattleActionMessage24:
+ApplyLuckIncreaseAndPrintResult:
         lda     #$24                            ; B0C4 A9 24                    .$
-        jmp     DisplayBattleActionMessage      ; B0C6 4C D0 B0                 L..
+        jmp     ApplyBattleStatIncreaseAndPrintResult; B0C6 4C D0 B0            L..
 ; ----------------------------------------------------------------------------
-DisplayBattleActionMessage03:
+ApplyMaximumHpIncreaseAndPrintResult:
         lda     #$03                            ; B0C9 A9 03                    ..
-        jmp     DisplayBattleActionMessage      ; B0CB 4C D0 B0                 L..
+        jmp     ApplyBattleStatIncreaseAndPrintResult; B0CB 4C D0 B0            L..
 ; ----------------------------------------------------------------------------
-DisplayBattleActionMessage0A:
+ApplyMaximumMpIncreaseAndPrintResult:
         lda     #$0A                            ; B0CE A9 0A                    ..
-DisplayBattleActionMessage:
+ApplyBattleStatIncreaseAndPrintResult:
         pha                                     ; B0D0 48                       H
         brk                                     ; B0D1 00                       .
         db   $07,$1F                         ; B0D2 07 1F                    ..
@@ -8573,11 +8573,11 @@ DisplayBattleActionMessage:
 ; ----------------------------------------------------------------------------
         rts                                     ; B0E3 60                       `
 ; ----------------------------------------------------------------------------
-AbortBattleActionViaRoute05:
+PrintActionStep2AndAbortViaRouteFive:
         brk                                     ; B0E4 00                       .
         db   $E2,$D3,$02                     ; B0E5 E2 D3 02                 ...
 ; ----------------------------------------------------------------------------
-        jmp     SetBattleRouteByte71To05        ; B0E8 4C 47 A0                 LG.
+        jmp     ResolveTargetWithAbortRouteAndPrintStep1; B0E8 4C 47 A0         LG.
 ; ----------------------------------------------------------------------------
 ResolveMirrorOfRaBattleAction:
         brk                                     ; B0EB 00                       .
@@ -8707,7 +8707,7 @@ BattleActionServices_Branch_B150:
         rts                                     ; B17B 60                       `
 ; ----------------------------------------------------------------------------
 ClearBattleActionModeBitZeroDirect:
-        jsr     ClearBattleModeBitZero          ; B17C 20 DB 96                  ..
+        jsr     RunPhysicalAttack               ; B17C 20 DB 96                  ..
         rts                                     ; B17F 60                       `
 ; ----------------------------------------------------------------------------
 ResolveCalmingBattleAction:
@@ -8771,12 +8771,12 @@ BattleActionServices_Branch_B1CB:
 QueueBattleResult24Index15:
         lda     #$24                            ; B1D0 A9 24                    .$
         ldx     #$15                            ; B1D2 A2 15                    ..
-        jmp     QueueBattleResultPairAndResolve ; B1D4 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; B1D4 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 QueueBattleResult25Index16:
         lda     #$25                            ; B1D7 A9 25                    .%
         ldx     #$16                            ; B1D9 A2 16                    ..
-        jmp     QueueBattleResultPairAndResolve ; B1DB 4C 4F 9D                 LO.
+        jmp     ApplyBattleEffectOperationAndPrintResult; B1DB 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
 ResolveSuddenWeaponStrike:
         brk                                     ; B1DE 00                       .
@@ -8808,7 +8808,7 @@ BattleActionServices_Branch_B1FE:
 ; ----------------------------------------------------------------------------
         jsr     IronizeBattleTarget             ; B206 20 C4 AC                  ..
         bcc     BattleActionServices_Branch_B20E; B209 90 03                    ..
-        jsr     ClearBattleModeBitZero          ; B20B 20 DB 96                  ..
+        jsr     RunPhysicalAttack               ; B20B 20 DB 96                  ..
 BattleActionServices_Branch_B20E:
         lda     BattleActionFlags               ; B20E AD E7 72                 ..r
         and     #$60                            ; B211 29 60                    )`
@@ -9066,7 +9066,7 @@ ResetBattleActionChoiceState:
         db   $78,$79,$7A,$7B,$7C,$7D,$7E,$A8 ; B358 78 79 7A 7B 7C 7D 7E A8  xyz{|}~.
         db   $A9,$AA,$AB,$3E,$3D             ; B360 A9 AA AB 3E 3D           ...>=
 ; ----------------------------------------------------------------------------
-SeedBattleAction7FAndRaiseCommitFlag:
+SeedPendingActionAndPrintStep1:
         lda     #$7F                            ; B365 A9 7F                    ..
         brk                                     ; B367 00                       .
         db   $17,$0F                         ; B368 17 0F                    ..
@@ -9077,7 +9077,7 @@ SeedBattleAction7FAndRaiseCommitFlag:
 ; ----------------------------------------------------------------------------
         rts                                     ; B371 60                       `
 ; ----------------------------------------------------------------------------
-ValidateBattleCountdownAndAdvancePhase:
+PrintActionStep1AndResolveIronize:
         brk                                     ; B372 00                       .
         db   $F2,$D3,$01                     ; B373 F2 D3 01                 ...
 ; ----------------------------------------------------------------------------
@@ -9118,14 +9118,14 @@ AdvanceBattleSelectionAfterAction51:
 QueueBattleResult24Index17:
         lda     #$24                            ; B39C A9 24                    .$
         ldx     #$17                            ; B39E A2 17                    ..
-        jsr     QueueBattleResultPairAndResolve ; B3A0 20 4F 9D                  O.
+        jsr     ApplyBattleEffectOperationAndPrintResult; B3A0 20 4F 9D          O.
         rts                                     ; B3A3 60                       `
 ; ----------------------------------------------------------------------------
-SnapshotBattlePointerTriple:
+PrintActionStep1WithValue:
         brk                                     ; B3A4 00                       .
         db   $4A,$33                         ; B3A5 4A 33                    J3
 ; ----------------------------------------------------------------------------
-        sta     $FD                             ; B3A7 85 FD                    ..
+        sta     MessageNumberArgument           ; B3A7 85 FD                    ..
         lda     $73                             ; B3A9 A5 73                    .s
         sta     $FE                             ; B3AB 85 FE                    ..
         lda     $74                             ; B3AD A5 74                    .t
@@ -9369,7 +9369,7 @@ ValidateBattleActionAndUpdateDialogue:
         db   $5F,$53                         ; B4DB 5F 53                    _S
 ; ----------------------------------------------------------------------------
         jsr     BuildBattleDialogueWindowUpperRows; B4DD 20 86 87                ..
-        jsr     QueueBattleActionInterruptionIfEligible; B4E0 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; B4E0 20 F7 A3                  ..
 BattleActionServices_Branch_B4E3:
         rts                                     ; B4E3 60                       `
 ; ----------------------------------------------------------------------------
@@ -9408,7 +9408,7 @@ BattleActionServices_Branch_B50D:
         brk                                     ; B512 00                       .
         db   $5E,$33                         ; B513 5E 33                    ^3
 ; ----------------------------------------------------------------------------
-        jmp     QueueBattleActionInterruptionIfEligible; B515 4C F7 A3          L..
+        jmp     RedrawBattleUiRecords2BAnd4D    ; B515 4C F7 A3                 L..
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_B518:
         brk                                     ; B518 00                       .
@@ -9628,7 +9628,7 @@ ResolveBattleOutcome1EAndAdvancePhase:
         lda     #$1E                            ; B654 A9 1E                    ..
         jmp     ResolveBattleOutcomeAndRewards  ; B656 4C 74 9C                 Lt.
 ; ----------------------------------------------------------------------------
-SetBattleActionPostCommitFlag:
+SetPostCommitFlagAndPrintActionStep1:
         lda     BattleModeFlags                 ; B659 AD E4 72                 ..r
         ora     #$08                            ; B65C 09 08                    ..
         sta     BattleModeFlags                 ; B65E 8D E4 72                 ..r
@@ -9858,7 +9858,7 @@ ResolveBattleOutcomeForPhaseDispatch:
         lda     #$00                            ; B79D A9 00                    ..
         jmp     ResolveBattleOutcomeAndRewards  ; B79F 4C 74 9C                 Lt.
 ; ----------------------------------------------------------------------------
-SetBattleStatusFlag0:
+PrintActionStep1AndSetStatusFlag:
         brk                                     ; B7A2 00                       .
         db   $E6,$D3,$01                     ; B7A3 E6 D3 01                 ...
 ; ----------------------------------------------------------------------------
@@ -9894,7 +9894,7 @@ ResolveGlitteringDragonTransformation:
         lda     $73                             ; B7D5 A5 73                    .s
         sta     BattleDamageAmountHigh          ; B7D7 8D 62 73                 .bs
         jsr     ApplyBattleDamageAndResolveDefeat; B7DA 20 DB 90                 ..
-        jsr     QueueBattleActionInterruptionIfEligible; B7DD 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; B7DD 20 F7 A3                  ..
         lda     BattleActionFlags               ; B7E0 AD E7 72                 ..r
         and     #$01                            ; B7E3 29 01                    ).
         bne     BattleActionServices_Branch_B7F7; B7E5 D0 10                    ..
@@ -10183,7 +10183,7 @@ RunTimeReversalBattleSequence:
         db   $28,$0F                         ; B987 28 0F                    (.
 ; ----------------------------------------------------------------------------
         jsr     BuildBattleDialogueWindowUpperRows; B989 20 86 87                ..
-        jsr     QueueBattleActionInterruptionIfEligible; B98C 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; B98C 20 F7 A3                  ..
         brk                                     ; B98F 00                       .
         db   $10,$4F                         ; B990 10 4F                    .O
 ; ----------------------------------------------------------------------------
@@ -10557,7 +10557,7 @@ BattleActionServices_Branch_BBC1:
 ; ----------------------------------------------------------------------------
 BattleActionServices_Branch_BBD5:
         jsr     BuildBattleDialogueWindowUpperRows; BBD5 20 86 87                ..
-        jsr     QueueBattleActionInterruptionIfEligible; BBD8 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; BBD8 20 F7 A3                  ..
 BattleActionServices_Branch_BBDB:
         brk                                     ; BBDB 00                       .
         db   $27,$0F                         ; BBDC 27 0F                    '.
@@ -10761,7 +10761,7 @@ BattleActionServices_Branch_BCB8:
         cpx     $8E                             ; BCDB E4 8E                    ..
         bcc     BattleActionServices_Branch_BCB8; BCDD 90 D9                    ..
         jsr     BuildBattleDialogueWindowUpperRows; BCDF 20 86 87                ..
-        jsr     QueueBattleActionInterruptionIfEligible; BCE2 20 F7 A3           ..
+        jsr     RedrawBattleUiRecords2BAnd4D    ; BCE2 20 F7 A3                  ..
         brk                                     ; BCE5 00                       .
         db   $27,$0F                         ; BCE6 27 0F                    '.
 ; ----------------------------------------------------------------------------
@@ -10954,7 +10954,7 @@ BattleActionServices_Branch_BDF0:
         jmp     SubmitPaletteWithoutFade        ; BDF9 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
 CommitQueuedBattleActionSlotMatch:
-        jsr     ResolveAndCommitQueuedAction84  ; BDFC 20 A9 A1                  ..
+        jsr     ResolveAndCommitForcedQueuedAction; BDFC 20 A9 A1                ..
         rts                                     ; BDFF 60                       `
 ; ----------------------------------------------------------------------------
 TryRandomizeBattleDamageAmount:
@@ -11118,7 +11118,7 @@ LoadBattleIdValuePairsFromStreamAndResetDisplay:
         lda     $6BDE                           ; BF5C AD DE 6B                 ..k
         ora     #$80                            ; BF5F 09 80                    ..
         sta     $6BDE                           ; BF61 8D DE 6B                 ..k
-        bit     $C000                           ; BF64 2C 00 C0                 ,..
+        bit     DebugFeatureFlags               ; BF64 2C 00 C0                 ,..
         bvs     BattleActionServices_Branch_BFAE; BF67 70 45                    pE
 BattleActionServices_Branch_BF69:
         brk                                     ; BF69 00                       .

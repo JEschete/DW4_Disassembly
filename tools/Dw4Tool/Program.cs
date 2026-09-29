@@ -2161,7 +2161,7 @@ internal static class Program
             {
                 reasons.Add("broad-bank13-prefix");
             }
-            if (Regex.IsMatch(name, "Display|Print|Message", RegexOptions.IgnoreCase) &&
+            if (Regex.IsMatch(name, @"(?:^|_)(?:Display|Print|Message)", RegexOptions.IgnoreCase) &&
                 RoutineUsesOnlyAudioBrks(location.Bank, location.Address))
             {
                 reasons.Add("display-name-only-invokes-audio");

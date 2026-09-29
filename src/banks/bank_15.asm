@@ -832,13 +832,13 @@ ItemEffectInventory_Branch_9910:
 ItemEffectInventory_Branch_9913:
         rts                                     ; 9913 60                       `
 ; ----------------------------------------------------------------------------
-EffectScript_InvokeAdjustedItemHandler:
+PrintScriptMessageFromAdjustedBase:
         inx                                     ; 9914 E8                       .
         inx                                     ; 9915 E8                       .
         inx                                     ; 9916 E8                       .
         inx                                     ; 9917 E8                       .
         inx                                     ; 9918 E8                       .
-EffectScript_InvokeItemHandlerPreservingCursor:
+PrintScriptMessagePreservingCursor:
         sta     $00                             ; 9919 85 00                    ..
         tya                                     ; 991B 98                       .
         pha                                     ; 991C 48                       H
@@ -853,7 +853,7 @@ EffectScript_InvokeItemHandlerPreservingCursor:
 EffectScript_InitializeInterpreterContext:
         ldx     #$00                            ; 9925 A2 00                    ..
         stx     $E7                             ; 9927 86 E7                    ..
-        stx     $FD                             ; 9929 86 FD                    ..
+        stx     MessageNumberArgument           ; 9929 86 FD                    ..
         stx     $FE                             ; 992B 86 FE                    ..
         stx     $FF                             ; 992D 86 FF                    ..
         sty     $E9                             ; 992F 84 E9                    ..
@@ -875,7 +875,7 @@ EffectScript_InitializeInterpreterContext:
         sbc     #$01                            ; 994E E9 01                    ..
         tax                                     ; 9950 AA                       .
         lda     $00                             ; 9951 A5 00                    ..
-        jmp     EffectScript_InvokeAdjustedItemHandler; 9953 4C 14 99           L..
+        jmp     PrintScriptMessageFromAdjustedBase; 9953 4C 14 99               L..
 ; ----------------------------------------------------------------------------
 EffectScript_LoadReferencedEntryValue:
         pha                                     ; 9956 48                       H
@@ -894,13 +894,13 @@ EffectScript_ResolveInitialSelector:
         lda     $00                             ; 9966 A5 00                    ..
         cmp     #$07                            ; 9968 C9 07                    ..
         bcs     ItemEffectInventory_Branch_9972 ; 996A B0 06                    ..
-        jsr     EffectScript_DispatchInventoryModeSelector; 996C 20 BF 9C        ..
+        jsr     DispatchShopMode                ; 996C 20 BF 9C                  ..
         pla                                     ; 996F 68                       h
         pla                                     ; 9970 68                       h
         rts                                     ; 9971 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9972:
-        jsr     EffectCallback_PrepareEffectSelectionContext; 9972 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; 9972 20 FB B7                  ..
         lda     $00                             ; 9975 A5 00                    ..
         cmp     #$61                            ; 9977 C9 61                    .a
         lda     $01                             ; 9979 A5 01                    ..
@@ -985,7 +985,7 @@ ItemEffectInventory_Branch_99F1:
 ItemEffectInventory_Branch_99FB:
         cmp     #$05                            ; 99FB C9 05                    ..
         bne     ItemEffectInventory_Branch_9A05 ; 99FD D0 06                    ..
-        jsr     EffectScript_TestSelectionCondition; 99FF 20 C9 9A               ..
+        jsr     AskYesNo                        ; 99FF 20 C9 9A                  ..
         jmp     ItemEffectInventory_Branch_9A4C ; 9A02 4C 4C 9A                 LL.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9A05:
@@ -1079,7 +1079,7 @@ ItemEffectInventory_Branch_9A86:
 EffectScript_TestItemOperand:
         lda     ($DA),y                         ; 9A8C B1 DA                    ..
         iny                                     ; 9A8E C8                       .
-        jsr     EffectCallback_TestEffectAvailability; 9A8F 20 69 A7             i.
+        jsr     IsEventEffectAvailable          ; 9A8F 20 69 A7                  i.
         rts                                     ; 9A92 60                       `
 ; ----------------------------------------------------------------------------
 EffectScript_ReturnOriginalScriptOperandY:
@@ -1125,9 +1125,9 @@ EffectScript_TestEffectCondition:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9AC8 60                       `
 ; ----------------------------------------------------------------------------
-EffectScript_TestSelectionCondition:
+AskYesNo:
         lda     #$48                            ; 9AC9 A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; 9ACB 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; 9ACB 20 B5 B7      ..
         ora     #$00                            ; 9ACE 09 00                    ..
         rts                                     ; 9AD0 60                       `
 ; ----------------------------------------------------------------------------
@@ -1289,7 +1289,7 @@ EffectScript_ExecuteCommandBlock:
         tax                                     ; 9BB3 AA                       .
         lda     ($DA),y                         ; 9BB4 B1 DA                    ..
         iny                                     ; 9BB6 C8                       .
-        jsr     EffectScript_InvokeItemHandlerPreservingCursor; 9BB7 20 19 99    ..
+        jsr     PrintScriptMessagePreservingCursor; 9BB7 20 19 99                ..
         jmp     ItemEffectInventory_Branch_9C2E ; 9BBA 4C 2E 9C                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9BBD:
@@ -1417,7 +1417,7 @@ EffectScript_InvokeModeHandlerPreservingContext:
         pha                                     ; 9C6D 48                       H
         lda     ($DA),y                         ; 9C6E B1 DA                    ..
         sta     $00                             ; 9C70 85 00                    ..
-        jsr     EffectScript_DispatchInventoryModeSelector; 9C72 20 BF 9C        ..
+        jsr     DispatchShopMode                ; 9C72 20 BF 9C                  ..
 RestoreEffectScriptContext:
         pla                                     ; 9C75 68                       h
         tay                                     ; 9C76 A8                       .
@@ -1453,8 +1453,8 @@ EffectScript_LoadItemPointerFromSelectorWindow:
         sta     $DB                             ; 9C9D 85 DB                    ..
         tax                                     ; 9C9F AA                       .
         lda     $DA                             ; 9CA0 A5 DA                    ..
-        jsr     EffectScript_InvokeAdjustedItemHandler; 9CA2 20 14 99            ..
-        jsr     EffectScript_TestSelectionCondition; 9CA5 20 C9 9A               ..
+        jsr     PrintScriptMessageFromAdjustedBase; 9CA2 20 14 99                ..
+        jsr     AskYesNo                        ; 9CA5 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_9CAE ; 9CA8 F0 04                    ..
         lda     #$02                            ; 9CAA A9 02                    ..
         bne     ItemEffectInventory_Branch_9CB0 ; 9CAC D0 02                    ..
@@ -1469,9 +1469,9 @@ ItemEffectInventory_Branch_9CB0:
         bcc     ItemEffectInventory_Branch_9CBC ; 9CB9 90 01                    ..
         inx                                     ; 9CBB E8                       .
 ItemEffectInventory_Branch_9CBC:
-        jmp     EffectScript_InvokeAdjustedItemHandler; 9CBC 4C 14 99           L..
+        jmp     PrintScriptMessageFromAdjustedBase; 9CBC 4C 14 99               L..
 ; ----------------------------------------------------------------------------
-EffectScript_DispatchInventoryModeSelector:
+DispatchShopMode:
         cmp     #$04                            ; 9CBF C9 04                    ..
         bne     ItemEffectInventory_Branch_9CC6 ; 9CC1 D0 03                    ..
         jmp     ItemEffectInventory_Branch_BBCE ; 9CC3 4C CE BB                 L..
@@ -1484,12 +1484,12 @@ ItemEffectInventory_Branch_9CC6:
 ItemEffectInventory_Branch_9CCD:
         cmp     #$01                            ; 9CCD C9 01                    ..
         bne     ItemEffectInventory_Branch_9CD4 ; 9CCF D0 03                    ..
-        jmp     PrepareAndRunPrimaryTargetSelection; 9CD1 4C 22 B8              L".
+        jmp     PrepareAndRunShopBuyMenu        ; 9CD1 4C 22 B8                 L".
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9CD4:
         cmp     #$03                            ; 9CD4 C9 03                    ..
         bne     ItemEffectInventory_Branch_9CDB ; 9CD6 D0 03                    ..
-        jmp     PrepareAndRunAlternateTargetSelection; 9CD8 4C 29 B8            L).
+        jmp     PrepareAndRunShopSellMenu       ; 9CD8 4C 29 B8                 L).
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9CDB:
         cmp     #$02                            ; 9CDB C9 02                    ..
@@ -1504,7 +1504,7 @@ EffectScript_IsNighttime:
         cmp     #$78                            ; 9CE8 C9 78                    .x
         rts                                     ; 9CEA 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ApplyChapterSpecificStateAdjustments:
+ApplyChapterStoryStateAdjustments:
         lda     SaveCurrentChapterMinus1        ; 9CEB AD 5A 61                 .Za
         beq     ItemEffectInventory_Branch_9CF9 ; 9CEE F0 09                    ..
         cmp     #$04                            ; 9CF0 C9 04                    ..
@@ -1552,22 +1552,22 @@ ItemEffectInventory_Branch_9D1F:
 ItemEffectInventory_Branch_9D29:
         rts                                     ; 9D29 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CheckRow16ElseSetMode3:
+HandleShopCounterRowRestriction:
         ldy     PlayerLocalY                    ; 9D2A A4 45                    .E
         cpy     #$16                            ; 9D2C C0 16                    ..
         bne     ItemEffectInventory_Branch_9D33 ; 9D2E D0 03                    ..
-        jmp     EffectCallback_InvokeIndexedEffectHandler; 9D30 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; 9D30 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9D33:
-        jmp     PrepareAndRunAlternateTargetSelection; 9D33 4C 29 B8            L).
+        jmp     PrepareAndRunShopSellMenu       ; 9D33 4C 29 B8                 L).
 ; ----------------------------------------------------------------------------
-EffectCallback_SetSlot8Command33:
+SetScriptedActorPurchaseCommand:
         ldx     #$08                            ; 9D36 A2 08                    ..
         lda     #$33                            ; 9D38 A9 33                    .3
         sta     $7046,x                         ; 9D3A 9D 46 70                 .Fp
         rts                                     ; 9D3D 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SelectResultFromVehicleState:
+SelectScriptResultFromVehicleState:
         ldx     #$00                            ; 9D3E A2 00                    ..
         lda     $6281                           ; 9D40 AD 81 62                 ..b
         and     #$03                            ; 9D43 29 03                    ).
@@ -1583,17 +1583,17 @@ ItemEffectInventory_Branch_9D4F:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9D53:
         txa                                     ; 9D53 8A                       .
-        jmp     EffectCallback_InvokeIndexedEffectHandler; 9D54 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; 9D54 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetStatus00:
+WaitThenClearScriptStatus:
         lda     #$00                            ; 9D57 A9 00                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; 9D59 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; 9D59 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetStatus80AfterA66A:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; 9D5C 20 6A A6         j.
+PrintIndexedDialogueAndSetBusyStatus:
+        jsr     PrintScriptLineByOffset         ; 9D5C 20 6A A6                  j.
         jmp     SetEffectInterpreterStatus80    ; 9D5F 4C B6 B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetInitialEventProgress:
+TriggerMapEvent01:
         lda     #$01                            ; 9D62 A9 01                    ..
         brk                                     ; 9D64 00                       .
         db   $07,$CF                         ; 9D65 07 CF                    ..
@@ -1614,7 +1614,7 @@ ItemEffectInventory_Branch_9D76:
         db   $08,$EB,$04                     ; 9D77 08 EB 04                 ...
 ; ----------------------------------------------------------------------------
         beq     ItemEffectInventory_Branch_9D7F ; 9D7A F0 03                    ..
-        jmp     EffectCallback_InvokeFirstEffectHandler; 9D7C 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; 9D7C 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9D7F:
         brk                                     ; 9D7F 00                       .
@@ -1622,17 +1622,17 @@ ItemEffectInventory_Branch_9D7F:
 ; ----------------------------------------------------------------------------
         rts                                     ; 9D82 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetMapExitFlagBit08:
+MarkCurrentMapExitAvailable:
         lda     $62AA                           ; 9D83 AD AA 62                 ..b
         ora     #$08                            ; 9D86 09 08                    ..
         sta     $62AA                           ; 9D88 8D AA 62                 ..b
         rts                                     ; 9D8B 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_Consume07C6TripletAndContinue:
-        jsr     EffectCallback_Move07C6TripletToWorkingValue; 9D8C 20 92 9D      ..
-        jmp     EffectCallback_InvokeFirstEffectHandler; 9D8F 4C 64 A6          Ld.
+ConsumeBufferedRewardAndPrintOpeningLine:
+        jsr     MoveBufferedRewardToMessageNumberArgument; 9D8C 20 92 9D         ..
+        jmp     PrintScriptLine0                ; 9D8F 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-EffectCallback_Move07C6TripletToWorkingValue:
+MoveBufferedRewardToMessageNumberArgument:
         lda     $07C7                           ; 9D92 AD C7 07                 ...
         sta     $70                             ; 9D95 85 70                    .p
         sta     $FE                             ; 9D97 85 FE                    ..
@@ -1640,7 +1640,7 @@ EffectCallback_Move07C6TripletToWorkingValue:
         sta     $71                             ; 9D9C 85 71                    .q
         sta     $FF                             ; 9D9E 85 FF                    ..
         lda     $07C6                           ; 9DA0 AD C6 07                 ...
-        sta     $FD                             ; 9DA3 85 FD                    ..
+        sta     MessageNumberArgument           ; 9DA3 85 FD                    ..
         brk                                     ; 9DA5 00                       .
         db   $4B,$73                         ; 9DA6 4B 73                    Ks
 ; ----------------------------------------------------------------------------
@@ -1653,8 +1653,8 @@ EffectCallback_Move07C6TripletToWorkingValue:
         sta     $07C8                           ; 9DB4 8D C8 07                 ...
         rts                                     ; 9DB7 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ShiftWorkingValueRightAndClampToOne:
-        lda     $FD                             ; 9DB8 A5 FD                    ..
+ScaleMessageNumberArgumentAndClampToOne:
+        lda     MessageNumberArgument           ; 9DB8 A5 FD                    ..
         sta     $00                             ; 9DBA 85 00                    ..
         lda     $FE                             ; 9DBC A5 FE                    ..
         sta     $01                             ; 9DBE 85 01                    ..
@@ -1675,11 +1675,11 @@ ItemEffectInventory_Branch_9DC4:
 ItemEffectInventory_Branch_9DD9:
         rts                                     ; 9DD9 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RunMapRelocationPrelude:
-        jsr     EffectCallback_InvokeEighthEffectHandler; 9DDA 20 4C A6          L.
+RunMapRelocationPrelude:
+        jsr     PrintScriptLine7                ; 9DDA 20 4C A6                  L.
         jmp     RunMapRelocationEffect          ; 9DDD 4C F0 9D                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ResolveMapRelocationDestination:
+ResolveMapRelocationDestination:
         brk                                     ; 9DE0 00                       .
         db   $09,$EB,$01                     ; 9DE1 09 EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -1688,9 +1688,9 @@ EffectCallback_ResolveMapRelocationDestination:
         and     #$02                            ; 9DE9 29 02                    ).
         bne     ItemEffectInventory_Branch_9E45 ; 9DEB D0 58                    .X
 ItemEffectInventory_Branch_9DED:
-        jsr     EffectCallback_InvokeSecondEffectHandler; 9DED 20 68 A6          h.
+        jsr     PrintScriptLine1                ; 9DED 20 68 A6                  h.
 RunMapRelocationEffect:
-        jsr     EffectCallback_InvokeThirdEffectHandler; 9DF0 20 60 A6           `.
+        jsr     PrintScriptLine2                ; 9DF0 20 60 A6                  `.
         lda     #$80                            ; 9DF3 A9 80                    ..
         sta     $DD                             ; 9DF5 85 DD                    ..
         lda     #$1B                            ; 9DF7 A9 1B                    ..
@@ -1698,7 +1698,7 @@ RunMapRelocationEffect:
         lda     #$05                            ; 9DFB A9 05                    ..
         sta     PlayerLocalY                    ; 9DFD 85 45                    .E
         jsr     WaitForButtonStateSixtyFrames   ; 9DFF 20 10 D2                  ..
-        jsr     EffectCallback_PreserveDdAroundAea6; 9E02 20 BC A6               ..
+        jsr     PreserveSceneStateAroundTransition; 9E02 20 BC A6                ..
         ldx     #$01                            ; 9E05 A2 01                    ..
         lda     #$1B                            ; 9E07 A9 1B                    ..
         sta     $6F66,x                         ; 9E09 9D 66 6F                 .fo
@@ -1706,18 +1706,18 @@ RunMapRelocationEffect:
         lda     #$04                            ; 9E0F A9 04                    ..
         sta     $6F86,x                         ; 9E11 9D 86 6F                 ..o
         sta     $6FC6,x                         ; 9E14 9D C6 6F                 ..o
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; 9E17 20 C9 A4 ..
-        jsr     EffectCallback_RefreshMapAfterEffect; 9E1A 20 A9 A6              ..
-        jsr     EffectCallback_InvokeFourthEffectHandler; 9E1D 20 5C A6          \.
-        jsr     EffectCallback_InvokeFifthEffectHandler; 9E20 20 58 A6           X.
+        jsr     RefreshMapPreservingScriptPointers; 9E17 20 C9 A4                ..
+        jsr     RefreshMapAfterScriptEvent      ; 9E1A 20 A9 A6                  ..
+        jsr     PrintScriptLine3                ; 9E1D 20 5C A6                  \.
+        jsr     PrintScriptLine4                ; 9E20 20 58 A6                  X.
         lda     #$74                            ; 9E23 A9 74                    .t
-        jsr     EffectCallback_TestEffectAvailability; 9E25 20 69 A7             i.
+        jsr     IsEventEffectAvailable          ; 9E25 20 69 A7                  i.
         beq     ItemEffectInventory_Branch_9E36 ; 9E28 F0 0C                    ..
         lda     #$05                            ; 9E2A A9 05                    ..
-        jsr     EffectCallback_CompareEffectProgress; 9E2C 20 74 A7              t.
+        jsr     HasEventProgressReachedLimit    ; 9E2C 20 74 A7                  t.
         bcs     ItemEffectInventory_Branch_9E36 ; 9E2F B0 05                    ..
         lda     #$74                            ; 9E31 A9 74                    .t
-        jsr     EffectCallback_CommitAvailableEffectValue; 9E33 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; 9E33 20 89 B0                  ..
 ItemEffectInventory_Branch_9E36:
         brk                                     ; 9E36 00                       .
         db   $09,$DB,$FA                     ; 9E37 09 DB FA                 ...
@@ -1734,15 +1734,15 @@ ItemEffectInventory_Branch_9E45:
         lda     $628B                           ; 9E45 AD 8B 62                 ..b
         and     #$80                            ; 9E48 29 80                    ).
         beq     ItemEffectInventory_Branch_9E52 ; 9E4A F0 06                    ..
-        jsr     EffectCallback_InvokeSeventhEffectHandler; 9E4C 20 50 A6         P.
+        jsr     PrintScriptLine6                ; 9E4C 20 50 A6                  P.
         jmp     ItemEffectInventory_Branch_9E55 ; 9E4F 4C 55 9E                 LU.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9E52:
-        jsr     EffectCallback_InvokeSixthEffectHandler; 9E52 20 54 A6           T.
+        jsr     PrintScriptLine5                ; 9E52 20 54 A6                  T.
 ItemEffectInventory_Branch_9E55:
         rts                                     ; 9E55 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_EnterSubmap00At051C:
+EnterConfiguredSubmapAfterDelay:
         jsr     WaitForButtonStateSixtyFrames   ; 9E56 20 10 D2                  ..
         lda     #$00                            ; 9E59 A9 00                    ..
         sta     CurrentSubmapNumber             ; 9E5B 85 64                    .d
@@ -1750,8 +1750,8 @@ EffectCallback_EnterSubmap00At051C:
         sta     PlayerLocalX                    ; 9E5F 85 44                    .D
         lda     #$1C                            ; 9E61 A9 1C                    ..
         sta     PlayerLocalY                    ; 9E63 85 45                    .E
-        jsr     EffectCallback_PreserveDdAroundAea6; 9E65 20 BC A6               ..
-        jsr     EffectCallback_WaitForAudioAndResumeMapMusic; 9E68 20 3F B0      ?.
+        jsr     PreserveSceneStateAroundTransition; 9E65 20 BC A6                ..
+        jsr     WaitForAudioAndResumeMapMusic   ; 9E68 20 3F B0                  ?.
         lda     #$81                            ; 9E6B A9 81                    ..
         brk                                     ; 9E6D 00                       .
         db   $31,$EF                         ; 9E6E 31 EF                    1.
@@ -1761,19 +1761,19 @@ EffectCallback_EnterSubmap00At051C:
         and     #$FC                            ; 9E75 29 FC                    ).
         ora     #$03                            ; 9E77 09 03                    ..
         sta     $7006,x                         ; 9E79 9D 06 70                 ..p
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; 9E7C 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; 9E7C 20 C9 A4                ..
         jmp     FadePaletteFromBlack            ; 9E7F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ApplyConditionalMapEffect:
+ApplyConditionalMapEvent:
         lda     #$74                            ; 9E82 A9 74                    .t
-        jsr     EffectCallback_TestEffectAvailability; 9E84 20 69 A7             i.
+        jsr     IsEventEffectAvailable          ; 9E84 20 69 A7                  i.
         beq     ItemEffectInventory_Branch_9E98 ; 9E87 F0 0F                    ..
         lda     #$05                            ; 9E89 A9 05                    ..
-        jsr     EffectCallback_CompareEffectProgress; 9E8B 20 74 A7              t.
+        jsr     HasEventProgressReachedLimit    ; 9E8B 20 74 A7                  t.
         bcs     ItemEffectInventory_Branch_9E98 ; 9E8E B0 08                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; 9E90 20 64 A6           d.
+        jsr     PrintScriptLine0                ; 9E90 20 64 A6                  d.
         lda     #$74                            ; 9E93 A9 74                    .t
-        jsr     EffectCallback_CommitAvailableEffectValue; 9E95 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; 9E95 20 89 B0                  ..
 ItemEffectInventory_Branch_9E98:
         rts                                     ; 9E98 60                       `
 ; ----------------------------------------------------------------------------
@@ -1789,7 +1789,7 @@ RunNetasShopSalesSettlement:
         sta     $71                             ; 9EAE 85 71                    .q
         sta     $FF                             ; 9EB0 85 FF                    ..
         lda     $6254                           ; 9EB2 AD 54 62                 .Tb
-        sta     $FD                             ; 9EB5 85 FD                    ..
+        sta     MessageNumberArgument           ; 9EB5 85 FD                    ..
         brk                                     ; 9EB7 00                       .
         db   $4B,$73                         ; 9EB8 4B 73                    Ks
 ; ----------------------------------------------------------------------------
@@ -1838,7 +1838,7 @@ ItemEffectInventory_Branch_9ED5:
 ItemEffectInventory_Branch_9EF3:
         ldx     $DA                             ; 9EF3 A6 DA                    ..
         lda     #$1F                            ; 9EF5 A9 1F                    ..
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; 9EF7 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; 9EF7 20 B5 B7      ..
         cmp     #$FF                            ; 9EFA C9 FF                    ..
         beq     ItemEffectInventory_Branch_9F4B ; 9EFC F0 4D                    .M
         sta     $DB                             ; 9EFE 85 DB                    ..
@@ -1854,14 +1854,14 @@ ItemEffectInventory_Branch_9EF3:
         bcs     ItemEffectInventory_Branch_9F45 ; 9F0C B0 37                    .7
         lda     $F9                             ; 9F0E A5 F9                    ..
         sta     $00                             ; 9F10 85 00                    ..
-        jsr     EffectValue_LoadTripletForEntryId; 9F12 20 CF B2                 ..
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; 9F15 20 7C A4      |.
+        jsr     Shop_LoadItemPrice              ; 9F12 20 CF B2                  ..
+        jsr     CopyValueToMessageNumberArgument; 9F15 20 7C A4                  |.
         lda     #$60                            ; 9F18 A9 60                    .`
-        jsr     EffectCallback_ConvertEffectResultToScaledValue; 9F1A 20 0D A6   ..
+        jsr     ConvertScriptResultToMessageNumber; 9F1A 20 0D A6                ..
         brk                                     ; 9F1D 00                       .
         db   $6F,$3B                         ; 9F1E 6F 3B                    o;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; 9F20 20 C9 9A               ..
+        jsr     AskYesNo                        ; 9F20 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_9F3F ; 9F23 D0 1A                    ..
         ldx     $DA                             ; 9F25 A6 DA                    ..
         lda     $DB                             ; 9F27 A5 DB                    ..
@@ -1877,7 +1877,7 @@ ItemEffectInventory_Branch_9F34:
         brk                                     ; 9F34 00                       .
         db   $71,$3B                         ; 9F35 71 3B                    q;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; 9F37 20 C9 9A               ..
+        jsr     AskYesNo                        ; 9F37 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_9F4B ; 9F3A D0 0F                    ..
         jmp     ItemEffectInventory_Branch_9EC8 ; 9F3C 4C C8 9E                 L..
 ; ----------------------------------------------------------------------------
@@ -1898,14 +1898,14 @@ ItemEffectInventory_Branch_9F4B:
         db   $74,$3B                         ; 9F4C 74 3B                    t;
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9F4E:
-        jsr     EffectScript_TestSelectionCondition; 9F4E 20 C9 9A               ..
+        jsr     AskYesNo                        ; 9F4E 20 C9 9A                  ..
         cmp     #$00                            ; 9F51 C9 00                    ..
         bne     ItemEffectInventory_Branch_9F6B ; 9F53 D0 16                    ..
         jsr     InventoryStorage_FindFirstEmptySlot; 9F55 20 8A B3               ..
         ora     #$00                            ; 9F58 09 00                    ..
         beq     ItemEffectInventory_Branch_9F73 ; 9F5A F0 17                    ..
         lda     #$63                            ; 9F5C A9 63                    .c
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; 9F5E 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; 9F5E 20 B5 B7      ..
         jsr     InventoryStorage_FindFirstEmptySlot; 9F61 20 8A B3               ..
         cmp     #$09                            ; 9F64 C9 09                    ..
         bcc     ItemEffectInventory_Branch_9F6B ; 9F66 90 03                    ..
@@ -1952,10 +1952,10 @@ ItemEffectInventory_Branch_9F90:
         brk                                     ; 9FA6 00                       .
         db   $11,$0F                         ; 9FA7 11 0F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_RollScaledValue21Plus60; 9FA9 20 FA A5            ..
+        jsr     RollLargeRandomRewardValue      ; 9FA9 20 FA A5                  ..
         lda     $6254                           ; 9FAC AD 54 62                 .Tb
         clc                                     ; 9FAF 18                       .
-        adc     $FD                             ; 9FB0 65 FD                    e.
+        adc     MessageNumberArgument           ; 9FB0 65 FD                    e.
         sta     $6254                           ; 9FB2 8D 54 62                 .Tb
         lda     $6255                           ; 9FB5 AD 55 62                 .Ub
         adc     $FE                             ; 9FB8 65 FE                    e.
@@ -1976,7 +1976,7 @@ ItemEffectInventory_Branch_9FCF:
 ItemEffectInventory_Branch_9FD5:
         rts                                     ; 9FD5 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_Resolve628C628DOutcome:
+ConsumeDailyEventCounter:
         brk                                     ; 9FD6 00                       .
         db   $0B,$EB,$04                     ; 9FD7 0B EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -2000,17 +2000,17 @@ ItemEffectInventory_Branch_9FE4:
         brk                                     ; 9FF8 00                       .
         db   $13,$CB,$80                     ; 9FF9 13 CB 80                 ...
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_DispatchIndexedEffectAndFinalize; 9FFC 4C 06 A0  L..
+        jmp     PrintIndexedDialogueAndRefreshEntityLayout; 9FFC 4C 06 A0       L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_9FFF:
         sta     $628D                           ; 9FFF 8D 8D 62                 ..b
         brk                                     ; A002 00                       .
         db   $13,$CB,$40                     ; A003 13 CB 40                 ..@
 ; ----------------------------------------------------------------------------
-EffectCallback_DispatchIndexedEffectAndFinalize:
+PrintIndexedDialogueAndRefreshEntityLayout:
         tya                                     ; A006 98                       .
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A007 20 6A A6         j.
-        jmp     EffectCallback_FinalizeEffectState; A00A 4C B6 A4               L..
+        jsr     PrintScriptLineByOffset         ; A007 20 6A A6                  j.
+        jmp     ReapplyMapEntityLayout          ; A00A 4C B6 A4                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A00D:
         lda     #$01                            ; A00D A9 01                    ..
@@ -2019,11 +2019,11 @@ ItemEffectInventory_Branch_A011:
         dey                                     ; A011 88                       .
         tya                                     ; A012 98                       .
 ItemEffectInventory_Branch_A013:
-        jmp     EffectCallback_InvokeIndexedEffectHandler; A013 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; A013 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
-EffectCallback_RunState00ThenSeed0258Counter:
-        jsr     EffectCallback_InvokeFirstEffectHandler; A016 20 64 A6           d.
-        jsr     EffectScript_TestSelectionCondition; A019 20 C9 9A               ..
+RunOpeningDialogueAndSeedLocalCounter:
+        jsr     PrintScriptLine0                ; A016 20 64 A6                  d.
+        jsr     AskYesNo                        ; A019 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A028 ; A01C D0 0A                    ..
         ldy     #$02                            ; A01E A0 02                    ..
         lda     #$58                            ; A020 A9 58                    .X
@@ -2031,9 +2031,9 @@ EffectCallback_RunState00ThenSeed0258Counter:
         lda     #$02                            ; A024 A9 02                    ..
         bne     ItemEffectInventory_Branch_9FE4 ; A026 D0 BC                    ..
 ItemEffectInventory_Branch_A028:
-        jmp     EffectCallback_InvokeFourthEffectHandler; A028 4C 5C A6         L\.
+        jmp     PrintScriptLine3                ; A028 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
-EffectCallback_TestThreshold0088AndClearE7:
+WaitForScriptThresholdThenClearStatus:
         lda     #$88                            ; A02B A9 88                    ..
         sta     $70                             ; A02D 85 70                    .p
         lda     #$00                            ; A02F A9 00                    ..
@@ -2043,24 +2043,24 @@ EffectCallback_TestThreshold0088AndClearE7:
         db   $4C,$73                         ; A036 4C 73                    Ls
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_A049 ; A038 90 0F                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; A03A 20 68 A6          h.
+        jsr     PrintScriptLine1                ; A03A 20 68 A6                  h.
         brk                                     ; A03D 00                       .
         db   $0B,$CB,$20                     ; A03E 0B CB 20                 ..
 ; ----------------------------------------------------------------------------
         lda     #$09                            ; A041 A9 09                    ..
-        jsr     EffectCallback_Wait180FramesThenSetFlagAndStatus01; A043 20 D7 B0 ..
+        jsr     Wait180FramesThenTriggerMapEventAndSetStatus01; A043 20 D7 B0    ..
         jmp     ItemEffectInventory_Branch_A04C ; A046 4C 4C A0                 LL.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A049:
-        jsr     EffectCallback_InvokeFirstEffectHandler; A049 20 64 A6           d.
+        jsr     PrintScriptLine0                ; A049 20 64 A6                  d.
 ItemEffectInventory_Branch_A04C:
         lda     #$00                            ; A04C A9 00                    ..
         sta     $E7                             ; A04E 85 E7                    ..
         rts                                     ; A050 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestMinimumEffectValue:
+TestMinimumScriptValue:
         lda     #$6D                            ; A051 A9 6D                    .m
-        jsr     EffectCallback_LoadEffectAvailabilityResult; A053 20 9A B0       ..
+        jsr     LoadEventAvailabilityResult     ; A053 20 9A B0                  ..
         lda     #$61                            ; A056 A9 61                    .a
         sta     $70                             ; A058 85 70                    .p
         lda     #$00                            ; A05A A9 00                    ..
@@ -2074,8 +2074,8 @@ EffectCallback_TestMinimumEffectValue:
 ; ----------------------------------------------------------------------------
         rts                                     ; A067 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetStatus01ThenWaitShort:
-        jsr     EffectCallback_SetInterpreterStatus01; A068 20 AE B0             ..
+SetScriptReadyStatusAndWaitShort:
+        jsr     SetScriptInterpreterStatusReady ; A068 20 AE B0                  ..
         jmp     SetEntityCommandAndWaitSixtyFrames; A06B 4C 95 A4               L..
 ; ----------------------------------------------------------------------------
 InventoryService_RollRandomValueTwoToTwelve:
@@ -2090,30 +2090,30 @@ InventoryService_RollRandomValueTwoToTwelve:
         jsr     DividePointerWord               ; A07F 20 51 C8                  Q.
         clc                                     ; A082 18                       .
         adc     #$02                            ; A083 69 02                    i.
-        sta     $FD                             ; A085 85 FD                    ..
+        sta     MessageNumberArgument           ; A085 85 FD                    ..
         lda     $FE                             ; A087 A5 FE                    ..
         sta     $70                             ; A089 85 70                    .p
         lda     $FF                             ; A08B A5 FF                    ..
         sta     $71                             ; A08D 85 71                    .q
-        lda     $FD                             ; A08F A5 FD                    ..
+        lda     MessageNumberArgument           ; A08F A5 FD                    ..
         brk                                     ; A091 00                       .
         db   $4B,$73                         ; A092 4B 73                    Ks
 ; ----------------------------------------------------------------------------
         rts                                     ; A094 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag08ThenStatus01:
+TriggerMapEvent08AndSetStatus01:
         lda     #$08                            ; A095 A9 08                    ..
         brk                                     ; A097 00                       .
         db   $07,$CF                         ; A098 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; A09A 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; A09A 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag07:
+Wait180FramesThenTriggerMapEvent07:
         lda     #$07                            ; A09D A9 07                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; A09F 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; A09F 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunA66AThenEnterSubmap01At040C:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A0A2 20 6A A6         j.
+RunIndexedDialogueAndEnterInterior:
+        jsr     PrintScriptLineByOffset         ; A0A2 20 6A A6                  j.
         lda     $E0                             ; A0A5 A5 E0                    ..
         pha                                     ; A0A7 48                       H
         lda     $E1                             ; A0A8 A5 E1                    ..
@@ -2122,22 +2122,22 @@ EffectCallback_RunA66AThenEnterSubmap01At040C:
         brk                                     ; A0AE 00                       .
         db   $05,$8F                         ; A0AF 05 8F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_RunA732A738AndAdvanceTime; A0B1 20 C5 A6          ..
-        jsr     EffectCallback_EnterSubmap01At040C; A0B4 20 FF A0                ..
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; A0B7 20 C9 A4 ..
+        jsr     RunSceneTransitionAndAdvanceTime; A0B1 20 C5 A6                  ..
+        jsr     EnterInteriorAndRefresh         ; A0B4 20 FF A0                  ..
+        jsr     RefreshMapPreservingScriptPointers; A0B7 20 C9 A4                ..
         pla                                     ; A0BA 68                       h
         sta     $E1                             ; A0BB 85 E1                    ..
         pla                                     ; A0BD 68                       h
         sta     $E0                             ; A0BE 85 E0                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; A0C0 20 68 A6          h.
+        jsr     PrintScriptLine1                ; A0C0 20 68 A6                  h.
 ItemEffectInventory_Branch_A0C3:
-        jsr     EffectScript_TestSelectionCondition; A0C3 20 C9 9A               ..
+        jsr     AskYesNo                        ; A0C3 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A0CE ; A0C6 F0 06                    ..
-        jsr     EffectCallback_InvokeThirdEffectHandler; A0C8 20 60 A6           `.
+        jsr     PrintScriptLine2                ; A0C8 20 60 A6                  `.
         jmp     ItemEffectInventory_Branch_A0C3 ; A0CB 4C C3 A0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A0CE:
-        jsr     EffectCallback_InvokeFourthEffectHandler; A0CE 20 5C A6          \.
+        jsr     PrintScriptLine3                ; A0CE 20 5C A6                  \.
         lda     $E1                             ; A0D1 A5 E1                    ..
         pha                                     ; A0D3 48                       H
         lda     $E0                             ; A0D4 A5 E0                    ..
@@ -2150,7 +2150,7 @@ ItemEffectInventory_Branch_A0CE:
         sta     $E0                             ; A0DD 85 E0                    ..
         pla                                     ; A0DF 68                       h
         sta     $E1                             ; A0E0 85 E1                    ..
-        jsr     EffectCallback_InvokeFifthEffectHandler; A0E2 20 58 A6           X.
+        jsr     PrintScriptLine4                ; A0E2 20 58 A6                  X.
         ldx     #$00                            ; A0E5 A2 00                    ..
         lda     #$11                            ; A0E7 A9 11                    ..
         sta     $7046,x                         ; A0E9 9D 46 70                 .Fp
@@ -2158,12 +2158,12 @@ ItemEffectInventory_Branch_A0CE:
         lda     #$22                            ; A0EE A9 22                    ."
         sta     $7046,x                         ; A0F0 9D 46 70                 .Fp
         jsr     WaitForButtonStateOneTwentyFrames; A0F3 20 14 D2                 ..
-        jmp     EffectCallback_SetInterpreterStatus01; A0F6 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; A0F6 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_EnterSubmap01At040CAfterDelay:
+EnterInteriorAfterDelay:
         jsr     WaitForButtonStateOneTwentyFrames; A0F9 20 14 D2                 ..
-        jsr     EffectCallback_RunA732A738AndAdvanceTime; A0FC 20 C5 A6          ..
-EffectCallback_EnterSubmap01At040C:
+        jsr     RunSceneTransitionAndAdvanceTime; A0FC 20 C5 A6                  ..
+EnterInteriorAndRefresh:
         lda     #$82                            ; A0FF A9 82                    ..
         pha                                     ; A101 48                       H
         lda     #$01                            ; A102 A9 01                    ..
@@ -2172,14 +2172,14 @@ EffectCallback_EnterSubmap01At040C:
         sta     PlayerLocalX                    ; A108 85 44                    .D
         lda     #$0C                            ; A10A A9 0C                    ..
         sta     PlayerLocalY                    ; A10C 85 45                    .E
-        jsr     EffectCallback_WaitForAudioAndResumeMapMusic; A10E 20 3F B0      ?.
+        jsr     WaitForAudioAndResumeMapMusic   ; A10E 20 3F B0                  ?.
         pla                                     ; A111 68                       h
         brk                                     ; A112 00                       .
         db   $31,$EF                         ; A113 31 EF                    1.
 ; ----------------------------------------------------------------------------
         jmp     FadePaletteFromBlack            ; A115 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_AdjustPackedInventoryState:
+AdjustPackedInventoryCounts:
         lda     $628F                           ; A118 AD 8F 62                 ..b
         and     #$0F                            ; A11B 29 0F                    ).
         sta     $E3                             ; A11D 85 E3                    ..
@@ -2192,21 +2192,21 @@ EffectCallback_AdjustPackedInventoryState:
         lda     #$00                            ; A128 A9 00                    ..
         sta     $FE                             ; A12A 85 FE                    ..
         sta     $FF                             ; A12C 85 FF                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A12E 20 6A A6         j.
-        jsr     EffectScript_TestSelectionCondition; A131 20 C9 9A               ..
+        jsr     PrintScriptLineByOffset         ; A12E 20 6A A6                  j.
+        jsr     AskYesNo                        ; A131 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A187 ; A134 D0 51                    .Q
-        jsr     EffectCallback_InvokeSecondEffectHandler; A136 20 68 A6          h.
+        jsr     PrintScriptLine1                ; A136 20 68 A6                  h.
         brk                                     ; A139 00                       .
         db   $83,$2B                         ; A13A 83 2B                    .+
 ; ----------------------------------------------------------------------------
         lda     $E2                             ; A13C A5 E2                    ..
         ldy     #$28                            ; A13E A0 28                    .(
-        jsr     EffectCallback_CountEffectSequenceSteps; A140 20 E7 A1           ..
+        jsr     CountScriptSequenceSteps        ; A140 20 E7 A1                  ..
         sta     $E2                             ; A143 85 E2                    ..
         sty     $DA                             ; A145 84 DA                    ..
         lda     $E3                             ; A147 A5 E3                    ..
         ldy     #$06                            ; A149 A0 06                    ..
-        jsr     EffectCallback_CountEffectSequenceSteps; A14B 20 E7 A1           ..
+        jsr     CountScriptSequenceSteps        ; A14B 20 E7 A1                  ..
         sta     $E3                             ; A14E 85 E3                    ..
         sty     $DB                             ; A150 84 DB                    ..
         tya                                     ; A152 98                       .
@@ -2214,21 +2214,21 @@ EffectCallback_AdjustPackedInventoryState:
         beq     ItemEffectInventory_Branch_A184 ; A155 F0 2D                    .-
         lda     $DB                             ; A157 A5 DB                    ..
         beq     ItemEffectInventory_Branch_A164 ; A159 F0 09                    ..
-        jsr     EffectCallback_StoreOneBasedValueIn0554; A15B 20 DB A1           ..
-        jsr     EffectCallback_InvokeThirdEffectHandler; A15E 20 60 A6           `.
+        jsr     WriteOneBasedDialogueArgument   ; A15B 20 DB A1                  ..
+        jsr     PrintScriptLine2                ; A15E 20 60 A6                  `.
         brk                                     ; A161 00                       .
         db   $83,$2B                         ; A162 83 2B                    .+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A164:
         lda     $DA                             ; A164 A5 DA                    ..
         beq     ItemEffectInventory_Branch_A170 ; A166 F0 08                    ..
-        sta     $FD                             ; A168 85 FD                    ..
-        jsr     EffectCallback_InvokeFourthEffectHandler; A16A 20 5C A6          \.
+        sta     MessageNumberArgument           ; A168 85 FD                    ..
+        jsr     PrintScriptLine3                ; A16A 20 5C A6                  \.
         brk                                     ; A16D 00                       .
         db   $83,$2B                         ; A16E 83 2B                    .+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A170:
-        jsr     EffectCallback_InvokeFifthEffectHandler; A170 20 58 A6           X.
+        jsr     PrintScriptLine4                ; A170 20 58 A6                  X.
         lda     $E2                             ; A173 A5 E2                    ..
         asl     a                               ; A175 0A                       .
         asl     a                               ; A176 0A                       .
@@ -2240,9 +2240,9 @@ ItemEffectInventory_Branch_A170:
         beq     ItemEffectInventory_Branch_A1C0 ; A180 F0 3E                    .>
         bne     ItemEffectInventory_Branch_A187 ; A182 D0 03                    ..
 ItemEffectInventory_Branch_A184:
-        jsr     EffectCallback_InvokeSixthEffectHandler; A184 20 54 A6           T.
+        jsr     PrintScriptLine5                ; A184 20 54 A6                  T.
 ItemEffectInventory_Branch_A187:
-        jsr     EffectCallback_InvokeSeventhEffectHandler; A187 20 50 A6         P.
+        jsr     PrintScriptLine6                ; A187 20 50 A6                  P.
         lda     $628F                           ; A18A AD 8F 62                 ..b
         and     #$0F                            ; A18D 29 0F                    ).
         sta     $00                             ; A18F 85 00                    ..
@@ -2250,8 +2250,8 @@ ItemEffectInventory_Branch_A187:
         sec                                     ; A193 38                       8
         sbc     $00                             ; A194 E5 00                    ..
         beq     ItemEffectInventory_Branch_A1A1 ; A196 F0 09                    ..
-        jsr     EffectCallback_StoreOneBasedValueIn0554; A198 20 DB A1           ..
-        jsr     EffectCallback_InvokeThirdEffectHandler; A19B 20 60 A6           `.
+        jsr     WriteOneBasedDialogueArgument   ; A198 20 DB A1                  ..
+        jsr     PrintScriptLine2                ; A19B 20 60 A6                  `.
         brk                                     ; A19E 00                       .
         db   $83,$2B                         ; A19F 83 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -2267,14 +2267,14 @@ ItemEffectInventory_Branch_A1A1:
         lsr     a                               ; A1B0 4A                       J
         lsr     a                               ; A1B1 4A                       J
         lsr     a                               ; A1B2 4A                       J
-        sta     $FD                             ; A1B3 85 FD                    ..
-        jsr     EffectCallback_InvokeFourthEffectHandler; A1B5 20 5C A6          \.
+        sta     MessageNumberArgument           ; A1B3 85 FD                    ..
+        jsr     PrintScriptLine3                ; A1B5 20 5C A6                  \.
         brk                                     ; A1B8 00                       .
         db   $83,$2B                         ; A1B9 83 2B                    .+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A1BB:
         lda     #$07                            ; A1BB A9 07                    ..
-        jmp     EffectCallback_InvokeIndexedEffectHandler; A1BD 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; A1BD 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A1C0:
         lda     #$EA                            ; A1C0 A9 EA                    ..
@@ -2286,14 +2286,14 @@ ItemEffectInventory_Branch_A1C0:
         db   $4B,$73                         ; A1CB 4B 73                    Ks
 ; ----------------------------------------------------------------------------
         lda     #$08                            ; A1CD A9 08                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A1CF 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; A1CF 20 6A A6                  j.
         brk                                     ; A1D2 00                       .
         db   $0D,$CB,$10                     ; A1D3 0D CB 10                 ...
 ; ----------------------------------------------------------------------------
         lda     #$09                            ; A1D6 A9 09                    ..
-        jmp     EffectCallback_InvokeIndexedEffectHandler; A1D8 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; A1D8 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
-EffectCallback_StoreOneBasedValueIn0554:
+WriteOneBasedDialogueArgument:
         clc                                     ; A1DB 18                       .
         adc     #$01                            ; A1DC 69 01                    i.
         sta     $0554                           ; A1DE 8D 54 05                 .T.
@@ -2301,7 +2301,7 @@ EffectCallback_StoreOneBasedValueIn0554:
         sta     $0555                           ; A1E3 8D 55 05                 .U.
         rts                                     ; A1E6 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CountEffectSequenceSteps:
+CountScriptSequenceSteps:
         sty     $01                             ; A1E7 84 01                    ..
         ldy     #$00                            ; A1E9 A0 00                    ..
         sta     $00                             ; A1EB 85 00                    ..
@@ -2328,7 +2328,7 @@ ItemEffectInventory_Branch_A209:
         lda     $00                             ; A209 A5 00                    ..
         rts                                     ; A20B 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitAndSetSlot2Command11:
+WaitThenSetScriptedActorCommand:
         jsr     WaitForButtonStateOneEightyFrames; A20C 20 18 D2                 ..
         brk                                     ; A20F 00                       .
         db   $05,$CB,$01                     ; A210 05 CB 01                 ...
@@ -2344,7 +2344,7 @@ RunTaloonWeaponShopWorkChoice:
         brk                                     ; A220 00                       .
         db   $23,$3B                         ; A221 23 3B                    #;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A223 20 C9 9A               ..
+        jsr     AskYesNo                        ; A223 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A22B ; A226 F0 03                    ..
         jmp     ItemEffectInventory_Branch_A231 ; A228 4C 31 A2                 L1.
 ; ----------------------------------------------------------------------------
@@ -2364,7 +2364,7 @@ ItemEffectInventory_Branch_A235:
         brk                                     ; A235 00                       .
         db   $26,$3B                         ; A236 26 3B                    &;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A238 20 C9 9A               ..
+        jsr     AskYesNo                        ; A238 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A241 ; A23B F0 04                    ..
         brk                                     ; A23D 00                       .
         db   $28,$3B                         ; A23E 28 3B                    (;
@@ -2373,23 +2373,23 @@ ItemEffectInventory_Branch_A240:
         rts                                     ; A240 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A241:
-        jmp     EffectCallback_SetCurrentSlotCommand11AndWaitLong; A241 4C 8C A4L..
+        jmp     SetCurrentActorCommandAndWait   ; A241 4C 8C A4                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunA2C8WhenEb20Clear:
+RunRandomEventWhenStoryConditionClear:
         brk                                     ; A244 00                       .
         db   $0D,$EB,$20                     ; A245 0D EB 20                 ..
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_A240 ; A248 D0 F6                    ..
         beq     ItemEffectInventory_Branch_A252 ; A24A F0 06                    ..
-EffectCallback_SetStatus01ThenRunA2C8:
-        jsr     EffectCallback_SetInterpreterStatus01; A24C 20 AE B0             ..
+SetReadyStatusAndRunRandomEvent:
+        jsr     SetScriptInterpreterStatusReady ; A24C 20 AE B0                  ..
         jmp     ServeChapter3ShopCustomer       ; A24F 4C C8 A2                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A252:
         jsr     ServeChapter3ShopCustomer       ; A252 20 C8 A2                  ..
         jmp     ItemEffectInventory_Branch_990D ; A255 4C 0D 99                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RollIndexedListPosition:
+PickRandomScriptListEntry:
         jsr     NextRandomByte                  ; A258 20 91 C8                  ..
         sta     $00                             ; A25B 85 00                    ..
         lda     #$00                            ; A25D A9 00                    ..
@@ -2441,11 +2441,11 @@ ItemEffectInventory_Branch_A282:
         sta     $7046,x                         ; A2B4 9D 46 70                 .Fp
         ldx     #$0F                            ; A2B7 A2 0F                    ..
         lda     $07C6                           ; A2B9 AD C6 07                 ...
-        sta     $FD                             ; A2BC 85 FD                    ..
+        sta     MessageNumberArgument           ; A2BC 85 FD                    ..
         lda     #$00                            ; A2BE A9 00                    ..
         sta     $FE                             ; A2C0 85 FE                    ..
         sta     $FF                             ; A2C2 85 FF                    ..
-        jsr     EffectCallback_Move07C6TripletToWorkingValue; A2C4 20 92 9D      ..
+        jsr     MoveBufferedRewardToMessageNumberArgument; A2C4 20 92 9D         ..
 ItemEffectInventory_Branch_A2C7:
         rts                                     ; A2C7 60                       `
 ; ----------------------------------------------------------------------------
@@ -2458,7 +2458,7 @@ ServeChapter3ShopCustomer:
         brk                                     ; A2D1 00                       .
         db   $09,$CB,$01                     ; A2D2 09 CB 01                 ...
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; A2D5 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; A2D5 20 C9 A4                ..
         jsr     NextRandomByte                  ; A2D8 20 91 C8                  ..
         cmp     #$30                            ; A2DB C9 30                    .0
         bcs     ItemEffectInventory_Branch_A2E2 ; A2DD B0 03                    ..
@@ -2468,7 +2468,7 @@ ItemEffectInventory_Branch_A2E2:
         brk                                     ; A2E2 00                       .
         db   $29,$3B                         ; A2E3 29 3B                    );
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A2E5 20 C9 9A               ..
+        jsr     AskYesNo                        ; A2E5 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A2EE ; A2E8 F0 04                    ..
         brk                                     ; A2EA 00                       .
         db   $2A,$3B                         ; A2EB 2A 3B                    *;
@@ -2480,29 +2480,29 @@ ItemEffectInventory_Branch_A2EE:
         db   $2B,$3B                         ; A2EF 2B 3B                    +;
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A2F1:
-        jsr     EffectScript_TestSelectionCondition; A2F1 20 C9 9A               ..
+        jsr     AskYesNo                        ; A2F1 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A2FB ; A2F4 F0 05                    ..
         brk                                     ; A2F6 00                       .
         db   $2C,$3B                         ; A2F7 2C 3B                    ,;
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_A2F1 ; A2F9 B0 F6                    ..
 ItemEffectInventory_Branch_A2FB:
-        jsr     EffectCallback_LoadItemCandidatesForTargetPolicy; A2FB 20 EF B1  ..
+        jsr     LoadShopStock                   ; A2FB 20 EF B1                  ..
         lda     #$60                            ; A2FE A9 60                    .`
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A300 20 B5 B7        ..
-        jsr     EffectCallback_RollIndexedListPosition; A303 20 58 A2            X.
+        jsr     InvokeScriptLookupPreservingInterpreterState; A300 20 B5 B7      ..
+        jsr     PickRandomScriptListEntry       ; A303 20 58 A2                  X.
         tax                                     ; A306 AA                       .
         lda     $07BD,x                         ; A307 BD BD 07                 ...
         sta     $F9                             ; A30A 85 F9                    ..
 ItemEffectInventory_Branch_A30C:
         lda     $F9                             ; A30C A5 F9                    ..
         sta     $00                             ; A30E 85 00                    ..
-        jsr     EffectValue_LoadTripletForEntryId; A310 20 CF B2                 ..
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; A313 20 7C A4      |.
+        jsr     Shop_LoadItemPrice              ; A310 20 CF B2                  ..
+        jsr     CopyValueToMessageNumberArgument; A313 20 7C A4                  |.
         brk                                     ; A316 00                       .
         db   $2D,$3B                         ; A317 2D 3B                    -;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A319 20 C9 9A               ..
+        jsr     AskYesNo                        ; A319 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A33E ; A31C F0 20                    .
         jsr     NextRandomByte                  ; A31E 20 91 C8                  ..
         cmp     #$40                            ; A321 C9 40                    .@
@@ -2546,7 +2546,7 @@ ItemEffectInventory_Branch_A356:
         db   $2F,$3B                         ; A357 2F 3B                    /;
 ; ----------------------------------------------------------------------------
         ldx     #$04                            ; A359 A2 04                    ..
-        jsr     EffectCallback_ShiftWorkingValueRightAndClampToOne; A35B 20 B8 9D ..
+        jsr     ScaleMessageNumberArgumentAndClampToOne; A35B 20 B8 9D           ..
         jmp     ItemEffectInventory_Branch_A26C ; A35E 4C 6C A2                 Ll.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A361:
@@ -2554,7 +2554,7 @@ ItemEffectInventory_Branch_A361:
         lda     $DE                           ; A364 A5 DE                    ..
         sec                                     ; A366 38                       8
         sbc     $E1                             ; A367 E5 E1                    ..
-        sta     $FD                             ; A369 85 FD                    ..
+        sta     MessageNumberArgument           ; A369 85 FD                    ..
         lda     $DF                             ; A36B A5 DF                    ..
         sbc     $E2                             ; A36D E5 E2                    ..
         sta     $FE                             ; A36F 85 FE                    ..
@@ -2564,7 +2564,7 @@ ItemEffectInventory_Branch_A361:
         brk                                     ; A377 00                       .
         db   $30,$3B                         ; A378 30 3B                    0;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A37A 20 C9 9A               ..
+        jsr     AskYesNo                        ; A37A 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A38B ; A37D D0 0C                    ..
         lda     #$01                            ; A37F A9 01                    ..
         sta     $00                             ; A381 85 00                    ..
@@ -2582,7 +2582,7 @@ ItemEffectInventory_Branch_A394:
         lda     $DE                           ; A397 A5 DE                    ..
         clc                                     ; A399 18                       .
         adc     $E1                             ; A39A 65 E1                    e.
-        sta     $FD                             ; A39C 85 FD                    ..
+        sta     MessageNumberArgument           ; A39C 85 FD                    ..
         lda     $DF                             ; A39E A5 DF                    ..
         adc     $E2                             ; A3A0 65 E2                    e.
         sta     $FE                             ; A3A2 85 FE                    ..
@@ -2592,7 +2592,7 @@ ItemEffectInventory_Branch_A394:
         brk                                     ; A3AA 00                       .
         db   $31,$3B                         ; A3AB 31 3B                    1;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A3AD 20 C9 9A               ..
+        jsr     AskYesNo                        ; A3AD 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A3B7 ; A3B0 F0 05                    ..
         lda     $F9                             ; A3B2 A5 F9                    ..
         jmp     ItemEffectInventory_Branch_A32C ; A3B4 4C 2C A3                 L,.
@@ -2605,7 +2605,7 @@ ItemEffectInventory_Branch_A3B7:
         db   $32,$3B                         ; A3BF 32 3B                    2;
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; A3C1 A2 03                    ..
-        jsr     EffectCallback_ShiftWorkingValueRightAndClampToOne; A3C3 20 B8 9D ..
+        jsr     ScaleMessageNumberArgumentAndClampToOne; A3C3 20 B8 9D           ..
         jmp     ItemEffectInventory_Branch_A26C ; A3C6 4C 6C A2                 Ll.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A3C9:
@@ -2630,7 +2630,7 @@ ItemEffectInventory_Branch_A3D5:
         brk                                     ; A3D5 00                       .
         db   $37,$3B                         ; A3D6 37 3B                    7;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A3D8 20 C9 9A               ..
+        jsr     AskYesNo                        ; A3D8 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A3E1 ; A3DB F0 04                    ..
         brk                                     ; A3DD 00                       .
         db   $39,$3B                         ; A3DE 39 3B                    9;
@@ -2642,11 +2642,11 @@ ItemEffectInventory_Branch_A3E1:
         db   $38,$3B                         ; A3E2 38 3B                    8;
 ; ----------------------------------------------------------------------------
         ldx     #$04                            ; A3E4 A2 04                    ..
-        jsr     EffectCallback_ShiftWorkingValueRightAndClampToOne; A3E6 20 B8 9D ..
+        jsr     ScaleMessageNumberArgumentAndClampToOne; A3E6 20 B8 9D           ..
         jmp     ItemEffectInventory_Branch_A26C ; A3E9 4C 6C A2                 Ll.
 ; ----------------------------------------------------------------------------
 CalculateChapter3ShopCustomerOffer:
-        lda     $FD                             ; A3EC A5 FD                    ..
+        lda     MessageNumberArgument           ; A3EC A5 FD                    ..
         sta     $00                             ; A3EE 85 00                    ..
         sta     $DE                           ; A3F0 85 DE                    ..
         lda     $FE                             ; A3F2 A5 FE                    ..
@@ -2668,7 +2668,7 @@ ItemEffectInventory_Branch_A40E:
         brk                                     ; A40E 00                       .
         db   $29,$3B                         ; A40F 29 3B                    );
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A411 20 C9 9A               ..
+        jsr     AskYesNo                        ; A411 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A41A ; A414 F0 04                    ..
         brk                                     ; A416 00                       .
         db   $3B,$3B                         ; A417 3B 3B                    ;;
@@ -2679,7 +2679,7 @@ ItemEffectInventory_Branch_A41A:
         brk                                     ; A41A 00                       .
         db   $3C,$3B                         ; A41B 3C 3B                    <;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A41D 20 C9 9A               ..
+        jsr     AskYesNo                        ; A41D 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A426 ; A420 F0 04                    ..
         brk                                     ; A422 00                       .
         db   $3D,$3B                         ; A423 3D 3B                    =;
@@ -2707,12 +2707,12 @@ ItemEffectInventory_Branch_A443:
         stx     $DA                             ; A446 86 DA                    ..
         sta     $F9                             ; A448 85 F9                    ..
         sta     $00                             ; A44A 85 00                    ..
-        jsr     EffectValue_LoadReducedTripletForEntryId; A44C 20 5F B3          _.
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; A44F 20 7C A4      |.
+        jsr     Shop_LoadItemSellPrice          ; A44C 20 5F B3                  _.
+        jsr     CopyValueToMessageNumberArgument; A44F 20 7C A4                  |.
         brk                                     ; A452 00                       .
         db   $3E,$3B                         ; A453 3E 3B                    >;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A455 20 C9 9A               ..
+        jsr     AskYesNo                        ; A455 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A45E ; A458 F0 04                    ..
         brk                                     ; A45A 00                       .
         db   $3F,$3B                         ; A45B 3F 3B                    ?;
@@ -2739,55 +2739,55 @@ ItemEffectInventory_Branch_A472:
         db   $01,$02,$09                     ; A476 01 02 09                 ...
         db   $0B,$04,$23                     ; A479 0B 04 23                 ..#
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyValue0002ToWorkingTriplet:
+CopyValueToMessageNumberArgument:
         lda     $00                             ; A47C A5 00                    ..
-        sta     $FD                             ; A47E 85 FD                    ..
+        sta     MessageNumberArgument           ; A47E 85 FD                    ..
         lda     $01                             ; A480 A5 01                    ..
         sta     $FE                             ; A482 85 FE                    ..
         lda     $02                             ; A484 A5 02                    ..
         sta     $FF                             ; A486 85 FF                    ..
         rts                                     ; A488 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetStatus01ThenWaitLongWithCurrentSlot11:
-        jsr     EffectCallback_SetInterpreterStatus01; A489 20 AE B0             ..
-EffectCallback_SetCurrentSlotCommand11AndWaitLong:
-        jsr     EffectCallback_SetCurrentSlotCommand11; A48C 20 9E A4            ..
-        jsr     EffectCallback_SetInterpreterStatus01; A48F 20 AE B0             ..
+SetReadyStatusAndWaitWithActorCommand:
+        jsr     SetScriptInterpreterStatusReady ; A489 20 AE B0                  ..
+SetCurrentActorCommandAndWait:
+        jsr     SetCurrentActorCommand          ; A48C 20 9E A4                  ..
+        jsr     SetScriptInterpreterStatusReady ; A48F 20 AE B0                  ..
         jmp     WaitForButtonStateOneEightyFrames; A492 4C 18 D2                L..
 ; ----------------------------------------------------------------------------
 SetEntityCommandAndWaitSixtyFrames:
-        jsr     EffectCallback_SetCurrentSlotCommand11; A495 20 9E A4            ..
-        jsr     EffectCallback_SetInterpreterStatus01; A498 20 AE B0             ..
+        jsr     SetCurrentActorCommand          ; A495 20 9E A4                  ..
+        jsr     SetScriptInterpreterStatusReady ; A498 20 AE B0                  ..
         jmp     WaitForButtonStateSixtyFrames   ; A49B 4C 10 D2                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetCurrentSlotCommand11:
+SetCurrentActorCommand:
         ldx     $E8                             ; A49E A6 E8                    ..
         lda     #$11                            ; A4A0 A9 11                    ..
         sta     $7040,x                         ; A4A2 9D 40 70                 .@p
         rts                                     ; A4A5 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag05ThenStatusC0:
+TriggerMapEvent05AndSetStatusC0:
         lda     #$05                            ; A4A6 A9 05                    ..
         brk                                     ; A4A8 00                       .
         db   $07,$CF                         ; A4A9 07 CF                    ..
 ; ----------------------------------------------------------------------------
         jmp     ItemEffectInventory_Branch_B0B2 ; A4AB 4C B2 B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag04ThenStatusC0:
+TriggerMapEvent04AndSetStatusC0:
         lda     #$04                            ; A4AE A9 04                    ..
         brk                                     ; A4B0 00                       .
         db   $07,$CF                         ; A4B1 07 CF                    ..
 ; ----------------------------------------------------------------------------
         jmp     ItemEffectInventory_Branch_B0B2 ; A4B3 4C B2 B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_FinalizeEffectState:
+ReapplyMapEntityLayout:
         brk                                     ; A4B6 00                       .
         db   $07,$DF                         ; A4B7 07 DF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; A4B9 60                       `
 ; ----------------------------------------------------------------------------
 RunFloraAndAlexReunion:
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; A4BA 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; A4BA 20 C9 A4                ..
         brk                                     ; A4BD 00                       .
         db   $04,$3B                         ; A4BE 04 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -2797,13 +2797,13 @@ RunFloraAndAlexReunion:
         jsr     WaitForFreshButtonPress         ; A4C3 20 CC C8                  ..
         jmp     CloseFieldMessageWindow         ; A4C6 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_InvokeMapRefreshPreservingPointers:
+RefreshMapPreservingScriptPointers:
         lda     $00                             ; A4C9 A5 00                    ..
         pha                                     ; A4CB 48                       H
         lda     $01                             ; A4CC A5 01                    ..
         pha                                     ; A4CE 48                       H
         lda     #$43                            ; A4CF A9 43                    .C
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A4D1 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A4D1 20 B5 B7      ..
         brk                                     ; A4D4 00                       .
         db   $05,$6F                         ; A4D5 05 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -2813,7 +2813,7 @@ EffectCallback_InvokeMapRefreshPreservingPointers:
         sta     $00                             ; A4DB 85 00                    ..
         rts                                     ; A4DD 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetSlot1Command11AndStatus80:
+SetFirstActorCommandAndBusyStatus:
         brk                                     ; A4DE 00                       .
         db   $05,$CB,$08                     ; A4DF 05 CB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -2825,12 +2825,12 @@ EffectCallback_SetSlot1Command11AndStatus80:
         sta     $7046,x                         ; A4EA 9D 46 70                 .Fp
         jmp     SetEffectInterpreterStatus80    ; A4ED 4C B6 B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SelectInitialEffectState:
+SelectInitialInventoryRewardState:
         lda     #$77                            ; A4F0 A9 77                    .w
-        jsr     EffectCallback_CommitAvailableEffectValue; A4F2 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; A4F2 20 89 B0                  ..
         bcs     ItemEffectInventory_Branch_A4FD ; A4F5 B0 06                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; A4F7 20 64 A6           d.
-        jmp     EffectCallback_InvokeSecondEffectHandler; A4FA 4C 68 A6         Lh.
+        jsr     PrintScriptLine0                ; A4F7 20 64 A6                  d.
+        jmp     PrintScriptLine1                ; A4FA 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A4FD:
         brk                                     ; A4FD 00                       .
@@ -2838,18 +2838,18 @@ ItemEffectInventory_Branch_A4FD:
 ; ----------------------------------------------------------------------------
         rts                                     ; A500 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RunState00LoopThenSetFlag06:
-        jsr     EffectCallback_InvokeFirstEffectHandler; A501 20 64 A6           d.
+RunDialogueLoopThenTriggerMapEvent06:
+        jsr     PrintScriptLine0                ; A501 20 64 A6                  d.
 ItemEffectInventory_Branch_A504:
-        jsr     EffectScript_TestSelectionCondition; A504 20 C9 9A               ..
+        jsr     AskYesNo                        ; A504 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A50F ; A507 F0 06                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; A509 20 68 A6          h.
+        jsr     PrintScriptLine1                ; A509 20 68 A6                  h.
         jmp     ItemEffectInventory_Branch_A504 ; A50C 4C 04 A5                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A50F:
-        jsr     EffectCallback_InvokeThirdEffectHandler; A50F 20 60 A6           `.
+        jsr     PrintScriptLine2                ; A50F 20 60 A6                  `.
         lda     #$56                            ; A512 A9 56                    .V
-        jsr     EffectCallback_LoadEffectAvailabilityResult; A514 20 9A B0       ..
+        jsr     LoadEventAvailabilityResult     ; A514 20 9A B0                  ..
         brk                                     ; A517 00                       .
         db   $05,$CB,$04                     ; A518 05 CB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -2859,11 +2859,11 @@ ItemEffectInventory_Branch_A50F:
 ; ----------------------------------------------------------------------------
         rts                                     ; A520 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessThreshold5RewardFlow:
-        jsr     EffectCallback_InvokeFirstEffectHandler; A521 20 64 A6           d.
-        jsr     EffectScript_TestSelectionCondition; A524 20 C9 9A               ..
+ProcessRewardChoiceThreshold:
+        jsr     PrintScriptLine0                ; A521 20 64 A6                  d.
+        jsr     AskYesNo                        ; A524 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A52C ; A527 F0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; A529 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; A529 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A52C:
         lda     #$05                            ; A52C A9 05                    ..
@@ -2875,17 +2875,17 @@ ItemEffectInventory_Branch_A52C:
         db   $2D,$53                         ; A533 2D 53                    -S
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_A53A ; A535 D0 03                    ..
-        jmp     EffectCallback_InvokeThirdEffectHandler; A537 4C 60 A6          L`.
+        jmp     PrintScriptLine2                ; A537 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A53A:
-        jsr     EffectCallback_InvokeFourthEffectHandler; A53A 20 5C A6          \.
+        jsr     PrintScriptLine3                ; A53A 20 5C A6                  \.
         lda     #$05                            ; A53D A9 05                    ..
         brk                                     ; A53F 00                       .
         db   $63,$73                         ; A540 63 73                    cs
 ; ----------------------------------------------------------------------------
         tax                                     ; A542 AA                       .
         lda     #$1F                            ; A543 A9 1F                    ..
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A545 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A545 20 B5 B7      ..
         cmp     #$FF                            ; A548 C9 FF                    ..
         bne     ItemEffectInventory_Branch_A54F ; A54A D0 03                    ..
         jmp     ItemEffectInventory_Branch_A5E1 ; A54C 4C E1 A5                 L..
@@ -2911,7 +2911,7 @@ ItemEffectInventory_Branch_A54F:
         beq     ItemEffectInventory_Branch_A573 ; A567 F0 0A                    ..
         cpx     #$03                            ; A569 E0 03                    ..
         beq     ItemEffectInventory_Branch_A573 ; A56B F0 06                    ..
-        jsr     EffectCallback_InvokeFifthEffectHandler; A56D 20 58 A6           X.
+        jsr     PrintScriptLine4                ; A56D 20 58 A6                  X.
         jmp     ItemEffectInventory_Branch_A5CF ; A570 4C CF A5                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A573:
@@ -2921,42 +2921,42 @@ ItemEffectInventory_Branch_A573:
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_A582 ; A578 90 08                    ..
         lda     #$08                            ; A57A A9 08                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A57C 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; A57C 20 6A A6                  j.
         jmp     ItemEffectInventory_Branch_A5CF ; A57F 4C CF A5                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A582:
         lda     $E2                             ; A582 A5 E2                    ..
         sta     $F9                             ; A584 85 F9                    ..
         sta     $00                             ; A586 85 00                    ..
-        jsr     EffectValue_LoadTripletForEntryId; A588 20 CF B2                 ..
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; A58B 20 7C A4      |.
+        jsr     Shop_LoadItemPrice              ; A588 20 CF B2                  ..
+        jsr     CopyValueToMessageNumberArgument; A58B 20 7C A4                  |.
         lda     #$00                            ; A58E A9 00                    ..
         sta     $05                             ; A590 85 05                    ..
         jsr     NextRandomByte                  ; A592 20 91 C8                  ..
         cmp     #$08                            ; A595 C9 08                    ..
         bcc     ItemEffectInventory_Branch_A59F ; A597 90 06                    ..
-        jsr     EffectCallback_RollScaledValue1BPlus36; A599 20 E4 A5            ..
+        jsr     RollSmallRandomRewardValue      ; A599 20 E4 A5                  ..
         jmp     ItemEffectInventory_Branch_A5A2 ; A59C 4C A2 A5                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A59F:
-        jsr     EffectCallback_RollScaledValue21Plus60; A59F 20 FA A5            ..
+        jsr     RollLargeRandomRewardValue      ; A59F 20 FA A5                  ..
 ItemEffectInventory_Branch_A5A2:
-        lda     $FD                             ; A5A2 A5 FD                    ..
+        lda     MessageNumberArgument           ; A5A2 A5 FD                    ..
         sta     $6F                             ; A5A4 85 6F                    .o
         lda     $FE                             ; A5A6 A5 FE                    ..
         sta     $70                             ; A5A8 85 70                    .p
         lda     $FF                             ; A5AA A5 FF                    ..
         sta     $71                             ; A5AC 85 71                    .q
-        jsr     EffectCallback_InvokeSixthEffectHandler; A5AE 20 54 A6           T.
-        jsr     EffectScript_TestSelectionCondition; A5B1 20 C9 9A               ..
+        jsr     PrintScriptLine5                ; A5AE 20 54 A6                  T.
+        jsr     AskYesNo                        ; A5B1 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A5BE ; A5B4 F0 08                    ..
-        jsr     EffectCallback_InvokeEighthEffectHandler; A5B6 20 4C A6          L.
+        jsr     PrintScriptLine7                ; A5B6 20 4C A6                  L.
         brk                                     ; A5B9 00                       .
         db   $83,$2B                         ; A5BA 83 2B                    .+
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_A5CF ; A5BC B0 11                    ..
 ItemEffectInventory_Branch_A5BE:
-        jsr     EffectCallback_InvokeSeventhEffectHandler; A5BE 20 50 A6         P.
+        jsr     PrintScriptLine6                ; A5BE 20 50 A6                  P.
         brk                                     ; A5C1 00                       .
         db   $4B,$33                         ; A5C2 4B 33                    K3
 ; ----------------------------------------------------------------------------
@@ -2971,19 +2971,19 @@ ItemEffectInventory_Branch_A5BE:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A5CF:
         lda     #$09                            ; A5CF A9 09                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; A5D1 20 6A A6         j.
-        jsr     EffectScript_TestSelectionCondition; A5D4 20 C9 9A               ..
+        jsr     PrintScriptLineByOffset         ; A5D1 20 6A A6                  j.
+        jsr     AskYesNo                        ; A5D4 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A5DC ; A5D7 D0 03                    ..
         jmp     ItemEffectInventory_Branch_A52C ; A5D9 4C 2C A5                 L,.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A5DC:
         lda     #$0A                            ; A5DC A9 0A                    ..
-        jmp     EffectCallback_InvokeIndexedEffectHandler; A5DE 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; A5DE 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A5E1:
-        jmp     EffectCallback_InvokeEighthEffectHandler; A5E1 4C 4C A6         LL.
+        jmp     PrintScriptLine7                ; A5E1 4C 4C A6                 LL.
 ; ----------------------------------------------------------------------------
-EffectCallback_RollScaledValue1BPlus36:
+RollSmallRandomRewardValue:
         jsr     NextRandomByte                  ; A5E4 20 91 C8                  ..
         sta     $04                             ; A5E7 85 04                    ..
         ldx     #$04                            ; A5E9 A2 04                    ..
@@ -2993,9 +2993,9 @@ EffectCallback_RollScaledValue1BPlus36:
         jsr     MultiplyPointerWord             ; A5F1 20 27 C8                  '.
         clc                                     ; A5F4 18                       .
         adc     #$36                            ; A5F5 69 36                    i6
-        jmp     EffectCallback_ConvertEffectResultToScaledValue; A5F7 4C 0D A6  L..
+        jmp     ConvertScriptResultToMessageNumber; A5F7 4C 0D A6               L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RollScaledValue21Plus60:
+RollLargeRandomRewardValue:
         jsr     NextRandomByte                  ; A5FA 20 91 C8                  ..
         sta     $04                             ; A5FD 85 04                    ..
         lda     #$00                            ; A5FF A9 00                    ..
@@ -3005,7 +3005,7 @@ EffectCallback_RollScaledValue21Plus60:
         jsr     MultiplyPointerWord             ; A607 20 27 C8                  '.
         clc                                     ; A60A 18                       .
         adc     #$60                            ; A60B 69 60                    i`
-EffectCallback_ConvertEffectResultToScaledValue:
+ConvertScriptResultToMessageNumber:
         ldx     #$FD                            ; A60D A2 FD                    ..
         brk                                     ; A60F 00                       .
         db   $10,$3F                         ; A610 10 3F                    .?
@@ -3015,19 +3015,19 @@ ItemEffectInventory_Branch_A614:
         lsr     $1A                             ; A614 46 1A                    F.
         ror     $FF                             ; A616 66 FF                    f.
         ror     $FE                             ; A618 66 FE                    f.
-        ror     $FD                             ; A61A 66 FD                    f.
+        ror     MessageNumberArgument           ; A61A 66 FD                    f.
         dex                                     ; A61C CA                       .
         bne     ItemEffectInventory_Branch_A614 ; A61D D0 F5                    ..
         lda     $FF                             ; A61F A5 FF                    ..
         ora     $FE                             ; A621 05 FE                    ..
-        ora     $FD                             ; A623 05 FD                    ..
+        ora     MessageNumberArgument           ; A623 05 FD                    ..
         ora     $1A                             ; A625 05 1A                    ..
         bne     ItemEffectInventory_Branch_A62B ; A627 D0 02                    ..
-        inc     $FD                             ; A629 E6 FD                    ..
+        inc     MessageNumberArgument           ; A629 E6 FD                    ..
 ItemEffectInventory_Branch_A62B:
         rts                                     ; A62B 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestEa00ThresholdAndBranch:
+BranchOnScriptThreshold:
         lda     #$00                            ; A62C A9 00                    ..
         sta     $71                             ; A62E 85 71                    .q
         lda     #$EA                            ; A630 A9 EA                    ..
@@ -3040,40 +3040,40 @@ EffectCallback_TestEa00ThresholdAndBranch:
         brk                                     ; A63B 00                       .
         db   $0C,$CB,$40                     ; A63C 0C CB 40                 ..@
 ; ----------------------------------------------------------------------------
-EffectCallback_RunState01ThenState02:
+PrintScriptLinesOneAndTwo:
         brk                                     ; A63F 00                       .
         db   $0A,$CB,$10                     ; A640 0A CB 10                 ...
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeSecondEffectHandler; A643 20 68 A6          h.
-        jmp     EffectCallback_InvokeThirdEffectHandler; A646 4C 60 A6          L`.
+        jsr     PrintScriptLine1                ; A643 20 68 A6                  h.
+        jmp     PrintScriptLine2                ; A646 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A649:
-        jmp     EffectCallback_InvokeFirstEffectHandler; A649 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; A649 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-EffectCallback_InvokeEighthEffectHandler:
+PrintScriptLine7:
         lda     #$07                            ; A64C A9 07                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A64E D0 1A           ..
-EffectCallback_InvokeSeventhEffectHandler:
+        bne     PrintScriptLineByOffset         ; A64E D0 1A                    ..
+PrintScriptLine6:
         lda     #$06                            ; A650 A9 06                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A652 D0 16           ..
-EffectCallback_InvokeSixthEffectHandler:
+        bne     PrintScriptLineByOffset         ; A652 D0 16                    ..
+PrintScriptLine5:
         lda     #$05                            ; A654 A9 05                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A656 D0 12           ..
-EffectCallback_InvokeFifthEffectHandler:
+        bne     PrintScriptLineByOffset         ; A656 D0 12                    ..
+PrintScriptLine4:
         lda     #$04                            ; A658 A9 04                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A65A D0 0E           ..
-EffectCallback_InvokeFourthEffectHandler:
+        bne     PrintScriptLineByOffset         ; A65A D0 0E                    ..
+PrintScriptLine3:
         lda     #$03                            ; A65C A9 03                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A65E D0 0A           ..
-EffectCallback_InvokeThirdEffectHandler:
+        bne     PrintScriptLineByOffset         ; A65E D0 0A                    ..
+PrintScriptLine2:
         lda     #$02                            ; A660 A9 02                    ..
-        bne     EffectCallback_InvokeIndexedEffectHandler; A662 D0 06           ..
-EffectCallback_InvokeFirstEffectHandler:
+        bne     PrintScriptLineByOffset         ; A662 D0 06                    ..
+PrintScriptLine0:
         lda     #$00                            ; A664 A9 00                    ..
-        beq     EffectCallback_InvokeIndexedEffectHandler; A666 F0 02           ..
-EffectCallback_InvokeSecondEffectHandler:
+        beq     PrintScriptLineByOffset         ; A666 F0 02                    ..
+PrintScriptLine1:
         lda     #$01                            ; A668 A9 01                    ..
-EffectCallback_InvokeIndexedEffectHandler:
+PrintScriptLineByOffset:
         sta     $0F                             ; A66A 85 0F                    ..
         lda     $E0                             ; A66C A5 E0                    ..
         clc                                     ; A66E 18                       .
@@ -3082,25 +3082,25 @@ EffectCallback_InvokeIndexedEffectHandler:
         bcc     ItemEffectInventory_Branch_A676 ; A673 90 01                    ..
         inx                                     ; A675 E8                       .
 ItemEffectInventory_Branch_A676:
-        jmp     EffectScript_InvokeItemHandlerPreservingCursor; A676 4C 19 99   L..
+        jmp     PrintScriptMessagePreservingCursor; A676 4C 19 99               L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetPosition0E05AndRefreshDdScene:
+PositionPlayerAndRefreshScene:
         lda     #$0E                            ; A679 A9 0E                    ..
         sta     PlayerLocalX                    ; A67B 85 44                    .D
         lda     #$05                            ; A67D A9 05                    ..
         sta     PlayerLocalY                    ; A67F 85 45                    .E
         lda     #$82                            ; A681 A9 82                    ..
         bne     ItemEffectInventory_Branch_A689 ; A683 D0 04                    ..
-EffectCallback_UseFacingWithHighBitAndRefreshDdScene:
+RefreshSceneFromFacingDirection:
         lda     $3D                             ; A685 A5 3D                    .=
         ora     #$80                            ; A687 09 80                    ..
 ItemEffectInventory_Branch_A689:
         sta     $DD                             ; A689 85 DD                    ..
         jsr     WaitForButtonStateSixtyFrames   ; A68B 20 10 D2                  ..
-        jsr     EffectCallback_PreserveDdAroundAea6; A68E 20 BC A6               ..
-        jmp     EffectCallback_RefreshMapAfterEffect; A691 4C A9 A6             L..
+        jsr     PreserveSceneStateAroundTransition; A68E 20 BC A6                ..
+        jmp     RefreshMapAfterScriptEvent      ; A691 4C A9 A6                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RefreshSceneUnlessAtMap19Sub1:
+RefreshSceneOrUseMapSpecificPath:
         lda     CurrentMapNumber                ; A694 A5 63                    .c
         cmp     #$19                            ; A696 C9 19                    ..
         bne     ItemEffectInventory_Branch_A6A3 ; A698 D0 09                    ..
@@ -3110,29 +3110,29 @@ EffectCallback_RefreshSceneUnlessAtMap19Sub1:
         jmp     ItemEffectInventory_Branch_AFF0 ; A6A0 4C F0 AF                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A6A3:
-        jsr     EffectCallback_PreserveDdAroundAea6; A6A3 20 BC A6               ..
+        jsr     PreserveSceneStateAroundTransition; A6A3 20 BC A6                ..
 ItemEffectInventory_Branch_A6A6:
-        jsr     EffectCallback_DispatchResolvedEffect; A6A6 20 B7 A6             ..
-EffectCallback_RefreshMapAfterEffect:
+        jsr     DispatchResolvedScriptEvent     ; A6A6 20 B7 A6                  ..
+RefreshMapAfterScriptEvent:
         lda     #$43                            ; A6A9 A9 43                    .C
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A6AB 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A6AB 20 B5 B7      ..
         brk                                     ; A6AE 00                       .
         db   $05,$6F                         ; A6AF 05 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_WaitForAudioAndResumeMapMusic; A6B1 20 3F B0      ?.
+        jsr     WaitForAudioAndResumeMapMusic   ; A6B1 20 3F B0                  ?.
         jmp     FadePaletteFromBlack            ; A6B4 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_DispatchResolvedEffect:
+DispatchResolvedScriptEvent:
         lda     #$07                            ; A6B7 A9 07                    ..
-        jmp     EffectCallback_InvokeLookupWithDaPreserved; A6B9 4C B5 B7       L..
+        jmp     InvokeScriptLookupPreservingInterpreterState; A6B9 4C B5 B7     L..
 ; ----------------------------------------------------------------------------
-EffectCallback_PreserveDdAroundAea6:
+PreserveSceneStateAroundTransition:
         lda     $DD                             ; A6BC A5 DD                    ..
         pha                                     ; A6BE 48                       H
-        jsr     EffectCallback_Run04301LoopForDdCount; A6BF 20 A6 AE             ..
+        jsr     RepeatSceneUpdateForResolvedCount; A6BF 20 A6 AE                 ..
         pla                                     ; A6C2 68                       h
         sta     $DD                             ; A6C3 85 DD                    ..
-EffectCallback_RunA732A738AndAdvanceTime:
+RunSceneTransitionAndAdvanceTime:
         ldx     #$00                            ; A6C5 A2 00                    ..
 ItemEffectInventory_Branch_A6C7:
         lda     $DA,x                           ; A6C7 B5 DA                    ..
@@ -3140,7 +3140,7 @@ ItemEffectInventory_Branch_A6C7:
         inx                                     ; A6CA E8                       .
         cpx     #$10                            ; A6CB E0 10                    ..
         bcc     ItemEffectInventory_Branch_A6C7 ; A6CD 90 F8                    ..
-        jsr     EffectCallback_FadePaletteToBlack; A6CF 20 32 A7                 2.
+        jsr     FadeEventPaletteToBlack         ; A6CF 20 32 A7                  2.
         jsr     TriggerChapter5Map12FieldEvent  ; A6D2 20 38 A7                  8.
         brk                                     ; A6D5 00                       .
         db   $0F,$FB                         ; A6D6 0F FB                    ..
@@ -3162,7 +3162,7 @@ ItemEffectInventory_Branch_A6C7:
         brk                                     ; A6F0 00                       .
         db   $0A,$6F                         ; A6F1 0A 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_ApplyCurrentMapModeToTransition; A6F3 20 28 A7    (.
+        jsr     ApplyCurrentMapModeToEventTransition; A6F3 20 28 A7              (.
         ldx     #$0F                            ; A6F6 A2 0F                    ..
 ItemEffectInventory_Branch_A6F8:
         pla                                     ; A6F8 68                       h
@@ -3171,7 +3171,7 @@ ItemEffectInventory_Branch_A6F8:
         bpl     ItemEffectInventory_Branch_A6F8 ; A6FC 10 FA                    ..
         rts                                     ; A6FE 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RunA732Aea6AndRefresh:
+RunAlternateSceneTransitionAndRefresh:
         ldx     #$00                            ; A6FF A2 00                    ..
 ItemEffectInventory_Branch_A701:
         lda     $DA,x                           ; A701 B5 DA                    ..
@@ -3179,15 +3179,15 @@ ItemEffectInventory_Branch_A701:
         inx                                     ; A704 E8                       .
         cpx     #$10                            ; A705 E0 10                    ..
         bcc     ItemEffectInventory_Branch_A701 ; A707 90 F8                    ..
-        jsr     EffectCallback_FadePaletteToBlack; A709 20 32 A7                 2.
+        jsr     FadeEventPaletteToBlack         ; A709 20 32 A7                  2.
         brk                                     ; A70C 00                       .
         db   $0F,$FB                         ; A70D 0F FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_Run04301LoopForDdCount; A70F 20 A6 AE             ..
+        jsr     RepeatSceneUpdateForResolvedCount; A70F 20 A6 AE                 ..
         lda     #$28                            ; A712 A9 28                    .(
         sta     SaveTimeOfDay                   ; A714 8D ED 62                 ..b
         jsr     AdvanceDayAndSellNetasShopInventory; A717 20 79 9F               y.
-        jsr     EffectCallback_ApplyCurrentMapModeToTransition; A71A 20 28 A7    (.
+        jsr     ApplyCurrentMapModeToEventTransition; A71A 20 28 A7              (.
         ldx     #$0F                            ; A71D A2 0F                    ..
 ItemEffectInventory_Branch_A71F:
         pla                                     ; A71F 68                       h
@@ -3196,7 +3196,7 @@ ItemEffectInventory_Branch_A71F:
         bpl     ItemEffectInventory_Branch_A71F ; A723 10 FA                    ..
         jmp     ItemEffectInventory_Branch_A6A6 ; A725 4C A6 A6                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ApplyCurrentMapModeToTransition:
+ApplyCurrentMapModeToEventTransition:
         brk                                     ; A728 00                       .
         db   $28,$0F                         ; A729 28 0F                    (.
 ; ----------------------------------------------------------------------------
@@ -3204,7 +3204,7 @@ EffectCallback_ApplyCurrentMapModeToTransition:
         sta     $05FD                           ; A72E 8D FD 05                 ...
         rts                                     ; A731 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_FadePaletteToBlack:
+FadeEventPaletteToBlack:
         brk                                     ; A732 00                       .
         db   $04,$9F                         ; A733 04 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -3246,7 +3246,7 @@ ItemEffectInventory_Branch_A74C:
         sta     $DD                             ; A766 85 DD                    ..
         rts                                     ; A768 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestEffectAvailability:
+IsEventEffectAvailable:
         brk                                     ; A769 00                       .
         db   $66,$73                         ; A76A 66 73                    fs
 ; ----------------------------------------------------------------------------
@@ -3258,7 +3258,7 @@ ItemEffectInventory_Branch_A771:
         lda     #$01                            ; A771 A9 01                    ..
         rts                                     ; A773 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CompareEffectProgress:
+HasEventProgressReachedLimit:
         brk                                     ; A774 00                       .
         db   $63,$73                         ; A775 63 73                    cs
 ; ----------------------------------------------------------------------------
@@ -3269,7 +3269,7 @@ EffectCallback_CompareEffectProgress:
         cmp     #$08                            ; A77B C9 08                    ..
         rts                                     ; A77D 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_FindLastMatchingInventoryEntry:
+FindLastMatchingInventoryItem:
         sta     $0F                             ; A77E 85 0F                    ..
         txa                                     ; A780 8A                       .
         pha                                     ; A781 48                       H
@@ -3297,34 +3297,34 @@ RunCasinoCoinSeller:
         db   $55,$3B                         ; A798 55 3B                    U;
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A79A:
-        jsr     EffectCallback_LoadCasinoCoinsIntoWorkingTriplet; A79A 20 46 B0  F.
+        jsr     LoadCasinoCoinsIntoMessageNumberArgument; A79A 20 46 B0          F.
         brk                                     ; A79D 00                       .
         db   $56,$3B                         ; A79E 56 3B                    V;
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_CompareWorkingTripletWith999999; A7A0 20 41 A8    A.
+        jsr     CompareMessageNumberArgumentWithCasinoCap; A7A0 20 41 A8         A.
         bcc     ItemEffectInventory_Branch_A7A8 ; A7A3 90 03                    ..
         jmp     ItemEffectInventory_Branch_A823 ; A7A5 4C 23 A8                 L#.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A7A8:
-        jsr     EffectCallback_GetChapterCasinoStake; A7A8 20 5C A8              \.
-        sta     $FD                             ; A7AB 85 FD                    ..
+        jsr     GetChapterCasinoStake           ; A7A8 20 5C A8                  \.
+        sta     MessageNumberArgument           ; A7AB 85 FD                    ..
         lda     #$00                            ; A7AD A9 00                    ..
         sta     $FE                             ; A7AF 85 FE                    ..
         sta     $FF                             ; A7B1 85 FF                    ..
         brk                                     ; A7B3 00                       .
         db   $2D,$4B                         ; A7B4 2D 4B                    -K
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_DispatchResolvedEffect; A7B6 20 B7 A6             ..
+        jsr     DispatchResolvedScriptEvent     ; A7B6 20 B7 A6                  ..
         ldx     #$FD                            ; A7B9 A2 FD                    ..
         lda     #$62                            ; A7BB A9 62                    .b
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A7BD 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A7BD 20 B5 B7      ..
         cmp     #$FF                            ; A7C0 C9 FF                    ..
         beq     ItemEffectInventory_Branch_A835 ; A7C2 F0 71                    .q
-        lda     $FD                             ; A7C4 A5 FD                    ..
+        lda     MessageNumberArgument           ; A7C4 A5 FD                    ..
         ora     $FE                             ; A7C6 05 FE                    ..
         ora     $FF                             ; A7C8 05 FF                    ..
         beq     ItemEffectInventory_Branch_A835 ; A7CA F0 69                    .i
-        lda     $FD                             ; A7CC A5 FD                    ..
+        lda     MessageNumberArgument           ; A7CC A5 FD                    ..
         sta     $E2                             ; A7CE 85 E2                    ..
         lda     $FE                             ; A7D0 A5 FE                    ..
         sta     $E3                             ; A7D2 85 E3                    ..
@@ -3334,7 +3334,7 @@ ItemEffectInventory_Branch_A7A8:
         db   $57,$3B                         ; A7D9 57 3B                    W;
 ; ----------------------------------------------------------------------------
         ldx     #$FD                            ; A7DB A2 FD                    ..
-        jsr     EffectCallback_GetChapterCasinoStake; A7DD 20 5C A8              \.
+        jsr     GetChapterCasinoStake           ; A7DD 20 5C A8                  \.
         brk                                     ; A7E0 00                       .
         db   $10,$3F                         ; A7E1 10 3F                    .?
 ; ----------------------------------------------------------------------------
@@ -3342,33 +3342,33 @@ ItemEffectInventory_Branch_A7A8:
         brk                                     ; A7E6 00                       .
         db   $8D,$3B                         ; A7E7 8D 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A7E9 20 C9 9A               ..
+        jsr     AskYesNo                        ; A7E9 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A79A ; A7EC D0 AC                    ..
-        jsr     EffectCallback_TestWorkingTripletThreshold; A7EE 20 4E A8        N.
+        jsr     TestMessageNumberArgumentAgainstLimit; A7EE 20 4E A8             N.
         bcc     ItemEffectInventory_Branch_A82F ; A7F1 90 3C                    .<
         lda     $E2                             ; A7F3 A5 E2                    ..
         clc                                     ; A7F5 18                       .
         adc     SaveCasinoCoins                 ; A7F6 6D AD 62                 m.b
-        sta     $FD                             ; A7F9 85 FD                    ..
+        sta     MessageNumberArgument           ; A7F9 85 FD                    ..
         lda     $E3                             ; A7FB A5 E3                    ..
         adc     $62AE                           ; A7FD 6D AE 62                 m.b
         sta     $FE                             ; A800 85 FE                    ..
         lda     $E4                             ; A802 A5 E4                    ..
         adc     $62AF                           ; A804 6D AF 62                 m.b
         sta     $FF                             ; A807 85 FF                    ..
-        jsr     EffectCallback_CompareWorkingTripletWith1000000; A809 20 3A A8   :.
+        jsr     CompareMessageNumberArgumentWithMillion; A809 20 3A A8           :.
         bcs     ItemEffectInventory_Branch_A828 ; A80C B0 1A                    ..
         brk                                     ; A80E 00                       .
         db   $58,$3B                         ; A80F 58 3B                    X;
 ; ----------------------------------------------------------------------------
-        lda     $FD                             ; A811 A5 FD                    ..
+        lda     MessageNumberArgument           ; A811 A5 FD                    ..
         sta     SaveCasinoCoins                 ; A813 8D AD 62                 ..b
         lda     $FE                             ; A816 A5 FE                    ..
         sta     $62AE                           ; A818 8D AE 62                 ..b
         lda     $FF                             ; A81B A5 FF                    ..
         sta     $62AF                           ; A81D 8D AF 62                 ..b
 ItemEffectInventory_Branch_A820:
-        jmp     EffectCallback_DispatchResolvedEffect; A820 4C B7 A6            L..
+        jmp     DispatchResolvedScriptEvent     ; A820 4C B7 A6                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A823:
         brk                                     ; A823 00                       .
@@ -3396,33 +3396,33 @@ ItemEffectInventory_Branch_A835:
         db   $5A,$3B                         ; A836 5A 3B                    Z;
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_A820 ; A838 B0 E6                    ..
-EffectCallback_CompareWorkingTripletWith1000000:
-        lda     $FD                             ; A83A A5 FD                    ..
+CompareMessageNumberArgumentWithMillion:
+        lda     MessageNumberArgument           ; A83A A5 FD                    ..
         cmp     #$40                            ; A83C C9 40                    .@
-        jmp     CompareWorkingValueWithCasinoLimit; A83E 4C 45 A8               LE.
+        jmp     CompareMessageNumberArgumentWithCasinoLimit; A83E 4C 45 A8      LE.
 ; ----------------------------------------------------------------------------
-EffectCallback_CompareWorkingTripletWith999999:
-        lda     $FD                             ; A841 A5 FD                    ..
+CompareMessageNumberArgumentWithCasinoCap:
+        lda     MessageNumberArgument           ; A841 A5 FD                    ..
         cmp     #$3F                            ; A843 C9 3F                    .?
-CompareWorkingValueWithCasinoLimit:
+CompareMessageNumberArgumentWithCasinoLimit:
         lda     $FE                             ; A845 A5 FE                    ..
         sbc     #$42                            ; A847 E9 42                    .B
         lda     $FF                             ; A849 A5 FF                    ..
         sbc     #$0F                            ; A84B E9 0F                    ..
         rts                                     ; A84D 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestWorkingTripletThreshold:
+TestMessageNumberArgumentAgainstLimit:
         lda     $FE                             ; A84E A5 FE                    ..
         sta     $70                             ; A850 85 70                    .p
         lda     $FF                             ; A852 A5 FF                    ..
         sta     $71                             ; A854 85 71                    .q
-        lda     $FD                             ; A856 A5 FD                    ..
+        lda     MessageNumberArgument           ; A856 A5 FD                    ..
         brk                                     ; A858 00                       .
         db   $4C,$73                         ; A859 4C 73                    Ls
 ; ----------------------------------------------------------------------------
         rts                                     ; A85B 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_GetChapterCasinoStake:
+GetChapterCasinoStake:
         lda     SaveCurrentChapterMinus1        ; A85C AD 5A 61                 .Za
         cmp     #$01                            ; A85F C9 01                    ..
         bne     ItemEffectInventory_Branch_A866 ; A861 D0 03                    ..
@@ -3443,12 +3443,12 @@ RunCasinoExchangeCounter:
         brk                                     ; A870 00                       .
         db   $50,$3B                         ; A871 50 3B                    P;
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_LoadPrimaryItemCandidateList; A873 20 60 A9       `.
+        jsr     LoadPrimaryShopStockList        ; A873 20 60 A9                  `.
 ItemEffectInventory_Branch_A876:
         lda     #$00                            ; A876 A9 00                    ..
         sta     $F9                             ; A878 85 F9                    ..
-        jsr     EffectCallback_LoadCasinoCoinsIntoWorkingTriplet; A87A 20 46 B0  F.
-        lda     $FD                             ; A87D A5 FD                    ..
+        jsr     LoadCasinoCoinsIntoMessageNumberArgument; A87A 20 46 B0          F.
+        lda     MessageNumberArgument           ; A87D A5 FD                    ..
         ora     $FE                             ; A87F 05 FE                    ..
         ora     $FF                             ; A881 05 FF                    ..
         bne     ItemEffectInventory_Branch_A889 ; A883 D0 04                    ..
@@ -3461,23 +3461,23 @@ ItemEffectInventory_Branch_A889:
         brk                                     ; A889 00                       .
         db   $51,$3B                         ; A88A 51 3B                    Q;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A88C 20 C9 9A               ..
+        jsr     AskYesNo                        ; A88C 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A89D ; A88F D0 0C                    ..
         brk                                     ; A891 00                       .
         db   $52,$3B                         ; A892 52 3B                    R;
 ; ----------------------------------------------------------------------------
         lda     #$3F                            ; A894 A9 3F                    .?
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A896 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A896 20 B5 B7      ..
         cmp     #$FF                            ; A899 C9 FF                    ..
         bne     ItemEffectInventory_Branch_A8A0 ; A89B D0 03                    ..
 ItemEffectInventory_Branch_A89D:
         jmp     ItemEffectInventory_Branch_A95C ; A89D 4C 5C A9                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A8A0:
-        jsr     EffectCallback_LoadSelectedEntryValue; A8A0 20 73 BA             s.
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; A8A3 20 7C A4      |.
+        jsr     LoadSelectedItemPrice           ; A8A0 20 73 BA                  s.
+        jsr     CopyValueToMessageNumberArgument; A8A3 20 7C A4                  |.
         lda     SaveCasinoCoins                 ; A8A6 AD AD 62                 ..b
-        cmp     $FD                             ; A8A9 C5 FD                    ..
+        cmp     MessageNumberArgument           ; A8A9 C5 FD                    ..
         lda     $62AE                           ; A8AB AD AE 62                 ..b
         sbc     $FE                             ; A8AE E5 FE                    ..
         lda     $62AF                           ; A8B0 AD AF 62                 ..b
@@ -3492,7 +3492,7 @@ ItemEffectInventory_Branch_A8BD:
         brk                                     ; A8BD 00                       .
         db   $53,$3B                         ; A8BE 53 3B                    S;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A8C0 20 C9 9A               ..
+        jsr     AskYesNo                        ; A8C0 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_A876 ; A8C3 D0 B1                    ..
         lda     $DA                             ; A8C5 A5 DA                    ..
         cmp     #$01                            ; A8C7 C9 01                    ..
@@ -3503,7 +3503,7 @@ ItemEffectInventory_Branch_A8CB:
 ; ----------------------------------------------------------------------------
         ldx     $DC                             ; A8CE A6 DC                    ..
         lda     #$40                            ; A8D0 A9 40                    .@
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A8D2 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A8D2 20 B5 B7      ..
         cmp     #$FF                            ; A8D5 C9 FF                    ..
         bne     ItemEffectInventory_Branch_A8DE ; A8D7 D0 05                    ..
         jmp     ItemEffectInventory_Branch_A95C ; A8D9 4C 5C A9                 L\.
@@ -3524,7 +3524,7 @@ ItemEffectInventory_Branch_A8DE:
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_A8F7 ; A8ED B0 08                    ..
 ItemEffectInventory_Branch_A8EF:
-        jsr     EffectCallback_CompareDbLookupWith08; A8EF 20 55 BA              U.
+        jsr     IsSelectedShopEntryTypeEight    ; A8EF 20 55 BA                  U.
         bcc     ItemEffectInventory_Branch_A911 ; A8F2 90 1D                    ..
         brk                                     ; A8F4 00                       .
         db   $78,$2B                         ; A8F5 78 2B                    x+
@@ -3537,7 +3537,7 @@ ItemEffectInventory_Branch_A8F7:
         db   $7B,$2B                         ; A8FE 7B 2B                    {+
 ; ----------------------------------------------------------------------------
         lda     #$48                            ; A900 A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A902 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A902 20 B5 B7      ..
         cmp     #$00                            ; A905 C9 00                    ..
         beq     ItemEffectInventory_Branch_A8CB ; A907 F0 C2                    ..
         jmp     ItemEffectInventory_Branch_A95C ; A909 4C 5C A9                 L\.
@@ -3585,7 +3585,7 @@ ItemEffectInventory_Branch_A936:
 ; ----------------------------------------------------------------------------
         lda     SaveCasinoCoins                 ; A939 AD AD 62                 ..b
         sec                                     ; A93C 38                       8
-        sbc     $FD                             ; A93D E5 FD                    ..
+        sbc     MessageNumberArgument           ; A93D E5 FD                    ..
         sta     SaveCasinoCoins                 ; A93F 8D AD 62                 ..b
         lda     $62AE                           ; A942 AD AE 62                 ..b
         sbc     $FE                             ; A945 E5 FE                    ..
@@ -3607,16 +3607,16 @@ ItemEffectInventory_Branch_A95C:
 ; ----------------------------------------------------------------------------
         rts                                     ; A95F 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadPrimaryItemCandidateList:
+LoadPrimaryShopStockList:
         lda     #$01                            ; A960 A9 01                    ..
         sta     $07C5                           ; A962 8D C5 07                 ...
         brk                                     ; A965 00                       .
         db   $62,$33                         ; A966 62 33                    b3
 ; ----------------------------------------------------------------------------
         sta     $DA                             ; A968 85 DA                    ..
-        jmp     EffectCallback_LoadItemCandidatesForTargetPolicy; A96A 4C EF B1 L..
+        jmp     LoadShopStock                   ; A96A 4C EF B1                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_CountMatchingItemCandidates:
+Shop_CountMatchingStockItems:
         ldx     #$00                            ; A96D A2 00                    ..
         stx     $01                             ; A96F 86 01                    ..
 ItemEffectInventory_Branch_A971:
@@ -3649,8 +3649,8 @@ ItemEffectInventory_Branch_A98A:
         rts                                     ; A999 60                       `
 ; ----------------------------------------------------------------------------
 RunSmallMedalKingRewardExchange:
-        jsr     EffectCallback_LoadPrimaryItemCandidateList; A99A 20 60 A9       `.
-        jsr     EffectCallback_CountMatchingItemCandidates; A99D 20 6D A9        m.
+        jsr     LoadPrimaryShopStockList        ; A99A 20 60 A9                  `.
+        jsr     Shop_CountMatchingStockItems    ; A99D 20 6D A9                  m.
         sta     $DB                             ; A9A0 85 DB                    ..
         bne     ItemEffectInventory_Branch_A9AE ; A9A2 D0 0A                    ..
         brk                                     ; A9A4 00                       .
@@ -3663,7 +3663,7 @@ RunSmallMedalKingRewardExchange:
         rts                                     ; A9AD 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_A9AE:
-        sta     $FD                             ; A9AE 85 FD                    ..
+        sta     MessageNumberArgument           ; A9AE 85 FD                    ..
         brk                                     ; A9B0 00                       .
         db   $B4,$4B                         ; A9B1 B4 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -3679,14 +3679,14 @@ ItemEffectInventory_Branch_A9AE:
 ItemEffectInventory_Branch_A9C3:
         jsr     EffectScript_LoadReferencedEntryValue; A9C3 20 56 99             V.
         lda     SaveSmallMedals                 ; A9C6 AD A2 62                 ..b
-        sta     $FD                             ; A9C9 85 FD                    ..
+        sta     MessageNumberArgument           ; A9C9 85 FD                    ..
         lda     #$00                            ; A9CB A9 00                    ..
         sta     $FE                             ; A9CD 85 FE                    ..
         sta     $FF                             ; A9CF 85 FF                    ..
         brk                                     ; A9D1 00                       .
         db   $B6,$4B                         ; A9D2 B6 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A9D4 20 C9 9A               ..
+        jsr     AskYesNo                        ; A9D4 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_A9DC ; A9D7 F0 03                    ..
         jmp     ItemEffectInventory_Branch_AA6A ; A9D9 4C 6A AA                 Lj.
 ; ----------------------------------------------------------------------------
@@ -3695,7 +3695,7 @@ ItemEffectInventory_Branch_A9DC:
         db   $B7,$4B                         ; A9DD B7 4B                    .K
 ; ----------------------------------------------------------------------------
         lda     #$3F                            ; A9DF A9 3F                    .?
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; A9E1 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; A9E1 20 B5 B7      ..
         cmp     #$FF                            ; A9E4 C9 FF                    ..
         bne     ItemEffectInventory_Branch_A9EB ; A9E6 D0 03                    ..
         jmp     ItemEffectInventory_Branch_AA6A ; A9E8 4C 6A AA                 Lj.
@@ -3707,13 +3707,13 @@ ItemEffectInventory_Branch_A9EB:
         brk                                     ; A9F1 00                       .
         db   $B8,$4B                         ; A9F2 B8 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; A9F4 20 C9 9A               ..
+        jsr     AskYesNo                        ; A9F4 20 C9 9A                  ..
         tax                                     ; A9F7 AA                       .
         bne     ItemEffectInventory_Branch_A9DC ; A9F8 D0 E2                    ..
         lda     $F9                             ; A9FA A5 F9                    ..
         sta     $DC                             ; A9FC 85 DC                    ..
         sta     $00                             ; A9FE 85 00                    ..
-        jsr     EffectValue_LoadTripletForEntryId; AA00 20 CF B2                 ..
+        jsr     Shop_LoadItemPrice              ; AA00 20 CF B2                  ..
         lda     $00                             ; AA03 A5 00                    ..
         sta     $DD                             ; AA05 85 DD                    ..
         lda     SaveSmallMedals                 ; AA07 AD A2 62                 ..b
@@ -3738,7 +3738,7 @@ ItemEffectInventory_Branch_AA20:
 ; ----------------------------------------------------------------------------
         ldx     $DC                             ; AA23 A6 DC                    ..
         lda     #$40                            ; AA25 A9 40                    .@
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; AA27 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; AA27 20 B5 B7      ..
         cmp     #$FF                            ; AA2A C9 FF                    ..
         beq     ItemEffectInventory_Branch_AA5A ; AA2C F0 2C                    .,
 ItemEffectInventory_Branch_AA2E:
@@ -3763,7 +3763,7 @@ ItemEffectInventory_Branch_AA47:
         brk                                     ; AA49 00                       .
         db   $BD,$4B                         ; AA4A BD 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AA4C 20 C9 9A               ..
+        jsr     AskYesNo                        ; AA4C 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AA20 ; AA4F F0 CF                    ..
         bne     ItemEffectInventory_Branch_AA6A ; AA51 D0 17                    ..
 ItemEffectInventory_Branch_AA53:
@@ -3778,7 +3778,7 @@ ItemEffectInventory_Branch_AA5A:
         brk                                     ; AA5F 00                       .
         db   $BE,$4B                         ; AA60 BE 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AA62 20 C9 9A               ..
+        jsr     AskYesNo                        ; AA62 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AA6A ; AA65 D0 03                    ..
         jmp     ItemEffectInventory_Branch_A9DC ; AA67 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
@@ -3788,33 +3788,33 @@ ItemEffectInventory_Branch_AA6A:
 ; ----------------------------------------------------------------------------
         rts                                     ; AA6D 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_FinalizeEffectWithStatusC0:
+StartPokerGame:
         brk                                     ; AA6E 00                       .
         db   $00,$7F                         ; AA6F 00 7F                    ..
 ; ----------------------------------------------------------------------------
         jmp     ItemEffectInventory_Branch_B0B2 ; AA71 4C B2 B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_CompleteDelayedEffectAndSetStatus:
+EnterEventInterior:
         jsr     WaitForButtonStateOneTwentyFrames; AA74 20 14 D2                 ..
         brk                                     ; AA77 00                       .
         db   $0A,$DF                         ; AA78 0A DF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AA7A 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AA7A 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunEffectOperationAndSetStatus:
+StartMonsterArenaRound:
         brk                                     ; AA7D 00                       .
         db   $14,$8F                         ; AA7E 14 8F                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AA80 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AA80 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag0B:
+TriggerMapEvent0B:
         lda     #$0B                            ; AA83 A9 0B                    ..
         brk                                     ; AA85 00                       .
         db   $07,$CF                         ; AA86 07 CF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; AA88 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyAvailableEffectValue:
+CopyAvailableEventValue:
         lda     #$74                            ; AA89 A9 74                    .t
         brk                                     ; AA8B 00                       .
         db   $66,$73                         ; AA8C 66 73                    fs
@@ -3828,7 +3828,7 @@ EffectCallback_CopyAvailableEffectValue:
 ItemEffectInventory_Branch_AA96:
         rts                                     ; AA96 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_DispatchEffectByAvailabilityBit:
+DispatchEventBranchByAvailability:
         lda     #$05                            ; AA97 A9 05                    ..
         brk                                     ; AA99 00                       .
         db   $63,$73                         ; AA9A 63 73                    cs
@@ -3845,78 +3845,78 @@ EffectCallback_DispatchEffectByAvailabilityBit:
 ItemEffectInventory_Branch_AAAA:
         lda     #$00                            ; AAAA A9 00                    ..
 ItemEffectInventory_Branch_AAAC:
-        jmp     EffectCallback_InvokeIndexedEffectHandler; AAAC 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; AAAC 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
-EffectCallback_RunBaseAndFollowupEffectStates:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AAAF 20 6A A6         j.
+RunBaseAndFollowupDialogueStates:
+        jsr     PrintScriptLineByOffset         ; AAAF 20 6A A6                  j.
 ItemEffectInventory_Branch_AAB2:
-        jsr     EffectScript_TestSelectionCondition; AAB2 20 C9 9A               ..
+        jsr     AskYesNo                        ; AAB2 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AABD ; AAB5 F0 06                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; AAB7 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AAB7 20 68 A6                  h.
         jmp     ItemEffectInventory_Branch_AAB2 ; AABA 4C B2 AA                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AABD:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AABD 20 60 A6           `.
-        jmp     EffectCallback_InvokeFourthEffectHandler; AAC0 4C 5C A6         L\.
+        jsr     PrintScriptLine2                ; AABD 20 60 A6                  `.
+        jmp     PrintScriptLine3                ; AAC0 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag17:
+Wait180FramesThenTriggerMapEvent17:
         lda     #$17                            ; AAC3 A9 17                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AAC5 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AAC5 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitShortThenSetFlag18:
+WaitShortThenTriggerMapEvent18:
         lda     #$18                            ; AAC8 A9 18                    ..
         bne     ItemEffectInventory_Branch_AACE ; AACA D0 02                    ..
-EffectCallback_WaitShortThenSetFlag11:
+WaitShortThenTriggerMapEvent11:
         lda     #$11                            ; AACC A9 11                    ..
 ItemEffectInventory_Branch_AACE:
-        jmp     EffectCallback_WaitShortThenSetFlagAndStatus01; AACE 4C CE B0   L..
+        jmp     WaitShortThenTriggerMapEventAndSetStatus01; AACE 4C CE B0       L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag13ThenStatus01:
+TriggerMapEvent13AndSetStatus01:
         lda     #$13                            ; AAD1 A9 13                    ..
         brk                                     ; AAD3 00                       .
         db   $07,$CF                         ; AAD4 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AAD6 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AAD6 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunBaseLoopThenSetFlag0D:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AAD9 20 6A A6         j.
+RunDialogueLoopThenTriggerMapEvent0D:
+        jsr     PrintScriptLineByOffset         ; AAD9 20 6A A6                  j.
 ItemEffectInventory_Branch_AADC:
-        jsr     EffectScript_TestSelectionCondition; AADC 20 C9 9A               ..
+        jsr     AskYesNo                        ; AADC 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AAE7 ; AADF F0 06                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; AAE1 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AAE1 20 68 A6                  h.
         jmp     ItemEffectInventory_Branch_AADC ; AAE4 4C DC AA                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AAE7:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AAE7 20 60 A6           `.
+        jsr     PrintScriptLine2                ; AAE7 20 60 A6                  `.
         lda     #$0D                            ; AAEA A9 0D                    ..
         brk                                     ; AAEC 00                       .
         db   $07,$CF                         ; AAED 07 CF                    ..
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneTwentyFrames; AAEF 20 14 D2                 ..
-        jmp     EffectCallback_SetInterpreterStatus01; AAF2 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AAF2 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag0C:
+TriggerMapEvent0C:
         lda     #$0C                            ; AAF5 A9 0C                    ..
         brk                                     ; AAF7 00                       .
         db   $07,$CF                         ; AAF8 07 CF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; AAFA 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessIndexedEffectHandlerChain:
+ProcessIndexedDialogueBranchChain:
         sta     $F9                             ; AAFB 85 F9                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AAFD 20 6A A6         j.
-        jsr     EffectScript_TestSelectionCondition; AB00 20 C9 9A               ..
+        jsr     PrintScriptLineByOffset         ; AAFD 20 6A A6                  j.
+        jsr     AskYesNo                        ; AB00 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AB08 ; AB03 D0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; AB05 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; AB05 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AB08:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AB08 20 60 A6           `.
-        jsr     EffectScript_TestSelectionCondition; AB0B 20 C9 9A               ..
+        jsr     PrintScriptLine2                ; AB08 20 60 A6                  `.
+        jsr     AskYesNo                        ; AB0B 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AB13 ; AB0E F0 03                    ..
-        jmp     EffectCallback_InvokeFourthEffectHandler; AB10 4C 5C A6         L\.
+        jmp     PrintScriptLine3                ; AB10 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AB13:
-        jsr     EffectCallback_InvokeFifthEffectHandler; AB13 20 58 A6           X.
+        jsr     PrintScriptLine4                ; AB13 20 58 A6                  X.
         brk                                     ; AB16 00                       .
         db   $65,$33                         ; AB17 65 33                    e3
 ; ----------------------------------------------------------------------------
@@ -3930,14 +3930,14 @@ ItemEffectInventory_Branch_AB13:
         brk                                     ; AB23 00                       .
         db   $26,$CB,$02                     ; AB24 26 CB 02                 &..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeSixthEffectHandler; AB27 20 54 A6           T.
-        jmp     EffectCallback_InvokeSeventhEffectHandler; AB2A 4C 50 A6        LP.
+        jsr     PrintScriptLine5                ; AB27 20 54 A6                  T.
+        jmp     PrintScriptLine6                ; AB2A 4C 50 A6                 LP.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AB2D:
-        jmp     EffectCallback_InvokeEighthEffectHandler; AB2D 4C 4C A6         LL.
+        jmp     PrintScriptLine7                ; AB2D 4C 4C A6                 LL.
 ; ----------------------------------------------------------------------------
 RunTaloonLighthouseRequestDialogue:
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; AB30 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; AB30 20 C9 A4                ..
         brk                                     ; AB33 00                       .
         db   $18,$CB,$20                     ; AB34 18 CB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -3945,7 +3945,7 @@ RunTaloonLighthouseRequestDialogue:
         db   $C7,$3B                         ; AB38 C7 3B                    .;
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AB3A:
-        jsr     EffectScript_TestSelectionCondition; AB3A 20 C9 9A               ..
+        jsr     AskYesNo                        ; AB3A 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AB44 ; AB3D F0 05                    ..
         brk                                     ; AB3F 00                       .
         db   $C8,$3B                         ; AB40 C8 3B                    .;
@@ -3959,14 +3959,14 @@ ItemEffectInventory_Branch_AB47:
         brk                                     ; AB47 00                       .
         db   $CA,$3B                         ; AB48 CA 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AB4A 20 C9 9A               ..
+        jsr     AskYesNo                        ; AB4A 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AB47 ; AB4D F0 F8                    ..
         brk                                     ; AB4F 00                       .
         db   $6B,$2B                         ; AB50 6B 2B                    k+
 ; ----------------------------------------------------------------------------
         jmp     ItemEffectInventory_Branch_990D ; AB52 4C 0D 99                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetSlot3Command11ThenFlag15:
+QueueScriptedActorCommandAndTriggerMapEvent:
         ldx     #$03                            ; AB55 A2 03                    ..
         lda     #$11                            ; AB57 A9 11                    ..
         sta     $7046,x                         ; AB59 9D 46 70                 .Fp
@@ -3974,9 +3974,9 @@ EffectCallback_SetSlot3Command11ThenFlag15:
         db   $17,$CB,$10                     ; AB5D 17 CB 10                 ...
 ; ----------------------------------------------------------------------------
         lda     #$15                            ; AB60 A9 15                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AB62 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AB62 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyResolvedEffectValueAndSelectEntry:
+CopyResolvedEventValueAndSelectEntry:
         lda     #$7E                            ; AB65 A9 7E                    .~
         brk                                     ; AB67 00                       .
         db   $66,$73                         ; AB68 66 73                    fs
@@ -3993,18 +3993,18 @@ EffectCallback_CopyResolvedEffectValueAndSelectEntry:
 ; ----------------------------------------------------------------------------
         rts                                     ; AB77 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_PromoteEffectWhenMapStateSet:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AB78 20 6A A6         j.
+PromoteDialogueBranchWhenMapStateSet:
+        jsr     PrintScriptLineByOffset         ; AB78 20 6A A6                  j.
         brk                                     ; AB7B 00                       .
         db   $62,$23,$40                     ; AB7C 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
         cmp     #$01                            ; AB7F C9 01                    ..
         bcc     ItemEffectInventory_Branch_AB86 ; AB81 90 03                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; AB83 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AB83 20 68 A6                  h.
 ItemEffectInventory_Branch_AB86:
-        jmp     EffectCallback_InvokeThirdEffectHandler; AB86 4C 60 A6          L`.
+        jmp     PrintScriptLine2                ; AB86 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
-EffectCallback_InitializeAndProcessEffectChoice:
+InitializeAndProcessEventChoice:
         lda     #$FF                            ; AB89 A9 FF                    ..
 RunAlenaPartyJoinAndPadequiaDialogue:
         sta     $DA                             ; AB8B 85 DA                    ..
@@ -4056,9 +4056,9 @@ ItemEffectInventory_Branch_ABBA:
         brk                                     ; ABC5 00                       .
         db   $07,$CF                         ; ABC6 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; ABC8 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; ABC8 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RouteSpecialActorThreshold:
+RouteSpecialActorDialogueThreshold:
         ldx     $E8                             ; ABCB A6 E8                    ..
         lda     $6F60,x                         ; ABCD BD 60 6F                 .`o
         cmp     #$18                            ; ABD0 C9 18                    ..
@@ -4067,31 +4067,31 @@ EffectCallback_RouteSpecialActorThreshold:
         cmp     #$0B                            ; ABD7 C9 0B                    ..
         beq     ItemEffectInventory_Branch_ABDE ; ABD9 F0 03                    ..
 ItemEffectInventory_Branch_ABDB:
-        jmp     EffectCallback_InvokeThirdEffectHandler; ABDB 4C 60 A6          L`.
+        jmp     PrintScriptLine2                ; ABDB 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ABDE:
         lda     #$05                            ; ABDE A9 05                    ..
         jsr     EffectScript_TestConfiguredThreshold; ABE0 20 F8 9A              ..
         bne     ItemEffectInventory_Branch_ABEB ; ABE3 D0 06                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; ABE5 20 64 A6           d.
-        jmp     EffectCallback_SetCurrentSlotCommand11; ABE8 4C 9E A4           L..
+        jsr     PrintScriptLine0                ; ABE5 20 64 A6                  d.
+        jmp     SetCurrentActorCommand          ; ABE8 4C 9E A4                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ABEB:
-        jmp     EffectCallback_InvokeSecondEffectHandler; ABEB 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ABEB 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag0E:
+Wait180FramesThenTriggerMapEvent0E:
         lda     #$0E                            ; ABEE A9 0E                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; ABF0 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; ABF0 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag0F:
+Wait180FramesThenTriggerMapEvent0F:
         lda     #$0F                            ; ABF3 A9 0F                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; ABF5 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; ABF5 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag14:
+Wait180FramesThenTriggerMapEvent14:
         lda     #$14                            ; ABF8 A9 14                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; ABFA 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; ABFA 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessThreshold0DGateFlow:
+ProcessStoryGateDialogueFlow:
         brk                                     ; ABFD 00                       .
         db   $1A,$EB,$04                     ; ABFE 1A EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -4100,37 +4100,37 @@ EffectCallback_ProcessThreshold0DGateFlow:
         db   $1A,$EB,$08                     ; AC04 1A EB 08                 ...
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_AC21 ; AC07 D0 18                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; AC09 20 64 A6           d.
+        jsr     PrintScriptLine0                ; AC09 20 64 A6                  d.
         lda     #$0D                            ; AC0C A9 0D                    ..
         jsr     EffectScript_TestConfiguredThreshold; AC0E 20 F8 9A              ..
         beq     ItemEffectInventory_Branch_AC16 ; AC11 F0 03                    ..
 ItemEffectInventory_Branch_AC13:
-        jmp     EffectCallback_InvokeSecondEffectHandler; AC13 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; AC13 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC16:
         cpx     #$00                            ; AC16 E0 00                    ..
         bne     ItemEffectInventory_Branch_AC13 ; AC18 D0 F9                    ..
-        jsr     EffectCallback_InvokeThirdEffectHandler; AC1A 20 60 A6           `.
+        jsr     PrintScriptLine2                ; AC1A 20 60 A6                  `.
         brk                                     ; AC1D 00                       .
         db   $1A,$CB,$08                     ; AC1E 1A CB 08                 ...
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC21:
         lda     #$4B                            ; AC21 A9 4B                    .K
-        jsr     EffectCallback_CommitAvailableEffectValue; AC23 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; AC23 20 89 B0                  ..
         bcs     ItemEffectInventory_Branch_AC31 ; AC26 B0 09                    ..
         brk                                     ; AC28 00                       .
         db   $1A,$CB,$04                     ; AC29 1A CB 04                 ...
 ; ----------------------------------------------------------------------------
         stx     $F9                             ; AC2C 86 F9                    ..
-        jmp     EffectCallback_InvokeFourthEffectHandler; AC2E 4C 5C A6         L\.
+        jmp     PrintScriptLine3                ; AC2E 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC31:
-        jmp     EffectCallback_InvokeFifthEffectHandler; AC31 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; AC31 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC34:
-        jmp     EffectCallback_InvokeSixthEffectHandler; AC34 4C 54 A6          LT.
+        jmp     PrintScriptLine5                ; AC34 4C 54 A6                 LT.
 ; ----------------------------------------------------------------------------
-EffectCallback_ResolveTieredEffectBranch:
+ResolveTieredDialogueBranch:
         brk                                     ; AC37 00                       .
         db   $62,$23,$40                     ; AC38 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -4140,28 +4140,28 @@ EffectCallback_ResolveTieredEffectBranch:
         brk                                     ; AC41 00                       .
         db   $29,$63,$40                     ; AC42 29 63 40                 )c@
 ; ----------------------------------------------------------------------------
-EffectCallback_AdvanceConditionalEffectStates:
+AdvanceConditionalDialogueBranches:
         cmp     #$01                            ; AC45 C9 01                    ..
         bne     ItemEffectInventory_Branch_AC4C ; AC47 D0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; AC49 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; AC49 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC4C:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AC4C 20 60 A6           `.
-        jsr     EffectScript_TestSelectionCondition; AC4F 20 C9 9A               ..
+        jsr     PrintScriptLine2                ; AC4C 20 60 A6                  `.
+        jsr     AskYesNo                        ; AC4F 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AC57 ; AC52 F0 03                    ..
-        jmp     EffectCallback_InvokeFourthEffectHandler; AC54 4C 5C A6         L\.
+        jmp     PrintScriptLine3                ; AC54 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC57:
-        jmp     EffectCallback_InvokeFifthEffectHandler; AC57 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; AC57 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AC5A:
-        jmp     EffectCallback_InvokeFirstEffectHandler; AC5A 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; AC5A 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag16:
+Wait180FramesThenTriggerMapEvent16:
         lda     #$16                            ; AC5D A9 16                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AC5F 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AC5F 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RollTripledRandomOffsetAndInvoke:
+RollTripledRandomDialogueOffset:
         jsr     NextRandomByte                  ; AC62 20 91 C8                  ..
         sta     $DA                             ; AC65 85 DA                    ..
         lda     #$00                            ; AC67 A9 00                    ..
@@ -4169,55 +4169,55 @@ EffectCallback_RollTripledRandomOffsetAndInvoke:
         lda     #$03                            ; AC6B A9 03                    ..
         ldx     #$DA                            ; AC6D A2 DA                    ..
         jsr     MultiplyPointerWord             ; AC6F 20 27 C8                  '.
-        jmp     EffectCallback_InvokeIndexedEffectHandler; AC72 4C 6A A6        Lj.
+        jmp     PrintScriptLineByOffset         ; AC72 4C 6A A6                 Lj.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag19:
+Wait180FramesThenTriggerMapEvent19:
         lda     #$19                            ; AC75 A9 19                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AC77 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AC77 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag1AThenStatus01:
+TriggerMapEvent1AAndSetStatus01:
         lda     #$1A                            ; AC7A A9 1A                    ..
         brk                                     ; AC7C 00                       .
         db   $07,$CF                         ; AC7D 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AC7F 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AC7F 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunA48CThenStatus01:
-        jsr     EffectCallback_SetCurrentSlotCommand11AndWaitLong; AC82 20 8C A4 ..
-        jmp     EffectCallback_SetInterpreterStatus01; AC85 4C AE B0            L..
+RunDelayedActorCommandAndFinish:
+        jsr     SetCurrentActorCommandAndWait   ; AC82 20 8C A4                  ..
+        jmp     SetScriptInterpreterStatusReady ; AC85 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ResolveEffectAvailabilityBranch:
+ResolveEventAvailabilityDialogueBranch:
         brk                                     ; AC88 00                       .
         db   $1D,$EB,$10                     ; AC89 1D EB 10                 ...
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_AC91 ; AC8C D0 03                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; AC8E 20 64 A6           d.
+        jsr     PrintScriptLine0                ; AC8E 20 64 A6                  d.
 ItemEffectInventory_Branch_AC91:
-        jsr     EffectCallback_InvokeSecondEffectHandler; AC91 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AC91 20 68 A6                  h.
         lda     #$73                            ; AC94 A9 73                    .s
-        jsr     EffectCallback_CommitAvailableEffectValue; AC96 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; AC96 20 89 B0                  ..
         bcs     ItemEffectInventory_Branch_ACA7 ; AC99 B0 0C                    ..
         stx     $F9                             ; AC9B 86 F9                    ..
         brk                                     ; AC9D 00                       .
         db   $1D,$CB,$20                     ; AC9E 1D CB 20                 ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeThirdEffectHandler; ACA1 20 60 A6           `.
-        jmp     EffectCallback_InvokeFourthEffectHandler; ACA4 4C 5C A6         L\.
+        jsr     PrintScriptLine2                ; ACA1 20 60 A6                  `.
+        jmp     PrintScriptLine3                ; ACA4 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ACA7:
         brk                                     ; ACA7 00                       .
         db   $1D,$CB,$10                     ; ACA8 1D CB 10                 ...
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_InvokeFifthEffectHandler; ACAB 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; ACAB 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
-EffectCallback_BranchOn6299ClassSet:
+RouteDialogueByActorClassState:
         brk                                     ; ACAE 00                       .
         db   $0B,$DF                         ; ACAF 0B DF                    ..
 ; ----------------------------------------------------------------------------
         brk                                     ; ACB1 00                       .
         db   $1E,$EB,$40                     ; ACB2 1E EB 40                 ..@
 ; ----------------------------------------------------------------------------
-EffectCallback_Check6299ClassSetForState00Or01:
+RouteSilentNpcDialogueByClass:
         bne     ItemEffectInventory_Branch_ACCE ; ACB5 D0 17                    ..
         lda     $6299                           ; ACB7 AD 99 62                 ..b
         and     #$3F                            ; ACBA 29 3F                    )?
@@ -4227,10 +4227,10 @@ EffectCallback_Check6299ClassSetForState00Or01:
         beq     ItemEffectInventory_Branch_ACCB ; ACC2 F0 07                    ..
         cmp     #$03                            ; ACC4 C9 03                    ..
         beq     ItemEffectInventory_Branch_ACCB ; ACC6 F0 03                    ..
-        jmp     EffectCallback_InvokeFirstEffectHandler; ACC8 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; ACC8 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ACCB:
-        jmp     EffectCallback_InvokeSecondEffectHandler; ACCB 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ACCB 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ACCE:
         brk                                     ; ACCE 00                       .
@@ -4238,7 +4238,7 @@ ItemEffectInventory_Branch_ACCE:
 ; ----------------------------------------------------------------------------
         rts                                     ; ACD1 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_BranchOn6299ClassSetAndE9:
+RouteSilentNpcDialogueBySavedSelector:
         brk                                     ; ACD2 00                       .
         db   $0B,$DF                         ; ACD3 0B DF                    ..
 ; ----------------------------------------------------------------------------
@@ -4246,7 +4246,7 @@ EffectCallback_BranchOn6299ClassSetAndE9:
         brk                                     ; ACD7 00                       .
         db   $1E,$EB,$40                     ; ACD8 1E EB 40                 ..@
 ; ----------------------------------------------------------------------------
-EffectCallback_Process6299ClassSetAndE9Branch:
+ProcessSilentNpcDialogueByClass:
         bne     ItemEffectInventory_Branch_AD04 ; ACDB D0 27                    .'
         lda     $6299                           ; ACDD AD 99 62                 ..b
         and     #$3F                            ; ACE0 29 3F                    )?
@@ -4258,7 +4258,7 @@ EffectCallback_Process6299ClassSetAndE9Branch:
         beq     ItemEffectInventory_Branch_ACF9 ; ACEC F0 0B                    ..
         cpy     #$01                            ; ACEE C0 01                    ..
         bne     ItemEffectInventory_Branch_ACF5 ; ACF0 D0 03                    ..
-        jmp     EffectCallback_InvokeFirstEffectHandler; ACF2 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; ACF2 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ACF5:
         lda     #$02                            ; ACF5 A9 02                    ..
@@ -4266,7 +4266,7 @@ ItemEffectInventory_Branch_ACF5:
 ItemEffectInventory_Branch_ACF9:
         cpy     #$01                            ; ACF9 C0 01                    ..
         bne     ItemEffectInventory_Branch_AD00 ; ACFB D0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; ACFD 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ACFD 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AD00:
         lda     #$03                            ; AD00 A9 03                    ..
@@ -4281,19 +4281,19 @@ ItemEffectInventory_Branch_AD04:
         rts                                     ; AD0D 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AD0E:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AD0E 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; AD0E 20 6A A6                  j.
 ItemEffectInventory_Branch_AD11:
         lda     #$1F                            ; AD11 A9 1F                    ..
         brk                                     ; AD13 00                       .
         db   $07,$CF                         ; AD14 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AD16 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AD16 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
 RunGardenburHostageSelection:
         brk                                     ; AD19 00                       .
         db   $42,$4B                         ; AD1A 42 4B                    BK
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AD1C 20 C9 9A               ..
+        jsr     AskYesNo                        ; AD1C 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AD5B ; AD1F D0 3A                    .:
         brk                                     ; AD21 00                       .
         db   $43,$4B                         ; AD22 43 4B                    CK
@@ -4301,7 +4301,7 @@ RunGardenburHostageSelection:
 ItemEffectInventory_Branch_AD24:
         ldx     #$02                            ; AD24 A2 02                    ..
         lda     #$42                            ; AD26 A9 42                    .B
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; AD28 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; AD28 20 B5 B7      ..
         cmp     #$FF                            ; AD2B C9 FF                    ..
         beq     ItemEffectInventory_Branch_AD5B ; AD2D F0 2C                    .,
         sta     $DA                             ; AD2F 85 DA                    ..
@@ -4346,23 +4346,23 @@ ItemEffectInventory_Branch_AD5F:
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_AD24 ; AD62 B0 C0                    ..
 RunGardenburQueenTrial:
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; AD64 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; AD64 20 C9 A4                ..
         brk                                     ; AD67 00                       .
         db   $3B,$4B                         ; AD68 3B 4B                    ;K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AD6A 20 C9 9A               ..
+        jsr     AskYesNo                        ; AD6A 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AD77 ; AD6D D0 08                    ..
 ItemEffectInventory_Branch_AD6F:
         brk                                     ; AD6F 00                       .
         db   $3C,$4B                         ; AD70 3C 4B                    <K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AD72 20 C9 9A               ..
+        jsr     AskYesNo                        ; AD72 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AD6F ; AD75 F0 F8                    ..
 ItemEffectInventory_Branch_AD77:
         brk                                     ; AD77 00                       .
         db   $3D,$4B                         ; AD78 3D 4B                    =K
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; AD7A 20 C9 9A               ..
+        jsr     AskYesNo                        ; AD7A 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AD85 ; AD7D D0 06                    ..
         brk                                     ; AD7F 00                       .
         db   $3E,$4B                         ; AD80 3E 4B                    >K
@@ -4374,11 +4374,11 @@ ItemEffectInventory_Branch_AD85:
         db   $3F,$4B                         ; AD86 3F 4B                    ?K
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_AD77 ; AD88 B0 ED                    ..
-EffectCallback_Wait180FramesThenSetFlag1D:
+Wait180FramesThenTriggerMapEvent1D:
         lda     #$1D                            ; AD8A A9 1D                    ..
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AD8C 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AD8C 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_DispatchActorTargetPolicy:
+DispatchShopCustomerPolicy:
         ldx     $E8                             ; AD8F A6 E8                    ..
         lda     $6F80,x                         ; AD91 BD 80 6F                 ..o
         tay                                     ; AD94 A8                       .
@@ -4395,23 +4395,23 @@ ItemEffectInventory_Branch_AD9F:
         jmp     ItemEffectInventory_Branch_B830 ; ADA7 4C 30 B8                 L0.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADAA:
-        jmp     PrepareAndRunAlternateTargetSelection; ADAA 4C 29 B8            L).
+        jmp     PrepareAndRunShopSellMenu       ; ADAA 4C 29 B8                 L).
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADAD:
-        jmp     PrepareAndRunPrimaryTargetSelection; ADAD 4C 22 B8              L".
+        jmp     PrepareAndRunShopBuyMenu        ; ADAD 4C 22 B8                 L".
 ; ----------------------------------------------------------------------------
-EffectCallback_RunEffectStatesUntilSelectionClears:
-        jsr     EffectCallback_InvokeFirstEffectHandler; ADB0 20 64 A6           d.
-        jsr     EffectScript_TestSelectionCondition; ADB3 20 C9 9A               ..
+RunDialogueStatesUntilSelectionClears:
+        jsr     PrintScriptLine0                ; ADB0 20 64 A6                  d.
+        jsr     AskYesNo                        ; ADB3 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_ADBB ; ADB6 F0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; ADB8 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ADB8 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADBB:
-        jsr     EffectCallback_InvokeThirdEffectHandler; ADBB 20 60 A6           `.
+        jsr     PrintScriptLine2                ; ADBB 20 60 A6                  `.
 ItemEffectInventory_Branch_ADBE:
-        jsr     EffectScript_TestSelectionCondition; ADBE 20 C9 9A               ..
+        jsr     AskYesNo                        ; ADBE 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_ADC9 ; ADC1 F0 06                    ..
-        jsr     EffectCallback_InvokeFourthEffectHandler; ADC3 20 5C A6          \.
+        jsr     PrintScriptLine3                ; ADC3 20 5C A6                  \.
         jmp     ItemEffectInventory_Branch_ADBE ; ADC6 4C BE AD                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADC9:
@@ -4421,16 +4421,16 @@ ItemEffectInventory_Branch_ADC9:
         brk                                     ; ADCD 00                       .
         db   $1D,$CB,$02                     ; ADCE 1D CB 02                 ...
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_InvokeFifthEffectHandler; ADD1 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; ADD1 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
-EffectCallback_SetFlag1E:
+TriggerMapEvent1E:
         lda     #$1E                            ; ADD4 A9 1E                    ..
         brk                                     ; ADD6 00                       .
         db   $07,$CF                         ; ADD7 07 CF                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; ADD9 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_BranchOnInitialEffectChoice:
+BranchOnInitialDialogueChoice:
         lda     #$00                            ; ADDA A9 00                    ..
         brk                                     ; ADDC 00                       .
         db   $63,$73                         ; ADDD 63 73                    cs
@@ -4442,49 +4442,49 @@ EffectCallback_BranchOnInitialEffectChoice:
         db   $63,$63,$41                     ; ADE6 63 63 41                 ccA
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_ADEE ; ADE9 90 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; ADEB 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ADEB 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_ADEE:
-        jmp     EffectCallback_InvokeFirstEffectHandler; ADEE 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; ADEE 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitShortThenSetFlag22:
+WaitShortThenTriggerMapEvent22:
         lda     #$22                            ; ADF1 A9 22                    ."
-        jmp     EffectCallback_WaitShortThenSetFlagAndStatus01; ADF3 4C CE B0   L..
+        jmp     WaitShortThenTriggerMapEventAndSetStatus01; ADF3 4C CE B0       L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ResolveEffectTierWithUpperBound:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; ADF6 20 6A A6         j.
-        jsr     EffectScript_TestSelectionCondition; ADF9 20 C9 9A               ..
+ResolveDialogueTierWithUpperBound:
+        jsr     PrintScriptLineByOffset         ; ADF6 20 6A A6                  j.
+        jsr     AskYesNo                        ; ADF9 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_AE01 ; ADFC F0 03                    ..
-        jmp     EffectCallback_InvokeSecondEffectHandler; ADFE 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; ADFE 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AE01:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AE01 20 60 A6           `.
+        jsr     PrintScriptLine2                ; AE01 20 60 A6                  `.
         brk                                     ; AE04 00                       .
         db   $62,$23,$40                     ; AE05 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
         cmp     #$04                            ; AE08 C9 04                    ..
         bcc     ItemEffectInventory_Branch_AE0F ; AE0A 90 03                    ..
-        jmp     EffectCallback_InvokeFourthEffectHandler; AE0C 4C 5C A6         L\.
+        jmp     PrintScriptLine3                ; AE0C 4C 5C A6                 L\.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AE0F:
-        jsr     EffectCallback_InvokeFifthEffectHandler; AE0F 20 58 A6           X.
+        jsr     PrintScriptLine4                ; AE0F 20 58 A6                  X.
         lda     #$14                            ; AE12 A9 14                    ..
-        jsr     EffectCallback_TestEffectAvailability; AE14 20 69 A7             i.
+        jsr     IsEventEffectAvailable          ; AE14 20 69 A7                  i.
         beq     ItemEffectInventory_Branch_AE1C ; AE17 F0 03                    ..
-        jsr     EffectCallback_InvokeSixthEffectHandler; AE19 20 54 A6           T.
+        jsr     PrintScriptLine5                ; AE19 20 54 A6                  T.
 ItemEffectInventory_Branch_AE1C:
-        jsr     EffectCallback_InvokeSeventhEffectHandler; AE1C 20 50 A6         P.
+        jsr     PrintScriptLine6                ; AE1C 20 50 A6                  P.
         brk                                     ; AE1F 00                       .
         db   $20,$CB,$20                     ; AE20 20 CB 20                  .
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_FinalizeEffectState; AE23 4C B6 A4               L..
+        jmp     ReapplyMapEntityLayout          ; AE23 4C B6 A4                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessF9SelectionScene:
+ProcessSelectedEventScene:
         brk                                     ; AE26 00                       .
         db   $20,$EB,$10                     ; AE27 20 EB 10                  ..
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_AE98 ; AE2A D0 6C                    .l
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AE2C 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; AE2C 20 6A A6                  j.
         lda     #$00                            ; AE2F A9 00                    ..
         brk                                     ; AE31 00                       .
         db   $63,$73                         ; AE32 63 73                    cs
@@ -4522,9 +4522,9 @@ EffectCallback_ProcessF9SelectionScene:
         sta     $E1                             ; AE59 85 E1                    ..
         pla                                     ; AE5B 68                       h
         sta     $E0                             ; AE5C 85 E0                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; AE5E 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AE5E 20 68 A6                  h.
 ItemEffectInventory_Branch_AE61:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AE61 20 60 A6           `.
+        jsr     PrintScriptLine2                ; AE61 20 60 A6                  `.
         lda     $F9                             ; AE64 A5 F9                    ..
         pha                                     ; AE66 48                       H
         lda     $E0                             ; AE67 A5 E0                    ..
@@ -4541,7 +4541,7 @@ ItemEffectInventory_Branch_AE61:
         sta     $E0                             ; AE76 85 E0                    ..
         pla                                     ; AE78 68                       h
         sta     $F9                             ; AE79 85 F9                    ..
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; AE7B 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; AE7B 20 C9 A4                ..
         lda     #$14                            ; AE7E A9 14                    ..
         brk                                     ; AE80 00                       .
         db   $66,$73                         ; AE81 66 73                    fs
@@ -4555,7 +4555,7 @@ ItemEffectInventory_Branch_AE61:
         brk                                     ; AE8B 00                       .
         db   $2E,$73                         ; AE8C 2E 73                    .s
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeFourthEffectHandler; AE8E 20 5C A6          \.
+        jsr     PrintScriptLine3                ; AE8E 20 5C A6                  \.
         brk                                     ; AE91 00                       .
         db   $05,$8F                         ; AE92 05 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -4570,9 +4570,9 @@ ItemEffectInventory_Branch_AE98:
         bcs     ItemEffectInventory_Branch_AEA3 ; AE9E B0 03                    ..
         jsr     EffectScript_LoadReferencedEntryValue; AEA0 20 56 99             V.
 ItemEffectInventory_Branch_AEA3:
-        jmp     EffectCallback_InvokeFifthEffectHandler; AEA3 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; AEA3 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
-EffectCallback_Run04301LoopForDdCount:
+RepeatSceneUpdateForResolvedCount:
         brk                                     ; AEA6 00                       .
         db   $62,$23,$01                     ; AEA7 62 23 01                 b#.
 ; ----------------------------------------------------------------------------
@@ -4590,7 +4590,7 @@ ItemEffectInventory_Branch_AEAE:
         bcc     ItemEffectInventory_Branch_AEAE ; AEB9 90 F3                    ..
         rts                                     ; AEBB 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ClearF9ToFbAndRunState00:
+ClearMessageArgumentsAndPrintBaseLine:
         lda     #$00                            ; AEBC A9 00                    ..
         brk                                     ; AEBE 00                       .
         db   $63,$73                         ; AEBF 63 73                    cs
@@ -4599,34 +4599,34 @@ EffectCallback_ClearF9ToFbAndRunState00:
         sta     $FA                             ; AEC3 85 FA                    ..
         sta     $FB                             ; AEC5 85 FB                    ..
 RunEffectStateZero:
-        jmp     EffectCallback_InvokeFirstEffectHandler; AEC7 4C 64 A6          Ld.
+        jmp     PrintScriptLine0                ; AEC7 4C 64 A6                 Ld.
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyHeroNameThenRunState00:
-        jsr     EffectCallback_CopyHeroNameToDialogueBuffer; AECA 20 67 B0       g.
+CopyHeroNameAndPrintBaseLine:
+        jsr     CopyHeroNameToDialogueBuffer    ; AECA 20 67 B0                  g.
         jmp     RunEffectStateZero              ; AECD 4C C7 AE                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessEffectAvailabilityBranches:
+ProcessEventAvailabilityDialogueBranches:
         brk                                     ; AED0 00                       .
         db   $20,$EB,$04                     ; AED1 20 EB 04                  ..
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_AEEC ; AED4 D0 16                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AED6 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; AED6 20 6A A6                  j.
         brk                                     ; AED9 00                       .
         db   $20,$CB,$04                     ; AEDA 20 CB 04                  ..
 ; ----------------------------------------------------------------------------
         lda     #$5B                            ; AEDD A9 5B                    .[
-        jsr     EffectCallback_CommitAvailableEffectValue; AEDF 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; AEDF 20 89 B0                  ..
         bcc     ItemEffectInventory_Branch_AEE7 ; AEE2 90 03                    ..
 ItemEffectInventory_Branch_AEE4:
-        jmp     EffectCallback_InvokeThirdEffectHandler; AEE4 4C 60 A6          L`.
+        jmp     PrintScriptLine2                ; AEE4 4C 60 A6                 L`.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AEE7:
         stx     $F9                             ; AEE7 86 F9                    ..
 ItemEffectInventory_Branch_AEE9:
-        jmp     EffectCallback_InvokeSecondEffectHandler; AEE9 4C 68 A6         Lh.
+        jmp     PrintScriptLine1                ; AEE9 4C 68 A6                 Lh.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AEEC:
-        jsr     EffectCallback_InvokeFourthEffectHandler; AEEC 20 5C A6          \.
+        jsr     PrintScriptLine3                ; AEEC 20 5C A6                  \.
         lda     #$5B                            ; AEEF A9 5B                    .[
         brk                                     ; AEF1 00                       .
         db   $3A,$0F                         ; AEF2 3A 0F                    :.
@@ -4638,14 +4638,14 @@ ItemEffectInventory_Branch_AEEC:
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_AF00 ; AEFB 90 03                    ..
 ItemEffectInventory_Branch_AEFD:
-        jmp     EffectCallback_InvokeFifthEffectHandler; AEFD 4C 58 A6          LX.
+        jmp     PrintScriptLine4                ; AEFD 4C 58 A6                 LX.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AF00:
         lda     #$5B                            ; AF00 A9 5B                    .[
-        jsr     EffectCallback_CommitAvailableEffectValue; AF02 20 89 B0         ..
+        jsr     CommitAvailableEventValue       ; AF02 20 89 B0                  ..
         bcs     ItemEffectInventory_Branch_AEE4 ; AF05 B0 DD                    ..
         stx     $F9                             ; AF07 86 F9                    ..
-        jsr     EffectCallback_InvokeSixthEffectHandler; AF09 20 54 A6           T.
+        jsr     PrintScriptLine5                ; AF09 20 54 A6                  T.
         jmp     ItemEffectInventory_Branch_AEE9 ; AF0C 4C E9 AE                 L..
 ; ----------------------------------------------------------------------------
 RunLuciaFarewell:
@@ -4653,12 +4653,12 @@ RunLuciaFarewell:
         db   $20,$EB,$08                     ; AF10 20 EB 08                  ..
 ; ----------------------------------------------------------------------------
         bne     ItemEffectInventory_Branch_AF20 ; AF13 D0 0B                    ..
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AF15 20 6A A6         j.
+        jsr     PrintScriptLineByOffset         ; AF15 20 6A A6                  j.
         lda     #$29                            ; AF18 A9 29                    .)
         brk                                     ; AF1A 00                       .
         db   $07,$CF                         ; AF1B 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AF1D 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AF1D 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AF20:
         brk                                     ; AF20 00                       .
@@ -4666,19 +4666,19 @@ ItemEffectInventory_Branch_AF20:
 ; ----------------------------------------------------------------------------
         rts                                     ; AF23 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessPackedWorldState:
-        jsr     EffectCallback_InvokeIndexedEffectHandler; AF24 20 6A A6         j.
+ProcessPackedWorldStateDialogue:
+        jsr     PrintScriptLineByOffset         ; AF24 20 6A A6                  j.
         lda     $62A4                           ; AF27 AD A4 62                 ..b
         and     #$F0                            ; AF2A 29 F0                    ).
         cmp     #$F0                            ; AF2C C9 F0                    ..
         beq     ItemEffectInventory_Branch_AF36 ; AF2E F0 06                    ..
-        jsr     EffectCallback_InvokeSecondEffectHandler; AF30 20 68 A6          h.
+        jsr     PrintScriptLine1                ; AF30 20 68 A6                  h.
         jmp     ItemEffectInventory_Branch_AF39 ; AF33 4C 39 AF                 L9.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_AF36:
-        jsr     EffectCallback_InvokeThirdEffectHandler; AF36 20 60 A6           `.
+        jsr     PrintScriptLine2                ; AF36 20 60 A6                  `.
 ItemEffectInventory_Branch_AF39:
-        jsr     EffectCallback_InvokeFourthEffectHandler; AF39 20 5C A6          \.
+        jsr     PrintScriptLine3                ; AF39 20 5C A6                  \.
         lda     $E0                             ; AF3C A5 E0                    ..
         pha                                     ; AF3E 48                       H
         lda     $E1                             ; AF3F A5 E1                    ..
@@ -4686,7 +4686,7 @@ ItemEffectInventory_Branch_AF39:
         brk                                     ; AF42 00                       .
         db   $05,$8F                         ; AF43 05 8F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_Run04301LoopForDdCount; AF45 20 A6 AE             ..
+        jsr     RepeatSceneUpdateForResolvedCount; AF45 20 A6 AE                 ..
         brk                                     ; AF48 00                       .
         db   $3B,$EF                         ; AF49 3B EF                    ;.
 ; ----------------------------------------------------------------------------
@@ -4697,28 +4697,28 @@ ItemEffectInventory_Branch_AF39:
         sta     $E1                             ; AF4F 85 E1                    ..
         pla                                     ; AF51 68                       h
         sta     $E0                             ; AF52 85 E0                    ..
-        jsr     EffectCallback_InvokeFifthEffectHandler; AF54 20 58 A6           X.
-        jsr     EffectScript_TestSelectionCondition; AF57 20 C9 9A               ..
+        jsr     PrintScriptLine4                ; AF54 20 58 A6                  X.
+        jsr     AskYesNo                        ; AF57 20 C9 9A                  ..
         bne     ItemEffectInventory_Branch_AF62 ; AF5A D0 06                    ..
         brk                                     ; AF5C 00                       .
         db   $0E,$2F                         ; AF5D 0E 2F                    ./
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_InvokeSixthEffectHandler; AF5F 20 54 A6           T.
+        jsr     PrintScriptLine5                ; AF5F 20 54 A6                  T.
 ItemEffectInventory_Branch_AF62:
-        jmp     EffectCallback_InvokeSeventhEffectHandler; AF62 4C 50 A6        LP.
+        jmp     PrintScriptLine6                ; AF62 4C 50 A6                 LP.
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag25:
+Wait180FramesThenTriggerMapEvent25:
         lda     #$25                            ; AF65 A9 25                    .%
         bne     ItemEffectInventory_Branch_AF6B ; AF67 D0 02                    ..
-EffectCallback_Wait180FramesThenSetFlag26:
+Wait180FramesThenTriggerMapEvent26:
         lda     #$26                            ; AF69 A9 26                    .&
 ItemEffectInventory_Branch_AF6B:
-        jmp     EffectCallback_Wait180FramesThenSetFlagAndStatus01; AF6B 4C D7 B0L..
+        jmp     Wait180FramesThenTriggerMapEventAndSetStatus01; AF6B 4C D7 B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlag27:
+Wait180FramesThenTriggerMapEvent27:
         lda     #$27                            ; AF6E A9 27                    .'
         bne     ItemEffectInventory_Branch_AF6B ; AF70 D0 F9                    ..
-EffectCallback_AnimateActorFieldSwapAndSetProgress:
+AnimateActorSwapAndTriggerProgressEvent:
         ldx     #$01                            ; AF72 A2 01                    ..
         lda     $6FE6,x                         ; AF74 BD E6 6F                 ..o
         sta     $DB                             ; AF77 85 DB                    ..
@@ -4747,24 +4747,24 @@ ItemEffectInventory_Branch_AF80:
         jsr     WaitForNmi                      ; AF9E 20 74 FF                  t.
         dec     $DA                             ; AFA1 C6 DA                    ..
         bne     ItemEffectInventory_Branch_AF80 ; AFA3 D0 DB                    ..
-        jsr     EffectCallback_InvokeFirstEffectHandler; AFA5 20 64 A6           d.
+        jsr     PrintScriptLine0                ; AFA5 20 64 A6                  d.
         lda     #$28                            ; AFA8 A9 28                    .(
         bne     ItemEffectInventory_Branch_AF6B ; AFAA D0 BF                    ..
-EffectCallback_SetFlag2EThenWaitShort:
+TriggerMapEvent2EThenWaitShort:
         lda     #$2E                            ; AFAC A9 2E                    ..
         brk                                     ; AFAE 00                       .
         db   $07,$CF                         ; AFAF 07 CF                    ..
 ; ----------------------------------------------------------------------------
         jmp     SetEntityCommandAndWaitSixtyFrames; AFB1 4C 95 A4               L..
 ; ----------------------------------------------------------------------------
-EffectCallback_CompleteDelayedInteractionAndSetStatus:
+CompleteDelayedInteractionAndSetStatus:
         jsr     WaitForButtonStateOneTwentyFrames; AFB4 20 14 D2                 ..
         brk                                     ; AFB7 00                       .
         db   $11,$DF                         ; AFB8 11 DF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; AFBA 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; AFBA 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyActorFieldAndRender:
+CopyActorAppearanceAndRender:
         ldx     #$01                            ; AFBD A2 01                    ..
         lda     $6FE6,x                         ; AFBF BD E6 6F                 ..o
         ldx     #$00                            ; AFC2 A2 00                    ..
@@ -4792,8 +4792,8 @@ ItemEffectInventory_Branch_AFF0:
         jsr     WaitForButtonStateOneTwentyFrames; AFF0 20 14 D2                 ..
         lda     #$00                            ; AFF3 A9 00                    ..
         sta     CurrentSubmapNumber             ; AFF5 85 64                    .d
-        jsr     EffectCallback_PreserveDdAroundAea6; AFF7 20 BC A6               ..
-        jsr     EffectCallback_WaitForAudioAndResumeMapMusic; AFFA 20 3F B0      ?.
+        jsr     PreserveSceneStateAroundTransition; AFF7 20 BC A6                ..
+        jsr     WaitForAudioAndResumeMapMusic   ; AFFA 20 3F B0                  ?.
         lda     #$80                            ; AFFD A9 80                    ..
         brk                                     ; AFFF 00                       .
         db   $31,$EF                         ; B000 31 EF                    1.
@@ -4802,12 +4802,12 @@ ItemEffectInventory_Branch_AFF0:
         and     #$FC                            ; B005 29 FC                    ).
         ora     #$03                            ; B007 09 03                    ..
         sta     $7000                           ; B009 8D 00 70                 ..p
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; B00C 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; B00C 20 C9 A4                ..
         jmp     FadePaletteFromBlack            ; B00F 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitShortThenSetFlag31:
+WaitShortThenTriggerMapEvent31:
         lda     #$31                            ; B012 A9 31                    .1
-        jmp     EffectCallback_WaitShortThenSetFlagAndStatus01; B014 4C CE B0   L..
+        jmp     WaitShortThenTriggerMapEventAndSetStatus01; B014 4C CE B0       L..
 ; ----------------------------------------------------------------------------
 ShowHectorWorkingAtTunnel:
         brk                                     ; B017 00                       .
@@ -4832,19 +4832,19 @@ PlayJingle10AndResumeMapMusic:
         brk                                     ; B030 00                       .
         db   $10,$FB                         ; B031 10 FB                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_WaitForAudioAndResumeMapMusic; B033 4C 3F B0     L?.
+        jmp     WaitForAudioAndResumeMapMusic   ; B033 4C 3F B0                 L?.
 ; ----------------------------------------------------------------------------
 PlayJingle33AndResumeMapMusic:
         brk                                     ; B036 00                       .
         db   $33,$FB                         ; B037 33 FB                    3.
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_WaitForAudioAndResumeMapMusic; B039 4C 3F B0     L?.
+        jmp     WaitForAudioAndResumeMapMusic   ; B039 4C 3F B0                 L?.
 ; ----------------------------------------------------------------------------
 PlayJingle2DAndResumeMapMusic:
         brk                                     ; B03C 00                       .
         db   $2D,$FB                         ; B03D 2D FB                    -.
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitForAudioAndResumeMapMusic:
+WaitForAudioAndResumeMapMusic:
         brk                                     ; B03F 00                       .
         db   $07,$9F                         ; B040 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -4853,9 +4853,9 @@ EffectCallback_WaitForAudioAndResumeMapMusic:
 ; ----------------------------------------------------------------------------
         rts                                     ; B045 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadCasinoCoinsIntoWorkingTriplet:
+LoadCasinoCoinsIntoMessageNumberArgument:
         lda     SaveCasinoCoins                 ; B046 AD AD 62                 ..b
-        sta     $FD                             ; B049 85 FD                    ..
+        sta     MessageNumberArgument           ; B049 85 FD                    ..
         lda     $62AE                           ; B04B AD AE 62                 ..b
         sta     $FE                             ; B04E 85 FE                    ..
         lda     $62AF                           ; B050 AD AF 62                 ..b
@@ -4876,7 +4876,7 @@ EffectScript_LoadPointerOperandIntoE0E1:
         lda     #$00                            ; B064 A9 00                    ..
         rts                                     ; B066 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CopyHeroNameToDialogueBuffer:
+CopyHeroNameToDialogueBuffer:
         ldx     #$00                            ; B067 A2 00                    ..
 ItemEffectInventory_Branch_B069:
         lda     SaveHeroName,x                  ; B069 BD 5D 61                 .]a
@@ -4899,7 +4899,7 @@ ItemEffectInventory_Branch_B083:
         sta     $0555,x                         ; B085 9D 55 05                 .U.
         rts                                     ; B088 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CommitAvailableEffectValue:
+CommitAvailableEventValue:
         sta     $00                             ; B089 85 00                    ..
         brk                                     ; B08B 00                       .
         db   $65,$33                         ; B08C 65 33                    e3
@@ -4917,7 +4917,7 @@ ItemEffectInventory_Branch_B098:
         sec                                     ; B098 38                       8
         rts                                     ; B099 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadEffectAvailabilityResult:
+LoadEventAvailabilityResult:
         sta     $E0                             ; B09A 85 E0                    ..
         tya                                     ; B09C 98                       .
         pha                                     ; B09D 48                       H
@@ -4936,7 +4936,7 @@ ItemEffectInventory_Branch_B0AB:
         tay                                     ; B0AC A8                       .
         rts                                     ; B0AD 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_SetInterpreterStatus01:
+SetScriptInterpreterStatusReady:
         lda     #$01                            ; B0AE A9 01                    ..
         bne     ItemEffectInventory_Branch_B0B8 ; B0B0 D0 06                    ..
 ItemEffectInventory_Branch_B0B2:
@@ -4955,7 +4955,7 @@ RejectDirectPartyMemberTalk:
 ; ----------------------------------------------------------------------------
         cmp     #$00                            ; B0C0 C9 00                    ..
         bne     ItemEffectInventory_Branch_B0CC ; B0C2 D0 08                    ..
-        jsr     EffectCallback_PrepareEffectSelectionContext; B0C4 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; B0C4 20 FB B7                  ..
         brk                                     ; B0C7 00                       .
         db   $54,$4B                         ; B0C8 54 4B                    TK
 ; ----------------------------------------------------------------------------
@@ -4965,14 +4965,14 @@ ItemEffectInventory_Branch_B0CC:
         pla                                     ; B0CC 68                       h
         rts                                     ; B0CD 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitShortThenSetFlagAndStatus01:
+WaitShortThenTriggerMapEventAndSetStatus01:
         pha                                     ; B0CE 48                       H
         tya                                     ; B0CF 98                       .
         pha                                     ; B0D0 48                       H
         jsr     WaitForButtonStateOneTwentyFrames; B0D1 20 14 D2                 ..
         jmp     FinishEffectDelayAndSetStatus   ; B0D4 4C DD B0                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_Wait180FramesThenSetFlagAndStatus01:
+Wait180FramesThenTriggerMapEventAndSetStatus01:
         pha                                     ; B0D7 48                       H
         tya                                     ; B0D8 98                       .
         pha                                     ; B0D9 48                       H
@@ -4984,7 +4984,7 @@ FinishEffectDelayAndSetStatus:
         brk                                     ; B0E0 00                       .
         db   $07,$CF                         ; B0E1 07 CF                    ..
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_SetInterpreterStatus01; B0E3 4C AE B0            L..
+        jmp     SetScriptInterpreterStatusReady ; B0E3 4C AE B0                 L..
 ; ----------------------------------------------------------------------------
 RunCaptivePrisonerRescueDialogue:
         sta     $DA                             ; B0E6 85 DA                    ..
@@ -5028,14 +5028,14 @@ ItemEffectInventory_Branch_B116:
         lda     $E8                             ; B122 A5 E8                    ..
         cmp     #$06                            ; B124 C9 06                    ..
         bne     ItemEffectInventory_Branch_B12B ; B126 D0 03                    ..
-        jsr     EffectCallback_CopyActorFieldAndRender; B128 20 BD AF            ..
+        jsr     CopyActorAppearanceAndRender    ; B128 20 BD AF                  ..
 ItemEffectInventory_Branch_B12B:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B12B 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; B12B 20 FB B7                  ..
         brk                                     ; B12E 00                       .
         db   $1C,$87                         ; B12F 1C 87                    ..
 ; ----------------------------------------------------------------------------
         lda     #$20                            ; B131 A9 20                    .
-        jsr     EffectCallback_WaitShortThenSetFlagAndStatus01; B133 20 CE B0    ..
+        jsr     WaitShortThenTriggerMapEventAndSetStatus01; B133 20 CE B0        ..
         pla                                     ; B136 68                       h
         pla                                     ; B137 68                       h
         rts                                     ; B138 60                       `
@@ -5081,7 +5081,7 @@ ItemEffectInventory_Branch_B162:
         cmp     #$41                            ; B16A C9 41                    .A
         beq     ItemEffectInventory_Branch_B145 ; B16C F0 D7                    ..
 ItemEffectInventory_Branch_B16E:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B16E 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; B16E 20 FB B7                  ..
         ldx     #$04                            ; B171 A2 04                    ..
         ldy     #$FF                            ; B173 A0 FF                    ..
 ItemEffectInventory_Branch_B175:
@@ -5094,7 +5094,7 @@ ItemEffectInventory_Branch_B175:
         pla                                     ; B181 68                       h
         pla                                     ; B182 68                       h
         lda     $B1D1,y                         ; B183 B9 D1 B1                 ...
-        jmp     EffectScript_InvokeItemHandlerPreservingCursor; B186 4C 19 99   L..
+        jmp     PrintScriptMessagePreservingCursor; B186 4C 19 99               L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B189:
         brk                                     ; B189 00                       .
@@ -5109,7 +5109,7 @@ ItemEffectInventory_Branch_B195:
         rts                                     ; B195 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B196:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B196 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; B196 20 FB B7                  ..
         lda     $DA                             ; B199 A5 DA                    ..
         cmp     #$19                            ; B19B C9 19                    ..
         bne     ItemEffectInventory_Branch_B1A4 ; B19D D0 05                    ..
@@ -5142,7 +5142,7 @@ ItemEffectInventory_Branch_B1B0:
         db   $17,$14,$18,$19,$1A,$1B,$1C,$1D ; B1E1 17 14 18 19 1A 1B 1C 1D  ........
         db   $1E,$1F,$20,$20,$0F,$FF         ; B1E9 1E 1F 20 20 0F FF        ..  ..
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadItemCandidatesForTargetPolicy:
+LoadShopStock:
         pha                                     ; B1EF 48                       H
         txa                                     ; B1F0 8A                       .
         pha                                     ; B1F1 48                       H
@@ -5169,7 +5169,7 @@ EffectCallback_LoadItemCandidatesForTargetPolicy:
         pla                                     ; B214 68                       h
         sta     $DA                             ; B215 85 DA                    ..
         ldy     #$00                            ; B217 A0 00                    ..
-        jsr     EffectCallback_AdvanceCandidatePointerToCurrentMap; B219 20 A3 B2 ..
+        jsr     Shop_AdvanceStockPointerToCurrentMap; B219 20 A3 B2              ..
 ItemEffectInventory_Branch_B21C:
         jsr     EffectScript_ReadBankedByteFromDaPointer; B21C 20 A4 BF          ..
         bmi     ItemEffectInventory_Branch_B22B ; B21F 30 0A                    0.
@@ -5182,7 +5182,7 @@ ItemEffectInventory_Branch_B22B:
         and     #$7F                            ; B22B 29 7F                    ).
         sta     $07BD,y                         ; B22D 99 BD 07                 ...
         iny                                     ; B230 C8                       .
-        jsr     EffectCallback_AppendSpecialCandidates; B231 20 43 B2            C.
+        jsr     Shop_AppendSpecialStockItems    ; B231 20 43 B2                  C.
         sty     $07C4                           ; B234 8C C4 07                 ...
 ItemEffectInventory_Branch_B237:
         pla                                     ; B237 68                       h
@@ -5196,8 +5196,8 @@ ItemEffectInventory_Branch_B237:
         pla                                     ; B241 68                       h
         rts                                     ; B242 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_AppendSpecialCandidates:
-        jsr     EffectCallback_TestMap16Sub0Mode1; B243 20 8C B2                 ..
+Shop_AppendSpecialStockItems:
+        jsr     IsSpecialShopCandidateListContext; B243 20 8C B2                 ..
         bcc     ItemEffectInventory_Branch_B25C ; B246 90 14                    ..
         ldx     #$00                            ; B248 A2 00                    ..
 ItemEffectInventory_Branch_B24A:
@@ -5238,7 +5238,7 @@ ItemEffectInventory_Branch_B25C:
 ItemEffectInventory_Branch_B28B:
         rts                                     ; B28B 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestMap16Sub0Mode1:
+IsSpecialShopCandidateListContext:
         lda     CurrentMapNumber                ; B28C A5 63                    .c
         cmp     #$16                            ; B28E C9 16                    ..
         bne     ItemEffectInventory_Branch_B2A1 ; B290 D0 0F                    ..
@@ -5255,15 +5255,15 @@ ItemEffectInventory_Branch_B2A1:
         clc                                     ; B2A1 18                       .
         rts                                     ; B2A2 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_AdvanceCandidatePointerToCurrentMap:
+Shop_AdvanceStockPointerToCurrentMap:
         jsr     EffectScript_ReadBankedByteFromDaPointer; B2A3 20 A4 BF          ..
-        jsr     EffectCallback_IncrementCandidatePointer; B2A6 20 C8 B2          ..
+        jsr     Shop_AdvanceStockPointer        ; B2A6 20 C8 B2                  ..
         cmp     #$FF                            ; B2A9 C9 FF                    ..
         beq     ItemEffectInventory_Branch_B2BB ; B2AB F0 0E                    ..
         cmp     CurrentMapNumber                ; B2AD C5 63                    .c
         bne     ItemEffectInventory_Branch_B2BC ; B2AF D0 0B                    ..
         jsr     EffectScript_ReadBankedByteFromDaPointer; B2B1 20 A4 BF          ..
-        jsr     EffectCallback_IncrementCandidatePointer; B2B4 20 C8 B2          ..
+        jsr     Shop_AdvanceStockPointer        ; B2B4 20 C8 B2                  ..
         cmp     CurrentSubmapNumber             ; B2B7 C5 64                    .d
         bne     ItemEffectInventory_Branch_B2BC ; B2B9 D0 01                    ..
 ItemEffectInventory_Branch_B2BB:
@@ -5271,18 +5271,18 @@ ItemEffectInventory_Branch_B2BB:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B2BC:
         jsr     EffectScript_ReadBankedByteFromDaPointer; B2BC 20 A4 BF          ..
-        jsr     EffectCallback_IncrementCandidatePointer; B2BF 20 C8 B2          ..
+        jsr     Shop_AdvanceStockPointer        ; B2BF 20 C8 B2                  ..
         ora     #$00                            ; B2C2 09 00                    ..
-        bmi     EffectCallback_AdvanceCandidatePointerToCurrentMap; B2C4 30 DD  0.
+        bmi     Shop_AdvanceStockPointerToCurrentMap; B2C4 30 DD                0.
         bpl     ItemEffectInventory_Branch_B2BC ; B2C6 10 F4                    ..
-EffectCallback_IncrementCandidatePointer:
+Shop_AdvanceStockPointer:
         inc     $DA                             ; B2C8 E6 DA                    ..
         bne     ItemEffectInventory_Branch_B2CE ; B2CA D0 02                    ..
         inc     $DB                             ; B2CC E6 DB                    ..
 ItemEffectInventory_Branch_B2CE:
         rts                                     ; B2CE 60                       `
 ; ----------------------------------------------------------------------------
-EffectValue_LoadTripletForEntryId:
+Shop_LoadItemPrice:
         pha                                     ; B2CF 48                       H
         txa                                     ; B2D0 8A                       .
         pha                                     ; B2D1 48                       H
@@ -5370,7 +5370,7 @@ ItemEffectInventory_Branch_B347:
         db   $00,$59,$F4,$01,$22,$E8,$03,$66 ; B34F 00 59 F4 01 22 E8 03 66  .Y.."..f
         db   $C4,$09,$50,$A0,$0F,$45,$50,$C3 ; B357 C4 09 50 A0 0F 45 50 C3  ..P..EP.
 ; ----------------------------------------------------------------------------
-EffectValue_LoadReducedTripletForEntryId:
+Shop_LoadItemSellPrice:
         pha                                     ; B35F 48                       H
         txa                                     ; B360 8A                       .
         pha                                     ; B361 48                       H
@@ -5391,7 +5391,7 @@ EffectValue_LoadReducedTripletForEntryId:
 ; ----------------------------------------------------------------------------
 Bank15_InitializeInventoryStorage:
         lda     #$00                            ; B374 A9 00                    ..
-        sta     $625B                           ; B376 8D 5B 62                 .[b
+        sta     VaultGoldThousands              ; B376 8D 5B 62                 .[b
         sta     $625C                           ; B379 8D 5C 62                 .\b
         ldy     #$7F                            ; B37C A0 7F                    ..
 ItemEffectInventory_Branch_B37E:
@@ -5592,18 +5592,18 @@ ItemEffectInventory_Branch_B49C:
         sta     $02                             ; B4B6 85 02                    ..
         rts                                     ; B4B8 60                       `
 ; ----------------------------------------------------------------------------
-InventoryAccumulator_AddWorkingValue:
+VaultGold_AddThousands:
         lda     $00                             ; B4B9 A5 00                    ..
         clc                                     ; B4BB 18                       .
-        adc     $625B                           ; B4BC 6D 5B 62                 m[b
-        sta     $625B                           ; B4BF 8D 5B 62                 .[b
+        adc     VaultGoldThousands              ; B4BC 6D 5B 62                 m[b
+        sta     VaultGoldThousands              ; B4BF 8D 5B 62                 .[b
         lda     $01                             ; B4C2 A5 01                    ..
         adc     $625C                           ; B4C4 6D 5C 62                 m\b
         sta     $625C                           ; B4C7 8D 5C 62                 .\b
         rts                                     ; B4CA 60                       `
 ; ----------------------------------------------------------------------------
-InventoryAccumulator_TrySubtractWorkingValue:
-        lda     $625B                           ; B4CB AD 5B 62                 .[b
+VaultGold_TrySubtractThousands:
+        lda     VaultGoldThousands              ; B4CB AD 5B 62                 .[b
         sec                                     ; B4CE 38                       8
         sbc     $00                             ; B4CF E5 00                    ..
         sta     $03                             ; B4D1 85 03                    ..
@@ -5612,14 +5612,14 @@ InventoryAccumulator_TrySubtractWorkingValue:
         bcc     ItemEffectInventory_Branch_B4E2 ; B4D8 90 08                    ..
         sta     $625C                           ; B4DA 8D 5C 62                 .\b
         lda     $03                             ; B4DD A5 03                    ..
-        sta     $625B                           ; B4DF 8D 5B 62                 .[b
+        sta     VaultGoldThousands              ; B4DF 8D 5B 62                 .[b
 ItemEffectInventory_Branch_B4E2:
         rts                                     ; B4E2 60                       `
 ; ----------------------------------------------------------------------------
-InventoryAccumulator_LoadCurrentValue:
+VaultGold_LoadThousands:
         lda     $625C                           ; B4E3 AD 5C 62                 .\b
         sta     $01                             ; B4E6 85 01                    ..
-        lda     $625B                           ; B4E8 AD 5B 62                 .[b
+        lda     VaultGoldThousands              ; B4E8 AD 5B 62                 .[b
         sta     $00                             ; B4EB 85 00                    ..
         rts                                     ; B4ED 60                       `
 ; ----------------------------------------------------------------------------
@@ -5656,7 +5656,7 @@ InitializeHouseOfHealingVisit:
         db   $22,$2F                         ; B514 22 2F                    "/
 ; ----------------------------------------------------------------------------
         lda     #$43                            ; B516 A9 43                    .C
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B518 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B518 20 B5 B7      ..
         brk                                     ; B51B 00                       .
         db   $05,$6F                         ; B51C 05 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -5672,7 +5672,7 @@ ShowHouseOfHealingFarewell:
 ; ----------------------------------------------------------------------------
 RunEffectLookupAndAudioCue:
         lda     #$50                            ; B528 A9 50                    .P
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B52A 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B52A 20 B5 B7      ..
         brk                                     ; B52D 00                       .
         db   $05,$6F                         ; B52E 05 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -5711,12 +5711,12 @@ ItemEffectInventory_Branch_B546:
         beq     ItemEffectInventory_Branch_B569 ; B55F F0 08                    ..
 ItemEffectInventory_Branch_B561:
         lda     #$41                            ; B561 A9 41                    .A
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B563 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B563 20 B5 B7      ..
         jmp     ItemEffectInventory_Branch_B575 ; B566 4C 75 B5                 Lu.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B569:
         lda     #$6D                            ; B569 A9 6D                    .m
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B56B 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B56B 20 B5 B7      ..
         cmp     #$FF                            ; B56E C9 FF                    ..
         beq     ItemEffectInventory_Branch_B592 ; B570 F0 20                    .
         clc                                     ; B572 18                       .
@@ -5757,7 +5757,7 @@ ItemEffectInventory_Branch_B59A:
 ; ----------------------------------------------------------------------------
         ldx     #$00                            ; B5A3 A2 00                    ..
         lda     #$42                            ; B5A5 A9 42                    .B
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B5A7 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B5A7 20 B5 B7      ..
         cmp     #$FF                            ; B5AA C9 FF                    ..
         bne     ItemEffectInventory_Branch_B5B3 ; B5AC D0 05                    ..
         jmp     ItemEffectInventory_Branch_B595 ; B5AE 4C 95 B5                 L..
@@ -5806,7 +5806,7 @@ ItemEffectInventory_Branch_B5E3:
 ; ----------------------------------------------------------------------------
         ldx     #$01                            ; B5EC A2 01                    ..
         lda     #$42                            ; B5EE A9 42                    .B
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B5F0 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B5F0 20 B5 B7      ..
         cmp     #$FF                            ; B5F3 C9 FF                    ..
         bne     ItemEffectInventory_Branch_B5FC ; B5F5 D0 05                    ..
         jmp     ItemEffectInventory_Branch_B595 ; B5F7 4C 95 B5                 L..
@@ -5861,7 +5861,7 @@ ItemEffectInventory_Branch_B636:
 ; ----------------------------------------------------------------------------
         ldx     #$02                            ; B63F A2 02                    ..
         lda     #$42                            ; B641 A9 42                    .B
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B643 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B643 20 B5 B7      ..
         cmp     #$FF                            ; B646 C9 FF                    ..
         bne     ItemEffectInventory_Branch_B64F ; B648 D0 05                    ..
         jmp     ItemEffectInventory_Branch_B595 ; B64A 4C 95 B5                 L..
@@ -5952,7 +5952,7 @@ ItemEffectInventory_Branch_B6BE:
         db   $28,$2B                         ; B6C3 28 2B                    (+
 ; ----------------------------------------------------------------------------
         lda     #$48                            ; B6C5 A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B6C7 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B6C7 20 B5 B7      ..
         cmp     #$00                            ; B6CA C9 00                    ..
         beq     ItemEffectInventory_Branch_B6D5 ; B6CC F0 07                    ..
         brk                                     ; B6CE 00                       .
@@ -5973,7 +5973,7 @@ ItemEffectInventory_Branch_B6D5:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B6E1:
         lda     #$48                            ; B6E1 A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B6E3 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B6E3 20 B5 B7      ..
         tax                                     ; B6E6 AA                       .
         beq     ItemEffectInventory_Branch_B739 ; B6E7 F0 50                    .P
         lda     $DC                             ; B6E9 A5 DC                    ..
@@ -5983,7 +5983,7 @@ ItemEffectInventory_Branch_B6E1:
 ; ----------------------------------------------------------------------------
         inc     $DC                             ; B6F0 E6 DC                    ..
         lda     #$48                            ; B6F2 A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B6F4 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B6F4 20 B5 B7      ..
         tax                                     ; B6F7 AA                       .
         beq     ItemEffectInventory_Branch_B73D ; B6F8 F0 43                    .C
         brk                                     ; B6FA 00                       .
@@ -6015,7 +6015,7 @@ ItemEffectInventory_Branch_B70D:
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_B730 ; B71D B0 11                    ..
         lda     $00                             ; B71F A5 00                    ..
-        sta     $FD                             ; B721 85 FD                    ..
+        sta     MessageNumberArgument           ; B721 85 FD                    ..
         lda     $01                             ; B723 A5 01                    ..
         sta     $FE                             ; B725 85 FE                    ..
         lda     $02                             ; B727 A5 02                    ..
@@ -6048,7 +6048,7 @@ ItemEffectInventory_Branch_B73D:
         jsr     FadePaletteToBlack              ; B743 20 C5 C5                  ..
         jsr     ResetDisplayState               ; B746 20 4E C5                  N.
         lda     #$43                            ; B749 A9 43                    .C
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B74B 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B74B 20 B5 B7      ..
         brk                                     ; B74E 00                       .
         db   $05,$6F                         ; B74F 05 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -6062,11 +6062,11 @@ ItemEffectInventory_Branch_B73D:
         brk                                     ; B760 00                       .
         db   $94,$2B                         ; B761 94 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     UpperFixedEngine_Branch_C0E9    ; B763 4C E9 C0                 L..
+        jmp     HaltGame                        ; B763 4C E9 C0                 L..
 ; ----------------------------------------------------------------------------
 RunHouseOfHealingPaymentPrompt:
         lda     $E2                             ; B766 A5 E2                    ..
-        sta     $FD                             ; B768 85 FD                    ..
+        sta     MessageNumberArgument           ; B768 85 FD                    ..
         lda     $E3                             ; B76A A5 E3                    ..
         sta     $FE                             ; B76C 85 FE                    ..
         lda     $E4                             ; B76E A5 E4                    ..
@@ -6075,9 +6075,9 @@ RunHouseOfHealingPaymentPrompt:
         db   $2E,$2B                         ; B773 2E 2B                    .+
 ; ----------------------------------------------------------------------------
         lda     #$07                            ; B775 A9 07                    ..
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B777 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B777 20 B5 B7      ..
         lda     #$48                            ; B77A A9 48                    .H
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B77C 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B77C 20 B5 B7      ..
         cmp     #$00                            ; B77F C9 00                    ..
         beq     ItemEffectInventory_Branch_B78B ; B781 F0 08                    ..
         brk                                     ; B783 00                       .
@@ -6116,7 +6116,7 @@ CompleteHouseOfHealingTreatment:
 ; ----------------------------------------------------------------------------
         jsr     PlayJingle10AndResumeMapMusic   ; B7A9 20 30 B0                  0.
         lda     #$07                            ; B7AC A9 07                    ..
-        jmp     EffectCallback_InvokeLookupWithDaPreserved; B7AE 4C B5 B7       L..
+        jmp     InvokeScriptLookupPreservingInterpreterState; B7AE 4C B5 B7     L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B7B1:
         brk                                     ; B7B1 00                       .
@@ -6125,7 +6125,7 @@ ItemEffectInventory_Branch_B7B1:
 ItemEffectInventory_Branch_B7B4:
         rts                                     ; B7B4 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_InvokeLookupWithDaPreserved:
+InvokeScriptLookupPreservingInterpreterState:
         stx     $0E                             ; B7B5 86 0E                    ..
         sta     $0F                             ; B7B7 85 0F                    ..
         tya                                     ; B7B9 98                       .
@@ -6172,7 +6172,7 @@ ItemEffectInventory_Branch_B7EE:
         lda     $0F                             ; B7F8 A5 0F                    ..
         rts                                     ; B7FA 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_PrepareEffectSelectionContext:
+PrepareShopSelectionContext:
         lda     $00                             ; B7FB A5 00                    ..
         pha                                     ; B7FD 48                       H
         lda     $01                             ; B7FE A5 01                    ..
@@ -6181,45 +6181,45 @@ EffectCallback_PrepareEffectSelectionContext:
         db   $05,$6F                         ; B802 05 6F                    .o
 ; ----------------------------------------------------------------------------
         lda     #$50                            ; B804 A9 50                    .P
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B806 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B806 20 B5 B7      ..
         pla                                     ; B809 68                       h
         sta     $01                             ; B80A 85 01                    ..
         pla                                     ; B80C 68                       h
         sta     $00                             ; B80D 85 00                    ..
         rts                                     ; B80F 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadEffectContextAndResolveEntry:
+LoadShopContextAndResolveEntry:
         brk                                     ; B810 00                       .
         db   $62,$33                         ; B811 62 33                    b3
 ; ----------------------------------------------------------------------------
         sta     $DA                             ; B813 85 DA                    ..
         lda     #$69                            ; B815 A9 69                    .i
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B817 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B817 20 B5 B7      ..
         lda     #$3E                            ; B81A A9 3E                    .>
-        jmp     EffectCallback_InvokeLookupWithDaPreserved; B81C 4C B5 B7       L..
+        jmp     InvokeScriptLookupPreservingInterpreterState; B81C 4C B5 B7     L..
 ; ----------------------------------------------------------------------------
-EffectCallback_EnterPrimaryTargetSelection:
-        jmp     RunPrimaryTargetSelection       ; B81F 4C 25 B8                 L%.
+EnterShopBuyMenu:
+        jmp     RunShopBuyMenu                  ; B81F 4C 25 B8                 L%.
 ; ----------------------------------------------------------------------------
-PrepareAndRunPrimaryTargetSelection:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B822 20 FB B7      ..
-RunPrimaryTargetSelection:
+PrepareAndRunShopBuyMenu:
+        jsr     PrepareShopSelectionContext     ; B822 20 FB B7                  ..
+RunShopBuyMenu:
         lda     #$01                            ; B825 A9 01                    ..
         bne     ItemEffectInventory_Branch_B835 ; B827 D0 0C                    ..
-PrepareAndRunAlternateTargetSelection:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B829 20 FB B7      ..
+PrepareAndRunShopSellMenu:
+        jsr     PrepareShopSelectionContext     ; B829 20 FB B7                  ..
         lda     #$03                            ; B82C A9 03                    ..
         bne     ItemEffectInventory_Branch_B835 ; B82E D0 05                    ..
 ItemEffectInventory_Branch_B830:
-        jsr     EffectCallback_PrepareEffectSelectionContext; B830 20 FB B7      ..
-EffectCallback_RunSecondaryTargetSelection:
+        jsr     PrepareShopSelectionContext     ; B830 20 FB B7                  ..
+RunShopSellMenu:
         lda     #$02                            ; B833 A9 02                    ..
 ItemEffectInventory_Branch_B835:
         sta     $07C5                           ; B835 8D C5 07                 ...
         lda     #$00                            ; B838 A9 00                    ..
-        jsr     RunVaultService                 ; B83A 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B83A 20 EF BA                  ..
 ItemEffectInventory_Branch_B83D:
-        jsr     EffectCallback_LoadEffectContextAndResolveEntry; B83D 20 10 B8   ..
+        jsr     LoadShopContextAndResolveEntry  ; B83D 20 10 B8                  ..
         cmp     #$00                            ; B840 C9 00                    ..
         beq     ItemEffectInventory_Branch_B84E ; B842 F0 0A                    ..
         cmp     #$01                            ; B844 C9 01                    ..
@@ -6230,35 +6230,35 @@ ItemEffectInventory_Branch_B84B:
         jmp     ItemEffectInventory_Branch_BA0A ; B84B 4C 0A BA                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B84E:
-        jsr     EffectCallback_LoadItemCandidatesForTargetPolicy; B84E 20 EF B1  ..
+        jsr     LoadShopStock                   ; B84E 20 EF B1                  ..
         lda     #$01                            ; B851 A9 01                    ..
-        jsr     RunVaultService                 ; B853 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B853 20 EF BA                  ..
         lda     #$3F                            ; B856 A9 3F                    .?
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B858 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B858 20 B5 B7      ..
         cmp     #$FF                            ; B85B C9 FF                    ..
         bne     ItemEffectInventory_Branch_B862 ; B85D D0 03                    ..
         jmp     ItemEffectInventory_Branch_BA02 ; B85F 4C 02 BA                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B862:
-        jsr     EffectCallback_CompareSelectedEntryValue; B862 20 5D BA          ].
+        jsr     CompareSelectedItemPrice        ; B862 20 5D BA                  ].
         bcs     ItemEffectInventory_Branch_B86F ; B865 B0 08                    ..
         lda     #$02                            ; B867 A9 02                    ..
-        jsr     RunVaultService                 ; B869 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B869 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B928 ; B86C 4C 28 B9                 L(.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B86F:
         lda     #$03                            ; B86F A9 03                    ..
-        jsr     RunVaultService                 ; B871 20 EF BA                  ..
-        jsr     EffectCallback_RemapDcForMode2Map18; B874 20 CD BA               ..
+        jsr     PrintShopMessageForShopType     ; B871 20 EF BA                  ..
+        jsr     RemapShopEntryForSpecialContext ; B874 20 CD BA                  ..
         lda     $DA                             ; B877 A5 DA                    ..
         cmp     #$01                            ; B879 C9 01                    ..
         beq     ItemEffectInventory_Branch_B890 ; B87B F0 13                    ..
 ItemEffectInventory_Branch_B87D:
         lda     #$04                            ; B87D A9 04                    ..
-        jsr     RunVaultService                 ; B87F 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B87F 20 EF BA                  ..
         ldx     $DC                             ; B882 A6 DC                    ..
         lda     #$40                            ; B884 A9 40                    .@
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B886 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B886 20 B5 B7      ..
         cmp     #$FF                            ; B889 C9 FF                    ..
         bne     ItemEffectInventory_Branch_B892 ; B88B D0 05                    ..
         jmp     ItemEffectInventory_Branch_B9F3 ; B88D 4C F3 B9                 L..
@@ -6275,7 +6275,7 @@ ItemEffectInventory_Branch_B892:
         cmp     #$08                            ; B89A C9 08                    ..
         bne     ItemEffectInventory_Branch_B8A8 ; B89C D0 0A                    ..
         lda     #$05                            ; B89E A9 05                    ..
-        jsr     RunVaultService                 ; B8A0 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B8A0 20 EF BA                  ..
         brk                                     ; B8A3 00                       .
         db   $83,$2B                         ; B8A4 83 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -6284,38 +6284,38 @@ ItemEffectInventory_Branch_B8A8:
         cmp     #$09                            ; B8A8 C9 09                    ..
         bcc     ItemEffectInventory_Branch_B8B6 ; B8AA 90 0A                    ..
         lda     #$06                            ; B8AC A9 06                    ..
-        jsr     RunVaultService                 ; B8AE 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B8AE 20 EF BA                  ..
         brk                                     ; B8B1 00                       .
         db   $83,$2B                         ; B8B2 83 2B                    .+
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_B8C0 ; B8B4 B0 0A                    ..
 ItemEffectInventory_Branch_B8B6:
-        jsr     EffectCallback_CompareDbLookupWith08; B8B6 20 55 BA              U.
+        jsr     IsSelectedShopEntryTypeEight    ; B8B6 20 55 BA                  U.
         bcc     ItemEffectInventory_Branch_B8DB ; B8B9 90 20                    .
         lda     #$07                            ; B8BB A9 07                    ..
-        jsr     RunVaultService                 ; B8BD 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B8BD 20 EF BA                  ..
 ItemEffectInventory_Branch_B8C0:
         lda     $DA                             ; B8C0 A5 DA                    ..
         cmp     #$01                            ; B8C2 C9 01                    ..
         beq     ItemEffectInventory_Branch_B8D3 ; B8C4 F0 0D                    ..
 ItemEffectInventory_Branch_B8C6:
         lda     #$08                            ; B8C6 A9 08                    ..
-        jsr     RunVaultService                 ; B8C8 20 EF BA                  ..
-        jsr     EffectScript_TestSelectionCondition; B8CB 20 C9 9A               ..
+        jsr     PrintShopMessageForShopType     ; B8C8 20 EF BA                  ..
+        jsr     AskYesNo                        ; B8CB 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_B87D ; B8CE F0 AD                    ..
         jmp     ItemEffectInventory_Branch_B9F3 ; B8D0 4C F3 B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B8D3:
         lda     #$09                            ; B8D3 A9 09                    ..
-        jsr     RunVaultService                 ; B8D5 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B8D5 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B9FF ; B8D8 4C FF B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B8DB:
-        jsr     EffectCallback_TestDcAgainstSelectionLimit; B8DB 20 3E BA        >.
+        jsr     TestShopIndexAgainstSelectionLimit; B8DB 20 3E BA                >.
         bcs     ItemEffectInventory_Branch_B8F3 ; B8DE B0 13                    ..
         lda     #$0A                            ; B8E0 A9 0A                    ..
-        jsr     RunVaultService                 ; B8E2 20 EF BA                  ..
-        jsr     EffectScript_TestSelectionCondition; B8E5 20 C9 9A               ..
+        jsr     PrintShopMessageForShopType     ; B8E2 20 EF BA                  ..
+        jsr     AskYesNo                        ; B8E5 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_B8F3 ; B8E8 F0 09                    ..
         lda     $DA                             ; B8EA A5 DA                    ..
         cmp     #$01                            ; B8EC C9 01                    ..
@@ -6330,7 +6330,7 @@ ItemEffectInventory_Branch_B8F3:
         tax                                     ; B8F8 AA                       .
         beq     ItemEffectInventory_Branch_B903 ; B8F9 F0 08                    ..
         lda     #$0B                            ; B8FB A9 0B                    ..
-        jsr     RunVaultService                 ; B8FD 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B8FD 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B925 ; B900 4C 25 B9                 L%.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B903:
@@ -6341,21 +6341,21 @@ ItemEffectInventory_Branch_B903:
         cmp     #$01                            ; B908 C9 01                    ..
         bne     ItemEffectInventory_Branch_B914 ; B90A D0 08                    ..
         lda     #$0C                            ; B90C A9 0C                    ..
-        jsr     RunVaultService                 ; B90E 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B90E 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B925 ; B911 4C 25 B9                 L%.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B914:
         cmp     #$02                            ; B914 C9 02                    ..
         bne     ItemEffectInventory_Branch_B920 ; B916 D0 08                    ..
         lda     #$0D                            ; B918 A9 0D                    ..
-        jsr     RunVaultService                 ; B91A 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B91A 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B925 ; B91D 4C 25 B9                 L%.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B920:
         lda     #$0E                            ; B920 A9 0E                    ..
-        jsr     RunVaultService                 ; B922 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B922 20 EF BA                  ..
 ItemEffectInventory_Branch_B925:
-        jsr     EffectCallback_ValidateFullEntryValue; B925 20 A0 BA             ..
+        jsr     ValidateSelectedItemBuyPrice    ; B925 20 A0 BA                  ..
 ItemEffectInventory_Branch_B928:
         jmp     ItemEffectInventory_Branch_B9FF ; B928 4C FF B9                 L..
 ; ----------------------------------------------------------------------------
@@ -6364,9 +6364,9 @@ ItemEffectInventory_Branch_B92B:
         cmp     #$01                            ; B92D C9 01                    ..
         beq     ItemEffectInventory_Branch_B945 ; B92F F0 14                    ..
         lda     #$0F                            ; B931 A9 0F                    ..
-        jsr     RunVaultService                 ; B933 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B933 20 EF BA                  ..
         lda     #$49                            ; B936 A9 49                    .I
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; B938 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; B938 20 B5 B7      ..
         cmp     #$FF                            ; B93B C9 FF                    ..
         bne     ItemEffectInventory_Branch_B947 ; B93D D0 08                    ..
         brk                                     ; B93F 00                       .
@@ -6386,7 +6386,7 @@ ItemEffectInventory_Branch_B947:
         cmp     #$08                            ; B94F C9 08                    ..
         bne     ItemEffectInventory_Branch_B95E ; B951 D0 0B                    ..
         lda     #$10                            ; B953 A9 10                    ..
-        jsr     RunVaultService                 ; B955 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B955 20 EF BA                  ..
         brk                                     ; B958 00                       .
         db   $83,$2B                         ; B959 83 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -6399,7 +6399,7 @@ ItemEffectInventory_Branch_B95E:
         db   $D6,$4B                         ; B963 D6 4B                    .K
 ; ----------------------------------------------------------------------------
         lda     #$11                            ; B965 A9 11                    ..
-        jsr     RunVaultService                 ; B967 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B967 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B97B ; B96A 4C 7B B9                 L{.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B96D:
@@ -6410,7 +6410,7 @@ ItemEffectInventory_Branch_B96D:
         cmp     #$00                            ; B972 C9 00                    ..
         bne     ItemEffectInventory_Branch_B987 ; B974 D0 11                    ..
         lda     #$12                            ; B976 A9 12                    ..
-        jsr     RunVaultService                 ; B978 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B978 20 EF BA                  ..
 ItemEffectInventory_Branch_B97B:
         lda     $DA                             ; B97B A5 DA                    ..
         cmp     #$01                            ; B97D C9 01                    ..
@@ -6425,14 +6425,14 @@ ItemEffectInventory_Branch_B987:
         db   $D6,$4B                         ; B988 D6 4B                    .K
 ; ----------------------------------------------------------------------------
         lda     #$13                            ; B98A A9 13                    ..
-        jsr     RunVaultService                 ; B98C 20 EF BA                  ..
-        jsr     EffectCallback_LoadDbSelectionAndDd; B98F 20 20 BA                .
+        jsr     PrintShopMessageForShopType     ; B98C 20 EF BA                  ..
+        jsr     Shop_LoadSelectedStockEntryContext; B98F 20 20 BA                 .
         bcc     ItemEffectInventory_Branch_B997 ; B992 90 03                    ..
         jmp     ItemEffectInventory_Branch_B9F3 ; B994 4C F3 B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B997:
         lda     #$14                            ; B997 A9 14                    ..
-        jsr     RunVaultService                 ; B999 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B999 20 EF BA                  ..
         lda     $DB                             ; B99C A5 DB                    ..
         sta     $F9                             ; B99E 85 F9                    ..
         lda     $DC                             ; B9A0 A5 DC                    ..
@@ -6441,25 +6441,25 @@ ItemEffectInventory_Branch_B997:
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_B9AF ; B9A5 90 08                    ..
         lda     #$15                            ; B9A7 A9 15                    ..
-        jsr     RunVaultService                 ; B9A9 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9A9 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B9F0 ; B9AC 4C F0 B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B9AF:
         lda     $DC                             ; B9AF A5 DC                    ..
         sta     $00                             ; B9B1 85 00                    ..
-        jsr     EffectValue_LoadReducedTripletForEntryId; B9B3 20 5F B3          _.
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; B9B6 20 7C A4      |.
+        jsr     Shop_LoadItemSellPrice          ; B9B3 20 5F B3                  _.
+        jsr     CopyValueToMessageNumberArgument; B9B6 20 7C A4                  |.
         lda     #$16                            ; B9B9 A9 16                    ..
-        jsr     RunVaultService                 ; B9BB 20 EF BA                  ..
-        jsr     EffectScript_TestSelectionCondition; B9BE 20 C9 9A               ..
+        jsr     PrintShopMessageForShopType     ; B9BB 20 EF BA                  ..
+        jsr     AskYesNo                        ; B9BE 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_B9CB ; B9C1 F0 08                    ..
         lda     #$17                            ; B9C3 A9 17                    ..
-        jsr     RunVaultService                 ; B9C5 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9C5 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B9F0 ; B9C8 4C F0 B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B9CB:
         lda     #$18                            ; B9CB A9 18                    ..
-        jsr     RunVaultService                 ; B9CD 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9CD 20 EF BA                  ..
         ldx     $DB                             ; B9D0 A6 DB                    ..
         brk                                     ; B9D2 00                       .
         db   $6A,$53                         ; B9D3 6A 53                    jS
@@ -6470,16 +6470,16 @@ ItemEffectInventory_Branch_B9CB:
         db   $83,$2B                         ; B9D9 83 2B                    .+
 ; ----------------------------------------------------------------------------
         lda     #$19                            ; B9DB A9 19                    ..
-        jsr     RunVaultService                 ; B9DD 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9DD 20 EF BA                  ..
 ItemEffectInventory_Branch_B9E0:
-        jsr     EffectCallback_TestDdAndResetDisplay; B9E0 20 10 BA              ..
+        jsr     TestShopStateAndResetDisplay    ; B9E0 20 10 BA                  ..
         bcc     ItemEffectInventory_Branch_B9ED ; B9E3 90 08                    ..
         lda     #$1A                            ; B9E5 A9 1A                    ..
-        jsr     RunVaultService                 ; B9E7 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9E7 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B9FF ; B9EA 4C FF B9                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_B9ED:
-        jsr     EffectCallback_ValidateReducedEntryValue; B9ED 20 82 BA          ..
+        jsr     ValidateSelectedItemSellPrice   ; B9ED 20 82 BA                  ..
 ItemEffectInventory_Branch_B9F0:
         jmp     ItemEffectInventory_Branch_B9FF ; B9F0 4C FF B9                 L..
 ; ----------------------------------------------------------------------------
@@ -6488,29 +6488,29 @@ ItemEffectInventory_Branch_B9F3:
         cmp     #$02                            ; B9F6 C9 02                    ..
         bne     ItemEffectInventory_Branch_BA02 ; B9F8 D0 08                    ..
         lda     #$1B                            ; B9FA A9 1B                    ..
-        jsr     RunVaultService                 ; B9FC 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; B9FC 20 EF BA                  ..
 ItemEffectInventory_Branch_B9FF:
         brk                                     ; B9FF 00                       .
         db   $83,$2B                         ; BA00 83 2B                    .+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BA02:
         lda     #$1C                            ; BA02 A9 1C                    ..
-        jsr     RunVaultService                 ; BA04 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; BA04 20 EF BA                  ..
         jmp     ItemEffectInventory_Branch_B83D ; BA07 4C 3D B8                 L=.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BA0A:
         lda     #$1D                            ; BA0A A9 1D                    ..
-        jsr     RunVaultService                 ; BA0C 20 EF BA                  ..
+        jsr     PrintShopMessageForShopType     ; BA0C 20 EF BA                  ..
         rts                                     ; BA0F 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestDdAndResetDisplay:
+TestShopStateAndResetDisplay:
         lda     $DD                             ; BA10 A5 DD                    ..
         bpl     ItemEffectInventory_Branch_BA1E ; BA12 10 0A                    ..
         brk                                     ; BA14 00                       .
         db   $0C,$0F                         ; BA15 0C 0F                    ..
 ; ----------------------------------------------------------------------------
         bcc     ItemEffectInventory_Branch_BA1E ; BA17 90 05                    ..
-        jsr     EffectCallback_PlayJingle12AndResumeMapMusic; BA19 20 C0 BA      ..
+        jsr     PlayShopTransactionJingleAndResumeMusic; BA19 20 C0 BA           ..
         sec                                     ; BA1C 38                       8
         rts                                     ; BA1D 60                       `
 ; ----------------------------------------------------------------------------
@@ -6518,10 +6518,10 @@ ItemEffectInventory_Branch_BA1E:
         clc                                     ; BA1E 18                       .
         rts                                     ; BA1F 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadDbSelectionAndDd:
+Shop_LoadSelectedStockEntryContext:
         ldx     $DB                             ; BA20 A6 DB                    ..
         lda     #$6A                            ; BA22 A9 6A                    .j
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BA24 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BA24 20 B5 B7      ..
         cmp     #$FF                            ; BA27 C9 FF                    ..
         bne     ItemEffectInventory_Branch_BA2D ; BA29 D0 02                    ..
         sec                                     ; BA2B 38                       8
@@ -6540,7 +6540,7 @@ ItemEffectInventory_Branch_BA2D:
         clc                                     ; BA3C 18                       .
         rts                                     ; BA3D 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_TestDcAgainstSelectionLimit:
+TestShopIndexAgainstSelectionLimit:
         lda     $DC                             ; BA3E A5 DC                    ..
         brk                                     ; BA40 00                       .
         db   $0B,$0F                         ; BA41 0B 0F                    ..
@@ -6562,7 +6562,7 @@ ItemEffectInventory_Branch_BA53:
         sec                                     ; BA53 38                       8
         rts                                     ; BA54 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CompareDbLookupWith08:
+IsSelectedShopEntryTypeEight:
         ldx     $DB                             ; BA55 A6 DB                    ..
         brk                                     ; BA57 00                       .
         db   $2D,$53                         ; BA58 2D 53                    -S
@@ -6570,33 +6570,33 @@ EffectCallback_CompareDbLookupWith08:
         cmp     #$08                            ; BA5A C9 08                    ..
         rts                                     ; BA5C 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_CompareSelectedEntryValue:
-        jsr     EffectCallback_LoadSelectedEntryValue; BA5D 20 73 BA             s.
-        jsr     EffectCallback_CopyValue0002ToWorkingTriplet; BA60 20 7C A4      |.
+CompareSelectedItemPrice:
+        jsr     LoadSelectedItemPrice           ; BA5D 20 73 BA                  s.
+        jsr     CopyValueToMessageNumberArgument; BA60 20 7C A4                  |.
         brk                                     ; BA63 00                       .
         db   $4A,$33                         ; BA64 4A 33                    J3
 ; ----------------------------------------------------------------------------
         lda     $72                             ; BA66 A5 72                    .r
-        cmp     $FD                             ; BA68 C5 FD                    ..
+        cmp     MessageNumberArgument           ; BA68 C5 FD                    ..
         lda     $73                             ; BA6A A5 73                    .s
         sbc     $FE                             ; BA6C E5 FE                    ..
         lda     $74                             ; BA6E A5 74                    .t
         sbc     $FF                             ; BA70 E5 FF                    ..
         rts                                     ; BA72 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadSelectedEntryValue:
+LoadSelectedItemPrice:
         sta     $DF                             ; BA73 85 DF                    ..
         tax                                     ; BA75 AA                       .
         lda     $07BD,x                         ; BA76 BD BD 07                 ...
         sta     $DC                             ; BA79 85 DC                    ..
         sta     $00                             ; BA7B 85 00                    ..
         sta     $F9                             ; BA7D 85 F9                    ..
-        jmp     EffectValue_LoadTripletForEntryId; BA7F 4C CF B2                L..
+        jmp     Shop_LoadItemPrice              ; BA7F 4C CF B2                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ValidateReducedEntryValue:
+ValidateSelectedItemSellPrice:
         lda     $DC                             ; BA82 A5 DC                    ..
         sta     $00                             ; BA84 85 00                    ..
-        jsr     EffectValue_LoadReducedTripletForEntryId; BA86 20 5F B3          _.
+        jsr     Shop_LoadItemSellPrice          ; BA86 20 5F B3                  _.
         lda     $01                             ; BA89 A5 01                    ..
         sta     $70                             ; BA8B 85 70                    .p
         lda     $02                             ; BA8D A5 02                    ..
@@ -6610,12 +6610,12 @@ EffectCallback_ValidateReducedEntryValue:
         brk                                     ; BA9A 00                       .
         db   $30,$73                         ; BA9B 30 73                    0s
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_DispatchResolvedEffect; BA9D 4C B7 A6            L..
+        jmp     DispatchResolvedScriptEvent     ; BA9D 4C B7 A6                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ValidateFullEntryValue:
+ValidateSelectedItemBuyPrice:
         lda     $DC                             ; BAA0 A5 DC                    ..
         sta     $00                             ; BAA2 85 00                    ..
-        jsr     EffectValue_LoadTripletForEntryId; BAA4 20 CF B2                 ..
+        jsr     Shop_LoadItemPrice              ; BAA4 20 CF B2                  ..
         lda     $01                             ; BAA7 A5 01                    ..
         sta     $70                             ; BAA9 85 70                    .p
         lda     $02                             ; BAAB A5 02                    ..
@@ -6630,9 +6630,9 @@ EffectCallback_ValidateFullEntryValue:
         brk                                     ; BABA 00                       .
         db   $2E,$73                         ; BABB 2E 73                    .s
 ; ----------------------------------------------------------------------------
-        jmp     EffectCallback_DispatchResolvedEffect; BABD 4C B7 A6            L..
+        jmp     DispatchResolvedScriptEvent     ; BABD 4C B7 A6                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_PlayJingle12AndResumeMapMusic:
+PlayShopTransactionJingleAndResumeMusic:
         brk                                     ; BAC0 00                       .
         db   $04,$9F                         ; BAC1 04 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -6647,7 +6647,7 @@ EffectCallback_PlayJingle12AndResumeMapMusic:
 ; ----------------------------------------------------------------------------
         rts                                     ; BACC 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RemapDcForMode2Map18:
+RemapShopEntryForSpecialContext:
         lda     $07C5                           ; BACD AD C5 07                 ...
         cmp     #$02                            ; BAD0 C9 02                    ..
         bne     ItemEffectInventory_Branch_BAEE ; BAD2 D0 1A                    ..
@@ -6669,7 +6669,7 @@ ItemEffectInventory_Branch_BAEC:
 ItemEffectInventory_Branch_BAEE:
         rts                                     ; BAEE 60                       `
 ; ----------------------------------------------------------------------------
-RunVaultService:
+PrintShopMessageForShopType:
         asl     a                               ; BAEF 0A                       .
         tay                                     ; BAF0 A8                       .
         ldx     $07C5                           ; BAF1 AE C5 07                 ...
@@ -6678,7 +6678,7 @@ RunVaultService:
         lda     Bank15_ItemEffectLookupA,y      ; BAF8 B9 1A BB                 ...
         tax                                     ; BAFB AA                       .
         lda     $BB1B,y                         ; BAFC B9 1B BB                 ...
-        jmp     EffectScript_InvokeItemHandlerPreservingCursor; BAFF 4C 19 99   L..
+        jmp     PrintScriptMessagePreservingCursor; BAFF 4C 19 99               L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BB02:
         cpx     #$03                            ; BB02 E0 03                    ..
@@ -6686,13 +6686,13 @@ ItemEffectInventory_Branch_BB02:
         lda     Bank15_ItemEffectLookupB,y      ; BB06 B9 92 BB                 ...
         tax                                     ; BB09 AA                       .
         lda     $BB93,y                         ; BB0A B9 93 BB                 ...
-        jmp     EffectScript_InvokeItemHandlerPreservingCursor; BB0D 4C 19 99   L..
+        jmp     PrintScriptMessagePreservingCursor; BB0D 4C 19 99               L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BB10:
         lda     Bank15_ItemEffectLookupDefault,y; BB10 B9 56 BB                 .V.
         tax                                     ; BB13 AA                       .
         lda     $BB57,y                         ; BB14 B9 57 BB                 .W.
-        jmp     EffectScript_InvokeItemHandlerPreservingCursor; BB17 4C 19 99   L..
+        jmp     PrintScriptMessagePreservingCursor; BB17 4C 19 99               L..
 ; ----------------------------------------------------------------------------
 Bank15_ItemEffectLookupA:
         db   $02                             ; BB1A 02                       .
@@ -6726,7 +6726,7 @@ Bank15_ItemEffectLookupB:
         db   $8C,$02,$8D                     ; BBCB 8C 02 8D                 ...
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BBCE:
-        jsr     EffectCallback_PrepareEffectSelectionContext; BBCE 20 FB B7      ..
+        jsr     PrepareShopSelectionContext     ; BBCE 20 FB B7                  ..
         brk                                     ; BBD1 00                       .
         db   $62,$33                         ; BBD2 62 33                    b3
 ; ----------------------------------------------------------------------------
@@ -6736,9 +6736,9 @@ ItemEffectInventory_Branch_BBCE:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BBD9:
         lda     #$69                            ; BBD9 A9 69                    .i
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BBDB 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BBDB 20 B5 B7      ..
         lda     #$44                            ; BBDE A9 44                    .D
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BBE0 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BBE0 20 B5 B7      ..
         cmp     #$00                            ; BBE3 C9 00                    ..
         beq     ItemEffectInventory_Branch_BBF1 ; BBE5 F0 0A                    ..
         cmp     #$01                            ; BBE7 C9 01                    ..
@@ -6753,7 +6753,7 @@ ItemEffectInventory_Branch_BBF1:
         db   $39,$2B                         ; BBF2 39 2B                    9+
 ; ----------------------------------------------------------------------------
         lda     #$45                            ; BBF4 A9 45                    .E
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BBF6 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BBF6 20 B5 B7      ..
         cmp     #$00                            ; BBF9 C9 00                    ..
         beq     ItemEffectInventory_Branch_BC07 ; BBFB F0 0A                    ..
         cmp     #$01                            ; BBFD C9 01                    ..
@@ -6764,7 +6764,7 @@ ItemEffectInventory_Branch_BC04:
         jmp     ItemEffectInventory_Branch_BC7D ; BC04 4C 7D BC                 L}.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BC07:
-        jsr     InventoryAccumulator_LoadCurrentValue; BC07 20 E3 B4             ..
+        jsr     VaultGold_LoadThousands         ; BC07 20 E3 B4                  ..
         lda     $00                             ; BC0A A5 00                    ..
         cmp     #$E7                            ; BC0C C9 E7                    ..
         lda     $01                             ; BC0E A5 01                    ..
@@ -6781,7 +6781,7 @@ ItemEffectInventory_Branch_BC1A:
         db   $3A,$2B                         ; BC1B 3A 2B                    :+
 ; ----------------------------------------------------------------------------
         lda     #$46                            ; BC1D A9 46                    .F
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BC1F 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BC1F 20 B5 B7      ..
         tax                                     ; BC22 AA                       .
         beq     ItemEffectInventory_Branch_BC29 ; BC23 F0 04                    ..
         cmp     #$FF                            ; BC25 C9 FF                    ..
@@ -6794,7 +6794,7 @@ ItemEffectInventory_Branch_BC2C:
         sta     $DC                             ; BC2E 85 DC                    ..
         lda     #$00                            ; BC30 A9 00                    ..
         sta     $01                             ; BC32 85 01                    ..
-        jsr     EffectCallback_LoadThousandsTripletIntoWorkingValue; BC34 20 CC BE ..
+        jsr     LoadThousandsIntoMessageNumberArgument; BC34 20 CC BE            ..
         lda     $01                             ; BC37 A5 01                    ..
         sta     $70                             ; BC39 85 70                    .p
         lda     $02                             ; BC3B A5 02                    ..
@@ -6810,7 +6810,7 @@ ItemEffectInventory_Branch_BC2C:
         jmp     ItemEffectInventory_Branch_BEBF ; BC49 4C BF BE                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BC4C:
-        jsr     InventoryAccumulator_LoadCurrentValue; BC4C 20 E3 B4             ..
+        jsr     VaultGold_LoadThousands         ; BC4C 20 E3 B4                  ..
         lda     $00                             ; BC4F A5 00                    ..
         clc                                     ; BC51 18                       .
         adc     $DC                             ; BC52 65 DC                    e.
@@ -6833,7 +6833,7 @@ ItemEffectInventory_Branch_BC6C:
         sta     $00                             ; BC6E 85 00                    ..
         lda     #$00                            ; BC70 A9 00                    ..
         sta     $01                             ; BC72 85 01                    ..
-        jsr     InventoryAccumulator_AddWorkingValue; BC74 20 B9 B4              ..
+        jsr     VaultGold_AddThousands          ; BC74 20 B9 B4                  ..
         brk                                     ; BC77 00                       .
         db   $3C,$2B                         ; BC78 3C 2B                    <+
 ; ----------------------------------------------------------------------------
@@ -6856,7 +6856,7 @@ ItemEffectInventory_Branch_BC8A:
         db   $3D,$2B                         ; BC91 3D 2B                    =+
 ; ----------------------------------------------------------------------------
         lda     #$49                            ; BC93 A9 49                    .I
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BC95 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BC95 20 B5 B7      ..
         cmp     #$FF                            ; BC98 C9 FF                    ..
         bne     ItemEffectInventory_Branch_BCA1 ; BC9A D0 05                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BC9C 4C B7 BE                 L..
@@ -6892,7 +6892,7 @@ ItemEffectInventory_Branch_BCBF:
         brk                                     ; BCBF 00                       .
         db   $3F,$2B                         ; BCC0 3F 2B                    ?+
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_LoadDbSelectionAndDd; BCC2 20 20 BA                .
+        jsr     Shop_LoadSelectedStockEntryContext; BCC2 20 20 BA                 .
         bcc     ItemEffectInventory_Branch_BCCA ; BCC5 90 03                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BCC7 4C B7 BE                 L..
 ; ----------------------------------------------------------------------------
@@ -6900,12 +6900,12 @@ ItemEffectInventory_Branch_BCCA:
         brk                                     ; BCCA 00                       .
         db   $40,$2B                         ; BCCB 40 2B                    @+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BCCD 20 C9 9A               ..
+        jsr     AskYesNo                        ; BCCD 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BCD5 ; BCD0 F0 03                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BCD2 4C B7 BE                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BCD5:
-        jsr     EffectCallback_TestDdAndResetDisplay; BCD5 20 10 BA              ..
+        jsr     TestShopStateAndResetDisplay    ; BCD5 20 10 BA                  ..
         bcc     ItemEffectInventory_Branch_BCDF ; BCD8 90 05                    ..
         brk                                     ; BCDA 00                       .
         db   $41,$2B                         ; BCDB 41 2B                    A+
@@ -6932,7 +6932,7 @@ ItemEffectInventory_Branch_BCEE:
         brk                                     ; BCF8 00                       .
         db   $43,$2B                         ; BCF9 43 2B                    C+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BCFB 20 C9 9A               ..
+        jsr     AskYesNo                        ; BCFB 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BD03 ; BCFE F0 03                    ..
 ItemEffectInventory_Branch_BD00:
         jmp     ItemEffectInventory_Branch_BEC2 ; BD00 4C C2 BE                 L..
@@ -6945,7 +6945,7 @@ ItemEffectInventory_Branch_BD06:
         db   $44,$2B                         ; BD07 44 2B                    D+
 ; ----------------------------------------------------------------------------
         lda     #$45                            ; BD09 A9 45                    .E
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BD0B 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BD0B 20 B5 B7      ..
         cmp     #$00                            ; BD0E C9 00                    ..
         beq     ItemEffectInventory_Branch_BD1C ; BD10 F0 0A                    ..
         cmp     #$01                            ; BD12 C9 01                    ..
@@ -6956,7 +6956,7 @@ ItemEffectInventory_Branch_BD19:
         jmp     ItemEffectInventory_Branch_BDAA ; BD19 4C AA BD                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BD1C:
-        jsr     InventoryAccumulator_LoadCurrentValue; BD1C 20 E3 B4             ..
+        jsr     VaultGold_LoadThousands         ; BD1C 20 E3 B4                  ..
         lda     $00                             ; BD1F A5 00                    ..
         ora     $01                             ; BD21 05 01                    ..
         bne     ItemEffectInventory_Branch_BD2B ; BD23 D0 06                    ..
@@ -6966,13 +6966,13 @@ ItemEffectInventory_Branch_BD1C:
         jmp     ItemEffectInventory_Branch_BEBC ; BD28 4C BC BE                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BD2B:
-        jsr     EffectCallback_LoadThousandsTripletIntoWorkingValue; BD2B 20 CC BE ..
+        jsr     LoadThousandsIntoMessageNumberArgument; BD2B 20 CC BE            ..
         brk                                     ; BD2E 00                       .
         db   $46,$2B                         ; BD2F 46 2B                    F+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BD31:
         lda     #$46                            ; BD31 A9 46                    .F
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BD33 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BD33 20 B5 B7      ..
         tax                                     ; BD36 AA                       .
         beq     ItemEffectInventory_Branch_BD3D ; BD37 F0 04                    ..
         cmp     #$FF                            ; BD39 C9 FF                    ..
@@ -6985,7 +6985,7 @@ ItemEffectInventory_Branch_BD40:
         sta     $00                             ; BD42 85 00                    ..
         lda     #$00                            ; BD44 A9 00                    ..
         sta     $01                             ; BD46 85 01                    ..
-        jsr     EffectCallback_LoadThousandsTripletIntoWorkingValue; BD48 20 CC BE ..
+        jsr     LoadThousandsIntoMessageNumberArgument; BD48 20 CC BE            ..
         brk                                     ; BD4B 00                       .
         db   $91,$2B                         ; BD4C 91 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -6993,7 +6993,7 @@ ItemEffectInventory_Branch_BD40:
         sta     $00                             ; BD50 85 00                    ..
         lda     #$00                            ; BD52 A9 00                    ..
         sta     $01                             ; BD54 85 01                    ..
-        jsr     InventoryAccumulator_TrySubtractWorkingValue; BD56 20 CB B4      ..
+        jsr     VaultGold_TrySubtractThousands  ; BD56 20 CB B4                  ..
         bcs     ItemEffectInventory_Branch_BD63 ; BD59 B0 08                    ..
         brk                                     ; BD5B 00                       .
         db   $83,$2B                         ; BD5C 83 2B                    .+
@@ -7041,7 +7041,7 @@ ItemEffectInventory_Branch_BD8D:
         sta     $00                             ; BD9C 85 00                    ..
         lda     #$00                            ; BD9E A9 00                    ..
         sta     $01                             ; BDA0 85 01                    ..
-        jsr     InventoryAccumulator_AddWorkingValue; BDA2 20 B9 B4              ..
+        jsr     VaultGold_AddThousands          ; BDA2 20 B9 B4                  ..
         brk                                     ; BDA5 00                       .
         db   $2B,$4B                         ; BDA6 2B 4B                    +K
 ; ----------------------------------------------------------------------------
@@ -7060,7 +7060,7 @@ ItemEffectInventory_Branch_BDB7:
         db   $4A,$2B                         ; BDB8 4A 2B                    J+
 ; ----------------------------------------------------------------------------
         lda     #$47                            ; BDBA A9 47                    .G
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BDBC 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BDBC 20 B5 B7      ..
         cmp     #$FF                            ; BDBF C9 FF                    ..
         bne     ItemEffectInventory_Branch_BDC6 ; BDC1 D0 03                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BDC3 4C B7 BE                 L..
@@ -7074,7 +7074,7 @@ ItemEffectInventory_Branch_BDC6:
         brk                                     ; BDD0 00                       .
         db   $4B,$2B                         ; BDD1 4B 2B                    K+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BDD3 20 C9 9A               ..
+        jsr     AskYesNo                        ; BDD3 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BDDB ; BDD6 F0 03                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BDD8 4C B7 BE                 L..
 ; ----------------------------------------------------------------------------
@@ -7091,7 +7091,7 @@ ItemEffectInventory_Branch_BDDB:
         brk                                     ; BDEA 00                       .
         db   $4C,$2B                         ; BDEB 4C 2B                    L+
 ; ----------------------------------------------------------------------------
-        jsr     InventoryAccumulator_LoadCurrentValue; BDED 20 E3 B4             ..
+        jsr     VaultGold_LoadThousands         ; BDED 20 E3 B4                  ..
         lda     $00                             ; BDF0 A5 00                    ..
         ora     $01                             ; BDF2 05 01                    ..
         bne     ItemEffectInventory_Branch_BDF9 ; BDF4 D0 03                    ..
@@ -7104,7 +7104,7 @@ ItemEffectInventory_Branch_BDF9:
         brk                                     ; BDFC 00                       .
         db   $4D,$2B                         ; BDFD 4D 2B                    M+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BDFF 20 C9 9A               ..
+        jsr     AskYesNo                        ; BDFF 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BE07 ; BE02 F0 03                    ..
         jmp     ItemEffectInventory_Branch_BEBC ; BE04 4C BC BE                 L..
 ; ----------------------------------------------------------------------------
@@ -7121,7 +7121,7 @@ ItemEffectInventory_Branch_BE0A:
 ItemEffectInventory_Branch_BE13:
         ldx     $DC                             ; BE13 A6 DC                    ..
         lda     #$40                            ; BE15 A9 40                    .@
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BE17 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BE17 20 B5 B7      ..
         cmp     #$FF                            ; BE1A C9 FF                    ..
         bne     ItemEffectInventory_Branch_BE23 ; BE1C D0 05                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BE1E 4C B7 BE                 L..
@@ -7165,12 +7165,12 @@ ItemEffectInventory_Branch_BE4D:
         brk                                     ; BE4D 00                       .
         db   $51,$2B                         ; BE4E 51 2B                    Q+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BE50 20 C9 9A               ..
+        jsr     AskYesNo                        ; BE50 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BE13 ; BE53 F0 BE                    ..
         jmp     ItemEffectInventory_Branch_BEB7 ; BE55 4C B7 BE                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BE58:
-        jsr     EffectCallback_TestDcAgainstSelectionLimit; BE58 20 3E BA        >.
+        jsr     TestShopIndexAgainstSelectionLimit; BE58 20 3E BA                >.
         bcs     ItemEffectInventory_Branch_BE71 ; BE5B B0 14                    ..
         lda     $DB                             ; BE5D A5 DB                    ..
         sta     $F9                             ; BE5F 85 F9                    ..
@@ -7180,7 +7180,7 @@ ItemEffectInventory_Branch_BE58:
         brk                                     ; BE67 00                       .
         db   $52,$2B                         ; BE68 52 2B                    R+
 ; ----------------------------------------------------------------------------
-        jsr     EffectScript_TestSelectionCondition; BE6A 20 C9 9A               ..
+        jsr     AskYesNo                        ; BE6A 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BE71 ; BE6D F0 02                    ..
         bne     ItemEffectInventory_Branch_BE4D ; BE6F D0 DC                    ..
 ItemEffectInventory_Branch_BE71:
@@ -7190,7 +7190,7 @@ ItemEffectInventory_Branch_BE71:
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; BE76 A9 00                    ..
         beq     ItemEffectInventory_Branch_BE7F ; BE78 F0 05                    ..
-EffectCallback_DormantInventoryCarryBranch:
+UnreachableInventoryCarryBranch:
         brk                                     ; BE7A 00                       .
         db   $53,$2B                         ; BE7B 53 2B                    S+
 ; ----------------------------------------------------------------------------
@@ -7242,7 +7242,7 @@ ItemEffectInventory_Branch_BEB7:
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_BEC2 ; BEBA B0 06                    ..
 ItemEffectInventory_Branch_BEBC:
-        jsr     EffectCallback_DispatchResolvedEffect; BEBC 20 B7 A6             ..
+        jsr     DispatchResolvedScriptEvent     ; BEBC 20 B7 A6                  ..
 ItemEffectInventory_Branch_BEBF:
         brk                                     ; BEBF 00                       .
         db   $83,$2B                         ; BEC0 83 2B                    .+
@@ -7259,11 +7259,11 @@ ItemEffectInventory_Branch_BEC8:
 ; ----------------------------------------------------------------------------
         rts                                     ; BECB 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadThousandsTripletIntoWorkingValue:
+LoadThousandsIntoMessageNumberArgument:
         jsr     EffectMath_Multiply0001By1000   ; BECC 20 EE B4                  ..
-        jmp     EffectCallback_CopyValue0002ToWorkingTriplet; BECF 4C 7C A4     L|.
+        jmp     CopyValueToMessageNumberArgument; BECF 4C 7C A4                 L|.
 ; ----------------------------------------------------------------------------
-EffectCallback_RunTemporaryFeMapSelection:
+RunTemporaryOverlayMapSelection:
         lda     $0553                           ; BED2 AD 53 05                 .S.
         and     #$7F                            ; BED5 29 7F                    ).
         sta     $0553                           ; BED7 8D 53 05                 .S.
@@ -7274,7 +7274,7 @@ EffectCallback_RunTemporaryFeMapSelection:
         lda     #$FE                            ; BEE0 A9 FE                    ..
         sta     CurrentSubmapNumber             ; BEE2 85 64                    .d
         sta     CurrentMapNumber                ; BEE4 85 63                    .c
-        jsr     EffectCallback_InvokeMapRefreshPreservingPointers; BEE6 20 C9 A4 ..
+        jsr     RefreshMapPreservingScriptPointers; BEE6 20 C9 A4                ..
         jsr     NextRandomByte                  ; BEE9 20 91 C8                  ..
         cmp     #$10                            ; BEEC C9 10                    ..
         bcs     ItemEffectInventory_Branch_BEF6 ; BEEE B0 06                    ..
@@ -7282,7 +7282,7 @@ EffectCallback_RunTemporaryFeMapSelection:
         jmp     ItemEffectInventory_Branch_BEF9 ; BEF3 4C F9 BE                 L..
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BEF6:
-        jsr     EffectCallback_RunSecondaryTargetSelection; BEF6 20 33 B8        3.
+        jsr     RunShopSellMenu                 ; BEF6 20 33 B8                  3.
 ItemEffectInventory_Branch_BEF9:
         jsr     WaitForButtonStateOneEightyFrames; BEF9 20 18 D2                 ..
         pla                                     ; BEFC 68                       h
@@ -7296,7 +7296,7 @@ ItemEffectInventory_Branch_BEF9:
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BF06:
         lda     #$50                            ; BF06 A9 50                    .P
-        jsr     EffectCallback_InvokeLookupWithDaPreserved; BF08 20 B5 B7        ..
+        jsr     InvokeScriptLookupPreservingInterpreterState; BF08 20 B5 B7      ..
         brk                                     ; BF0B 00                       .
         db   $05,$6F                         ; BF0C 05 6F                    .o
 ; ----------------------------------------------------------------------------
@@ -7312,12 +7312,12 @@ ItemEffectInventory_Branch_BF18:
         db   $32,$2B                         ; BF19 32 2B                    2+
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BF1B:
-        jsr     EffectCallback_LoadMapScaledValueIntoWorkingTriplet; BF1B 20 4F BF O.
+        jsr     LoadMapScaledValueIntoMessageNumberArgument; BF1B 20 4F BF       O.
         brk                                     ; BF1E 00                       .
         db   $33,$2B                         ; BF1F 33 2B                    3+
 ; ----------------------------------------------------------------------------
-        jsr     EffectCallback_DispatchResolvedEffect; BF21 20 B7 A6             ..
-        jsr     EffectScript_TestSelectionCondition; BF24 20 C9 9A               ..
+        jsr     DispatchResolvedScriptEvent     ; BF21 20 B7 A6                  ..
+        jsr     AskYesNo                        ; BF24 20 C9 9A                  ..
         beq     ItemEffectInventory_Branch_BF2D ; BF27 F0 04                    ..
         brk                                     ; BF29 00                       .
         db   $34,$2B                         ; BF2A 34 2B                    4+
@@ -7325,7 +7325,7 @@ ItemEffectInventory_Branch_BF1B:
         rts                                     ; BF2C 60                       `
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BF2D:
-        jsr     EffectCallback_TestWorkingTripletThreshold; BF2D 20 4E A8        N.
+        jsr     TestMessageNumberArgumentAgainstLimit; BF2D 20 4E A8             N.
         bcs     ItemEffectInventory_Branch_BF36 ; BF30 B0 04                    ..
         brk                                     ; BF32 00                       .
         db   $35,$2B                         ; BF33 35 2B                    5+
@@ -7340,11 +7340,11 @@ ItemEffectInventory_Branch_BF36:
         lda     CurrentSubmapNumber             ; BF3C A5 64                    .d
         cmp     #$FE                            ; BF3E C9 FE                    ..
         beq     ItemEffectInventory_Branch_BF48 ; BF40 F0 06                    ..
-        jsr     EffectCallback_RefreshSceneUnlessAtMap19Sub1; BF42 20 94 A6      ..
+        jsr     RefreshSceneOrUseMapSpecificPath; BF42 20 94 A6                  ..
         jmp     ItemEffectInventory_Branch_BF4B ; BF45 4C 4B BF                 LK.
 ; ----------------------------------------------------------------------------
 ItemEffectInventory_Branch_BF48:
-        jsr     EffectCallback_RunA732Aea6AndRefresh; BF48 20 FF A6              ..
+        jsr     RunAlternateSceneTransitionAndRefresh; BF48 20 FF A6             ..
 ItemEffectInventory_Branch_BF4B:
         brk                                     ; BF4B 00                       .
         db   $37,$2B                         ; BF4C 37 2B                    7+
@@ -7352,7 +7352,7 @@ ItemEffectInventory_Branch_BF4B:
 ItemEffectInventory_Branch_BF4E:
         rts                                     ; BF4E 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_LoadMapScaledValueIntoWorkingTriplet:
+LoadMapScaledValueIntoMessageNumberArgument:
         lda     #$00                            ; BF4F A9 00                    ..
         sta     $FE                             ; BF51 85 FE                    ..
         sta     $FF                             ; BF53 85 FF                    ..
@@ -7392,7 +7392,7 @@ ItemEffectInventory_Branch_BF8E:
         lda     ($DA),y                         ; BF8E B1 DA                    ..
         jsr     EffectScript_ReadBankedByteFromDaPointer; BF90 20 A4 BF          ..
 ItemEffectInventory_Branch_BF93:
-        sta     $FD                             ; BF93 85 FD                    ..
+        sta     MessageNumberArgument           ; BF93 85 FD                    ..
         brk                                     ; BF95 00                       .
         db   $62,$23,$01                     ; BF96 62 23 01                 b#.
 ; ----------------------------------------------------------------------------

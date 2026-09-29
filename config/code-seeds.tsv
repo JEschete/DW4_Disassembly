@@ -255,8 +255,8 @@
 1B	A4D7	-	Direct ROM scan	JSR to fixed trampoline $C00A
 1B	A7BE	-	Direct ROM scan	JSR to fixed trampoline $C03A
 1B	ACA0	-	Direct ROM scan	JSR to fixed trampoline $C031
-1B	AD25	-	Direct ROM analysis	Coherent dormant handler ending with RTI at $AD39; branches and BRK continuations stay within the bounded block
-1B	AD3A	-	Direct ROM analysis	Coherent dormant handler ending with RTS at $AD48 after three-byte BRK service $2A,$CB,$40
+1B	AD25	-	Direct ROM analysis	Live continuation of PrepareScriptedMapEventScene after BRK $2A,$EB,$40; the apparent RTI at $AD39 is the inline $40 operand byte at $AD39
+1B	AD3A	-	Direct ROM analysis	Live continuation after BRK $2A,$EB,$40 at $AD36; runs the following BRK-backed event preparation and returns at $AD48
 1B	AD6B	-	Direct ROM scan	JSR to fixed trampoline $C037
 1B	B0B0	-	Direct ROM analysis	Coherent dormant sibling of the active eight-call loop at $B05E, ending with RTS at $B0DB
 1B	B0E7	-	Direct ROM analysis	Coherent decrementing sibling of $B0DC, ending with JMP $B511 at $B0EF

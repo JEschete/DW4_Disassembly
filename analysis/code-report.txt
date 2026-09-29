@@ -258,8 +258,8 @@ Seeds:
   bank $1B:$A4D7 | Direct ROM scan | JSR to fixed trampoline $C00A
   bank $1B:$A7BE | Direct ROM scan | JSR to fixed trampoline $C03A
   bank $1B:$ACA0 | Direct ROM scan | JSR to fixed trampoline $C031
-  bank $1B:$AD25 | Direct ROM analysis | Coherent dormant handler ending with RTI at $AD39; branches and BRK continuations stay within the bounded block
-  bank $1B:$AD3A | Direct ROM analysis | Coherent dormant handler ending with RTS at $AD48 after three-byte BRK service $2A,$CB,$40
+  bank $1B:$AD25 | Direct ROM analysis | Live continuation of PrepareScriptedMapEventScene after BRK $2A,$EB,$40; the apparent RTI at $AD39 is the inline $40 operand byte at $AD39
+  bank $1B:$AD3A | Direct ROM analysis | Live continuation after BRK $2A,$EB,$40 at $AD36; runs the following BRK-backed event preparation and returns at $AD48
   bank $1B:$AD6B | Direct ROM scan | JSR to fixed trampoline $C037
   bank $1B:$B0B0 | Direct ROM analysis | Coherent dormant sibling of the active eight-call loop at $B05E, ending with RTS at $B0DB
   bank $1B:$B0E7 | Direct ROM analysis | Coherent decrementing sibling of $B0DC, ending with JMP $B511 at $B0EF
@@ -1339,126 +1339,126 @@ Seeds:
   bank $13:$B049 | Entry pointer table | Bank $13 pointer at $8082: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
   bank $13:$B049 | Entry pointer table | Bank $13 pointer at $8084: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
   bank $13:$B049 | Entry pointer table | Bank $13 pointer at $8086: Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
-  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B91: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B93: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B95: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B97: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B99: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8BA1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8BA3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C80 | Entry pointer table | Bank $13 pointer at $8BA5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C8E | Entry pointer table | Bank $13 pointer at $8BA7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BA9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B175 | Entry pointer table | Bank $13 pointer at $8BAB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B195 | Entry pointer table | Bank $13 pointer at $8BAD: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B15F | Entry pointer table | Bank $13 pointer at $8BAF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B16A | Entry pointer table | Bank $13 pointer at $8BB1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B1B8 | Entry pointer table | Bank $13 pointer at $8BB3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8BB5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B442 | Entry pointer table | Bank $13 pointer at $8BB7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B44B | Entry pointer table | Bank $13 pointer at $8BB9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B2A3 | Entry pointer table | Bank $13 pointer at $8BBB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BBD: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B24C | Entry pointer table | Bank $13 pointer at $8BBF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B257 | Entry pointer table | Bank $13 pointer at $8BC1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BC9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCD: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BDB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BDD: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BDF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BEB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BED: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B392 | Entry pointer table | Bank $13 pointer at $8BEF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B3B2 | Entry pointer table | Bank $13 pointer at $8BF1: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B3CA | Entry pointer table | Bank $13 pointer at $8BF3: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B3FB | Entry pointer table | Bank $13 pointer at $8BF5: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B421 | Entry pointer table | Bank $13 pointer at $8BF7: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B424 | Entry pointer table | Bank $13 pointer at $8BF9: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFB: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFD: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFF: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B262 | Entry pointer table | Bank $13 pointer at $8C01: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C03: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C05: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C07: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C09: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C0B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C0D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B1EE | Entry pointer table | Bank $13 pointer at $8C0F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C11: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B229 | Entry pointer table | Bank $13 pointer at $8C13: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B209 | Entry pointer table | Bank $13 pointer at $8C15: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B23B | Entry pointer table | Bank $13 pointer at $8C17: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8C19: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C21: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C23: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C25: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C27: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C29: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C31: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C33: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C35: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C37: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C39: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C41: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C72 | Entry pointer table | Bank $13 pointer at $8C43: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C94 | Entry pointer table | Bank $13 pointer at $8C45: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C47: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C49: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C4B: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8C4D: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B27D | Entry pointer table | Bank $13 pointer at $8C4F: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8C7C | Entry pointer table | Bank $13 pointer at $8C51: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B392 | Entry pointer table | Bank $13 pointer at $8C53: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C55: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$B298 | Entry pointer table | Bank $13 pointer at $8C57: 104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91CD: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91CF: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91D1: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D3: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D5: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91D7: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D9: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91DB: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91DD: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91DF: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91E1: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E3: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E5: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E7: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E9: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91EB: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
-  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91ED: Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
+  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B8F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B91: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B93: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B95: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B97: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C5A | Entry pointer table | Bank $13 pointer at $8B99: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8B9F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8BA1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C60 | Entry pointer table | Bank $13 pointer at $8BA3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C80 | Entry pointer table | Bank $13 pointer at $8BA5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C8E | Entry pointer table | Bank $13 pointer at $8BA7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BA9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B175 | Entry pointer table | Bank $13 pointer at $8BAB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B195 | Entry pointer table | Bank $13 pointer at $8BAD: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B15F | Entry pointer table | Bank $13 pointer at $8BAF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B16A | Entry pointer table | Bank $13 pointer at $8BB1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B1B8 | Entry pointer table | Bank $13 pointer at $8BB3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8BB5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B442 | Entry pointer table | Bank $13 pointer at $8BB7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B44B | Entry pointer table | Bank $13 pointer at $8BB9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B2A3 | Entry pointer table | Bank $13 pointer at $8BBB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BBD: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B24C | Entry pointer table | Bank $13 pointer at $8BBF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B257 | Entry pointer table | Bank $13 pointer at $8BC1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BC7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BC9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCD: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BCF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BD9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BDB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8CD8 | Entry pointer table | Bank $13 pointer at $8BDD: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BDF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BE9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BEB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8BED: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B392 | Entry pointer table | Bank $13 pointer at $8BEF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B3B2 | Entry pointer table | Bank $13 pointer at $8BF1: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B3CA | Entry pointer table | Bank $13 pointer at $8BF3: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B3FB | Entry pointer table | Bank $13 pointer at $8BF5: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B421 | Entry pointer table | Bank $13 pointer at $8BF7: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B424 | Entry pointer table | Bank $13 pointer at $8BF9: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFB: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFD: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B2AB | Entry pointer table | Bank $13 pointer at $8BFF: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B262 | Entry pointer table | Bank $13 pointer at $8C01: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C03: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C05: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C07: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C09: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C0B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C69 | Entry pointer table | Bank $13 pointer at $8C0D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B1EE | Entry pointer table | Bank $13 pointer at $8C0F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C11: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B229 | Entry pointer table | Bank $13 pointer at $8C13: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B209 | Entry pointer table | Bank $13 pointer at $8C15: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B23B | Entry pointer table | Bank $13 pointer at $8C17: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8C19: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C1F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C21: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C23: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C25: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C27: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C29: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C2F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C31: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C33: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C35: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C37: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C39: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C3F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C41: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C72 | Entry pointer table | Bank $13 pointer at $8C43: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C94 | Entry pointer table | Bank $13 pointer at $8C45: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B461 | Entry pointer table | Bank $13 pointer at $8C47: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C49: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C4B: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C59 | Entry pointer table | Bank $13 pointer at $8C4D: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B27D | Entry pointer table | Bank $13 pointer at $8C4F: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8C7C | Entry pointer table | Bank $13 pointer at $8C51: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B392 | Entry pointer table | Bank $13 pointer at $8C53: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$8D01 | Entry pointer table | Bank $13 pointer at $8C55: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$B298 | Entry pointer table | Bank $13 pointer at $8C57: 103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91CD: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91CF: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91D1: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D3: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D5: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91D7: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91D9: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91DB: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9178 | Entry pointer table | Bank $13 pointer at $91DD: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91DF: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91E1: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E3: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E5: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E7: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91E9: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$919A | Entry pointer table | Bank $13 pointer at $91EB: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
+  bank $13:$9176 | Entry pointer table | Bank $13 pointer at $91ED: Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
   bank $13:$8FA2 | Entry pointer table | Bank $13 pointer at $9100: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
   bank $13:$8FA2 | Entry pointer table | Bank $13 pointer at $9102: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
   bank $13:$8FA2 | Entry pointer table | Bank $13 pointer at $9104: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F

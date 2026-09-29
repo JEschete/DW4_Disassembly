@@ -18,8 +18,8 @@
 10	BattlePartyServices	Verified	Battle-side party, status, statistic, and reward services
 11	BattleActionServices	Verified	Battle action, combatant-state, and arena services
 12	BattleSetupServices	Verified	Battle setup, monster initialization, and combat services
-13	BattlePresentation	Verified	Battle presentation and state routing
-14	BattleTurnEngine	Verified	Battle turn processing and monster graphics decoder
+13	BattleAi	Verified	Battle AI action evaluation, scoring, effect rolls, and resistance checks
+14	BattleDisplay	Verified	Monster graphics decoding, display-slot placement, and battle-screen animation
 15	ItemEffectInventory	Verified	Item/effect scripts, interpreter, and inventory services
 16	TextUiSystem	Verified	Dialogue decoder and text/window user-interface services
 17	MapSystem	Verified	Map services and map-information records

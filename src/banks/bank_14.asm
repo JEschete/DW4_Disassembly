@@ -15,62 +15,62 @@ Bank14_BattleTurnDirectory:
         db   $1B,$A0,$30,$90,$F1,$A3,$40,$9A ; 8028 1B A0 30 90 F1 A3 40 9A  ..0...@.
         db   $BE,$90,$54,$84                 ; 8030 BE 90 54 84              ..T.
 ; ----------------------------------------------------------------------------
-Bank14_BattleTurnEngine:
+Bank14_BattleDisplayServices:
         ldx     #$07                            ; 8034 A2 07                    ..
         stx     $C7                             ; 8036 86 C7                    ..
-BattleTurnEngine_Branch_8038:
-        jsr     BattleTurnEngine_ClearResolvedTurnSlot; 8038 20 11 82            ..
+BattleDisplay_Branch_8038:
+        jsr     BattleDisplay_ClearResolvedDisplaySlot; 8038 20 11 82            ..
         dec     $C7                             ; 803B C6 C7                    ..
-        bpl     BattleTurnEngine_Branch_8038    ; 803D 10 F9                    ..
+        bpl     BattleDisplay_Branch_8038       ; 803D 10 F9                    ..
         jsr     SuspendRenderingUpdates         ; 803F 20 AF C5                  ..
         lda     #$FF                            ; 8042 A9 FF                    ..
         ldx     #$07                            ; 8044 A2 07                    ..
-BattleTurnEngine_Branch_8046:
+BattleDisplay_Branch_8046:
         sta     $06A0,x                         ; 8046 9D A0 06                 ...
         dex                                     ; 8049 CA                       .
-        bpl     BattleTurnEngine_Branch_8046    ; 804A 10 FA                    ..
+        bpl     BattleDisplay_Branch_8046       ; 804A 10 FA                    ..
         ldx     #$19                            ; 804C A2 19                    ..
-BattleTurnEngine_Branch_804E:
+BattleDisplay_Branch_804E:
         sta     $05FC,x                         ; 804E 9D FC 05                 ...
         dex                                     ; 8051 CA                       .
-        bpl     BattleTurnEngine_Branch_804E    ; 8052 10 FA                    ..
+        bpl     BattleDisplay_Branch_804E       ; 8052 10 FA                    ..
         lda     $0514                           ; 8054 AD 14 05                 ...
         sta     $05FD                           ; 8057 8D FD 05                 ...
         lda     #$00                            ; 805A A9 00                    ..
         sta     $CA                             ; 805C 85 CA                    ..
         sta     $C9                             ; 805E 85 C9                    ..
         ldx     #$03                            ; 8060 A2 03                    ..
-BattleTurnEngine_Branch_8062:
+BattleDisplay_Branch_8062:
         sta     $6E49,x                         ; 8062 9D 49 6E                 .In
         dex                                     ; 8065 CA                       .
-        bpl     BattleTurnEngine_Branch_8062    ; 8066 10 FA                    ..
+        bpl     BattleDisplay_Branch_8062       ; 8066 10 FA                    ..
         ldx     #$07                            ; 8068 A2 07                    ..
-BattleTurnEngine_Branch_806A:
+BattleDisplay_Branch_806A:
         sta     $0444,x                         ; 806A 9D 44 04                 .D.
         dex                                     ; 806D CA                       .
-        bpl     BattleTurnEngine_Branch_806A    ; 806E 10 FA                    ..
+        bpl     BattleDisplay_Branch_806A       ; 806E 10 FA                    ..
         ldx     #$07                            ; 8070 A2 07                    ..
-BattleTurnEngine_Branch_8072:
+BattleDisplay_Branch_8072:
         brk                                     ; 8072 00                       .
         db   $29,$C3,$0E                     ; 8073 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
-        bcc     BattleTurnEngine_Branch_807F    ; 8076 90 07                    ..
+        bcc     BattleDisplay_Branch_807F       ; 8076 90 07                    ..
         brk                                     ; 8078 00                       .
         db   $2D,$B3                         ; 8079 2D B3                    -.
 ; ----------------------------------------------------------------------------
         tax                                     ; 807B AA                       .
         inc     $6E49,x                         ; 807C FE 49 6E                 .In
-BattleTurnEngine_Branch_807F:
+BattleDisplay_Branch_807F:
         dec     $7B                             ; 807F C6 7B                    .{
         ldx     $7B                             ; 8081 A6 7B                    .{
-        bpl     BattleTurnEngine_Branch_8072    ; 8083 10 ED                    ..
+        bpl     BattleDisplay_Branch_8072       ; 8083 10 ED                    ..
         ldx     #$00                            ; 8085 A2 00                    ..
         stx     $C6                             ; 8087 86 C6                    ..
         stx     $C7                             ; 8089 86 C7                    ..
-BattleTurnEngine_Branch_808B:
+BattleDisplay_Branch_808B:
         ldy     $6E45,x                         ; 808B BC 45 6E                 .En
         cpy     #$99                            ; 808E C0 99                    ..
-        bne     BattleTurnEngine_Branch_80AD    ; 8090 D0 1B                    ..
+        bne     BattleDisplay_Branch_80AD       ; 8090 D0 1B                    ..
         txa                                     ; 8092 8A                       .
         pha                                     ; 8093 48                       H
         ldx     #$03                            ; 8094 A2 03                    ..
@@ -79,24 +79,24 @@ BattleTurnEngine_Branch_808B:
 ; ----------------------------------------------------------------------------
         pla                                     ; 809A 68                       h
         tax                                     ; 809B AA                       .
-        bcs     BattleTurnEngine_Branch_80AD    ; 809C B0 0F                    ..
+        bcs     BattleDisplay_Branch_80AD       ; 809C B0 0F                    ..
         lda     #$1C                            ; 809E A9 1C                    ..
         sta     $0600                           ; 80A0 8D 00 06                 ...
         lda     #$39                            ; 80A3 A9 39                    .9
         sta     $0601                           ; 80A5 8D 01 06                 ...
         lda     #$13                            ; 80A8 A9 13                    ..
         sta     $0602                           ; 80AA 8D 02 06                 ...
-BattleTurnEngine_Branch_80AD:
+BattleDisplay_Branch_80AD:
         sty     $C4                             ; 80AD 84 C4                    ..
         iny                                     ; 80AF C8                       .
-        beq     BattleTurnEngine_Branch_80E4    ; 80B0 F0 32                    .2
+        beq     BattleDisplay_Branch_80E4       ; 80B0 F0 32                    .2
         lda     $6E49,x                         ; 80B2 BD 49 6E                 .In
-        beq     BattleTurnEngine_Branch_80E4    ; 80B5 F0 2D                    .-
+        beq     BattleDisplay_Branch_80E4       ; 80B5 F0 2D                    .-
         sta     $C5                             ; 80B7 85 C5                    ..
-        jsr     BattleTurnEngine_MapCurrentCombatantId; 80B9 20 0C 9F            ..
-        jsr     BattleTurnEngine_LoadCombatantGraphicMetricsIntoSlot; 80BC 20 EF 92 ..
-        jsr     BattleTurnEngine_AccumulateCombatantWidths; 80BF 20 54 9C        T.
-        jsr     BattleTurnEngine_AssignSecondaryPlacementRecord; 80C2 20 96 94   ..
+        jsr     BattleDisplay_MapCurrentCombatantId; 80B9 20 0C 9F               ..
+        jsr     BattleDisplay_LoadCombatantGraphicMetricsIntoSlot; 80BC 20 EF 92 ..
+        jsr     BattleDisplay_AccumulateCombatantWidths; 80BF 20 54 9C           T.
+        jsr     BattleDisplay_AssignSecondaryPlacementRecord; 80C2 20 96 94      ..
         lda     $C4                             ; 80C5 A5 C4                    ..
         ldx     $C6                             ; 80C7 A6 C6                    ..
         sta     $0440,x                         ; 80C9 9D 40 04                 .@.
@@ -104,7 +104,7 @@ BattleTurnEngine_Branch_80AD:
         brk                                     ; 80CE 00                       .
         db   $29,$C3,$0C                     ; 80CF 29 C3 0C                 )..
 ; ----------------------------------------------------------------------------
-        bcc     BattleTurnEngine_Branch_80E1    ; 80D2 90 0D                    ..
+        bcc     BattleDisplay_Branch_80E1       ; 80D2 90 0D                    ..
         brk                                     ; 80D4 00                       .
         db   $11,$1F                         ; 80D5 11 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -113,20 +113,20 @@ BattleTurnEngine_Branch_80AD:
         ldx     $C6                             ; 80DA A6 C6                    ..
         sta     $0440,x                         ; 80DC 9D 40 04                 .@.
         sta     $C4                             ; 80DF 85 C4                    ..
-BattleTurnEngine_Branch_80E1:
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 80E1 20 6E 94     n.
-BattleTurnEngine_Branch_80E4:
+BattleDisplay_Branch_80E1:
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 80E1 20 6E 94        n.
+BattleDisplay_Branch_80E4:
         inc     $C6                             ; 80E4 E6 C6                    ..
         ldx     $C6                             ; 80E6 A6 C6                    ..
         cpx     #$04                            ; 80E8 E0 04                    ..
-        bcc     BattleTurnEngine_Branch_808B    ; 80EA 90 9F                    ..
+        bcc     BattleDisplay_Branch_808B       ; 80EA 90 9F                    ..
         ldx     #$00                            ; 80EC A2 00                    ..
-BattleTurnEngine_Branch_80EE:
+BattleDisplay_Branch_80EE:
         stx     $C7                             ; 80EE 86 C7                    ..
         brk                                     ; 80F0 00                       .
         db   $29,$C3,$0E                     ; 80F1 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
-        bcc     BattleTurnEngine_Branch_811E    ; 80F4 90 28                    .(
+        bcc     BattleDisplay_Branch_811E       ; 80F4 90 28                    .(
         brk                                     ; 80F6 00                       .
         db   $2D,$B3                         ; 80F7 2D B3                    -.
 ; ----------------------------------------------------------------------------
@@ -135,133 +135,133 @@ BattleTurnEngine_Branch_80EE:
         db   $2E,$B3                         ; 80FC 2E B3                    ..
 ; ----------------------------------------------------------------------------
         sta     $C5                             ; 80FE 85 C5                    ..
-        jsr     BattleTurnEngine_ReserveQueuedTurnSlot; 8100 20 8F 9E            ..
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 8103 20 D1 9E       ..
-        jsr     BattleTurnEngine_EncodeTurnSlotReservation; 8106 20 D2 93        ..
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 8109 20 7F 9E ..
+        jsr     BattleDisplay_ReserveDisplaySlot; 8100 20 8F 9E                  ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 8103 20 D1 9E             ..
+        jsr     BattleDisplay_EncodeDisplaySlotReservation; 8106 20 D2 93        ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 8109 20 7F 9E   ..
         lda     $7392,x                         ; 810C BD 92 73                 ..s
-        beq     BattleTurnEngine_Branch_811E    ; 810F F0 0D                    ..
+        beq     BattleDisplay_Branch_811E       ; 810F F0 0D                    ..
         lda     $C9                             ; 8111 A5 C9                    ..
         ldy     $C7                             ; 8113 A4 C7                    ..
         sta     $06A0,y                         ; 8115 99 A0 06                 ...
         clc                                     ; 8118 18                       .
         adc     $7392,x                         ; 8119 7D 92 73                 }.s
         sta     $C9                             ; 811C 85 C9                    ..
-BattleTurnEngine_Branch_811E:
+BattleDisplay_Branch_811E:
         inc     $7B                             ; 811E E6 7B                    .{
         ldx     $7B                             ; 8120 A6 7B                    .{
         cpx     #$08                            ; 8122 E0 08                    ..
-        bcc     BattleTurnEngine_Branch_80EE    ; 8124 90 C8                    ..
-        jsr     BattleTurnEngine_LayoutQueuedCombatantXPositions; 8126 20 71 9C  q.
-        jsr     BattleTurnEngine_RebuildBattleOamFromTurnSlots; 8129 20 CF 81    ..
+        bcc     BattleDisplay_Branch_80EE       ; 8124 90 C8                    ..
+        jsr     BattleDisplay_LayoutQueuedCombatantXPositions; 8126 20 71 9C     q.
+        jsr     BattleDisplay_RebuildBattleOamFromDisplaySlots; 8129 20 CF 81    ..
         jmp     WaitForNmi                      ; 812C 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RefreshBattleTurnVisualState:
-        jsr     BattleTurnEngine_ResetBattleVisualState; 812F 20 D3 91           ..
+BattleDisplay_RefreshBattleTurnVisualState:
+        jsr     BattleDisplay_ResetBattleVisualState; 812F 20 D3 91              ..
         jsr     SuspendRenderingUpdates         ; 8132 20 AF C5                  ..
-        jsr     BattleTurnEngine_InitializeBattleBackdropWindow; 8135 20 92 92   ..
-        jsr     BattleTurnEngine_DecayFrontCombatantTimers; 8138 20 6B 92        k.
+        jsr     BattleDisplay_InitializeBattleBackdropWindow; 8135 20 92 92      ..
+        jsr     BattleDisplay_DecayFrontCombatantTimers; 8138 20 6B 92           k.
         ldx     #$00                            ; 813B A2 00                    ..
         stx     $C6                             ; 813D 86 C6                    ..
         stx     $C7                             ; 813F 86 C7                    ..
-BattleTurnEngine_Branch_8141:
+BattleDisplay_Branch_8141:
         ldx     $C6                             ; 8141 A6 C6                    ..
         ldy     $6E45,x                         ; 8143 BC 45 6E                 .En
         sty     $C4                             ; 8146 84 C4                    ..
         iny                                     ; 8148 C8                       .
-        beq     BattleTurnEngine_Branch_81B5    ; 8149 F0 6A                    .j
-        jsr     BattleTurnEngine_MapCurrentCombatantId; 814B 20 0C 9F            ..
+        beq     BattleDisplay_Branch_81B5       ; 8149 F0 6A                    .j
+        jsr     BattleDisplay_MapCurrentCombatantId; 814B 20 0C 9F               ..
         lda     $6E49,x                         ; 814E BD 49 6E                 .In
         sta     $C5                             ; 8151 85 C5                    ..
         stx     $C6                             ; 8153 86 C6                    ..
-        jsr     BattleTurnEngine_LoadCombatantGraphicMetricsIntoSlot; 8155 20 EF 92 ..
+        jsr     BattleDisplay_LoadCombatantGraphicMetricsIntoSlot; 8155 20 EF 92 ..
         lda     $C4                             ; 8158 A5 C4                    ..
         cmp     #$AE                            ; 815A C9 AE                    ..
-        beq     BattleTurnEngine_Branch_8184    ; 815C F0 26                    .&
+        beq     BattleDisplay_Branch_8184       ; 815C F0 26                    .&
         cmp     #$BC                            ; 815E C9 BC                    ..
-        beq     BattleTurnEngine_Branch_8184    ; 8160 F0 22                    ."
-        jsr     BattleTurnEngine_FindNonOverlappingQueuedOamX; 8162 20 DD 9A     ..
-        bcc     BattleTurnEngine_Branch_81AE    ; 8165 90 47                    .G
-        jsr     BattleTurnEngine_CountCombatantWidthWithoutAdvancing; 8167 20 4A 9C J.
-        bcc     BattleTurnEngine_Branch_81AE    ; 816A 90 42                    .B
-        jsr     BattleTurnEngine_TrySecondaryCombatantPlacementGroup; 816C 20 39 94 9.
-        bcc     BattleTurnEngine_Branch_81AE    ; 816F 90 3D                    .=
-        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 8171 20 F2 93 ..
-        bcc     BattleTurnEngine_Branch_81AE    ; 8174 90 38                    .8
+        beq     BattleDisplay_Branch_8184       ; 8160 F0 22                    ."
+        jsr     BattleDisplay_FindNonOverlappingQueuedOamX; 8162 20 DD 9A        ..
+        bcc     BattleDisplay_Branch_81AE       ; 8165 90 47                    .G
+        jsr     BattleDisplay_CountCombatantWidthWithoutAdvancing; 8167 20 4A 9C J.
+        bcc     BattleDisplay_Branch_81AE       ; 816A 90 42                    .B
+        jsr     BattleDisplay_TrySecondaryCombatantPlacementGroup; 816C 20 39 94 9.
+        bcc     BattleDisplay_Branch_81AE       ; 816F 90 3D                    .=
+        jsr     BattleDisplay_TryPrimaryCombatantPlacementGroup; 8171 20 F2 93   ..
+        bcc     BattleDisplay_Branch_81AE       ; 8174 90 38                    .8
         lda     $C4                             ; 8176 A5 C4                    ..
-        beq     BattleTurnEngine_Branch_8184    ; 8178 F0 0A                    ..
-        jsr     BattleTurnEngine_CheckGraphicPpuHighByteOverflow; 817A 20 82 96  ..
-        bcc     BattleTurnEngine_Branch_81AE    ; 817D 90 2F                    ./
-        jsr     BattleTurnEngine_CheckGraphicPpuLowByteOverflow; 817F 20 86 96   ..
-        bcc     BattleTurnEngine_Branch_81AE    ; 8182 90 2A                    .*
-BattleTurnEngine_Branch_8184:
-        jsr     BattleTurnEngine_AccumulateCombatantWidths; 8184 20 54 9C        T.
-        bcc     BattleTurnEngine_Branch_81AE    ; 8187 90 25                    .%
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 8189 20 6E 94     n.
-        jsr     BattleTurnEngine_AssignSecondaryPlacementRecord; 818C 20 96 94   ..
+        beq     BattleDisplay_Branch_8184       ; 8178 F0 0A                    ..
+        jsr     BattleDisplay_CheckGraphicPpuHighByteOverflow; 817A 20 82 96     ..
+        bcc     BattleDisplay_Branch_81AE       ; 817D 90 2F                    ./
+        jsr     BattleDisplay_CheckGraphicPpuLowByteOverflow; 817F 20 86 96      ..
+        bcc     BattleDisplay_Branch_81AE       ; 8182 90 2A                    .*
+BattleDisplay_Branch_8184:
+        jsr     BattleDisplay_AccumulateCombatantWidths; 8184 20 54 9C           T.
+        bcc     BattleDisplay_Branch_81AE       ; 8187 90 25                    .%
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 8189 20 6E 94        n.
+        jsr     BattleDisplay_AssignSecondaryPlacementRecord; 818C 20 96 94      ..
         lda     $C4                             ; 818F A5 C4                    ..
         cmp     #$AE                            ; 8191 C9 AE                    ..
-        beq     BattleTurnEngine_Branch_8198    ; 8193 F0 03                    ..
-        jsr     BattleTurnEngine_WriteQueuedCombatantOamStrip; 8195 20 4E 9B     N.
-BattleTurnEngine_Branch_8198:
+        beq     BattleDisplay_Branch_8198       ; 8193 F0 03                    ..
+        jsr     BattleDisplay_WriteQueuedCombatantOamStrip; 8195 20 4E 9B        N.
+BattleDisplay_Branch_8198:
         ldx     $C6                             ; 8198 A6 C6                    ..
         lda     $C4                             ; 819A A5 C4                    ..
         sta     $0440,x                         ; 819C 9D 40 04                 .@.
-        beq     BattleTurnEngine_Branch_81A4    ; 819F F0 03                    ..
-        jsr     BattleTurnEngine_LoadCombatantBattleGraphic; 81A1 20 9C 96       ..
-BattleTurnEngine_Branch_81A4:
+        beq     BattleDisplay_Branch_81A4       ; 819F F0 03                    ..
+        jsr     BattleDisplay_LoadCombatantBattleGraphic; 81A1 20 9C 96          ..
+BattleDisplay_Branch_81A4:
         lda     $C5                             ; 81A4 A5 C5                    ..
         ldx     $C6                             ; 81A6 A6 C6                    ..
         sta     $6E49,x                         ; 81A8 9D 49 6E                 .In
-        jmp     BattleTurnEngine_Branch_81B5    ; 81AB 4C B5 81                 L..
+        jmp     BattleDisplay_Branch_81B5       ; 81AB 4C B5 81                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_81AE:
+BattleDisplay_Branch_81AE:
         ldx     $C6                             ; 81AE A6 C6                    ..
-        jsr     BattleTurnEngine_CompactFrontCombatantSlots; 81B0 20 F4 81       ..
+        jsr     BattleDisplay_CompactFrontCombatantSlots; 81B0 20 F4 81          ..
         dec     $C6                             ; 81B3 C6 C6                    ..
-BattleTurnEngine_Branch_81B5:
+BattleDisplay_Branch_81B5:
         inc     $C6                             ; 81B5 E6 C6                    ..
         ldx     $C6                             ; 81B7 A6 C6                    ..
         cpx     #$04                            ; 81B9 E0 04                    ..
-        bcc     BattleTurnEngine_Branch_8141    ; 81BB 90 84                    ..
-        jsr     BattleTurnEngine_RebuildTurnSlotReservations; 81BD 20 AB 93      ..
-        jsr     BattleTurnEngine_LayoutQueuedCombatantXPositions; 81C0 20 71 9C  q.
-        jsr     BattleTurnEngine_PreloadDependentBattleGraphics; 81C3 20 AB 85   ..
-        jsr     BattleTurnEngine_RebuildBattleOamFromTurnSlots; 81C6 20 CF 81    ..
+        bcc     BattleDisplay_Branch_8141       ; 81BB 90 84                    ..
+        jsr     BattleDisplay_RebuildDisplaySlotReservations; 81BD 20 AB 93      ..
+        jsr     BattleDisplay_LayoutQueuedCombatantXPositions; 81C0 20 71 9C     q.
+        jsr     BattleDisplay_PreloadDependentBattleGraphics; 81C3 20 AB 85      ..
+        jsr     BattleDisplay_RebuildBattleOamFromDisplaySlots; 81C6 20 CF 81    ..
         jsr     WaitForNmi                      ; 81C9 20 74 FF                  t.
         jmp     FadePaletteFromBlack            ; 81CC 4C BF C5                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RebuildBattleOamFromTurnSlots:
+BattleDisplay_RebuildBattleOamFromDisplaySlots:
         ldx     #$00                            ; 81CF A2 00                    ..
         lda     #$F7                            ; 81D1 A9 F7                    ..
-BattleTurnEngine_Branch_81D3:
+BattleDisplay_Branch_81D3:
         sta     $0200,x                         ; 81D3 9D 00 02                 ...
         inx                                     ; 81D6 E8                       .
         inx                                     ; 81D7 E8                       .
         inx                                     ; 81D8 E8                       .
         inx                                     ; 81D9 E8                       .
-        bne     BattleTurnEngine_Branch_81D3    ; 81DA D0 F7                    ..
+        bne     BattleDisplay_Branch_81D3       ; 81DA D0 F7                    ..
         lda     #$02                            ; 81DC A9 02                    ..
         sta     OAMDMA                          ; 81DE 8D 14 40                 ..@
         jsr     ResumeRenderingAfterPpuWork     ; 81E1 20 8F C5                  ..
         lda     #$00                            ; 81E4 A9 00                    ..
         sta     $C7                             ; 81E6 85 C7                    ..
-BattleTurnEngine_Branch_81E8:
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 81E8 20 22 98     ".
+BattleDisplay_Branch_81E8:
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 81E8 20 22 98        ".
         inc     $C7                             ; 81EB E6 C7                    ..
         lda     $C7                             ; 81ED A5 C7                    ..
         cmp     #$08                            ; 81EF C9 08                    ..
-        bne     BattleTurnEngine_Branch_81E8    ; 81F1 D0 F5                    ..
+        bne     BattleDisplay_Branch_81E8       ; 81F1 D0 F5                    ..
         rts                                     ; 81F3 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CompactFrontCombatantSlots:
+BattleDisplay_CompactFrontCombatantSlots:
         lda     $6E46,x                         ; 81F4 BD 46 6E                 .Fn
         sta     $6E45,x                         ; 81F7 9D 45 6E                 .En
         lda     $6E4A,x                         ; 81FA BD 4A 6E                 .Jn
         sta     $6E49,x                         ; 81FD 9D 49 6E                 .In
         inx                                     ; 8200 E8                       .
         cpx     #$04                            ; 8201 E0 04                    ..
-        bne     BattleTurnEngine_CompactFrontCombatantSlots; 8203 D0 EF         ..
+        bne     BattleDisplay_CompactFrontCombatantSlots; 8203 D0 EF            ..
         dex                                     ; 8205 CA                       .
         lda     #$FF                            ; 8206 A9 FF                    ..
         sta     $6E45,x                         ; 8208 9D 45 6E                 .En
@@ -269,59 +269,59 @@ BattleTurnEngine_CompactFrontCombatantSlots:
         sta     $6E49,x                         ; 820D 9D 49 6E                 .In
         rts                                     ; 8210 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearResolvedTurnSlot:
+BattleDisplay_ClearResolvedDisplaySlot:
         lda     $C7                             ; 8211 A5 C7                    ..
         pha                                     ; 8213 48                       H
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 8214 20 D1 9E       ..
-        jsr     BattleTurnEngine_RemoveCurrentTurnSlotAndCollapseDisplay; 8217 20 CC 82 ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 8214 20 D1 9E             ..
+        jsr     BattleDisplay_RemoveCurrentDisplaySlotAndCollapseDisplay; 8217 20 CC 82 ..
         pla                                     ; 821A 68                       h
         sta     $C7                             ; 821B 85 C7                    ..
-        jmp     ClearReservedQueuedTurnSlot     ; 821D 4C F4 9E                 L..
+        jmp     ClearReservedDisplaySlot        ; 821D 4C F4 9E                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RemoveResolvedTurnSlot:
+BattleDisplay_RemoveResolvedDisplaySlot:
         lda     $C7                             ; 8220 A5 C7                    ..
         pha                                     ; 8222 48                       H
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 8223 20 D1 9E       ..
-        jsr     BattleTurnEngine_RunResolvedTurnSlotRemoval; 8226 20 2F 82       /.
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 8223 20 D1 9E             ..
+        jsr     BattleDisplay_RunResolvedDisplaySlotRemoval; 8226 20 2F 82       /.
         pla                                     ; 8229 68                       h
         sta     $C7                             ; 822A 85 C7                    ..
-        jmp     ClearReservedQueuedTurnSlot     ; 822C 4C F4 9E                 L..
+        jmp     ClearReservedDisplaySlot        ; 822C 4C F4 9E                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunResolvedTurnSlotRemoval:
-        jsr     BattleTurnEngine_CheckSpecialBlinkGate; 822F 20 67 83            g.
-        bcs     BattleTurnEngine_Branch_8237    ; 8232 B0 03                    ..
-        jmp     BattleTurnEngine_RemoveCurrentTurnSlotAndCollapseDisplay; 8234 4C CC 82L..
+BattleDisplay_RunResolvedDisplaySlotRemoval:
+        jsr     BattleDisplay_CheckSpecialBlinkGate; 822F 20 67 83               g.
+        bcs     BattleDisplay_Branch_8237       ; 8232 B0 03                    ..
+        jmp     BattleDisplay_RemoveCurrentDisplaySlotAndCollapseDisplay; 8234 4C CC 82L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8237:
+BattleDisplay_Branch_8237:
         ldx     $6E45                           ; 8237 AE 45 6E                 .En
         cpx     #$AE                            ; 823A E0 AE                    ..
-        bne     BattleTurnEngine_Branch_8263    ; 823C D0 25                    .%
+        bne     BattleDisplay_Branch_8263       ; 823C D0 25                    .%
         lda     #$30                            ; 823E A9 30                    .0
-        jsr     BattleTurnEngine_FlashBattlePatternFill; 8240 20 7F 83           ..
+        jsr     BattleDisplay_FlashBattlePatternFill; 8240 20 7F 83              ..
         lda     #$20                            ; 8243 A9 20                    .
-        jsr     BattleTurnEngine_FlashBattlePatternFill; 8245 20 7F 83           ..
+        jsr     BattleDisplay_FlashBattlePatternFill; 8245 20 7F 83              ..
         lda     #$10                            ; 8248 A9 10                    ..
-        jsr     BattleTurnEngine_FlashBattlePatternFill; 824A 20 7F 83           ..
+        jsr     BattleDisplay_FlashBattlePatternFill; 824A 20 7F 83              ..
         lda     #$00                            ; 824D A9 00                    ..
-        jsr     BattleTurnEngine_FlashBattlePatternFill; 824F 20 7F 83           ..
+        jsr     BattleDisplay_FlashBattlePatternFill; 824F 20 7F 83              ..
         brk                                     ; 8252 00                       .
         db   $00,$FB                         ; 8253 00 FB                    ..
 ; ----------------------------------------------------------------------------
         ldy     #$00                            ; 8255 A0 00                    ..
         lda     #$3F                            ; 8257 A9 3F                    .?
         sta     $04                             ; 8259 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; 825B 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; 825B 20 1D 9C                  ..
         lda     #$0F                            ; 825E A9 0F                    ..
-        jmp     BattleTurnEngine_FlashBattlePatternFill; 8260 4C 7F 83          L..
+        jmp     BattleDisplay_FlashBattlePatternFill; 8260 4C 7F 83             L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8263:
+BattleDisplay_Branch_8263:
         lda     #$FF                            ; 8263 A9 FF                    ..
-        jsr     BattleTurnEngine_FillBattlePatternBuffer; 8265 20 B7 83          ..
+        jsr     BattleDisplay_FillBattlePatternBuffer; 8265 20 B7 83             ..
         jsr     SubmitPaletteWithoutFade        ; 8268 20 B9 C5                  ..
         ldy     #$00                            ; 826B A0 00                    ..
         lda     #$3F                            ; 826D A9 3F                    .?
         sta     $04                             ; 826F 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; 8271 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; 8271 20 1D 9C                  ..
         jsr     WaitForNmi                      ; 8274 20 74 FF                  t.
         lda     $6E45                           ; 8277 AD 45 6E                 .En
         cmp     #$BC                            ; 827A C9 BC                    ..
@@ -337,10 +337,10 @@ BattleTurnEngine_Branch_8263:
         sta     NextTextCharacter               ; 8290 8D 02 03                 ...
         lda     #$00                            ; 8293 A9 00                    ..
         ldx     #$7F                            ; 8295 A2 7F                    ..
-BattleTurnEngine_Branch_8297:
+BattleDisplay_Branch_8297:
         sta     $0303,x                         ; 8297 9D 03 03                 ...
         dex                                     ; 829A CA                       .
-        bpl     BattleTurnEngine_Branch_8297    ; 829B 10 FA                    ..
+        bpl     BattleDisplay_Branch_8297       ; 829B 10 FA                    ..
         inc     $050B                           ; 829D EE 0B 05                 ...
         jsr     RequestPpuUpdateAndWait         ; 82A0 20 2D C6                  -.
         lda     #$C0                            ; 82A3 A9 C0                    ..
@@ -360,12 +360,12 @@ BattleTurnEngine_Branch_8297:
         sta     $1F                             ; 82C7 85 1F                    ..
         jmp     RemoveQueuedCombatantSlot       ; 82C9 4C CF 82                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RemoveCurrentTurnSlotAndCollapseDisplay:
-        jsr     BattleTurnEngine_EraseQueuedCombatantGraphic; 82CC 20 40 9A      @.
+BattleDisplay_RemoveCurrentDisplaySlotAndCollapseDisplay:
+        jsr     BattleDisplay_EraseQueuedCombatantGraphic; 82CC 20 40 9A         @.
 RemoveQueuedCombatantSlot:
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 82CF 20 7F 9E ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 82CF 20 7F 9E   ..
         stx     $C6                             ; 82D2 86 C6                    ..
-        jsr     BattleTurnEngine_RepackQueuedOamPositions; 82D4 20 8C 9B         ..
+        jsr     BattleDisplay_RepackQueuedOamPositions; 82D4 20 8C 9B            ..
         lda     #$00                            ; 82D7 A9 00                    ..
         ldx     $C7                             ; 82D9 A6 C7                    ..
         sta     $0690,x                         ; 82DB 9D 90 06                 ...
@@ -374,45 +374,45 @@ RemoveQueuedCombatantSlot:
         sta     $06A0,x                         ; 82E3 9D A0 06                 ...
         jmp     RemoveCombatantPlacementRecord  ; 82E6 4C 92 9A                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_BlinkResolvedTurnSlot:
-        jsr     BattleTurnEngine_CheckSpecialBlinkGate; 82E9 20 67 83            g.
-        bcc     BattleTurnEngine_Branch_8328    ; 82EC 90 3A                    .:
+BattleDisplay_BlinkResolvedDisplaySlot:
+        jsr     BattleDisplay_CheckSpecialBlinkGate; 82E9 20 67 83               g.
+        bcc     BattleDisplay_Branch_8328       ; 82EC 90 3A                    .:
         ldx     #$04                            ; 82EE A2 04                    ..
-BattleTurnEngine_Branch_82F0:
+BattleDisplay_Branch_82F0:
         txa                                     ; 82F0 8A                       .
         pha                                     ; 82F1 48                       H
-        jsr     BattleTurnEngine_CopyPatternBufferToDecodeScratch; 82F2 20 53 96 S.
+        jsr     BattleDisplay_CopyPatternBufferToDecodeScratch; 82F2 20 53 96    S.
         ldy     #$03                            ; 82F5 A0 03                    ..
         lda     #$FF                            ; 82F7 A9 FF                    ..
-        jsr     BattleTurnEngine_FillBattlePatternBuffer; 82F9 20 B7 83          ..
+        jsr     BattleDisplay_FillBattlePatternBuffer; 82F9 20 B7 83             ..
         ldx     $6E45                           ; 82FC AE 45 6E                 .En
         cpx     #$AE                            ; 82FF E0 AE                    ..
-        bne     BattleTurnEngine_Branch_830F    ; 8301 D0 0C                    ..
+        bne     BattleDisplay_Branch_830F       ; 8301 D0 0C                    ..
         lda     $6E7E                           ; 8303 AD 7E 6E                 .~n
         cmp     #$07                            ; 8306 C9 07                    ..
-        bne     BattleTurnEngine_Branch_830F    ; 8308 D0 05                    ..
+        bne     BattleDisplay_Branch_830F       ; 8308 D0 05                    ..
         lda     #$30                            ; 830A A9 30                    .0
-        jsr     BattleTurnEngine_FillBattlePatternBufferWithSentinels; 830C 20 A5 83 ..
-BattleTurnEngine_Branch_830F:
+        jsr     BattleDisplay_FillBattlePatternBufferWithSentinels; 830C 20 A5 83 ..
+BattleDisplay_Branch_830F:
         jsr     SubmitPaletteWithoutFade        ; 830F 20 B9 C5                  ..
         ldx     #$03                            ; 8312 A2 03                    ..
         jsr     WaitFrames                      ; 8314 20 0C C9                  ..
-        jsr     BattleTurnEngine_CopyDecodeScratchToPatternBuffer; 8317 20 65 96 e.
+        jsr     BattleDisplay_CopyDecodeScratchToPatternBuffer; 8317 20 65 96    e.
         jsr     SubmitPaletteWithoutFade        ; 831A 20 B9 C5                  ..
         ldx     #$03                            ; 831D A2 03                    ..
         jsr     WaitFrames                      ; 831F 20 0C C9                  ..
         pla                                     ; 8322 68                       h
         tax                                     ; 8323 AA                       .
         dex                                     ; 8324 CA                       .
-        bne     BattleTurnEngine_Branch_82F0    ; 8325 D0 C9                    ..
+        bne     BattleDisplay_Branch_82F0       ; 8325 D0 C9                    ..
         rts                                     ; 8327 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8328:
+BattleDisplay_Branch_8328:
         lda     $C7                             ; 8328 A5 C7                    ..
         pha                                     ; 832A 48                       H
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 832B 20 D1 9E       ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 832B 20 D1 9E             ..
         ldx     #$08                            ; 832E A2 08                    ..
-BattleTurnEngine_Branch_8330:
+BattleDisplay_Branch_8330:
         txa                                     ; 8330 8A                       .
         pha                                     ; 8331 48                       H
         and     #$01                            ; 8332 29 01                    ).
@@ -426,51 +426,51 @@ BattleTurnEngine_Branch_8330:
         clc                                     ; 8342 18                       .
         adc     $050C                           ; 8343 6D 0C 05                 m..
         pha                                     ; 8346 48                       H
-        jsr     BattleTurnEngine_JumpViaScratchPointer; 8347 20 64 83            d.
+        jsr     BattleDisplay_JumpViaScratchPointer; 8347 20 64 83               d.
         pla                                     ; 834A 68                       h
         sec                                     ; 834B 38                       8
         sbc     $050C                           ; 834C ED 0C 05                 ...
-        beq     BattleTurnEngine_Branch_835B    ; 834F F0 0A                    ..
-        bcc     BattleTurnEngine_Branch_835B    ; 8351 90 08                    ..
+        beq     BattleDisplay_Branch_835B       ; 834F F0 0A                    ..
+        bcc     BattleDisplay_Branch_835B       ; 8351 90 08                    ..
         cmp     #$03                            ; 8353 C9 03                    ..
-        bcs     BattleTurnEngine_Branch_835B    ; 8355 B0 04                    ..
+        bcs     BattleDisplay_Branch_835B       ; 8355 B0 04                    ..
         tax                                     ; 8357 AA                       .
         jsr     WaitFrames                      ; 8358 20 0C C9                  ..
-BattleTurnEngine_Branch_835B:
+BattleDisplay_Branch_835B:
         pla                                     ; 835B 68                       h
         tax                                     ; 835C AA                       .
         dex                                     ; 835D CA                       .
-        bne     BattleTurnEngine_Branch_8330    ; 835E D0 D0                    ..
+        bne     BattleDisplay_Branch_8330       ; 835E D0 D0                    ..
         pla                                     ; 8360 68                       h
         sta     $C7                             ; 8361 85 C7                    ..
         rts                                     ; 8363 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_JumpViaScratchPointer:
+BattleDisplay_JumpViaScratchPointer:
         jmp     ($0000)                         ; 8364 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckSpecialBlinkGate:
+BattleDisplay_CheckSpecialBlinkGate:
         ldx     #$80                            ; 8367 A2 80                    ..
         brk                                     ; 8369 00                       .
         db   $29,$C3,$0E                     ; 836A 29 C3 0E                 )..
 ; ----------------------------------------------------------------------------
         cmp     #$01                            ; 836D C9 01                    ..
-        beq     BattleTurnEngine_Branch_8373    ; 836F F0 02                    ..
-BattleTurnEngine_Branch_8371:
+        beq     BattleDisplay_Branch_8373       ; 836F F0 02                    ..
+BattleDisplay_Branch_8371:
         clc                                     ; 8371 18                       .
         rts                                     ; 8372 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8373:
+BattleDisplay_Branch_8373:
         sec                                     ; 8373 38                       8
         ldx     $05FE                           ; 8374 AE FE 05                 ...
         inx                                     ; 8377 E8                       .
-        bne     BattleTurnEngine_Branch_8371    ; 8378 D0 F7                    ..
+        bne     BattleDisplay_Branch_8371       ; 8378 D0 F7                    ..
         rts                                     ; 837A 60                       `
 ; ----------------------------------------------------------------------------
         db   $40                             ; 837B 40                       @
         db   $9A,$22,$98                     ; 837C 9A 22 98                 .".
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FlashBattlePatternFill:
-        jsr     BattleTurnEngine_FillBattlePatternBufferWithSentinels; 837F 20 A5 83 ..
+BattleDisplay_FlashBattlePatternFill:
+        jsr     BattleDisplay_FillBattlePatternBufferWithSentinels; 837F 20 A5 83 ..
         jsr     SubmitPaletteWithoutFade        ; 8382 20 B9 C5                  ..
         jsr     DecrementAudioGlobalLowNibble   ; 8385 20 C6 EE                  ..
         ldx     #$0E                            ; 8388 A2 0E                    ..
@@ -485,8 +485,8 @@ BattleTurnEngine_FlashBattlePatternFill:
         ldx     #$0E                            ; 83A0 A2 0E                    ..
         jmp     WaitFrames                      ; 83A2 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FillBattlePatternBufferWithSentinels:
-        jsr     BattleTurnEngine_FillBattlePatternBuffer; 83A5 20 B7 83          ..
+BattleDisplay_FillBattlePatternBufferWithSentinels:
+        jsr     BattleDisplay_FillBattlePatternBuffer; 83A5 20 B7 83             ..
         lda     #$FF                            ; 83A8 A9 FF                    ..
         sta     $0606                           ; 83AA 8D 06 06                 ...
         sta     $060A                           ; 83AD 8D 0A 06                 ...
@@ -494,36 +494,36 @@ BattleTurnEngine_FillBattlePatternBufferWithSentinels:
         sta     $060F                           ; 83B3 8D 0F 06                 ...
         rts                                     ; 83B6 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FillBattlePatternBuffer:
+BattleDisplay_FillBattlePatternBuffer:
         ldy     #$03                            ; 83B7 A0 03                    ..
-BattleTurnEngine_Branch_83B9:
+BattleDisplay_Branch_83B9:
         sta     $05FC,y                         ; 83B9 99 FC 05                 ...
         iny                                     ; 83BC C8                       .
         cpy     #$1A                            ; 83BD C0 1A                    ..
-        bcc     BattleTurnEngine_Branch_83B9    ; 83BF 90 F8                    ..
+        bcc     BattleDisplay_Branch_83B9       ; 83BF 90 F8                    ..
         rts                                     ; 83C1 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunBattleScreenShake:
+BattleDisplay_RunBattleScreenShake:
         jsr     WaitForNmi                      ; 83C2 20 74 FF                  t.
         lda     #$02                            ; 83C5 A9 02                    ..
         sta     $D6                             ; 83C7 85 D6                    ..
         ldy     #$00                            ; 83C9 A0 00                    ..
-BattleTurnEngine_Branch_83CB:
+BattleDisplay_Branch_83CB:
         sty     $D7                             ; 83CB 84 D7                    ..
         tya                                     ; 83CD 98                       .
         ldy     #$01                            ; 83CE A0 01                    ..
         and     #$02                            ; 83D0 29 02                    ).
-        beq     BattleTurnEngine_Branch_83D7    ; 83D2 F0 03                    ..
+        beq     BattleDisplay_Branch_83D7       ; 83D2 F0 03                    ..
         lda     #$03                            ; 83D4 A9 03                    ..
         dey                                     ; 83D6 88                       .
-BattleTurnEngine_Branch_83D7:
+BattleDisplay_Branch_83D7:
         tax                                     ; 83D7 AA                       .
         lda     $0508,y                         ; 83D8 B9 08 05                 ...
         clc                                     ; 83DB 18                       .
         adc     $D6                             ; 83DC 65 D6                    e.
         sta     $0508,y                         ; 83DE 99 08 05                 ...
         ldy     #$3F                            ; 83E1 A0 3F                    .?
-BattleTurnEngine_Branch_83E3:
+BattleDisplay_Branch_83E3:
         txa                                     ; 83E3 8A                       .
         pha                                     ; 83E4 48                       H
         ldx     #$00                            ; 83E5 A2 00                    ..
@@ -541,7 +541,7 @@ BattleTurnEngine_Branch_83E3:
         pla                                     ; 83FA 68                       h
         tax                                     ; 83FB AA                       .
         dey                                     ; 83FC 88                       .
-        bpl     BattleTurnEngine_Branch_83E3    ; 83FD 10 E4                    ..
+        bpl     BattleDisplay_Branch_83E3       ; 83FD 10 E4                    ..
         ldx     #$02                            ; 83FF A2 02                    ..
         jsr     WaitFrames                      ; 8401 20 0C C9                  ..
         lda     $D6                             ; 8404 A5 D6                    ..
@@ -551,35 +551,35 @@ BattleTurnEngine_Branch_83E3:
         ldy     $D7                             ; 840C A4 D7                    ..
         iny                                     ; 840E C8                       .
         cpy     #$0C                            ; 840F C0 0C                    ..
-        bne     BattleTurnEngine_Branch_83CB    ; 8411 D0 B8                    ..
+        bne     BattleDisplay_Branch_83CB       ; 8411 D0 B8                    ..
         rts                                     ; 8413 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunSlowBattlePatternWipe:
+BattleDisplay_RunSlowBattlePatternWipe:
         ldx     #$03                            ; 8414 A2 03                    ..
         stx     $D6                             ; 8416 86 D6                    ..
         ldx     #$05                            ; 8418 A2 05                    ..
-        bne     BattleTurnEngine_Branch_8422    ; 841A D0 06                    ..
-BattleTurnEngine_RunRapidBattlePatternWipe:
+        bne     BattleDisplay_Branch_8422       ; 841A D0 06                    ..
+BattleDisplay_RunRapidBattlePatternWipe:
         ldx     #$01                            ; 841C A2 01                    ..
         stx     $D6                             ; 841E 86 D6                    ..
         ldx     #$08                            ; 8420 A2 08                    ..
-BattleTurnEngine_Branch_8422:
+BattleDisplay_Branch_8422:
         lda     #$98                            ; 8422 A9 98                    ..
         sta     PPUMASK                         ; 8424 8D 01 20                 ..
-BattleTurnEngine_Branch_8427:
+BattleDisplay_Branch_8427:
         txa                                     ; 8427 8A                       .
         pha                                     ; 8428 48                       H
-        jsr     BattleTurnEngine_CopyPatternBufferToDecodeScratch; 8429 20 53 96 S.
+        jsr     BattleDisplay_CopyPatternBufferToDecodeScratch; 8429 20 53 96    S.
         tya                                     ; 842C 98                       .
         pha                                     ; 842D 48                       H
-BattleTurnEngine_Branch_842E:
+BattleDisplay_Branch_842E:
         sta     $05FB,x                         ; 842E 9D FB 05                 ...
         dex                                     ; 8431 CA                       .
-        bne     BattleTurnEngine_Branch_842E    ; 8432 D0 FA                    ..
+        bne     BattleDisplay_Branch_842E       ; 8432 D0 FA                    ..
         jsr     SubmitPaletteWithoutFade        ; 8434 20 B9 C5                  ..
         ldx     $D6                             ; 8437 A6 D6                    ..
         jsr     WaitFrames                      ; 8439 20 0C C9                  ..
-        jsr     BattleTurnEngine_CopyDecodeScratchToPatternBuffer; 843C 20 65 96 e.
+        jsr     BattleDisplay_CopyDecodeScratchToPatternBuffer; 843C 20 65 96    e.
         jsr     SubmitPaletteWithoutFade        ; 843F 20 B9 C5                  ..
         ldx     $D6                             ; 8442 A6 D6                    ..
         jsr     WaitFrames                      ; 8444 20 0C C9                  ..
@@ -588,54 +588,54 @@ BattleTurnEngine_Branch_842E:
         pla                                     ; 8449 68                       h
         tax                                     ; 844A AA                       .
         dex                                     ; 844B CA                       .
-        bne     BattleTurnEngine_Branch_8427    ; 844C D0 D9                    ..
+        bne     BattleDisplay_Branch_8427       ; 844C D0 D9                    ..
         lda     #$18                            ; 844E A9 18                    ..
         sta     PPUMASK                         ; 8450 8D 01 20                 ..
         rts                                     ; 8453 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunBattlePatternAnimationSequence:
+BattleDisplay_RunBattlePatternAnimationSequence:
         brk                                     ; 8454 00                       .
         db   $A6,$FB                         ; 8455 A6 FB                    ..
 ; ----------------------------------------------------------------------------
         lda     #$06                            ; 8457 A9 06                    ..
         sta     $03                             ; 8459 85 03                    ..
         lda     #$06                            ; 845B A9 06                    ..
-        jsr     BattleTurnEngine_RepeatBattlePatternFrameCycle; 845D 20 80 84    ..
+        jsr     BattleDisplay_RepeatBattlePatternFrameCycle; 845D 20 80 84       ..
         brk                                     ; 8460 00                       .
         db   $A7,$FB                         ; 8461 A7 FB                    ..
 ; ----------------------------------------------------------------------------
         lda     #$09                            ; 8463 A9 09                    ..
         sta     $03                             ; 8465 85 03                    ..
         lda     #$02                            ; 8467 A9 02                    ..
-        jsr     BattleTurnEngine_RepeatBattlePatternFrameCycle; 8469 20 80 84    ..
+        jsr     BattleDisplay_RepeatBattlePatternFrameCycle; 8469 20 80 84       ..
         lda     #$0B                            ; 846C A9 0B                    ..
         sta     $03                             ; 846E 85 03                    ..
         lda     #$00                            ; 8470 A9 00                    ..
         sta     $01                             ; 8472 85 01                    ..
-BattleTurnEngine_Branch_8474:
-        jsr     BattleTurnEngine_LoadBattlePatternFrame; 8474 20 96 84           ..
+BattleDisplay_Branch_8474:
+        jsr     BattleDisplay_LoadBattlePatternFrame; 8474 20 96 84              ..
         inc     $01                             ; 8477 E6 01                    ..
         lda     $01                             ; 8479 A5 01                    ..
         cmp     #$03                            ; 847B C9 03                    ..
-        bcc     BattleTurnEngine_Branch_8474    ; 847D 90 F5                    ..
+        bcc     BattleDisplay_Branch_8474       ; 847D 90 F5                    ..
         rts                                     ; 847F 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RepeatBattlePatternFrameCycle:
+BattleDisplay_RepeatBattlePatternFrameCycle:
         sta     $00                           ; 8480 85 00                    ..
-BattleTurnEngine_Branch_8482:
+BattleDisplay_Branch_8482:
         lda     #$00                            ; 8482 A9 00                    ..
         sta     $01                             ; 8484 85 01                    ..
-BattleTurnEngine_Branch_8486:
-        jsr     BattleTurnEngine_LoadBattlePatternFrame; 8486 20 96 84           ..
+BattleDisplay_Branch_8486:
+        jsr     BattleDisplay_LoadBattlePatternFrame; 8486 20 96 84              ..
         inc     $01                             ; 8489 E6 01                    ..
         lda     $01                             ; 848B A5 01                    ..
         cmp     #$04                            ; 848D C9 04                    ..
-        bcc     BattleTurnEngine_Branch_8486    ; 848F 90 F5                    ..
+        bcc     BattleDisplay_Branch_8486       ; 848F 90 F5                    ..
         dec     $00                           ; 8491 C6 00                    ..
-        bne     BattleTurnEngine_Branch_8482    ; 8493 D0 ED                    ..
+        bne     BattleDisplay_Branch_8482       ; 8493 D0 ED                    ..
         rts                                     ; 8495 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadBattlePatternFrame:
+BattleDisplay_LoadBattlePatternFrame:
         ldx     $01                             ; 8496 A6 01                    ..
         lda     $84C0,x                         ; 8498 BD C0 84                 ...
         sta     $02                             ; 849B 85 02                    ..
@@ -646,17 +646,17 @@ BattleTurnEngine_LoadBattlePatternFrame:
         adc     $02                             ; 84A1 65 02                    e.
         tax                                     ; 84A3 AA                       .
         ldy     #$00                            ; 84A4 A0 00                    ..
-BattleTurnEngine_Branch_84A6:
+BattleDisplay_Branch_84A6:
         lda     $84C4,x                         ; 84A6 BD C4 84                 ...
         sta     $0600,y                         ; 84A9 99 00 06                 ...
         inx                                     ; 84AC E8                       .
         iny                                     ; 84AD C8                       .
         cpy     #$03                            ; 84AE C0 03                    ..
-        bne     BattleTurnEngine_Branch_84B4    ; 84B0 D0 02                    ..
+        bne     BattleDisplay_Branch_84B4       ; 84B0 D0 02                    ..
         ldy     #$09                            ; 84B2 A0 09                    ..
-BattleTurnEngine_Branch_84B4:
+BattleDisplay_Branch_84B4:
         cpy     #$0F                            ; 84B4 C0 0F                    ..
-        bcc     BattleTurnEngine_Branch_84A6    ; 84B6 90 EE                    ..
+        bcc     BattleDisplay_Branch_84A6       ; 84B6 90 EE                    ..
         jsr     SubmitPaletteWithoutFade        ; 84B8 20 B9 C5                  ..
         ldx     $03                             ; 84BB A6 03                    ..
         jmp     WaitFrames                      ; 84BD 4C 0C C9                 L..
@@ -667,64 +667,64 @@ BattleTurnEngine_Branch_84B4:
         db   $28,$18,$20,$10,$35,$32,$29,$39 ; 84D4 28 18 20 10 35 32 29 39  (. .52)9
         db   $36,$30,$15                     ; 84DC 36 30 15                 60.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AddCombatantToFirstFreeTurnSlot:
+BattleDisplay_AddCombatantToFirstFreeDisplaySlot:
         lda     $C7                             ; 84DF A5 C7                    ..
         pha                                     ; 84E1 48                       H
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 84E2 20 D1 9E       ..
-        bcs     BattleTurnEngine_Branch_852A    ; 84E5 B0 43                    .C
-        jsr     BattleTurnEngine_FindFreeQueuedTurnSlot; 84E7 20 5E 9E           ^.
-        bcc     BattleTurnEngine_Branch_852A    ; 84EA 90 3E                    .>
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 84E2 20 D1 9E             ..
+        bcs     BattleDisplay_Branch_852A       ; 84E5 B0 43                    .C
+        jsr     BattleDisplay_FindFreeDisplaySlot; 84E7 20 5E 9E                 ^.
+        bcc     BattleDisplay_Branch_852A       ; 84EA 90 3E                    .>
         lda     $C4                             ; 84EC A5 C4                    ..
         pha                                     ; 84EE 48                       H
-        jsr     BattleTurnEngine_MapCurrentCombatantId; 84EF 20 0C 9F            ..
+        jsr     BattleDisplay_MapCurrentCombatantId; 84EF 20 0C 9F               ..
         lda     $C4                             ; 84F2 A5 C4                    ..
         cmp     #$7E                            ; 84F4 C9 7E                    .~
-        beq     BattleTurnEngine_Branch_8501    ; 84F6 F0 09                    ..
-        jsr     BattleTurnEngine_FindActiveCombatantSlot; 84F8 20 42 9E          B.
-        bcs     BattleTurnEngine_Branch_8515    ; 84FB B0 18                    ..
+        beq     BattleDisplay_Branch_8501       ; 84F6 F0 09                    ..
+        jsr     BattleDisplay_FindActiveCombatantSlot; 84F8 20 42 9E             B.
+        bcs     BattleDisplay_Branch_8515       ; 84FB B0 18                    ..
         lda     $C4                             ; 84FD A5 C4                    ..
-        beq     BattleTurnEngine_Branch_8506    ; 84FF F0 05                    ..
-BattleTurnEngine_Branch_8501:
-        jsr     BattleTurnEngine_FindLoadedBattleGraphicSlot; 8501 20 1C 9E      ..
-        bcc     BattleTurnEngine_Branch_8527    ; 8504 90 21                    .!
-BattleTurnEngine_Branch_8506:
-        jsr     BattleTurnEngine_FindEmptyActiveCombatantSlot; 8506 20 34 9E     4.
-        bcc     BattleTurnEngine_Branch_8527    ; 8509 90 1C                    ..
-        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 850B 20 F2 93 ..
-        bcc     BattleTurnEngine_Branch_8527    ; 850E 90 17                    ..
-        jsr     BattleTurnEngine_TrySecondaryCombatantPlacementGroup; 8510 20 39 94 9.
-        bcc     BattleTurnEngine_Branch_8527    ; 8513 90 12                    ..
-BattleTurnEngine_Branch_8515:
-        jsr     BattleTurnEngine_MeasureCombatantGraphicLayout; 8515 20 20 93     .
+        beq     BattleDisplay_Branch_8506       ; 84FF F0 05                    ..
+BattleDisplay_Branch_8501:
+        jsr     BattleDisplay_FindLoadedBattleGraphicSlot; 8501 20 1C 9E         ..
+        bcc     BattleDisplay_Branch_8527       ; 8504 90 21                    .!
+BattleDisplay_Branch_8506:
+        jsr     BattleDisplay_FindEmptyActiveCombatantSlot; 8506 20 34 9E        4.
+        bcc     BattleDisplay_Branch_8527       ; 8509 90 1C                    ..
+        jsr     BattleDisplay_TryPrimaryCombatantPlacementGroup; 850B 20 F2 93   ..
+        bcc     BattleDisplay_Branch_8527       ; 850E 90 17                    ..
+        jsr     BattleDisplay_TrySecondaryCombatantPlacementGroup; 8510 20 39 94 9.
+        bcc     BattleDisplay_Branch_8527       ; 8513 90 12                    ..
+BattleDisplay_Branch_8515:
+        jsr     BattleDisplay_MeasureCombatantGraphicLayout; 8515 20 20 93        .
         lda     #$01                            ; 8518 A9 01                    ..
         sta     $C5                             ; 851A 85 C5                    ..
-        jsr     BattleTurnEngine_FindRightmostQueuedOamEdge; 851C 20 E4 9B       ..
-        jsr     BattleTurnEngine_FindNonOverlappingQueuedOamX; 851F 20 DD 9A     ..
-        bcc     BattleTurnEngine_Branch_8527    ; 8522 90 03                    ..
-        jsr     BattleTurnEngine_FindCenteredQueuedOamX; 8524 20 BA 9C           ..
-BattleTurnEngine_Branch_8527:
+        jsr     BattleDisplay_FindRightmostQueuedOamEdge; 851C 20 E4 9B          ..
+        jsr     BattleDisplay_FindNonOverlappingQueuedOamX; 851F 20 DD 9A        ..
+        bcc     BattleDisplay_Branch_8527       ; 8522 90 03                    ..
+        jsr     BattleDisplay_FindCenteredQueuedOamX; 8524 20 BA 9C              ..
+BattleDisplay_Branch_8527:
         pla                                     ; 8527 68                       h
         sta     $C4                             ; 8528 85 C4                    ..
-BattleTurnEngine_Branch_852A:
+BattleDisplay_Branch_852A:
         pla                                     ; 852A 68                       h
         sta     $C7                             ; 852B 85 C7                    ..
         rts                                     ; 852D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DeployQueuedCombatantIntoActiveSlot:
+BattleDisplay_DeployQueuedCombatantIntoActiveSlot:
         lda     $C7                             ; 852E A5 C7                    ..
         pha                                     ; 8530 48                       H
-        jsr     BattleTurnEngine_ReserveQueuedTurnSlot; 8531 20 8F 9E            ..
-        bcc     BattleTurnEngine_Branch_857F    ; 8534 90 49                    .I
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 8536 20 D1 9E       ..
+        jsr     BattleDisplay_ReserveDisplaySlot; 8531 20 8F 9E                  ..
+        bcc     BattleDisplay_Branch_857F       ; 8534 90 49                    .I
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 8536 20 D1 9E             ..
         lda     $C4                             ; 8539 A5 C4                    ..
         pha                                     ; 853B 48                       H
-        jsr     BattleTurnEngine_MapCurrentCombatantId; 853C 20 0C 9F            ..
+        jsr     BattleDisplay_MapCurrentCombatantId; 853C 20 0C 9F               ..
         lda     $C4                             ; 853F A5 C4                    ..
         cmp     #$7E                            ; 8541 C9 7E                    .~
-        beq     BattleTurnEngine_Branch_854A    ; 8543 F0 05                    ..
-        jsr     BattleTurnEngine_FindActiveCombatantSlot; 8545 20 42 9E          B.
-        bcs     BattleTurnEngine_Branch_8568    ; 8548 B0 1E                    ..
-BattleTurnEngine_Branch_854A:
+        beq     BattleDisplay_Branch_854A       ; 8543 F0 05                    ..
+        jsr     BattleDisplay_FindActiveCombatantSlot; 8545 20 42 9E             B.
+        bcs     BattleDisplay_Branch_8568       ; 8548 B0 1E                    ..
+BattleDisplay_Branch_854A:
         ldx     $C6                             ; 854A A6 C6                    ..
         lda     $C4                             ; 854C A5 C4                    ..
         sta     $0440,x                         ; 854E 9D 40 04                 .@.
@@ -732,30 +732,30 @@ BattleTurnEngine_Branch_854A:
         sta     $7385,x                         ; 8553 9D 85 73                 ..s
         lda     $D3                             ; 8556 A5 D3                    ..
         sta     $7392,x                         ; 8558 9D 92 73                 ..s
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 855B 20 6E 94     n.
-        bcc     BattleTurnEngine_Branch_8572    ; 855E 90 12                    ..
-        jsr     BattleTurnEngine_AssignSecondaryPlacementRecord; 8560 20 96 94   ..
-        bcc     BattleTurnEngine_Branch_8572    ; 8563 90 0D                    ..
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 855B 20 6E 94        n.
+        bcc     BattleDisplay_Branch_8572       ; 855E 90 12                    ..
+        jsr     BattleDisplay_AssignSecondaryPlacementRecord; 8560 20 96 94      ..
+        bcc     BattleDisplay_Branch_8572       ; 8563 90 0D                    ..
         jsr     SubmitPaletteWithoutFade        ; 8565 20 B9 C5                  ..
-BattleTurnEngine_Branch_8568:
-        jsr     BattleTurnEngine_FindCenteredQueuedOamX; 8568 20 BA 9C           ..
-        bcc     BattleTurnEngine_Branch_8572    ; 856B 90 05                    ..
-        jsr     BattleTurnEngine_FinalizeQueuedCombatantSlot; 856D 20 83 85      ..
-        bcs     BattleTurnEngine_Branch_857C    ; 8570 B0 0A                    ..
-BattleTurnEngine_Branch_8572:
+BattleDisplay_Branch_8568:
+        jsr     BattleDisplay_FindCenteredQueuedOamX; 8568 20 BA 9C              ..
+        bcc     BattleDisplay_Branch_8572       ; 856B 90 05                    ..
+        jsr     BattleDisplay_FinalizeQueuedCombatantSlot; 856D 20 83 85         ..
+        bcs     BattleDisplay_Branch_857C       ; 8570 B0 0A                    ..
+BattleDisplay_Branch_8572:
         ldx     $C7                             ; 8572 A6 C7                    ..
         lda     #$00                            ; 8574 A9 00                    ..
         sta     $0690,x                         ; 8576 9D 90 06                 ...
         sta     $0698,x                         ; 8579 9D 98 06                 ...
-BattleTurnEngine_Branch_857C:
+BattleDisplay_Branch_857C:
         pla                                     ; 857C 68                       h
         sta     $C4                             ; 857D 85 C4                    ..
-BattleTurnEngine_Branch_857F:
+BattleDisplay_Branch_857F:
         pla                                     ; 857F 68                       h
         sta     $C7                             ; 8580 85 C7                    ..
         rts                                     ; 8582 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FinalizeQueuedCombatantSlot:
+BattleDisplay_FinalizeQueuedCombatantSlot:
         ldx     $C7                             ; 8583 A6 C7                    ..
         sta     $0698,x                         ; 8585 9D 98 06                 ...
         ldy     $C6                             ; 8588 A4 C6                    ..
@@ -763,47 +763,47 @@ BattleTurnEngine_FinalizeQueuedCombatantSlot:
         sta     $7385,y                         ; 858C 99 85 73                 ..s
         lda     $D3                             ; 858F A5 D3                    ..
         sta     $7392,y                         ; 8591 99 92 73                 ..s
-        beq     BattleTurnEngine_Branch_859B    ; 8594 F0 05                    ..
+        beq     BattleDisplay_Branch_859B       ; 8594 F0 05                    ..
         lda     $C9                             ; 8596 A5 C9                    ..
-        jmp     BattleTurnEngine_Branch_859D    ; 8598 4C 9D 85                 L..
+        jmp     BattleDisplay_Branch_859D       ; 8598 4C 9D 85                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_859B:
+BattleDisplay_Branch_859B:
         lda     #$FF                            ; 859B A9 FF                    ..
-BattleTurnEngine_Branch_859D:
+BattleDisplay_Branch_859D:
         sta     $06A0,x                         ; 859D 9D A0 06                 ...
-        jsr     BattleTurnEngine_FindUniqueQueuedTurnSlotByte; 85A0 20 CC 9D     ..
+        jsr     BattleDisplay_FindUniqueDisplaySlotByte; 85A0 20 CC 9D           ..
         ldx     $C7                             ; 85A3 A6 C7                    ..
         sta     $0690,x                         ; 85A5 9D 90 06                 ...
-        jmp     BattleTurnEngine_RenderQueuedCombatantGraphic; 85A8 4C 22 98    L".
+        jmp     BattleDisplay_RenderQueuedCombatantGraphic; 85A8 4C 22 98       L".
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_PreloadDependentBattleGraphics:
+BattleDisplay_PreloadDependentBattleGraphics:
         lda     #$1E                            ; 85AB A9 1E                    ..
         sta     $6E59                           ; 85AD 8D 59 6E                 .Yn
         ldx     #$00                            ; 85B0 A2 00                    ..
         stx     $C8                             ; 85B2 86 C8                    ..
-BattleTurnEngine_Branch_85B4:
+BattleDisplay_Branch_85B4:
         lda     $044C,x                         ; 85B4 BD 4C 04                 .L.
         cmp     #$FF                            ; 85B7 C9 FF                    ..
-        beq     BattleTurnEngine_Branch_8606    ; 85B9 F0 4B                    .K
+        beq     BattleDisplay_Branch_8606       ; 85B9 F0 4B                    .K
         cmp     #$7E                            ; 85BB C9 7E                    .~
-        bne     BattleTurnEngine_Branch_85CF    ; 85BD D0 10                    ..
+        bne     BattleDisplay_Branch_85CF       ; 85BD D0 10                    ..
         lda     $1F                             ; 85BF A5 1F                    ..
         and     #$7F                            ; 85C1 29 7F                    ).
         sta     $1F                             ; 85C3 85 1F                    ..
-        jsr     BattleTurnEngine_StreamSpecialBattleNametableBlock; 85C5 20 25 86 %.
+        jsr     BattleDisplay_StreamSpecialBattleNametableBlock; 85C5 20 25 86   %.
         lda     $1F                             ; 85C8 A5 1F                    ..
         ora     #$80                            ; 85CA 09 80                    ..
         sta     $1F                             ; 85CC 85 1F                    ..
         rts                                     ; 85CE 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_85CF:
-        jsr     BattleTurnEngine_FindMappedCombatantIdIndex; 85CF 20 1A 9F       ..
+BattleDisplay_Branch_85CF:
+        jsr     BattleDisplay_FindMappedCombatantIdIndex; 85CF 20 1A 9F          ..
         brk                                     ; 85D2 00                       .
         db   $25,$0F                         ; 85D3 25 0F                    %.
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; 85D5 A9 00                    ..
         sta     $01                             ; 85D7 85 01                    ..
-BattleTurnEngine_Branch_85D9:
+BattleDisplay_Branch_85D9:
         lda     $01                             ; 85D9 A5 01                    ..
         clc                                     ; 85DB 18                       .
         adc     #$09                            ; 85DC 69 09                    i.
@@ -814,28 +814,28 @@ BattleTurnEngine_Branch_85D9:
         and     #$7F                            ; 85E6 29 7F                    ).
         sec                                     ; 85E8 38                       8
         sbc     #$4B                            ; 85E9 E9 4B                    .K
-        bcc     BattleTurnEngine_Branch_85F5    ; 85EB 90 08                    ..
+        bcc     BattleDisplay_Branch_85F5       ; 85EB 90 08                    ..
         cmp     #$0B                            ; 85ED C9 0B                    ..
-        bcs     BattleTurnEngine_Branch_85F5    ; 85EF B0 04                    ..
+        bcs     BattleDisplay_Branch_85F5       ; 85EF B0 04                    ..
         tax                                     ; 85F1 AA                       .
-        jsr     BattleTurnEngine_LoadDependentBattleGraphic; 85F2 20 0A 86       ..
-BattleTurnEngine_Branch_85F5:
+        jsr     BattleDisplay_LoadDependentBattleGraphic; 85F2 20 0A 86          ..
+BattleDisplay_Branch_85F5:
         inc     $01                             ; 85F5 E6 01                    ..
         lda     $01                             ; 85F7 A5 01                    ..
         cmp     #$06                            ; 85F9 C9 06                    ..
-        bne     BattleTurnEngine_Branch_85D9    ; 85FB D0 DC                    ..
+        bne     BattleDisplay_Branch_85D9       ; 85FB D0 DC                    ..
         inc     $C8                             ; 85FD E6 C8                    ..
         ldx     $C8                             ; 85FF A6 C8                    ..
         cpx     #$0E                            ; 8601 E0 0E                    ..
-        bne     BattleTurnEngine_Branch_85B4    ; 8603 D0 AF                    ..
+        bne     BattleDisplay_Branch_85B4       ; 8603 D0 AF                    ..
         rts                                     ; 8605 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8606:
+BattleDisplay_Branch_8606:
         lda     #$31                            ; 8606 A9 31                    .1
-        bne     BattleTurnEngine_Branch_860D    ; 8608 D0 03                    ..
-BattleTurnEngine_LoadDependentBattleGraphic:
+        bne     BattleDisplay_Branch_860D       ; 8608 D0 03                    ..
+BattleDisplay_LoadDependentBattleGraphic:
         lda     $8646,x                         ; 860A BD 46 86                 .F.
-BattleTurnEngine_Branch_860D:
+BattleDisplay_Branch_860D:
         sta     $C4                             ; 860D 85 C4                    ..
         lda     $02                             ; 860F A5 02                    ..
         pha                                     ; 8611 48                       H
@@ -843,7 +843,7 @@ BattleTurnEngine_Branch_860D:
         pha                                     ; 8614 48                       H
         lda     $C8                             ; 8615 A5 C8                    ..
         pha                                     ; 8617 48                       H
-        jsr     BattleTurnEngine_LoadCombatantBattleGraphic; 8618 20 9C 96       ..
+        jsr     BattleDisplay_LoadCombatantBattleGraphic; 8618 20 9C 96          ..
         pla                                     ; 861B 68                       h
         sta     $C8                             ; 861C 85 C8                    ..
         pla                                     ; 861E 68                       h
@@ -852,7 +852,7 @@ BattleTurnEngine_Branch_860D:
         sta     $02                             ; 8622 85 02                    ..
         rts                                     ; 8624 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_StreamSpecialBattleNametableBlock:
+BattleDisplay_StreamSpecialBattleNametableBlock:
         lda     $8651                           ; 8625 AD 51 86                 .Q.
         sta     $C0                             ; 8628 85 C0                    ..
         lda     $8652                           ; 862A AD 52 86                 .R.
@@ -867,7 +867,7 @@ BattleTurnEngine_StreamSpecialBattleNametableBlock:
         sta     $19                             ; 863D 85 19                    ..
         jmp     UploadBattleGraphicsBlocks      ; 863F 4C D5 8C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadDependentBattleGraphicId:
+BattleDisplay_LoadDependentBattleGraphicId:
         lda     $8646,y                         ; 8642 B9 46 86                 .F.
         rts                                     ; 8645 60                       `
 ; ----------------------------------------------------------------------------
@@ -876,22 +876,22 @@ BattleTurnEngine_LoadDependentBattleGraphicId:
         db   $91                             ; 8651 91                       .
         db   $A1                             ; 8652 A1                       .
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckTransitionSpritePlacement:
+BattleDisplay_CheckTransitionSpritePlacement:
         lda     #$00                            ; 8653 A9 00                    ..
         sta     $D6                             ; 8655 85 D6                    ..
         sta     $D8                             ; 8657 85 D8                    ..
         lda     #$4D                            ; 8659 A9 4D                    .M
         sta     $C4                             ; 865B 85 C4                    ..
-        jsr     BattleTurnEngine_LoadPlacementCoordinates; 865D 20 93 95         ..
-        jsr     BattleTurnEngine_TryPrimaryCombatantPlacementGroup; 8660 20 F2 93 ..
-        bcs     BattleTurnEngine_Branch_8666    ; 8663 B0 01                    ..
+        jsr     BattleDisplay_LoadPlacementCoordinates; 865D 20 93 95            ..
+        jsr     BattleDisplay_TryPrimaryCombatantPlacementGroup; 8660 20 F2 93   ..
+        bcs     BattleDisplay_Branch_8666       ; 8663 B0 01                    ..
         rts                                     ; 8665 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8666:
-        jmp     BattleTurnEngine_FindEmptyActiveCombatantSlot; 8666 4C 34 9E    L4.
+BattleDisplay_Branch_8666:
+        jmp     BattleDisplay_FindEmptyActiveCombatantSlot; 8666 4C 34 9E       L4.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_InsertTransitionSpriteAndRotateQueue:
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 8669 20 6E 94     n.
+BattleDisplay_InsertTransitionSpriteAndRotateQueue:
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 8669 20 6E 94        n.
         jsr     SubmitPaletteWithoutFade        ; 866C 20 B9 C5                  ..
         ldx     $C6                             ; 866F A6 C6                    ..
         lda     #$4D                            ; 8671 A9 4D                    .M
@@ -908,10 +908,10 @@ BattleTurnEngine_InsertTransitionSpriteAndRotateQueue:
         sta     $C5                             ; 8686 85 C5                    ..
         ldx     #$00                            ; 8688 A2 00                    ..
         stx     $C7                             ; 868A 86 C7                    ..
-BattleTurnEngine_Branch_868C:
+BattleDisplay_Branch_868C:
         lda     $0690,x                         ; 868C BD 90 06                 ...
-        bpl     BattleTurnEngine_Branch_86BB    ; 868F 10 2A                    .*
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 8691 20 7F 9E ..
+        bpl     BattleDisplay_Branch_86BB       ; 868F 10 2A                    .*
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 8691 20 7F 9E   ..
         lda     $7385,x                         ; 8694 BD 85 73                 ..s
         lsr     a                               ; 8697 4A                       J
         sta     $D2                             ; 8698 85 D2                    ..
@@ -923,26 +923,26 @@ BattleTurnEngine_Branch_868C:
         sta     $0477                           ; 86A5 8D 77 04                 .w.
         dec     $0477                           ; 86A8 CE 77 04                 .w.
         ldx     #$07                            ; 86AB A2 07                    ..
-BattleTurnEngine_Branch_86AD:
-        jsr     BattleTurnEngine_SwapQueuedSpritePositionsAndRedraw; 86AD 20 C5 86 ..
+BattleDisplay_Branch_86AD:
+        jsr     BattleDisplay_SwapQueuedSpritePositionsAndRedraw; 86AD 20 C5 86  ..
         dex                                     ; 86B0 CA                       .
-        bne     BattleTurnEngine_Branch_86AD    ; 86B1 D0 FA                    ..
+        bne     BattleDisplay_Branch_86AD       ; 86B1 D0 FA                    ..
         ldx     $C7                             ; 86B3 A6 C7                    ..
         ldy     $0690,x                         ; 86B5 BC 90 06                 ...
         iny                                     ; 86B8 C8                       .
         sty     $C5                             ; 86B9 84 C5                    ..
-BattleTurnEngine_Branch_86BB:
+BattleDisplay_Branch_86BB:
         inc     $C7                             ; 86BB E6 C7                    ..
         ldx     $C7                             ; 86BD A6 C7                    ..
         cpx     #$08                            ; 86BF E0 08                    ..
-        bne     BattleTurnEngine_Branch_868C    ; 86C1 D0 C9                    ..
+        bne     BattleDisplay_Branch_868C       ; 86C1 D0 C9                    ..
         sec                                     ; 86C3 38                       8
         rts                                     ; 86C4 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_SwapQueuedSpritePositionsAndRedraw:
+BattleDisplay_SwapQueuedSpritePositionsAndRedraw:
         txa                                     ; 86C5 8A                       .
         pha                                     ; 86C6 48                       H
-        jsr     BattleTurnEngine_EraseQueuedCombatantGraphic; 86C7 20 40 9A      @.
+        jsr     BattleDisplay_EraseQueuedCombatantGraphic; 86C7 20 40 9A         @.
         ldy     $C5                             ; 86CA A4 C5                    ..
         ldx     $C7                             ; 86CC A6 C7                    ..
         lda     $0690,x                         ; 86CE BD 90 06                 ...
@@ -955,32 +955,32 @@ BattleTurnEngine_SwapQueuedSpritePositionsAndRedraw:
         lda     $0478                           ; 86DE AD 78 04                 .x.
         sta     $0477                           ; 86E1 8D 77 04                 .w.
         sty     $0478                           ; 86E4 8C 78 04                 .x.
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 86E7 20 22 98     ".
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 86E7 20 22 98        ".
         pla                                     ; 86EA 68                       h
         tax                                     ; 86EB AA                       .
         rts                                     ; 86EC 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AssignQueuedCombatantToResolvedSlot:
+BattleDisplay_AssignQueuedCombatantToResolvedSlot:
         lda     $C7                             ; 86ED A5 C7                    ..
         pha                                     ; 86EF 48                       H
-        jsr     BattleTurnEngine_FindMatchingOrEmptyCombatantSlot; 86F0 20 37 87 7.
-        bcs     BattleTurnEngine_Branch_86F7    ; 86F3 B0 02                    ..
+        jsr     BattleDisplay_FindMatchingOrEmptyCombatantSlot; 86F0 20 37 87    7.
+        bcs     BattleDisplay_Branch_86F7       ; 86F3 B0 02                    ..
         pla                                     ; 86F5 68                       h
         rts                                     ; 86F6 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_86F7:
-        bne     BattleTurnEngine_Branch_8704    ; 86F7 D0 0B                    ..
-        jsr     BattleTurnEngine_StorePreviewCoordinatesInPlacementRecord; 86F9 20 7A 87 z.
+BattleDisplay_Branch_86F7:
+        bne     BattleDisplay_Branch_8704       ; 86F7 D0 0B                    ..
+        jsr     BattleDisplay_StorePreviewCoordinatesInPlacementRecord; 86F9 20 7A 87 z.
         lda     #$04                            ; 86FC A9 04                    ..
-        jsr     BattleTurnEngine_StorePreviewCoordinatesInPlacementRecord; 86FE 20 7A 87 z.
+        jsr     BattleDisplay_StorePreviewCoordinatesInPlacementRecord; 86FE 20 7A 87 z.
         jsr     SubmitPaletteWithoutFade        ; 8701 20 B9 C5                  ..
-BattleTurnEngine_Branch_8704:
-        jsr     BattleTurnEngine_FindUniqueQueuedTurnSlotByte; 8704 20 CC 9D     ..
+BattleDisplay_Branch_8704:
+        jsr     BattleDisplay_FindUniqueDisplaySlotByte; 8704 20 CC 9D           ..
         sta     $C5                             ; 8707 85 C5                    ..
         pla                                     ; 8709 68                       h
         sta     $C7                             ; 870A 85 C7                    ..
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 870C 20 D1 9E       ..
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 870F 20 7F 9E ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 870C 20 D1 9E             ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 870F 20 7F 9E   ..
         ldy     $C6                             ; 8712 A4 C6                    ..
         lda     $7385,x                         ; 8714 BD 85 73                 ..s
         sta     $7385,y                         ; 8717 99 85 73                 ..s
@@ -992,12 +992,12 @@ BattleTurnEngine_Branch_8704:
         lda     #$00                            ; 8728 A9 00                    ..
         ldx     $C7                             ; 872A A6 C7                    ..
         sta     $0690,x                         ; 872C 9D 90 06                 ...
-        jsr     BattleTurnEngine_EncodeTurnSlotReservation; 872F 20 D2 93        ..
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 8732 20 22 98     ".
+        jsr     BattleDisplay_EncodeDisplaySlotReservation; 872F 20 D2 93        ..
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 8732 20 22 98        ".
         sec                                     ; 8735 38                       8
         rts                                     ; 8736 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindMatchingOrEmptyCombatantSlot:
+BattleDisplay_FindMatchingOrEmptyCombatantSlot:
         ldx     $C7                             ; 8737 A6 C7                    ..
         brk                                     ; 8739 00                       .
         db   $2D,$B3                         ; 873A 2D B3                    -.
@@ -1006,53 +1006,53 @@ BattleTurnEngine_FindMatchingOrEmptyCombatantSlot:
         lda     $6E45,y                         ; 873D B9 45 6E                 .En
         sta     $6F                             ; 8740 85 6F                    .o
         ldx     #$07                            ; 8742 A2 07                    ..
-BattleTurnEngine_Branch_8744:
+BattleDisplay_Branch_8744:
         brk                                     ; 8744 00                       .
         db   $29,$C3,$10                     ; 8745 29 C3 10                 )..
 ; ----------------------------------------------------------------------------
-        bcc     BattleTurnEngine_Branch_8763    ; 8748 90 19                    ..
+        bcc     BattleDisplay_Branch_8763       ; 8748 90 19                    ..
         brk                                     ; 874A 00                       .
         db   $2D,$B3                         ; 874B 2D B3                    -.
 ; ----------------------------------------------------------------------------
         tay                                     ; 874D A8                       .
         lda     $6E45,y                         ; 874E B9 45 6E                 .En
         cmp     $6F                             ; 8751 C5 6F                    .o
-        bne     BattleTurnEngine_Branch_8763    ; 8753 D0 0E                    ..
+        bne     BattleDisplay_Branch_8763       ; 8753 D0 0E                    ..
         stx     $C7                             ; 8755 86 C7                    ..
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 8757 20 D1 9E       ..
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 875A 20 7F 9E ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 8757 20 D1 9E             ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 875A 20 7F 9E   ..
         stx     $C6                             ; 875D 86 C6                    ..
         lda     #$01                            ; 875F A9 01                    ..
         sec                                     ; 8761 38                       8
         rts                                     ; 8762 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8763:
+BattleDisplay_Branch_8763:
         dex                                     ; 8763 CA                       .
-        bpl     BattleTurnEngine_Branch_8744    ; 8764 10 DE                    ..
-        jsr     BattleTurnEngine_FindEmptyActiveCombatantSlot; 8766 20 34 9E     4.
-        bcc     BattleTurnEngine_Branch_8777    ; 8769 90 0C                    ..
+        bpl     BattleDisplay_Branch_8744       ; 8764 10 DE                    ..
+        jsr     BattleDisplay_FindEmptyActiveCombatantSlot; 8766 20 34 9E        4.
+        bcc     BattleDisplay_Branch_8777       ; 8769 90 0C                    ..
         lda     #$00                            ; 876B A9 00                    ..
-        jsr     BattleTurnEngine_PreparePreviewPlacementRecord; 876D 20 84 87    ..
-        bcc     BattleTurnEngine_Branch_8777    ; 8770 90 05                    ..
+        jsr     BattleDisplay_PreparePreviewPlacementRecord; 876D 20 84 87       ..
+        bcc     BattleDisplay_Branch_8777       ; 8770 90 05                    ..
         lda     #$04                            ; 8772 A9 04                    ..
-        jsr     BattleTurnEngine_PreparePreviewPlacementRecord; 8774 20 84 87    ..
-BattleTurnEngine_Branch_8777:
+        jsr     BattleDisplay_PreparePreviewPlacementRecord; 8774 20 84 87       ..
+BattleDisplay_Branch_8777:
         lda     #$00                            ; 8777 A9 00                    ..
         rts                                     ; 8779 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_StorePreviewCoordinatesInPlacementRecord:
-        jsr     BattleTurnEngine_PreparePreviewPlacementRecord; 877A 20 84 87    ..
+BattleDisplay_StorePreviewCoordinatesInPlacementRecord:
+        jsr     BattleDisplay_PreparePreviewPlacementRecord; 877A 20 84 87       ..
         lda     #$00                            ; 877D A9 00                    ..
         sta     $D6                             ; 877F 85 D6                    ..
-        jmp     BattleTurnEngine_CommitPlacementRecord; 8781 4C 2F 95           L/.
+        jmp     BattleDisplay_CommitPlacementRecord; 8781 4C 2F 95              L/.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_PreparePreviewPlacementRecord:
-        jsr     BattleTurnEngine_LoadPreviewPlacementCoordinates; 8784 20 8F 87  ..
-        jsr     BattleTurnEngine_FindMatchingPlacementRecord; 8787 20 C5 94      ..
-        bcs     BattleTurnEngine_Branch_87B0    ; 878A B0 24                    .$
-        jmp     BattleTurnEngine_FindEmptyPlacementRecord; 878C 4C EF 94        L..
+BattleDisplay_PreparePreviewPlacementRecord:
+        jsr     BattleDisplay_LoadPreviewPlacementCoordinates; 8784 20 8F 87     ..
+        jsr     BattleDisplay_FindMatchingPlacementRecord; 8787 20 C5 94         ..
+        bcs     BattleDisplay_Branch_87B0       ; 878A B0 24                    .$
+        jmp     BattleDisplay_FindEmptyPlacementRecord; 878C 4C EF 94           L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPreviewPlacementCoordinates:
+BattleDisplay_LoadPreviewPlacementCoordinates:
         sta     $D8                             ; 878F 85 D8                    ..
         lda     $C4                             ; 8791 A5 C4                    ..
         sta     $00                           ; 8793 85 00                    ..
@@ -1061,41 +1061,41 @@ BattleTurnEngine_LoadPreviewPlacementCoordinates:
         adc     $00                           ; 8797 65 00                    e.
         asl     a                               ; 8799 0A                       .
         ldy     $D8                             ; 879A A4 D8                    ..
-        beq     BattleTurnEngine_Branch_87A1    ; 879C F0 03                    ..
+        beq     BattleDisplay_Branch_87A1       ; 879C F0 03                    ..
         clc                                     ; 879E 18                       .
         adc     #$03                            ; 879F 69 03                    i.
-BattleTurnEngine_Branch_87A1:
+BattleDisplay_Branch_87A1:
         tax                                     ; 87A1 AA                       .
         ldy     #$00                            ; 87A2 A0 00                    ..
-BattleTurnEngine_Branch_87A4:
+BattleDisplay_Branch_87A4:
         lda     $87B1,x                         ; 87A4 BD B1 87                 ...
         sta     $0477,y                         ; 87A7 99 77 04                 .w.
         inx                                     ; 87AA E8                       .
         iny                                     ; 87AB C8                       .
         cpy     #$03                            ; 87AC C0 03                    ..
-        bcc     BattleTurnEngine_Branch_87A4    ; 87AE 90 F4                    ..
-BattleTurnEngine_Branch_87B0:
+        bcc     BattleDisplay_Branch_87A4       ; 87AE 90 F4                    ..
+BattleDisplay_Branch_87B0:
         rts                                     ; 87B0 60                       `
 ; ----------------------------------------------------------------------------
         db   $26,$2C,$1C,$10,$00,$0F,$3C,$2C ; 87B1 26 2C 1C 10 00 0F 3C 2C  &,....<,
         db   $15,$22,$0F,$0F,$14,$17,$10,$30 ; 87B9 15 22 0F 0F 14 17 10 30  .".....0
         db   $11,$05,$00,$00,$00,$00,$00,$00 ; 87C1 11 05 00 00 00 00 00 00  ........
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadBattleGraphicAndBindTurnSlot:
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 87C9 20 D1 9E       ..
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 87CC 20 7F 9E ..
+BattleDisplay_LoadBattleGraphicAndBindDisplaySlot:
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 87C9 20 D1 9E             ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 87CC 20 7F 9E   ..
         stx     $C6                             ; 87CF 86 C6                    ..
-        jsr     BattleTurnEngine_CheckSmallBattleGraphicLoaded; 87D1 20 F0 89    ..
-        bcc     BattleTurnEngine_Branch_87D9    ; 87D4 90 03                    ..
-        jmp     BattleTurnEngine_Branch_885A    ; 87D6 4C 5A 88                 LZ.
+        jsr     BattleDisplay_CheckSmallBattleGraphicLoaded; 87D1 20 F0 89       ..
+        bcc     BattleDisplay_Branch_87D9       ; 87D4 90 03                    ..
+        jmp     BattleDisplay_Branch_885A       ; 87D6 4C 5A 88                 LZ.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_87D9:
-        jsr     BattleTurnEngine_CheckMappedBattleGraphicInUpperSlots; 87D9 20 DD 89 ..
+BattleDisplay_Branch_87D9:
+        jsr     BattleDisplay_CheckMappedBattleGraphicInUpperSlots; 87D9 20 DD 89 ..
         lda     $C4                             ; 87DC A5 C4                    ..
-        jsr     BattleTurnEngine_LoadSpecialBattleGraphicPattern; 87DE 20 00 BD  ..
+        jsr     BattleDisplay_LoadSpecialBattleGraphicPattern; 87DE 20 00 BD     ..
         lda     #$00                            ; 87E1 A9 00                    ..
         sta     $00                           ; 87E3 85 00                    ..
-BattleTurnEngine_Branch_87E5:
+BattleDisplay_Branch_87E5:
         lda     #$00                            ; 87E5 A9 00                    ..
         sta     NextTextCharacter               ; 87E7 8D 02 03                 ...
         lda     $00                           ; 87EA A5 00                    ..
@@ -1105,18 +1105,18 @@ BattleTurnEngine_Branch_87E5:
         clc                                     ; 87F0 18                       .
         adc     $0468,x                         ; 87F1 7D 68 04                 }h.
         ldy     #$04                            ; 87F4 A0 04                    ..
-BattleTurnEngine_Branch_87F6:
+BattleDisplay_Branch_87F6:
         lsr     a                               ; 87F6 4A                       J
         ror     NextTextCharacter               ; 87F7 6E 02 03                 n..
         dey                                     ; 87FA 88                       .
-        bne     BattleTurnEngine_Branch_87F6    ; 87FB D0 F9                    ..
+        bne     BattleDisplay_Branch_87F6       ; 87FB D0 F9                    ..
         ora     #$90                            ; 87FD 09 90                    ..
         sta     $0300                           ; 87FF 8D 00 03                 ...
         lda     #$40                            ; 8802 A9 40                    .@
         sta     $0301                           ; 8804 8D 01 03                 ...
         lda     #$01                            ; 8807 A9 01                    ..
         sta     $050B                           ; 8809 8D 0B 05                 ...
-BattleTurnEngine_Branch_880C:
+BattleDisplay_Branch_880C:
         lda     $00                           ; 880C A5 00                    ..
         pha                                     ; 880E 48                       H
         asl     a                               ; 880F 0A                       .
@@ -1136,7 +1136,7 @@ BattleTurnEngine_Branch_880C:
         ldy     $00                           ; 8824 A4 00                    ..
         lda     $0650,y                         ; 8826 B9 50 06                 .P.
         ldy     #$08                            ; 8829 A0 08                    ..
-BattleTurnEngine_Branch_882B:
+BattleDisplay_Branch_882B:
         lsr     a                               ; 882B 4A                       J
         php                                     ; 882C 08                       .
         ror     $0303,x                         ; 882D 7E 03 03                 ~..
@@ -1145,7 +1145,7 @@ BattleTurnEngine_Branch_882B:
         ror     $0303,x                         ; 8834 7E 03 03                 ~..
         ror     $0313,x                         ; 8837 7E 13 03                 ~..
         dey                                     ; 883A 88                       .
-        bne     BattleTurnEngine_Branch_882B    ; 883B D0 EE                    ..
+        bne     BattleDisplay_Branch_882B       ; 883B D0 EE                    ..
         lda     $0303,x                         ; 883D BD 03 03                 ...
         sta     $0304,x                         ; 8840 9D 04 03                 ...
         lda     $0313,x                         ; 8843 BD 13 03                 ...
@@ -1153,13 +1153,13 @@ BattleTurnEngine_Branch_882B:
         inc     $00                           ; 8849 E6 00                    ..
         lda     $00                           ; 884B A5 00                    ..
         and     #$0F                            ; 884D 29 0F                    ).
-        bne     BattleTurnEngine_Branch_880C    ; 884F D0 BB                    ..
+        bne     BattleDisplay_Branch_880C       ; 884F D0 BB                    ..
         jsr     RequestPpuUpdateAndWait         ; 8851 20 2D C6                  -.
         lda     $00                           ; 8854 A5 00                    ..
         cmp     #$40                            ; 8856 C9 40                    .@
-        bne     BattleTurnEngine_Branch_87E5    ; 8858 D0 8B                    ..
-BattleTurnEngine_Branch_885A:
-        jsr     BattleTurnEngine_RenderBattlePatternTriplet; 885A 20 21 89       !.
+        bne     BattleDisplay_Branch_87E5       ; 8858 D0 8B                    ..
+BattleDisplay_Branch_885A:
+        jsr     BattleDisplay_RenderBattlePatternTriplet; 885A 20 21 89          !.
         ldx     $C8                             ; 885D A6 C8                    ..
         lda     $0468,x                         ; 885F BD 68 04                 .h.
         clc                                     ; 8862 18                       .
@@ -1173,7 +1173,7 @@ BattleTurnEngine_Branch_885A:
         brk                                     ; 8872 00                       .
         db   $A0,$FB                         ; 8873 A0 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunBattleOamBurstAnimation; 8875 20 33 89       3.
+        jsr     BattleDisplay_RunBattleOamBurstAnimation; 8875 20 33 89          3.
         ldx     $C7                             ; 8878 A6 C7                    ..
         lda     $0698,x                         ; 887A BD 98 06                 ...
         pha                                     ; 887D 48                       H
@@ -1181,7 +1181,7 @@ BattleTurnEngine_Branch_885A:
         pha                                     ; 8881 48                       H
         lda     $C4                             ; 8882 A5 C4                    ..
         pha                                     ; 8884 48                       H
-        jsr     BattleTurnEngine_RunResolvedTurnSlotRemoval; 8885 20 2F 82       /.
+        jsr     BattleDisplay_RunResolvedDisplaySlotRemoval; 8885 20 2F 82       /.
         pla                                     ; 8888 68                       h
         sta     $C4                             ; 8889 85 C4                    ..
         pla                                     ; 888B 68                       h
@@ -1193,12 +1193,12 @@ BattleTurnEngine_Branch_885A:
         lda     $044C,x                         ; 8897 BD 4C 04                 .L.
         ldx     $C6                             ; 889A A6 C6                    ..
         sta     $0440,x                         ; 889C 9D 40 04                 .@.
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 889F 20 6E 94     n.
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 889F 20 6E 94        n.
         jsr     SubmitPaletteWithoutFade        ; 88A2 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 88A5 20 74 FF                  t.
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 88A8 20 22 98     ".
-        jsr     BattleTurnEngine_ClearBattleOamMarkerQuad; 88AB 20 C6 89         ..
-        jsr     BattleTurnEngine_RenderBattlePatternTriplet; 88AE 20 21 89       !.
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 88A8 20 22 98        ".
+        jsr     BattleDisplay_ClearBattleOamMarkerQuad; 88AB 20 C6 89            ..
+        jsr     BattleDisplay_RenderBattlePatternTriplet; 88AE 20 21 89          !.
         lda     #$00                            ; 88B1 A9 00                    ..
         sta     $02                             ; 88B3 85 02                    ..
         dec     $D6                             ; 88B5 C6 D6                    ..
@@ -1206,27 +1206,27 @@ BattleTurnEngine_Branch_885A:
         asl     $D6                             ; 88B9 06 D6                    ..
         asl     $D6                             ; 88BB 06 D6                    ..
         lda     #$28                            ; 88BD A9 28                    .(
-        jsr     BattleTurnEngine_DrawBattleOamMarkerQuad; 88BF 20 9C 89          ..
+        jsr     BattleDisplay_DrawBattleOamMarkerQuad; 88BF 20 9C 89             ..
         lda     #$29                            ; 88C2 A9 29                    .)
-        jsr     BattleTurnEngine_DrawBattleOamMarkerQuad; 88C4 20 9C 89          ..
-        jsr     BattleTurnEngine_ClearBattleOamMarkerQuad; 88C7 20 C6 89         ..
+        jsr     BattleDisplay_DrawBattleOamMarkerQuad; 88C4 20 9C 89             ..
+        jsr     BattleDisplay_ClearBattleOamMarkerQuad; 88C7 20 C6 89            ..
         sec                                     ; 88CA 38                       8
         rts                                     ; 88CB 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadSpecialBattleGraphicAndBindTurnSlot:
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 88CC 20 D1 9E       ..
-        jsr     BattleTurnEngine_ResolveCurrentQueuedCombatantSlot; 88CF 20 7F 9E ..
+BattleDisplay_LoadSpecialBattleGraphicAndBindDisplaySlot:
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 88CC 20 D1 9E             ..
+        jsr     BattleDisplay_ResolveCurrentQueuedCombatantSlot; 88CF 20 7F 9E   ..
         stx     $C6                             ; 88D2 86 C6                    ..
         brk                                     ; 88D4 00                       .
         db   $A0,$FB                         ; 88D5 A0 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunBattleOamBurstAnimation; 88D7 20 33 89       3.
+        jsr     BattleDisplay_RunBattleOamBurstAnimation; 88D7 20 33 89          3.
         ldx     $C7                             ; 88DA A6 C7                    ..
         lda     $0698,x                         ; 88DC BD 98 06                 ...
         pha                                     ; 88DF 48                       H
         lda     $0690,x                         ; 88E0 BD 90 06                 ...
         pha                                     ; 88E3 48                       H
-        jsr     BattleTurnEngine_RunResolvedTurnSlotRemoval; 88E4 20 2F 82       /.
+        jsr     BattleDisplay_RunResolvedDisplaySlotRemoval; 88E4 20 2F 82       /.
         pla                                     ; 88E7 68                       h
         ldx     $C7                             ; 88E8 A6 C7                    ..
         sta     $0690,x                         ; 88EA 9D 90 06                 ...
@@ -1236,10 +1236,10 @@ BattleTurnEngine_LoadSpecialBattleGraphicAndBindTurnSlot:
         ldx     $C6                             ; 88F3 A6 C6                    ..
         sta     $0440,x                         ; 88F5 9D 40 04                 .@.
         sta     $C4                             ; 88F8 85 C4                    ..
-        jsr     BattleTurnEngine_AssignPrimaryPlacementRecord; 88FA 20 6E 94     n.
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 88FD 20 22 98     ".
-        jsr     BattleTurnEngine_ClearBattleOamMarkerQuad; 8900 20 C6 89         ..
-        jsr     BattleTurnEngine_RenderBattlePatternTriplet; 8903 20 21 89       !.
+        jsr     BattleDisplay_AssignPrimaryPlacementRecord; 88FA 20 6E 94        n.
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 88FD 20 22 98        ".
+        jsr     BattleDisplay_ClearBattleOamMarkerQuad; 8900 20 C6 89            ..
+        jsr     BattleDisplay_RenderBattlePatternTriplet; 8903 20 21 89          !.
         lda     #$00                            ; 8906 A9 00                    ..
         sta     $02                             ; 8908 85 02                    ..
         dec     $D6                             ; 890A C6 D6                    ..
@@ -1247,14 +1247,14 @@ BattleTurnEngine_LoadSpecialBattleGraphicAndBindTurnSlot:
         asl     $D6                             ; 890E 06 D6                    ..
         asl     $D6                             ; 8910 06 D6                    ..
         lda     #$28                            ; 8912 A9 28                    .(
-        jsr     BattleTurnEngine_DrawBattleOamMarkerQuad; 8914 20 9C 89          ..
+        jsr     BattleDisplay_DrawBattleOamMarkerQuad; 8914 20 9C 89             ..
         lda     #$29                            ; 8917 A9 29                    .)
-        jsr     BattleTurnEngine_DrawBattleOamMarkerQuad; 8919 20 9C 89          ..
-        jsr     BattleTurnEngine_ClearBattleOamMarkerQuad; 891C 20 C6 89         ..
+        jsr     BattleDisplay_DrawBattleOamMarkerQuad; 8919 20 9C 89             ..
+        jsr     BattleDisplay_ClearBattleOamMarkerQuad; 891C 20 C6 89            ..
         sec                                     ; 891F 38                       8
         rts                                     ; 8920 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RenderBattlePatternTriplet:
+BattleDisplay_RenderBattlePatternTriplet:
         lda     #$30                            ; 8921 A9 30                    .0
         sta     $0609                           ; 8923 8D 09 06                 ...
         lda     #$3C                            ; 8926 A9 3C                    .<
@@ -1263,7 +1263,7 @@ BattleTurnEngine_RenderBattlePatternTriplet:
         sta     $060B                           ; 892D 8D 0B 06                 ...
         jmp     SubmitPaletteWithoutFade        ; 8930 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunBattleOamBurstAnimation:
+BattleDisplay_RunBattleOamBurstAnimation:
         ldx     $C7                             ; 8933 A6 C7                    ..
         lda     $0698,x                         ; 8935 BD 98 06                 ...
         asl     a                               ; 8938 0A                       .
@@ -1273,7 +1273,7 @@ BattleTurnEngine_RunBattleOamBurstAnimation:
         ldy     #$00                            ; 893D A0 00                    ..
         sty     $02                             ; 893F 84 02                    ..
         ldy     #$03                            ; 8941 A0 03                    ..
-BattleTurnEngine_Branch_8943:
+BattleDisplay_Branch_8943:
         tya                                     ; 8943 98                       .
         and     #$01                            ; 8944 29 01                    ).
         asl     a                               ; 8946 0A                       .
@@ -1294,18 +1294,18 @@ BattleTurnEngine_Branch_8943:
         ldx     #$00                            ; 895D A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 895F 20 3E C7                  >.
         dey                                     ; 8962 88                       .
-        bpl     BattleTurnEngine_Branch_8943    ; 8963 10 DE                    ..
+        bpl     BattleDisplay_Branch_8943       ; 8963 10 DE                    ..
         ldx     #$03                            ; 8965 A2 03                    ..
         jsr     WaitFrames                      ; 8967 20 0C C9                  ..
         lda     #$08                            ; 896A A9 08                    ..
-        jsr     BattleTurnEngine_DrawBattleOamQuadFrame; 896C 20 74 89           t.
+        jsr     BattleDisplay_DrawBattleOamQuadFrame; 896C 20 74 89              t.
         lda     #$18                            ; 896F A9 18                    ..
-        jmp     BattleTurnEngine_DrawBattleOamQuadFrame; 8971 4C 74 89          Lt.
+        jmp     BattleDisplay_DrawBattleOamQuadFrame; 8971 4C 74 89             Lt.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawBattleOamQuadFrame:
+BattleDisplay_DrawBattleOamQuadFrame:
         sta     $D8                             ; 8974 85 D8                    ..
         ldy     #$0F                            ; 8976 A0 0F                    ..
-BattleTurnEngine_Branch_8978:
+BattleDisplay_Branch_8978:
         tya                                     ; 8978 98                       .
         and     #$03                            ; 8979 29 03                    ).
         asl     a                               ; 897B 0A                       .
@@ -1324,41 +1324,41 @@ BattleTurnEngine_Branch_8978:
         ldx     #$00                            ; 898F A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 8991 20 3E C7                  >.
         dey                                     ; 8994 88                       .
-        bpl     BattleTurnEngine_Branch_8978    ; 8995 10 E1                    ..
+        bpl     BattleDisplay_Branch_8978       ; 8995 10 E1                    ..
         ldx     #$03                            ; 8997 A2 03                    ..
         jmp     WaitFrames                      ; 8999 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawBattleOamMarkerQuad:
+BattleDisplay_DrawBattleOamMarkerQuad:
         sta     $01                             ; 899C 85 01                    ..
         ldy     #$03                            ; 899E A0 03                    ..
-BattleTurnEngine_Branch_89A0:
+BattleDisplay_Branch_89A0:
         tya                                     ; 89A0 98                       .
         lsr     a                               ; 89A1 4A                       J
         lda     #$00                            ; 89A2 A9 00                    ..
-        bcc     BattleTurnEngine_Branch_89A8    ; 89A4 90 02                    ..
+        bcc     BattleDisplay_Branch_89A8       ; 89A4 90 02                    ..
         lda     #$28                            ; 89A6 A9 28                    .(
-BattleTurnEngine_Branch_89A8:
+BattleDisplay_Branch_89A8:
         clc                                     ; 89A8 18                       .
         adc     $D6                             ; 89A9 65 D6                    e.
         sta     $03                             ; 89AB 85 03                    ..
         tya                                     ; 89AD 98                       .
         and     #$02                            ; 89AE 29 02                    ).
-        beq     BattleTurnEngine_Branch_89B4    ; 89B0 F0 02                    ..
+        beq     BattleDisplay_Branch_89B4       ; 89B0 F0 02                    ..
         lda     #$28                            ; 89B2 A9 28                    .(
-BattleTurnEngine_Branch_89B4:
+BattleDisplay_Branch_89B4:
         clc                                     ; 89B4 18                       .
         adc     #$5F                            ; 89B5 69 5F                    i_
         sta     $00                           ; 89B7 85 00                    ..
         ldx     #$00                            ; 89B9 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 89BB 20 3E C7                  >.
         dey                                     ; 89BE 88                       .
-        bpl     BattleTurnEngine_Branch_89A0    ; 89BF 10 DF                    ..
+        bpl     BattleDisplay_Branch_89A0       ; 89BF 10 DF                    ..
         ldx     #$03                            ; 89C1 A2 03                    ..
         jmp     WaitFrames                      ; 89C3 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearBattleOamMarkerQuad:
+BattleDisplay_ClearBattleOamMarkerQuad:
         ldy     #$0F                            ; 89C6 A0 0F                    ..
-BattleTurnEngine_Branch_89C8:
+BattleDisplay_Branch_89C8:
         lda     #$F7                            ; 89C8 A9 F7                    ..
         sta     $00                           ; 89CA 85 00                    ..
         sta     $01                             ; 89CC 85 01                    ..
@@ -1367,42 +1367,42 @@ BattleTurnEngine_Branch_89C8:
         ldx     #$00                            ; 89D2 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 89D4 20 3E C7                  >.
         dey                                     ; 89D7 88                       .
-        bpl     BattleTurnEngine_Branch_89C8    ; 89D8 10 EE                    ..
+        bpl     BattleDisplay_Branch_89C8       ; 89D8 10 EE                    ..
         rts                                     ; 89DA 60                       `
 ; ----------------------------------------------------------------------------
         db   $91,$A1                         ; 89DB 91 A1                    ..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckMappedBattleGraphicInUpperSlots:
+BattleDisplay_CheckMappedBattleGraphicInUpperSlots:
         lda     $C4                             ; 89DD A5 C4                    ..
         pha                                     ; 89DF 48                       H
         clc                                     ; 89E0 18                       .
         adc     #$F0                            ; 89E1 69 F0                    i.
         sta     $C4                             ; 89E3 85 C4                    ..
-        jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 89E5 20 0C 9E    ..
+        jsr     BattleDisplay_FindFallbackBattleGraphicSlot; 89E5 20 0C 9E       ..
         lda     #$06                            ; 89E8 A9 06                    ..
         cmp     $C8                             ; 89EA C5 C8                    ..
         pla                                     ; 89EC 68                       h
         sta     $C4                             ; 89ED 85 C4                    ..
         rts                                     ; 89EF 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckSmallBattleGraphicLoaded:
+BattleDisplay_CheckSmallBattleGraphicLoaded:
         lda     $C4                             ; 89F0 A5 C4                    ..
         cmp     #$09                            ; 89F2 C9 09                    ..
-        bcs     BattleTurnEngine_Branch_8A02    ; 89F4 B0 0C                    ..
+        bcs     BattleDisplay_Branch_8A02       ; 89F4 B0 0C                    ..
         pha                                     ; 89F6 48                       H
         adc     #$F0                            ; 89F7 69 F0                    i.
         sta     $C4                             ; 89F9 85 C4                    ..
-        jsr     BattleTurnEngine_FindLoadedBattleGraphicSlot; 89FB 20 1C 9E      ..
+        jsr     BattleDisplay_FindLoadedBattleGraphicSlot; 89FB 20 1C 9E         ..
         pla                                     ; 89FE 68                       h
         sta     $C4                             ; 89FF 85 C4                    ..
         rts                                     ; 8A01 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8A02:
+BattleDisplay_Branch_8A02:
         clc                                     ; 8A02 18                       .
         rts                                     ; 8A03 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunBattleFormationTransition:
-        jsr     BattleTurnEngine_LoadPrimaryBattleGraphicsPointer; 8A04 20 69 8A i.
+BattleDisplay_RunBattleFormationTransition:
+        jsr     BattleDisplay_LoadPrimaryBattleGraphicsPointer; 8A04 20 69 8A    i.
         lda     #$30                            ; 8A07 A9 30                    .0
         sta     $0609                           ; 8A09 8D 09 06                 ...
         lda     #$15                            ; 8A0C A9 15                    ..
@@ -1413,56 +1413,56 @@ BattleTurnEngine_RunBattleFormationTransition:
         ldx     #$07                            ; 8A19 A2 07                    ..
         lda     #$00                            ; 8A1B A9 00                    ..
         sta     $06                             ; 8A1D 85 06                    ..
-BattleTurnEngine_Branch_8A1F:
-        jsr     BattleTurnEngine_SelectClosestQueuedTurnSlotToCenter; 8A1F 20 A7 8A ..
+BattleDisplay_Branch_8A1F:
+        jsr     BattleDisplay_SelectClosestDisplaySlotToCenter; 8A1F 20 A7 8A    ..
         inc     $04                             ; 8A22 E6 04                    ..
-        beq     BattleTurnEngine_Branch_8A42    ; 8A24 F0 1C                    ..
+        beq     BattleDisplay_Branch_8A42       ; 8A24 F0 1C                    ..
         txa                                     ; 8A26 8A                       .
         pha                                     ; 8A27 48                       H
-        jsr     BattleTurnEngine_DrawQueuedTurnSlotColumn; 8A28 20 CB 8A         ..
+        jsr     BattleDisplay_DrawDisplaySlotColumn; 8A28 20 CB 8A               ..
         lda     $06                             ; 8A2B A5 06                    ..
         pha                                     ; 8A2D 48                       H
-        jsr     BattleTurnEngine_RunResolvedTurnSlotRemoval; 8A2E 20 2F 82       /.
+        jsr     BattleDisplay_RunResolvedDisplaySlotRemoval; 8A2E 20 2F 82       /.
         pla                                     ; 8A31 68                       h
         sta     $06                             ; 8A32 85 06                    ..
-        jsr     BattleTurnEngine_AnimateQueuedTurnSlotHorizontalStep; 8A34 20 E2 8A ..
+        jsr     BattleDisplay_AnimateDisplaySlotHorizontalStep; 8A34 20 E2 8A    ..
         brk                                     ; 8A37 00                       .
         db   $97,$FB                         ; 8A38 97 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_AnimateQueuedTurnSlotToFormationBand; 8A3A 20 36 8B 6.
-        jsr     BattleTurnEngine_RunQueuedTurnSlotEchoPass; 8A3D 20 85 8B        ..
+        jsr     BattleDisplay_AnimateDisplaySlotToFormationBand; 8A3A 20 36 8B   6.
+        jsr     BattleDisplay_RunDisplaySlotEchoPass; 8A3D 20 85 8B              ..
         pla                                     ; 8A40 68                       h
         tax                                     ; 8A41 AA                       .
-BattleTurnEngine_Branch_8A42:
+BattleDisplay_Branch_8A42:
         inc     $06                             ; 8A42 E6 06                    ..
         dex                                     ; 8A44 CA                       .
-        bpl     BattleTurnEngine_Branch_8A1F    ; 8A45 10 D8                    ..
-        jsr     BattleTurnEngine_ClearFirstBattleOamPage; 8A47 20 07 8C          ..
+        bpl     BattleDisplay_Branch_8A1F       ; 8A45 10 D8                    ..
+        jsr     BattleDisplay_ClearFirstBattleOamPage; 8A47 20 07 8C             ..
         lda     #$30                            ; 8A4A A9 30                    .0
         sta     $C4                             ; 8A4C 85 C4                    ..
         lda     #$00                            ; 8A4E A9 00                    ..
         sta     $C7                             ; 8A50 85 C7                    ..
         ldx     #$03                            ; 8A52 A2 03                    ..
-BattleTurnEngine_Branch_8A54:
+BattleDisplay_Branch_8A54:
         sta     $738D,x                         ; 8A54 9D 8D 73                 ..s
         dex                                     ; 8A57 CA                       .
-        bpl     BattleTurnEngine_Branch_8A54    ; 8A58 10 FA                    ..
-        jsr     BattleTurnEngine_AddCombatantToFirstFreeTurnSlot; 8A5A 20 DF 84  ..
+        bpl     BattleDisplay_Branch_8A54       ; 8A58 10 FA                    ..
+        jsr     BattleDisplay_AddCombatantToFirstFreeDisplaySlot; 8A5A 20 DF 84  ..
         brk                                     ; 8A5D 00                       .
         db   $98,$FB                         ; 8A5E 98 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_DeployQueuedCombatantIntoActiveSlot; 8A60 20 2E 85 ..
-        jsr     BattleTurnEngine_LoadSecondaryBattleGraphicsPointer; 8A63 20 76 8A v.
-        jmp     BattleTurnEngine_Branch_8C1B    ; 8A66 4C 1B 8C                 L..
+        jsr     BattleDisplay_DeployQueuedCombatantIntoActiveSlot; 8A60 20 2E 85 ..
+        jsr     BattleDisplay_LoadSecondaryBattleGraphicsPointer; 8A63 20 76 8A  v.
+        jmp     BattleDisplay_Branch_8C1B       ; 8A66 4C 1B 8C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPrimaryBattleGraphicsPointer:
+BattleDisplay_LoadPrimaryBattleGraphicsPointer:
         lda     $8D76                           ; 8A69 AD 76 8D                 .v.
         sta     $C0                             ; 8A6C 85 C0                    ..
         lda     $8D77                           ; 8A6E AD 77 8D                 .w.
         sta     $C1                             ; 8A71 85 C1                    ..
         jmp     LoadQueuedCombatantGraphics     ; 8A73 4C 83 8A                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadSecondaryBattleGraphicsPointer:
+BattleDisplay_LoadSecondaryBattleGraphicsPointer:
         lda     $8D78                           ; 8A76 AD 78 8D                 .x.
         sta     $C0                             ; 8A79 85 C0                    ..
         lda     $8D79                           ; 8A7B AD 79 8D                 .y.
@@ -1470,17 +1470,17 @@ BattleTurnEngine_LoadSecondaryBattleGraphicsPointer:
         jmp     LoadQueuedCombatantGraphics     ; 8A80 4C 83 8A                 L..
 ; ----------------------------------------------------------------------------
 LoadQueuedCombatantGraphics:
-        jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 8A83 20 0C 9E    ..
+        jsr     BattleDisplay_FindFallbackBattleGraphicSlot; 8A83 20 0C 9E       ..
         ldx     $C8                             ; 8A86 A6 C8                    ..
         lda     $045A,x                         ; 8A88 BD 5A 04                 .Z.
         ldx     #$08                            ; 8A8B A2 08                    ..
         stx     $16                             ; 8A8D 86 16                    ..
         ldx     #$03                            ; 8A8F A2 03                    ..
-BattleTurnEngine_Branch_8A91:
+BattleDisplay_Branch_8A91:
         asl     a                               ; 8A91 0A                       .
         rol     $16                             ; 8A92 26 16                    &.
         dex                                     ; 8A94 CA                       .
-        bpl     BattleTurnEngine_Branch_8A91    ; 8A95 10 FA                    ..
+        bpl     BattleDisplay_Branch_8A91       ; 8A95 10 FA                    ..
         sta     $17                             ; 8A97 85 17                    ..
         clc                                     ; 8A99 18                       .
         adc     #$80                            ; 8A9A 69 80                    i.
@@ -1490,31 +1490,31 @@ BattleTurnEngine_Branch_8A91:
         sta     $18                             ; 8AA2 85 18                    ..
         jmp     UploadBattleGraphicsBlocks      ; 8AA4 4C D5 8C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_SelectClosestQueuedTurnSlotToCenter:
+BattleDisplay_SelectClosestDisplaySlotToCenter:
         ldy     #$FF                            ; 8AA7 A0 FF                    ..
         sty     $04                             ; 8AA9 84 04                    ..
         iny                                     ; 8AAB C8                       .
-BattleTurnEngine_Branch_8AAC:
+BattleDisplay_Branch_8AAC:
         lda     $0690,y                         ; 8AAC B9 90 06                 ...
-        bpl     BattleTurnEngine_Branch_8AC5    ; 8AAF 10 14                    ..
+        bpl     BattleDisplay_Branch_8AC5       ; 8AAF 10 14                    ..
         lda     $0698,y                         ; 8AB1 B9 98 06                 ...
         sec                                     ; 8AB4 38                       8
         sbc     #$0F                            ; 8AB5 E9 0F                    ..
-        bcs     BattleTurnEngine_Branch_8ABD    ; 8AB7 B0 04                    ..
+        bcs     BattleDisplay_Branch_8ABD       ; 8AB7 B0 04                    ..
         eor     #$FF                            ; 8AB9 49 FF                    I.
         adc     #$01                            ; 8ABB 69 01                    i.
-BattleTurnEngine_Branch_8ABD:
+BattleDisplay_Branch_8ABD:
         cmp     $04                             ; 8ABD C5 04                    ..
-        bcs     BattleTurnEngine_Branch_8AC5    ; 8ABF B0 04                    ..
+        bcs     BattleDisplay_Branch_8AC5       ; 8ABF B0 04                    ..
         sta     $04                             ; 8AC1 85 04                    ..
         sty     $C7                             ; 8AC3 84 C7                    ..
-BattleTurnEngine_Branch_8AC5:
+BattleDisplay_Branch_8AC5:
         iny                                     ; 8AC5 C8                       .
         cpy     #$08                            ; 8AC6 C0 08                    ..
-        bne     BattleTurnEngine_Branch_8AAC    ; 8AC8 D0 E2                    ..
+        bne     BattleDisplay_Branch_8AAC       ; 8AC8 D0 E2                    ..
         rts                                     ; 8ACA 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawQueuedTurnSlotColumn:
+BattleDisplay_DrawDisplaySlotColumn:
         lda     #$77                            ; 8ACB A9 77                    .w
         sta     $00                           ; 8ACD 85 00                    ..
         lda     #$00                            ; 8ACF A9 00                    ..
@@ -1526,9 +1526,9 @@ BattleTurnEngine_DrawQueuedTurnSlotColumn:
         asl     a                               ; 8ADB 0A                       .
         asl     a                               ; 8ADC 0A                       .
         sta     $03                             ; 8ADD 85 03                    ..
-        jmp     BattleTurnEngine_CommitBattleOamTileBlock; 8ADF 4C 86 8C        L..
+        jmp     BattleDisplay_CommitBattleOamTileBlock; 8ADF 4C 86 8C           L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AnimateQueuedTurnSlotHorizontalStep:
+BattleDisplay_AnimateDisplaySlotHorizontalStep:
         ldx     $06                             ; 8AE2 A6 06                    ..
         lda     $8D29,x                         ; 8AE4 BD 29 8D                 .).
         sta     $08                             ; 8AE7 85 08                    ..
@@ -1545,18 +1545,18 @@ AnimateQueuedCombatantHorizontalMotion:
         jsr     CopyOamSpriteRecord             ; 8AF8 20 70 C7                  p.
         lda     $03                             ; 8AFB A5 03                    ..
         cmp     $08                             ; 8AFD C5 08                    ..
-        beq     BattleTurnEngine_Branch_8B35    ; 8AFF F0 34                    .4
-        bcc     BattleTurnEngine_Branch_8B0B    ; 8B01 90 08                    ..
+        beq     BattleDisplay_Branch_8B35       ; 8AFF F0 34                    .4
+        bcc     BattleDisplay_Branch_8B0B       ; 8B01 90 08                    ..
         lda     $0A                             ; 8B03 A5 0A                    ..
         eor     #$FF                            ; 8B05 49 FF                    I.
         sta     $0A                             ; 8B07 85 0A                    ..
         inc     $0A                             ; 8B09 E6 0A                    ..
-BattleTurnEngine_Branch_8B0B:
-        jsr     BattleTurnEngine_AdvanceQueuedTurnSlotHorizontalStep; 8B0B 20 13 8B ..
+BattleDisplay_Branch_8B0B:
+        jsr     BattleDisplay_AdvanceDisplaySlotHorizontalStep; 8B0B 20 13 8B    ..
         inc     $09                             ; 8B0E E6 09                    ..
         jmp     AnimateQueuedCombatantHorizontalMotion; 8B10 4C ED 8A           L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AdvanceQueuedTurnSlotHorizontalStep:
+BattleDisplay_AdvanceDisplaySlotHorizontalStep:
         lda     $06                             ; 8B13 A5 06                    ..
         asl     a                               ; 8B15 0A                       .
         asl     a                               ; 8B16 0A                       .
@@ -1566,27 +1566,27 @@ BattleTurnEngine_AdvanceQueuedTurnSlotHorizontalStep:
         lda     $03                             ; 8B1D A5 03                    ..
         clc                                     ; 8B1F 18                       .
         adc     $0A                             ; 8B20 65 0A                    e.
-        bcs     BattleTurnEngine_Branch_8B2A    ; 8B22 B0 06                    ..
+        bcs     BattleDisplay_Branch_8B2A       ; 8B22 B0 06                    ..
         cmp     $08                             ; 8B24 C5 08                    ..
-        bcc     BattleTurnEngine_Branch_8B30    ; 8B26 90 08                    ..
-        bcs     BattleTurnEngine_Branch_8B2E    ; 8B28 B0 04                    ..
-BattleTurnEngine_Branch_8B2A:
+        bcc     BattleDisplay_Branch_8B30       ; 8B26 90 08                    ..
+        bcs     BattleDisplay_Branch_8B2E       ; 8B28 B0 04                    ..
+BattleDisplay_Branch_8B2A:
         cmp     $08                             ; 8B2A C5 08                    ..
-        bcs     BattleTurnEngine_Branch_8B30    ; 8B2C B0 02                    ..
-BattleTurnEngine_Branch_8B2E:
+        bcs     BattleDisplay_Branch_8B30       ; 8B2C B0 02                    ..
+BattleDisplay_Branch_8B2E:
         lda     $08                             ; 8B2E A5 08                    ..
-BattleTurnEngine_Branch_8B30:
+BattleDisplay_Branch_8B30:
         sta     $03                             ; 8B30 85 03                    ..
-        jsr     BattleTurnEngine_CommitBattleOamTileBlock; 8B32 20 86 8C         ..
-BattleTurnEngine_Branch_8B35:
+        jsr     BattleDisplay_CommitBattleOamTileBlock; 8B32 20 86 8C            ..
+BattleDisplay_Branch_8B35:
         rts                                     ; 8B35 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AnimateQueuedTurnSlotToFormationBand:
+BattleDisplay_AnimateDisplaySlotToFormationBand:
         ldx     $06                             ; 8B36 A6 06                    ..
         lda     $8D42,x                         ; 8B38 BD 42 8D                 .B.
         sta     $08                             ; 8B3B 85 08                    ..
         ldy     #$00                            ; 8B3D A0 00                    ..
-BattleTurnEngine_Branch_8B3F:
+BattleDisplay_Branch_8B3F:
         tya                                     ; 8B3F 98                       .
         pha                                     ; 8B40 48                       H
         ldx     #$00                            ; 8B41 A2 00                    ..
@@ -1597,20 +1597,20 @@ BattleTurnEngine_Branch_8B3F:
         jsr     CopyOamSpriteRecord             ; 8B48 20 70 C7                  p.
         lda     $03                             ; 8B4B A5 03                    ..
         cmp     $08                             ; 8B4D C5 08                    ..
-        bne     BattleTurnEngine_Branch_8B53    ; 8B4F D0 02                    ..
+        bne     BattleDisplay_Branch_8B53       ; 8B4F D0 02                    ..
         pla                                     ; 8B51 68                       h
         rts                                     ; 8B52 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8B53:
+BattleDisplay_Branch_8B53:
         cmp     #$78                            ; 8B53 C9 78                    .x
-        bcs     BattleTurnEngine_Branch_8B5D    ; 8B55 B0 06                    ..
+        bcs     BattleDisplay_Branch_8B5D       ; 8B55 B0 06                    ..
         inc     $03                             ; 8B57 E6 03                    ..
         inc     $03                             ; 8B59 E6 03                    ..
-        bne     BattleTurnEngine_Branch_8B61    ; 8B5B D0 04                    ..
-BattleTurnEngine_Branch_8B5D:
+        bne     BattleDisplay_Branch_8B61       ; 8B5B D0 04                    ..
+BattleDisplay_Branch_8B5D:
         dec     $03                             ; 8B5D C6 03                    ..
         dec     $03                             ; 8B5F C6 03                    ..
-BattleTurnEngine_Branch_8B61:
+BattleDisplay_Branch_8B61:
         pla                                     ; 8B61 68                       h
         tay                                     ; 8B62 A8                       .
         lda     $00                           ; 8B63 A5 00                    ..
@@ -1618,24 +1618,24 @@ BattleTurnEngine_Branch_8B61:
         adc     $8D31,y                         ; 8B66 79 31 8D                 y1.
         ldx     $06                             ; 8B69 A6 06                    ..
         cpx     #$07                            ; 8B6B E0 07                    ..
-        bne     BattleTurnEngine_Branch_8B73    ; 8B6D D0 04                    ..
+        bne     BattleDisplay_Branch_8B73       ; 8B6D D0 04                    ..
         clc                                     ; 8B6F 18                       .
         adc     $8D31,y                         ; 8B70 79 31 8D                 y1.
-BattleTurnEngine_Branch_8B73:
+BattleDisplay_Branch_8B73:
         sta     $00                           ; 8B73 85 00                    ..
         ldx     $C8                             ; 8B75 A6 C8                    ..
         lda     $045A,x                         ; 8B77 BD 5A 04                 .Z.
         clc                                     ; 8B7A 18                       .
         adc     #$04                            ; 8B7B 69 04                    i.
         sta     $01                             ; 8B7D 85 01                    ..
-        jsr     BattleTurnEngine_CommitBattleOamTileBlock; 8B7F 20 86 8C         ..
+        jsr     BattleDisplay_CommitBattleOamTileBlock; 8B7F 20 86 8C            ..
         iny                                     ; 8B82 C8                       .
-        bne     BattleTurnEngine_Branch_8B3F    ; 8B83 D0 BA                    ..
-BattleTurnEngine_RunQueuedTurnSlotEchoPass:
+        bne     BattleDisplay_Branch_8B3F       ; 8B83 D0 BA                    ..
+BattleDisplay_RunDisplaySlotEchoPass:
         lda     $06                             ; 8B85 A5 06                    ..
         pha                                     ; 8B87 48                       H
         cmp     #$02                            ; 8B88 C9 02                    ..
-        bcc     BattleTurnEngine_Branch_8BC2    ; 8B8A 90 36                    .6
+        bcc     BattleDisplay_Branch_8BC2       ; 8B8A 90 36                    .6
         asl     a                               ; 8B8C 0A                       .
         asl     a                               ; 8B8D 0A                       .
         tay                                     ; 8B8E A8                       .
@@ -1646,13 +1646,13 @@ BattleTurnEngine_RunQueuedTurnSlotEchoPass:
         sta     $00                           ; 8B99 85 00                    ..
         lda     #$00                            ; 8B9B A9 00                    ..
         sta     $01                             ; 8B9D 85 01                    ..
-        jsr     BattleTurnEngine_CommitBattleOamTileBlock; 8B9F 20 86 8C         ..
+        jsr     BattleDisplay_CommitBattleOamTileBlock; 8B9F 20 86 8C            ..
         lda     $06                             ; 8BA2 A5 06                    ..
         cmp     #$07                            ; 8BA4 C9 07                    ..
-        bne     BattleTurnEngine_Branch_8BC2    ; 8BA6 D0 1A                    ..
+        bne     BattleDisplay_Branch_8BC2       ; 8BA6 D0 1A                    ..
         lda     #$04                            ; 8BA8 A9 04                    ..
         sta     $0C                             ; 8BAA 85 0C                    ..
-        jsr     BattleTurnEngine_RunQueuedTurnSlotSweep; 8BAC 20 C9 8B           ..
+        jsr     BattleDisplay_RunDisplaySlotSweep; 8BAC 20 C9 8B                 ..
         jsr     WaitForNmi                      ; 8BAF 20 74 FF                  t.
         ldx     #$07                            ; 8BB2 A2 07                    ..
         jsr     WaitFrames                      ; 8BB4 20 0C C9                  ..
@@ -1660,33 +1660,33 @@ BattleTurnEngine_RunQueuedTurnSlotEchoPass:
         sta     $06                             ; 8BB9 85 06                    ..
         lda     #$FC                            ; 8BBB A9 FC                    ..
         sta     $0C                             ; 8BBD 85 0C                    ..
-        jsr     BattleTurnEngine_RunQueuedTurnSlotSweep; 8BBF 20 C9 8B           ..
-BattleTurnEngine_Branch_8BC2:
+        jsr     BattleDisplay_RunDisplaySlotSweep; 8BBF 20 C9 8B                 ..
+BattleDisplay_Branch_8BC2:
         jsr     WaitForNmi                      ; 8BC2 20 74 FF                  t.
         pla                                     ; 8BC5 68                       h
         sta     $06                             ; 8BC6 85 06                    ..
         rts                                     ; 8BC8 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunQueuedTurnSlotSweep:
+BattleDisplay_RunDisplaySlotSweep:
         lda     #$00                            ; 8BC9 A9 00                    ..
         ldy     $06                             ; 8BCB A4 06                    ..
         ldx     $0C                             ; 8BCD A6 0C                    ..
-        bmi     BattleTurnEngine_Branch_8BDA    ; 8BCF 30 09                    0.
+        bmi     BattleDisplay_Branch_8BDA       ; 8BCF 30 09                    0.
         cpy     #$07                            ; 8BD1 C0 07                    ..
-        beq     BattleTurnEngine_Branch_8BDA    ; 8BD3 F0 05                    ..
+        beq     BattleDisplay_Branch_8BDA       ; 8BD3 F0 05                    ..
         ldx     $C8                             ; 8BD5 A6 C8                    ..
         lda     $045A,x                         ; 8BD7 BD 5A 04                 .Z.
-BattleTurnEngine_Branch_8BDA:
+BattleDisplay_Branch_8BDA:
         ldx     $8D6E,y                         ; 8BDA BE 6E 8D                 .n.
-BattleTurnEngine_Branch_8BDD:
-        jsr     BattleTurnEngine_AdvanceQueuedTurnSlotSweepStep; 8BDD 20 E8 8B   ..
+BattleDisplay_Branch_8BDD:
+        jsr     BattleDisplay_AdvanceDisplaySlotSweepStep; 8BDD 20 E8 8B         ..
         dex                                     ; 8BE0 CA                       .
-        bne     BattleTurnEngine_Branch_8BDD    ; 8BE1 D0 FA                    ..
+        bne     BattleDisplay_Branch_8BDD       ; 8BE1 D0 FA                    ..
         dec     $06                             ; 8BE3 C6 06                    ..
-        bpl     BattleTurnEngine_RunQueuedTurnSlotSweep; 8BE5 10 E2             ..
+        bpl     BattleDisplay_RunDisplaySlotSweep; 8BE5 10 E2                   ..
         rts                                     ; 8BE7 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AdvanceQueuedTurnSlotSweepStep:
+BattleDisplay_AdvanceDisplaySlotSweepStep:
         pha                                     ; 8BE8 48                       H
         pha                                     ; 8BE9 48                       H
         txa                                     ; 8BEA 8A                       .
@@ -1705,24 +1705,24 @@ BattleTurnEngine_AdvanceQueuedTurnSlotSweepStep:
         tax                                     ; 8BFE AA                       .
         pla                                     ; 8BFF 68                       h
         sta     $01                             ; 8C00 85 01                    ..
-        jsr     BattleTurnEngine_DrawBattleOamTileBlock; 8C02 20 8C 8C           ..
+        jsr     BattleDisplay_DrawBattleOamTileBlock; 8C02 20 8C 8C              ..
         pla                                     ; 8C05 68                       h
         rts                                     ; 8C06 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearFirstBattleOamPage:
+BattleDisplay_ClearFirstBattleOamPage:
         ldx     #$02                            ; 8C07 A2 02                    ..
         jsr     WaitFrames                      ; 8C09 20 0C C9                  ..
         ldy     #$1F                            ; 8C0C A0 1F                    ..
-BattleTurnEngine_Branch_8C0E:
+BattleDisplay_Branch_8C0E:
         ldx     #$00                            ; 8C0E A2 00                    ..
         lda     #$F7                            ; 8C10 A9 F7                    ..
         sta     $00                           ; 8C12 85 00                    ..
         jsr     CopySpriteRecordToOam           ; 8C14 20 3E C7                  >.
         dey                                     ; 8C17 88                       .
-        bpl     BattleTurnEngine_Branch_8C0E    ; 8C18 10 F4                    ..
+        bpl     BattleDisplay_Branch_8C0E       ; 8C18 10 F4                    ..
         rts                                     ; 8C1A 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8C1B:
+BattleDisplay_Branch_8C1B:
         lda     #$30                            ; 8C1B A9 30                    .0
         sta     $060F                           ; 8C1D 8D 0F 06                 ...
         lda     #$3C                            ; 8C20 A9 3C                    .<
@@ -1730,42 +1730,42 @@ BattleTurnEngine_Branch_8C1B:
         lda     #$2C                            ; 8C25 A9 2C                    .,
         sta     $0611                           ; 8C27 8D 11 06                 ...
         jsr     SubmitPaletteWithoutFade        ; 8C2A 20 B9 C5                  ..
-        jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 8C2D 20 0C 9E    ..
+        jsr     BattleDisplay_FindFallbackBattleGraphicSlot; 8C2D 20 0C 9E       ..
         ldx     $C8                             ; 8C30 A6 C8                    ..
         lda     $045A,x                         ; 8C32 BD 5A 04                 .Z.
         sta     $01                             ; 8C35 85 01                    ..
-        jsr     BattleTurnEngine_DrawBattleOamMarkerStrip; 8C37 20 5C 8C         \.
+        jsr     BattleDisplay_DrawBattleOamMarkerStrip; 8C37 20 5C 8C            \.
         ldx     #$05                            ; 8C3A A2 05                    ..
         jsr     WaitFrames                      ; 8C3C 20 0C C9                  ..
         inc     $01                             ; 8C3F E6 01                    ..
-        jsr     BattleTurnEngine_DrawBattleOamMarkerStrip; 8C41 20 5C 8C         \.
+        jsr     BattleDisplay_DrawBattleOamMarkerStrip; 8C41 20 5C 8C            \.
         ldx     #$03                            ; 8C44 A2 03                    ..
         jsr     WaitFrames                      ; 8C46 20 0C C9                  ..
         ldy     #$05                            ; 8C49 A0 05                    ..
-BattleTurnEngine_Branch_8C4B:
+BattleDisplay_Branch_8C4B:
         lda     #$F7                            ; 8C4B A9 F7                    ..
         sta     $00                           ; 8C4D 85 00                    ..
         ldx     #$00                            ; 8C4F A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 8C51 20 3E C7                  >.
         iny                                     ; 8C54 C8                       .
         cpy     #$0C                            ; 8C55 C0 0C                    ..
-        bne     BattleTurnEngine_Branch_8C4B    ; 8C57 D0 F2                    ..
+        bne     BattleDisplay_Branch_8C4B       ; 8C57 D0 F2                    ..
         jmp     WaitForNmi                      ; 8C59 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawBattleOamMarkerStrip:
+BattleDisplay_DrawBattleOamMarkerStrip:
         lda     #$02                            ; 8C5C A9 02                    ..
         sta     $02                             ; 8C5E 85 02                    ..
         ldy     #$05                            ; 8C60 A0 05                    ..
-BattleTurnEngine_Branch_8C62:
+BattleDisplay_Branch_8C62:
         tya                                     ; 8C62 98                       .
         sec                                     ; 8C63 38                       8
         sbc     #$05                            ; 8C64 E9 05                    ..
         ldx     $01                             ; 8C66 A6 01                    ..
         cpx     #$0C                            ; 8C68 E0 0C                    ..
-        beq     BattleTurnEngine_Branch_8C6F    ; 8C6A F0 03                    ..
+        beq     BattleDisplay_Branch_8C6F       ; 8C6A F0 03                    ..
         clc                                     ; 8C6C 18                       .
         adc     #$07                            ; 8C6D 69 07                    i.
-BattleTurnEngine_Branch_8C6F:
+BattleDisplay_Branch_8C6F:
         asl     a                               ; 8C6F 0A                       .
         tax                                     ; 8C70 AA                       .
         lda     $8D52,x                         ; 8C71 BD 52 8D                 .R.
@@ -1776,21 +1776,21 @@ BattleTurnEngine_Branch_8C6F:
         jsr     CopySpriteRecordToOam           ; 8C7D 20 3E C7                  >.
         iny                                     ; 8C80 C8                       .
         cpy     #$0C                            ; 8C81 C0 0C                    ..
-        bne     BattleTurnEngine_Branch_8C62    ; 8C83 D0 DD                    ..
+        bne     BattleDisplay_Branch_8C62       ; 8C83 D0 DD                    ..
         rts                                     ; 8C85 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CommitBattleOamTileBlock:
-        jsr     BattleTurnEngine_DrawBattleOamTileBlock; 8C86 20 8C 8C           ..
+BattleDisplay_CommitBattleOamTileBlock:
+        jsr     BattleDisplay_DrawBattleOamTileBlock; 8C86 20 8C 8C              ..
         jmp     WaitForNmi                      ; 8C89 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawBattleOamTileBlock:
+BattleDisplay_DrawBattleOamTileBlock:
         txa                                     ; 8C8C 8A                       .
         pha                                     ; 8C8D 48                       H
         tya                                     ; 8C8E 98                       .
         pha                                     ; 8C8F 48                       H
         ldx     #$03                            ; 8C90 A2 03                    ..
         stx     $07                             ; 8C92 86 07                    ..
-BattleTurnEngine_Branch_8C94:
+BattleDisplay_Branch_8C94:
         lda     $00                           ; 8C94 A5 00                    ..
         pha                                     ; 8C96 48                       H
         lda     $01                             ; 8C97 A5 01                    ..
@@ -1828,7 +1828,7 @@ BattleTurnEngine_Branch_8C94:
         pla                                     ; 8CC9 68                       h
         sta     $00                           ; 8CCA 85 00                    ..
         dec     $07                             ; 8CCC C6 07                    ..
-        bpl     BattleTurnEngine_Branch_8C94    ; 8CCE 10 C4                    ..
+        bpl     BattleDisplay_Branch_8C94       ; 8CCE 10 C4                    ..
         pla                                     ; 8CD0 68                       h
         tay                                     ; 8CD1 A8                       .
         pla                                     ; 8CD2 68                       h
@@ -1845,19 +1845,19 @@ UploadBattleGraphicsBlocks:
         sta     $0301                           ; 8CE2 8D 01 03                 ...
         lda     $17                             ; 8CE5 A5 17                    ..
         sta     NextTextCharacter               ; 8CE7 8D 02 03                 ...
-BattleTurnEngine_Branch_8CEA:
+BattleDisplay_Branch_8CEA:
         ldx     #$00                            ; 8CEA A2 00                    ..
         ldy     #$00                            ; 8CEC A0 00                    ..
-BattleTurnEngine_Branch_8CEE:
+BattleDisplay_Branch_8CEE:
         lda     ($C0),y                         ; 8CEE B1 C0                    ..
         sta     $0303,x                         ; 8CF0 9D 03 03                 ...
         inc     $C0                             ; 8CF3 E6 C0                    ..
-        bne     BattleTurnEngine_Branch_8CF9    ; 8CF5 D0 02                    ..
+        bne     BattleDisplay_Branch_8CF9       ; 8CF5 D0 02                    ..
         inc     $C1                             ; 8CF7 E6 C1                    ..
-BattleTurnEngine_Branch_8CF9:
+BattleDisplay_Branch_8CF9:
         inx                                     ; 8CF9 E8                       .
         cpx     #$40                            ; 8CFA E0 40                    .@
-        bne     BattleTurnEngine_Branch_8CEE    ; 8CFC D0 F0                    ..
+        bne     BattleDisplay_Branch_8CEE       ; 8CFC D0 F0                    ..
         lda     #$01                            ; 8CFE A9 01                    ..
         sta     $050B                           ; 8D00 8D 0B 05                 ...
         jsr     RequestPpuUpdateAndWait         ; 8D03 20 2D C6                  -.
@@ -1865,15 +1865,15 @@ BattleTurnEngine_Branch_8CF9:
         clc                                     ; 8D09 18                       .
         adc     #$40                            ; 8D0A 69 40                    i@
         sta     NextTextCharacter               ; 8D0C 8D 02 03                 ...
-        bcc     BattleTurnEngine_Branch_8D14    ; 8D0F 90 03                    ..
+        bcc     BattleDisplay_Branch_8D14       ; 8D0F 90 03                    ..
         inc     $0300                           ; 8D11 EE 00 03                 ...
-BattleTurnEngine_Branch_8D14:
+BattleDisplay_Branch_8D14:
         lda     $0300                           ; 8D14 AD 00 03                 ...
         cmp     $18                             ; 8D17 C5 18                    ..
-        bcc     BattleTurnEngine_Branch_8CEA    ; 8D19 90 CF                    ..
+        bcc     BattleDisplay_Branch_8CEA       ; 8D19 90 CF                    ..
         lda     NextTextCharacter               ; 8D1B AD 02 03                 ...
         cmp     $19                             ; 8D1E C5 19                    ..
-        bcc     BattleTurnEngine_Branch_8CEA    ; 8D20 90 C8                    ..
+        bcc     BattleDisplay_Branch_8CEA       ; 8D20 90 C8                    ..
         lda     $1F                             ; 8D22 A5 1F                    ..
         and     #$BF                            ; 8D24 29 BF                    ).
         sta     $1F                             ; 8D26 85 1F                    ..
@@ -1896,16 +1896,16 @@ BattleTurnEngine_Branch_8D14:
         db   $D1                             ; 8D78 D1                       .
         db   $A3                             ; 8D79 A3                       .
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunScrollWindowTransition:
+BattleDisplay_RunScrollWindowTransition:
         brk                                     ; 8D7A 00                       .
         db   $AB,$FB                         ; 8D7B AB FB                    ..
 ; ----------------------------------------------------------------------------
         inc     $C7                             ; 8D7D E6 C7                    ..
-        bne     BattleTurnEngine_Branch_8DF1    ; 8D7F D0 70                    .p
+        bne     BattleDisplay_Branch_8DF1       ; 8D7F D0 70                    .p
         lda     $C7                             ; 8D81 A5 C7                    ..
         pha                                     ; 8D83 48                       H
         ldx     #$01                            ; 8D84 A2 01                    ..
-BattleTurnEngine_Branch_8D86:
+BattleDisplay_Branch_8D86:
         lda     #$BA                            ; 8D86 A9 BA                    ..
         sta     $6E45,x                         ; 8D88 9D 45 6E                 .En
         sta     $7206,x                         ; 8D8B 9D 06 72                 ..r
@@ -1926,78 +1926,78 @@ BattleTurnEngine_Branch_8D86:
         txa                                     ; 8DB5 8A                       .
         asl     a                               ; 8DB6 0A                       .
         sta     $06A0,x                         ; 8DB7 9D A0 06                 ...
-        jsr     BattleTurnEngine_EncodeTurnSlotReservation; 8DBA 20 D2 93        ..
+        jsr     BattleDisplay_EncodeDisplaySlotReservation; 8DBA 20 D2 93        ..
         inc     $C6                             ; 8DBD E6 C6                    ..
         inc     $C7                             ; 8DBF E6 C7                    ..
         ldx     $C7                             ; 8DC1 A6 C7                    ..
         cpx     #$04                            ; 8DC3 E0 04                    ..
-        bcc     BattleTurnEngine_Branch_8D86    ; 8DC5 90 BF                    ..
+        bcc     BattleDisplay_Branch_8D86       ; 8DC5 90 BF                    ..
         pla                                     ; 8DC7 68                       h
         sta     $C7                             ; 8DC8 85 C7                    ..
-        jsr     BattleTurnEngine_LoadScrollWindowRows; 8DCA 20 2F 8E             /.
-        jsr     BattleTurnEngine_ClearScrollWindowTiles; 8DCD 20 6B 8E           k.
-        jsr     BattleTurnEngine_LoadScrollWindowStatusPanel; 8DD0 20 9D 8E      ..
+        jsr     BattleDisplay_LoadScrollWindowRows; 8DCA 20 2F 8E                /.
+        jsr     BattleDisplay_ClearScrollWindowTiles; 8DCD 20 6B 8E              k.
+        jsr     BattleDisplay_LoadScrollWindowStatusPanel; 8DD0 20 9D 8E         ..
         lda     #$00                            ; 8DD3 A9 00                    ..
         sta     $00                           ; 8DD5 85 00                    ..
-        jsr     BattleTurnEngine_LoadScrollWindowPattern; 8DD7 20 9C 8F          ..
+        jsr     BattleDisplay_LoadScrollWindowPattern; 8DD7 20 9C 8F             ..
         lda     #$B0                            ; 8DDA A9 B0                    ..
         sta     $02                             ; 8DDC 85 02                    ..
-        jsr     BattleTurnEngine_RunScrollWindowTransitionPass; 8DDE 20 FE 8D    ..
+        jsr     BattleDisplay_RunScrollWindowTransitionPass; 8DDE 20 FE 8D       ..
         ldx     #$00                            ; 8DE1 A2 00                    ..
         lda     #$FC                            ; 8DE3 A9 FC                    ..
-BattleTurnEngine_Branch_8DE5:
+BattleDisplay_Branch_8DE5:
         clc                                     ; 8DE5 18                       .
         adc     #$07                            ; 8DE6 69 07                    i.
         sta     $0698,x                         ; 8DE8 9D 98 06                 ...
         inx                                     ; 8DEB E8                       .
         cpx     #$04                            ; 8DEC E0 04                    ..
-        bcc     BattleTurnEngine_Branch_8DE5    ; 8DEE 90 F5                    ..
+        bcc     BattleDisplay_Branch_8DE5       ; 8DEE 90 F5                    ..
         rts                                     ; 8DF0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8DF1:
-        jsr     BattleTurnEngine_ClearScrollWindowTiles; 8DF1 20 6B 8E           k.
-        jsr     BattleTurnEngine_LoadScrollWindowStatusPanel; 8DF4 20 9D 8E      ..
+BattleDisplay_Branch_8DF1:
+        jsr     BattleDisplay_ClearScrollWindowTiles; 8DF1 20 6B 8E              k.
+        jsr     BattleDisplay_LoadScrollWindowStatusPanel; 8DF4 20 9D 8E         ..
         lda     #$00                            ; 8DF7 A9 00                    ..
         sta     $02                             ; 8DF9 85 02                    ..
-        jmp     BattleTurnEngine_RunScrollWindowTransitionPass; 8DFB 4C FE 8D   L..
+        jmp     BattleDisplay_RunScrollWindowTransitionPass; 8DFB 4C FE 8D      L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunScrollWindowTransitionPass:
+BattleDisplay_RunScrollWindowTransitionPass:
         lda     #$00                            ; 8DFE A9 00                    ..
         sta     $01                             ; 8E00 85 01                    ..
         lda     #$01                            ; 8E02 A9 01                    ..
         sta     $00                           ; 8E04 85 00                    ..
-BattleTurnEngine_Branch_8E06:
+BattleDisplay_Branch_8E06:
         lda     $02                             ; 8E06 A5 02                    ..
         sta     $03                             ; 8E08 85 03                    ..
-BattleTurnEngine_Branch_8E0A:
+BattleDisplay_Branch_8E0A:
         lda     $00                           ; 8E0A A5 00                    ..
         lsr     a                               ; 8E0C 4A                       J
-        bcs     BattleTurnEngine_Branch_8E15    ; 8E0D B0 06                    ..
-        jsr     BattleTurnEngine_LoadScrollWindowPattern; 8E0F 20 9C 8F          ..
-        jmp     BattleTurnEngine_Branch_8E18    ; 8E12 4C 18 8E                 L..
+        bcs     BattleDisplay_Branch_8E15       ; 8E0D B0 06                    ..
+        jsr     BattleDisplay_LoadScrollWindowPattern; 8E0F 20 9C 8F             ..
+        jmp     BattleDisplay_Branch_8E18       ; 8E12 4C 18 8E                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8E15:
-        jsr     BattleTurnEngine_AdjustScrollWindowEdge; 8E15 20 3A 8F           :.
-BattleTurnEngine_Branch_8E18:
+BattleDisplay_Branch_8E15:
+        jsr     BattleDisplay_AdjustScrollWindowEdge; 8E15 20 3A 8F              :.
+BattleDisplay_Branch_8E18:
         php                                     ; 8E18 08                       .
-        jsr     BattleTurnEngine_CommitScrollWindowStep; 8E19 20 D9 8E           ..
+        jsr     BattleDisplay_CommitScrollWindowStep; 8E19 20 D9 8E              ..
         plp                                     ; 8E1C 28                       (
-        bcc     BattleTurnEngine_Branch_8E0A    ; 8E1D 90 EB                    ..
+        bcc     BattleDisplay_Branch_8E0A       ; 8E1D 90 EB                    ..
         inc     $00                           ; 8E1F E6 00                    ..
         lda     $00                           ; 8E21 A5 00                    ..
         cmp     #$05                            ; 8E23 C9 05                    ..
-        bcc     BattleTurnEngine_Branch_8E06    ; 8E25 90 DF                    ..
+        bcc     BattleDisplay_Branch_8E06       ; 8E25 90 DF                    ..
         inc     $00                           ; 8E27 E6 00                    ..
-        jsr     BattleTurnEngine_LoadScrollWindowPattern; 8E29 20 9C 8F          ..
-        jmp     BattleTurnEngine_CommitScrollWindowStep; 8E2C 4C D9 8E          L..
+        jsr     BattleDisplay_LoadScrollWindowPattern; 8E29 20 9C 8F             ..
+        jmp     BattleDisplay_CommitScrollWindowStep; 8E2C 4C D9 8E             L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadScrollWindowRows:
+BattleDisplay_LoadScrollWindowRows:
         ldx     #$00                            ; 8E2F A2 00                    ..
         lda     #$A1                            ; 8E31 A9 A1                    ..
         sta     $04                             ; 8E33 85 04                    ..
         lda     #$6D                            ; 8E35 A9 6D                    .m
         sta     $05                             ; 8E37 85 05                    ..
-BattleTurnEngine_Branch_8E39:
+BattleDisplay_Branch_8E39:
         lda     $04                             ; 8E39 A5 04                    ..
         sta     $0300,x                         ; 8E3B 9D 00 03                 ...
         inx                                     ; 8E3E E8                       .
@@ -2009,24 +2009,24 @@ BattleTurnEngine_Branch_8E39:
         clc                                     ; 8E4A 18                       .
         adc     #$20                            ; 8E4B 69 20                    i
         sta     $05                             ; 8E4D 85 05                    ..
-        bcc     BattleTurnEngine_Branch_8E53    ; 8E4F 90 02                    ..
+        bcc     BattleDisplay_Branch_8E53       ; 8E4F 90 02                    ..
         inc     $04                             ; 8E51 E6 04                    ..
-BattleTurnEngine_Branch_8E53:
+BattleDisplay_Branch_8E53:
         inx                                     ; 8E53 E8                       .
         lda     #$00                            ; 8E54 A9 00                    ..
         ldy     #$06                            ; 8E56 A0 06                    ..
-BattleTurnEngine_Branch_8E58:
+BattleDisplay_Branch_8E58:
         sta     $0300,x                         ; 8E58 9D 00 03                 ...
         inx                                     ; 8E5B E8                       .
         dey                                     ; 8E5C 88                       .
-        bne     BattleTurnEngine_Branch_8E58    ; 8E5D D0 F9                    ..
+        bne     BattleDisplay_Branch_8E58       ; 8E5D D0 F9                    ..
         cpx     #$36                            ; 8E5F E0 36                    .6
-        bcc     BattleTurnEngine_Branch_8E39    ; 8E61 90 D6                    ..
+        bcc     BattleDisplay_Branch_8E39       ; 8E61 90 D6                    ..
         lda     #$06                            ; 8E63 A9 06                    ..
         sta     $050B                           ; 8E65 8D 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; 8E68 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearScrollWindowTiles:
+BattleDisplay_ClearScrollWindowTiles:
         lda     #$A3                            ; 8E6B A9 A3                    ..
         sta     $0300                           ; 8E6D 8D 00 03                 ...
         lda     #$18                            ; 8E70 A9 18                    ..
@@ -2035,29 +2035,29 @@ BattleTurnEngine_ClearScrollWindowTiles:
         sta     NextTextCharacter               ; 8E77 8D 02 03                 ...
         lda     #$50                            ; 8E7A A9 50                    .P
         ldx     #$00                            ; 8E7C A2 00                    ..
-BattleTurnEngine_Branch_8E7E:
+BattleDisplay_Branch_8E7E:
         sta     $0303,x                         ; 8E7E 9D 03 03                 ...
         sta     $0410,x                         ; 8E81 9D 10 04                 ...
         inx                                     ; 8E84 E8                       .
         cpx     #$08                            ; 8E85 E0 08                    ..
-        bcc     BattleTurnEngine_Branch_8E7E    ; 8E87 90 F5                    ..
+        bcc     BattleDisplay_Branch_8E7E       ; 8E87 90 F5                    ..
         lda     #$55                            ; 8E89 A9 55                    .U
         cpx     #$10                            ; 8E8B E0 10                    ..
-        bcc     BattleTurnEngine_Branch_8E7E    ; 8E8D 90 EF                    ..
+        bcc     BattleDisplay_Branch_8E7E       ; 8E8D 90 EF                    ..
         lda     #$05                            ; 8E8F A9 05                    ..
         cpx     #$18                            ; 8E91 E0 18                    ..
-        bcc     BattleTurnEngine_Branch_8E7E    ; 8E93 90 E9                    ..
+        bcc     BattleDisplay_Branch_8E7E       ; 8E93 90 E9                    ..
         lda     #$01                            ; 8E95 A9 01                    ..
         sta     $050B                           ; 8E97 8D 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; 8E9A 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadScrollWindowStatusPanel:
+BattleDisplay_LoadScrollWindowStatusPanel:
         ldx     #$03                            ; 8E9D A2 03                    ..
-BattleTurnEngine_Branch_8E9F:
+BattleDisplay_Branch_8E9F:
         lda     $8ECD,x                         ; 8E9F BD CD 8E                 ...
         sta     $0200,x                         ; 8EA2 9D 00 02                 ...
         dex                                     ; 8EA5 CA                       .
-        bpl     BattleTurnEngine_Branch_8E9F    ; 8EA6 10 F7                    ..
+        bpl     BattleDisplay_Branch_8E9F       ; 8EA6 10 F7                    ..
         lda     #$80                            ; 8EA8 A9 80                    ..
         sta     $0300                           ; 8EAA 8D 00 03                 ...
         lda     #$10                            ; 8EAD A9 10                    ..
@@ -2065,12 +2065,12 @@ BattleTurnEngine_Branch_8E9F:
         lda     #$00                            ; 8EB2 A9 00                    ..
         sta     NextTextCharacter               ; 8EB4 8D 02 03                 ...
         ldx     #$07                            ; 8EB7 A2 07                    ..
-BattleTurnEngine_Branch_8EB9:
+BattleDisplay_Branch_8EB9:
         lda     $8ED1,x                         ; 8EB9 BD D1 8E                 ...
         sta     $0303,x                         ; 8EBC 9D 03 03                 ...
         sta     $030B,x                         ; 8EBF 9D 0B 03                 ...
         dex                                     ; 8EC2 CA                       .
-        bpl     BattleTurnEngine_Branch_8EB9    ; 8EC3 10 F4                    ..
+        bpl     BattleDisplay_Branch_8EB9       ; 8EC3 10 F4                    ..
         lda     #$01                            ; 8EC5 A9 01                    ..
         sta     $050B                           ; 8EC7 8D 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; 8ECA 4C 2D C6                 L-.
@@ -2078,35 +2078,35 @@ BattleTurnEngine_Branch_8EB9:
         db   $4A,$00,$20,$20                 ; 8ECD 4A 00 20 20              J.
         db   $00,$00,$00,$FF,$00,$00,$00,$00 ; 8ED1 00 00 00 FF 00 00 00 00  ........
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CommitScrollWindowStep:
+BattleDisplay_CommitScrollWindowStep:
         jsr     WaitForNmi                      ; 8ED9 20 74 FF                  t.
         ldy     #$01                            ; 8EDC A0 01                    ..
         ldx     #$80                            ; 8EDE A2 80                    ..
-BattleTurnEngine_Branch_8EE0:
+BattleDisplay_Branch_8EE0:
         nop                                     ; 8EE0 EA                       .
         dex                                     ; 8EE1 CA                       .
-        bne     BattleTurnEngine_Branch_8EE0    ; 8EE2 D0 FC                    ..
+        bne     BattleDisplay_Branch_8EE0       ; 8EE2 D0 FC                    ..
         dey                                     ; 8EE4 88                       .
-        bne     BattleTurnEngine_Branch_8EE0    ; 8EE5 D0 F9                    ..
-BattleTurnEngine_Branch_8EE7:
+        bne     BattleDisplay_Branch_8EE0       ; 8EE5 D0 F9                    ..
+BattleDisplay_Branch_8EE7:
         bit     PPUSTATUS                       ; 8EE7 2C 02 20                 ,.
-        bvc     BattleTurnEngine_Branch_8EE7    ; 8EEA 50 FB                    P.
+        bvc     BattleDisplay_Branch_8EE7       ; 8EEA 50 FB                    P.
         ldx     #$20                            ; 8EEC A2 20                    .
-BattleTurnEngine_Branch_8EEE:
+BattleDisplay_Branch_8EEE:
         dex                                     ; 8EEE CA                       .
-        bpl     BattleTurnEngine_Branch_8EEE    ; 8EEF 10 FD                    ..
+        bpl     BattleDisplay_Branch_8EEE       ; 8EEF 10 FD                    ..
         ldx     $01                             ; 8EF1 A6 01                    ..
         lda     $02,x                           ; 8EF3 B5 02                    ..
         sta     PPUSCROLL                       ; 8EF5 8D 05 20                 ..
         lda     $0509                           ; 8EF8 AD 09 05                 ...
         sta     PPUSCROLL                       ; 8EFB 8D 05 20                 ..
         lda     $C7                             ; 8EFE A5 C7                    ..
-        bne     BattleTurnEngine_Branch_8F0A    ; 8F00 D0 08                    ..
+        bne     BattleDisplay_Branch_8F0A       ; 8F00 D0 08                    ..
         lda     #$91                            ; 8F02 A9 91                    ..
         ldy     $00                           ; 8F04 A4 00                    ..
         cpy     #$01                            ; 8F06 C0 01                    ..
-        beq     BattleTurnEngine_Branch_8F14    ; 8F08 F0 0A                    ..
-BattleTurnEngine_Branch_8F0A:
+        beq     BattleDisplay_Branch_8F14       ; 8F08 F0 0A                    ..
+BattleDisplay_Branch_8F0A:
         lda     $0505                           ; 8F0A AD 05 05                 ...
         lsr     a                               ; 8F0D 4A                       J
         pha                                     ; 8F0E 48                       H
@@ -2114,15 +2114,15 @@ BattleTurnEngine_Branch_8F0A:
         asl     a                               ; 8F11 0A                       .
         pla                                     ; 8F12 68                       h
         rol     a                               ; 8F13 2A                       *
-BattleTurnEngine_Branch_8F14:
+BattleDisplay_Branch_8F14:
         sta     PPUCTRL                         ; 8F14 8D 00 20                 ..
         ldx     #$06                            ; 8F17 A2 06                    ..
         ldy     #$80                            ; 8F19 A0 80                    ..
-BattleTurnEngine_Branch_8F1B:
+BattleDisplay_Branch_8F1B:
         dey                                     ; 8F1B 88                       .
-        bne     BattleTurnEngine_Branch_8F1B    ; 8F1C D0 FD                    ..
+        bne     BattleDisplay_Branch_8F1B       ; 8F1C D0 FD                    ..
         dex                                     ; 8F1E CA                       .
-        bne     BattleTurnEngine_Branch_8F1B    ; 8F1F D0 FA                    ..
+        bne     BattleDisplay_Branch_8F1B       ; 8F1F D0 FA                    ..
         lda     $0508                           ; 8F21 AD 08 05                 ...
         sta     PPUSCROLL                       ; 8F24 8D 05 20                 ..
         lda     $0509                           ; 8F27 AD 09 05                 ...
@@ -2134,9 +2134,9 @@ BattleTurnEngine_Branch_8F1B:
         sta     $01                             ; 8F37 85 01                    ..
         rts                                     ; 8F39 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AdjustScrollWindowEdge:
+BattleDisplay_AdjustScrollWindowEdge:
         lda     $C7                             ; 8F3A A5 C7                    ..
-        bne     BattleTurnEngine_Branch_8F5C    ; 8F3C D0 1E                    ..
+        bne     BattleDisplay_Branch_8F5C       ; 8F3C D0 1E                    ..
         lda     $00                           ; 8F3E A5 00                    ..
         and     #$06                            ; 8F40 29 06                    ).
         ora     $01                             ; 8F42 05 01                    ..
@@ -2144,21 +2144,21 @@ BattleTurnEngine_AdjustScrollWindowEdge:
         ldx     $01                             ; 8F45 A6 01                    ..
         lda     $8F90,y                         ; 8F47 B9 90 8F                 ...
         cmp     $02,x                           ; 8F4A D5 02                    ..
-        bne     BattleTurnEngine_Branch_8F54    ; 8F4C D0 06                    ..
+        bne     BattleDisplay_Branch_8F54       ; 8F4C D0 06                    ..
         cpx     #$00                            ; 8F4E E0 00                    ..
-        beq     BattleTurnEngine_Branch_8F5A    ; 8F50 F0 08                    ..
+        beq     BattleDisplay_Branch_8F5A       ; 8F50 F0 08                    ..
         sec                                     ; 8F52 38                       8
         rts                                     ; 8F53 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8F54:
+BattleDisplay_Branch_8F54:
         cpx     #$00                            ; 8F54 E0 00                    ..
-        bne     BattleTurnEngine_Branch_8F74    ; 8F56 D0 1C                    ..
+        bne     BattleDisplay_Branch_8F74       ; 8F56 D0 1C                    ..
         inc     $02                             ; 8F58 E6 02                    ..
-BattleTurnEngine_Branch_8F5A:
+BattleDisplay_Branch_8F5A:
         clc                                     ; 8F5A 18                       .
         rts                                     ; 8F5B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8F5C:
+BattleDisplay_Branch_8F5C:
         sta     $04                             ; 8F5C 85 04                    ..
         dec     $04                             ; 8F5E C6 04                    ..
         asl     $04                             ; 8F60 06 04                    ..
@@ -2169,36 +2169,36 @@ BattleTurnEngine_Branch_8F5C:
         tay                                     ; 8F68 A8                       .
         lda     $8F94,y                         ; 8F69 B9 94 8F                 ...
         cmp     $03                             ; 8F6C C5 03                    ..
-        beq     BattleTurnEngine_Branch_8F8F    ; 8F6E F0 1F                    ..
+        beq     BattleDisplay_Branch_8F8F       ; 8F6E F0 1F                    ..
         cpy     #$02                            ; 8F70 C0 02                    ..
-        bcs     BattleTurnEngine_Branch_8F78    ; 8F72 B0 04                    ..
-BattleTurnEngine_Branch_8F74:
+        bcs     BattleDisplay_Branch_8F78       ; 8F72 B0 04                    ..
+BattleDisplay_Branch_8F74:
         dec     $03                             ; 8F74 C6 03                    ..
         clc                                     ; 8F76 18                       .
         rts                                     ; 8F77 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_8F78:
+BattleDisplay_Branch_8F78:
         cpy     #$04                            ; 8F78 C0 04                    ..
-        bcs     BattleTurnEngine_Branch_8F82    ; 8F7A B0 06                    ..
+        bcs     BattleDisplay_Branch_8F82       ; 8F7A B0 06                    ..
         cpy     #$02                            ; 8F7C C0 02                    ..
-        beq     BattleTurnEngine_Branch_8F74    ; 8F7E F0 F4                    ..
-        bne     BattleTurnEngine_Branch_8F8C    ; 8F80 D0 0A                    ..
-BattleTurnEngine_Branch_8F82:
+        beq     BattleDisplay_Branch_8F74       ; 8F7E F0 F4                    ..
+        bne     BattleDisplay_Branch_8F8C       ; 8F80 D0 0A                    ..
+BattleDisplay_Branch_8F82:
         cpy     #$06                            ; 8F82 C0 06                    ..
-        bcs     BattleTurnEngine_Branch_8F8C    ; 8F84 B0 06                    ..
+        bcs     BattleDisplay_Branch_8F8C       ; 8F84 B0 06                    ..
         cpy     #$04                            ; 8F86 C0 04                    ..
-        beq     BattleTurnEngine_Branch_8F8C    ; 8F88 F0 02                    ..
-        bne     BattleTurnEngine_Branch_8F74    ; 8F8A D0 E8                    ..
-BattleTurnEngine_Branch_8F8C:
+        beq     BattleDisplay_Branch_8F8C       ; 8F88 F0 02                    ..
+        bne     BattleDisplay_Branch_8F74       ; 8F8A D0 E8                    ..
+BattleDisplay_Branch_8F8C:
         inc     $03                             ; 8F8C E6 03                    ..
         clc                                     ; 8F8E 18                       .
-BattleTurnEngine_Branch_8F8F:
+BattleDisplay_Branch_8F8F:
         rts                                     ; 8F8F 60                       `
 ; ----------------------------------------------------------------------------
         db   $E8,$78,$00,$C8                 ; 8F90 E8 78 00 C8              .x..
         db   $90,$C8,$90,$38,$70,$C8,$70,$38 ; 8F94 90 C8 90 38 70 C8 70 38  ...8p.p8
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadScrollWindowPattern:
+BattleDisplay_LoadScrollWindowPattern:
         lda     $C7                             ; 8F9C A5 C7                    ..
         asl     a                               ; 8F9E 0A                       .
         asl     a                               ; 8F9F 0A                       .
@@ -2212,28 +2212,28 @@ BattleTurnEngine_LoadScrollWindowPattern:
         sta     $04                             ; 8FAC 85 04                    ..
         ldx     #$00                            ; 8FAE A2 00                    ..
         ldy     #$00                            ; 8FB0 A0 00                    ..
-BattleTurnEngine_Branch_8FB2:
+BattleDisplay_Branch_8FB2:
         lda     #$00                            ; 8FB2 A9 00                    ..
         sta     $05                             ; 8FB4 85 05                    ..
-BattleTurnEngine_Branch_8FB6:
+BattleDisplay_Branch_8FB6:
         lda     $8FFA,x                         ; 8FB6 BD FA 8F                 ...
         sta     $0300,y                         ; 8FB9 99 00 03                 ...
         lda     $05                             ; 8FBC A5 05                    ..
         cmp     #$02                            ; 8FBE C9 02                    ..
-        bne     BattleTurnEngine_Branch_8FCB    ; 8FC0 D0 09                    ..
+        bne     BattleDisplay_Branch_8FCB       ; 8FC0 D0 09                    ..
         lda     $8FFA,x                         ; 8FC2 BD FA 8F                 ...
         clc                                     ; 8FC5 18                       .
         adc     $04                             ; 8FC6 65 04                    e.
         sta     $0300,y                         ; 8FC8 99 00 03                 ...
-BattleTurnEngine_Branch_8FCB:
+BattleDisplay_Branch_8FCB:
         inx                                     ; 8FCB E8                       .
         iny                                     ; 8FCC C8                       .
         inc     $05                             ; 8FCD E6 05                    ..
         lda     $05                             ; 8FCF A5 05                    ..
         cmp     #$09                            ; 8FD1 C9 09                    ..
-        bcc     BattleTurnEngine_Branch_8FB6    ; 8FD3 90 E1                    ..
+        bcc     BattleDisplay_Branch_8FB6       ; 8FD3 90 E1                    ..
         cpx     #$36                            ; 8FD5 E0 36                    .6
-        bcc     BattleTurnEngine_Branch_8FB2    ; 8FD7 90 D9                    ..
+        bcc     BattleDisplay_Branch_8FB2       ; 8FD7 90 D9                    ..
         lda     #$06                            ; 8FD9 A9 06                    ..
         sta     $050B                           ; 8FDB 8D 0B 05                 ...
         lda     $1F                             ; 8FDE A5 1F                    ..
@@ -2253,9 +2253,9 @@ BattleTurnEngine_Branch_8FCB:
         db   $A6,$B2,$B1,$A5,$99,$A2,$06,$03 ; 9022 A6 B2 B1 A5 99 A2 06 03  ........
         db   $9C,$A8,$B4,$B3,$A7,$9B         ; 902A 9C A8 B4 B3 A7 9B        ......
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunQueuedTurnSlotHighlightBurst:
-        jsr     BattleTurnEngine_SyncPresentationRenderState; 9030 20 B4 A0      ..
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 9033 20 D1 9E       ..
+BattleDisplay_RunDisplaySlotHighlightBurst:
+        jsr     BattleDisplay_SyncPresentationRenderState; 9030 20 B4 A0         ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 9033 20 D1 9E             ..
         ldx     $C7                             ; 9036 A6 C7                    ..
         lda     $0698,x                         ; 9038 BD 98 06                 ...
         asl     a                               ; 903B 0A                       .
@@ -2263,7 +2263,7 @@ BattleTurnEngine_RunQueuedTurnSlotHighlightBurst:
         asl     a                               ; 903D 0A                       .
         sta     $04                             ; 903E 85 04                    ..
         ldy     #$07                            ; 9040 A0 07                    ..
-BattleTurnEngine_Branch_9042:
+BattleDisplay_Branch_9042:
         tya                                     ; 9042 98                       .
         and     #$02                            ; 9043 29 02                    ).
         pha                                     ; 9045 48                       H
@@ -2275,17 +2275,17 @@ BattleTurnEngine_Branch_9042:
         lsr     a                               ; 904D 4A                       J
         adc     #$08                            ; 904E 69 08                    i.
         cpy     #$04                            ; 9050 C0 04                    ..
-        bcc     BattleTurnEngine_Branch_905A    ; 9052 90 06                    ..
+        bcc     BattleDisplay_Branch_905A       ; 9052 90 06                    ..
         sty     $01                             ; 9054 84 01                    ..
         lda     #$01                            ; 9056 A9 01                    ..
-        bne     BattleTurnEngine_Branch_9063    ; 9058 D0 09                    ..
-BattleTurnEngine_Branch_905A:
+        bne     BattleDisplay_Branch_9063       ; 9058 D0 09                    ..
+BattleDisplay_Branch_905A:
         sta     $01                             ; 905A 85 01                    ..
         tya                                     ; 905C 98                       .
         and     #$01                            ; 905D 29 01                    ).
-        beq     BattleTurnEngine_Branch_9063    ; 905F F0 02                    ..
+        beq     BattleDisplay_Branch_9063       ; 905F F0 02                    ..
         lda     #$40                            ; 9061 A9 40                    .@
-BattleTurnEngine_Branch_9063:
+BattleDisplay_Branch_9063:
         sta     $02                             ; 9063 85 02                    ..
         tya                                     ; 9065 98                       .
         and     #$01                            ; 9066 29 01                    ).
@@ -2298,29 +2298,29 @@ BattleTurnEngine_Branch_9063:
         ldx     #$00                            ; 9071 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 9073 20 3E C7                  >.
         dey                                     ; 9076 88                       .
-        bpl     BattleTurnEngine_Branch_9042    ; 9077 10 C9                    ..
+        bpl     BattleDisplay_Branch_9042       ; 9077 10 C9                    ..
         jsr     WaitForNmi                      ; 9079 20 74 FF                  t.
         lda     #$02                            ; 907C A9 02                    ..
         ldx     #$06                            ; 907E A2 06                    ..
-        jsr     BattleTurnEngine_OscillateQueuedTurnSlotHighlight; 9080 20 99 90 ..
+        jsr     BattleDisplay_OscillateDisplaySlotHighlight; 9080 20 99 90       ..
         ldx     #$2D                            ; 9083 A2 2D                    .-
         jsr     WaitFrames                      ; 9085 20 0C C9                  ..
         lda     #$FC                            ; 9088 A9 FC                    ..
         ldx     #$02                            ; 908A A2 02                    ..
-        jsr     BattleTurnEngine_OscillateQueuedTurnSlotHighlight; 908C 20 99 90 ..
-        jsr     BattleTurnEngine_ClearQueuedOamOverlay; 908F 20 17 9C            ..
+        jsr     BattleDisplay_OscillateDisplaySlotHighlight; 908C 20 99 90       ..
+        jsr     BattleDisplay_ClearQueuedOamOverlay; 908F 20 17 9C               ..
         lda     $1F                             ; 9092 A5 1F                    ..
         and     #$F7                            ; 9094 29 F7                    ).
         sta     $1F                             ; 9096 85 1F                    ..
         rts                                     ; 9098 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_OscillateQueuedTurnSlotHighlight:
+BattleDisplay_OscillateDisplaySlotHighlight:
         sta     $04                             ; 9099 85 04                    ..
-BattleTurnEngine_Branch_909B:
+BattleDisplay_Branch_909B:
         txa                                     ; 909B 8A                       .
         pha                                     ; 909C 48                       H
         ldy     #$04                            ; 909D A0 04                    ..
-BattleTurnEngine_Branch_909F:
+BattleDisplay_Branch_909F:
         ldx     #$00                            ; 909F A2 00                    ..
         jsr     CopyOamSpriteRecord             ; 90A1 20 70 C7                  p.
         lda     $00                           ; 90A4 A5 00                    ..
@@ -2331,81 +2331,81 @@ BattleTurnEngine_Branch_909F:
         jsr     CopySpriteRecordToOam           ; 90AD 20 3E C7                  >.
         iny                                     ; 90B0 C8                       .
         cpy     #$08                            ; 90B1 C0 08                    ..
-        bcc     BattleTurnEngine_Branch_909F    ; 90B3 90 EA                    ..
+        bcc     BattleDisplay_Branch_909F       ; 90B3 90 EA                    ..
         jsr     WaitForNmi                      ; 90B5 20 74 FF                  t.
         pla                                     ; 90B8 68                       h
         tax                                     ; 90B9 AA                       .
         dex                                     ; 90BA CA                       .
-        bpl     BattleTurnEngine_Branch_909B    ; 90BB 10 DE                    ..
+        bpl     BattleDisplay_Branch_909B       ; 90BB 10 DE                    ..
         rts                                     ; 90BD 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckQueuedCombatantRightEdgeThreshold:
+BattleDisplay_CheckQueuedCombatantRightEdgeThreshold:
         lda     $C7                             ; 90BE A5 C7                    ..
         pha                                     ; 90C0 48                       H
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 90C1 20 D1 9E       ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 90C1 20 D1 9E             ..
         ldy     #$32                            ; 90C4 A0 32                    .2
-        jsr     BattleTurnEngine_LoadQueuedCombatantId; 90C6 20 76 9E            v.
+        jsr     BattleDisplay_LoadQueuedCombatantId; 90C6 20 76 9E               v.
         cmp     #$0B                            ; 90C9 C9 0B                    ..
-        beq     BattleTurnEngine_Branch_90CF    ; 90CB F0 02                    ..
+        beq     BattleDisplay_Branch_90CF       ; 90CB F0 02                    ..
         ldy     #$29                            ; 90CD A0 29                    .)
-BattleTurnEngine_Branch_90CF:
-        jsr     BattleTurnEngine_FindRightmostQueuedOamEdge; 90CF 20 E4 9B       ..
+BattleDisplay_Branch_90CF:
+        jsr     BattleDisplay_FindRightmostQueuedOamEdge; 90CF 20 E4 9B          ..
         cpy     $C9                             ; 90D2 C4 C9                    ..
         pla                                     ; 90D4 68                       h
         sta     $C7                             ; 90D5 85 C7                    ..
         rts                                     ; 90D7 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_PositionResolvedCombatantSlot:
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 90D8 20 D1 9E       ..
-        jsr     BattleTurnEngine_LoadQueuedCombatantId; 90DB 20 76 9E            v.
+BattleDisplay_PositionResolvedCombatantSlot:
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 90D8 20 D1 9E             ..
+        jsr     BattleDisplay_LoadQueuedCombatantId; 90DB 20 76 9E               v.
         stx     $C6                             ; 90DE 86 C6                    ..
         sta     $C4                             ; 90E0 85 C4                    ..
-        jsr     BattleTurnEngine_MeasureCombatantGraphicLayout; 90E2 20 20 93     .
+        jsr     BattleDisplay_MeasureCombatantGraphicLayout; 90E2 20 20 93        .
         lda     $D3                             ; 90E5 A5 D3                    ..
         sta     $7392,x                         ; 90E7 9D 92 73                 ..s
         ldx     $C7                             ; 90EA A6 C7                    ..
         lda     #$26                            ; 90EC A9 26                    .&
         sta     $06A0,x                         ; 90EE 9D A0 06                 ...
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 90F1 20 22 98     ".
-        jsr     BattleTurnEngine_FindCenteredQueuedOamX; 90F4 20 BA 9C           ..
-        bcc     BattleTurnEngine_Branch_911F    ; 90F7 90 26                    .&
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 90F1 20 22 98        ".
+        jsr     BattleDisplay_FindCenteredQueuedOamX; 90F4 20 BA 9C              ..
+        bcc     BattleDisplay_Branch_911F       ; 90F7 90 26                    .&
         sta     $05                             ; 90F9 85 05                    ..
         jsr     NextRandomByte                  ; 90FB 20 91 C8                  ..
         cmp     #$98                            ; 90FE C9 98                    ..
-        bcc     BattleTurnEngine_Branch_911F    ; 9100 90 1D                    ..
-        jsr     BattleTurnEngine_AnimateResolvedCombatantShiftFromCurrentX; 9102 20 4E 91 N.
+        bcc     BattleDisplay_Branch_911F       ; 9100 90 1D                    ..
+        jsr     BattleDisplay_AnimateResolvedCombatantShiftFromCurrentX; 9102 20 4E 91 N.
         lda     $C7                             ; 9105 A5 C7                    ..
         pha                                     ; 9107 48                       H
         lda     $7B                             ; 9108 A5 7B                    .{
         sta     $C7                             ; 910A 85 C7                    ..
-        jsr     BattleTurnEngine_ReserveQueuedTurnSlot; 910C 20 8F 9E            ..
-        jsr     BattleTurnEngine_LoadReservedQueuedTurnSlot; 910F 20 D1 9E       ..
+        jsr     BattleDisplay_ReserveDisplaySlot; 910C 20 8F 9E                  ..
+        jsr     BattleDisplay_LoadReservedDisplaySlot; 910F 20 D1 9E             ..
         lda     $05                             ; 9112 A5 05                    ..
-        jsr     BattleTurnEngine_FinalizeQueuedCombatantSlot; 9114 20 83 85      ..
+        jsr     BattleDisplay_FinalizeQueuedCombatantSlot; 9114 20 83 85         ..
         pla                                     ; 9117 68                       h
         sta     $C7                             ; 9118 85 C7                    ..
-        jsr     BattleTurnEngine_ClearResolvedCombatantPlacement; 911A 20 3F 91  ?.
+        jsr     BattleDisplay_ClearResolvedCombatantPlacement; 911A 20 3F 91     ?.
         sec                                     ; 911D 38                       8
         rts                                     ; 911E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_911F:
+BattleDisplay_Branch_911F:
         lda     $D3                             ; 911F A5 D3                    ..
         pha                                     ; 9121 48                       H
         lda     #$00                            ; 9122 A9 00                    ..
         ldx     $C6                             ; 9124 A6 C6                    ..
         sta     $7392,x                         ; 9126 9D 92 73                 ..s
-        jsr     BattleTurnEngine_EraseQueuedCombatantGraphic; 9129 20 40 9A      @.
+        jsr     BattleDisplay_EraseQueuedCombatantGraphic; 9129 20 40 9A         @.
         ldx     $C6                             ; 912C A6 C6                    ..
         pla                                     ; 912E 68                       h
         sta     $7392,x                         ; 912F 9D 92 73                 ..s
         lda     #$00                            ; 9132 A9 00                    ..
-        jsr     BattleTurnEngine_AnimateResolvedCombatantShiftByHalfDistance; 9134 20 5D 91 ].
-        jsr     BattleTurnEngine_ClearResolvedCombatantPlacement; 9137 20 3F 91  ?.
-        jsr     BattleTurnEngine_RenderQueuedCombatantGraphic; 913A 20 22 98     ".
+        jsr     BattleDisplay_AnimateResolvedCombatantShiftByHalfDistance; 9134 20 5D 91 ].
+        jsr     BattleDisplay_ClearResolvedCombatantPlacement; 9137 20 3F 91     ?.
+        jsr     BattleDisplay_RenderQueuedCombatantGraphic; 913A 20 22 98        ".
         clc                                     ; 913D 18                       .
         rts                                     ; 913E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearResolvedCombatantPlacement:
+BattleDisplay_ClearResolvedCombatantPlacement:
         lda     #$00                            ; 913F A9 00                    ..
         ldx     $C6                             ; 9141 A6 C6                    ..
         sta     $7392,x                         ; 9143 9D 92 73                 ..s
@@ -2414,29 +2414,29 @@ BattleTurnEngine_ClearResolvedCombatantPlacement:
         sta     $06A0,x                         ; 914A 9D A0 06                 ...
         rts                                     ; 914D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AnimateResolvedCombatantShiftFromCurrentX:
+BattleDisplay_AnimateResolvedCombatantShiftFromCurrentX:
         lda     $05                             ; 914E A5 05                    ..
         ldx     $C7                             ; 9150 A6 C7                    ..
         sec                                     ; 9152 38                       8
         sbc     $0698,x                         ; 9153 FD 98 06                 ...
-        bcs     BattleTurnEngine_AnimateResolvedCombatantShiftByHalfDistance; 9156 B0 05..
+        bcs     BattleDisplay_AnimateResolvedCombatantShiftByHalfDistance; 9156 B0 05..
         eor     #$FF                            ; 9158 49 FF                    I.
         tax                                     ; 915A AA                       .
         inx                                     ; 915B E8                       .
         txa                                     ; 915C 8A                       .
-BattleTurnEngine_AnimateResolvedCombatantShiftByHalfDistance:
+BattleDisplay_AnimateResolvedCombatantShiftByHalfDistance:
         lsr     a                               ; 915D 4A                       J
         sta     $04                             ; 915E 85 04                    ..
         lda     #$00                            ; 9160 A9 00                    ..
         sta     $06                             ; 9162 85 06                    ..
-BattleTurnEngine_Branch_9164:
+BattleDisplay_Branch_9164:
         ldx     $C6                             ; 9164 A6 C6                    ..
         lda     $7392,x                         ; 9166 BD 92 73                 ..s
         sta     $07                             ; 9169 85 07                    ..
         ldx     $C7                             ; 916B A6 C7                    ..
         lda     $06A0,x                         ; 916D BD A0 06                 ...
         sta     $08                             ; 9170 85 08                    ..
-BattleTurnEngine_Branch_9172:
+BattleDisplay_Branch_9172:
         ldy     $08                             ; 9172 A4 08                    ..
         ldx     #$00                            ; 9174 A2 00                    ..
         jsr     CopyOamSpriteRecord             ; 9176 20 70 C7                  p.
@@ -2444,12 +2444,12 @@ BattleTurnEngine_Branch_9172:
         ldx     $C7                             ; 917B A6 C7                    ..
         cmp     $0698,x                         ; 917D DD 98 06                 ...
         lda     $04                             ; 9180 A5 04                    ..
-        bcs     BattleTurnEngine_Branch_9189    ; 9182 B0 05                    ..
+        bcs     BattleDisplay_Branch_9189       ; 9182 B0 05                    ..
         eor     #$FF                            ; 9184 49 FF                    I.
         tax                                     ; 9186 AA                       .
         inx                                     ; 9187 E8                       .
         txa                                     ; 9188 8A                       .
-BattleTurnEngine_Branch_9189:
+BattleDisplay_Branch_9189:
         clc                                     ; 9189 18                       .
         adc     $03                             ; 918A 65 03                    e.
         sta     $03                             ; 918C 85 03                    ..
@@ -2463,16 +2463,16 @@ BattleTurnEngine_Branch_9189:
         jsr     CopySpriteRecordToOam           ; 919C 20 3E C7                  >.
         inc     $08                             ; 919F E6 08                    ..
         dec     $07                             ; 91A1 C6 07                    ..
-        bne     BattleTurnEngine_Branch_9172    ; 91A3 D0 CD                    ..
+        bne     BattleDisplay_Branch_9172       ; 91A3 D0 CD                    ..
         jsr     WaitForNmi                      ; 91A5 20 74 FF                  t.
         inc     $06                             ; 91A8 E6 06                    ..
         lda     $06                             ; 91AA A5 06                    ..
         cmp     #$10                            ; 91AC C9 10                    ..
-        bne     BattleTurnEngine_Branch_9164    ; 91AE D0 B4                    ..
+        bne     BattleDisplay_Branch_9164       ; 91AE D0 B4                    ..
         ldy     #$26                            ; 91B0 A0 26                    .&
         lda     #$1A                            ; 91B2 A9 1A                    ..
         sta     $04                             ; 91B4 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; 91B6 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; 91B6 20 1D 9C                  ..
         jsr     WaitForNmi                      ; 91B9 20 74 FF                  t.
         lda     #$00                            ; 91BC A9 00                    ..
         sta     $D3                             ; 91BE 85 D3                    ..
@@ -2482,24 +2482,24 @@ BattleTurnEngine_Branch_9189:
         db   $01,$01,$01,$05,$09,$0C,$19,$1C ; 91C9 01 01 01 05 09 0C 19 1C  ........
         db   $50,$06                         ; 91D1 50 06                    P.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ResetBattleVisualState:
+BattleDisplay_ResetBattleVisualState:
         lda     #$F7                            ; 91D3 A9 F7                    ..
         sta     $00                           ; 91D5 85 00                    ..
         sta     $01                             ; 91D7 85 01                    ..
         sta     $02                             ; 91D9 85 02                    ..
         sta     $03                             ; 91DB 85 03                    ..
         ldy     #$3F                            ; 91DD A0 3F                    .?
-BattleTurnEngine_Branch_91DF:
+BattleDisplay_Branch_91DF:
         ldx     #$00                            ; 91DF A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 91E1 20 3E C7                  >.
         dey                                     ; 91E4 88                       .
-        bpl     BattleTurnEngine_Branch_91DF    ; 91E5 10 F8                    ..
+        bpl     BattleDisplay_Branch_91DF       ; 91E5 10 F8                    ..
         lda     #$FF                            ; 91E7 A9 FF                    ..
         ldx     #$18                            ; 91E9 A2 18                    ..
-BattleTurnEngine_Branch_91EB:
+BattleDisplay_Branch_91EB:
         sta     $05FC,x                         ; 91EB 9D FC 05                 ...
         dex                                     ; 91EE CA                       .
-        bpl     BattleTurnEngine_Branch_91EB    ; 91EF 10 FA                    ..
+        bpl     BattleDisplay_Branch_91EB       ; 91EF 10 FA                    ..
         jsr     WaitForNmi                      ; 91F1 20 74 FF                  t.
         jsr     SubmitPaletteWithoutFade        ; 91F4 20 B9 C5                  ..
         jsr     WaitForNmi                      ; 91F7 20 74 FF                  t.
@@ -2507,30 +2507,30 @@ BattleTurnEngine_Branch_91EB:
         sta     $05FD                           ; 91FD 8D FD 05                 ...
         lda     #$00                            ; 9200 A9 00                    ..
         ldx     #$19                            ; 9202 A2 19                    ..
-BattleTurnEngine_Branch_9204:
+BattleDisplay_Branch_9204:
         sta     $C0,x                           ; 9204 95 C0                    ..
         dex                                     ; 9206 CA                       .
-        bpl     BattleTurnEngine_Branch_9204    ; 9207 10 FB                    ..
+        bpl     BattleDisplay_Branch_9204       ; 9207 10 FB                    ..
         ldx     #$03                            ; 9209 A2 03                    ..
-BattleTurnEngine_Branch_920B:
+BattleDisplay_Branch_920B:
         sta     $738D,x                         ; 920B 9D 8D 73                 ..s
         dex                                     ; 920E CA                       .
-        bpl     BattleTurnEngine_Branch_920B    ; 920F 10 FA                    ..
+        bpl     BattleDisplay_Branch_920B       ; 920F 10 FA                    ..
         ldx     #$59                            ; 9211 A2 59                    .Y
-BattleTurnEngine_Branch_9213:
+BattleDisplay_Branch_9213:
         sta     $0650,x                         ; 9213 9D 50 06                 .P.
         dex                                     ; 9216 CA                       .
-        bpl     BattleTurnEngine_Branch_9213    ; 9217 10 FA                    ..
+        bpl     BattleDisplay_Branch_9213       ; 9217 10 FA                    ..
         ldx     #$3F                            ; 9219 A2 3F                    .?
-BattleTurnEngine_Branch_921B:
+BattleDisplay_Branch_921B:
         sta     $0440,x                         ; 921B 9D 40 04                 .@.
         dex                                     ; 921E CA                       .
-        bpl     BattleTurnEngine_Branch_921B    ; 921F 10 FA                    ..
+        bpl     BattleDisplay_Branch_921B       ; 921F 10 FA                    ..
         ldx     #$0B                            ; 9221 A2 0B                    ..
-BattleTurnEngine_Branch_9223:
+BattleDisplay_Branch_9223:
         sta     $6E4D,x                         ; 9223 9D 4D 6E                 .Mn
         dex                                     ; 9226 CA                       .
-        bpl     BattleTurnEngine_Branch_9223    ; 9227 10 FA                    ..
+        bpl     BattleDisplay_Branch_9223       ; 9227 10 FA                    ..
         sta     $0508                           ; 9229 8D 08 05                 ...
         sta     $0509                           ; 922C 8D 09 05                 ...
         lda     #$8D                            ; 922F A9 8D                    ..
@@ -2541,68 +2541,68 @@ BattleTurnEngine_Branch_9223:
         sta     $045A                           ; 923A 8D 5A 04                 .Z.
         lda     #$FF                            ; 923D A9 FF                    ..
         ldx     #$03                            ; 923F A2 03                    ..
-BattleTurnEngine_Branch_9241:
+BattleDisplay_Branch_9241:
         sta     $0440,x                         ; 9241 9D 40 04                 .@.
         dex                                     ; 9244 CA                       .
-        bpl     BattleTurnEngine_Branch_9241    ; 9245 10 FA                    ..
+        bpl     BattleDisplay_Branch_9241       ; 9245 10 FA                    ..
         ldx     #$0D                            ; 9247 A2 0D                    ..
-BattleTurnEngine_Branch_9249:
+BattleDisplay_Branch_9249:
         sta     $044C,x                         ; 9249 9D 4C 04                 .L.
         dex                                     ; 924C CA                       .
-        bpl     BattleTurnEngine_Branch_9249    ; 924D 10 FA                    ..
-BattleTurnEngine_ClearDecodedBattleGraphicBuffers:
+        bpl     BattleDisplay_Branch_9249       ; 924D 10 FA                    ..
+BattleDisplay_ClearDecodedBattleGraphicBuffers:
         lda     #$00                            ; 924F A9 00                    ..
         tax                                     ; 9251 AA                       .
-BattleTurnEngine_Branch_9252:
+BattleDisplay_Branch_9252:
         sta     $0480,x                         ; 9252 9D 80 04                 ...
         inx                                     ; 9255 E8                       .
         cpx     #$70                            ; 9256 E0 70                    .p
-        bcc     BattleTurnEngine_Branch_9252    ; 9258 90 F8                    ..
+        bcc     BattleDisplay_Branch_9252       ; 9258 90 F8                    ..
         ldx     #$12                            ; 925A A2 12                    ..
-BattleTurnEngine_Branch_925C:
+BattleDisplay_Branch_925C:
         sta     $064F,x                         ; 925C 9D 4F 06                 .O.
         dex                                     ; 925F CA                       .
-        bne     BattleTurnEngine_Branch_925C    ; 9260 D0 FA                    ..
+        bne     BattleDisplay_Branch_925C       ; 9260 D0 FA                    ..
         ldx     #$90                            ; 9262 A2 90                    ..
-BattleTurnEngine_Branch_9264:
+BattleDisplay_Branch_9264:
         sta     $75FF,x                         ; 9264 9D FF 75                 ..u
         dex                                     ; 9267 CA                       .
-        bne     BattleTurnEngine_Branch_9264    ; 9268 D0 FA                    ..
+        bne     BattleDisplay_Branch_9264       ; 9268 D0 FA                    ..
         rts                                     ; 926A 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DecayFrontCombatantTimers:
+BattleDisplay_DecayFrontCombatantTimers:
         ldx     #$00                            ; 926B A2 00                    ..
         lda     #$08                            ; 926D A9 08                    ..
-BattleTurnEngine_Branch_926F:
+BattleDisplay_Branch_926F:
         sec                                     ; 926F 38                       8
         sbc     $6E49,x                         ; 9270 FD 49 6E                 .In
-        bcs     BattleTurnEngine_Branch_927D    ; 9273 B0 08                    ..
+        bcs     BattleDisplay_Branch_927D       ; 9273 B0 08                    ..
         adc     $6E49,x                         ; 9275 7D 49 6E                 }In
         sta     $6E49,x                         ; 9278 9D 49 6E                 .In
         lda     #$00                            ; 927B A9 00                    ..
-BattleTurnEngine_Branch_927D:
+BattleDisplay_Branch_927D:
         inx                                     ; 927D E8                       .
         cpx     #$04                            ; 927E E0 04                    ..
-        bne     BattleTurnEngine_Branch_926F    ; 9280 D0 ED                    ..
+        bne     BattleDisplay_Branch_926F       ; 9280 D0 ED                    ..
         ldx     #$03                            ; 9282 A2 03                    ..
-BattleTurnEngine_Branch_9284:
+BattleDisplay_Branch_9284:
         lda     $6E49,x                         ; 9284 BD 49 6E                 .In
-        bne     BattleTurnEngine_Branch_928E    ; 9287 D0 05                    ..
+        bne     BattleDisplay_Branch_928E       ; 9287 D0 05                    ..
         lda     #$FF                            ; 9289 A9 FF                    ..
         sta     $6E45,x                         ; 928B 9D 45 6E                 .En
-BattleTurnEngine_Branch_928E:
+BattleDisplay_Branch_928E:
         dex                                     ; 928E CA                       .
-        bpl     BattleTurnEngine_Branch_9284    ; 928F 10 F3                    ..
-BattleTurnEngine_Branch_9291:
+        bpl     BattleDisplay_Branch_9284       ; 928F 10 F3                    ..
+BattleDisplay_Branch_9291:
         rts                                     ; 9291 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_InitializeBattleBackdropWindow:
+BattleDisplay_InitializeBattleBackdropWindow:
         lda     $6E45                           ; 9292 AD 45 6E                 .En
         cmp     #$AE                            ; 9295 C9 AE                    ..
-        beq     BattleTurnEngine_Branch_9291    ; 9297 F0 F8                    ..
+        beq     BattleDisplay_Branch_9291       ; 9297 F0 F8                    ..
         lda     #$00                            ; 9299 A9 00                    ..
         sta     $C4                             ; 929B 85 C4                    ..
-        jsr     BattleTurnEngine_LoadCombatantBattleGraphic; 929D 20 9C 96       ..
+        jsr     BattleDisplay_LoadCombatantBattleGraphic; 929D 20 9C 96          ..
         lda     #$91                            ; 92A0 A9 91                    ..
         sta     $0468                           ; 92A2 8D 68 04                 .h.
         lda     #$04                            ; 92A5 A9 04                    ..
@@ -2625,44 +2625,44 @@ BattleTurnEngine_InitializeBattleBackdropWindow:
         lda     $00                           ; 92CA A5 00                    ..
         sta     PPUADDR                         ; 92CC 8D 06 20                 ..
         lda     PPUDATA                         ; 92CF AD 07 20                 ..
-BattleTurnEngine_Branch_92D2:
+BattleDisplay_Branch_92D2:
         lda     PPUDATA                         ; 92D2 AD 07 20                 ..
         sta     $0303,x                         ; 92D5 9D 03 03                 ...
         inx                                     ; 92D8 E8                       .
         cpx     $03                             ; 92D9 E4 03                    ..
-        bcc     BattleTurnEngine_Branch_92D2    ; 92DB 90 F5                    ..
+        bcc     BattleDisplay_Branch_92D2       ; 92DB 90 F5                    ..
         ldx     #$02                            ; 92DD A2 02                    ..
-BattleTurnEngine_Branch_92DF:
+BattleDisplay_Branch_92DF:
         lda     $02,x                           ; 92DF B5 02                    ..
         sta     $0300,x                         ; 92E1 9D 00 03                 ...
         dex                                     ; 92E4 CA                       .
-        bpl     BattleTurnEngine_Branch_92DF    ; 92E5 10 F8                    ..
+        bpl     BattleDisplay_Branch_92DF       ; 92E5 10 F8                    ..
         lda     #$01                            ; 92E7 A9 01                    ..
         sta     $050B                           ; 92E9 8D 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; 92EC 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadCombatantGraphicMetricsIntoSlot:
-        jsr     BattleTurnEngine_MeasureCombatantGraphicLayout; 92EF 20 20 93     .
+BattleDisplay_LoadCombatantGraphicMetricsIntoSlot:
+        jsr     BattleDisplay_MeasureCombatantGraphicLayout; 92EF 20 20 93        .
         tya                                     ; 92F2 98                       .
         pha                                     ; 92F3 48                       H
         lda     $C4                             ; 92F4 A5 C4                    ..
         cmp     #$0B                            ; 92F6 C9 0B                    ..
-        beq     BattleTurnEngine_Branch_930D    ; 92F8 F0 13                    ..
+        beq     BattleDisplay_Branch_930D       ; 92F8 F0 13                    ..
         cmp     #$4B                            ; 92FA C9 4B                    .K
-        beq     BattleTurnEngine_Branch_930D    ; 92FC F0 0F                    ..
+        beq     BattleDisplay_Branch_930D       ; 92FC F0 0F                    ..
         cmp     #$AE                            ; 92FE C9 AE                    ..
-        bne     BattleTurnEngine_Branch_9306    ; 9300 D0 04                    ..
+        bne     BattleDisplay_Branch_9306       ; 9300 D0 04                    ..
         lda     #$0D                            ; 9302 A9 0D                    ..
-        bne     BattleTurnEngine_Branch_930F    ; 9304 D0 09                    ..
-BattleTurnEngine_Branch_9306:
+        bne     BattleDisplay_Branch_930F       ; 9304 D0 09                    ..
+BattleDisplay_Branch_9306:
         lda     $6E45                           ; 9306 AD 45 6E                 .En
         cmp     #$BA                            ; 9309 C9 BA                    ..
-        bne     BattleTurnEngine_Branch_9311    ; 930B D0 04                    ..
-BattleTurnEngine_Branch_930D:
+        bne     BattleDisplay_Branch_9311       ; 930B D0 04                    ..
+BattleDisplay_Branch_930D:
         lda     #$00                            ; 930D A9 00                    ..
-BattleTurnEngine_Branch_930F:
+BattleDisplay_Branch_930F:
         sta     $D3                             ; 930F 85 D3                    ..
-BattleTurnEngine_Branch_9311:
+BattleDisplay_Branch_9311:
         ldy     $C6                             ; 9311 A4 C6                    ..
         lda     $D2                             ; 9313 A5 D2                    ..
         sta     $7385,y                         ; 9315 99 85 73                 ..s
@@ -2672,14 +2672,14 @@ BattleTurnEngine_Branch_9311:
         tay                                     ; 931E A8                       .
         rts                                     ; 931F 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_MeasureCombatantGraphicLayout:
+BattleDisplay_MeasureCombatantGraphicLayout:
         txa                                     ; 9320 8A                       .
         pha                                     ; 9321 48                       H
         tya                                     ; 9322 98                       .
         pha                                     ; 9323 48                       H
         lda     $C4                             ; 9324 A5 C4                    ..
         cmp     #$AE                            ; 9326 C9 AE                    ..
-        bne     BattleTurnEngine_Branch_933C    ; 9328 D0 12                    ..
+        bne     BattleDisplay_Branch_933C       ; 9328 D0 12                    ..
         lda     #$0E                            ; 932A A9 0E                    ..
         sta     $D2                             ; 932C 85 D2                    ..
         lda     #$00                            ; 932E A9 00                    ..
@@ -2688,8 +2688,8 @@ BattleTurnEngine_MeasureCombatantGraphicLayout:
         sta     $D4                             ; 9334 85 D4                    ..
         lda     #$2E                            ; 9336 A9 2E                    ..
         sta     $D5                             ; 9338 85 D5                    ..
-        bne     BattleTurnEngine_Branch_93A6    ; 933A D0 6A                    .j
-BattleTurnEngine_Branch_933C:
+        bne     BattleDisplay_Branch_93A6       ; 933A D0 6A                    .j
+BattleDisplay_Branch_933C:
         jsr     Bank14_LoadMonsterGraphicsDescriptor; 933C 20 A9 9F              ..
         lda     $CD                             ; 933F A5 CD                    ..
         sta     $C0                             ; 9341 85 C0                    ..
@@ -2700,85 +2700,85 @@ BattleTurnEngine_Branch_933C:
         stx     $D5                             ; 934B 86 D5                    ..
         stx     $D3                             ; 934D 86 D3                    ..
         stx     $D2                             ; 934F 86 D2                    ..
-BattleTurnEngine_Branch_9351:
+BattleDisplay_Branch_9351:
         jsr     Bank14_SelectMonsterGraphicsBank; 9351 20 26 9F                  &.
         jsr     Bank14_RefillMonsterGraphicsInput; 9354 20 66 9F                 f.
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9357 20 8D 9F                  ..
         pha                                     ; 935A 48                       H
         and     #$40                            ; 935B 29 40                    )@
-        beq     BattleTurnEngine_Branch_9371    ; 935D F0 12                    ..
+        beq     BattleDisplay_Branch_9371       ; 935D F0 12                    ..
         jsr     Bank14_ReadMonsterGraphicsByte  ; 935F 20 8D 9F                  ..
         and     #$0F                            ; 9362 29 0F                    ).
         cmp     $D2                             ; 9364 C5 D2                    ..
-        bcc     BattleTurnEngine_Branch_936A    ; 9366 90 02                    ..
+        bcc     BattleDisplay_Branch_936A       ; 9366 90 02                    ..
         sta     $D2                             ; 9368 85 D2                    ..
-BattleTurnEngine_Branch_936A:
+BattleDisplay_Branch_936A:
         inc     $D5                             ; 936A E6 D5                    ..
         pla                                     ; 936C 68                       h
-        bpl     BattleTurnEngine_Branch_9351    ; 936D 10 E2                    ..
-        bmi     BattleTurnEngine_Branch_9389    ; 936F 30 18                    0.
-BattleTurnEngine_Branch_9371:
+        bpl     BattleDisplay_Branch_9351       ; 936D 10 E2                    ..
+        bmi     BattleDisplay_Branch_9389       ; 936F 30 18                    0.
+BattleDisplay_Branch_9371:
         jsr     Bank14_AdvanceMonsterGraphicsInput; 9371 20 9F 9F                ..
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9374 20 8D 9F                  ..
         clc                                     ; 9377 18                       .
         adc     #$4F                            ; 9378 69 4F                    iO
         cpx     #$40                            ; 937A E0 40                    .@
-        bcs     BattleTurnEngine_Branch_9381    ; 937C B0 03                    ..
+        bcs     BattleDisplay_Branch_9381       ; 937C B0 03                    ..
         sta     $0650,x                         ; 937E 9D 50 06                 .P.
-BattleTurnEngine_Branch_9381:
+BattleDisplay_Branch_9381:
         inx                                     ; 9381 E8                       .
         inc     $D3                             ; 9382 E6 D3                    ..
         pla                                     ; 9384 68                       h
-        bpl     BattleTurnEngine_Branch_9351    ; 9385 10 CA                    ..
+        bpl     BattleDisplay_Branch_9351       ; 9385 10 CA                    ..
         inc     $D4                             ; 9387 E6 D4                    ..
-BattleTurnEngine_Branch_9389:
+BattleDisplay_Branch_9389:
         jsr     Bank14_AdvanceMonsterGraphicsStreamBlock; 9389 20 EB 9F          ..
         dec     $D1                             ; 938C C6 D1                    ..
-        bne     BattleTurnEngine_Branch_9351    ; 938E D0 C1                    ..
+        bne     BattleDisplay_Branch_9351       ; 938E D0 C1                    ..
         inc     $D2                             ; 9390 E6 D2                    ..
         lda     $C4                             ; 9392 A5 C4                    ..
         cmp     #$58                            ; 9394 C9 58                    .X
-        beq     BattleTurnEngine_Branch_93A4    ; 9396 F0 0C                    ..
+        beq     BattleDisplay_Branch_93A4       ; 9396 F0 0C                    ..
         cmp     #$6C                            ; 9398 C9 6C                    .l
-        beq     BattleTurnEngine_Branch_93A4    ; 939A F0 08                    ..
+        beq     BattleDisplay_Branch_93A4       ; 939A F0 08                    ..
         cmp     #$83                            ; 939C C9 83                    ..
-        beq     BattleTurnEngine_Branch_93A4    ; 939E F0 04                    ..
+        beq     BattleDisplay_Branch_93A4       ; 939E F0 04                    ..
         cmp     #$7E                            ; 93A0 C9 7E                    .~
-        bne     BattleTurnEngine_Branch_93A6    ; 93A2 D0 02                    ..
-BattleTurnEngine_Branch_93A4:
+        bne     BattleDisplay_Branch_93A6       ; 93A2 D0 02                    ..
+BattleDisplay_Branch_93A4:
         inc     $D2                             ; 93A4 E6 D2                    ..
-BattleTurnEngine_Branch_93A6:
+BattleDisplay_Branch_93A6:
         pla                                     ; 93A6 68                       h
         tay                                     ; 93A7 A8                       .
         pla                                     ; 93A8 68                       h
         tax                                     ; 93A9 AA                       .
         rts                                     ; 93AA 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RebuildTurnSlotReservations:
+BattleDisplay_RebuildDisplaySlotReservations:
         ldx     #$00                            ; 93AB A2 00                    ..
         stx     $C7                             ; 93AD 86 C7                    ..
-BattleTurnEngine_Branch_93AF:
+BattleDisplay_Branch_93AF:
         ldy     $6E45,x                         ; 93AF BC 45 6E                 .En
         stx     $C6                             ; 93B2 86 C6                    ..
         iny                                     ; 93B4 C8                       .
-        beq     BattleTurnEngine_Branch_93CC    ; 93B5 F0 15                    ..
+        beq     BattleDisplay_Branch_93CC       ; 93B5 F0 15                    ..
         ldy     #$00                            ; 93B7 A0 00                    ..
         sty     $C5                             ; 93B9 84 C5                    ..
-BattleTurnEngine_Branch_93BB:
-        jsr     BattleTurnEngine_ReserveQueuedTurnSlot; 93BB 20 8F 9E            ..
-        jsr     BattleTurnEngine_EncodeTurnSlotReservation; 93BE 20 D2 93        ..
+BattleDisplay_Branch_93BB:
+        jsr     BattleDisplay_ReserveDisplaySlot; 93BB 20 8F 9E                  ..
+        jsr     BattleDisplay_EncodeDisplaySlotReservation; 93BE 20 D2 93        ..
         inc     $C7                             ; 93C1 E6 C7                    ..
         inc     $C5                             ; 93C3 E6 C5                    ..
         lda     $C5                             ; 93C5 A5 C5                    ..
         cmp     $6E49,x                         ; 93C7 DD 49 6E                 .In
-        bcc     BattleTurnEngine_Branch_93BB    ; 93CA 90 EF                    ..
-BattleTurnEngine_Branch_93CC:
+        bcc     BattleDisplay_Branch_93BB       ; 93CA 90 EF                    ..
+BattleDisplay_Branch_93CC:
         inx                                     ; 93CC E8                       .
         cpx     #$04                            ; 93CD E0 04                    ..
-        bne     BattleTurnEngine_Branch_93AF    ; 93CF D0 DE                    ..
+        bne     BattleDisplay_Branch_93AF       ; 93CF D0 DE                    ..
         rts                                     ; 93D1 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_EncodeTurnSlotReservation:
+BattleDisplay_EncodeDisplaySlotReservation:
         txa                                     ; 93D2 8A                       .
         pha                                     ; 93D3 48                       H
         tya                                     ; 93D4 98                       .
@@ -2800,130 +2800,130 @@ BattleTurnEngine_EncodeTurnSlotReservation:
         tax                                     ; 93F0 AA                       .
         rts                                     ; 93F1 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_TryPrimaryCombatantPlacementGroup:
-        jsr     BattleTurnEngine_InitializePrimaryPlacementScan; 93F2 20 B1 94   ..
-BattleTurnEngine_Branch_93F5:
-        jsr     BattleTurnEngine_LoadPlacementCoordinates; 93F5 20 93 95         ..
-        jsr     BattleTurnEngine_FindMatchingPlacementRecord; 93F8 20 C5 94      ..
-        bcc     BattleTurnEngine_Branch_9400    ; 93FB 90 03                    ..
+BattleDisplay_TryPrimaryCombatantPlacementGroup:
+        jsr     BattleDisplay_InitializePrimaryPlacementScan; 93F2 20 B1 94      ..
+BattleDisplay_Branch_93F5:
+        jsr     BattleDisplay_LoadPlacementCoordinates; 93F5 20 93 95            ..
+        jsr     BattleDisplay_FindMatchingPlacementRecord; 93F8 20 C5 94         ..
+        bcc     BattleDisplay_Branch_9400       ; 93FB 90 03                    ..
         dec     $0476                           ; 93FD CE 76 04                 .v.
-BattleTurnEngine_Branch_9400:
+BattleDisplay_Branch_9400:
         dec     $D6                             ; 9400 C6 D6                    ..
-        bpl     BattleTurnEngine_Branch_93F5    ; 9402 10 F1                    ..
-        jsr     BattleTurnEngine_CountFreePlacementRecords; 9404 20 4D 94        M.
-        bcs     BattleTurnEngine_Branch_942F    ; 9407 B0 26                    .&
+        bpl     BattleDisplay_Branch_93F5       ; 9402 10 F1                    ..
+        jsr     BattleDisplay_CountFreePlacementRecords; 9404 20 4D 94           M.
+        bcs     BattleDisplay_Branch_942F       ; 9407 B0 26                    .&
         ldx     $0476                           ; 9409 AE 76 04                 .v.
         dex                                     ; 940C CA                       .
-        bne     BattleTurnEngine_Branch_9437    ; 940D D0 28                    .(
-BattleTurnEngine_CheckPlacementAgainstLeadRecord:
+        bne     BattleDisplay_Branch_9437       ; 940D D0 28                    .(
+BattleDisplay_CheckPlacementAgainstLeadRecord:
         lda     $05FD                           ; 940F AD FD 05                 ...
         cmp     #$30                            ; 9412 C9 30                    .0
-        bne     BattleTurnEngine_Branch_9431    ; 9414 D0 1B                    ..
+        bne     BattleDisplay_Branch_9431       ; 9414 D0 1B                    ..
         cmp     $0477                           ; 9416 CD 77 04                 .w.
-        bne     BattleTurnEngine_Branch_9431    ; 9419 D0 16                    ..
-BattleTurnEngine_Branch_941B:
+        bne     BattleDisplay_Branch_9431       ; 9419 D0 16                    ..
+BattleDisplay_Branch_941B:
         lda     $05FE                           ; 941B AD FE 05                 ...
         cmp     #$FF                            ; 941E C9 FF                    ..
-        beq     BattleTurnEngine_Branch_942F    ; 9420 F0 0D                    ..
+        beq     BattleDisplay_Branch_942F       ; 9420 F0 0D                    ..
         cmp     $0478                           ; 9422 CD 78 04                 .x.
-        bne     BattleTurnEngine_Branch_9437    ; 9425 D0 10                    ..
+        bne     BattleDisplay_Branch_9437       ; 9425 D0 10                    ..
         lda     $05FF                           ; 9427 AD FF 05                 ...
         cmp     $0479                           ; 942A CD 79 04                 .y.
-        bne     BattleTurnEngine_Branch_9437    ; 942D D0 08                    ..
-BattleTurnEngine_Branch_942F:
+        bne     BattleDisplay_Branch_9437       ; 942D D0 08                    ..
+BattleDisplay_Branch_942F:
         sec                                     ; 942F 38                       8
         rts                                     ; 9430 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9431:
+BattleDisplay_Branch_9431:
         lda     $C4                             ; 9431 A5 C4                    ..
         cmp     #$F0                            ; 9433 C9 F0                    ..
-        bcs     BattleTurnEngine_Branch_941B    ; 9435 B0 E4                    ..
-BattleTurnEngine_Branch_9437:
+        bcs     BattleDisplay_Branch_941B       ; 9435 B0 E4                    ..
+BattleDisplay_Branch_9437:
         clc                                     ; 9437 18                       .
         rts                                     ; 9438 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_TrySecondaryCombatantPlacementGroup:
-        jsr     BattleTurnEngine_InitializeSecondaryPlacementScan; 9439 20 B5 94 ..
-        beq     BattleTurnEngine_Branch_942F    ; 943C F0 F1                    ..
-BattleTurnEngine_Branch_943E:
-        jsr     BattleTurnEngine_LoadPlacementCoordinates; 943E 20 93 95         ..
-        jsr     BattleTurnEngine_FindMatchingPlacementRecord; 9441 20 C5 94      ..
-        bcc     BattleTurnEngine_Branch_9449    ; 9444 90 03                    ..
+BattleDisplay_TrySecondaryCombatantPlacementGroup:
+        jsr     BattleDisplay_InitializeSecondaryPlacementScan; 9439 20 B5 94    ..
+        beq     BattleDisplay_Branch_942F       ; 943C F0 F1                    ..
+BattleDisplay_Branch_943E:
+        jsr     BattleDisplay_LoadPlacementCoordinates; 943E 20 93 95            ..
+        jsr     BattleDisplay_FindMatchingPlacementRecord; 9441 20 C5 94         ..
+        bcc     BattleDisplay_Branch_9449       ; 9444 90 03                    ..
         dec     $0476                           ; 9446 CE 76 04                 .v.
-BattleTurnEngine_Branch_9449:
+BattleDisplay_Branch_9449:
         dec     $D6                             ; 9449 C6 D6                    ..
-        bpl     BattleTurnEngine_Branch_943E    ; 944B 10 F1                    ..
-BattleTurnEngine_CountFreePlacementRecords:
+        bpl     BattleDisplay_Branch_943E       ; 944B 10 F1                    ..
+BattleDisplay_CountFreePlacementRecords:
         ldx     #$00                            ; 944D A2 00                    ..
         stx     $D9                             ; 944F 86 D9                    ..
         lda     $D8                             ; 9451 A5 D8                    ..
         asl     a                               ; 9453 0A                       .
         adc     $D8                             ; 9454 65 D8                    e.
         tay                                     ; 9456 A8                       .
-BattleTurnEngine_Branch_9457:
+BattleDisplay_Branch_9457:
         lda     $05FD,y                         ; 9457 B9 FD 05                 ...
         cmp     #$FF                            ; 945A C9 FF                    ..
-        bne     BattleTurnEngine_Branch_9460    ; 945C D0 02                    ..
+        bne     BattleDisplay_Branch_9460       ; 945C D0 02                    ..
         inc     $D9                             ; 945E E6 D9                    ..
-BattleTurnEngine_Branch_9460:
+BattleDisplay_Branch_9460:
         iny                                     ; 9460 C8                       .
         iny                                     ; 9461 C8                       .
         iny                                     ; 9462 C8                       .
         inx                                     ; 9463 E8                       .
         cpx     #$04                            ; 9464 E0 04                    ..
-        bne     BattleTurnEngine_Branch_9457    ; 9466 D0 EF                    ..
+        bne     BattleDisplay_Branch_9457       ; 9466 D0 EF                    ..
         lda     $D9                             ; 9468 A5 D9                    ..
         cmp     $0476                           ; 946A CD 76 04                 .v.
         rts                                     ; 946D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AssignPrimaryPlacementRecord:
-        jsr     BattleTurnEngine_InitializePrimaryPlacementScan; 946E 20 B1 94   ..
-BattleTurnEngine_Branch_9471:
-        jsr     BattleTurnEngine_LoadPlacementCoordinates; 9471 20 93 95         ..
-        jsr     BattleTurnEngine_FindMatchingPlacementRecord; 9474 20 C5 94      ..
-        bcs     BattleTurnEngine_Branch_9487    ; 9477 B0 0E                    ..
-        jsr     BattleTurnEngine_FindEmptyPlacementRecord; 9479 20 EF 94         ..
-        bcs     BattleTurnEngine_Branch_9487    ; 947C B0 09                    ..
-        jsr     BattleTurnEngine_CheckPlacementAgainstLeadRecord; 947E 20 0F 94  ..
-        bcc     BattleTurnEngine_Branch_9495    ; 9481 90 12                    ..
+BattleDisplay_AssignPrimaryPlacementRecord:
+        jsr     BattleDisplay_InitializePrimaryPlacementScan; 946E 20 B1 94      ..
+BattleDisplay_Branch_9471:
+        jsr     BattleDisplay_LoadPlacementCoordinates; 9471 20 93 95            ..
+        jsr     BattleDisplay_FindMatchingPlacementRecord; 9474 20 C5 94         ..
+        bcs     BattleDisplay_Branch_9487       ; 9477 B0 0E                    ..
+        jsr     BattleDisplay_FindEmptyPlacementRecord; 9479 20 EF 94            ..
+        bcs     BattleDisplay_Branch_9487       ; 947C B0 09                    ..
+        jsr     BattleDisplay_CheckPlacementAgainstLeadRecord; 947E 20 0F 94     ..
+        bcc     BattleDisplay_Branch_9495       ; 9481 90 12                    ..
         lda     #$00                            ; 9483 A9 00                    ..
         sta     $D9                             ; 9485 85 D9                    ..
-BattleTurnEngine_Branch_9487:
-        jsr     BattleTurnEngine_CommitPlacementRecord; 9487 20 2F 95            /.
+BattleDisplay_Branch_9487:
+        jsr     BattleDisplay_CommitPlacementRecord; 9487 20 2F 95               /.
         dec     $D6                             ; 948A C6 D6                    ..
-        bpl     BattleTurnEngine_Branch_9471    ; 948C 10 E3                    ..
+        bpl     BattleDisplay_Branch_9471       ; 948C 10 E3                    ..
         lda     $0514                           ; 948E AD 14 05                 ...
         sta     $05FD                           ; 9491 8D FD 05                 ...
         sec                                     ; 9494 38                       8
-BattleTurnEngine_Branch_9495:
+BattleDisplay_Branch_9495:
         rts                                     ; 9495 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AssignSecondaryPlacementRecord:
-        jsr     BattleTurnEngine_InitializeSecondaryPlacementScan; 9496 20 B5 94 ..
-        beq     BattleTurnEngine_Branch_94AF    ; 9499 F0 14                    ..
-BattleTurnEngine_Branch_949B:
-        jsr     BattleTurnEngine_LoadPlacementCoordinates; 949B 20 93 95         ..
-        jsr     BattleTurnEngine_FindMatchingPlacementRecord; 949E 20 C5 94      ..
-        bcs     BattleTurnEngine_Branch_94A8    ; 94A1 B0 05                    ..
-        jsr     BattleTurnEngine_FindEmptyPlacementRecord; 94A3 20 EF 94         ..
-        bcc     BattleTurnEngine_Branch_94B0    ; 94A6 90 08                    ..
-BattleTurnEngine_Branch_94A8:
-        jsr     BattleTurnEngine_CommitPlacementRecord; 94A8 20 2F 95            /.
+BattleDisplay_AssignSecondaryPlacementRecord:
+        jsr     BattleDisplay_InitializeSecondaryPlacementScan; 9496 20 B5 94    ..
+        beq     BattleDisplay_Branch_94AF       ; 9499 F0 14                    ..
+BattleDisplay_Branch_949B:
+        jsr     BattleDisplay_LoadPlacementCoordinates; 949B 20 93 95            ..
+        jsr     BattleDisplay_FindMatchingPlacementRecord; 949E 20 C5 94         ..
+        bcs     BattleDisplay_Branch_94A8       ; 94A1 B0 05                    ..
+        jsr     BattleDisplay_FindEmptyPlacementRecord; 94A3 20 EF 94            ..
+        bcc     BattleDisplay_Branch_94B0       ; 94A6 90 08                    ..
+BattleDisplay_Branch_94A8:
+        jsr     BattleDisplay_CommitPlacementRecord; 94A8 20 2F 95               /.
         dec     $D6                             ; 94AB C6 D6                    ..
-        bpl     BattleTurnEngine_Branch_949B    ; 94AD 10 EC                    ..
-BattleTurnEngine_Branch_94AF:
+        bpl     BattleDisplay_Branch_949B       ; 94AD 10 EC                    ..
+BattleDisplay_Branch_94AF:
         sec                                     ; 94AF 38                       8
-BattleTurnEngine_Branch_94B0:
+BattleDisplay_Branch_94B0:
         rts                                     ; 94B0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_InitializePrimaryPlacementScan:
+BattleDisplay_InitializePrimaryPlacementScan:
         lda     #$00                            ; 94B1 A9 00                    ..
-        beq     BattleTurnEngine_Branch_94B7    ; 94B3 F0 02                    ..
-BattleTurnEngine_InitializeSecondaryPlacementScan:
+        beq     BattleDisplay_Branch_94B7       ; 94B3 F0 02                    ..
+BattleDisplay_InitializeSecondaryPlacementScan:
         lda     #$04                            ; 94B5 A9 04                    ..
-BattleTurnEngine_Branch_94B7:
+BattleDisplay_Branch_94B7:
         sta     $D8                             ; 94B7 85 D8                    ..
-        jsr     BattleTurnEngine_LoadPlacementCountForSelectedGroup; 94B9 20 57 95 W.
+        jsr     BattleDisplay_LoadPlacementCountForSelectedGroup; 94B9 20 57 95  W.
         ldy     $0476                           ; 94BC AC 76 04                 .v.
         php                                     ; 94BF 08                       .
         dey                                     ; 94C0 88                       .
@@ -2931,126 +2931,126 @@ BattleTurnEngine_Branch_94B7:
         plp                                     ; 94C3 28                       (
         rts                                     ; 94C4 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindMatchingPlacementRecord:
+BattleDisplay_FindMatchingPlacementRecord:
         lda     #$00                            ; 94C5 A9 00                    ..
         sta     $D9                             ; 94C7 85 D9                    ..
-BattleTurnEngine_Branch_94C9:
+BattleDisplay_Branch_94C9:
         lda     $D9                             ; 94C9 A5 D9                    ..
         asl     a                               ; 94CB 0A                       .
         adc     $D9                             ; 94CC 65 D9                    e.
         ldy     $D8                             ; 94CE A4 D8                    ..
-        beq     BattleTurnEngine_Branch_94D4    ; 94D0 F0 02                    ..
+        beq     BattleDisplay_Branch_94D4       ; 94D0 F0 02                    ..
         adc     #$0C                            ; 94D2 69 0C                    i.
-BattleTurnEngine_Branch_94D4:
+BattleDisplay_Branch_94D4:
         tay                                     ; 94D4 A8                       .
         ldx     #$00                            ; 94D5 A2 00                    ..
-BattleTurnEngine_Branch_94D7:
+BattleDisplay_Branch_94D7:
         lda     $0477,x                         ; 94D7 BD 77 04                 .w.
         cmp     $05FD,y                         ; 94DA D9 FD 05                 ...
-        bne     BattleTurnEngine_Branch_94E6    ; 94DD D0 07                    ..
+        bne     BattleDisplay_Branch_94E6       ; 94DD D0 07                    ..
         iny                                     ; 94DF C8                       .
         inx                                     ; 94E0 E8                       .
         cpx     #$03                            ; 94E1 E0 03                    ..
-        bcc     BattleTurnEngine_Branch_94D7    ; 94E3 90 F2                    ..
+        bcc     BattleDisplay_Branch_94D7       ; 94E3 90 F2                    ..
         rts                                     ; 94E5 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_94E6:
+BattleDisplay_Branch_94E6:
         inc     $D9                             ; 94E6 E6 D9                    ..
         lda     #$03                            ; 94E8 A9 03                    ..
         cmp     $D9                             ; 94EA C5 D9                    ..
-        bcs     BattleTurnEngine_Branch_94C9    ; 94EC B0 DB                    ..
+        bcs     BattleDisplay_Branch_94C9       ; 94EC B0 DB                    ..
         rts                                     ; 94EE 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindEmptyPlacementRecord:
+BattleDisplay_FindEmptyPlacementRecord:
         ldy     #$00                            ; 94EF A0 00                    ..
         sty     $D9                             ; 94F1 84 D9                    ..
-BattleTurnEngine_Branch_94F3:
+BattleDisplay_Branch_94F3:
         lda     $D9                             ; 94F3 A5 D9                    ..
         asl     a                               ; 94F5 0A                       .
         adc     $D9                             ; 94F6 65 D9                    e.
         ldy     $D8                             ; 94F8 A4 D8                    ..
-        beq     BattleTurnEngine_Branch_94FE    ; 94FA F0 02                    ..
+        beq     BattleDisplay_Branch_94FE       ; 94FA F0 02                    ..
         adc     #$0C                            ; 94FC 69 0C                    i.
-BattleTurnEngine_Branch_94FE:
+BattleDisplay_Branch_94FE:
         tax                                     ; 94FE AA                       .
         ldy     $05FD,x                         ; 94FF BC FD 05                 ...
         iny                                     ; 9502 C8                       .
-        bne     BattleTurnEngine_Branch_9507    ; 9503 D0 02                    ..
+        bne     BattleDisplay_Branch_9507       ; 9503 D0 02                    ..
         sec                                     ; 9505 38                       8
         rts                                     ; 9506 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9507:
+BattleDisplay_Branch_9507:
         inc     $D9                             ; 9507 E6 D9                    ..
         lda     #$03                            ; 9509 A9 03                    ..
         cmp     $D9                             ; 950B C5 D9                    ..
-        bcs     BattleTurnEngine_Branch_94F3    ; 950D B0 E4                    ..
+        bcs     BattleDisplay_Branch_94F3       ; 950D B0 E4                    ..
         rts                                     ; 950F 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPlacementNibbleFromCombatantFlags:
+BattleDisplay_LoadPlacementNibbleFromCombatantFlags:
         lda     $0444,x                         ; 9510 BD 44 04                 .D.
         iny                                     ; 9513 C8                       .
-BattleTurnEngine_Branch_9514:
+BattleDisplay_Branch_9514:
         dey                                     ; 9514 88                       .
-        beq     BattleTurnEngine_Branch_951C    ; 9515 F0 05                    ..
+        beq     BattleDisplay_Branch_951C       ; 9515 F0 05                    ..
         lsr     a                               ; 9517 4A                       J
         lsr     a                               ; 9518 4A                       J
-        jmp     BattleTurnEngine_Branch_9514    ; 9519 4C 14 95                 L..
+        jmp     BattleDisplay_Branch_9514       ; 9519 4C 14 95                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_951C:
+BattleDisplay_Branch_951C:
         and     #$03                            ; 951C 29 03                    ).
         rts                                     ; 951E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_StorePlacementNibbleInCombatantFlags:
+BattleDisplay_StorePlacementNibbleInCombatantFlags:
         iny                                     ; 951F C8                       .
-BattleTurnEngine_Branch_9520:
+BattleDisplay_Branch_9520:
         dey                                     ; 9520 88                       .
-        beq     BattleTurnEngine_Branch_9528    ; 9521 F0 05                    ..
+        beq     BattleDisplay_Branch_9528       ; 9521 F0 05                    ..
         asl     a                               ; 9523 0A                       .
         asl     a                               ; 9524 0A                       .
-        jmp     BattleTurnEngine_Branch_9520    ; 9525 4C 20 95                 L .
+        jmp     BattleDisplay_Branch_9520       ; 9525 4C 20 95                 L .
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9528:
+BattleDisplay_Branch_9528:
         ora     $0444,x                         ; 9528 1D 44 04                 .D.
         sta     $0444,x                         ; 952B 9D 44 04                 .D.
         rts                                     ; 952E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CommitPlacementRecord:
+BattleDisplay_CommitPlacementRecord:
         lda     $C6                             ; 952F A5 C6                    ..
         clc                                     ; 9531 18                       .
         adc     $D8                             ; 9532 65 D8                    e.
         tax                                     ; 9534 AA                       .
         ldy     $D6                             ; 9535 A4 D6                    ..
         lda     $D9                             ; 9537 A5 D9                    ..
-        jsr     BattleTurnEngine_StorePlacementNibbleInCombatantFlags; 9539 20 1F 95 ..
+        jsr     BattleDisplay_StorePlacementNibbleInCombatantFlags; 9539 20 1F 95 ..
         ldx     #$00                            ; 953C A2 00                    ..
         lda     $D9                             ; 953E A5 D9                    ..
         asl     a                               ; 9540 0A                       .
         adc     $D9                             ; 9541 65 D9                    e.
         ldy     $D8                             ; 9543 A4 D8                    ..
-        beq     BattleTurnEngine_Branch_9549    ; 9545 F0 02                    ..
+        beq     BattleDisplay_Branch_9549       ; 9545 F0 02                    ..
         adc     #$0C                            ; 9547 69 0C                    i.
-BattleTurnEngine_Branch_9549:
+BattleDisplay_Branch_9549:
         tay                                     ; 9549 A8                       .
-BattleTurnEngine_Branch_954A:
+BattleDisplay_Branch_954A:
         lda     $0477,x                         ; 954A BD 77 04                 .w.
         sta     $05FD,y                         ; 954D 99 FD 05                 ...
         iny                                     ; 9550 C8                       .
         inx                                     ; 9551 E8                       .
         cpx     #$03                            ; 9552 E0 03                    ..
-        bne     BattleTurnEngine_Branch_954A    ; 9554 D0 F4                    ..
+        bne     BattleDisplay_Branch_954A       ; 9554 D0 F4                    ..
         rts                                     ; 9556 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPlacementCountForSelectedGroup:
+BattleDisplay_LoadPlacementCountForSelectedGroup:
         txa                                     ; 9557 8A                       .
         pha                                     ; 9558 48                       H
         tya                                     ; 9559 98                       .
         pha                                     ; 955A 48                       H
         lda     $C4                             ; 955B A5 C4                    ..
         cmp     #$F0                            ; 955D C9 F0                    ..
-        bcc     BattleTurnEngine_Branch_9565    ; 955F 90 04                    ..
+        bcc     BattleDisplay_Branch_9565       ; 955F 90 04                    ..
         lda     #$01                            ; 9561 A9 01                    ..
-        bne     BattleTurnEngine_Branch_9589    ; 9563 D0 24                    .$
-BattleTurnEngine_Branch_9565:
+        bne     BattleDisplay_Branch_9589       ; 9563 D0 24                    .$
+BattleDisplay_Branch_9565:
         jsr     Bank14_LoadMonsterGraphicsDescriptor; 9565 20 A9 9F              ..
         lda     $CF                             ; 9568 A5 CF                    ..
         sta     $C0                             ; 956A 85 C0                    ..
@@ -3060,7 +3060,7 @@ BattleTurnEngine_Branch_9565:
         lda     ($C0),y                         ; 9572 B1 C0                    ..
         jsr     Bank14_AdvanceMonsterGraphicsInput; 9574 20 9F 9F                ..
         ldx     $D8                             ; 9577 A6 D8                    ..
-        bne     BattleTurnEngine_Branch_9589    ; 9579 D0 0E                    ..
+        bne     BattleDisplay_Branch_9589       ; 9579 D0 0E                    ..
         and     #$F0                            ; 957B 29 F0                    ).
         lsr     a                               ; 957D 4A                       J
         lsr     a                               ; 957E 4A                       J
@@ -3073,7 +3073,7 @@ BattleTurnEngine_Branch_9565:
         tax                                     ; 9587 AA                       .
         rts                                     ; 9588 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9589:
+BattleDisplay_Branch_9589:
         and     #$0F                            ; 9589 29 0F                    ).
         sta     $0476                           ; 958B 8D 76 04                 .v.
         pla                                     ; 958E 68                       h
@@ -3082,10 +3082,10 @@ BattleTurnEngine_Branch_9589:
         tax                                     ; 9591 AA                       .
         rts                                     ; 9592 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPlacementCoordinates:
+BattleDisplay_LoadPlacementCoordinates:
         lda     $C4                             ; 9593 A5 C4                    ..
         sbc     #$F0                            ; 9595 E9 F0                    ..
-        bcc     BattleTurnEngine_Branch_95B1    ; 9597 90 18                    ..
+        bcc     BattleDisplay_Branch_95B1       ; 9597 90 18                    ..
         tax                                     ; 9599 AA                       .
         lda     $9673,x                         ; 959A BD 73 96                 .s.
         asl     a                               ; 959D 0A                       .
@@ -3098,83 +3098,83 @@ BattleTurnEngine_LoadPlacementCoordinates:
         sta     $0477                           ; 95AD 8D 77 04                 .w.
         rts                                     ; 95B0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_95B1:
+BattleDisplay_Branch_95B1:
         lda     $0476                           ; 95B1 AD 76 04                 .v.
         pha                                     ; 95B4 48                       H
         lda     $D6                             ; 95B5 A5 D6                    ..
         pha                                     ; 95B7 48                       H
         ldx     $D8                             ; 95B8 A6 D8                    ..
-        bne     BattleTurnEngine_Branch_95CF    ; 95BA D0 13                    ..
+        bne     BattleDisplay_Branch_95CF       ; 95BA D0 13                    ..
         lda     #$04                            ; 95BC A9 04                    ..
         sta     $D8                             ; 95BE 85 D8                    ..
-        jsr     BattleTurnEngine_LoadPlacementCountForSelectedGroup; 95C0 20 57 95 W.
+        jsr     BattleDisplay_LoadPlacementCountForSelectedGroup; 95C0 20 57 95  W.
         lda     #$00                            ; 95C3 A9 00                    ..
         sta     $D8                             ; 95C5 85 D8                    ..
         lda     $0476                           ; 95C7 AD 76 04                 .v.
         clc                                     ; 95CA 18                       .
         adc     $D6                             ; 95CB 65 D6                    e.
         sta     $D6                             ; 95CD 85 D6                    ..
-BattleTurnEngine_Branch_95CF:
+BattleDisplay_Branch_95CF:
         asl     a                               ; 95CF 0A                       .
         adc     $D6                             ; 95D0 65 D6                    e.
         tay                                     ; 95D2 A8                       .
         ldx     #$00                            ; 95D3 A2 00                    ..
-BattleTurnEngine_Branch_95D5:
+BattleDisplay_Branch_95D5:
         lda     ($C0),y                         ; 95D5 B1 C0                    ..
         sta     $0477,x                         ; 95D7 9D 77 04                 .w.
         iny                                     ; 95DA C8                       .
         inx                                     ; 95DB E8                       .
         cpx     #$03                            ; 95DC E0 03                    ..
-        bne     BattleTurnEngine_Branch_95D5    ; 95DE D0 F5                    ..
+        bne     BattleDisplay_Branch_95D5       ; 95DE D0 F5                    ..
         pla                                     ; 95E0 68                       h
         sta     $D6                             ; 95E1 85 D6                    ..
         pla                                     ; 95E3 68                       h
         sta     $0476                           ; 95E4 8D 76 04                 .v.
         rts                                     ; 95E7 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_PruneOccupiedPlacementRecords:
-        jsr     BattleTurnEngine_LoadPlacementCountForSelectedGroup; 95E8 20 57 95 W.
+BattleDisplay_PruneOccupiedPlacementRecords:
+        jsr     BattleDisplay_LoadPlacementCountForSelectedGroup; 95E8 20 57 95  W.
         ldy     $0476                           ; 95EB AC 76 04                 .v.
-        beq     BattleTurnEngine_Branch_964E    ; 95EE F0 5E                    .^
+        beq     BattleDisplay_Branch_964E       ; 95EE F0 5E                    .^
         dey                                     ; 95F0 88                       .
-BattleTurnEngine_Branch_95F1:
+BattleDisplay_Branch_95F1:
         tya                                     ; 95F1 98                       .
         pha                                     ; 95F2 48                       H
         lda     $C6                             ; 95F3 A5 C6                    ..
         clc                                     ; 95F5 18                       .
         adc     $D8                             ; 95F6 65 D8                    e.
         tax                                     ; 95F8 AA                       .
-        jsr     BattleTurnEngine_LoadPlacementNibbleFromCombatantFlags; 95F9 20 10 95 ..
+        jsr     BattleDisplay_LoadPlacementNibbleFromCombatantFlags; 95F9 20 10 95 ..
         sta     $D9                             ; 95FC 85 D9                    ..
         ldx     #$03                            ; 95FE A2 03                    ..
-BattleTurnEngine_Branch_9600:
+BattleDisplay_Branch_9600:
         cpx     $C6                             ; 9600 E4 C6                    ..
-        beq     BattleTurnEngine_Branch_962A    ; 9602 F0 26                    .&
+        beq     BattleDisplay_Branch_962A       ; 9602 F0 26                    .&
         ldy     $0440,x                         ; 9604 BC 40 04                 .@.
         sty     $C4                             ; 9607 84 C4                    ..
         iny                                     ; 9609 C8                       .
-        beq     BattleTurnEngine_Branch_962A    ; 960A F0 1E                    ..
-        jsr     BattleTurnEngine_LoadPlacementCountForSelectedGroup; 960C 20 57 95 W.
-BattleTurnEngine_Branch_960F:
+        beq     BattleDisplay_Branch_962A       ; 960A F0 1E                    ..
+        jsr     BattleDisplay_LoadPlacementCountForSelectedGroup; 960C 20 57 95  W.
+BattleDisplay_Branch_960F:
         dec     $0476                           ; 960F CE 76 04                 .v.
         lda     $0476                           ; 9612 AD 76 04                 .v.
-        bmi     BattleTurnEngine_Branch_962A    ; 9615 30 13                    0.
+        bmi     BattleDisplay_Branch_962A       ; 9615 30 13                    0.
         tay                                     ; 9617 A8                       .
         txa                                     ; 9618 8A                       .
         pha                                     ; 9619 48                       H
         clc                                     ; 961A 18                       .
         adc     $D8                             ; 961B 65 D8                    e.
         tax                                     ; 961D AA                       .
-        jsr     BattleTurnEngine_LoadPlacementNibbleFromCombatantFlags; 961E 20 10 95 ..
+        jsr     BattleDisplay_LoadPlacementNibbleFromCombatantFlags; 961E 20 10 95 ..
         tay                                     ; 9621 A8                       .
         pla                                     ; 9622 68                       h
         tax                                     ; 9623 AA                       .
         cpy     $D9                             ; 9624 C4 D9                    ..
-        beq     BattleTurnEngine_Branch_9649    ; 9626 F0 21                    .!
-        bne     BattleTurnEngine_Branch_960F    ; 9628 D0 E5                    ..
-BattleTurnEngine_Branch_962A:
+        beq     BattleDisplay_Branch_9649       ; 9626 F0 21                    .!
+        bne     BattleDisplay_Branch_960F       ; 9628 D0 E5                    ..
+BattleDisplay_Branch_962A:
         dex                                     ; 962A CA                       .
-        bpl     BattleTurnEngine_Branch_9600    ; 962B 10 D3                    ..
+        bpl     BattleDisplay_Branch_9600       ; 962B 10 D3                    ..
         txa                                     ; 962D 8A                       .
         pha                                     ; 962E 48                       H
         lda     $D9                             ; 962F A5 D9                    ..
@@ -3182,49 +3182,49 @@ BattleTurnEngine_Branch_962A:
         clc                                     ; 9632 18                       .
         adc     $D9                             ; 9633 65 D9                    e.
         ldy     $D8                             ; 9635 A4 D8                    ..
-        beq     BattleTurnEngine_Branch_963B    ; 9637 F0 02                    ..
+        beq     BattleDisplay_Branch_963B       ; 9637 F0 02                    ..
         adc     #$0C                            ; 9639 69 0C                    i.
-BattleTurnEngine_Branch_963B:
+BattleDisplay_Branch_963B:
         tay                                     ; 963B A8                       .
         ldx     #$03                            ; 963C A2 03                    ..
         lda     #$FF                            ; 963E A9 FF                    ..
-BattleTurnEngine_Branch_9640:
+BattleDisplay_Branch_9640:
         sta     $05FD,y                         ; 9640 99 FD 05                 ...
         iny                                     ; 9643 C8                       .
         dex                                     ; 9644 CA                       .
-        bne     BattleTurnEngine_Branch_9640    ; 9645 D0 F9                    ..
+        bne     BattleDisplay_Branch_9640       ; 9645 D0 F9                    ..
         pla                                     ; 9647 68                       h
         tax                                     ; 9648 AA                       .
-BattleTurnEngine_Branch_9649:
+BattleDisplay_Branch_9649:
         pla                                     ; 9649 68                       h
         tay                                     ; 964A A8                       .
         dey                                     ; 964B 88                       .
-        bpl     BattleTurnEngine_Branch_95F1    ; 964C 10 A3                    ..
-BattleTurnEngine_Branch_964E:
+        bpl     BattleDisplay_Branch_95F1       ; 964C 10 A3                    ..
+BattleDisplay_Branch_964E:
         rts                                     ; 964E 60                       `
 ; ----------------------------------------------------------------------------
         db   $A2,$03,$D0,$02                 ; 964F A2 03 D0 02              ....
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CopyPatternBufferToDecodeScratch:
+BattleDisplay_CopyPatternBufferToDecodeScratch:
         ldx     #$00                            ; 9653 A2 00                    ..
-BattleTurnEngine_Branch_9655:
+BattleDisplay_Branch_9655:
         lda     $05FC,x                         ; 9655 BD FC 05                 ...
         sta     $0650,x                         ; 9658 9D 50 06                 .P.
         inx                                     ; 965B E8                       .
         cpx     #$19                            ; 965C E0 19                    ..
-        bne     BattleTurnEngine_Branch_9655    ; 965E D0 F5                    ..
+        bne     BattleDisplay_Branch_9655       ; 965E D0 F5                    ..
         rts                                     ; 9660 60                       `
 ; ----------------------------------------------------------------------------
         db   $A2,$03,$D0,$02                 ; 9661 A2 03 D0 02              ....
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CopyDecodeScratchToPatternBuffer:
+BattleDisplay_CopyDecodeScratchToPatternBuffer:
         ldx     #$00                            ; 9665 A2 00                    ..
-BattleTurnEngine_Branch_9667:
+BattleDisplay_Branch_9667:
         lda     $0650,x                         ; 9667 BD 50 06                 .P.
         sta     $05FC,x                         ; 966A 9D FC 05                 ...
         inx                                     ; 966D E8                       .
         cpx     #$19                            ; 966E E0 19                    ..
-        bne     BattleTurnEngine_Branch_9667    ; 9670 D0 F5                    ..
+        bne     BattleDisplay_Branch_9667       ; 9670 D0 F5                    ..
         rts                                     ; 9672 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$00,$02,$02,$01,$02,$02,$01 ; 9673 00 00 02 02 01 02 02 01  ........
@@ -3232,34 +3232,34 @@ BattleTurnEngine_Branch_9667:
         db   $12                             ; 967C 12                       .
         db   $1B,$06,$27,$25,$13             ; 967D 1B 06 27 25 13           ..'%.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckGraphicPpuHighByteOverflow:
+BattleDisplay_CheckGraphicPpuHighByteOverflow:
         ldx     #$01                            ; 9682 A2 01                    ..
-        bne     BattleTurnEngine_Branch_9688    ; 9684 D0 02                    ..
-BattleTurnEngine_CheckGraphicPpuLowByteOverflow:
+        bne     BattleDisplay_Branch_9688       ; 9684 D0 02                    ..
+BattleDisplay_CheckGraphicPpuLowByteOverflow:
         ldx     #$00                            ; 9686 A2 00                    ..
-BattleTurnEngine_Branch_9688:
+BattleDisplay_Branch_9688:
         txa                                     ; 9688 8A                       .
         pha                                     ; 9689 48                       H
-        jsr     BattleTurnEngine_FindLoadedBattleGraphicSlot; 968A 20 1C 9E      ..
+        jsr     BattleDisplay_FindLoadedBattleGraphicSlot; 968A 20 1C 9E         ..
         pla                                     ; 968D 68                       h
         tax                                     ; 968E AA                       .
-        bcs     BattleTurnEngine_Branch_969A    ; 968F B0 09                    ..
+        bcs     BattleDisplay_Branch_969A       ; 968F B0 09                    ..
         lda     $CB,x                           ; 9691 B5 CB                    ..
         clc                                     ; 9693 18                       .
         adc     $D4,x                           ; 9694 75 D4                    u.
-        bcc     BattleTurnEngine_Branch_969A    ; 9696 90 02                    ..
+        bcc     BattleDisplay_Branch_969A       ; 9696 90 02                    ..
         clc                                     ; 9698 18                       .
         rts                                     ; 9699 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_969A:
+BattleDisplay_Branch_969A:
         sec                                     ; 969A 38                       8
         rts                                     ; 969B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadCombatantBattleGraphic:
-        jsr     BattleTurnEngine_FindLoadedBattleGraphicSlot; 969C 20 1C 9E      ..
-        bcs     BattleTurnEngine_Branch_9711    ; 969F B0 70                    .p
-        jsr     BattleTurnEngine_FindFallbackBattleGraphicSlot; 96A1 20 0C 9E    ..
-        bcc     BattleTurnEngine_Branch_9711    ; 96A4 90 6B                    .k
+BattleDisplay_LoadCombatantBattleGraphic:
+        jsr     BattleDisplay_FindLoadedBattleGraphicSlot; 969C 20 1C 9E         ..
+        bcs     BattleDisplay_Branch_9711       ; 969F B0 70                    .p
+        jsr     BattleDisplay_FindFallbackBattleGraphicSlot; 96A1 20 0C 9E       ..
+        bcc     BattleDisplay_Branch_9711       ; 96A4 90 6B                    .k
         jsr     Bank14_LoadMonsterGraphicsDescriptor; 96A6 20 A9 9F              ..
         lda     $CD                             ; 96A9 A5 CD                    ..
         sta     $C0                             ; 96AB 85 C0                    ..
@@ -3271,14 +3271,14 @@ BattleTurnEngine_LoadCombatantBattleGraphic:
         lda     $045A,x                         ; 96B8 BD 5A 04                 .Z.
         sta     $CB                             ; 96BB 85 CB                    ..
         lda     $C4                             ; 96BD A5 C4                    ..
-        bne     BattleTurnEngine_Branch_96C5    ; 96BF D0 04                    ..
+        bne     BattleDisplay_Branch_96C5       ; 96BF D0 04                    ..
         lda     #$8D                            ; 96C1 A9 8D                    ..
         sta     $CC                             ; 96C3 85 CC                    ..
-BattleTurnEngine_Branch_96C5:
+BattleDisplay_Branch_96C5:
         jsr     Bank14_SelectMonsterGraphicsBank; 96C5 20 26 9F                  &.
         lda     $29                             ; 96C8 A5 29                    .)
         pha                                     ; 96CA 48                       H
-BattleTurnEngine_Branch_96CB:
+BattleDisplay_Branch_96CB:
         lda     $C0                             ; 96CB A5 C0                    ..
         pha                                     ; 96CD 48                       H
         lda     $C1                             ; 96CE A5 C1                    ..
@@ -3287,39 +3287,39 @@ BattleTurnEngine_Branch_96CB:
         sta     $29                             ; 96D3 85 29                    .)
         lda     $C4                             ; 96D5 A5 C4                    ..
         cmp     #$AE                            ; 96D7 C9 AE                    ..
-        bne     BattleTurnEngine_Branch_96E3    ; 96D9 D0 08                    ..
+        bne     BattleDisplay_Branch_96E3       ; 96D9 D0 08                    ..
         lda     $D1                             ; 96DB A5 D1                    ..
         cmp     #$6A                            ; 96DD C9 6A                    .j
-        bcs     BattleTurnEngine_Branch_96E3    ; 96DF B0 02                    ..
+        bcs     BattleDisplay_Branch_96E3       ; 96DF B0 02                    ..
         inc     $29                             ; 96E1 E6 29                    .)
-BattleTurnEngine_Branch_96E3:
+BattleDisplay_Branch_96E3:
         jsr     Bank14_DecodeMonsterGraphicsBitplanes; 96E3 20 12 97             ..
         pla                                     ; 96E6 68                       h
         sta     $C1                             ; 96E7 85 C1                    ..
         pla                                     ; 96E9 68                       h
         sta     $C0                             ; 96EA 85 C0                    ..
-        jsr     BattleTurnEngine_UploadDecodedMonsterGraphicsBlocks; 96EC 20 83 97 ..
-        bcc     BattleTurnEngine_Branch_970E    ; 96EF 90 1D                    ..
+        jsr     BattleDisplay_UploadDecodedMonsterGraphicsBlocks; 96EC 20 83 97  ..
+        bcc     BattleDisplay_Branch_970E       ; 96EF 90 1D                    ..
         dec     $D1                             ; 96F1 C6 D1                    ..
-        bne     BattleTurnEngine_Branch_96CB    ; 96F3 D0 D6                    ..
+        bne     BattleDisplay_Branch_96CB       ; 96F3 D0 D6                    ..
         ldx     $C8                             ; 96F5 A6 C8                    ..
         lda     $C4                             ; 96F7 A5 C4                    ..
-        beq     BattleTurnEngine_Branch_96FE    ; 96F9 F0 03                    ..
+        beq     BattleDisplay_Branch_96FE       ; 96F9 F0 03                    ..
         sta     $044C,x                         ; 96FB 9D 4C 04                 .L.
-BattleTurnEngine_Branch_96FE:
+BattleDisplay_Branch_96FE:
         inx                                     ; 96FE E8                       .
         cpx     #$0E                            ; 96FF E0 0E                    ..
-        beq     BattleTurnEngine_Branch_970D    ; 9701 F0 0A                    ..
+        beq     BattleDisplay_Branch_970D       ; 9701 F0 0A                    ..
         lda     $CB                             ; 9703 A5 CB                    ..
         sta     $045A,x                         ; 9705 9D 5A 04                 .Z.
         lda     $CC                             ; 9708 A5 CC                    ..
         sta     $0468,x                         ; 970A 9D 68 04                 .h.
-BattleTurnEngine_Branch_970D:
+BattleDisplay_Branch_970D:
         sec                                     ; 970D 38                       8
-BattleTurnEngine_Branch_970E:
+BattleDisplay_Branch_970E:
         pla                                     ; 970E 68                       h
         sta     $29                             ; 970F 85 29                    .)
-BattleTurnEngine_Branch_9711:
+BattleDisplay_Branch_9711:
         rts                                     ; 9711 60                       `
 ; ----------------------------------------------------------------------------
 Bank14_DecodeMonsterGraphicsBitplanes:
@@ -3328,73 +3328,73 @@ Bank14_DecodeMonsterGraphicsBitplanes:
         lda     #$FF                            ; 9716 A9 FF                    ..
         sta     $D7                             ; 9718 85 D7                    ..
         sta     $D8                             ; 971A 85 D8                    ..
-BattleTurnEngine_Branch_971C:
+BattleDisplay_Branch_971C:
         jsr     Bank14_RefillMonsterGraphicsInput; 971C 20 66 9F                 f.
         jsr     Bank14_ReadMonsterGraphicsByte  ; 971F 20 8D 9F                  ..
         tax                                     ; 9722 AA                       .
         ldy     $29                             ; 9723 A4 29                    .)
-        bne     BattleTurnEngine_Branch_9731    ; 9725 D0 0A                    ..
+        bne     BattleDisplay_Branch_9731       ; 9725 D0 0A                    ..
         and     #$40                            ; 9727 29 40                    )@
-        bne     BattleTurnEngine_Branch_972E    ; 9729 D0 03                    ..
+        bne     BattleDisplay_Branch_972E       ; 9729 D0 03                    ..
         jsr     Bank14_AdvanceMonsterGraphicsInput; 972B 20 9F 9F                ..
-BattleTurnEngine_Branch_972E:
+BattleDisplay_Branch_972E:
         jsr     Bank14_AdvanceMonsterGraphicsInput; 972E 20 9F 9F                ..
-BattleTurnEngine_Branch_9731:
+BattleDisplay_Branch_9731:
         txa                                     ; 9731 8A                       .
-        bpl     BattleTurnEngine_Branch_971C    ; 9732 10 E8                    ..
+        bpl     BattleDisplay_Branch_971C       ; 9732 10 E8                    ..
         lsr     a                               ; 9734 4A                       J
         and     #$04                            ; 9735 29 04                    ).
-        beq     BattleTurnEngine_Branch_974A    ; 9737 F0 11                    ..
-        bcc     BattleTurnEngine_Branch_9740    ; 9739 90 05                    ..
+        beq     BattleDisplay_Branch_974A       ; 9737 F0 11                    ..
+        bcc     BattleDisplay_Branch_9740       ; 9739 90 05                    ..
         jsr     Bank14_ReadMonsterGraphicsByte  ; 973B 20 8D 9F                  ..
         sta     $D6                             ; 973E 85 D6                    ..
-BattleTurnEngine_Branch_9740:
+BattleDisplay_Branch_9740:
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9740 20 8D 9F                  ..
         sta     $D7                             ; 9743 85 D7                    ..
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9745 20 8D 9F                  ..
         sta     $D8                             ; 9748 85 D8                    ..
-BattleTurnEngine_Branch_974A:
+BattleDisplay_Branch_974A:
         ldx     #$00                            ; 974A A2 00                    ..
         jsr     Bank14_RefillMonsterGraphicsInput; 974C 20 66 9F                 f.
-BattleTurnEngine_Branch_974F:
+BattleDisplay_Branch_974F:
         lda     $D6                             ; 974F A5 D6                    ..
         asl     $D7                             ; 9751 06 D7                    ..
         rol     $D8                             ; 9753 26 D8                    &.
-        bcc     BattleTurnEngine_Branch_975A    ; 9755 90 03                    ..
+        bcc     BattleDisplay_Branch_975A       ; 9755 90 03                    ..
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9757 20 8D 9F                  ..
-BattleTurnEngine_Branch_975A:
+BattleDisplay_Branch_975A:
         sta     $0650,x                         ; 975A 9D 50 06                 .P.
         ldy     #$08                            ; 975D A0 08                    ..
-BattleTurnEngine_Branch_975F:
+BattleDisplay_Branch_975F:
         asl     a                               ; 975F 0A                       .
         ror     $0660,x                         ; 9760 7E 60 06                 ~`.
         dey                                     ; 9763 88                       .
-        bne     BattleTurnEngine_Branch_975F    ; 9764 D0 F9                    ..
+        bne     BattleDisplay_Branch_975F       ; 9764 D0 F9                    ..
         inx                                     ; 9766 E8                       .
         cpx     #$10                            ; 9767 E0 10                    ..
-        bne     BattleTurnEngine_Branch_974F    ; 9769 D0 E4                    ..
+        bne     BattleDisplay_Branch_974F       ; 9769 D0 E4                    ..
         ldx     #$00                            ; 976B A2 00                    ..
-BattleTurnEngine_Branch_976D:
+BattleDisplay_Branch_976D:
         txa                                     ; 976D 8A                       .
         ora     #$07                            ; 976E 09 07                    ..
         tay                                     ; 9770 A8                       .
-BattleTurnEngine_Branch_9771:
+BattleDisplay_Branch_9771:
         lda     $0650,x                         ; 9771 BD 50 06                 .P.
         sta     $0670,y                         ; 9774 99 70 06                 .p.
         inx                                     ; 9777 E8                       .
         dey                                     ; 9778 88                       .
         txa                                     ; 9779 8A                       .
         and     #$07                            ; 977A 29 07                    ).
-        bne     BattleTurnEngine_Branch_9771    ; 977C D0 F3                    ..
+        bne     BattleDisplay_Branch_9771       ; 977C D0 F3                    ..
         cpx     #$20                            ; 977E E0 20                    .
-        bne     BattleTurnEngine_Branch_976D    ; 9780 D0 EB                    ..
+        bne     BattleDisplay_Branch_976D       ; 9780 D0 EB                    ..
         rts                                     ; 9782 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_UploadDecodedMonsterGraphicsBlocks:
+BattleDisplay_UploadDecodedMonsterGraphicsBlocks:
         lda     #$00                            ; 9783 A9 00                    ..
         sta     $D6                             ; 9785 85 D6                    ..
         jsr     Bank14_RefillMonsterGraphicsInput; 9787 20 66 9F                 f.
-BattleTurnEngine_Branch_978A:
+BattleDisplay_Branch_978A:
         jsr     Bank14_ReadMonsterGraphicsByte  ; 978A 20 8D 9F                  ..
         sta     $17                             ; 978D 85 17                    ..
         lsr     a                               ; 978F 4A                       J
@@ -3403,37 +3403,37 @@ BattleTurnEngine_Branch_978A:
         inx                                     ; 9793 E8                       .
         lda     $17                             ; 9794 A5 17                    ..
         and     #$40                            ; 9796 29 40                    )@
-        bne     BattleTurnEngine_Branch_979B    ; 9798 D0 01                    ..
+        bne     BattleDisplay_Branch_979B       ; 9798 D0 01                    ..
         tax                                     ; 979A AA                       .
-BattleTurnEngine_Branch_979B:
+BattleDisplay_Branch_979B:
         ldy     $29                             ; 979B A4 29                    .)
-        bne     BattleTurnEngine_Branch_97A8    ; 979D D0 09                    ..
+        bne     BattleDisplay_Branch_97A8       ; 979D D0 09                    ..
         txa                                     ; 979F 8A                       .
-        bne     BattleTurnEngine_Branch_97A5    ; 97A0 D0 03                    ..
+        bne     BattleDisplay_Branch_97A5       ; 97A0 D0 03                    ..
         jsr     Bank14_AdvanceMonsterGraphicsInput; 97A2 20 9F 9F                ..
-BattleTurnEngine_Branch_97A5:
+BattleDisplay_Branch_97A5:
         jsr     Bank14_AdvanceMonsterGraphicsInput; 97A5 20 9F 9F                ..
-BattleTurnEngine_Branch_97A8:
+BattleDisplay_Branch_97A8:
         txa                                     ; 97A8 8A                       .
         tay                                     ; 97A9 A8                       .
         iny                                     ; 97AA C8                       .
         lda     #$20                            ; 97AB A9 20                    .
-BattleTurnEngine_Branch_97AD:
+BattleDisplay_Branch_97AD:
         lsr     a                               ; 97AD 4A                       J
         dey                                     ; 97AE 88                       .
-        bne     BattleTurnEngine_Branch_97AD    ; 97AF D0 FC                    ..
+        bne     BattleDisplay_Branch_97AD       ; 97AF D0 FC                    ..
         tay                                     ; 97B1 A8                       .
         and     $D6                             ; 97B2 25 D6                    %.
-        bne     BattleTurnEngine_Branch_9814    ; 97B4 D0 5E                    .^
+        bne     BattleDisplay_Branch_9814       ; 97B4 D0 5E                    .^
         tya                                     ; 97B6 98                       .
         ora     $D6                             ; 97B7 05 D6                    ..
         sta     $D6                             ; 97B9 85 D6                    ..
         ldy     #$10                            ; 97BB A0 10                    ..
         txa                                     ; 97BD 8A                       .
-        bne     BattleTurnEngine_Branch_97C2    ; 97BE D0 02                    ..
+        bne     BattleDisplay_Branch_97C2       ; 97BE D0 02                    ..
         tay                                     ; 97C0 A8                       .
         inx                                     ; 97C1 E8                       .
-BattleTurnEngine_Branch_97C2:
+BattleDisplay_Branch_97C2:
         sty     $1C                             ; 97C2 84 1C                    ..
         dex                                     ; 97C4 CA                       .
         txa                                     ; 97C5 8A                       .
@@ -3453,17 +3453,17 @@ BattleTurnEngine_Branch_97C2:
         tax                                     ; 97D8 AA                       .
         lda     $CB,x                           ; 97D9 B5 CB                    ..
         inc     $CB,x                           ; 97DB F6 CB                    ..
-        bne     BattleTurnEngine_Branch_97E1    ; 97DD D0 02                    ..
+        bne     BattleDisplay_Branch_97E1       ; 97DD D0 02                    ..
         clc                                     ; 97DF 18                       .
         rts                                     ; 97E0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_97E1:
+BattleDisplay_Branch_97E1:
         ldy     #$04                            ; 97E1 A0 04                    ..
-BattleTurnEngine_Branch_97E3:
+BattleDisplay_Branch_97E3:
         lsr     a                               ; 97E3 4A                       J
         ror     $1D                             ; 97E4 66 1D                    f.
         dey                                     ; 97E6 88                       .
-        bne     BattleTurnEngine_Branch_97E3    ; 97E7 D0 FA                    ..
+        bne     BattleDisplay_Branch_97E3       ; 97E7 D0 FA                    ..
         ora     $1C                             ; 97E9 05 1C                    ..
         sta     $1C                             ; 97EB 85 1C                    ..
         lda     PPUSTATUS                       ; 97ED AD 02 20                 ..
@@ -3473,35 +3473,35 @@ BattleTurnEngine_Branch_97E3:
         sta     PPUADDR                         ; 97F7 8D 06 20                 ..
         ldx     $16                             ; 97FA A6 16                    ..
         ldy     #$10                            ; 97FC A0 10                    ..
-BattleTurnEngine_Branch_97FE:
+BattleDisplay_Branch_97FE:
         lda     $0650,x                         ; 97FE BD 50 06                 .P.
         sta     PPUDATA                         ; 9801 8D 07 20                 ..
         inx                                     ; 9804 E8                       .
         dey                                     ; 9805 88                       .
-        bne     BattleTurnEngine_Branch_97FE    ; 9806 D0 F6                    ..
+        bne     BattleDisplay_Branch_97FE       ; 9806 D0 F6                    ..
         lda     $0508                           ; 9808 AD 08 05                 ...
         sta     PPUSCROLL                       ; 980B 8D 05 20                 ..
         lda     $0509                           ; 980E AD 09 05                 ...
         sta     PPUSCROLL                       ; 9811 8D 05 20                 ..
-BattleTurnEngine_Branch_9814:
+BattleDisplay_Branch_9814:
         lda     $17                             ; 9814 A5 17                    ..
-        bmi     BattleTurnEngine_Branch_981B    ; 9816 30 03                    0.
-        jmp     BattleTurnEngine_Branch_978A    ; 9818 4C 8A 97                 L..
+        bmi     BattleDisplay_Branch_981B       ; 9816 30 03                    0.
+        jmp     BattleDisplay_Branch_978A       ; 9818 4C 8A 97                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_981B:
+BattleDisplay_Branch_981B:
         jsr     Bank14_AdvanceMonsterGraphicsStreamBlock; 981B 20 EB 9F          ..
         sec                                     ; 981E 38                       8
         rts                                     ; 981F 60                       `
 ; ----------------------------------------------------------------------------
         db   $50,$06                         ; 9820 50 06                    P.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RenderQueuedCombatantGraphic:
+BattleDisplay_RenderQueuedCombatantGraphic:
         lda     $C9                             ; 9822 A5 C9                    ..
         pha                                     ; 9824 48                       H
         ldy     $C7                             ; 9825 A4 C7                    ..
         lda     $0690,y                         ; 9827 B9 90 06                 ...
-        bpl     BattleTurnEngine_Branch_987F    ; 982A 10 53                    .S
-        jsr     BattleTurnEngine_LoadQueuedCombatantId; 982C 20 76 9E            v.
+        bpl     BattleDisplay_Branch_987F       ; 982A 10 53                    .S
+        jsr     BattleDisplay_LoadQueuedCombatantId; 982C 20 76 9E               v.
         sta     $C4                             ; 982F 85 C4                    ..
         stx     $C6                             ; 9831 86 C6                    ..
         lda     $7385,x                         ; 9833 BD 85 73                 ..s
@@ -3512,52 +3512,52 @@ BattleTurnEngine_RenderQueuedCombatantGraphic:
         sta     $C9                             ; 9840 85 C9                    ..
         lda     $C4                             ; 9842 A5 C4                    ..
         cmp     #$F0                            ; 9844 C9 F0                    ..
-        bcs     BattleTurnEngine_Branch_9873    ; 9846 B0 2B                    .+
+        bcs     BattleDisplay_Branch_9873       ; 9846 B0 2B                    .+
         jsr     Bank14_LoadMonsterGraphicsDescriptor; 9848 20 A9 9F              ..
         lda     $6E45                           ; 984B AD 45 6E                 .En
         cmp     #$AE                            ; 984E C9 AE                    ..
-        bne     BattleTurnEngine_Branch_9856    ; 9850 D0 04                    ..
+        bne     BattleDisplay_Branch_9856       ; 9850 D0 04                    ..
         lda     #$36                            ; 9852 A9 36                    .6
         sta     $D1                             ; 9854 85 D1                    ..
-BattleTurnEngine_Branch_9856:
+BattleDisplay_Branch_9856:
         lda     $CD                             ; 9856 A5 CD                    ..
         sta     $C0                             ; 9858 85 C0                    ..
         lda     $CE                             ; 985A A5 CE                    ..
         sta     $C1                             ; 985C 85 C1                    ..
         lda     $C4                             ; 985E A5 C4                    ..
-        beq     BattleTurnEngine_Branch_986A    ; 9860 F0 08                    ..
+        beq     BattleDisplay_Branch_986A       ; 9860 F0 08                    ..
         cmp     #$A9                            ; 9862 C9 A9                    ..
-        beq     BattleTurnEngine_Branch_986A    ; 9864 F0 04                    ..
+        beq     BattleDisplay_Branch_986A       ; 9864 F0 04                    ..
         cmp     #$4D                            ; 9866 C9 4D                    .M
-        bne     BattleTurnEngine_Branch_9873    ; 9868 D0 09                    ..
-BattleTurnEngine_Branch_986A:
+        bne     BattleDisplay_Branch_9873       ; 9868 D0 09                    ..
+BattleDisplay_Branch_986A:
         lda     #$8D                            ; 986A A9 8D                    ..
         sta     $CC                             ; 986C 85 CC                    ..
         dec     $CC                             ; 986E C6 CC                    ..
-        jmp     BattleTurnEngine_Branch_9891    ; 9870 4C 91 98                 L..
+        jmp     BattleDisplay_Branch_9891       ; 9870 4C 91 98                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9873:
+BattleDisplay_Branch_9873:
         ldy     #$00                            ; 9873 A0 00                    ..
-BattleTurnEngine_Branch_9875:
+BattleDisplay_Branch_9875:
         cmp     $044C,y                         ; 9875 D9 4C 04                 .L.
-        beq     BattleTurnEngine_Branch_9883    ; 9878 F0 09                    ..
+        beq     BattleDisplay_Branch_9883       ; 9878 F0 09                    ..
         iny                                     ; 987A C8                       .
         cpy     #$0D                            ; 987B C0 0D                    ..
-        bne     BattleTurnEngine_Branch_9875    ; 987D D0 F6                    ..
-BattleTurnEngine_Branch_987F:
+        bne     BattleDisplay_Branch_9875       ; 987D D0 F6                    ..
+BattleDisplay_Branch_987F:
         clc                                     ; 987F 18                       .
         jmp     RestoreBattleGraphicsOamCursor  ; 9880 4C 38 9A                 L8.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9883:
+BattleDisplay_Branch_9883:
         lda     $045A,y                         ; 9883 B9 5A 04                 .Z.
         sta     $CB                             ; 9886 85 CB                    ..
         dec     $CB                             ; 9888 C6 CB                    ..
         lda     $0468,y                         ; 988A B9 68 04                 .h.
         sta     $CC                             ; 988D 85 CC                    ..
         dec     $CC                             ; 988F C6 CC                    ..
-BattleTurnEngine_Branch_9891:
-        jsr     BattleTurnEngine_ComputeCombatantTilePointers; 9891 20 21 9D     !.
-        jsr     BattleTurnEngine_ClearDecodedBattleGraphicBuffers; 9894 20 4F 92 O.
+BattleDisplay_Branch_9891:
+        jsr     BattleDisplay_ComputeCombatantTilePointers; 9891 20 21 9D        !.
+        jsr     BattleDisplay_ClearDecodedBattleGraphicBuffers; 9894 20 4F 92    O.
         lda     $C4                             ; 9897 A5 C4                    ..
         cmp     #$F0                            ; 9899 C9 F0                    ..
         bcc     DecodeMonsterGraphicsStream     ; 989B 90 58                    .X
@@ -3565,10 +3565,10 @@ BattleTurnEngine_Branch_9891:
         ldy     #$00                            ; 989F A0 00                    ..
         sty     $00                           ; 98A1 84 00                    ..
         sty     $01                             ; 98A3 84 01                    ..
-BattleTurnEngine_Branch_98A5:
+BattleDisplay_Branch_98A5:
         ldx     #$00                            ; 98A5 A2 00                    ..
         stx     $02                             ; 98A7 86 02                    ..
-BattleTurnEngine_Branch_98A9:
+BattleDisplay_Branch_98A9:
         ldy     $00                           ; 98A9 A4 00                    ..
         lda     $9A3C,y                         ; 98AB B9 3C 9A                 .<.
         asl     a                               ; 98AE 0A                       .
@@ -3581,60 +3581,60 @@ BattleTurnEngine_Branch_98A9:
         pha                                     ; 98BB 48                       H
         lda     $D6                             ; 98BC A5 D6                    ..
         lsr     a                               ; 98BE 4A                       J
-        bcc     BattleTurnEngine_Branch_98CA    ; 98BF 90 09                    ..
+        bcc     BattleDisplay_Branch_98CA       ; 98BF 90 09                    ..
         lda     $00                           ; 98C1 A5 00                    ..
         asl     a                               ; 98C3 0A                       .
         clc                                     ; 98C4 18                       .
         adc     #$07                            ; 98C5 69 07                    i.
         adc     $01                             ; 98C7 65 01                    e.
         tay                                     ; 98C9 A8                       .
-BattleTurnEngine_Branch_98CA:
+BattleDisplay_Branch_98CA:
         pla                                     ; 98CA 68                       h
         sta     $760C,y                         ; 98CB 99 0C 76                 ..v
         inc     $01                             ; 98CE E6 01                    ..
         inc     $02                             ; 98D0 E6 02                    ..
         lda     $02                             ; 98D2 A5 02                    ..
         cmp     #$04                            ; 98D4 C9 04                    ..
-        bcc     BattleTurnEngine_Branch_98A9    ; 98D6 90 D1                    ..
+        bcc     BattleDisplay_Branch_98A9       ; 98D6 90 D1                    ..
         inc     $00                           ; 98D8 E6 00                    ..
         lda     $00                           ; 98DA A5 00                    ..
         cmp     #$04                            ; 98DC C9 04                    ..
-        bcc     BattleTurnEngine_Branch_98A5    ; 98DE 90 C5                    ..
+        bcc     BattleDisplay_Branch_98A5       ; 98DE 90 C5                    ..
         ldx     $C6                             ; 98E0 A6 C6                    ..
         ldy     #$00                            ; 98E2 A0 00                    ..
-        jsr     BattleTurnEngine_LoadPlacementNibbleFromCombatantFlags; 98E4 20 10 95 ..
+        jsr     BattleDisplay_LoadPlacementNibbleFromCombatantFlags; 98E4 20 10 95 ..
         ldx     #$0B                            ; 98E7 A2 0B                    ..
-BattleTurnEngine_Branch_98E9:
+BattleDisplay_Branch_98E9:
         sta     $0650,x                         ; 98E9 9D 50 06                 .P.
         dex                                     ; 98EC CA                       .
-        bpl     BattleTurnEngine_Branch_98E9    ; 98ED 10 FA                    ..
-        jsr     BattleTurnEngine_LoadCombatantTileDataIntoBuffers; 98EF 20 4B 9D K.
+        bpl     BattleDisplay_Branch_98E9       ; 98ED 10 FA                    ..
+        jsr     BattleDisplay_LoadCombatantTileDataIntoBuffers; 98EF 20 4B 9D    K.
         jmp     RestoreBattleGraphicsOamCursor  ; 98F2 4C 38 9A                 L8.
 ; ----------------------------------------------------------------------------
 DecodeMonsterGraphicsStream:
         lda     #$00                            ; 98F5 A9 00                    ..
         sta     $06A8                           ; 98F7 8D A8 06                 ...
-BattleTurnEngine_Branch_98FA:
+BattleDisplay_Branch_98FA:
         jsr     Bank14_SelectMonsterGraphicsBank; 98FA 20 26 9F                  &.
         jsr     Bank14_RefillMonsterGraphicsInput; 98FD 20 66 9F                 f.
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9900 20 8D 9F                  ..
         sta     $06A9                           ; 9903 8D A9 06                 ...
         and     #$40                            ; 9906 29 40                    )@
-        bne     BattleTurnEngine_Branch_9973    ; 9908 D0 69                    .i
+        bne     BattleDisplay_Branch_9973       ; 9908 D0 69                    .i
         ldx     $C6                             ; 990A A6 C6                    ..
         lda     $7392,x                         ; 990C BD 92 73                 ..s
-        bne     BattleTurnEngine_Branch_9914    ; 990F D0 03                    ..
-        jmp     BattleTurnEngine_Branch_9A34    ; 9911 4C 34 9A                 L4.
+        bne     BattleDisplay_Branch_9914       ; 990F D0 03                    ..
+        jmp     BattleDisplay_Branch_9A34       ; 9911 4C 34 9A                 L4.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9914:
+BattleDisplay_Branch_9914:
         lda     $06A8                           ; 9914 AD A8 06                 ...
         and     #$10                            ; 9917 29 10                    ).
-        bne     BattleTurnEngine_Branch_9925    ; 9919 D0 0A                    ..
+        bne     BattleDisplay_Branch_9925       ; 9919 D0 0A                    ..
         inc     $CB                             ; 991B E6 CB                    ..
         lda     $06A8                           ; 991D AD A8 06                 ...
         ora     #$10                            ; 9920 09 10                    ..
         sta     $06A8                           ; 9922 8D A8 06                 ...
-BattleTurnEngine_Branch_9925:
+BattleDisplay_Branch_9925:
         lda     $CB                             ; 9925 A5 CB                    ..
         sta     $01                             ; 9927 85 01                    ..
         lda     $06A9                           ; 9929 AD A9 06                 ...
@@ -3649,14 +3649,14 @@ BattleTurnEngine_Branch_9925:
         lda     $0448,y                         ; 9937 B9 48 04                 .H.
         ldy     $D7                             ; 993A A4 D7                    ..
         iny                                     ; 993C C8                       .
-BattleTurnEngine_Branch_993D:
+BattleDisplay_Branch_993D:
         dey                                     ; 993D 88                       .
-        beq     BattleTurnEngine_Branch_9945    ; 993E F0 05                    ..
+        beq     BattleDisplay_Branch_9945       ; 993E F0 05                    ..
         lsr     a                               ; 9940 4A                       J
         lsr     a                               ; 9941 4A                       J
-        jmp     BattleTurnEngine_Branch_993D    ; 9942 4C 3D 99                 L=.
+        jmp     BattleDisplay_Branch_993D       ; 9942 4C 3D 99                 L=.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9945:
+BattleDisplay_Branch_9945:
         and     #$03                            ; 9945 29 03                    ).
         sta     $D7                             ; 9947 85 D7                    ..
         pla                                     ; 9949 68                       h
@@ -3680,9 +3680,9 @@ BattleTurnEngine_Branch_9945:
         ldx     #$00                            ; 9969 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 996B 20 3E C7                  >.
         inc     $C9                             ; 996E E6 C9                    ..
-        jmp     BattleTurnEngine_Branch_9A22    ; 9970 4C 22 9A                 L".
+        jmp     BattleDisplay_Branch_9A22       ; 9970 4C 22 9A                 L".
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9973:
+BattleDisplay_Branch_9973:
         lda     $06A9                           ; 9973 AD A9 06                 ...
         lsr     a                               ; 9976 4A                       J
         lsr     a                               ; 9977 4A                       J
@@ -3693,14 +3693,14 @@ BattleTurnEngine_Branch_9973:
         ldx     $C6                             ; 997D A6 C6                    ..
         lda     $0444,x                         ; 997F BD 44 04                 .D.
         iny                                     ; 9982 C8                       .
-BattleTurnEngine_Branch_9983:
+BattleDisplay_Branch_9983:
         dey                                     ; 9983 88                       .
-        beq     BattleTurnEngine_Branch_998B    ; 9984 F0 05                    ..
+        beq     BattleDisplay_Branch_998B       ; 9984 F0 05                    ..
         lsr     a                               ; 9986 4A                       J
         lsr     a                               ; 9987 4A                       J
-        jmp     BattleTurnEngine_Branch_9983    ; 9988 4C 83 99                 L..
+        jmp     BattleDisplay_Branch_9983       ; 9988 4C 83 99                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_998B:
+BattleDisplay_Branch_998B:
         and     #$03                            ; 998B 29 03                    ).
         sta     $047E                           ; 998D 8D 7E 04                 .~.
         jsr     Bank14_ReadMonsterGraphicsByte  ; 9990 20 8D 9F                  ..
@@ -3717,18 +3717,18 @@ BattleTurnEngine_Branch_998B:
         lsr     a                               ; 99A3 4A                       J
         and     #$0F                            ; 99A4 29 0F                    ).
         tax                                     ; 99A6 AA                       .
-        beq     BattleTurnEngine_Branch_99B7    ; 99A7 F0 0E                    ..
+        beq     BattleDisplay_Branch_99B7       ; 99A7 F0 0E                    ..
         lda     #$00                            ; 99A9 A9 00                    ..
-BattleTurnEngine_Branch_99AB:
+BattleDisplay_Branch_99AB:
         clc                                     ; 99AB 18                       .
         adc     $01                             ; 99AC 65 01                    e.
         dex                                     ; 99AE CA                       .
-        bne     BattleTurnEngine_Branch_99AB    ; 99AF D0 FA                    ..
+        bne     BattleDisplay_Branch_99AB       ; 99AF D0 FA                    ..
         asl     a                               ; 99B1 0A                       .
         clc                                     ; 99B2 18                       .
         adc     $00                           ; 99B3 65 00                    e.
         sta     $00                           ; 99B5 85 00                    ..
-BattleTurnEngine_Branch_99B7:
+BattleDisplay_Branch_99B7:
         lda     $D6                             ; 99B7 A5 D6                    ..
         and     #$01                            ; 99B9 29 01                    ).
         clc                                     ; 99BB 18                       .
@@ -3740,27 +3740,27 @@ BattleTurnEngine_Branch_99B7:
         sta     $02                             ; 99C4 85 02                    ..
         lda     $D8                             ; 99C6 A5 D8                    ..
         ldx     #$00                            ; 99C8 A2 00                    ..
-BattleTurnEngine_Branch_99CA:
+BattleDisplay_Branch_99CA:
         sta     $03                             ; 99CA 85 03                    ..
         inx                                     ; 99CC E8                       .
         sec                                     ; 99CD 38                       8
         sbc     $02                             ; 99CE E5 02                    ..
-        bcs     BattleTurnEngine_Branch_99CA    ; 99D0 B0 F8                    ..
+        bcs     BattleDisplay_Branch_99CA       ; 99D0 B0 F8                    ..
         dex                                     ; 99D2 CA                       .
         lda     #$00                            ; 99D3 A9 00                    ..
-BattleTurnEngine_Branch_99D5:
+BattleDisplay_Branch_99D5:
         clc                                     ; 99D5 18                       .
         adc     $01                             ; 99D6 65 01                    e.
         dex                                     ; 99D8 CA                       .
-        bne     BattleTurnEngine_Branch_99D5    ; 99D9 D0 FA                    ..
+        bne     BattleDisplay_Branch_99D5       ; 99D9 D0 FA                    ..
         sta     $02                             ; 99DB 85 02                    ..
         asl     $01                             ; 99DD 06 01                    ..
         lda     $03                             ; 99DF A5 03                    ..
         sec                                     ; 99E1 38                       8
         sbc     $01                             ; 99E2 E5 01                    ..
-        bcc     BattleTurnEngine_Branch_99E8    ; 99E4 90 02                    ..
+        bcc     BattleDisplay_Branch_99E8       ; 99E4 90 02                    ..
         sta     $03                             ; 99E6 85 03                    ..
-BattleTurnEngine_Branch_99E8:
+BattleDisplay_Branch_99E8:
         lda     $03                             ; 99E8 A5 03                    ..
         lsr     a                               ; 99EA 4A                       J
         clc                                     ; 99EB 18                       .
@@ -3775,36 +3775,36 @@ BattleTurnEngine_Branch_99E8:
         tay                                     ; 99FC A8                       .
         iny                                     ; 99FD C8                       .
         lda     #$10                            ; 99FE A9 10                    ..
-BattleTurnEngine_Branch_9A00:
+BattleDisplay_Branch_9A00:
         lsr     a                               ; 9A00 4A                       J
         dey                                     ; 9A01 88                       .
-        bne     BattleTurnEngine_Branch_9A00    ; 9A02 D0 FC                    ..
+        bne     BattleDisplay_Branch_9A00       ; 9A02 D0 FC                    ..
         sta     $D7                             ; 9A04 85 D7                    ..
         and     $06A8                           ; 9A06 2D A8 06                 -..
-        bne     BattleTurnEngine_Branch_9A1A    ; 9A09 D0 0F                    ..
+        bne     BattleDisplay_Branch_9A1A       ; 9A09 D0 0F                    ..
         lda     $06A8                           ; 9A0B AD A8 06                 ...
         ora     $D7                             ; 9A0E 05 D7                    ..
         sta     $06A8                           ; 9A10 8D A8 06                 ...
         inc     $CC                             ; 9A13 E6 CC                    ..
         lda     $CC                             ; 9A15 A5 CC                    ..
         sta     $047A,x                         ; 9A17 9D 7A 04                 .z.
-BattleTurnEngine_Branch_9A1A:
+BattleDisplay_Branch_9A1A:
         lda     $047A,x                         ; 9A1A BD 7A 04                 .z.
         ldx     $D8                             ; 9A1D A6 D8                    ..
         sta     $7600,x                         ; 9A1F 9D 00 76                 ..v
-BattleTurnEngine_Branch_9A22:
+BattleDisplay_Branch_9A22:
         lda     $06A9                           ; 9A22 AD A9 06                 ...
-        bmi     BattleTurnEngine_Branch_9A2A    ; 9A25 30 03                    0.
-        jmp     BattleTurnEngine_Branch_98FA    ; 9A27 4C FA 98                 L..
+        bmi     BattleDisplay_Branch_9A2A       ; 9A25 30 03                    0.
+        jmp     BattleDisplay_Branch_98FA       ; 9A27 4C FA 98                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9A2A:
+BattleDisplay_Branch_9A2A:
         jsr     Bank14_AdvanceMonsterGraphicsStreamBlock; 9A2A 20 EB 9F          ..
         dec     $D1                             ; 9A2D C6 D1                    ..
-        beq     BattleTurnEngine_Branch_9A34    ; 9A2F F0 03                    ..
+        beq     BattleDisplay_Branch_9A34       ; 9A2F F0 03                    ..
         jmp     DecodeMonsterGraphicsStream     ; 9A31 4C F5 98                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9A34:
-        jsr     BattleTurnEngine_LoadCombatantTileDataIntoBuffers; 9A34 20 4B 9D K.
+BattleDisplay_Branch_9A34:
+        jsr     BattleDisplay_LoadCombatantTileDataIntoBuffers; 9A34 20 4B 9D    K.
         sec                                     ; 9A37 38                       8
 RestoreBattleGraphicsOamCursor:
         pla                                     ; 9A38 68                       h
@@ -3813,10 +3813,10 @@ RestoreBattleGraphicsOamCursor:
 ; ----------------------------------------------------------------------------
         db   $00,$01,$04,$05                 ; 9A3C 00 01 04 05              ....
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_EraseQueuedCombatantGraphic:
+BattleDisplay_EraseQueuedCombatantGraphic:
         ldy     $C7                             ; 9A40 A4 C7                    ..
         lda     $0690,y                         ; 9A42 B9 90 06                 ...
-        bpl     BattleTurnEngine_Branch_9A90    ; 9A45 10 49                    .I
+        bpl     BattleDisplay_Branch_9A90       ; 9A45 10 49                    .I
         pha                                     ; 9A47 48                       H
         lda     $0698,y                         ; 9A48 B9 98 06                 ...
         sta     $D6                             ; 9A4B 85 D6                    ..
@@ -3834,10 +3834,10 @@ BattleTurnEngine_EraseQueuedCombatantGraphic:
         sta     $D2                             ; 9A61 85 D2                    ..
         lda     $7392,y                         ; 9A63 B9 92 73                 ..s
         sta     $D3                             ; 9A66 85 D3                    ..
-        jsr     BattleTurnEngine_ComputeCombatantTilePointers; 9A68 20 21 9D     !.
+        jsr     BattleDisplay_ComputeCombatantTilePointers; 9A68 20 21 9D        !.
         lda     $D3                             ; 9A6B A5 D3                    ..
-        beq     BattleTurnEngine_Branch_9A85    ; 9A6D F0 16                    ..
-BattleTurnEngine_Branch_9A6F:
+        beq     BattleDisplay_Branch_9A85       ; 9A6D F0 16                    ..
+BattleDisplay_Branch_9A6F:
         ldy     $D7                             ; 9A6F A4 D7                    ..
         ldx     #$00                            ; 9A71 A2 00                    ..
         jsr     CopyOamSpriteRecord             ; 9A73 20 70 C7                  p.
@@ -3847,39 +3847,39 @@ BattleTurnEngine_Branch_9A6F:
         jsr     CopySpriteRecordToOam           ; 9A7C 20 3E C7                  >.
         inc     $D7                             ; 9A7F E6 D7                    ..
         dec     $D3                             ; 9A81 C6 D3                    ..
-        bne     BattleTurnEngine_Branch_9A6F    ; 9A83 D0 EA                    ..
-BattleTurnEngine_Branch_9A85:
-        jsr     BattleTurnEngine_ClearDecodedBattleGraphicBuffers; 9A85 20 4F 92 O.
+        bne     BattleDisplay_Branch_9A6F       ; 9A83 D0 EA                    ..
+BattleDisplay_Branch_9A85:
+        jsr     BattleDisplay_ClearDecodedBattleGraphicBuffers; 9A85 20 4F 92    O.
         jsr     WaitForNmi                      ; 9A88 20 74 FF                  t.
-        jsr     BattleTurnEngine_LoadCombatantTileDataIntoBuffers; 9A8B 20 4B 9D K.
+        jsr     BattleDisplay_LoadCombatantTileDataIntoBuffers; 9A8B 20 4B 9D    K.
         sec                                     ; 9A8E 38                       8
         rts                                     ; 9A8F 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9A90:
+BattleDisplay_Branch_9A90:
         clc                                     ; 9A90 18                       .
         rts                                     ; 9A91 60                       `
 ; ----------------------------------------------------------------------------
 RemoveCombatantPlacementRecord:
         ldx     #$07                            ; 9A92 A2 07                    ..
-BattleTurnEngine_Branch_9A94:
+BattleDisplay_Branch_9A94:
         lda     $0690,x                         ; 9A94 BD 90 06                 ...
-        bpl     BattleTurnEngine_Branch_9AA2    ; 9A97 10 09                    ..
+        bpl     BattleDisplay_Branch_9AA2       ; 9A97 10 09                    ..
         and     #$18                            ; 9A99 29 18                    ).
         lsr     a                               ; 9A9B 4A                       J
         lsr     a                               ; 9A9C 4A                       J
         lsr     a                               ; 9A9D 4A                       J
         cmp     $C6                             ; 9A9E C5 C6                    ..
-        beq     BattleTurnEngine_Branch_9AC4    ; 9AA0 F0 22                    ."
-BattleTurnEngine_Branch_9AA2:
+        beq     BattleDisplay_Branch_9AC4       ; 9AA0 F0 22                    ."
+BattleDisplay_Branch_9AA2:
         dex                                     ; 9AA2 CA                       .
-        bpl     BattleTurnEngine_Branch_9A94    ; 9AA3 10 EF                    ..
+        bpl     BattleDisplay_Branch_9A94       ; 9AA3 10 EF                    ..
         ldx     $C6                             ; 9AA5 A6 C6                    ..
         lda     $0440,x                         ; 9AA7 BD 40 04                 .@.
         cmp     #$7E                            ; 9AAA C9 7E                    .~
-        beq     BattleTurnEngine_Branch_9AB3    ; 9AAC F0 05                    ..
+        beq     BattleDisplay_Branch_9AB3       ; 9AAC F0 05                    ..
         sta     $C4                             ; 9AAE 85 C4                    ..
-        jsr     BattleTurnEngine_PruneCombatantPlacementRecords; 9AB0 20 C6 9A   ..
-BattleTurnEngine_Branch_9AB3:
+        jsr     BattleDisplay_PruneCombatantPlacementRecords; 9AB0 20 C6 9A      ..
+BattleDisplay_Branch_9AB3:
         ldx     $C6                             ; 9AB3 A6 C6                    ..
         lda     #$FF                            ; 9AB5 A9 FF                    ..
         sta     $0440,x                         ; 9AB7 9D 40 04                 .@.
@@ -3889,69 +3889,69 @@ BattleTurnEngine_Branch_9AB3:
         sec                                     ; 9AC2 38                       8
         rts                                     ; 9AC3 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9AC4:
+BattleDisplay_Branch_9AC4:
         clc                                     ; 9AC4 18                       .
         rts                                     ; 9AC5 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_PruneCombatantPlacementRecords:
+BattleDisplay_PruneCombatantPlacementRecords:
         lda     #$00                            ; 9AC6 A9 00                    ..
         sta     $D8                             ; 9AC8 85 D8                    ..
-        jsr     BattleTurnEngine_PruneOccupiedPlacementRecords; 9ACA 20 E8 95    ..
+        jsr     BattleDisplay_PruneOccupiedPlacementRecords; 9ACA 20 E8 95       ..
         lda     #$04                            ; 9ACD A9 04                    ..
         sta     $D8                             ; 9ACF 85 D8                    ..
-        jsr     BattleTurnEngine_PruneOccupiedPlacementRecords; 9AD1 20 E8 95    ..
+        jsr     BattleDisplay_PruneOccupiedPlacementRecords; 9AD1 20 E8 95       ..
         lda     $0514                           ; 9AD4 AD 14 05                 ...
         sta     $05FD                           ; 9AD7 8D FD 05                 ...
         rts                                     ; 9ADA 60                       `
 ; ----------------------------------------------------------------------------
         db   $50,$06                         ; 9ADB 50 06                    P.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindNonOverlappingQueuedOamX:
+BattleDisplay_FindNonOverlappingQueuedOamX:
         lda     $C9                             ; 9ADD A5 C9                    ..
         pha                                     ; 9ADF 48                       H
         lda     $D3                             ; 9AE0 A5 D3                    ..
-        beq     BattleTurnEngine_Branch_9B49    ; 9AE2 F0 65                    .e
+        beq     BattleDisplay_Branch_9B49       ; 9AE2 F0 65                    .e
         sta     $D6                             ; 9AE4 85 D6                    ..
         lda     #$48                            ; 9AE6 A9 48                    .H
         sta     $D8                             ; 9AE8 85 D8                    ..
-BattleTurnEngine_Branch_9AEA:
+BattleDisplay_Branch_9AEA:
         lda     #$00                            ; 9AEA A9 00                    ..
         sta     $D9                             ; 9AEC 85 D9                    ..
         lda     $C9                             ; 9AEE A5 C9                    ..
-        beq     BattleTurnEngine_Branch_9B0B    ; 9AF0 F0 19                    ..
+        beq     BattleDisplay_Branch_9B0B       ; 9AF0 F0 19                    ..
         sta     $D7                             ; 9AF2 85 D7                    ..
         ldy     #$00                            ; 9AF4 A0 00                    ..
-BattleTurnEngine_Branch_9AF6:
+BattleDisplay_Branch_9AF6:
         ldx     #$00                            ; 9AF6 A2 00                    ..
         jsr     CopyOamSpriteRecord             ; 9AF8 20 70 C7                  p.
         lda     $00                           ; 9AFB A5 00                    ..
         sec                                     ; 9AFD 38                       8
         sbc     $D8                             ; 9AFE E5 D8                    ..
         cmp     #$08                            ; 9B00 C9 08                    ..
-        bcs     BattleTurnEngine_Branch_9B06    ; 9B02 B0 02                    ..
+        bcs     BattleDisplay_Branch_9B06       ; 9B02 B0 02                    ..
         inc     $D9                             ; 9B04 E6 D9                    ..
-BattleTurnEngine_Branch_9B06:
+BattleDisplay_Branch_9B06:
         iny                                     ; 9B06 C8                       .
         cpy     $D7                             ; 9B07 C4 D7                    ..
-        bne     BattleTurnEngine_Branch_9AF6    ; 9B09 D0 EB                    ..
-BattleTurnEngine_Branch_9B0B:
+        bne     BattleDisplay_Branch_9AF6       ; 9B09 D0 EB                    ..
+BattleDisplay_Branch_9B0B:
         ldx     #$00                            ; 9B0B A2 00                    ..
-BattleTurnEngine_Branch_9B0D:
+BattleDisplay_Branch_9B0D:
         ldy     #$00                            ; 9B0D A0 00                    ..
-BattleTurnEngine_Branch_9B0F:
+BattleDisplay_Branch_9B0F:
         lda     $0650,y                         ; 9B0F B9 50 06                 .P.
         sec                                     ; 9B12 38                       8
         sbc     $D8                             ; 9B13 E5 D8                    ..
         cmp     #$08                            ; 9B15 C9 08                    ..
-        bcs     BattleTurnEngine_Branch_9B2E    ; 9B17 B0 15                    ..
+        bcs     BattleDisplay_Branch_9B2E       ; 9B17 B0 15                    ..
         inc     $D9                             ; 9B19 E6 D9                    ..
         lda     $D9                             ; 9B1B A5 D9                    ..
         cmp     #$09                            ; 9B1D C9 09                    ..
-        bcc     BattleTurnEngine_Branch_9B2E    ; 9B1F 90 0D                    ..
-BattleTurnEngine_Branch_9B21:
+        bcc     BattleDisplay_Branch_9B2E       ; 9B1F 90 0D                    ..
+BattleDisplay_Branch_9B21:
         stx     $C5                             ; 9B21 86 C5                    ..
         txa                                     ; 9B23 8A                       .
-        bne     BattleTurnEngine_Branch_9B41    ; 9B24 D0 1B                    ..
+        bne     BattleDisplay_Branch_9B41       ; 9B24 D0 1B                    ..
         dex                                     ; 9B26 CA                       .
         stx     $C4                             ; 9B27 86 C4                    ..
         pla                                     ; 9B29 68                       h
@@ -3959,45 +3959,45 @@ BattleTurnEngine_Branch_9B21:
         clc                                     ; 9B2C 18                       .
         rts                                     ; 9B2D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9B2E:
+BattleDisplay_Branch_9B2E:
         iny                                     ; 9B2E C8                       .
         cpy     $D6                             ; 9B2F C4 D6                    ..
-        bne     BattleTurnEngine_Branch_9B0F    ; 9B31 D0 DC                    ..
+        bne     BattleDisplay_Branch_9B0F       ; 9B31 D0 DC                    ..
         lda     $C9                             ; 9B33 A5 C9                    ..
         clc                                     ; 9B35 18                       .
         adc     $D6                             ; 9B36 65 D6                    e.
         cmp     #$41                            ; 9B38 C9 41                    .A
-        bcs     BattleTurnEngine_Branch_9B21    ; 9B3A B0 E5                    ..
+        bcs     BattleDisplay_Branch_9B21       ; 9B3A B0 E5                    ..
         inx                                     ; 9B3C E8                       .
         cpx     $C5                             ; 9B3D E4 C5                    ..
-        bne     BattleTurnEngine_Branch_9B0D    ; 9B3F D0 CC                    ..
-BattleTurnEngine_Branch_9B41:
+        bne     BattleDisplay_Branch_9B0D       ; 9B3F D0 CC                    ..
+BattleDisplay_Branch_9B41:
         inc     $D8                             ; 9B41 E6 D8                    ..
         lda     $D8                             ; 9B43 A5 D8                    ..
         cmp     #$C8                            ; 9B45 C9 C8                    ..
-        bne     BattleTurnEngine_Branch_9AEA    ; 9B47 D0 A1                    ..
-BattleTurnEngine_Branch_9B49:
+        bne     BattleDisplay_Branch_9AEA       ; 9B47 D0 A1                    ..
+BattleDisplay_Branch_9B49:
         pla                                     ; 9B49 68                       h
         sta     $C9                             ; 9B4A 85 C9                    ..
         sec                                     ; 9B4C 38                       8
         rts                                     ; 9B4D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_WriteQueuedCombatantOamStrip:
+BattleDisplay_WriteQueuedCombatantOamStrip:
         ldx     $C5                             ; 9B4E A6 C5                    ..
-BattleTurnEngine_Branch_9B50:
+BattleDisplay_Branch_9B50:
         txa                                     ; 9B50 8A                       .
         pha                                     ; 9B51 48                       H
         ldx     $C7                             ; 9B52 A6 C7                    ..
         ldy     $D3                             ; 9B54 A4 D3                    ..
-        bne     BattleTurnEngine_Branch_9B5F    ; 9B56 D0 07                    ..
+        bne     BattleDisplay_Branch_9B5F       ; 9B56 D0 07                    ..
         lda     #$FF                            ; 9B58 A9 FF                    ..
         sta     $06A0,x                         ; 9B5A 9D A0 06                 ...
-        bne     BattleTurnEngine_Branch_9B84    ; 9B5D D0 25                    .%
-BattleTurnEngine_Branch_9B5F:
+        bne     BattleDisplay_Branch_9B84       ; 9B5D D0 25                    .%
+BattleDisplay_Branch_9B5F:
         lda     $C9                             ; 9B5F A5 C9                    ..
         sta     $06A0,x                         ; 9B61 9D A0 06                 ...
         ldx     #$00                            ; 9B64 A2 00                    ..
-BattleTurnEngine_Branch_9B66:
+BattleDisplay_Branch_9B66:
         lda     $0650,x                         ; 9B66 BD 50 06                 .P.
         sta     $00                           ; 9B69 85 00                    ..
         lda     #$00                            ; 9B6B A9 00                    ..
@@ -4016,17 +4016,17 @@ BattleTurnEngine_Branch_9B66:
         pla                                     ; 9B7F 68                       h
         tay                                     ; 9B80 A8                       .
         dey                                     ; 9B81 88                       .
-        bne     BattleTurnEngine_Branch_9B66    ; 9B82 D0 E2                    ..
-BattleTurnEngine_Branch_9B84:
+        bne     BattleDisplay_Branch_9B66       ; 9B82 D0 E2                    ..
+BattleDisplay_Branch_9B84:
         inc     $C7                             ; 9B84 E6 C7                    ..
         pla                                     ; 9B86 68                       h
         tax                                     ; 9B87 AA                       .
         dex                                     ; 9B88 CA                       .
-        bne     BattleTurnEngine_Branch_9B50    ; 9B89 D0 C5                    ..
+        bne     BattleDisplay_Branch_9B50       ; 9B89 D0 C5                    ..
         rts                                     ; 9B8B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RepackQueuedOamPositions:
-        jsr     BattleTurnEngine_FindRightmostQueuedOamEdge; 9B8C 20 E4 9B       ..
+BattleDisplay_RepackQueuedOamPositions:
+        jsr     BattleDisplay_FindRightmostQueuedOamEdge; 9B8C 20 E4 9B          ..
         lda     $C9                             ; 9B8F A5 C9                    ..
         ldy     $C6                             ; 9B91 A4 C6                    ..
         sec                                     ; 9B93 38                       8
@@ -4035,13 +4035,13 @@ BattleTurnEngine_RepackQueuedOamPositions:
         ldx     $C7                             ; 9B99 A6 C7                    ..
         lda     $06A0,x                         ; 9B9B BD A0 06                 ...
         cmp     #$FF                            ; 9B9E C9 FF                    ..
-        beq     BattleTurnEngine_Branch_9BE3    ; 9BA0 F0 41                    .A
+        beq     BattleDisplay_Branch_9BE3       ; 9BA0 F0 41                    .A
         sta     $05                             ; 9BA2 85 05                    ..
         pha                                     ; 9BA4 48                       H
         clc                                     ; 9BA5 18                       .
         adc     $7392,y                         ; 9BA6 79 92 73                 y.s
         tay                                     ; 9BA9 A8                       .
-        jsr     BattleTurnEngine_CopyOamSpriteRange; 9BAA 20 32 9C               2.
+        jsr     BattleDisplay_CopyOamSpriteRange; 9BAA 20 32 9C                  2.
         pla                                     ; 9BAD 68                       h
         sta     $05                             ; 9BAE 85 05                    ..
         ldy     $C6                             ; 9BB0 A4 C6                    ..
@@ -4052,31 +4052,31 @@ BattleTurnEngine_RepackQueuedOamPositions:
         sec                                     ; 9BBA 38                       8
         sbc     $04                             ; 9BBB E5 04                    ..
         tay                                     ; 9BBD A8                       .
-        jsr     BattleTurnEngine_HideOamSpriteRange; 9BBE 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; 9BBE 20 1D 9C                  ..
         pla                                     ; 9BC1 68                       h
         sta     $04                             ; 9BC2 85 04                    ..
         ldx     #$07                            ; 9BC4 A2 07                    ..
-BattleTurnEngine_Branch_9BC6:
+BattleDisplay_Branch_9BC6:
         lda     $06A0,x                         ; 9BC6 BD A0 06                 ...
         cmp     #$FF                            ; 9BC9 C9 FF                    ..
-        beq     BattleTurnEngine_Branch_9BE0    ; 9BCB F0 13                    ..
+        beq     BattleDisplay_Branch_9BE0       ; 9BCB F0 13                    ..
         cmp     $05                             ; 9BCD C5 05                    ..
-        bne     BattleTurnEngine_Branch_9BD8    ; 9BCF D0 07                    ..
+        bne     BattleDisplay_Branch_9BD8       ; 9BCF D0 07                    ..
         lda     #$FF                            ; 9BD1 A9 FF                    ..
         sta     $06A0,x                         ; 9BD3 9D A0 06                 ...
-        bne     BattleTurnEngine_Branch_9BE0    ; 9BD6 D0 08                    ..
-BattleTurnEngine_Branch_9BD8:
-        bcc     BattleTurnEngine_Branch_9BE0    ; 9BD8 90 06                    ..
+        bne     BattleDisplay_Branch_9BE0       ; 9BD6 D0 08                    ..
+BattleDisplay_Branch_9BD8:
+        bcc     BattleDisplay_Branch_9BE0       ; 9BD8 90 06                    ..
         sec                                     ; 9BDA 38                       8
         sbc     $04                             ; 9BDB E5 04                    ..
         sta     $06A0,x                         ; 9BDD 9D A0 06                 ...
-BattleTurnEngine_Branch_9BE0:
+BattleDisplay_Branch_9BE0:
         dex                                     ; 9BE0 CA                       .
-        bpl     BattleTurnEngine_Branch_9BC6    ; 9BE1 10 E3                    ..
-BattleTurnEngine_Branch_9BE3:
+        bpl     BattleDisplay_Branch_9BC6       ; 9BE1 10 E3                    ..
+BattleDisplay_Branch_9BE3:
         rts                                     ; 9BE3 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindRightmostQueuedOamEdge:
+BattleDisplay_FindRightmostQueuedOamEdge:
         pha                                     ; 9BE4 48                       H
         txa                                     ; 9BE5 8A                       .
         pha                                     ; 9BE6 48                       H
@@ -4086,27 +4086,27 @@ BattleTurnEngine_FindRightmostQueuedOamEdge:
         stx     $C9                             ; 9BEB 86 C9                    ..
         dex                                     ; 9BED CA                       .
         ldy     #$07                            ; 9BEE A0 07                    ..
-BattleTurnEngine_Branch_9BF0:
+BattleDisplay_Branch_9BF0:
         lda     $06A0,y                         ; 9BF0 B9 A0 06                 ...
         cmp     #$FF                            ; 9BF3 C9 FF                    ..
-        beq     BattleTurnEngine_Branch_9BFF    ; 9BF5 F0 08                    ..
+        beq     BattleDisplay_Branch_9BFF       ; 9BF5 F0 08                    ..
         cmp     $C9                             ; 9BF7 C5 C9                    ..
-        bcc     BattleTurnEngine_Branch_9BFF    ; 9BF9 90 04                    ..
+        bcc     BattleDisplay_Branch_9BFF       ; 9BF9 90 04                    ..
         sta     $C9                             ; 9BFB 85 C9                    ..
         tya                                     ; 9BFD 98                       .
         tax                                     ; 9BFE AA                       .
-BattleTurnEngine_Branch_9BFF:
+BattleDisplay_Branch_9BFF:
         dey                                     ; 9BFF 88                       .
-        bpl     BattleTurnEngine_Branch_9BF0    ; 9C00 10 EE                    ..
+        bpl     BattleDisplay_Branch_9BF0       ; 9C00 10 EE                    ..
         inx                                     ; 9C02 E8                       .
-        beq     BattleTurnEngine_Branch_9C11    ; 9C03 F0 0C                    ..
+        beq     BattleDisplay_Branch_9C11       ; 9C03 F0 0C                    ..
         dex                                     ; 9C05 CA                       .
-        jsr     BattleTurnEngine_ResolveQueuedCombatantSlotFromX; 9C06 20 81 9E  ..
+        jsr     BattleDisplay_ResolveQueuedCombatantSlotFromX; 9C06 20 81 9E     ..
         lda     $7392,x                         ; 9C09 BD 92 73                 ..s
         clc                                     ; 9C0C 18                       .
         adc     $C9                             ; 9C0D 65 C9                    e.
         sta     $C9                             ; 9C0F 85 C9                    ..
-BattleTurnEngine_Branch_9C11:
+BattleDisplay_Branch_9C11:
         pla                                     ; 9C11 68                       h
         tay                                     ; 9C12 A8                       .
         pla                                     ; 9C13 68                       h
@@ -4114,25 +4114,25 @@ BattleTurnEngine_Branch_9C11:
         pla                                     ; 9C15 68                       h
         rts                                     ; 9C16 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearQueuedOamOverlay:
+BattleDisplay_ClearQueuedOamOverlay:
         ldy     #$00                            ; 9C17 A0 00                    ..
         lda     #$40                            ; 9C19 A9 40                    .@
         sta     $04                             ; 9C1B 85 04                    ..
-BattleTurnEngine_HideOamSpriteRange:
+BattleDisplay_HideOamSpriteRange:
         lda     #$F7                            ; 9C1D A9 F7                    ..
         sta     $00                           ; 9C1F 85 00                    ..
         sta     $01                             ; 9C21 85 01                    ..
         sta     $02                             ; 9C23 85 02                    ..
         sta     $03                             ; 9C25 85 03                    ..
-BattleTurnEngine_Branch_9C27:
+BattleDisplay_Branch_9C27:
         ldx     #$00                            ; 9C27 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; 9C29 20 3E C7                  >.
         iny                                     ; 9C2C C8                       .
         dec     $04                             ; 9C2D C6 04                    ..
-        bne     BattleTurnEngine_Branch_9C27    ; 9C2F D0 F6                    ..
+        bne     BattleDisplay_Branch_9C27       ; 9C2F D0 F6                    ..
         rts                                     ; 9C31 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CopyOamSpriteRange:
+BattleDisplay_CopyOamSpriteRange:
         ldx     #$00                            ; 9C32 A2 00                    ..
         jsr     CopyOamSpriteRecord             ; 9C34 20 70 C7                  p.
         tay                                     ; 9C37 A8                       .
@@ -4145,57 +4145,57 @@ BattleTurnEngine_CopyOamSpriteRange:
         iny                                     ; 9C42 C8                       .
         inc     $05                             ; 9C43 E6 05                    ..
         dec     $04                             ; 9C45 C6 04                    ..
-        bne     BattleTurnEngine_CopyOamSpriteRange; 9C47 D0 E9                 ..
+        bne     BattleDisplay_CopyOamSpriteRange; 9C47 D0 E9                    ..
         rts                                     ; 9C49 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CountCombatantWidthWithoutAdvancing:
+BattleDisplay_CountCombatantWidthWithoutAdvancing:
         lda     $CA                             ; 9C4A A5 CA                    ..
         pha                                     ; 9C4C 48                       H
-        jsr     BattleTurnEngine_AccumulateCombatantWidths; 9C4D 20 54 9C        T.
+        jsr     BattleDisplay_AccumulateCombatantWidths; 9C4D 20 54 9C           T.
         pla                                     ; 9C50 68                       h
         sta     $CA                             ; 9C51 85 CA                    ..
         rts                                     ; 9C53 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AccumulateCombatantWidths:
+BattleDisplay_AccumulateCombatantWidths:
         ldx     #$00                            ; 9C54 A2 00                    ..
-BattleTurnEngine_Branch_9C56:
+BattleDisplay_Branch_9C56:
         ldy     $C6                             ; 9C56 A4 C6                    ..
         lda     $7385,y                         ; 9C58 B9 85 73                 ..s
         sec                                     ; 9C5B 38                       8
         adc     $CA                             ; 9C5C 65 CA                    e.
         cmp     #$20                            ; 9C5E C9 20                    .
-        bcs     BattleTurnEngine_Branch_9C69    ; 9C60 B0 07                    ..
+        bcs     BattleDisplay_Branch_9C69       ; 9C60 B0 07                    ..
         sta     $CA                             ; 9C62 85 CA                    ..
         inx                                     ; 9C64 E8                       .
         cpx     $C5                             ; 9C65 E4 C5                    ..
-        bne     BattleTurnEngine_Branch_9C56    ; 9C67 D0 ED                    ..
-BattleTurnEngine_Branch_9C69:
+        bne     BattleDisplay_Branch_9C56       ; 9C67 D0 ED                    ..
+BattleDisplay_Branch_9C69:
         stx     $C5                             ; 9C69 86 C5                    ..
         txa                                     ; 9C6B 8A                       .
         sec                                     ; 9C6C 38                       8
-        bne     BattleTurnEngine_Branch_9C70    ; 9C6D D0 01                    ..
+        bne     BattleDisplay_Branch_9C70       ; 9C6D D0 01                    ..
         clc                                     ; 9C6F 18                       .
-BattleTurnEngine_Branch_9C70:
+BattleDisplay_Branch_9C70:
         rts                                     ; 9C70 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LayoutQueuedCombatantXPositions:
+BattleDisplay_LayoutQueuedCombatantXPositions:
         lda     $6E45                           ; 9C71 AD 45 6E                 .En
         cmp     #$AD                            ; 9C74 C9 AD                    ..
-        bne     BattleTurnEngine_Branch_9C7C    ; 9C76 D0 04                    ..
+        bne     BattleDisplay_Branch_9C7C       ; 9C76 D0 04                    ..
         lda     #$02                            ; 9C78 A9 02                    ..
-        bne     BattleTurnEngine_Branch_9C86    ; 9C7A D0 0A                    ..
-BattleTurnEngine_Branch_9C7C:
+        bne     BattleDisplay_Branch_9C86       ; 9C7A D0 0A                    ..
+BattleDisplay_Branch_9C7C:
         cmp     #$AE                            ; 9C7C C9 AE                    ..
-        beq     BattleTurnEngine_Branch_9C84    ; 9C7E F0 04                    ..
+        beq     BattleDisplay_Branch_9C84       ; 9C7E F0 04                    ..
         cmp     #$BC                            ; 9C80 C9 BC                    ..
-        bne     BattleTurnEngine_Branch_9C8A    ; 9C82 D0 06                    ..
-BattleTurnEngine_Branch_9C84:
+        bne     BattleDisplay_Branch_9C8A       ; 9C82 D0 06                    ..
+BattleDisplay_Branch_9C84:
         lda     #$0A                            ; 9C84 A9 0A                    ..
-BattleTurnEngine_Branch_9C86:
+BattleDisplay_Branch_9C86:
         sta     $0698                           ; 9C86 8D 98 06                 ...
         rts                                     ; 9C89 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9C8A:
+BattleDisplay_Branch_9C8A:
         dec     $CA                             ; 9C8A C6 CA                    ..
         lda     $CA                             ; 9C8C A5 CA                    ..
         lsr     a                               ; 9C8E 4A                       J
@@ -4206,25 +4206,25 @@ BattleTurnEngine_Branch_9C8A:
         sta     $CA                             ; 9C96 85 CA                    ..
         ldy     #$00                            ; 9C98 A0 00                    ..
         sty     $C7                             ; 9C9A 84 C7                    ..
-BattleTurnEngine_Branch_9C9C:
-        jsr     BattleTurnEngine_LoadQueuedCombatantId; 9C9C 20 76 9E            v.
-        bcc     BattleTurnEngine_Branch_9CB2    ; 9C9F 90 11                    ..
+BattleDisplay_Branch_9C9C:
+        jsr     BattleDisplay_LoadQueuedCombatantId; 9C9C 20 76 9E               v.
+        bcc     BattleDisplay_Branch_9CB2       ; 9C9F 90 11                    ..
         cmp     #$FF                            ; 9CA1 C9 FF                    ..
-        beq     BattleTurnEngine_Branch_9CB2    ; 9CA3 F0 0D                    ..
+        beq     BattleDisplay_Branch_9CB2       ; 9CA3 F0 0D                    ..
         lda     $CA                             ; 9CA5 A5 CA                    ..
         sta     $0698,y                         ; 9CA7 99 98 06                 ...
         lda     $7385,x                         ; 9CAA BD 85 73                 ..s
         sec                                     ; 9CAD 38                       8
         adc     $CA                             ; 9CAE 65 CA                    e.
         sta     $CA                             ; 9CB0 85 CA                    ..
-BattleTurnEngine_Branch_9CB2:
+BattleDisplay_Branch_9CB2:
         inc     $C7                             ; 9CB2 E6 C7                    ..
         iny                                     ; 9CB4 C8                       .
         cpy     #$08                            ; 9CB5 C0 08                    ..
-        bne     BattleTurnEngine_Branch_9C9C    ; 9CB7 D0 E3                    ..
+        bne     BattleDisplay_Branch_9C9C       ; 9CB7 D0 E3                    ..
         rts                                     ; 9CB9 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindCenteredQueuedOamX:
+BattleDisplay_FindCenteredQueuedOamX:
         lda     $D2                             ; 9CBA A5 D2                    ..
         sta     $D8                             ; 9CBC 85 D8                    ..
         lsr     $D8                             ; 9CBE 46 D8                    F.
@@ -4235,31 +4235,31 @@ BattleTurnEngine_FindCenteredQueuedOamX:
         lda     #$01                            ; 9CC7 A9 01                    ..
         sta     $D7                             ; 9CC9 85 D7                    ..
 FindCollisionFreeQueuedOamX:
-        jsr     BattleTurnEngine_CheckQueuedOamXCollision; 9CCB 20 EB 9C         ..
-        bcc     BattleTurnEngine_Branch_9CD1    ; 9CCE 90 01                    ..
+        jsr     BattleDisplay_CheckQueuedOamXCollision; 9CCB 20 EB 9C            ..
+        bcc     BattleDisplay_Branch_9CD1       ; 9CCE 90 01                    ..
         rts                                     ; 9CD0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9CD1:
+BattleDisplay_Branch_9CD1:
         lda     $D7                             ; 9CD1 A5 D7                    ..
         eor     #$01                            ; 9CD3 49 01                    I.
         lsr     a                               ; 9CD5 4A                       J
         lda     $D7                             ; 9CD6 A5 D7                    ..
-        bcc     BattleTurnEngine_Branch_9CDC    ; 9CD8 90 02                    ..
+        bcc     BattleDisplay_Branch_9CDC       ; 9CD8 90 02                    ..
         eor     #$FF                            ; 9CDA 49 FF                    I.
-BattleTurnEngine_Branch_9CDC:
+BattleDisplay_Branch_9CDC:
         adc     $D6                             ; 9CDC 65 D6                    e.
-        beq     BattleTurnEngine_Branch_9D1F    ; 9CDE F0 3F                    .?
+        beq     BattleDisplay_Branch_9D1F       ; 9CDE F0 3F                    .?
         cmp     #$20                            ; 9CE0 C9 20                    .
-        bcs     BattleTurnEngine_Branch_9D1F    ; 9CE2 B0 3B                    .;
+        bcs     BattleDisplay_Branch_9D1F       ; 9CE2 B0 3B                    .;
         sta     $D6                             ; 9CE4 85 D6                    ..
         inc     $D7                             ; 9CE6 E6 D7                    ..
         jmp     FindCollisionFreeQueuedOamX     ; 9CE8 4C CB 9C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CheckQueuedOamXCollision:
+BattleDisplay_CheckQueuedOamXCollision:
         ldx     #$00                            ; 9CEB A2 00                    ..
-BattleTurnEngine_Branch_9CED:
+BattleDisplay_Branch_9CED:
         lda     $0690,x                         ; 9CED BD 90 06                 ...
-        bpl     BattleTurnEngine_Branch_9D0D    ; 9CF0 10 1B                    ..
+        bpl     BattleDisplay_Branch_9D0D       ; 9CF0 10 1B                    ..
         and     #$18                            ; 9CF2 29 18                    ).
         lsr     a                               ; 9CF4 4A                       J
         lsr     a                               ; 9CF5 4A                       J
@@ -4269,30 +4269,30 @@ BattleTurnEngine_Branch_9CED:
         clc                                     ; 9CFB 18                       .
         adc     $7385,y                         ; 9CFC 79 85 73                 y.s
         cmp     $D6                             ; 9CFF C5 D6                    ..
-        bcc     BattleTurnEngine_Branch_9D0D    ; 9D01 90 0A                    ..
+        bcc     BattleDisplay_Branch_9D0D       ; 9D01 90 0A                    ..
         lda     $D6                             ; 9D03 A5 D6                    ..
         clc                                     ; 9D05 18                       .
         adc     $D2                             ; 9D06 65 D2                    e.
         cmp     $0698,x                         ; 9D08 DD 98 06                 ...
-        bcs     BattleTurnEngine_Branch_9D1F    ; 9D0B B0 12                    ..
-BattleTurnEngine_Branch_9D0D:
+        bcs     BattleDisplay_Branch_9D1F       ; 9D0B B0 12                    ..
+BattleDisplay_Branch_9D0D:
         inx                                     ; 9D0D E8                       .
         cpx     #$08                            ; 9D0E E0 08                    ..
-        bne     BattleTurnEngine_Branch_9CED    ; 9D10 D0 DB                    ..
+        bne     BattleDisplay_Branch_9CED       ; 9D10 D0 DB                    ..
         lda     $D6                             ; 9D12 A5 D6                    ..
         clc                                     ; 9D14 18                       .
         adc     $D2                             ; 9D15 65 D2                    e.
         cmp     #$20                            ; 9D17 C9 20                    .
-        bcs     BattleTurnEngine_Branch_9D1F    ; 9D19 B0 04                    ..
+        bcs     BattleDisplay_Branch_9D1F       ; 9D19 B0 04                    ..
         lda     $D6                             ; 9D1B A5 D6                    ..
         sec                                     ; 9D1D 38                       8
         rts                                     ; 9D1E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9D1F:
+BattleDisplay_Branch_9D1F:
         clc                                     ; 9D1F 18                       .
         rts                                     ; 9D20 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ComputeCombatantTilePointers:
+BattleDisplay_ComputeCombatantTilePointers:
         txa                                     ; 9D21 8A                       .
         pha                                     ; 9D22 48                       H
         lda     $D6                             ; 9D23 A5 D6                    ..
@@ -4302,13 +4302,13 @@ BattleTurnEngine_ComputeCombatantTilePointers:
         php                                     ; 9D2B 08                       .
         ldx     $C4                             ; 9D2C A6 C4                    ..
         cpx     #$AE                            ; 9D2E E0 AE                    ..
-        beq     BattleTurnEngine_Branch_9D36    ; 9D30 F0 04                    ..
+        beq     BattleDisplay_Branch_9D36       ; 9D30 F0 04                    ..
         cpx     #$BC                            ; 9D32 E0 BC                    ..
-        bne     BattleTurnEngine_Branch_9D3B    ; 9D34 D0 05                    ..
-BattleTurnEngine_Branch_9D36:
+        bne     BattleDisplay_Branch_9D3B       ; 9D34 D0 05                    ..
+BattleDisplay_Branch_9D36:
         and     #$EF                            ; 9D36 29 EF                    ).
         sta     $04F2                           ; 9D38 8D F2 04                 ...
-BattleTurnEngine_Branch_9D3B:
+BattleDisplay_Branch_9D3B:
         plp                                     ; 9D3B 28                       (
         lda     #$00                            ; 9D3C A9 00                    ..
         rol     a                               ; 9D3E 2A                       *
@@ -4321,16 +4321,16 @@ BattleTurnEngine_Branch_9D3B:
         tax                                     ; 9D49 AA                       .
         rts                                     ; 9D4A 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadCombatantTileDataIntoBuffers:
+BattleDisplay_LoadCombatantTileDataIntoBuffers:
         lda     $04F3                           ; 9D4B AD F3 04                 ...
         and     #$0F                            ; 9D4E 29 0F                    ).
         cmp     #$04                            ; 9D50 C9 04                    ..
-        bcs     BattleTurnEngine_Branch_9D59    ; 9D52 B0 05                    ..
+        bcs     BattleDisplay_Branch_9D59       ; 9D52 B0 05                    ..
         asl     a                               ; 9D54 0A                       .
         asl     a                               ; 9D55 0A                       .
         tax                                     ; 9D56 AA                       .
-        bne     BattleTurnEngine_Branch_9D73    ; 9D57 D0 1A                    ..
-BattleTurnEngine_Branch_9D59:
+        bne     BattleDisplay_Branch_9D73       ; 9D57 D0 1A                    ..
+BattleDisplay_Branch_9D59:
         pha                                     ; 9D59 48                       H
         ora     #$20                            ; 9D5A 09 20                    .
         sta     $04F3                           ; 9D5C 8D F3 04                 ...
@@ -4339,7 +4339,7 @@ BattleTurnEngine_Branch_9D59:
         tax                                     ; 9D61 AA                       .
         tay                                     ; 9D62 A8                       .
         pha                                     ; 9D63 48                       H
-        jsr     BattleTurnEngine_CopyCombatantTilePage; 9D64 20 A2 9D            ..
+        jsr     BattleDisplay_CopyCombatantTilePage; 9D64 20 A2 9D               ..
         lda     $04F2                           ; 9D67 AD F2 04                 ...
         clc                                     ; 9D6A 18                       .
         adc     #$20                            ; 9D6B 69 20                    i
@@ -4347,15 +4347,15 @@ BattleTurnEngine_Branch_9D59:
         pla                                     ; 9D70 68                       h
         tax                                     ; 9D71 AA                       .
         asl     a                               ; 9D72 0A                       .
-BattleTurnEngine_Branch_9D73:
+BattleDisplay_Branch_9D73:
         tay                                     ; 9D73 A8                       .
-        jsr     BattleTurnEngine_CopyCombatantTilePage; 9D74 20 A2 9D            ..
+        jsr     BattleDisplay_CopyCombatantTilePage; 9D74 20 A2 9D               ..
         lda     $C4                             ; 9D77 A5 C4                    ..
         cmp     #$AE                            ; 9D79 C9 AE                    ..
-        beq     BattleTurnEngine_Branch_9D81    ; 9D7B F0 04                    ..
+        beq     BattleDisplay_Branch_9D81       ; 9D7B F0 04                    ..
         cmp     #$BC                            ; 9D7D C9 BC                    ..
-        bne     BattleTurnEngine_Branch_9DCB    ; 9D7F D0 4A                    .J
-BattleTurnEngine_Branch_9D81:
+        bne     BattleDisplay_Branch_9DCB       ; 9D7F D0 4A                    .J
+BattleDisplay_Branch_9D81:
         lda     $04F3                           ; 9D81 AD F3 04                 ...
         ora     #$10                            ; 9D84 09 10                    ..
         and     #$1F                            ; 9D86 29 1F                    ).
@@ -4372,9 +4372,9 @@ BattleTurnEngine_Branch_9D81:
         clc                                     ; 9D99 18                       .
         adc     #$20                            ; 9D9A 69 20                    i
         sta     $04F2                           ; 9D9C 8D F2 04                 ...
-        jmp     BattleTurnEngine_CopyCombatantTilePage; 9D9F 4C A2 9D           L..
+        jmp     BattleDisplay_CopyCombatantTilePage; 9D9F 4C A2 9D              L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_CopyCombatantTilePage:
+BattleDisplay_CopyCombatantTilePage:
         lda     $064F,y                         ; 9DA2 B9 4F 06                 .O.
         sta     $04DF,x                         ; 9DA5 9D DF 04                 ...
         tya                                     ; 9DA8 98                       .
@@ -4388,28 +4388,28 @@ BattleTurnEngine_CopyCombatantTilePage:
         asl     a                               ; 9DB0 0A                       .
         asl     a                               ; 9DB1 0A                       .
         tay                                     ; 9DB2 A8                       .
-BattleTurnEngine_Branch_9DB3:
+BattleDisplay_Branch_9DB3:
         lda     $75FF,y                         ; 9DB3 B9 FF 75                 ..u
         sta     $047F,x                         ; 9DB6 9D 7F 04                 ...
         dey                                     ; 9DB9 88                       .
         dex                                     ; 9DBA CA                       .
         txa                                     ; 9DBB 8A                       .
         and     #$03                            ; 9DBC 29 03                    ).
-        bne     BattleTurnEngine_Branch_9DB3    ; 9DBE D0 F3                    ..
+        bne     BattleDisplay_Branch_9DB3       ; 9DBE D0 F3                    ..
         pla                                     ; 9DC0 68                       h
         tax                                     ; 9DC1 AA                       .
         pla                                     ; 9DC2 68                       h
         tay                                     ; 9DC3 A8                       .
         dey                                     ; 9DC4 88                       .
         dex                                     ; 9DC5 CA                       .
-        bne     BattleTurnEngine_CopyCombatantTilePage; 9DC6 D0 DA              ..
+        bne     BattleDisplay_CopyCombatantTilePage; 9DC6 D0 DA                 ..
         brk                                     ; 9DC8 00                       .
         db   $12,$DF                         ; 9DC9 12 DF                    ..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9DCB:
+BattleDisplay_Branch_9DCB:
         rts                                     ; 9DCB 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindUniqueQueuedTurnSlotByte:
+BattleDisplay_FindUniqueDisplaySlotByte:
         lda     $C6                             ; 9DCC A5 C6                    ..
         pha                                     ; 9DCE 48                       H
         asl     a                               ; 9DCF 0A                       .
@@ -4418,13 +4418,13 @@ BattleTurnEngine_FindUniqueQueuedTurnSlotByte:
         ora     #$80                            ; 9DD2 09 80                    ..
         sta     $C6                             ; 9DD4 85 C6                    ..
         ldx     #$07                            ; 9DD6 A2 07                    ..
-BattleTurnEngine_Branch_9DD8:
+BattleDisplay_Branch_9DD8:
         lda     $0690,x                         ; 9DD8 BD 90 06                 ...
         and     #$98                            ; 9DDB 29 98                    ).
         cmp     $C6                             ; 9DDD C5 C6                    ..
-        beq     BattleTurnEngine_Branch_9DEC    ; 9DDF F0 0B                    ..
+        beq     BattleDisplay_Branch_9DEC       ; 9DDF F0 0B                    ..
         dex                                     ; 9DE1 CA                       .
-        bpl     BattleTurnEngine_Branch_9DD8    ; 9DE2 10 F4                    ..
+        bpl     BattleDisplay_Branch_9DD8       ; 9DE2 10 F4                    ..
         ldy     $C6                             ; 9DE4 A4 C6                    ..
         pla                                     ; 9DE6 68                       h
         sta     $C6                             ; 9DE7 85 C6                    ..
@@ -4432,15 +4432,15 @@ BattleTurnEngine_Branch_9DD8:
         sec                                     ; 9DEA 38                       8
         rts                                     ; 9DEB 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9DEC:
+BattleDisplay_Branch_9DEC:
         ldx     #$07                            ; 9DEC A2 07                    ..
-BattleTurnEngine_Branch_9DEE:
+BattleDisplay_Branch_9DEE:
         lda     $0690,x                         ; 9DEE BD 90 06                 ...
         and     #$9F                            ; 9DF1 29 9F                    ).
         cmp     $C6                             ; 9DF3 C5 C6                    ..
-        beq     BattleTurnEngine_Branch_9E02    ; 9DF5 F0 0B                    ..
+        beq     BattleDisplay_Branch_9E02       ; 9DF5 F0 0B                    ..
         dex                                     ; 9DF7 CA                       .
-        bpl     BattleTurnEngine_Branch_9DEE    ; 9DF8 10 F4                    ..
+        bpl     BattleDisplay_Branch_9DEE       ; 9DF8 10 F4                    ..
         ldy     $C6                             ; 9DFA A4 C6                    ..
         pla                                     ; 9DFC 68                       h
         sta     $C6                             ; 9DFD 85 C6                    ..
@@ -4448,73 +4448,73 @@ BattleTurnEngine_Branch_9DEE:
         sec                                     ; 9E00 38                       8
         rts                                     ; 9E01 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9E02:
+BattleDisplay_Branch_9E02:
         inc     $C6                             ; 9E02 E6 C6                    ..
         lda     $C6                             ; 9E04 A5 C6                    ..
         and     #$07                            ; 9E06 29 07                    ).
-        bne     BattleTurnEngine_Branch_9DEC    ; 9E08 D0 E2                    ..
+        bne     BattleDisplay_Branch_9DEC       ; 9E08 D0 E2                    ..
         clc                                     ; 9E0A 18                       .
         rts                                     ; 9E0B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindFallbackBattleGraphicSlot:
+BattleDisplay_FindFallbackBattleGraphicSlot:
         pha                                     ; 9E0C 48                       H
         lda     $C4                             ; 9E0D A5 C4                    ..
         pha                                     ; 9E0F 48                       H
         lda     #$FF                            ; 9E10 A9 FF                    ..
         sta     $C4                             ; 9E12 85 C4                    ..
-        jsr     BattleTurnEngine_FindLoadedBattleGraphicSlot; 9E14 20 1C 9E      ..
+        jsr     BattleDisplay_FindLoadedBattleGraphicSlot; 9E14 20 1C 9E         ..
         pla                                     ; 9E17 68                       h
         sta     $C4                             ; 9E18 85 C4                    ..
         pla                                     ; 9E1A 68                       h
         rts                                     ; 9E1B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindLoadedBattleGraphicSlot:
+BattleDisplay_FindLoadedBattleGraphicSlot:
         pha                                     ; 9E1C 48                       H
         tya                                     ; 9E1D 98                       .
         pha                                     ; 9E1E 48                       H
         lda     $C4                             ; 9E1F A5 C4                    ..
         ldy     #$00                            ; 9E21 A0 00                    ..
-BattleTurnEngine_Branch_9E23:
+BattleDisplay_Branch_9E23:
         cmp     $044C,y                         ; 9E23 D9 4C 04                 .L.
-        beq     BattleTurnEngine_Branch_9E2F    ; 9E26 F0 07                    ..
+        beq     BattleDisplay_Branch_9E2F       ; 9E26 F0 07                    ..
         iny                                     ; 9E28 C8                       .
         cpy     #$0E                            ; 9E29 C0 0E                    ..
-        bne     BattleTurnEngine_Branch_9E23    ; 9E2B D0 F6                    ..
-        beq     BattleTurnEngine_Branch_9E53    ; 9E2D F0 24                    .$
-BattleTurnEngine_Branch_9E2F:
+        bne     BattleDisplay_Branch_9E23       ; 9E2B D0 F6                    ..
+        beq     BattleDisplay_Branch_9E53       ; 9E2D F0 24                    .$
+BattleDisplay_Branch_9E2F:
         sty     $C8                             ; 9E2F 84 C8                    ..
         jmp     ReturnActiveCombatantSlotSearch ; 9E31 4C 5A 9E                 LZ.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindEmptyActiveCombatantSlot:
+BattleDisplay_FindEmptyActiveCombatantSlot:
         lda     $C4                             ; 9E34 A5 C4                    ..
         pha                                     ; 9E36 48                       H
         lda     #$FF                            ; 9E37 A9 FF                    ..
         sta     $C4                             ; 9E39 85 C4                    ..
-        jsr     BattleTurnEngine_FindActiveCombatantSlot; 9E3B 20 42 9E          B.
+        jsr     BattleDisplay_FindActiveCombatantSlot; 9E3B 20 42 9E             B.
         pla                                     ; 9E3E 68                       h
         sta     $C4                             ; 9E3F 85 C4                    ..
         rts                                     ; 9E41 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindActiveCombatantSlot:
+BattleDisplay_FindActiveCombatantSlot:
         pha                                     ; 9E42 48                       H
         tya                                     ; 9E43 98                       .
         pha                                     ; 9E44 48                       H
         lda     $C4                             ; 9E45 A5 C4                    ..
         ldy     #$00                            ; 9E47 A0 00                    ..
-BattleTurnEngine_Branch_9E49:
+BattleDisplay_Branch_9E49:
         cmp     $0440,y                         ; 9E49 D9 40 04                 .@.
-        beq     BattleTurnEngine_Branch_9E58    ; 9E4C F0 0A                    ..
+        beq     BattleDisplay_Branch_9E58       ; 9E4C F0 0A                    ..
         iny                                     ; 9E4E C8                       .
         cpy     #$04                            ; 9E4F C0 04                    ..
-        bne     BattleTurnEngine_Branch_9E49    ; 9E51 D0 F6                    ..
-BattleTurnEngine_Branch_9E53:
+        bne     BattleDisplay_Branch_9E49       ; 9E51 D0 F6                    ..
+BattleDisplay_Branch_9E53:
         pla                                     ; 9E53 68                       h
         tay                                     ; 9E54 A8                       .
         pla                                     ; 9E55 68                       h
         clc                                     ; 9E56 18                       .
         rts                                     ; 9E57 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9E58:
+BattleDisplay_Branch_9E58:
         sty     $C6                             ; 9E58 84 C6                    ..
 ReturnActiveCombatantSlotSearch:
         pla                                     ; 9E5A 68                       h
@@ -4522,37 +4522,37 @@ ReturnActiveCombatantSlotSearch:
         pla                                     ; 9E5C 68                       h
         rts                                     ; 9E5D 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindFreeQueuedTurnSlot:
+BattleDisplay_FindFreeDisplaySlot:
         tya                                     ; 9E5E 98                       .
         pha                                     ; 9E5F 48                       H
         ldy     #$00                            ; 9E60 A0 00                    ..
-BattleTurnEngine_Branch_9E62:
+BattleDisplay_Branch_9E62:
         lda     $0690,y                         ; 9E62 B9 90 06                 ...
-        bpl     BattleTurnEngine_Branch_9E70    ; 9E65 10 09                    ..
+        bpl     BattleDisplay_Branch_9E70       ; 9E65 10 09                    ..
         iny                                     ; 9E67 C8                       .
         cpy     #$08                            ; 9E68 C0 08                    ..
-        bne     BattleTurnEngine_Branch_9E62    ; 9E6A D0 F6                    ..
+        bne     BattleDisplay_Branch_9E62       ; 9E6A D0 F6                    ..
         pla                                     ; 9E6C 68                       h
         tay                                     ; 9E6D A8                       .
         clc                                     ; 9E6E 18                       .
         rts                                     ; 9E6F 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9E70:
+BattleDisplay_Branch_9E70:
         sty     $C7                             ; 9E70 84 C7                    ..
         pla                                     ; 9E72 68                       h
         tay                                     ; 9E73 A8                       .
         sec                                     ; 9E74 38                       8
         rts                                     ; 9E75 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadQueuedCombatantId:
+BattleDisplay_LoadQueuedCombatantId:
         ldx     $C7                             ; 9E76 A6 C7                    ..
-        jsr     BattleTurnEngine_ResolveQueuedCombatantSlotFromX; 9E78 20 81 9E  ..
+        jsr     BattleDisplay_ResolveQueuedCombatantSlotFromX; 9E78 20 81 9E     ..
         lda     $0440,x                         ; 9E7B BD 40 04                 .@.
         rts                                     ; 9E7E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ResolveCurrentQueuedCombatantSlot:
+BattleDisplay_ResolveCurrentQueuedCombatantSlot:
         ldx     $C7                             ; 9E7F A6 C7                    ..
-BattleTurnEngine_ResolveQueuedCombatantSlotFromX:
+BattleDisplay_ResolveQueuedCombatantSlotFromX:
         lda     $0690,x                         ; 9E81 BD 90 06                 ...
         asl     a                               ; 9E84 0A                       .
         php                                     ; 9E85 08                       .
@@ -4565,7 +4565,7 @@ BattleTurnEngine_ResolveQueuedCombatantSlotFromX:
         plp                                     ; 9E8D 28                       (
         rts                                     ; 9E8E 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ReserveQueuedTurnSlot:
+BattleDisplay_ReserveDisplaySlot:
         txa                                     ; 9E8F 8A                       .
         pha                                     ; 9E90 48                       H
         tya                                     ; 9E91 98                       .
@@ -4574,43 +4574,43 @@ BattleTurnEngine_ReserveQueuedTurnSlot:
         lsr     a                               ; 9E95 4A                       J
         tax                                     ; 9E96 AA                       .
         lda     $738D,x                         ; 9E97 BD 8D 73                 ..s
-        bcs     BattleTurnEngine_Branch_9EA4    ; 9E9A B0 08                    ..
+        bcs     BattleDisplay_Branch_9EA4       ; 9E9A B0 08                    ..
         and     #$08                            ; 9E9C 29 08                    ).
-        beq     BattleTurnEngine_Branch_9EA7    ; 9E9E F0 07                    ..
-BattleTurnEngine_Branch_9EA0:
+        beq     BattleDisplay_Branch_9EA7       ; 9E9E F0 07                    ..
+BattleDisplay_Branch_9EA0:
         pla                                     ; 9EA0 68                       h
         pla                                     ; 9EA1 68                       h
         clc                                     ; 9EA2 18                       .
         rts                                     ; 9EA3 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9EA4:
+BattleDisplay_Branch_9EA4:
         asl     a                               ; 9EA4 0A                       .
-        bcs     BattleTurnEngine_Branch_9EA0    ; 9EA5 B0 F9                    ..
-BattleTurnEngine_Branch_9EA7:
+        bcs     BattleDisplay_Branch_9EA0       ; 9EA5 B0 F9                    ..
+BattleDisplay_Branch_9EA7:
         ldy     #$00                            ; 9EA7 A0 00                    ..
-BattleTurnEngine_Branch_9EA9:
+BattleDisplay_Branch_9EA9:
         lda     $0690,y                         ; 9EA9 B9 90 06                 ...
-        bpl     BattleTurnEngine_Branch_9EB5    ; 9EAC 10 07                    ..
+        bpl     BattleDisplay_Branch_9EB5       ; 9EAC 10 07                    ..
         iny                                     ; 9EAE C8                       .
         cpy     #$08                            ; 9EAF C0 08                    ..
-        bcc     BattleTurnEngine_Branch_9EA9    ; 9EB1 90 F6                    ..
+        bcc     BattleDisplay_Branch_9EA9       ; 9EB1 90 F6                    ..
         clc                                     ; 9EB3 18                       .
         rts                                     ; 9EB4 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9EB5:
+BattleDisplay_Branch_9EB5:
         tya                                     ; 9EB5 98                       .
         ora     #$08                            ; 9EB6 09 08                    ..
         tay                                     ; 9EB8 A8                       .
         lda     $C7                             ; 9EB9 A5 C7                    ..
         lsr     a                               ; 9EBB 4A                       J
-        bcc     BattleTurnEngine_Branch_9EC4    ; 9EBC 90 06                    ..
+        bcc     BattleDisplay_Branch_9EC4       ; 9EBC 90 06                    ..
         tya                                     ; 9EBE 98                       .
         asl     a                               ; 9EBF 0A                       .
         asl     a                               ; 9EC0 0A                       .
         asl     a                               ; 9EC1 0A                       .
         asl     a                               ; 9EC2 0A                       .
         tay                                     ; 9EC3 A8                       .
-BattleTurnEngine_Branch_9EC4:
+BattleDisplay_Branch_9EC4:
         tya                                     ; 9EC4 98                       .
         ora     $738D,x                         ; 9EC5 1D 8D 73                 ..s
         sta     $738D,x                         ; 9EC8 9D 8D 73                 ..s
@@ -4621,30 +4621,30 @@ BattleTurnEngine_Branch_9EC4:
         sec                                     ; 9ECF 38                       8
         rts                                     ; 9ED0 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadReservedQueuedTurnSlot:
+BattleDisplay_LoadReservedDisplaySlot:
         txa                                     ; 9ED1 8A                       .
         pha                                     ; 9ED2 48                       H
         lda     $C7                             ; 9ED3 A5 C7                    ..
         lsr     a                               ; 9ED5 4A                       J
         tax                                     ; 9ED6 AA                       .
         lda     $738D,x                         ; 9ED7 BD 8D 73                 ..s
-        bcc     BattleTurnEngine_Branch_9EE0    ; 9EDA 90 04                    ..
+        bcc     BattleDisplay_Branch_9EE0       ; 9EDA 90 04                    ..
         lsr     a                               ; 9EDC 4A                       J
         lsr     a                               ; 9EDD 4A                       J
         lsr     a                               ; 9EDE 4A                       J
         lsr     a                               ; 9EDF 4A                       J
-BattleTurnEngine_Branch_9EE0:
+BattleDisplay_Branch_9EE0:
         pha                                     ; 9EE0 48                       H
         sec                                     ; 9EE1 38                       8
         and     #$08                            ; 9EE2 29 08                    ).
-        bne     BattleTurnEngine_Branch_9EEB    ; 9EE4 D0 05                    ..
+        bne     BattleDisplay_Branch_9EEB       ; 9EE4 D0 05                    ..
         pla                                     ; 9EE6 68                       h
         pla                                     ; 9EE7 68                       h
         tax                                     ; 9EE8 AA                       .
         clc                                     ; 9EE9 18                       .
         rts                                     ; 9EEA 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9EEB:
+BattleDisplay_Branch_9EEB:
         pla                                     ; 9EEB 68                       h
         and     #$07                            ; 9EEC 29 07                    ).
         sta     $C7                             ; 9EEE 85 C7                    ..
@@ -4653,26 +4653,26 @@ BattleTurnEngine_Branch_9EEB:
         sec                                     ; 9EF2 38                       8
         rts                                     ; 9EF3 60                       `
 ; ----------------------------------------------------------------------------
-ClearReservedQueuedTurnSlot:
+ClearReservedDisplaySlot:
         txa                                     ; 9EF4 8A                       .
         pha                                     ; 9EF5 48                       H
         lda     a:$C7                           ; 9EF6 AD C7 00                 ...
         lsr     a                               ; 9EF9 4A                       J
         tax                                     ; 9EFA AA                       .
         lda     #$F0                            ; 9EFB A9 F0                    ..
-        bcc     BattleTurnEngine_Branch_9F03    ; 9EFD 90 04                    ..
+        bcc     BattleDisplay_Branch_9F03       ; 9EFD 90 04                    ..
         lsr     a                               ; 9EFF 4A                       J
         lsr     a                               ; 9F00 4A                       J
         lsr     a                               ; 9F01 4A                       J
         lsr     a                               ; 9F02 4A                       J
-BattleTurnEngine_Branch_9F03:
+BattleDisplay_Branch_9F03:
         and     $738D,x                         ; 9F03 3D 8D 73                 =.s
         sta     $738D,x                         ; 9F06 9D 8D 73                 ..s
         pla                                     ; 9F09 68                       h
         tax                                     ; 9F0A AA                       .
         rts                                     ; 9F0B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_MapCurrentCombatantId:
+BattleDisplay_MapCurrentCombatantId:
         pha                                     ; 9F0C 48                       H
         txa                                     ; 9F0D 8A                       .
         pha                                     ; 9F0E 48                       H
@@ -4684,14 +4684,14 @@ BattleTurnEngine_MapCurrentCombatantId:
         pla                                     ; 9F18 68                       h
         rts                                     ; 9F19 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FindMappedCombatantIdIndex:
+BattleDisplay_FindMappedCombatantIdIndex:
         ldx     #$00                            ; 9F1A A2 00                    ..
-BattleTurnEngine_Branch_9F1C:
+BattleDisplay_Branch_9F1C:
         cmp     Bank14_MonsterIdMap,x           ; 9F1C DD D5 B2                 ...
-        beq     BattleTurnEngine_Branch_9F24    ; 9F1F F0 03                    ..
+        beq     BattleDisplay_Branch_9F24       ; 9F1F F0 03                    ..
         inx                                     ; 9F21 E8                       .
-        bne     BattleTurnEngine_Branch_9F1C    ; 9F22 D0 F8                    ..
-BattleTurnEngine_Branch_9F24:
+        bne     BattleDisplay_Branch_9F1C       ; 9F22 D0 F8                    ..
+BattleDisplay_Branch_9F24:
         txa                                     ; 9F24 8A                       .
         rts                                     ; 9F25 60                       `
 ; ----------------------------------------------------------------------------
@@ -4703,20 +4703,20 @@ Bank14_SelectMonsterGraphicsBank:
         ldy     #$14                            ; 9F2A A0 14                    ..
         lda     $C4                             ; 9F2C A5 C4                    ..
         cmp     #$14                            ; 9F2E C9 14                    ..
-        beq     BattleTurnEngine_Branch_9F5F    ; 9F30 F0 2D                    .-
+        beq     BattleDisplay_Branch_9F5F       ; 9F30 F0 2D                    .-
         cmp     #$2E                            ; 9F32 C9 2E                    ..
-        beq     BattleTurnEngine_Branch_9F5F    ; 9F34 F0 29                    .)
+        beq     BattleDisplay_Branch_9F5F       ; 9F34 F0 29                    .)
         cmp     #$3F                            ; 9F36 C9 3F                    .?
-        beq     BattleTurnEngine_Branch_9F5F    ; 9F38 F0 25                    .%
+        beq     BattleDisplay_Branch_9F5F       ; 9F38 F0 25                    .%
         cmp     #$B2                            ; 9F3A C9 B2                    ..
-        beq     BattleTurnEngine_Branch_9F5F    ; 9F3C F0 21                    .!
+        beq     BattleDisplay_Branch_9F5F       ; 9F3C F0 21                    .!
         cmp     #$C0                            ; 9F3E C9 C0                    ..
-        beq     BattleTurnEngine_Branch_9F5F    ; 9F40 F0 1D                    ..
+        beq     BattleDisplay_Branch_9F5F       ; 9F40 F0 1D                    ..
         cmp     #$B1                            ; 9F42 C9 B1                    ..
-        bne     BattleTurnEngine_Branch_9F4A    ; 9F44 D0 04                    ..
+        bne     BattleDisplay_Branch_9F4A       ; 9F44 D0 04                    ..
         ldy     #$10                            ; 9F46 A0 10                    ..
-        bne     BattleTurnEngine_Branch_9F5F    ; 9F48 D0 15                    ..
-BattleTurnEngine_Branch_9F4A:
+        bne     BattleDisplay_Branch_9F5F       ; 9F48 D0 15                    ..
+BattleDisplay_Branch_9F4A:
         pha                                     ; 9F4A 48                       H
         and     #$07                            ; 9F4B 29 07                    ).
         tax                                     ; 9F4D AA                       .
@@ -4726,14 +4726,14 @@ BattleTurnEngine_Branch_9F4A:
         lsr     a                               ; 9F51 4A                       J
         tay                                     ; 9F52 A8                       .
         lda     Bank14_MonsterGraphicsBankBitmap,y; 9F53 B9 98 B3               ...
-BattleTurnEngine_Branch_9F56:
+BattleDisplay_Branch_9F56:
         asl     a                               ; 9F56 0A                       .
         dex                                     ; 9F57 CA                       .
-        bpl     BattleTurnEngine_Branch_9F56    ; 9F58 10 FC                    ..
+        bpl     BattleDisplay_Branch_9F56       ; 9F58 10 FC                    ..
         ldy     #$06                            ; 9F5A A0 06                    ..
-        bcc     BattleTurnEngine_Branch_9F5F    ; 9F5C 90 01                    ..
+        bcc     BattleDisplay_Branch_9F5F       ; 9F5C 90 01                    ..
         iny                                     ; 9F5E C8                       .
-BattleTurnEngine_Branch_9F5F:
+BattleDisplay_Branch_9F5F:
         sty     $C2                             ; 9F5F 84 C2                    ..
         pla                                     ; 9F61 68                       h
         tax                                     ; 9F62 AA                       .
@@ -4784,9 +4784,9 @@ Bank14_ReadMonsterGraphicsByte:
 Bank14_AdvanceMonsterGraphicsInput:
         inc     $6DF8                           ; 9F9F EE F8 6D                 ..m
         inc     $C0                             ; 9FA2 E6 C0                    ..
-        bne     BattleTurnEngine_Branch_9FA8    ; 9FA4 D0 02                    ..
+        bne     BattleDisplay_Branch_9FA8       ; 9FA4 D0 02                    ..
         inc     $C1                             ; 9FA6 E6 C1                    ..
-BattleTurnEngine_Branch_9FA8:
+BattleDisplay_Branch_9FA8:
         rts                                     ; 9FA8 60                       `
 ; ----------------------------------------------------------------------------
 Bank14_LoadMonsterGraphicsDescriptor:
@@ -4801,9 +4801,9 @@ Bank14_LoadMonsterGraphicsDescriptor:
         rol     $C1                             ; 9FB5 26 C1                    &.
         clc                                     ; 9FB7 18                       .
         adc     $C4                             ; 9FB8 65 C4                    e.
-        bcc     BattleTurnEngine_Branch_9FBE    ; 9FBA 90 02                    ..
+        bcc     BattleDisplay_Branch_9FBE       ; 9FBA 90 02                    ..
         inc     $C1                             ; 9FBC E6 C1                    ..
-BattleTurnEngine_Branch_9FBE:
+BattleDisplay_Branch_9FBE:
         clc                                     ; 9FBE 18                       .
         adc     $A019                           ; 9FBF 6D 19 A0                 m..
         sta     $C0                             ; 9FC2 85 C0                    ..
@@ -4828,19 +4828,19 @@ BattleTurnEngine_Branch_9FBE:
 Bank14_AdvanceMonsterGraphicsStreamBlock:
         lsr     a                               ; 9FEB 4A                       J
         and     #$04                            ; 9FEC 29 04                    ).
-        bne     BattleTurnEngine_Branch_9FFC    ; 9FEE D0 0C                    ..
+        bne     BattleDisplay_Branch_9FFC       ; 9FEE D0 0C                    ..
         lda     #$10                            ; 9FF0 A9 10                    ..
         clc                                     ; 9FF2 18                       .
         adc     $C0                             ; 9FF3 65 C0                    e.
         sta     $C0                             ; 9FF5 85 C0                    ..
-        bcc     BattleTurnEngine_Branch_A018    ; 9FF7 90 1F                    ..
+        bcc     BattleDisplay_Branch_A018       ; 9FF7 90 1F                    ..
         inc     $C1                             ; 9FF9 E6 C1                    ..
         rts                                     ; 9FFB 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_9FFC:
-        bcc     BattleTurnEngine_Branch_A001    ; 9FFC 90 03                    ..
+BattleDisplay_Branch_9FFC:
+        bcc     BattleDisplay_Branch_A001       ; 9FFC 90 03                    ..
         jsr     Bank14_AdvanceMonsterGraphicsInput; 9FFE 20 9F 9F                ..
-BattleTurnEngine_Branch_A001:
+BattleDisplay_Branch_A001:
         jsr     Bank14_ReadMonsterGraphicsByte  ; A001 20 8D 9F                  ..
         pha                                     ; A004 48                       H
         jsr     Bank14_ReadMonsterGraphicsByte  ; A005 20 8D 9F                  ..
@@ -4850,61 +4850,61 @@ BattleTurnEngine_Branch_A001:
         tya                                     ; A00D 98                       .
 Bank14_AdvanceMonsterGraphicsInputBySetBits:
         asl     a                               ; A00E 0A                       .
-        bcc     BattleTurnEngine_Branch_A016    ; A00F 90 05                    ..
+        bcc     BattleDisplay_Branch_A016       ; A00F 90 05                    ..
         pha                                     ; A011 48                       H
         jsr     Bank14_AdvanceMonsterGraphicsInput; A012 20 9F 9F                ..
         pla                                     ; A015 68                       h
-BattleTurnEngine_Branch_A016:
+BattleDisplay_Branch_A016:
         bne     Bank14_AdvanceMonsterGraphicsInputBySetBits; A016 D0 F6         ..
-BattleTurnEngine_Branch_A018:
+BattleDisplay_Branch_A018:
         rts                                     ; A018 60                       `
 ; ----------------------------------------------------------------------------
         db   $B1                             ; A019 B1                       .
         db   $B3                             ; A01A B3                       .
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunQueuedTurnSlotRandomFillBurst:
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A01B 20 7C A0          |.
-        jsr     BattleTurnEngine_BuildQueuedTurnSlotOverlayGrid; A01E 20 D5 A0   ..
-        jsr     BattleTurnEngine_RandomlyFillOverlayPatternTile; A021 20 2E A0   ..
-        jsr     BattleTurnEngine_EraseQueuedCombatantGraphic; A024 20 40 9A      @.
-        jmp     BattleTurnEngine_ClearQueuedOamOverlay; A027 4C 17 9C           L..
+BattleDisplay_RunDisplaySlotRandomFillBurst:
+        jsr     BattleDisplay_ClearOverlayPatternTile; A01B 20 7C A0             |.
+        jsr     BattleDisplay_BuildDisplaySlotOverlayGrid; A01E 20 D5 A0         ..
+        jsr     BattleDisplay_RandomlyFillOverlayPatternTile; A021 20 2E A0      ..
+        jsr     BattleDisplay_EraseQueuedCombatantGraphic; A024 20 40 9A         @.
+        jmp     BattleDisplay_ClearQueuedOamOverlay; A027 4C 17 9C              L..
 ; ----------------------------------------------------------------------------
         db   $A9,$00,$F0,$02                 ; A02A A9 00 F0 02              ....
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RandomlyFillOverlayPatternTile:
+BattleDisplay_RandomlyFillOverlayPatternTile:
         lda     #$FF                            ; A02E A9 FF                    ..
         sta     $00                           ; A030 85 00                    ..
 RandomlyFillOverlayPatternUntilComplete:
         lda     #$03                            ; A032 A9 03                    ..
         sta     $02                             ; A034 85 02                    ..
-        jsr     BattleTurnEngine_FlipRandomOverlayBitTowardTarget; A036 20 42 A0 B.
-        bcc     BattleTurnEngine_Branch_A03C    ; A039 90 01                    ..
+        jsr     BattleDisplay_FlipRandomOverlayBitTowardTarget; A036 20 42 A0    B.
+        bcc     BattleDisplay_Branch_A03C       ; A039 90 01                    ..
         rts                                     ; A03B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_A03C:
-        jsr     BattleTurnEngine_UploadOverlayPatternTile; A03C 20 92 A0         ..
+BattleDisplay_Branch_A03C:
+        jsr     BattleDisplay_UploadOverlayPatternTile; A03C 20 92 A0            ..
         jmp     RandomlyFillOverlayPatternUntilComplete; A03F 4C 32 A0          L2.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_FlipRandomOverlayBitTowardTarget:
+BattleDisplay_FlipRandomOverlayBitTowardTarget:
         lda     #$00                            ; A042 A9 00                    ..
         sta     $01                             ; A044 85 01                    ..
         ldx     #$07                            ; A046 A2 07                    ..
-BattleTurnEngine_Branch_A048:
+BattleDisplay_Branch_A048:
         lda     $0650,x                         ; A048 BD 50 06                 .P.
         cmp     $00                           ; A04B C5 00                    ..
         clc                                     ; A04D 18                       .
-        beq     BattleTurnEngine_Branch_A051    ; A04E F0 01                    ..
+        beq     BattleDisplay_Branch_A051       ; A04E F0 01                    ..
         sec                                     ; A050 38                       8
-BattleTurnEngine_Branch_A051:
+BattleDisplay_Branch_A051:
         rol     $01                             ; A051 26 01                    &.
         dex                                     ; A053 CA                       .
-        bpl     BattleTurnEngine_Branch_A048    ; A054 10 F2                    ..
+        bpl     BattleDisplay_Branch_A048       ; A054 10 F2                    ..
         lda     $01                             ; A056 A5 01                    ..
-        bne     BattleTurnEngine_Branch_A05C    ; A058 D0 02                    ..
+        bne     BattleDisplay_Branch_A05C       ; A058 D0 02                    ..
         sec                                     ; A05A 38                       8
         rts                                     ; A05B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_A05C:
+BattleDisplay_Branch_A05C:
         brk                                     ; A05C 00                       .
         db   $2B,$0F                         ; A05D 2B 0F                    +.
 ; ----------------------------------------------------------------------------
@@ -4917,34 +4917,34 @@ BattleTurnEngine_Branch_A05C:
         tay                                     ; A068 A8                       .
         lda     #$00                            ; A069 A9 00                    ..
         sec                                     ; A06B 38                       8
-BattleTurnEngine_Branch_A06C:
+BattleDisplay_Branch_A06C:
         rol     a                               ; A06C 2A                       *
         dey                                     ; A06D 88                       .
-        bpl     BattleTurnEngine_Branch_A06C    ; A06E 10 FC                    ..
+        bpl     BattleDisplay_Branch_A06C       ; A06E 10 FC                    ..
         eor     $0650,x                         ; A070 5D 50 06                 ]P.
         sta     $0650,x                         ; A073 9D 50 06                 .P.
         dec     $02                             ; A076 C6 02                    ..
-        bne     BattleTurnEngine_FlipRandomOverlayBitTowardTarget; A078 D0 C8   ..
+        bne     BattleDisplay_FlipRandomOverlayBitTowardTarget; A078 D0 C8      ..
         clc                                     ; A07A 18                       .
         rts                                     ; A07B 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ClearOverlayPatternTile:
+BattleDisplay_ClearOverlayPatternTile:
         lda     #$00                            ; A07C A9 00                    ..
-        beq     BattleTurnEngine_Branch_A082    ; A07E F0 02                    ..
-BattleTurnEngine_FillOverlayPatternTile:
+        beq     BattleDisplay_Branch_A082       ; A07E F0 02                    ..
+BattleDisplay_FillOverlayPatternTile:
         lda     #$FF                            ; A080 A9 FF                    ..
-BattleTurnEngine_Branch_A082:
+BattleDisplay_Branch_A082:
         ldx     #$0F                            ; A082 A2 0F                    ..
         ldy     #$00                            ; A084 A0 00                    ..
-BattleTurnEngine_Branch_A086:
+BattleDisplay_Branch_A086:
         pha                                     ; A086 48                       H
         sta     $0650,x                         ; A087 9D 50 06                 .P.
         tya                                     ; A08A 98                       .
         sta     $0658,x                         ; A08B 9D 58 06                 .X.
         pla                                     ; A08E 68                       h
         dex                                     ; A08F CA                       .
-        bpl     BattleTurnEngine_Branch_A086    ; A090 10 F4                    ..
-BattleTurnEngine_UploadOverlayPatternTile:
+        bpl     BattleDisplay_Branch_A086       ; A090 10 F4                    ..
+BattleDisplay_UploadOverlayPatternTile:
         lda     #$80                            ; A092 A9 80                    ..
         sta     $0300                           ; A094 8D 00 03                 ...
         lda     #$00                            ; A097 A9 00                    ..
@@ -4954,14 +4954,14 @@ BattleTurnEngine_UploadOverlayPatternTile:
         lda     #$01                            ; A0A1 A9 01                    ..
         sta     $050B                           ; A0A3 8D 0B 05                 ...
         ldx     #$0F                            ; A0A6 A2 0F                    ..
-BattleTurnEngine_Branch_A0A8:
+BattleDisplay_Branch_A0A8:
         lda     $0650,x                         ; A0A8 BD 50 06                 .P.
         sta     $0303,x                         ; A0AB 9D 03 03                 ...
         dex                                     ; A0AE CA                       .
-        bpl     BattleTurnEngine_Branch_A0A8    ; A0AF 10 F7                    ..
+        bpl     BattleDisplay_Branch_A0A8       ; A0AF 10 F7                    ..
         jmp     RequestPpuUpdateAndWait         ; A0B1 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_SyncPresentationRenderState:
+BattleDisplay_SyncPresentationRenderState:
         lda     $1F                             ; A0B4 A5 1F                    ..
         and     #$7F                            ; A0B6 29 7F                    ).
         sta     $1F                             ; A0B8 85 1F                    ..
@@ -4971,22 +4971,22 @@ BattleTurnEngine_SyncPresentationRenderState:
         lda     $1F                             ; A0C0 A5 1F                    ..
         and     #$F7                            ; A0C2 29 F7                    ).
         sta     $1F                             ; A0C4 85 1F                    ..
-BattleTurnEngine_Branch_A0C6:
+BattleDisplay_Branch_A0C6:
         jsr     WaitForNmi                      ; A0C6 20 74 FF                  t.
         lda     $0513                           ; A0C9 AD 13 05                 ...
-        bne     BattleTurnEngine_Branch_A0C6    ; A0CC D0 F8                    ..
+        bne     BattleDisplay_Branch_A0C6       ; A0CC D0 F8                    ..
         lda     $1F                             ; A0CE A5 1F                    ..
         ora     #$08                            ; A0D0 09 08                    ..
         sta     $1F                             ; A0D2 85 1F                    ..
         rts                                     ; A0D4 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_BuildQueuedTurnSlotOverlayGrid:
+BattleDisplay_BuildDisplaySlotOverlayGrid:
         ldy     #$23                            ; A0D5 A0 23                    .#
         lda     #$00                            ; A0D7 A9 00                    ..
         sta     $01                             ; A0D9 85 01                    ..
         lda     #$02                            ; A0DB A9 02                    ..
         sta     $02                             ; A0DD 85 02                    ..
-BattleTurnEngine_Branch_A0DF:
+BattleDisplay_Branch_A0DF:
         ldx     $C7                             ; A0DF A6 C7                    ..
         lda     $0698,x                         ; A0E1 BD 98 06                 ...
         asl     a                               ; A0E4 0A                       .
@@ -5013,7 +5013,7 @@ BattleTurnEngine_Branch_A0DF:
         ldx     #$00                            ; A106 A2 00                    ..
         jsr     CopySpriteRecordToOam           ; A108 20 3E C7                  >.
         dey                                     ; A10B 88                       .
-        bpl     BattleTurnEngine_Branch_A0DF    ; A10C 10 D1                    ..
+        bpl     BattleDisplay_Branch_A0DF       ; A10C 10 D1                    ..
         jmp     WaitForNmi                      ; A10E 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
 Bank14_RawBattleGraphics:
@@ -5110,27 +5110,27 @@ Bank14_RawBattleGraphics:
         db   $00,$00,$18,$34,$28,$18,$00,$00 ; A3E1 00 00 18 34 28 18 00 00  ...4(...
         db   $00,$00,$10,$28,$34,$18,$00,$00 ; A3E9 00 00 10 28 34 18 00 00  ...(4...
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunBattlePresentationScene:
-        jsr     BattleTurnEngine_SyncPresentationRenderState; A3F1 20 B4 A0      ..
+DispatchNecrosaroTransformationScene:
+        jsr     BattleDisplay_SyncPresentationRenderState; A3F1 20 B4 A0         ..
         lda     $6E7E                           ; A3F4 AD 7E 6E                 .~n
         asl     a                               ; A3F7 0A                       .
         tax                                     ; A3F8 AA                       .
-        lda     Bank14_BattlePresentationSubdirectory,x; A3F9 BD 0D A4          ...
+        lda     Bank14_NecrosaroTransformationSubdirectory,x; A3F9 BD 0D A4     ...
         sta     $00                           ; A3FC 85 00                    ..
         lda     $A40E,x                         ; A3FE BD 0E A4                 ...
         sta     $01                             ; A401 85 01                    ..
-        jsr     BattleTurnEngine_JumpViaScratchPointer; A403 20 64 83            d.
+        jsr     BattleDisplay_JumpViaScratchPointer; A403 20 64 83               d.
         lda     $1F                             ; A406 A5 1F                    ..
         and     #$F7                            ; A408 29 F7                    ).
         sta     $1F                             ; A40A 85 1F                    ..
         rts                                     ; A40C 60                       `
 ; ----------------------------------------------------------------------------
-Bank14_BattlePresentationSubdirectory:
+Bank14_NecrosaroTransformationSubdirectory:
         db   $1B                             ; A40D 1B                       .
         db   $A4,$6A,$A4,$99,$A4,$D0,$A4,$7F ; A40E A4 6A A4 99 A4 D0 A4 7F  .j......
         db   $A6,$36,$A7,$88,$A8             ; A416 A6 36 A7 88 A8           .6...
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunPrimedSinglePanelRevealScene:
+RunNecrosaroFirstFormTransition:
         lda     #$A3                            ; A41B A9 A3                    ..
         sta     $0300                           ; A41D 8D 00 03                 ...
         lda     #$18                            ; A420 A9 18                    ..
@@ -5138,23 +5138,23 @@ BattleTurnEngine_RunPrimedSinglePanelRevealScene:
         lda     #$D0                            ; A425 A9 D0                    ..
         sta     NextTextCharacter               ; A427 8D 02 03                 ...
         ldx     #$17                            ; A42A A2 17                    ..
-BattleTurnEngine_Branch_A42C:
+BattleDisplay_Branch_A42C:
         lda     #$55                            ; A42C A9 55                    .U
         cpx     #$10                            ; A42E E0 10                    ..
-        bcc     BattleTurnEngine_Branch_A434    ; A430 90 02                    ..
+        bcc     BattleDisplay_Branch_A434       ; A430 90 02                    ..
         lda     #$05                            ; A432 A9 05                    ..
-BattleTurnEngine_Branch_A434:
+BattleDisplay_Branch_A434:
         sta     $0303,x                         ; A434 9D 03 03                 ...
         dex                                     ; A437 CA                       .
-        bpl     BattleTurnEngine_Branch_A42C    ; A438 10 F2                    ..
+        bpl     BattleDisplay_Branch_A42C       ; A438 10 F2                    ..
         inc     $050B                           ; A43A EE 0B 05                 ...
         jsr     RequestPpuUpdateAndWait         ; A43D 20 2D C6                  -.
         ldx     #$00                            ; A440 A2 00                    ..
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A442 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A442 20 ED B0 ..
         ldy     #$01                            ; A445 A0 01                    ..
         lda     #$EE                            ; A447 A9 EE                    ..
         sta     $04                             ; A449 85 04                    ..
-BattleTurnEngine_Branch_A44B:
+BattleDisplay_Branch_A44B:
         ldx     #$00                            ; A44B A2 00                    ..
         jsr     CopyOamSpriteRecord             ; A44D 20 70 C7                  p.
         lda     $04                             ; A450 A5 04                    ..
@@ -5165,84 +5165,84 @@ BattleTurnEngine_Branch_A44B:
         iny                                     ; A45B C8                       .
         iny                                     ; A45C C8                       .
         cpy     #$0D                            ; A45D C0 0D                    ..
-        bcc     BattleTurnEngine_Branch_A44B    ; A45F 90 EA                    ..
+        bcc     BattleDisplay_Branch_A44B       ; A45F 90 EA                    ..
         jsr     WaitForNmi                      ; A461 20 74 FF                  t.
         lda     #$00                            ; A464 A9 00                    ..
         sta     $0F                             ; A466 85 0F                    ..
-        beq     BattleTurnEngine_Branch_A46E    ; A468 F0 04                    ..
-BattleTurnEngine_RunSecondarySinglePanelRevealScene:
+        beq     BattleDisplay_Branch_A46E       ; A468 F0 04                    ..
+RunNecrosaroSecondFormTransition:
         lda     #$01                            ; A46A A9 01                    ..
         sta     $0F                             ; A46C 85 0F                    ..
-BattleTurnEngine_Branch_A46E:
+BattleDisplay_Branch_A46E:
         ldx     #$00                            ; A46E A2 00                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A470 20 00 B1     ..
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A473 20 7C A0          |.
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A470 20 00 B1 ..
+        jsr     BattleDisplay_ClearOverlayPatternTile; A473 20 7C A0             |.
         ldx     $0F                             ; A476 A6 0F                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A478 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A478 20 1A AC   ..
         brk                                     ; A47B 00                       .
         db   $A7,$FB                         ; A47C A7 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunOverlayFillSweep; A47E 20 7C AE              |.
+        jsr     NecrosaroTransformation_RunOverlayFillSweep; A47E 20 7C AE       |.
         ldx     $0F                             ; A481 A6 0F                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A483 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A483 20 43 AA C.
         ldy     #$0D                            ; A486 A0 0D                    ..
         lda     #$12                            ; A488 A9 12                    ..
         sta     $04                             ; A48A 85 04                    ..
         lda     $0F                             ; A48C A5 0F                    ..
-        beq     BattleTurnEngine_Branch_A496    ; A48E F0 06                    ..
+        beq     BattleDisplay_Branch_A496       ; A48E F0 06                    ..
         ldy     #$01                            ; A490 A0 01                    ..
         lda     #$1E                            ; A492 A9 1E                    ..
         sta     $04                             ; A494 85 04                    ..
-BattleTurnEngine_Branch_A496:
-        jmp     BattleTurnEngine_HideOamSpriteRange; A496 4C 1D 9C              L..
+BattleDisplay_Branch_A496:
+        jmp     BattleDisplay_HideOamSpriteRange; A496 4C 1D 9C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunDualPanelRevealScene:
+RunNecrosaroThirdFormTransition:
         lda     #$02                            ; A499 A9 02                    ..
         sta     $0F                             ; A49B 85 0F                    ..
         ldx     #$02                            ; A49D A2 02                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A49F 20 1A AC          ..
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A4A2 20 7C A0          |.
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A49F 20 1A AC   ..
+        jsr     BattleDisplay_ClearOverlayPatternTile; A4A2 20 7C A0             |.
         inc     $0F                             ; A4A5 E6 0F                    ..
         ldx     $0F                             ; A4A7 A6 0F                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A4A9 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A4A9 20 1A AC   ..
         dec     $0F                             ; A4AC C6 0F                    ..
         brk                                     ; A4AE 00                       .
         db   $A7,$FB                         ; A4AF A7 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunOverlayFillSweep; A4B1 20 7C AE              |.
+        jsr     NecrosaroTransformation_RunOverlayFillSweep; A4B1 20 7C AE       |.
         inc     $0F                             ; A4B4 E6 0F                    ..
         ldx     $0F                             ; A4B6 A6 0F                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A4B8 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A4B8 20 43 AA C.
         dec     $0F                             ; A4BB C6 0F                    ..
         ldx     #$01                            ; A4BD A2 01                    ..
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A4BF 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A4BF 20 ED B0 ..
         ldx     #$04                            ; A4C2 A2 04                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A4C4 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A4C4 20 43 AA C.
         ldy     #$00                            ; A4C7 A0 00                    ..
         lda     #$14                            ; A4C9 A9 14                    ..
         sta     $04                             ; A4CB 85 04                    ..
-        jmp     BattleTurnEngine_HideOamSpriteRange; A4CD 4C 1D 9C              L..
+        jmp     BattleDisplay_HideOamSpriteRange; A4CD 4C 1D 9C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunProgressivePanelAssemblyScene:
+RunNecrosaroFourthFormTransition:
         brk                                     ; A4D0 00                       .
         db   $B0,$FB                         ; A4D1 B0 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A4D3 20 7C A0          |.
+        jsr     BattleDisplay_ClearOverlayPatternTile; A4D3 20 7C A0             |.
         ldy     #$01                            ; A4D6 A0 01                    ..
         sty     $0F                             ; A4D8 84 0F                    ..
-BattleTurnEngine_Branch_A4DA:
+BattleDisplay_Branch_A4DA:
         dey                                     ; A4DA 88                       .
         ldx     $A621,y                         ; A4DB BE 21 A6                 .!.
-BattleTurnEngine_Branch_A4DE:
+BattleDisplay_Branch_A4DE:
         txa                                     ; A4DE 8A                       .
         pha                                     ; A4DF 48                       H
-        jsr     BattleTurnEngine_LoadPhaseSelectedSpriteLayout; A4E0 20 F8 A5    ..
+        jsr     NecrosaroTransformation_LoadPhaseSelectedSpriteLayout; A4E0 20 F8 A5 ..
         ldy     $0F                             ; A4E3 A4 0F                    ..
         dey                                     ; A4E5 88                       .
         ldx     $A631,y                         ; A4E6 BE 31 A6                 .1.
         jsr     WaitFrames                      ; A4E9 20 0C C9                  ..
         dec     $0F                             ; A4EC C6 0F                    ..
-        jsr     BattleTurnEngine_LoadPhaseSelectedSpriteLayout; A4EE 20 F8 A5    ..
+        jsr     NecrosaroTransformation_LoadPhaseSelectedSpriteLayout; A4EE 20 F8 A5 ..
         ldy     $0F                             ; A4F1 A4 0F                    ..
         ldx     $A629,y                         ; A4F3 BE 29 A6                 .).
         jsr     WaitFrames                      ; A4F6 20 0C C9                  ..
@@ -5250,162 +5250,162 @@ BattleTurnEngine_Branch_A4DE:
         pla                                     ; A4FB 68                       h
         tax                                     ; A4FC AA                       .
         dex                                     ; A4FD CA                       .
-        bne     BattleTurnEngine_Branch_A4DE    ; A4FE D0 DE                    ..
-        jsr     BattleTurnEngine_LoadPhaseSelectedSpriteLayout; A500 20 F8 A5    ..
+        bne     BattleDisplay_Branch_A4DE       ; A4FE D0 DE                    ..
+        jsr     NecrosaroTransformation_LoadPhaseSelectedSpriteLayout; A500 20 F8 A5 ..
         ldy     $0F                             ; A503 A4 0F                    ..
         dey                                     ; A505 88                       .
         ldx     $A641,y                         ; A506 BE 41 A6                 .A.
-        beq     BattleTurnEngine_Branch_A50E    ; A509 F0 03                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A50B 20 43 AA       C.
-BattleTurnEngine_Branch_A50E:
+        beq     BattleDisplay_Branch_A50E       ; A509 F0 03                    ..
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A50B 20 43 AA C.
+BattleDisplay_Branch_A50E:
         inc     $0F                             ; A50E E6 0F                    ..
         ldy     $0F                             ; A510 A4 0F                    ..
         cpy     #$08                            ; A512 C0 08                    ..
-        bcc     BattleTurnEngine_Branch_A4DA    ; A514 90 C4                    ..
+        bcc     BattleDisplay_Branch_A4DA       ; A514 90 C4                    ..
         ldy     #$00                            ; A516 A0 00                    ..
         lda     #$10                            ; A518 A9 10                    ..
         sta     $04                             ; A51A 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A51C 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A51C 20 1D 9C                  ..
         ldy     #$03                            ; A51F A0 03                    ..
-BattleTurnEngine_Branch_A521:
+BattleDisplay_Branch_A521:
         tya                                     ; A521 98                       .
         pha                                     ; A522 48                       H
         lda     #$00                            ; A523 A9 00                    ..
         sta     $00                           ; A525 85 00                    ..
-BattleTurnEngine_Branch_A527:
-        jsr     BattleTurnEngine_QueuePresentationPaletteStep; A527 20 09 A6     ..
+BattleDisplay_Branch_A527:
+        jsr     NecrosaroTransformation_QueueTransformationPaletteStep; A527 20 09 A6 ..
         inc     $00                           ; A52A E6 00                    ..
         lda     $00                           ; A52C A5 00                    ..
         cmp     #$04                            ; A52E C9 04                    ..
-        bcc     BattleTurnEngine_Branch_A527    ; A530 90 F5                    ..
+        bcc     BattleDisplay_Branch_A527       ; A530 90 F5                    ..
         pla                                     ; A532 68                       h
         tay                                     ; A533 A8                       .
         dey                                     ; A534 88                       .
-        bne     BattleTurnEngine_Branch_A521    ; A535 D0 EA                    ..
+        bne     BattleDisplay_Branch_A521       ; A535 D0 EA                    ..
         lda     #$00                            ; A537 A9 00                    ..
         sta     $00                           ; A539 85 00                    ..
-BattleTurnEngine_Branch_A53B:
-        jsr     BattleTurnEngine_QueuePresentationPaletteStep; A53B 20 09 A6     ..
+BattleDisplay_Branch_A53B:
+        jsr     NecrosaroTransformation_QueueTransformationPaletteStep; A53B 20 09 A6 ..
         inc     $00                           ; A53E E6 00                    ..
         lda     $00                           ; A540 A5 00                    ..
         cmp     #$03                            ; A542 C9 03                    ..
-        bcc     BattleTurnEngine_Branch_A53B    ; A544 90 F5                    ..
+        bcc     BattleDisplay_Branch_A53B       ; A544 90 F5                    ..
         ldx     #$0E                            ; A546 A2 0E                    ..
-BattleTurnEngine_Branch_A548:
+BattleDisplay_Branch_A548:
         lda     $A650,x                         ; A548 BD 50 A6                 .P.
         sta     $0606,x                         ; A54B 9D 06 06                 ...
         dex                                     ; A54E CA                       .
-        bpl     BattleTurnEngine_Branch_A548    ; A54F 10 F7                    ..
+        bpl     BattleDisplay_Branch_A548       ; A54F 10 F7                    ..
         jsr     SubmitPaletteWithoutFade        ; A551 20 B9 C5                  ..
         jsr     WaitForNmi                      ; A554 20 74 FF                  t.
         ldx     #$02                            ; A557 A2 02                    ..
-BattleTurnEngine_Branch_A559:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A559 20 ED B0   ..
+BattleDisplay_Branch_A559:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A559 20 ED B0 ..
         inx                                     ; A55C E8                       .
         cpx     #$09                            ; A55D E0 09                    ..
-        bcc     BattleTurnEngine_Branch_A559    ; A55F 90 F8                    ..
+        bcc     BattleDisplay_Branch_A559       ; A55F 90 F8                    ..
         ldx     #$0B                            ; A561 A2 0B                    ..
-BattleTurnEngine_Branch_A563:
+BattleDisplay_Branch_A563:
         txa                                     ; A563 8A                       .
         pha                                     ; A564 48                       H
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A565 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A565 20 43 AA C.
         ldx     #$04                            ; A568 A2 04                    ..
         jsr     WaitFrames                      ; A56A 20 0C C9                  ..
         pla                                     ; A56D 68                       h
         tax                                     ; A56E AA                       .
         inx                                     ; A56F E8                       .
         cpx     #$11                            ; A570 E0 11                    ..
-        bcc     BattleTurnEngine_Branch_A563    ; A572 90 EF                    ..
+        bcc     BattleDisplay_Branch_A563       ; A572 90 EF                    ..
         ldx     #$09                            ; A574 A2 09                    ..
-BattleTurnEngine_Branch_A576:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A576 20 ED B0   ..
+BattleDisplay_Branch_A576:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A576 20 ED B0 ..
         inx                                     ; A579 E8                       .
         cpx     #$0B                            ; A57A E0 0B                    ..
-        bcc     BattleTurnEngine_Branch_A576    ; A57C 90 F8                    ..
+        bcc     BattleDisplay_Branch_A576       ; A57C 90 F8                    ..
         ldx     #$11                            ; A57E A2 11                    ..
-BattleTurnEngine_Branch_A580:
+BattleDisplay_Branch_A580:
         txa                                     ; A580 8A                       .
         pha                                     ; A581 48                       H
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A582 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A582 20 43 AA C.
         ldx     #$02                            ; A585 A2 02                    ..
         jsr     WaitFrames                      ; A587 20 0C C9                  ..
         pla                                     ; A58A 68                       h
         tax                                     ; A58B AA                       .
         inx                                     ; A58C E8                       .
         cpx     #$13                            ; A58D E0 13                    ..
-        bcc     BattleTurnEngine_Branch_A580    ; A58F 90 EF                    ..
-        jsr     BattleTurnEngine_UploadConsecutivePresentationPanels; A591 20 ED A5 ..
+        bcc     BattleDisplay_Branch_A580       ; A58F 90 EF                    ..
+        jsr     NecrosaroTransformation_UploadConsecutiveTransformationPanels; A591 20 ED A5 ..
         ldx     #$13                            ; A594 A2 13                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A596 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A596 20 43 AA C.
         ldy     #$00                            ; A599 A0 00                    ..
-BattleTurnEngine_Branch_A59B:
+BattleDisplay_Branch_A59B:
         ldx     $A65F,y                         ; A59B BE 5F A6                 ._.
         tya                                     ; A59E 98                       .
         pha                                     ; A59F 48                       H
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A5A0 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A5A0 20 ED B0 ..
         ldx     #$0C                            ; A5A3 A2 0C                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A5A5 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A5A5 20 1A AC   ..
         pla                                     ; A5A8 68                       h
         tay                                     ; A5A9 A8                       .
         ldx     #$0F                            ; A5AA A2 0F                    ..
         jsr     WaitFrames                      ; A5AC 20 0C C9                  ..
         iny                                     ; A5AF C8                       .
         cpy     #$03                            ; A5B0 C0 03                    ..
-        bcc     BattleTurnEngine_Branch_A59B    ; A5B2 90 E7                    ..
+        bcc     BattleDisplay_Branch_A59B       ; A5B2 90 E7                    ..
         ldx     #$19                            ; A5B4 A2 19                    ..
         jsr     WaitFrames                      ; A5B6 20 0C C9                  ..
         ldx     #$01                            ; A5B9 A2 01                    ..
-BattleTurnEngine_Branch_A5BB:
+BattleDisplay_Branch_A5BB:
         txa                                     ; A5BB 8A                       .
         pha                                     ; A5BC 48                       H
         ldy     #$00                            ; A5BD A0 00                    ..
-BattleTurnEngine_Branch_A5BF:
+BattleDisplay_Branch_A5BF:
         tya                                     ; A5BF 98                       .
         pha                                     ; A5C0 48                       H
         ldx     $A662,y                         ; A5C1 BE 62 A6                 .b.
         cpx     #$0D                            ; A5C4 E0 0D                    ..
-        bne     BattleTurnEngine_Branch_A5CB    ; A5C6 D0 03                    ..
-        jsr     BattleTurnEngine_UploadConsecutivePresentationPanels; A5C8 20 ED A5 ..
-BattleTurnEngine_Branch_A5CB:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A5CB 20 ED B0   ..
+        bne     BattleDisplay_Branch_A5CB       ; A5C6 D0 03                    ..
+        jsr     NecrosaroTransformation_UploadConsecutiveTransformationPanels; A5C8 20 ED A5 ..
+BattleDisplay_Branch_A5CB:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A5CB 20 ED B0 ..
         pla                                     ; A5CE 68                       h
         tay                                     ; A5CF A8                       .
         iny                                     ; A5D0 C8                       .
         cpy     #$05                            ; A5D1 C0 05                    ..
-        bcc     BattleTurnEngine_Branch_A5BF    ; A5D3 90 EA                    ..
+        bcc     BattleDisplay_Branch_A5BF       ; A5D3 90 EA                    ..
         pla                                     ; A5D5 68                       h
         tax                                     ; A5D6 AA                       .
         dex                                     ; A5D7 CA                       .
-        bpl     BattleTurnEngine_Branch_A5BB    ; A5D8 10 E1                    ..
+        bpl     BattleDisplay_Branch_A5BB       ; A5D8 10 E1                    ..
         ldx     #$17                            ; A5DA A2 17                    ..
-BattleTurnEngine_Branch_A5DC:
+BattleDisplay_Branch_A5DC:
         lda     $A667,x                         ; A5DC BD 67 A6                 .g.
         sta     $0300,x                         ; A5DF 9D 00 03                 ...
         dex                                     ; A5E2 CA                       .
-        bpl     BattleTurnEngine_Branch_A5DC    ; A5E3 10 F7                    ..
+        bpl     BattleDisplay_Branch_A5DC       ; A5E3 10 F7                    ..
         lda     #$08                            ; A5E5 A9 08                    ..
         sta     $050B                           ; A5E7 8D 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; A5EA 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_UploadConsecutivePresentationPanels:
+NecrosaroTransformation_UploadConsecutiveTransformationPanels:
         ldx     #$0B                            ; A5ED A2 0B                    ..
-BattleTurnEngine_Branch_A5EF:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A5EF 20 ED B0   ..
+BattleDisplay_Branch_A5EF:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A5EF 20 ED B0 ..
         inx                                     ; A5F2 E8                       .
         cpx     #$0E                            ; A5F3 E0 0E                    ..
-        bcc     BattleTurnEngine_Branch_A5EF    ; A5F5 90 F8                    ..
+        bcc     BattleDisplay_Branch_A5EF       ; A5F5 90 F8                    ..
         rts                                     ; A5F7 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadPhaseSelectedSpriteLayout:
+NecrosaroTransformation_LoadPhaseSelectedSpriteLayout:
         ldy     #$00                            ; A5F8 A0 00                    ..
         lda     #$14                            ; A5FA A9 14                    ..
         sta     $04                             ; A5FC 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A5FE 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A5FE 20 1D 9C                  ..
         ldy     $0F                             ; A601 A4 0F                    ..
         ldx     $A639,y                         ; A603 BE 39 A6                 .9.
-        jmp     BattleTurnEngine_LoadIndexedSpriteLayout; A606 4C 1A AC         L..
+        jmp     NecrosaroTransformation_LoadIndexedSpriteLayout; A606 4C 1A AC  L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_QueuePresentationPaletteStep:
+NecrosaroTransformation_QueueTransformationPaletteStep:
         lda     $00                           ; A609 A5 00                    ..
         asl     a                               ; A60B 0A                       .
         tax                                     ; A60C AA                       .
@@ -5432,19 +5432,19 @@ BattleTurnEngine_QueuePresentationPaletteStep:
         db   $98,$18,$E6,$02,$18,$E7,$00,$18 ; A66F 98 18 E6 02 18 E7 00 18  ........
         db   $EF,$19,$18,$FF,$7C,$19,$0F,$3E ; A677 EF 19 18 FF 7C 19 0F 3E  ....|..>
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunTwinSweepAssemblyScene:
+RunNecrosaroFifthFormTransition:
         ldx     #$12                            ; A67F A2 12                    ..
-BattleTurnEngine_Branch_A681:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A681 20 ED B0   ..
+BattleDisplay_Branch_A681:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A681 20 ED B0 ..
         inx                                     ; A684 E8                       .
         cpx     #$1C                            ; A685 E0 1C                    ..
-        bcc     BattleTurnEngine_Branch_A681    ; A687 90 F8                    ..
+        bcc     BattleDisplay_Branch_A681       ; A687 90 F8                    ..
         ldx     #$0D                            ; A689 A2 0D                    ..
-BattleTurnEngine_Branch_A68B:
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A68B 20 1A AC          ..
+BattleDisplay_Branch_A68B:
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A68B 20 1A AC   ..
         inx                                     ; A68E E8                       .
         cpx     #$10                            ; A68F E0 10                    ..
-        bcc     BattleTurnEngine_Branch_A68B    ; A691 90 F8                    ..
+        bcc     BattleDisplay_Branch_A68B       ; A691 90 F8                    ..
         lda     #$FF                            ; A693 A9 FF                    ..
         sta     $05                             ; A695 85 05                    ..
         lda     #$00                            ; A697 A9 00                    ..
@@ -5460,34 +5460,34 @@ BattleTurnEngine_Branch_A68B:
         brk                                     ; A6AB 00                       .
         db   $B1,$FB                         ; A6AC B1 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunSpriteSweepSequence; A6AE 20 CD AE           ..
+        jsr     NecrosaroTransformation_RunSpriteSweepSequence; A6AE 20 CD AE    ..
         brk                                     ; A6B1 00                       .
         db   $80,$FB                         ; A6B2 80 FB                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$13                            ; A6B4 A2 13                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A6B6 20 1A AC          ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A6B9 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A6B6 20 1A AC   ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A6B9 20 80 A0              ..
         ldx     #$14                            ; A6BC A2 14                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A6BE 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A6BE 20 1A AC   ..
         ldx     #$14                            ; A6C1 A2 14                    ..
-BattleTurnEngine_Branch_A6C3:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A6C3 20 43 AA       C.
+BattleDisplay_Branch_A6C3:
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A6C3 20 43 AA C.
         inx                                     ; A6C6 E8                       .
         cpx     #$1C                            ; A6C7 E0 1C                    ..
-        bcc     BattleTurnEngine_Branch_A6C3    ; A6C9 90 F8                    ..
+        bcc     BattleDisplay_Branch_A6C3       ; A6C9 90 F8                    ..
         lda     #$03                            ; A6CB A9 03                    ..
         sta     $0F                             ; A6CD 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A6CF 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A6CF 20 80 AE      ..
         ldy     #$02                            ; A6D2 A0 02                    ..
         lda     #$18                            ; A6D4 A9 18                    ..
         sta     $04                             ; A6D6 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A6D8 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A6D8 20 1D 9C                  ..
         ldx     #$10                            ; A6DB A2 10                    ..
-BattleTurnEngine_Branch_A6DD:
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A6DD 20 1A AC          ..
+BattleDisplay_Branch_A6DD:
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A6DD 20 1A AC   ..
         inx                                     ; A6E0 E8                       .
         cpx     #$13                            ; A6E1 E0 13                    ..
-        bcc     BattleTurnEngine_Branch_A6DD    ; A6E3 90 F8                    ..
+        bcc     BattleDisplay_Branch_A6DD       ; A6E3 90 F8                    ..
         lda     #$01                            ; A6E5 A9 01                    ..
         sta     $05                             ; A6E7 85 05                    ..
         lda     #$04                            ; A6E9 A9 04                    ..
@@ -5503,72 +5503,72 @@ BattleTurnEngine_Branch_A6DD:
         brk                                     ; A6FD 00                       .
         db   $B1,$FB                         ; A6FE B1 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunSpriteSweepSequence; A700 20 CD AE           ..
+        jsr     NecrosaroTransformation_RunSpriteSweepSequence; A700 20 CD AE    ..
         brk                                     ; A703 00                       .
         db   $80,$FB                         ; A704 80 FB                    ..
 ; ----------------------------------------------------------------------------
         ldy     #$02                            ; A706 A0 02                    ..
         lda     #$07                            ; A708 A9 07                    ..
         sta     $04                             ; A70A 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A70C 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A70C 20 1D 9C                  ..
         ldx     #$15                            ; A70F A2 15                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A711 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A711 20 1A AC   ..
         ldx     #$16                            ; A714 A2 16                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A716 20 1A AC          ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A719 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A716 20 1A AC   ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A719 20 80 A0              ..
         ldx     #$1C                            ; A71C A2 1C                    ..
-BattleTurnEngine_Branch_A71E:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A71E 20 43 AA       C.
+BattleDisplay_Branch_A71E:
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A71E 20 43 AA C.
         inx                                     ; A721 E8                       .
         cpx     #$24                            ; A722 E0 24                    .$
-        bcc     BattleTurnEngine_Branch_A71E    ; A724 90 F8                    ..
+        bcc     BattleDisplay_Branch_A71E       ; A724 90 F8                    ..
         lda     #$04                            ; A726 A9 04                    ..
         sta     $0F                             ; A728 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A72A 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A72A 20 80 AE      ..
         ldy     #$09                            ; A72D A0 09                    ..
         lda     #$18                            ; A72F A9 18                    ..
         sta     $04                             ; A731 85 04                    ..
-        jmp     BattleTurnEngine_HideOamSpriteRange; A733 4C 1D 9C              L..
+        jmp     BattleDisplay_HideOamSpriteRange; A733 4C 1D 9C                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunMultiwaveAssemblyScene:
+RunNecrosaroSixthFormTransition:
         ldx     #$1C                            ; A736 A2 1C                    ..
-BattleTurnEngine_Branch_A738:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A738 20 ED B0   ..
+BattleDisplay_Branch_A738:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A738 20 ED B0 ..
         inx                                     ; A73B E8                       .
         cpx     #$1F                            ; A73C E0 1F                    ..
-        bcc     BattleTurnEngine_Branch_A738    ; A73E 90 F8                    ..
+        bcc     BattleDisplay_Branch_A738       ; A73E 90 F8                    ..
         ldx     #$17                            ; A740 A2 17                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A742 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A742 20 1A AC   ..
         ldx     #$24                            ; A745 A2 24                    .$
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A747 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A747 20 43 AA C.
         ldx     #$1F                            ; A74A A2 1F                    ..
-BattleTurnEngine_Branch_A74C:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A74C 20 ED B0   ..
+BattleDisplay_Branch_A74C:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A74C 20 ED B0 ..
         inx                                     ; A74F E8                       .
         cpx     #$29                            ; A750 E0 29                    .)
-        bcc     BattleTurnEngine_Branch_A74C    ; A752 90 F8                    ..
+        bcc     BattleDisplay_Branch_A74C       ; A752 90 F8                    ..
         ldx     #$18                            ; A754 A2 18                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A756 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A756 20 1A AC   ..
         ldx     #$25                            ; A759 A2 25                    .%
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A75B 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A75B 20 43 AA C.
         ldx     #$1C                            ; A75E A2 1C                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A760 20 00 B1     ..
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A763 20 7C A0          |.
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A760 20 00 B1 ..
+        jsr     BattleDisplay_ClearOverlayPatternTile; A763 20 7C A0             |.
         ldx     #$19                            ; A766 A2 19                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A768 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A768 20 1A AC   ..
         lda     #$05                            ; A76B A9 05                    ..
         sta     $0F                             ; A76D 85 0F                    ..
         brk                                     ; A76F 00                       .
         db   $A7,$FB                         ; A770 A7 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunOverlayFillSweep; A772 20 7C AE              |.
+        jsr     NecrosaroTransformation_RunOverlayFillSweep; A772 20 7C AE       |.
         ldx     #$26                            ; A775 A2 26                    .&
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A777 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A777 20 43 AA C.
         lda     $0514                           ; A77A AD 14 05                 ...
         sta     $0609                           ; A77D 8D 09 06                 ...
         jsr     SubmitPaletteWithoutFade        ; A780 20 B9 C5                  ..
         ldx     #$1A                            ; A783 A2 1A                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A785 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A785 20 1A AC   ..
         lda     #$FF                            ; A788 A9 FF                    ..
         sta     $05                             ; A78A 85 05                    ..
         lda     #$08                            ; A78C A9 08                    ..
@@ -5584,58 +5584,58 @@ BattleTurnEngine_Branch_A74C:
         brk                                     ; A7A0 00                       .
         db   $B1,$FB                         ; A7A1 B1 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunSpriteSweepSequence; A7A3 20 CD AE           ..
+        jsr     NecrosaroTransformation_RunSpriteSweepSequence; A7A3 20 CD AE    ..
         ldx     #$1B                            ; A7A6 A2 1B                    ..
-BattleTurnEngine_Branch_A7A8:
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A7A8 20 1A AC          ..
+BattleDisplay_Branch_A7A8:
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A7A8 20 1A AC   ..
         inx                                     ; A7AB E8                       .
         cpx     #$1F                            ; A7AC E0 1F                    ..
-        bcc     BattleTurnEngine_Branch_A7A8    ; A7AE 90 F8                    ..
+        bcc     BattleDisplay_Branch_A7A8       ; A7AE 90 F8                    ..
         ldx     #$27                            ; A7B0 A2 27                    .'
-BattleTurnEngine_Branch_A7B2:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A7B2 20 43 AA       C.
+BattleDisplay_Branch_A7B2:
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A7B2 20 43 AA C.
         inx                                     ; A7B5 E8                       .
         cpx     #$2F                            ; A7B6 E0 2F                    ./
-        bcc     BattleTurnEngine_Branch_A7B2    ; A7B8 90 F8                    ..
+        bcc     BattleDisplay_Branch_A7B2       ; A7B8 90 F8                    ..
         ldx     #$1D                            ; A7BA A2 1D                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A7BC 20 00 B1     ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A7BF 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A7BC 20 00 B1 ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A7BF 20 80 A0              ..
         lda     #$06                            ; A7C2 A9 06                    ..
         sta     $0F                             ; A7C4 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A7C6 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A7C6 20 80 AE      ..
         ldy     #$06                            ; A7C9 A0 06                    ..
         lda     #$10                            ; A7CB A9 10                    ..
         sta     $04                             ; A7CD 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A7CF 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A7CF 20 1D 9C                  ..
         ldx     #$1F                            ; A7D2 A2 1F                    ..
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A7D4 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A7D4 20 1A AC   ..
         inx                                     ; A7D7 E8                       .
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A7D8 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A7D8 20 1A AC   ..
         ldx     #$1E                            ; A7DB A2 1E                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A7DD 20 00 B1     ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A7E0 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A7DD 20 00 B1 ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A7E0 20 80 A0              ..
         lda     #$07                            ; A7E3 A9 07                    ..
         sta     $0F                             ; A7E5 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A7E7 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A7E7 20 80 AE      ..
         ldx     #$21                            ; A7EA A2 21                    .!
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A7EC 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A7EC 20 1A AC   ..
         ldx     #$2F                            ; A7EF A2 2F                    ./
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A7F1 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A7F1 20 43 AA C.
         ldx     #$1C                            ; A7F4 A2 1C                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A7F6 20 00 B1     ..
-        jsr     BattleTurnEngine_ClearOverlayPatternTile; A7F9 20 7C A0          |.
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A7F6 20 00 B1 ..
+        jsr     BattleDisplay_ClearOverlayPatternTile; A7F9 20 7C A0             |.
         ldx     #$22                            ; A7FC A2 22                    ."
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A7FE 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A7FE 20 1A AC   ..
         lda     #$08                            ; A801 A9 08                    ..
         sta     $0F                             ; A803 85 0F                    ..
         brk                                     ; A805 00                       .
         db   $A7,$FB                         ; A806 A7 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunOverlayFillSweep; A808 20 7C AE              |.
+        jsr     NecrosaroTransformation_RunOverlayFillSweep; A808 20 7C AE       |.
         ldx     #$30                            ; A80B A2 30                    .0
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A80D 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A80D 20 43 AA C.
         ldx     #$23                            ; A810 A2 23                    .#
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A812 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A812 20 1A AC   ..
         lda     #$01                            ; A815 A9 01                    ..
         sta     $05                             ; A817 85 05                    ..
         lda     #$0B                            ; A819 A9 0B                    ..
@@ -5651,110 +5651,110 @@ BattleTurnEngine_Branch_A7B2:
         brk                                     ; A82D 00                       .
         db   $B1,$FB                         ; A82E B1 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunSpriteSweepSequence; A830 20 CD AE           ..
+        jsr     NecrosaroTransformation_RunSpriteSweepSequence; A830 20 CD AE    ..
         ldx     #$24                            ; A833 A2 24                    .$
-BattleTurnEngine_Branch_A835:
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A835 20 1A AC          ..
+BattleDisplay_Branch_A835:
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A835 20 1A AC   ..
         inx                                     ; A838 E8                       .
         cpx     #$28                            ; A839 E0 28                    .(
-        bcc     BattleTurnEngine_Branch_A835    ; A83B 90 F8                    ..
+        bcc     BattleDisplay_Branch_A835       ; A83B 90 F8                    ..
         ldx     #$31                            ; A83D A2 31                    .1
-BattleTurnEngine_Branch_A83F:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A83F 20 43 AA       C.
+BattleDisplay_Branch_A83F:
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A83F 20 43 AA C.
         inx                                     ; A842 E8                       .
         cpx     #$39                            ; A843 E0 39                    .9
-        bcc     BattleTurnEngine_Branch_A83F    ; A845 90 F8                    ..
+        bcc     BattleDisplay_Branch_A83F       ; A845 90 F8                    ..
         ldx     #$1D                            ; A847 A2 1D                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A849 20 00 B1     ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A84C 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A849 20 00 B1 ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A84C 20 80 A0              ..
         lda     #$09                            ; A84F A9 09                    ..
         sta     $0F                             ; A851 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A853 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A853 20 80 AE      ..
         ldy     #$06                            ; A856 A0 06                    ..
         lda     #$10                            ; A858 A9 10                    ..
         sta     $04                             ; A85A 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A85C 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A85C 20 1D 9C                  ..
         ldx     #$28                            ; A85F A2 28                    .(
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A861 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A861 20 1A AC   ..
         inx                                     ; A864 E8                       .
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A865 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A865 20 1A AC   ..
         ldx     #$1E                            ; A868 A2 1E                    ..
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; A86A 20 00 B1     ..
-        jsr     BattleTurnEngine_FillOverlayPatternTile; A86D 20 80 A0           ..
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; A86A 20 00 B1 ..
+        jsr     BattleDisplay_FillOverlayPatternTile; A86D 20 80 A0              ..
         lda     #$0A                            ; A870 A9 0A                    ..
         sta     $0F                             ; A872 85 0F                    ..
-        jsr     BattleTurnEngine_RunOverlayClearSweep; A874 20 80 AE             ..
+        jsr     NecrosaroTransformation_RunOverlayClearSweep; A874 20 80 AE      ..
         ldy     #$16                            ; A877 A0 16                    ..
         lda     #$02                            ; A879 A9 02                    ..
         sta     $04                             ; A87B 85 04                    ..
-        jsr     BattleTurnEngine_HideOamSpriteRange; A87D 20 1D 9C               ..
+        jsr     BattleDisplay_HideOamSpriteRange; A87D 20 1D 9C                  ..
         lda     #$30                            ; A880 A9 30                    .0
         sta     $0609                           ; A882 8D 09 06                 ...
         jmp     SubmitPaletteWithoutFade        ; A885 4C B9 C5                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunAttributeFlashAssemblyScene:
+RunNecrosaroFinalFormTransition:
         brk                                     ; A888 00                       .
         db   $04,$9F                         ; A889 04 9F                    ..
 ; ----------------------------------------------------------------------------
         ldx     #$29                            ; A88B A2 29                    .)
         ldy     #$00                            ; A88D A0 00                    ..
-BattleTurnEngine_Branch_A88F:
+BattleDisplay_Branch_A88F:
         tya                                     ; A88F 98                       .
         pha                                     ; A890 48                       H
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A891 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A891 20 ED B0 ..
         pla                                     ; A894 68                       h
         tay                                     ; A895 A8                       .
         inx                                     ; A896 E8                       .
         txa                                     ; A897 8A                       .
         cmp     $AA36,y                         ; A898 D9 36 AA                 .6.
-        bcc     BattleTurnEngine_Branch_A88F    ; A89B 90 F2                    ..
+        bcc     BattleDisplay_Branch_A88F       ; A89B 90 F2                    ..
         iny                                     ; A89D C8                       .
         cpy     #$05                            ; A89E C0 05                    ..
-        bcs     BattleTurnEngine_Branch_A8AE    ; A8A0 B0 0C                    ..
+        bcs     BattleDisplay_Branch_A8AE       ; A8A0 B0 0C                    ..
         txa                                     ; A8A2 8A                       .
         pha                                     ; A8A3 48                       H
         ldx     #$08                            ; A8A4 A2 08                    ..
         jsr     WaitFrames                      ; A8A6 20 0C C9                  ..
         pla                                     ; A8A9 68                       h
         tax                                     ; A8AA AA                       .
-        jmp     BattleTurnEngine_Branch_A88F    ; A8AB 4C 8F A8                 L..
+        jmp     BattleDisplay_Branch_A88F       ; A8AB 4C 8F A8                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_A8AE:
+BattleDisplay_Branch_A8AE:
         ldx     #$2A                            ; A8AE A2 2A                    .*
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A8B0 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A8B0 20 1A AC   ..
         inx                                     ; A8B3 E8                       .
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A8B4 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A8B4 20 1A AC   ..
         lda     #$0A                            ; A8B7 A9 0A                    ..
         sta     $01                             ; A8B9 85 01                    ..
-BattleTurnEngine_Branch_A8BB:
+BattleDisplay_Branch_A8BB:
         lda     #$0E                            ; A8BB A9 0E                    ..
         sta     $00                           ; A8BD 85 00                    ..
-BattleTurnEngine_Branch_A8BF:
+BattleDisplay_Branch_A8BF:
         lda     #$03                            ; A8BF A9 03                    ..
         jsr     QueueNametableAttributeUpdate   ; A8C1 20 27 C7                  '.
         inc     $00                           ; A8C4 E6 00                    ..
         lda     $00                           ; A8C6 A5 00                    ..
         cmp     #$14                            ; A8C8 C9 14                    ..
-        bcc     BattleTurnEngine_Branch_A8BF    ; A8CA 90 F3                    ..
+        bcc     BattleDisplay_Branch_A8BF       ; A8CA 90 F3                    ..
         inc     $01                             ; A8CC E6 01                    ..
         lda     $01                             ; A8CE A5 01                    ..
         cmp     #$0E                            ; A8D0 C9 0E                    ..
-        bcc     BattleTurnEngine_Branch_A8BB    ; A8D2 90 E7                    ..
+        bcc     BattleDisplay_Branch_A8BB       ; A8D2 90 E7                    ..
         lda     #$D5                            ; A8D4 A9 D5                    ..
         sta     $0317                           ; A8D6 8D 17 03                 ...
         jsr     RequestPpuUpdateAndWait         ; A8D9 20 2D C6                  -.
         ldx     #$36                            ; A8DC A2 36                    .6
-BattleTurnEngine_Branch_A8DE:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A8DE 20 ED B0   ..
+BattleDisplay_Branch_A8DE:
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A8DE 20 ED B0 ..
         inx                                     ; A8E1 E8                       .
         cpx     #$3A                            ; A8E2 E0 3A                    .:
-        bcc     BattleTurnEngine_Branch_A8DE    ; A8E4 90 F8                    ..
+        bcc     BattleDisplay_Branch_A8DE       ; A8E4 90 F8                    ..
         ldx     #$2C                            ; A8E6 A2 2C                    .,
-BattleTurnEngine_Branch_A8E8:
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A8E8 20 1A AC          ..
+BattleDisplay_Branch_A8E8:
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A8E8 20 1A AC   ..
         inx                                     ; A8EB E8                       .
         cpx     #$30                            ; A8EC E0 30                    .0
-        bcc     BattleTurnEngine_Branch_A8E8    ; A8EE 90 F8                    ..
+        bcc     BattleDisplay_Branch_A8E8       ; A8EE 90 F8                    ..
         lda     #$FF                            ; A8F0 A9 FF                    ..
         sta     $05                             ; A8F2 85 05                    ..
         lda     #$0E                            ; A8F4 A9 0E                    ..
@@ -5770,7 +5770,7 @@ BattleTurnEngine_Branch_A8E8:
         brk                                     ; A908 00                       .
         db   $A8,$FB                         ; A909 A8 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BattleTurnEngine_RunSpriteSweepSequence; A90B 20 CD AE           ..
+        jsr     NecrosaroTransformation_RunSpriteSweepSequence; A90B 20 CD AE    ..
         brk                                     ; A90E 00                       .
         db   $80,$FB                         ; A90F 80 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5778,105 +5778,105 @@ BattleTurnEngine_Branch_A8E8:
         db   $35,$FB                         ; A912 35 FB                    5.
 ; ----------------------------------------------------------------------------
         ldx     #$3A                            ; A914 A2 3A                    .:
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A916 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A916 20 ED B0 ..
         ldx     #$39                            ; A919 A2 39                    .9
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A91B 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A91B 20 43 AA C.
         ldx     #$0A                            ; A91E A2 0A                    ..
         jsr     WaitFrames                      ; A920 20 0C C9                  ..
         ldx     #$3B                            ; A923 A2 3B                    .;
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A925 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A925 20 ED B0 ..
         inx                                     ; A928 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A929 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A929 20 ED B0 ..
         ldx     #$3A                            ; A92C A2 3A                    .:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A92E 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A92E 20 43 AA C.
         inx                                     ; A931 E8                       .
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A932 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A932 20 43 AA C.
         ldx     #$0A                            ; A935 A2 0A                    ..
         jsr     WaitFrames                      ; A937 20 0C C9                  ..
         ldx     #$3D                            ; A93A A2 3D                    .=
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A93C 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A93C 20 ED B0 ..
         inx                                     ; A93F E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A940 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A940 20 ED B0 ..
         ldx     #$0A                            ; A943 A2 0A                    ..
         jsr     WaitFrames                      ; A945 20 0C C9                  ..
         ldx     #$3F                            ; A948 A2 3F                    .?
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A94A 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A94A 20 ED B0 ..
         inx                                     ; A94D E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A94E 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A94E 20 ED B0 ..
         ldx     #$30                            ; A951 A2 30                    .0
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A953 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A953 20 1A AC   ..
         ldx     #$3C                            ; A956 A2 3C                    .<
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A958 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A958 20 43 AA C.
         ldx     #$0A                            ; A95B A2 0A                    ..
         jsr     WaitFrames                      ; A95D 20 0C C9                  ..
         lda     #$00                            ; A960 A9 00                    ..
-        jsr     BattleTurnEngine_DrawIndexedOffsetSpritePair; A962 20 FD A9      ..
+        jsr     NecrosaroTransformation_DrawIndexedOffsetSpritePair; A962 20 FD A9 ..
         ldx     #$41                            ; A965 A2 41                    .A
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A967 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A967 20 ED B0 ..
         inx                                     ; A96A E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A96B 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A96B 20 ED B0 ..
         ldx     #$0A                            ; A96E A2 0A                    ..
         jsr     WaitFrames                      ; A970 20 0C C9                  ..
         ldx     #$43                            ; A973 A2 43                    .C
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A975 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A975 20 ED B0 ..
         inx                                     ; A978 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A979 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A979 20 ED B0 ..
         lda     #$01                            ; A97C A9 01                    ..
-        jsr     BattleTurnEngine_DrawIndexedOffsetSpritePair; A97E 20 FD A9      ..
+        jsr     NecrosaroTransformation_DrawIndexedOffsetSpritePair; A97E 20 FD A9 ..
         ldx     #$3D                            ; A981 A2 3D                    .=
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A983 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A983 20 43 AA C.
         ldx     #$0A                            ; A986 A2 0A                    ..
         jsr     WaitFrames                      ; A988 20 0C C9                  ..
         lda     #$02                            ; A98B A9 02                    ..
-        jsr     BattleTurnEngine_DrawIndexedOffsetSpritePair; A98D 20 FD A9      ..
+        jsr     NecrosaroTransformation_DrawIndexedOffsetSpritePair; A98D 20 FD A9 ..
         ldx     #$45                            ; A990 A2 45                    .E
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A992 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A992 20 ED B0 ..
         inx                                     ; A995 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A996 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A996 20 ED B0 ..
         ldx     #$0A                            ; A999 A2 0A                    ..
         jsr     WaitFrames                      ; A99B 20 0C C9                  ..
         lda     #$03                            ; A99E A9 03                    ..
-        jsr     BattleTurnEngine_DrawIndexedOffsetSpritePair; A9A0 20 FD A9      ..
+        jsr     NecrosaroTransformation_DrawIndexedOffsetSpritePair; A9A0 20 FD A9 ..
         ldx     #$47                            ; A9A3 A2 47                    .G
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9A5 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9A5 20 ED B0 ..
         inx                                     ; A9A8 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9A9 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9A9 20 ED B0 ..
         inx                                     ; A9AC E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9AD 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9AD 20 ED B0 ..
         ldx     #$3E                            ; A9B0 A2 3E                    .>
-        jsr     BattleTurnEngine_QueueIndexedNametableBlock; A9B2 20 43 AA       C.
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlock; A9B2 20 43 AA C.
         ldx     #$0A                            ; A9B5 A2 0A                    ..
         jsr     WaitFrames                      ; A9B7 20 0C C9                  ..
         ldx     #$4A                            ; A9BA A2 4A                    .J
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9BC 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9BC 20 ED B0 ..
         ldx     #$0F                            ; A9BF A2 0F                    ..
         jsr     WaitFrames                      ; A9C1 20 0C C9                  ..
         ldx     #$4B                            ; A9C4 A2 4B                    .K
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9C6 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9C6 20 ED B0 ..
         inx                                     ; A9C9 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9CA 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9CA 20 ED B0 ..
         ldx     #$0F                            ; A9CD A2 0F                    ..
         jsr     WaitFrames                      ; A9CF 20 0C C9                  ..
         ldx     #$4D                            ; A9D2 A2 4D                    .M
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9D4 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9D4 20 ED B0 ..
         inx                                     ; A9D7 E8                       .
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9D8 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9D8 20 ED B0 ..
         ldx     #$31                            ; A9DB A2 31                    .1
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A9DD 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A9DD 20 1A AC   ..
         inx                                     ; A9E0 E8                       .
-        jsr     BattleTurnEngine_LoadIndexedSpriteLayout; A9E1 20 1A AC          ..
+        jsr     NecrosaroTransformation_LoadIndexedSpriteLayout; A9E1 20 1A AC   ..
         ldx     #$0F                            ; A9E4 A2 0F                    ..
         jsr     WaitFrames                      ; A9E6 20 0C C9                  ..
         ldx     #$4F                            ; A9E9 A2 4F                    .O
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9EB 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9EB 20 ED B0 ..
         ldx     #$0F                            ; A9EE A2 0F                    ..
         jsr     WaitFrames                      ; A9F0 20 0C C9                  ..
         ldx     #$50                            ; A9F3 A2 50                    .P
-        jsr     BattleTurnEngine_UploadIndexedPresentationPanel; A9F5 20 ED B0   ..
+        jsr     NecrosaroTransformation_UploadIndexedTransformationPanel; A9F5 20 ED B0 ..
         ldx     #$0F                            ; A9F8 A2 0F                    ..
         jmp     WaitFrames                      ; A9FA 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawIndexedOffsetSpritePair:
+NecrosaroTransformation_DrawIndexedOffsetSpritePair:
         asl     a                               ; A9FD 0A                       .
         tax                                     ; A9FE AA                       .
         lda     $AA3B,x                         ; A9FF BD 3B AA                 .;.
@@ -5884,7 +5884,7 @@ BattleTurnEngine_DrawIndexedOffsetSpritePair:
         lda     $AA3C,x                         ; AA04 BD 3C AA                 .<.
         sta     $05                             ; AA07 85 05                    ..
         ldy     #$08                            ; AA09 A0 08                    ..
-BattleTurnEngine_Branch_AA0B:
+BattleDisplay_Branch_AA0B:
         ldx     #$00                            ; AA0B A2 00                    ..
         jsr     CopyOamSpriteRecord             ; AA0D 20 70 C7                  p.
         lda     $00                           ; AA10 A5 00                    ..
@@ -5895,11 +5895,11 @@ BattleTurnEngine_Branch_AA0B:
         pha                                     ; AA19 48                       H
         cpy     #$09                            ; AA1A C0 09                    ..
         clc                                     ; AA1C 18                       .
-        beq     BattleTurnEngine_Branch_AA24    ; AA1D F0 05                    ..
+        beq     BattleDisplay_Branch_AA24       ; AA1D F0 05                    ..
         eor     #$FF                            ; AA1F 49 FF                    I.
         sta     $05                             ; AA21 85 05                    ..
         sec                                     ; AA23 38                       8
-BattleTurnEngine_Branch_AA24:
+BattleDisplay_Branch_AA24:
         adc     $03                             ; AA24 65 03                    e.
         sta     $03                             ; AA26 85 03                    ..
         pla                                     ; AA28 68                       h
@@ -5908,14 +5908,14 @@ BattleTurnEngine_Branch_AA24:
         jsr     CopySpriteRecordToOam           ; AA2D 20 3E C7                  >.
         iny                                     ; AA30 C8                       .
         cpy     #$0A                            ; AA31 C0 0A                    ..
-        bcc     BattleTurnEngine_Branch_AA0B    ; AA33 90 D6                    ..
+        bcc     BattleDisplay_Branch_AA0B       ; AA33 90 D6                    ..
         rts                                     ; AA35 60                       `
 ; ----------------------------------------------------------------------------
         db   $2B,$2C,$2F,$32,$36             ; AA36 2B 2C 2F 32 36           +,/26
         db   $02                             ; AA3B 02                       .
         db   $03,$01,$03,$01,$03,$00,$02     ; AA3C 03 01 03 01 03 00 02     .......
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_QueueIndexedNametableBlock:
+NecrosaroTransformation_QueueIndexedNametableBlock:
         lda     $AA66,x                         ; AA43 BD 66 AA                 .f.
         sta     $05                             ; AA46 85 05                    ..
         lda     $AAA5,x                         ; AA48 BD A5 AA                 ...
@@ -5930,7 +5930,7 @@ BattleTurnEngine_QueueIndexedNametableBlock:
         sta     $06                             ; AA59 85 06                    ..
         lda     $AB24,x                         ; AA5B BD 24 AB                 .$.
         sta     $07                             ; AA5E 85 07                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlockWithOptionalMirror; AA60 20 EA AF ..
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlockWithOptionalMirror; AA60 20 EA AF ..
         pla                                     ; AA63 68                       h
         tax                                     ; AA64 AA                       .
         rts                                     ; AA65 60                       `
@@ -5992,7 +5992,7 @@ BattleTurnEngine_QueueIndexedNametableBlock:
         db   $84,$85,$91,$92,$93,$94,$95,$96 ; AC0C 84 85 91 92 93 94 95 96  ........
         db   $04,$03,$14,$13,$02,$12         ; AC14 04 03 14 13 02 12        ......
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadIndexedSpriteLayout:
+NecrosaroTransformation_LoadIndexedSpriteLayout:
         txa                                     ; AC1A 8A                       .
         pha                                     ; AC1B 48                       H
         lda     $AD32,x                         ; AC1C BD 32 AD                 .2.
@@ -6035,7 +6035,7 @@ BattleTurnEngine_LoadIndexedSpriteLayout:
         sta     $06                             ; AC59 85 06                    ..
         lda     $AD66,x                         ; AC5B BD 66 AD                 .f.
         sta     $07                             ; AC5E 85 07                    ..
-        jsr     BattleTurnEngine_DrawIndexedSpriteLayoutWithOptionalMirror; AC60 20 A8 AF ..
+        jsr     NecrosaroTransformation_DrawIndexedSpriteLayoutWithOptionalMirror; AC60 20 A8 AF ..
         pla                                     ; AC63 68                       h
         tax                                     ; AC64 AA                       .
         rts                                     ; AC65 60                       `
@@ -6112,22 +6112,22 @@ BattleTurnEngine_LoadIndexedSpriteLayout:
         db   $15,$50,$2D,$2D,$30,$44,$45,$46 ; AE6E 15 50 2D 2D 30 44 45 46  .P--0DEF
         db   $FC,$1A,$09,$2C,$FD,$34         ; AE76 FC 1A 09 2C FD 34        ...,.4
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunOverlayFillSweep:
+NecrosaroTransformation_RunOverlayFillSweep:
         lda     #$FF                            ; AE7C A9 FF                    ..
-        bne     BattleTurnEngine_Branch_AE82    ; AE7E D0 02                    ..
-BattleTurnEngine_RunOverlayClearSweep:
+        bne     BattleDisplay_Branch_AE82       ; AE7E D0 02                    ..
+NecrosaroTransformation_RunOverlayClearSweep:
         lda     #$00                            ; AE80 A9 00                    ..
-BattleTurnEngine_Branch_AE82:
+BattleDisplay_Branch_AE82:
         sta     $00                           ; AE82 85 00                    ..
-BattleTurnEngine_Branch_AE84:
+BattleDisplay_Branch_AE84:
         lda     #$01                            ; AE84 A9 01                    ..
         sta     $02                             ; AE86 85 02                    ..
         lda     $0F                             ; AE88 A5 0F                    ..
         pha                                     ; AE8A 48                       H
-        jsr     BattleTurnEngine_FlipRandomOverlayBitTowardTarget; AE8B 20 42 A0 B.
+        jsr     BattleDisplay_FlipRandomOverlayBitTowardTarget; AE8B 20 42 A0    B.
         pla                                     ; AE8E 68                       h
         sta     $0F                             ; AE8F 85 0F                    ..
-        bcs     BattleTurnEngine_Branch_AEE9    ; AE91 B0 56                    .V
+        bcs     BattleDisplay_Branch_AEE9       ; AE91 B0 56                    .V
         stx     $03                             ; AE93 86 03                    ..
         ldy     $0F                             ; AE95 A4 0F                    ..
         lda     $AEC2,y                         ; AE97 B9 C2 AE                 ...
@@ -6144,40 +6144,40 @@ BattleTurnEngine_Branch_AE84:
         pla                                     ; AEAC 68                       h
         and     #$80                            ; AEAD 29 80                    ).
         sta     $06                             ; AEAF 85 06                    ..
-        jsr     BattleTurnEngine_UploadMaskedOverlaySpriteStrip; AEB1 20 7A B0   z.
-        jmp     BattleTurnEngine_Branch_AE84    ; AEB4 4C 84 AE                 L..
+        jsr     NecrosaroTransformation_UploadMaskedOverlaySpriteStrip; AEB1 20 7A B0 z.
+        jmp     BattleDisplay_Branch_AE84       ; AEB4 4C 84 AE                 L..
 ; ----------------------------------------------------------------------------
         db   $06,$06,$00,$88,$88,$02,$88,$81 ; AEB7 06 06 00 88 88 02 88 81  ........
         db   $02,$88,$81                     ; AEBF 02 88 81                 ...
         db   $20,$EE,$80,$C4,$8F,$65,$85,$06 ; AEC2 20 EE 80 C4 8F 65 85 06   ....e..
         db   $5F,$7F,$FF                     ; AECA 5F 7F FF                 _..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunSpriteSweepSequence:
+NecrosaroTransformation_RunSpriteSweepSequence:
         ldx     #$00                            ; AECD A2 00                    ..
-BattleTurnEngine_Branch_AECF:
+BattleDisplay_Branch_AECF:
         txa                                     ; AECF 8A                       .
         pha                                     ; AED0 48                       H
         cpx     $0B                             ; AED1 E4 0B                    ..
-        bcc     BattleTurnEngine_Branch_AEDB    ; AED3 90 06                    ..
+        bcc     BattleDisplay_Branch_AEDB       ; AED3 90 06                    ..
         inx                                     ; AED5 E8                       .
         cpx     $08                             ; AED6 E4 08                    ..
         dex                                     ; AED8 CA                       .
-        beq     BattleTurnEngine_Branch_AEDB    ; AED9 F0 00                    ..
-BattleTurnEngine_Branch_AEDB:
-        jsr     BattleTurnEngine_AdvanceSpriteSweepStep; AEDB 20 EA AE           ..
+        beq     BattleDisplay_Branch_AEDB       ; AED9 F0 00                    ..
+BattleDisplay_Branch_AEDB:
+        jsr     NecrosaroTransformation_AdvanceSpriteSweepStep; AEDB 20 EA AE    ..
         pla                                     ; AEDE 68                       h
         tax                                     ; AEDF AA                       .
-        bcc     BattleTurnEngine_Branch_AECF    ; AEE0 90 ED                    ..
+        bcc     BattleDisplay_Branch_AECF       ; AEE0 90 ED                    ..
         inc     $04                             ; AEE2 E6 04                    ..
         inx                                     ; AEE4 E8                       .
         cpx     $08                             ; AEE5 E4 08                    ..
-        bcc     BattleTurnEngine_Branch_AECF    ; AEE7 90 E6                    ..
-BattleTurnEngine_Branch_AEE9:
+        bcc     BattleDisplay_Branch_AECF       ; AEE7 90 E6                    ..
+BattleDisplay_Branch_AEE9:
         rts                                     ; AEE9 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_AdvanceSpriteSweepStep:
+NecrosaroTransformation_AdvanceSpriteSweepStep:
         ldy     $0A                             ; AEEA A4 0A                    ..
-BattleTurnEngine_Branch_AEEC:
+BattleDisplay_Branch_AEEC:
         ldx     #$00                            ; AEEC A2 00                    ..
         jsr     CopyOamSpriteRecord             ; AEEE 20 70 C7                  p.
         ldx     $09                             ; AEF1 A6 09                    ..
@@ -6191,7 +6191,7 @@ BattleTurnEngine_Branch_AEEC:
         tya                                     ; AF00 98                       .
         ldx     $04                             ; AF01 A6 04                    ..
         cmp     $AF1D,x                         ; AF03 DD 1D AF                 ...
-        bcc     BattleTurnEngine_Branch_AEEC    ; AF06 90 E4                    ..
+        bcc     BattleDisplay_Branch_AEEC       ; AF06 90 E4                    ..
         lda     $AF41,x                         ; AF08 BD 41 AF                 .A.
         tax                                     ; AF0B AA                       .
         jsr     WaitFrames                      ; AF0C 20 0C C9                  ..
@@ -6200,9 +6200,9 @@ BattleTurnEngine_Branch_AEEC:
         ldx     $04                             ; AF13 A6 04                    ..
         cmp     $AF2F,x                         ; AF15 DD 2F AF                 ./.
         sec                                     ; AF18 38                       8
-        beq     BattleTurnEngine_Branch_AF1C    ; AF19 F0 01                    ..
+        beq     BattleDisplay_Branch_AF1C       ; AF19 F0 01                    ..
         clc                                     ; AF1B 18                       .
-BattleTurnEngine_Branch_AF1C:
+BattleDisplay_Branch_AF1C:
         rts                                     ; AF1C 60                       `
 ; ----------------------------------------------------------------------------
         db   $0A,$0C,$0D,$0F,$0A,$0C,$0D,$0F ; AF1D 0A 0C 0D 0F 0A 0C 0D 0F  ........
@@ -6215,12 +6215,12 @@ BattleTurnEngine_Branch_AF1C:
         db   $0A,$14,$14,$0A,$14,$14,$0A,$14 ; AF49 0A 14 14 0A 14 14 0A 14  ........
         db   $14,$14                         ; AF51 14 14                    ..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_RunRandomSpriteJitterBurst:
+NecrosaroTransformation_RunRandomSpriteJitterBurst:
         jsr     NextRandomByte                  ; AF53 20 91 C8                  ..
         and     #$01                            ; AF56 29 01                    ).
-        beq     BattleTurnEngine_Branch_AF5C    ; AF58 F0 02                    ..
+        beq     BattleDisplay_Branch_AF5C       ; AF58 F0 02                    ..
         ora     #$03                            ; AF5A 09 03                    ..
-BattleTurnEngine_Branch_AF5C:
+BattleDisplay_Branch_AF5C:
         sta     $06                             ; AF5C 85 06                    ..
         jsr     NextRandomByte                  ; AF5E 20 91 C8                  ..
         pha                                     ; AF61 48                       H
@@ -6228,25 +6228,25 @@ BattleTurnEngine_Branch_AF5C:
         sta     $07                             ; AF64 85 07                    ..
         inc     $07                             ; AF66 E6 07                    ..
         pla                                     ; AF68 68                       h
-        bmi     BattleTurnEngine_Branch_AF73    ; AF69 30 08                    0.
+        bmi     BattleDisplay_Branch_AF73       ; AF69 30 08                    0.
         lda     $05                             ; AF6B A5 05                    ..
         eor     #$FF                            ; AF6D 49 FF                    I.
         sta     $07                             ; AF6F 85 07                    ..
         inc     $07                             ; AF71 E6 07                    ..
-BattleTurnEngine_Branch_AF73:
-        jsr     BattleTurnEngine_OffsetSpriteRangeByDelta; AF73 20 89 AF         ..
+BattleDisplay_Branch_AF73:
+        jsr     NecrosaroTransformation_OffsetSpriteRangeByDelta; AF73 20 89 AF  ..
         ldx     #$0A                            ; AF76 A2 0A                    ..
         jsr     WaitFrames                      ; AF78 20 0C C9                  ..
         lda     $07                             ; AF7B A5 07                    ..
         eor     #$FF                            ; AF7D 49 FF                    I.
         sta     $07                             ; AF7F 85 07                    ..
         inc     $07                             ; AF81 E6 07                    ..
-        jsr     BattleTurnEngine_OffsetSpriteRangeByDelta; AF83 20 89 AF         ..
+        jsr     NecrosaroTransformation_OffsetSpriteRangeByDelta; AF83 20 89 AF  ..
         jmp     WaitForNmi                      ; AF86 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_OffsetSpriteRangeByDelta:
+NecrosaroTransformation_OffsetSpriteRangeByDelta:
         ldy     $0A                             ; AF89 A4 0A                    ..
-BattleTurnEngine_Branch_AF8B:
+BattleDisplay_Branch_AF8B:
         ldx     #$00                            ; AF8B A2 00                    ..
         jsr     CopyOamSpriteRecord             ; AF8D 20 70 C7                  p.
         ldx     $06                             ; AF90 A6 06                    ..
@@ -6260,41 +6260,41 @@ BattleTurnEngine_Branch_AF8B:
         tya                                     ; AF9F 98                       .
         ldx     $04                             ; AFA0 A6 04                    ..
         cmp     $AF1D,x                         ; AFA2 DD 1D AF                 ...
-        bcc     BattleTurnEngine_Branch_AF8B    ; AFA5 90 E4                    ..
+        bcc     BattleDisplay_Branch_AF8B       ; AFA5 90 E4                    ..
         rts                                     ; AFA7 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawIndexedSpriteLayoutWithOptionalMirror:
+NecrosaroTransformation_DrawIndexedSpriteLayoutWithOptionalMirror:
         lda     $08                             ; AFA8 A5 08                    ..
-        beq     BattleTurnEngine_Branch_AFB7    ; AFAA F0 0B                    ..
+        beq     BattleDisplay_Branch_AFB7       ; AFAA F0 0B                    ..
         and     #$01                            ; AFAC 29 01                    ).
-        bne     BattleTurnEngine_Branch_AFB7    ; AFAE D0 07                    ..
+        bne     BattleDisplay_Branch_AFB7       ; AFAE D0 07                    ..
         sta     $08                             ; AFB0 85 08                    ..
-        jsr     BattleTurnEngine_DrawIndexedSpriteLayoutPass; AFB2 20 BA AF      ..
+        jsr     NecrosaroTransformation_DrawIndexedSpriteLayoutPass; AFB2 20 BA AF ..
         inc     $08                             ; AFB5 E6 08                    ..
-BattleTurnEngine_Branch_AFB7:
-        jmp     BattleTurnEngine_DrawIndexedSpriteLayoutPass; AFB7 4C BA AF     L..
+BattleDisplay_Branch_AFB7:
+        jmp     NecrosaroTransformation_DrawIndexedSpriteLayoutPass; AFB7 4C BA AFL..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DrawIndexedSpriteLayoutPass:
+NecrosaroTransformation_DrawIndexedSpriteLayoutPass:
         ldy     #$00                            ; AFBA A0 00                    ..
-BattleTurnEngine_Branch_AFBC:
+BattleDisplay_Branch_AFBC:
         tya                                     ; AFBC 98                       .
         pha                                     ; AFBD 48                       H
         pha                                     ; AFBE 48                       H
-        jsr     BattleTurnEngine_ResolveIndexedLayoutCellPosition; AFBF 20 18 B0 ..
+        jsr     NecrosaroTransformation_ResolveIndexedLayoutCellPosition; AFBF 20 18 B0 ..
         ldy     $04                             ; AFC2 A4 04                    ..
         pla                                     ; AFC4 68                       h
         ldx     $09                             ; AFC5 A6 09                    ..
-        beq     BattleTurnEngine_Branch_AFCD    ; AFC7 F0 04                    ..
+        beq     BattleDisplay_Branch_AFCD       ; AFC7 F0 04                    ..
         clc                                     ; AFC9 18                       .
         adc     $09                             ; AFCA 65 09                    e.
         tax                                     ; AFCC AA                       .
-BattleTurnEngine_Branch_AFCD:
+BattleDisplay_Branch_AFCD:
         stx     $01                             ; AFCD 86 01                    ..
         lda     $0A                             ; AFCF A5 0A                    ..
         ldx     $08                             ; AFD1 A6 08                    ..
-        beq     BattleTurnEngine_Branch_AFD7    ; AFD3 F0 02                    ..
+        beq     BattleDisplay_Branch_AFD7       ; AFD3 F0 02                    ..
         ora     #$40                            ; AFD5 09 40                    .@
-BattleTurnEngine_Branch_AFD7:
+BattleDisplay_Branch_AFD7:
         ora     $0C                             ; AFD7 05 0C                    ..
         sta     $02                             ; AFD9 85 02                    ..
         ldx     #$00                            ; AFDB A2 00                    ..
@@ -6304,43 +6304,43 @@ BattleTurnEngine_Branch_AFD7:
         tay                                     ; AFE3 A8                       .
         iny                                     ; AFE4 C8                       .
         cpy     $05                             ; AFE5 C4 05                    ..
-        bcc     BattleTurnEngine_Branch_AFBC    ; AFE7 90 D3                    ..
+        bcc     BattleDisplay_Branch_AFBC       ; AFE7 90 D3                    ..
         rts                                     ; AFE9 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_QueueIndexedNametableBlockWithOptionalMirror:
+NecrosaroTransformation_QueueIndexedNametableBlockWithOptionalMirror:
         lda     $08                             ; AFEA A5 08                    ..
-        beq     BattleTurnEngine_Branch_AFF9    ; AFEC F0 0B                    ..
+        beq     BattleDisplay_Branch_AFF9       ; AFEC F0 0B                    ..
         and     #$01                            ; AFEE 29 01                    ).
-        bne     BattleTurnEngine_Branch_AFF9    ; AFF0 D0 07                    ..
+        bne     BattleDisplay_Branch_AFF9       ; AFF0 D0 07                    ..
         sta     $08                             ; AFF2 85 08                    ..
-        jsr     BattleTurnEngine_QueueIndexedNametableBlockPass; AFF4 20 FF AF   ..
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlockPass; AFF4 20 FF AF ..
         inc     $08                             ; AFF7 E6 08                    ..
-BattleTurnEngine_Branch_AFF9:
-        jsr     BattleTurnEngine_QueueIndexedNametableBlockPass; AFF9 20 FF AF   ..
+BattleDisplay_Branch_AFF9:
+        jsr     NecrosaroTransformation_QueueIndexedNametableBlockPass; AFF9 20 FF AF ..
         jmp     RequestPpuUpdateAndWait         ; AFFC 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_QueueIndexedNametableBlockPass:
+NecrosaroTransformation_QueueIndexedNametableBlockPass:
         ldy     #$00                            ; AFFF A0 00                    ..
-BattleTurnEngine_Branch_B001:
-        jsr     BattleTurnEngine_DecodeIndexedLayoutCellCoordinates; B001 20 54 B0 T.
+BattleDisplay_Branch_B001:
+        jsr     NecrosaroTransformation_DecodeIndexedLayoutCellCoordinates; B001 20 54 B0 T.
         lda     $09                             ; B004 A5 09                    ..
-        beq     BattleTurnEngine_Branch_B00F    ; B006 F0 07                    ..
+        beq     BattleDisplay_Branch_B00F       ; B006 F0 07                    ..
         tya                                     ; B008 98                       .
         clc                                     ; B009 18                       .
         asl     a                               ; B00A 0A                       .
         adc     $08                             ; B00B 65 08                    e.
         adc     $09                             ; B00D 65 09                    e.
-BattleTurnEngine_Branch_B00F:
+BattleDisplay_Branch_B00F:
         jsr     QueueNametableTileUpdate        ; B00F 20 5A C6                  Z.
         iny                                     ; B012 C8                       .
         cpy     $05                             ; B013 C4 05                    ..
-        bcc     BattleTurnEngine_Branch_B001    ; B015 90 EA                    ..
+        bcc     BattleDisplay_Branch_B001       ; B015 90 EA                    ..
         rts                                     ; B017 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ResolveIndexedLayoutCellPosition:
+NecrosaroTransformation_ResolveIndexedLayoutCellPosition:
         lda     $0B                             ; B018 A5 0B                    ..
-        bne     BattleTurnEngine_Branch_B034    ; B01A D0 18                    ..
-        jsr     BattleTurnEngine_DecodeIndexedLayoutCellCoordinates; B01C 20 54 B0 T.
+        bne     BattleDisplay_Branch_B034       ; B01A D0 18                    ..
+        jsr     NecrosaroTransformation_DecodeIndexedLayoutCellCoordinates; B01C 20 54 B0 T.
         lda     $00                           ; B01F A5 00                    ..
         asl     a                               ; B021 0A                       .
         asl     a                               ; B022 0A                       .
@@ -6357,7 +6357,7 @@ BattleTurnEngine_ResolveIndexedLayoutCellPosition:
         sta     $00                           ; B031 85 00                    ..
         rts                                     ; B033 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_B034:
+BattleDisplay_Branch_B034:
         tya                                     ; B034 98                       .
         asl     a                               ; B035 0A                       .
         tay                                     ; B036 A8                       .
@@ -6368,20 +6368,20 @@ BattleTurnEngine_Branch_B034:
         iny                                     ; B03E C8                       .
         lda     ($06),y                         ; B03F B1 06                    ..
         ldx     $08                             ; B041 A6 08                    ..
-        beq     BattleTurnEngine_Branch_B04E    ; B043 F0 09                    ..
+        beq     BattleDisplay_Branch_B04E       ; B043 F0 09                    ..
         lda     #$34                            ; B045 A9 34                    .4
         sec                                     ; B047 38                       8
         sbc     ($06),y                         ; B048 F1 06                    ..
         asl     a                               ; B04A 0A                       .
         clc                                     ; B04B 18                       .
         adc     ($06),y                         ; B04C 71 06                    q.
-BattleTurnEngine_Branch_B04E:
+BattleDisplay_Branch_B04E:
         clc                                     ; B04E 18                       .
         adc     #$50                            ; B04F 69 50                    iP
         sta     $03                             ; B051 85 03                    ..
         rts                                     ; B053 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DecodeIndexedLayoutCellCoordinates:
+NecrosaroTransformation_DecodeIndexedLayoutCellCoordinates:
         lda     ($06),y                         ; B054 B1 06                    ..
         pha                                     ; B056 48                       H
         and     #$F0                            ; B057 29 F0                    ).
@@ -6395,7 +6395,7 @@ BattleTurnEngine_DecodeIndexedLayoutCellCoordinates:
         pla                                     ; B062 68                       h
         and     #$0F                            ; B063 29 0F                    ).
         ldx     $08                             ; B065 A6 08                    ..
-        beq     BattleTurnEngine_Branch_B074    ; B067 F0 0B                    ..
+        beq     BattleDisplay_Branch_B074       ; B067 F0 0B                    ..
         sta     $00                           ; B069 85 00                    ..
         lda     #$06                            ; B06B A9 06                    ..
         sec                                     ; B06D 38                       8
@@ -6403,13 +6403,13 @@ BattleTurnEngine_DecodeIndexedLayoutCellCoordinates:
         asl     a                               ; B070 0A                       .
         sec                                     ; B071 38                       8
         adc     $00                           ; B072 65 00                    e.
-BattleTurnEngine_Branch_B074:
+BattleDisplay_Branch_B074:
         clc                                     ; B074 18                       .
         adc     #$0A                            ; B075 69 0A                    i.
         sta     $00                           ; B077 85 00                    ..
         rts                                     ; B079 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_UploadMaskedOverlaySpriteStrip:
+NecrosaroTransformation_UploadMaskedOverlaySpriteStrip:
         lda     $0650,x                         ; B07A BD 50 06                 .P.
         sta     NextTextCharacter               ; B07D 8D 02 03                 ...
         lda     #$00                            ; B080 A9 00                    ..
@@ -6417,7 +6417,7 @@ BattleTurnEngine_UploadMaskedOverlaySpriteStrip:
         stx     $0301                           ; B085 8E 01 03                 ...
         ldx     #$00                            ; B088 A2 00                    ..
         stx     $04                             ; B08A 86 04                    ..
-BattleTurnEngine_Branch_B08C:
+BattleDisplay_Branch_B08C:
         lda     $01                             ; B08C A5 01                    ..
         sta     $0303,x                         ; B08E 9D 03 03                 ...
         sta     $0306,x                         ; B091 9D 06 03                 ...
@@ -6428,11 +6428,11 @@ BattleTurnEngine_Branch_B08C:
         asl     a                               ; B099 0A                       .
         pha                                     ; B09A 48                       H
         adc     $02                             ; B09B 65 02                    e.
-        bcc     BattleTurnEngine_Branch_B0A6    ; B09D 90 07                    ..
+        bcc     BattleDisplay_Branch_B0A6       ; B09D 90 07                    ..
         inc     $0303,x                         ; B09F FE 03 03                 ...
         inc     $0306,x                         ; B0A2 FE 06 03                 ...
         clc                                     ; B0A5 18                       .
-BattleTurnEngine_Branch_B0A6:
+BattleDisplay_Branch_B0A6:
         adc     $03                             ; B0A6 65 03                    e.
         sta     $0304,x                         ; B0A8 9D 04 03                 ...
         adc     #$08                            ; B0AB 69 08                    i.
@@ -6444,11 +6444,11 @@ BattleTurnEngine_Branch_B0A6:
         lda     NextTextCharacter               ; B0B5 AD 02 03                 ...
         pha                                     ; B0B8 48                       H
         lda     $06                             ; B0B9 A5 06                    ..
-        bmi     BattleTurnEngine_Branch_B0C1    ; B0BB 30 04                    0.
+        bmi     BattleDisplay_Branch_B0C1       ; B0BB 30 04                    0.
         pla                                     ; B0BD 68                       h
         eor     #$FF                            ; B0BE 49 FF                    I.
         pha                                     ; B0C0 48                       H
-BattleTurnEngine_Branch_B0C1:
+BattleDisplay_Branch_B0C1:
         pla                                     ; B0C1 68                       h
         pha                                     ; B0C2 48                       H
         and     $7600,y                         ; B0C3 39 00 76                 9.v
@@ -6466,15 +6466,15 @@ BattleTurnEngine_Branch_B0C1:
         inc     $04                             ; B0D9 E6 04                    ..
         lda     $04                             ; B0DB A5 04                    ..
         cmp     $05                             ; B0DD C5 05                    ..
-        bcc     BattleTurnEngine_Branch_B08C    ; B0DF 90 AB                    ..
+        bcc     BattleDisplay_Branch_B08C       ; B0DF 90 AB                    ..
         lda     $05                             ; B0E1 A5 05                    ..
         asl     a                               ; B0E3 0A                       .
         sta     $050B                           ; B0E4 8D 0B 05                 ...
         inc     $050B                           ; B0E7 EE 0B 05                 ...
         jmp     RequestPpuUpdateAndWait         ; B0EA 4C 2D C6                 L-.
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_UploadIndexedPresentationPanel:
-        jsr     BattleTurnEngine_LoadIndexedPresentationPanel; B0ED 20 00 B1     ..
+NecrosaroTransformation_UploadIndexedTransformationPanel:
+        jsr     NecrosaroTransformation_LoadIndexedTransformationPanel; B0ED 20 00 B1 ..
         lda     $1F                             ; B0F0 A5 1F                    ..
         ora     #$40                            ; B0F2 09 40                    .@
         sta     $1F                             ; B0F4 85 1F                    ..
@@ -6484,7 +6484,7 @@ BattleTurnEngine_UploadIndexedPresentationPanel:
         sta     $1F                             ; B0FD 85 1F                    ..
         rts                                     ; B0FF 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadIndexedPresentationPanel:
+NecrosaroTransformation_LoadIndexedTransformationPanel:
         txa                                     ; B100 8A                       .
         pha                                     ; B101 48                       H
         lda     #$07                            ; B102 A9 07                    ..
@@ -6509,9 +6509,9 @@ BattleTurnEngine_LoadIndexedPresentationPanel:
         asl     a                               ; B120 0A                       .
         sta     $0301                           ; B121 8D 01 03                 ...
         pla                                     ; B124 68                       h
-        beq     BattleTurnEngine_Branch_B12A    ; B125 F0 03                    ..
+        beq     BattleDisplay_Branch_B12A       ; B125 F0 03                    ..
         asl     $0301                           ; B127 0E 01 03                 ...
-BattleTurnEngine_Branch_B12A:
+BattleDisplay_Branch_B12A:
         sta     $0300                           ; B12A 8D 00 03                 ...
         lda     $B25C,x                         ; B12D BD 5C B2                 .\.
         pha                                     ; B130 48                       H
@@ -6529,9 +6529,9 @@ BattleTurnEngine_Branch_B12A:
         lda     #$00                            ; B149 A9 00                    ..
         sta     $29                             ; B14B 85 29                    .)
         cpx     #$02                            ; B14D E0 02                    ..
-        bcc     BattleTurnEngine_Branch_B153    ; B14F 90 02                    ..
+        bcc     BattleDisplay_Branch_B153       ; B14F 90 02                    ..
         inc     $29                             ; B151 E6 29                    .)
-BattleTurnEngine_Branch_B153:
+BattleDisplay_Branch_B153:
         txa                                     ; B153 8A                       .
         asl     a                               ; B154 0A                       .
         tax                                     ; B155 AA                       .
@@ -6539,7 +6539,7 @@ BattleTurnEngine_Branch_B153:
         sta     $C0                             ; B159 85 C0                    ..
         lda     $B1BB,x                         ; B15B BD BB B1                 ...
         sta     $C1                             ; B15E 85 C1                    ..
-        jsr     BattleTurnEngine_DecodePresentationPanelGraphics; B160 20 AD B2  ..
+        jsr     NecrosaroTransformation_DecodeTransformationPanelGraphics; B160 20 AD B2 ..
         pla                                     ; B163 68                       h
         sta     $29                             ; B164 85 29                    .)
         pla                                     ; B166 68                       h
@@ -6591,13 +6591,13 @@ BattleTurnEngine_Branch_B153:
         db   $5D,$3B,$56,$56,$96,$66,$96,$56 ; B2A4 5D 3B 56 56 96 66 96 56  ];VV.f.V
         db   $56                             ; B2AC 56                       V
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DecodePresentationPanelGraphics:
+NecrosaroTransformation_DecodeTransformationPanelGraphics:
         lda     #$00                            ; B2AD A9 00                    ..
         sta     $01                             ; B2AF 85 01                    ..
-BattleTurnEngine_Branch_B2B1:
+BattleDisplay_Branch_B2B1:
         jsr     Bank14_DecodeMonsterGraphicsBitplanes; B2B1 20 12 97             ..
         ldx     #$00                            ; B2B4 A2 00                    ..
-BattleTurnEngine_Branch_B2B6:
+BattleDisplay_Branch_B2B6:
         ldy     $01                             ; B2B6 A4 01                    ..
         lda     $0650,x                         ; B2B8 BD 50 06                 .P.
         sta     $0303,y                         ; B2BB 99 03 03                 ...
@@ -6605,14 +6605,14 @@ BattleTurnEngine_Branch_B2B6:
         inc     $01                             ; B2C1 E6 01                    ..
         inx                                     ; B2C3 E8                       .
         cpx     #$10                            ; B2C4 E0 10                    ..
-        bcc     BattleTurnEngine_Branch_B2B6    ; B2C6 90 EE                    ..
+        bcc     BattleDisplay_Branch_B2B6       ; B2C6 90 EE                    ..
         lda     $08                             ; B2C8 A5 08                    ..
-        beq     BattleTurnEngine_Branch_B2D0    ; B2CA F0 04                    ..
+        beq     BattleDisplay_Branch_B2D0       ; B2CA F0 04                    ..
         cpx     #$20                            ; B2CC E0 20                    .
-        bcc     BattleTurnEngine_Branch_B2B6    ; B2CE 90 E6                    ..
-BattleTurnEngine_Branch_B2D0:
+        bcc     BattleDisplay_Branch_B2B6       ; B2CE 90 E6                    ..
+BattleDisplay_Branch_B2D0:
         dec     $05                             ; B2D0 C6 05                    ..
-        bne     BattleTurnEngine_Branch_B2B1    ; B2D2 D0 DD                    ..
+        bne     BattleDisplay_Branch_B2B1       ; B2D2 D0 DD                    ..
         rts                                     ; B2D4 60                       `
 ; ----------------------------------------------------------------------------
 Bank14_MonsterIdMap:
@@ -6769,7 +6769,7 @@ Bank14_MonsterGraphicsDescriptors:
         db   $97,$F8,$BA,$19,$98,$92,$69,$B8 ; B769 97 F8 BA 19 98 92 69 B8  ......i.
         db   $19,$53,$BE,$DD,$B9,$23,$37,$BC ; B771 19 53 BE DD B9 23 37 BC  .S...#7.
         db   $C6,$BC                         ; B779 C6 BC                    ..
-Bank14_CompressedGraphicsStreams:
+Bank14_MonsterPaletteRecords:
         db   $10,$30,$15,$1C,$10,$30,$0F,$00 ; B77B 10 30 15 1C 10 30 0F 00  .0...0..
         db   $10,$30,$12,$16,$11,$27,$13,$17 ; B783 10 30 12 16 11 27 13 17  .0...'..
         db   $31,$2C,$1C,$11,$37,$15,$17,$30 ; B78B 31 2C 1C 11 37 15 17 30  1,..7..0
@@ -6948,7 +6948,7 @@ Bank14_CompressedGraphicsStreams:
         db   $13,$15,$1A,$2C,$11,$10,$00,$11 ; BCF3 13 15 1A 2C 11 10 00 11  ...,....
         db   $14,$04,$30,$37,$26             ; BCFB 14 04 30 37 26           ..07&
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadSpecialBattleGraphicPattern:
+BattleDisplay_LoadSpecialBattleGraphicPattern:
         pha                                     ; BD00 48                       H
         sta     $0E                             ; BD01 85 0E                    ..
         lda     #$00                            ; BD03 A9 00                    ..
@@ -6960,26 +6960,26 @@ BattleTurnEngine_LoadSpecialBattleGraphicPattern:
         jsr     MultiplyPointerWord             ; BD0F 20 27 C8                  '.
         ldx     #$00                            ; BD12 A2 00                    ..
         ldy     #$16                            ; BD14 A0 16                    ..
-        jsr     BattleTurnEngine_LoadBank8DescriptorPointer; BD16 20 19 BE       ..
+        jsr     BattleDisplay_LoadBank8DescriptorPointer; BD16 20 19 BE          ..
         ldx     #$06                            ; BD19 A2 06                    ..
         iny                                     ; BD1B C8                       .
-        jsr     BattleTurnEngine_LoadBank8DescriptorPointer; BD1C 20 19 BE       ..
+        jsr     BattleDisplay_LoadBank8DescriptorPointer; BD1C 20 19 BE          ..
         ldy     #$1A                            ; BD1F A0 1A                    ..
         pla                                     ; BD21 68                       h
         cmp     #$08                            ; BD22 C9 08                    ..
-        bne     BattleTurnEngine_Branch_BD29    ; BD24 D0 03                    ..
+        bne     BattleDisplay_Branch_BD29       ; BD24 D0 03                    ..
         iny                                     ; BD26 C8                       .
         iny                                     ; BD27 C8                       .
         iny                                     ; BD28 C8                       .
-BattleTurnEngine_Branch_BD29:
+BattleDisplay_Branch_BD29:
         ldx     #$0A                            ; BD29 A2 0A                    ..
-        jsr     BattleTurnEngine_LoadBank8DescriptorPointer; BD2B 20 19 BE       ..
+        jsr     BattleDisplay_LoadBank8DescriptorPointer; BD2B 20 19 BE          ..
         lda     $00                           ; BD2E A5 00                    ..
         clc                                     ; BD30 18                       .
         adc     #$0C                            ; BD31 69 0C                    i.
-        bcc     BattleTurnEngine_Branch_BD37    ; BD33 90 02                    ..
+        bcc     BattleDisplay_Branch_BD37       ; BD33 90 02                    ..
         inc     $01                             ; BD35 E6 01                    ..
-BattleTurnEngine_Branch_BD37:
+BattleDisplay_Branch_BD37:
         adc     $0E                             ; BD37 65 0E                    e.
         sta     $00                           ; BD39 85 00                    ..
         lda     $01                             ; BD3B A5 01                    ..
@@ -6998,9 +6998,9 @@ BattleTurnEngine_Branch_BD37:
         pha                                     ; BD56 48                       H
         ldx     #$0D                            ; BD57 A2 0D                    ..
         and     #$04                            ; BD59 29 04                    ).
-        beq     BattleTurnEngine_Branch_BD5E    ; BD5B F0 01                    ..
+        beq     BattleDisplay_Branch_BD5E       ; BD5B F0 01                    ..
         inx                                     ; BD5D E8                       .
-BattleTurnEngine_Branch_BD5E:
+BattleDisplay_Branch_BD5E:
         stx     $0C                             ; BD5E 86 0C                    ..
         pla                                     ; BD60 68                       h
         and     #$03                            ; BD61 29 03                    ).
@@ -7022,7 +7022,7 @@ BattleTurnEngine_Branch_BD5E:
         sta     $03                             ; BD80 85 03                    ..
         ldy     #$00                            ; BD82 A0 00                    ..
         txa                                     ; BD84 8A                       .
-        jsr     BattleTurnEngine_DecodeDescriptorQuadrantIntoBuffer; BD85 20 27 BE '.
+        jsr     BattleDisplay_DecodeDescriptorQuadrantIntoBuffer; BD85 20 27 BE  '.
         ldy     #$02                            ; BD88 A0 02                    ..
         ldx     #$00                            ; BD8A A2 00                    ..
         lda     #$08                            ; BD8C A9 08                    ..
@@ -7034,19 +7034,19 @@ BattleTurnEngine_Branch_BD5E:
         clc                                     ; BD95 18                       .
         adc     $06                             ; BD96 65 06                    e.
         sta     $06                             ; BD98 85 06                    ..
-        bcc     BattleTurnEngine_Branch_BD9E    ; BD9A 90 02                    ..
+        bcc     BattleDisplay_Branch_BD9E       ; BD9A 90 02                    ..
         inc     $07                             ; BD9C E6 07                    ..
-BattleTurnEngine_Branch_BD9E:
+BattleDisplay_Branch_BD9E:
         pla                                     ; BD9E 68                       h
         clc                                     ; BD9F 18                       .
         adc     $06                             ; BDA0 65 06                    e.
         sta     $06                             ; BDA2 85 06                    ..
-        bcc     BattleTurnEngine_Branch_BDA8    ; BDA4 90 02                    ..
+        bcc     BattleDisplay_Branch_BDA8       ; BDA4 90 02                    ..
         inc     $07                             ; BDA6 E6 07                    ..
-BattleTurnEngine_Branch_BDA8:
+BattleDisplay_Branch_BDA8:
         ldx     #$00                            ; BDA8 A2 00                    ..
         ldy     #$00                            ; BDAA A0 00                    ..
-BattleTurnEngine_Branch_BDAC:
+BattleDisplay_Branch_BDAC:
         tya                                     ; BDAC 98                       .
         pha                                     ; BDAD 48                       H
         txa                                     ; BDAE 8A                       .
@@ -7062,68 +7062,68 @@ BattleTurnEngine_Branch_BDAC:
         asl     a                               ; BDBD 0A                       .
         sta     $0D                             ; BDBE 85 0D                    ..
         pla                                     ; BDC0 68                       h
-        bmi     BattleTurnEngine_Branch_BDD1    ; BDC1 30 0E                    0.
+        bmi     BattleDisplay_Branch_BDD1       ; BDC1 30 0E                    0.
         lda     $0D                             ; BDC3 A5 0D                    ..
         clc                                     ; BDC5 18                       .
         adc     $02                             ; BDC6 65 02                    e.
         sta     $02                             ; BDC8 85 02                    ..
-        bcc     BattleTurnEngine_Branch_BDCE    ; BDCA 90 02                    ..
+        bcc     BattleDisplay_Branch_BDCE       ; BDCA 90 02                    ..
         inc     $03                             ; BDCC E6 03                    ..
-BattleTurnEngine_Branch_BDCE:
-        jmp     BattleTurnEngine_Branch_BDDC    ; BDCE 4C DC BD                 L..
+BattleDisplay_Branch_BDCE:
+        jmp     BattleDisplay_Branch_BDDC       ; BDCE 4C DC BD                 L..
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_Branch_BDD1:
+BattleDisplay_Branch_BDD1:
         lda     $0D                             ; BDD1 A5 0D                    ..
         sec                                     ; BDD3 38                       8
         sbc     $02                             ; BDD4 E5 02                    ..
         sta     $02                             ; BDD6 85 02                    ..
-        bcs     BattleTurnEngine_Branch_BDDC    ; BDD8 B0 02                    ..
+        bcs     BattleDisplay_Branch_BDDC       ; BDD8 B0 02                    ..
         dec     $03                             ; BDDA C6 03                    ..
-BattleTurnEngine_Branch_BDDC:
+BattleDisplay_Branch_BDDC:
         pla                                     ; BDDC 68                       h
         tax                                     ; BDDD AA                       .
         pla                                     ; BDDE 68                       h
         tay                                     ; BDDF A8                       .
         iny                                     ; BDE0 C8                       .
-        jsr     BattleTurnEngine_DecodeDescriptorQuadrantIntoBuffer; BDE1 20 27 BE '.
+        jsr     BattleDisplay_DecodeDescriptorQuadrantIntoBuffer; BDE1 20 27 BE  '.
         inx                                     ; BDE4 E8                       .
         cpy     #$03                            ; BDE5 C0 03                    ..
-        bne     BattleTurnEngine_Branch_BDAC    ; BDE7 D0 C3                    ..
+        bne     BattleDisplay_Branch_BDAC       ; BDE7 D0 C3                    ..
         ldx     #$00                            ; BDE9 A2 00                    ..
-BattleTurnEngine_Branch_BDEB:
+BattleDisplay_Branch_BDEB:
         asl     $0F                             ; BDEB 06 0F                    ..
-        bcc     BattleTurnEngine_Branch_BDF9    ; BDED 90 0A                    ..
+        bcc     BattleDisplay_Branch_BDF9       ; BDED 90 0A                    ..
         ldy     Bank14_GraphicsDestinationOffsets,x; BDEF BC 4F BE              .O.
         txa                                     ; BDF2 8A                       .
         pha                                     ; BDF3 48                       H
-        jsr     BattleTurnEngine_ReverseDecodedGraphicRows; BDF4 20 FF BD        ..
+        jsr     BattleDisplay_ReverseDecodedGraphicRows; BDF4 20 FF BD           ..
         pla                                     ; BDF7 68                       h
         tax                                     ; BDF8 AA                       .
-BattleTurnEngine_Branch_BDF9:
+BattleDisplay_Branch_BDF9:
         inx                                     ; BDF9 E8                       .
         cpx     #$04                            ; BDFA E0 04                    ..
-        bne     BattleTurnEngine_Branch_BDEB    ; BDFC D0 ED                    ..
+        bne     BattleDisplay_Branch_BDEB       ; BDFC D0 ED                    ..
         rts                                     ; BDFE 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_ReverseDecodedGraphicRows:
+BattleDisplay_ReverseDecodedGraphicRows:
         lda     #$10                            ; BDFF A9 10                    ..
         sta     $09                             ; BE01 85 09                    ..
-BattleTurnEngine_Branch_BE03:
+BattleDisplay_Branch_BE03:
         ldx     #$08                            ; BE03 A2 08                    ..
         lda     $0650,y                         ; BE05 B9 50 06                 .P.
-BattleTurnEngine_Branch_BE08:
+BattleDisplay_Branch_BE08:
         lsr     a                               ; BE08 4A                       J
         rol     $0D                             ; BE09 26 0D                    &.
         dex                                     ; BE0B CA                       .
-        bne     BattleTurnEngine_Branch_BE08    ; BE0C D0 FA                    ..
+        bne     BattleDisplay_Branch_BE08       ; BE0C D0 FA                    ..
         lda     $0D                             ; BE0E A5 0D                    ..
         sta     $0650,y                         ; BE10 99 50 06                 .P.
         iny                                     ; BE13 C8                       .
         dec     $09                             ; BE14 C6 09                    ..
-        bne     BattleTurnEngine_Branch_BE03    ; BE16 D0 EB                    ..
+        bne     BattleDisplay_Branch_BE03       ; BE16 D0 EB                    ..
         rts                                     ; BE18 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_LoadBank8DescriptorPointer:
+BattleDisplay_LoadBank8DescriptorPointer:
         tya                                     ; BE19 98                       .
         pha                                     ; BE1A 48                       H
         lda     #$08                            ; BE1B A9 08                    ..
@@ -7134,7 +7134,7 @@ BattleTurnEngine_LoadBank8DescriptorPointer:
         tay                                     ; BE25 A8                       .
         rts                                     ; BE26 60                       `
 ; ----------------------------------------------------------------------------
-BattleTurnEngine_DecodeDescriptorQuadrantIntoBuffer:
+BattleDisplay_DecodeDescriptorQuadrantIntoBuffer:
         tya                                     ; BE27 98                       .
         pha                                     ; BE28 48                       H
         txa                                     ; BE29 8A                       .
@@ -7149,12 +7149,12 @@ BattleTurnEngine_DecodeDescriptorQuadrantIntoBuffer:
         lda     Bank14_GraphicsDestinationOffsets,y; BE3A B9 4F BE              .O.
         tay                                     ; BE3D A8                       .
         ldx     #$0F                            ; BE3E A2 0F                    ..
-BattleTurnEngine_Branch_BE40:
+BattleDisplay_Branch_BE40:
         jsr     Bank14_ReadMonsterGraphicsByte  ; BE40 20 8D 9F                  ..
         sta     $0650,y                         ; BE43 99 50 06                 .P.
         iny                                     ; BE46 C8                       .
         dex                                     ; BE47 CA                       .
-        bpl     BattleTurnEngine_Branch_BE40    ; BE48 10 F6                    ..
+        bpl     BattleDisplay_Branch_BE40       ; BE48 10 F6                    ..
         pla                                     ; BE4A 68                       h
         tax                                     ; BE4B AA                       .
         pla                                     ; BE4C 68                       h

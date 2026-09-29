@@ -20,8 +20,8 @@
 12	B67A	B6BC	Direct ROM analysis	33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D
 13	8000	8038	Direct ROM analysis	28-entry code dispatch table; first target is $8038
 13	8078	8088	Direct ROM analysis	Eight-entry battle-state handler table selected by doubled state $75E8 at $8062-$8071
-13	8B8B	8C5B	Direct ROM analysis	104-entry battle-action handler table indexed through the $8B8B base pointer at $8599 and dispatched at $8509
-13	91CD	91F1	Direct ROM analysis	Eighteen-entry battle action handler table selected in parallel with action IDs $91A9-$91BA
+13	8B8B	8C59	Direct ROM analysis	103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
+13	91CD	91EF	Direct ROM analysis	Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
 13	9100	9110	Direct ROM analysis	Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
 13	A636	A696	Direct ROM analysis	Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
 13	A751	A753	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744

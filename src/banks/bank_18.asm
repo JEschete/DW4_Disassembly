@@ -847,7 +847,7 @@ MonsterBattleFont_Branch_997D:
         bpl     MonsterBattleFont_Branch_996F   ; 997F 10 EE                    ..
         rts                                     ; 9981 60                       `
 ; ----------------------------------------------------------------------------
-BuildBattleActionsForSlot96:
+BuildBattleActionsForCurrentSlot:
         ldy     $96                             ; 9982 A4 96                    ..
         lda     BattleSlotDescriptors,y         ; 9984 B9 F4 72                 ..r
         and     #$0F                            ; 9987 29 0F                    ).
@@ -1247,7 +1247,7 @@ MonsterBattleFont_Branch_9C04:
         jsr     SelectWorldEncounterZone        ; 9C04 20 19 9C                  ..
         jsr     ComputeEncounterWeightOffset    ; 9C07 20 CC 9C                  ..
         jsr     ComputeTerrainEncounterRate     ; 9C0A 20 B2 9C                  ..
-        jsr     ApplyEncounterCooldownAndLevelCheck; 9C0D 20 BA A0               ..
+        jsr     ApplyRepelEffect                ; 9C0D 20 BA A0                  ..
         jsr     RollRandomEncounterThreshold    ; 9C10 20 F6 9C                  ..
         bcs     MonsterBattleFont_Branch_9C18   ; 9C13 B0 03                    ..
         jmp     MonsterBattleFont_Branch_9D0E   ; 9C15 4C 0E 9D                 L..
@@ -1989,12 +1989,12 @@ MonsterBattleFont_Branch_A0A5:
         sta     $6E06                           ; A0B6 8D 06 6E                 ..n
         rts                                     ; A0B9 60                       `
 ; ----------------------------------------------------------------------------
-ApplyEncounterCooldownAndLevelCheck:
-        lda     $6E41                           ; A0BA AD 41 6E                 .An
+ApplyRepelEffect:
+        lda     RepelStepCounter                ; A0BA AD 41 6E                 .An
         and     #$7F                            ; A0BD 29 7F                    ).
         beq     MonsterBattleFont_Branch_A0F8   ; A0BF F0 37                    .7
-        dec     $6E41                           ; A0C1 CE 41 6E                 .An
-        lda     $6E41                           ; A0C4 AD 41 6E                 .An
+        dec     RepelStepCounter                ; A0C1 CE 41 6E                 .An
+        lda     RepelStepCounter                ; A0C4 AD 41 6E                 .An
         and     #$7F                            ; A0C7 29 7F                    ).
         beq     MonsterBattleFont_Branch_A0E4   ; A0C9 F0 19                    ..
         lda     $62D5                           ; A0CB AD D5 62                 ..b
@@ -2016,7 +2016,7 @@ MonsterBattleFont_Branch_A0E4:
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; A0E8 A2 03                    ..
         ldy     #$19                            ; A0EA A0 19                    ..
-        lda     $6E41                           ; A0EC AD 41 6E                 .An
+        lda     RepelStepCounter                ; A0EC AD 41 6E                 .An
         bmi     MonsterBattleFont_Branch_A0F2   ; A0EF 30 01                    0.
         iny                                     ; A0F1 C8                       .
 MonsterBattleFont_Branch_A0F2:
@@ -2184,7 +2184,7 @@ MonsterBattleFont_Branch_A1D7:
         ora     $6E44                           ; A1F0 0D 44 6E                 .Dn
         ora     #$C0                            ; A1F3 09 C0                    ..
         sta     $6E44                           ; A1F5 8D 44 6E                 .Dn
-        lda     $C000                           ; A1F8 AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; A1F8 AD 00 C0                 ...
         and     #$20                            ; A1FB 29 20                    )
         beq     MonsterBattleFont_Branch_A207   ; A1FD F0 08                    ..
         lda     $6E44                           ; A1FF AD 44 6E                 .Dn
@@ -2763,7 +2763,7 @@ MonsterBattleFont_Branch_A9E8:
         db   $84,$4B                         ; A9EE 84 4B                    .K
 ; ----------------------------------------------------------------------------
         lda     $6E83                           ; A9F0 AD 83 6E                 ..n
-        sta     $FD                             ; A9F3 85 FD                    ..
+        sta     MessageNumberArgument           ; A9F3 85 FD                    ..
         lda     $6E84                           ; A9F5 AD 84 6E                 ..n
         sta     $FE                             ; A9F8 85 FE                    ..
         lda     $6E85                           ; A9FA AD 85 6E                 ..n
@@ -2820,7 +2820,7 @@ MonsterBattleFont_Branch_AA30:
         jmp     MonsterBattleFont_Branch_A821   ; AA37 4C 21 A8                 L!.
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AA3A:
-        jsr     ApplyMonsterArenaWagerValue     ; AA3A 20 B9 AA                  ..
+        jsr     AddArenaWagerToCasinoCoins      ; AA3A 20 B9 AA                  ..
         brk                                     ; AA3D 00                       .
         db   $C5,$4B                         ; AA3E C5 4B                    .K
 ; ----------------------------------------------------------------------------
@@ -2895,11 +2895,11 @@ MonsterBattleFont_Branch_AA7F:
         jmp     MonsterBattleFont_Branch_A81B   ; AAAD 4C 1B A8                 L..
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AAB0:
-        jsr     ApplyMonsterArenaWagerValue     ; AAB0 20 B9 AA                  ..
-        jsr     RefreshMonsterArenaWagerUi      ; AAB3 20 CC AA                  ..
+        jsr     AddArenaWagerToCasinoCoins      ; AAB0 20 B9 AA                  ..
+        jsr     ShowArenaWinningsAndFanfare     ; AAB3 20 CC AA                  ..
         jmp     MonsterBattleFont_Branch_AA57   ; AAB6 4C 57 AA                 LW.
 ; ----------------------------------------------------------------------------
-ApplyMonsterArenaWagerValue:
+AddArenaWagerToCasinoCoins:
         lda     $6E83                           ; AAB9 AD 83 6E                 ..n
         sta     $36                             ; AABC 85 36                    .6
         lda     $6E84                           ; AABE AD 84 6E                 ..n
@@ -2911,7 +2911,7 @@ ApplyMonsterArenaWagerValue:
 ; ----------------------------------------------------------------------------
         rts                                     ; AACB 60                       `
 ; ----------------------------------------------------------------------------
-RefreshMonsterArenaWagerUi:
+ShowArenaWinningsAndFanfare:
         brk                                     ; AACC 00                       .
         db   $07,$6F,$6C                     ; AACD 07 6F 6C                 .ol
 ; ----------------------------------------------------------------------------
@@ -2995,7 +2995,7 @@ MonsterBattleFont_Branch_AB52:
         bcs     MonsterBattleFont_Branch_AB69   ; AB57 B0 10                    ..
 MonsterBattleFont_Branch_AB59:
         lda     $6E83                           ; AB59 AD 83 6E                 ..n
-        sta     $FD                             ; AB5C 85 FD                    ..
+        sta     MessageNumberArgument           ; AB5C 85 FD                    ..
         lda     $6E84                           ; AB5E AD 84 6E                 ..n
         sta     $FE                             ; AB61 85 FE                    ..
         lda     $6E85                           ; AB63 AD 85 6E                 ..n
@@ -3004,7 +3004,7 @@ MonsterBattleFont_Branch_AB59:
 ; ----------------------------------------------------------------------------
 MonsterBattleFont_Branch_AB69:
         lda     $6E83                           ; AB69 AD 83 6E                 ..n
-        sta     $FD                             ; AB6C 85 FD                    ..
+        sta     MessageNumberArgument           ; AB6C 85 FD                    ..
         lda     $6E84                           ; AB6E AD 84 6E                 ..n
         sta     $FE                             ; AB71 85 FE                    ..
         lda     $6E85                           ; AB73 AD 85 6E                 ..n
@@ -3015,8 +3015,8 @@ MonsterBattleFont_Branch_AB69:
         brk                                     ; AB7B 00                       .
         db   $C7,$4B                         ; AB7C C7 4B                    .K
 ; ----------------------------------------------------------------------------
-        jsr     ApplyMonsterArenaWagerValue     ; AB7E 20 B9 AA                  ..
-        jsr     RefreshMonsterArenaWagerUi      ; AB81 20 CC AA                  ..
+        jsr     AddArenaWagerToCasinoCoins      ; AB7E 20 B9 AA                  ..
+        jsr     ShowArenaWinningsAndFanfare     ; AB81 20 CC AA                  ..
         pla                                     ; AB84 68                       h
         pla                                     ; AB85 68                       h
         pla                                     ; AB86 68                       h
@@ -3038,7 +3038,7 @@ InitializeMonsterArenaDisplay:
 ; ----------------------------------------------------------------------------
         lda     #$00                            ; AB99 A9 00                    ..
         sta     $6E44                           ; AB9B 8D 44 6E                 .Dn
-        lda     $C000                           ; AB9E AD 00 C0                 ...
+        lda     DebugFeatureFlags               ; AB9E AD 00 C0                 ...
         bne     MonsterBattleFont_Branch_ABA6   ; ABA1 D0 03                    ..
 RunMonsterArenaBattleService:
         brk                                     ; ABA3 00                       .
@@ -3135,7 +3135,7 @@ MonsterBattleFont_Branch_AC12:
         jmp     WaitForButtonStateOneTwentyFrames; AC17 4C 14 D2                L..
 ; ----------------------------------------------------------------------------
 CommitMonsterArenaWagerSelection:
-        jsr     ApplyMonsterArenaWagerValue     ; AC1A 20 B9 AA                  ..
+        jsr     AddArenaWagerToCasinoCoins      ; AC1A 20 B9 AA                  ..
         clc                                     ; AC1D 18                       .
         rts                                     ; AC1E 60                       `
 ; ----------------------------------------------------------------------------
@@ -4156,7 +4156,7 @@ Bank18_BattleAnimationCommands:
         db   $2D,$30,$33,$2E,$29,$24,$1E,$1A ; B78D 2D 30 33 2E 29 24 1E 1A  -03.)$..
         db   $15,$18,$FD                     ; B795 15 18 FD                 ...
 ; ----------------------------------------------------------------------------
-Bank18_LoadFontTiles:
+LoadFullFontTiles:
         ldy     #$8C                            ; B798 A0 8C                    ..
         ldx     #$00                            ; B79A A2 00                    ..
         beq     MonsterBattleFont_Branch_B7A2   ; B79C F0 04                    ..
@@ -4422,7 +4422,7 @@ Bank18_UppercaseFont:
         db   $73,$32,$1C,$18,$0C,$1C,$26,$67 ; BDA5 73 32 1C 18 0C 1C 26 67  s2....&g
         db   $F7,$62,$34,$34,$18,$18,$18,$3C ; BDAD F7 62 34 34 18 18 18 3C  .b44...<
         db   $7F,$43,$07,$0E,$1C,$38,$71,$7F ; BDB5 7F 43 07 0E 1C 38 71 7F  .C...8q.
-Bank18_PostFontData:
+Bank18_MusicSequenceData:
         db   $7B,$E1,$40,$EE,$C0,$94,$60,$94 ; BDBD 7B E1 40 EE C0 94 60 94  {.@...`.
         db   $48,$73,$88,$05,$28,$28,$78,$E0 ; BDC5 48 73 88 05 28 28 78 E0  Hs..((x.
         db   $00,$95,$0C,$49,$73,$88,$05,$2B ; BDCD 00 95 0C 49 73 88 05 2B  ...Is..+

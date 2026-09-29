@@ -174,7 +174,7 @@
 10	BA0D	BA10	InlineServiceOperands	Verified	Three operands consumed by BRK service $6B,$93 before code resumes at $BA10; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 10	BA9A	BA9D	InlineServiceOperands	Verified	Three operands consumed by BRK service $04,$C3 before code resumes at $BA9D; no official opcode follows two operands at this site, while every call site decodes cleanly after three
 10	BBE8	BBEB	InlineServiceOperands	Verified	Three operands consumed by BRK service $64,$23 before code resumes at $BBEB; full service $64,$23 is registered as three-operand and all 1 decoded call site(s) resume coherently after three
-10	BC7E	BD2A	BattleCommandData	Verified	Opaque command data partitioned by service-directory targets $BC7E/$BCC7/$BCEC/$BD0E/$BD1F/$BD28 from entries $2F/$3B-$3F; the final two-byte segment ends at independently verified compressed graphics beginning at $BD2A, and every attempted supplementary decode is rejected or reaches an unsupported opcode
+10	BC7E	BD2A	MusicSequenceData	Verified	Audio sequence streams used by rendered tracks 1 and 26; directory-addressed boundaries are $BC7E/$BCC7/$BCEC/$BD0E/$BD1F/$BD28
 10	BD2A	BF54	CompressedMonsterGraphics	Verified	Monster ID $B1 descriptor at bank $14:$B726 selects bank $10 and points to $BD2A; the verified bitplane decoder consumes the stream before $FF padding
 10	BF54	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 10	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
@@ -323,12 +323,12 @@
 12	BC3A	BC3C	BattleSetupPointerConstant	Verified	Little-endian constant loaded directly by LDA $BC3A / LDA $BC3B at $BBF6-$BBFE
 12	BD17	BD1F	BattleSetupBitmasks	Verified	Eight bitmasks selected by LDA $BD17,Y at $BC7D with Y produced by the bounded bit-position scan in $BC75-$BC8C
 12	BDBD	BDC9	LookupTable	Verified	Twelve entries read by LDA $BDBD,X at $BD94 with X = byte AND $0F from $BD91-$BD93; mask values 12-15 would read the directory-addressed data at $BDC9
-12	BDC9	BE4E	BattleSetupCommandData	Verified	Opaque stream selected by final service-directory entry $2F at $805E; the next consecutive directory target $BE4E independently bounds the stream, and supplementary decoding immediately enters invalid fixed-bank operand data
-12	BE4E	BECD	BattleSetupCommandData	Verified	Opaque stream selected by final service-directory entry $30 at $8060 and bounded by the next consecutive directory target $BECD; supplementary linear decoding reaches unsupported opcode $12
-12	BECD	BF68	BattleSetupCommandData	Verified	Opaque stream selected by final service-directory entry $31 at $8062 and bounded by independently verified $FF padding beginning at $BF68; supplementary decoding reaches unsupported opcode $63, and bytes $86,$04 at $BED0 are an isolated Ghidra data decode
+12	BDC9	BE4E	MusicSequenceData	Verified	First directory-delimited portion of the audio sequence stream used by rendered track 53
+12	BE4E	BECD	MusicSequenceData	Verified	Second directory-delimited portion of the audio sequence stream used by rendered track 53
+12	BECD	BF68	MusicSequenceData	Verified	Final directory-delimited portion of the audio sequence stream used by rendered track 53, ending before $FF padding
 12	BF68	BFD8	Padding	Verified	Contiguous $FF padding after the final structured byte and before the compatibility footer
 12	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
-13	8000	8038	ServiceDirectory	Verified	Twenty-eight battle presentation and state pointers
+13	8000	8038	ServiceDirectory	Verified	Twenty-eight battle-AI scoring, effect-roll, and resistance service pointers
 13	8078	8088	BattleStateHandlerPointers	Verified	Eight little-endian handler pointers selected by doubled state $75E8 after the explicit range check against eight at bank $13:$80E4
 13	8599	859B	BattleActionHandlerBasePointer	Verified	Little-endian $8B8B base loaded by bank $13:$84E9 before adding twice the battle action ID
 13	85E9	85EE	LookupTable	Verified	Five entries read by LDA $85E9,X at $85DA with X = value AND $07 from $85D7-$85D9; mask values 5-7 would read the code at $85EE
@@ -338,7 +338,7 @@
 13	8A1E	8A32	BattleSlotRecordPointers	Verified	Ten little-endian pointers selected after the bounded ten-slot scan at bank $13:$89F5-$8A1D
 13	8AEF	8B24	BattlePresentationValues	Verified	Fifty-three values directly indexed by X in the loop bounded below $35 at bank $13:$B302-$B31B
 13	8B24	8B8B	BattlePresentationValues	Verified	One hundred three values indexed only after the explicit CMP #$67 guard at bank $13:$8977-$899B
-13	8B8B	8C5B	BattleActionHandlerPointers	Verified	One hundred four little-endian handlers indexed by twice the battle action ID and dispatched through bank $13:$8509
+13	8B8B	8C59	BattleActionHandlerPointers	Verified	One hundred three real little-endian handlers indexed by action IDs $00-$66; bytes $8C59-$8C5A begin following code and are not a handler pointer
 13	8D2A	8D35	BattleActionBitMasks	Verified	Eleven masks read by LDA $8D0B,X at $8CDB with X = $7599 from LDX $7599 at $8CD8; handler $8CD8 is reached only through BattleActionHandlerPointers entries $1F-$29, dispatched by JMP ($0002) at $8509 after STA $7599 / TAY at $84D2-$84D5 selected the entry, and STA $7599 at $84D2 is the only writer, so X is $1F through $29
 13	8D35	8D3C	BattleActionBitMasks	Verified	Masks read by LDA $8CD6,X at $8D04 with X = $7599 from LDX $7599 at $8D01; handler $8D01 is reached only through BattleActionHandlerPointers entries $5F, $60 and $65, dispatched by JMP ($0002) at $8509 after STA $7599 / TAY at $84D2-$84D5, so the reach is $8D35-$8D3B; the zero entries for IDs $61-$64 are dispatched to other handlers
 13	8D8F	8D91	BattleRecordBasePointer	Verified	Little-endian $7600 base pointer loaded by bank $13:$8D86-$8D8C and offset by $81 times $003A
@@ -347,7 +347,7 @@
 13	9100	9110	BattleArithmeticPointers	Verified	Eight little-endian arithmetic handler pointers consumed by bank $13:$8F93-$8F9F
 13	91A9	91BB	BattleActionIds	Verified	Eighteen action IDs searched by the descending $11 index at bank $13:$9155-$9163
 13	91BB	91CD	BattleActionValues	Verified	Eighteen values selected by the same descending X=$11..0 search through LDA $91BB,X at $9451, parallel to the eighteen action IDs at $91A9-$91BA
-13	91CD	91F1	BattleActionHandlerPointers	Verified	Eighteen little-endian handler pointers selected in parallel with the IDs at $91A9-$91BA
+13	91CD	91EF	BattleActionHandlerPointers	Verified	Seventeen real little-endian handler pointers selected for IDs $00-$10; bytes $91EF-$91F0 begin LDA $75D3 and are not a pointer
 13	9376	937A	ReviewedUnusedData	Verified	Reviewed unused: no decoded code, inline operand, pointer target, code exclusion, static absolute reference, source-attributed runtime read, or runtime execution across the 31-state progression corpus
 13	94CC	94EC	BattlePresentationIndices	Verified	Thirty-two values read by LDA $94CC,X at $927F/$931C after LDA $B80B,X / AND #$1F / TAX at $9279-$927E and $9314-$931B
 13	94DB	951B	BattlePresentationRangePairs	Verified	Sixty-four bytes of range/base pairs read by LDA $94DC,Y at $92C1 and LDA $94DB,Y at $92D2 with Y = 16 * t + 2 * s: t is the two-bit field returned by JSR $B0B4 at $92B1 and shifted by ASL / ASL / ASL / ASL at $92BA-$92BD, and s is the AND #$03 result of $92E2 at $9301 plus four when LDX $75D3 / CPX #$18 or CPX #$1F select it at $9289-$9298, doubled by ASL at $92B6 and added by ADC $00 at $92BE, so Y is at most 62 and the pairs end at $951A; the first seventeen bytes are shared with BattlePresentationIndices, and FCEUX read $94FB-$9502 and $950B-$950C from these consumers. This replaces an earlier reviewed-unused claim for $94EC-$951A that the base-inside-a-bounded-range rule wrongly accepted
@@ -373,10 +373,10 @@
 13	B80B	B90B	BattlePresentationLookup	Verified	Full 256-byte table directly indexed at $9279/$9316/$A46A/$B683/$B693 and bounded by verified code at $B90B
 13	B967	BA4E	BattlePresentationLookup	Verified	Directly indexed lookup base used at $8902/$9204/$A599/$A79E/$AD6B/$ADE1/$AEDC/$B302 and bounded by the next consumed table at $BA4E
 13	BA4E	BBCB	BattlePresentationTables	Verified	Parallel lookup tables whose bases $BA4E, $BA6C, $BA70, $BA74, $BAA5, $BAD5, $BB06, $BB22, $BB3F, $BB49 and the seven-byte records $BB53-$BB99 are each read by traced indexed consumers
-13	BBCB	BFA7	BattlePresentationCommands	Verified	Seven streams bounded by the final service-directory targets $BBCB/$BCEA/$BDE3/$BE81/$BEA8/$BF21/$BF65; uses the verified $F8-$FE animation command vocabulary with $FE loop pointers and $FD terminators
-13	BFA7	BFD8	Padding	Verified	Contiguous $FF padding after the final battle-presentation command stream and before the compatibility footer
+13	BBCB	BFA7	MusicSequenceData	Verified	Seven audio sequence streams used by rendered tracks 7 and 22, bounded by directory targets $BBCB/$BCEA/$BDE3/$BE81/$BEA8/$BF21/$BF65
+13	BFA7	BFD8	Padding	Verified	Contiguous $FF padding after the final bank $13 music sequence stream and before the compatibility footer
 13	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
-14	8000	8034	ServiceDirectory	Verified	Twenty-six battle-turn service pointers
+14	8000	8034	ServiceDirectory	Verified	Twenty-six monster graphics, display-slot, and battle-screen animation service pointers
 14	837B	837F	BattleTurnRoutinePointers	Verified	Two pointer pairs read by LDA $837B,X at $8336 and LDA $837C,X at $833B with X = 2 * (counter AND 1)
 14	84C0	84DF	BattleTurnCopyPatterns	Verified	Four selectors read by LDA $84C0,X at $8498 with X zero through three; each selects one of three nine-byte patterns at $84C4 copied by the loop at $84A6-$84B6
 14	8646	8651	BattleTurnMonsterIds	Verified	Eleven values read by LDA $8646,X at $860A after the source byte is reduced by $4B and rejected when the result is $0B or greater at $85E6-$85F1
@@ -430,7 +430,7 @@
 14	B2D5	B398	MonsterIdMap	Verified	Monster identifier ordering table consumed by bank $14:$9F0F/$9F1C
 14	B398	B3B1	MonsterGraphicsBankBitmap	Verified	Twenty-five-byte MSB-first bitmap selecting graphics bank $06 or $07
 14	B3B1	B77B	MonsterGraphicsDescriptors	Verified	One hundred ninety-four five-byte graphics descriptor records
-14	B77B	BD00	CompressedGraphicsStreams	Verified	Pointer-selected compressed graphics streams bounded by the 81-entry directory at $B1BA; code begins at $BD00
+14	B77B	BD00	MonsterPaletteRecords	Verified	One hundred ninety-one variable-length monster palette records read directly by bank $14:$9572/$95D5; the 81-entry panel directory at $B1BA addresses bank $07 graphics
 14	BE4F	BE53	GraphicsDestinationOffsets	Verified	Four destination offsets consumed at $BDEF and $BE3A while rearranging decoded monster graphics
 14	BE53	BFD0	CompressedMonsterGraphics	Verified	Special monster IDs $14,$2E,$3F,$B2,$C0 select bank $14 and descriptors point to this $19-chunk stream with layout variants
 14	BFD0	BFD8	Padding	Verified	Eight contiguous $FF bytes after the embedded graphics stream and before the compatibility footer
@@ -678,8 +678,8 @@
 17	A89D	B08D	Graphics	Verified	Two thousand thirty-two bytes uploaded to CHR RAM by bank $17:$A7FE-$A874
 17	B08D	B4AF	MapInfo	Verified	Seventy-three map pointers and map-information records
 17	B4AF	B4C1	MapAnimationSetup	Verified	Eighteen-byte setup block preceding the directory-addressed map animation streams
-17	B4C1	BEE5	MapAnimationCommands	Verified	Thirty-three directory-addressed command streams with loop pointers; runtime-read and never executed
-17	BEE5	BFD8	Padding	Verified	Contiguous $FF padding after map animation data
+17	B4C1	BEE5	MusicSequenceData	Verified	Thirty-three directory-addressed audio sequence streams used by rendered tracks 5, 9, 14, 21, 23, 25, 27, 31, 41, 43, and 44
+17	BEE5	BFD8	Padding	Verified	Contiguous $FF padding after bank $17 music sequence data
 17	BFD8	C000	CompatibilityFooter	Verified	Repeated reset stub, title signature, metadata, and vectors
 18	8000	8046	ServiceDirectory	Verified	Thirty-five-entry mixed battle-data directory
 18	8046	92AA	MonsterRecords	Verified	Two hundred fourteen 22-byte monster records
@@ -709,11 +709,11 @@
 18	B245	B2DD	BattleAnimationX	Verified	152 signed X-coordinate values indexed in parallel by the 29-group animation loop
 18	B2DD	B375	BattleAnimationY	Verified	152 signed Y-coordinate values indexed in parallel by the 29-group animation loop
 18	B375	B40D	BattleAnimationCommands	Verified	Twenty-nine variable command groups terminated by $FF and indexed in parallel with X/Y arrays
-18	B40D	B798	MixedDirectoryRecords	Verified	Record data selected by directory entries $802C ($B40D), $8030 ($B48F), $802E ($B525), $800E ($B5C2) and $8042 ($B655), bounded by the runtime-observed font uploader at $B798
+18	B40D	B798	MusicSequenceData	Verified	Directory-addressed audio sequence data used by rendered tracks 29, 30, and 42, bounded by the runtime-observed font uploader at $B798
 18	B7E3	B7E7	BattleFontSourcePointers	Verified	Two little-endian source pointers read by LDA $B7E3,X at $B7B1 and LDA $B7E4,X at $B7B6 with X initialized only to zero at $B79A or two at $B7A0
 18	B835	B83D	FontGraphics	Verified	Blank first glyph of the 1bpp font: eight zero bytes read by LDA $B835,Y at $B81C, whose copy loop stops when X reaches a multiple of 8; FCEUX read all eight, and the remaining glyphs begin at $B83D
 18	B83D	BDBD	FontGraphics	Verified	One-bitplane lowercase, symbol, uppercase, and digit glyphs
-18	BDBD	BFD8	MixedDirectoryRecords	Verified	Post-font record data selected by directory entries $8034 ($BDBD) and $8038 ($BEEE), bounded by the one-bitplane glyphs ending at $BDBC and the compatibility footer at $BFD8
+18	BDBD	BFD8	MusicSequenceData	Verified	Post-font audio sequence data used by rendered tracks 29, 30, and 42, bounded by the compatibility footer at $BFD8
 18	BFD8	C000	CompatibilityFooter	Verified	Exact match for the verified bank $1C reset stub, title signature, metadata, and vectors
 19	8000	8014	ServiceDirectory	Verified	Ten-entry audio service directory: two null entries, six fixed-engine audio trampolines, map-track selection, and current-map music playback
 19	804D	8050	InlineServiceOperands	Verified	Three operands consumed by the fixed-bank $x3 BRK service at $804C

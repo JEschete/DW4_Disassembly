@@ -12,7 +12,7 @@ Bank1B_EventDirectoryTextOverlay:
         db   $00,$00,$FE,$A0,$8A,$B7,$EF,$A4 ; 8010 00 00 FE A0 8A B7 EF A4  ........
         db   $1C,$A7,$2C,$A7,$F9,$AA,$F7,$AF ; 8018 1C A7 2C A7 F9 AA F7 AF  ..,.....
 ; ----------------------------------------------------------------------------
-Bank1B_MapEventServices:
+ScanMapOverlayAndRunTransition:
         ldy     #$01                            ; 8020 A0 01                    ..
         jsr     FindEntityInMapOverlayRecords   ; 8022 20 97 80                  ..
         bcs     MapEventText_Branch_802E        ; 8025 B0 07                    ..
@@ -2733,7 +2733,7 @@ MapEventText_Branch_A4D1:
         dex                                     ; A4D4 CA                       .
         bpl     MapEventText_Branch_A4D1        ; A4D5 10 FA                    ..
 RestoreDisplayAfterRasterTransition:
-        jsr     FixedTrampoline03               ; A4D7 20 0A C0                  ..
+        jsr     RebuildViewportWithRenderingSuspendedTrampoline; A4D7 20 0A C0   ..
 MapEventText_Branch_A4DA:
         jmp     ResumeRenderingAfterPpuWork     ; A4DA 4C 8F C5                 L..
 ; ----------------------------------------------------------------------------
@@ -2757,13 +2757,13 @@ RunChapterTitlePresentation:
         brk                                     ; A4F7 00                       .
         db   $02,$9F                         ; A4F8 02 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     BlankChapterTitlePalette        ; A4FA 20 1C A7                  ..
+        jsr     BlankPaletteToBlack             ; A4FA 20 1C A7                  ..
         jsr     SuspendRenderingUpdates         ; A4FD 20 AF C5                  ..
         jsr     InitializeChapterTitlePalette   ; A500 20 06 A7                  ..
         jsr     SubmitPaletteWithoutFade        ; A503 20 B9 C5                  ..
         jsr     RunChapterTitleOpeningSequence  ; A506 20 30 A5                  0.
         bcs     MapEventText_Branch_A521        ; A509 B0 16                    ..
-        jsr     BlankChapterTitlePalette        ; A50B 20 1C A7                  ..
+        jsr     BlankPaletteToBlack             ; A50B 20 1C A7                  ..
         jsr     EnterChapterTitleInteraction    ; A50E 20 B2 A7                  ..
         lda     $B0                             ; A511 A5 B0                    ..
         and     #$20                            ; A513 29 20                    )
@@ -2779,7 +2779,7 @@ MapEventText_Branch_A521:
         lda     $1F                             ; A521 A5 1F                    ..
         and     #$F7                            ; A523 29 F7                    ).
         sta     $1F                             ; A525 85 1F                    ..
-        jsr     BlankChapterTitlePalette        ; A527 20 1C A7                  ..
+        jsr     BlankPaletteToBlack             ; A527 20 1C A7                  ..
         brk                                     ; A52A 00                       .
         db   $08,$8F                         ; A52B 08 8F                    ..
 ; ----------------------------------------------------------------------------
@@ -2953,7 +2953,7 @@ MapEventText_Branch_A711:
 Bank1B_MapSetupValues:
         db   $0F,$21,$0F,$32                 ; A718 0F 21 0F 32              .!.2
 ; ----------------------------------------------------------------------------
-BlankChapterTitlePalette:
+BlankPaletteToBlack:
         lda     #$0F                            ; A71C A9 0F                    ..
         ldx     #$18                            ; A71E A2 18                    ..
 MapEventText_Branch_A720:
@@ -3038,7 +3038,7 @@ EnterChapterTitleInteraction:
         jsr     ResetDisplayState               ; A7B8 20 4E C5                  N.
         jsr     InitializeScriptedMapEventRam   ; A7BB 20 67 AF                  g.
 RunChapterTitleInteractionLoop:
-        jsr     FixedTrampoline13               ; A7BE 20 3A C0                  :.
+        jsr     UploadTitleSceneArtworkAliasTrampoline; A7BE 20 3A C0            :.
         jsr     SuspendRenderingUpdates         ; A7C1 20 AF C5                  ..
         ldx     #$00                            ; A7C4 A2 00                    ..
         jsr     UploadFixedGraphicsPages        ; A7C6 20 FB F3                  ..
@@ -3442,7 +3442,7 @@ Bank1B_MapRendererTables:
         db   $3B                             ; AAF5 3B                       ;
         db   $F5,$6B,$F6                     ; AAF6 F5 6B F6                 .k.
 ; ----------------------------------------------------------------------------
-DispatchChapterMapEventHandler:
+DispatchChapterCompletionCheck:
         php                                     ; AAF9 08                       .
         lda     SaveCurrentChapterMinus1        ; AAFA AD 5A 61                 .Za
         asl     a                               ; AAFD 0A                       .
@@ -3454,7 +3454,7 @@ DispatchChapterMapEventHandler:
         plp                                     ; AB09 28                       (
         jmp     ($0000)                         ; AB0A 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-HandleChapterOneMapEvent:
+CheckChapterOneCompletion:
         lda     $6283                           ; AB0D AD 83 62                 ..b
         and     #$A0                            ; AB10 29 A0                    ).
         cmp     #$80                            ; AB12 C9 80                    ..
@@ -3476,12 +3476,12 @@ HandleChapterOneMapEvent:
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; AB31 A2 03                    ..
         lda     #$46                            ; AB33 A9 46                    .F
-        jmp     MapEventText_Branch_ABB6        ; AB35 4C B6 AB                 L..
+        jmp     RunChapterEndingSequence        ; AB35 4C B6 AB                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AB38:
         rts                                     ; AB38 60                       `
 ; ----------------------------------------------------------------------------
-HandleChapterTwoMapEvent:
+CheckChapterTwoCompletion:
         bcs     MapEventText_Branch_AB41        ; AB39 B0 06                    ..
         lda     CurrentSubmapNumber             ; AB3B A5 64                    .d
         cmp     #$00                            ; AB3D C9 00                    ..
@@ -3496,12 +3496,12 @@ MapEventText_Branch_AB41:
 ; ----------------------------------------------------------------------------
         ldx     #$03                            ; AB4A A2 03                    ..
         lda     #$8B                            ; AB4C A9 8B                    ..
-        jmp     MapEventText_Branch_ABB6        ; AB4E 4C B6 AB                 L..
+        jmp     RunChapterEndingSequence        ; AB4E 4C B6 AB                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AB51:
         rts                                     ; AB51 60                       `
 ; ----------------------------------------------------------------------------
-HandleChapterThreeMapEvent:
+CheckChapterThreeCompletion:
         lda     CurrentMapNumber                ; AB52 A5 63                    .c
         cmp     #$3A                            ; AB54 C9 3A                    .:
         bne     MapEventText_Branch_AB74        ; AB56 D0 1C                    ..
@@ -3518,16 +3518,16 @@ HandleChapterThreeMapEvent:
         jsr     FadePaletteToBlack              ; AB6A 20 C5 C5                  ..
         lda     #$7C                            ; AB6D A9 7C                    .|
         ldx     #$03                            ; AB6F A2 03                    ..
-        jmp     MapEventText_Branch_ABB6        ; AB71 4C B6 AB                 L..
+        jmp     RunChapterEndingSequence        ; AB71 4C B6 AB                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AB74:
         rts                                     ; AB74 60                       `
 ; ----------------------------------------------------------------------------
-HandleChapterFourMapEvent:
+CheckChapterFourCompletion:
         brk                                     ; AB75 00                       .
         db   $0F,$EB,$10                     ; AB76 0F EB 10                 ...
 ; ----------------------------------------------------------------------------
-        beq     HandleChapterFiveMapEvent       ; AB79 F0 2B                    .+
+        beq     CheckGameEndingTrigger          ; AB79 F0 2B                    .+
         lda     CurrentMapNumber                ; AB7B A5 63                    .c
         cmp     #$04                            ; AB7D C9 04                    ..
         bne     MapEventText_Branch_AB8C        ; AB7F D0 0B                    ..
@@ -3536,11 +3536,11 @@ HandleChapterFourMapEvent:
 ; ----------------------------------------------------------------------------
         lda     #$AC                            ; AB85 A9 AC                    ..
         ldx     #$03                            ; AB87 A2 03                    ..
-        jmp     MapEventText_Branch_ABB6        ; AB89 4C B6 AB                 L..
+        jmp     RunChapterEndingSequence        ; AB89 4C B6 AB                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_AB8C:
         cmp     #$11                            ; AB8C C9 11                    ..
-        bne     HandleChapterFiveMapEvent       ; AB8E D0 16                    ..
+        bne     CheckGameEndingTrigger          ; AB8E D0 16                    ..
         dec     PlayerWorldX                    ; AB90 C6 42                    .B
         lda     #$80                            ; AB92 A9 80                    ..
         sta     $0533                           ; AB94 8D 33 05                 .3.
@@ -3550,7 +3550,7 @@ MapEventText_Branch_AB8C:
         sta     $0530                           ; AB9E 8D 30 05                 .0.
         lda     #$0F                            ; ABA1 A9 0F                    ..
         sta     $0531                           ; ABA3 8D 31 05                 .1.
-HandleChapterFiveMapEvent:
+CheckGameEndingTrigger:
         brk                                     ; ABA6 00                       .
         db   $26,$EB,$20                     ; ABA7 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
@@ -3563,7 +3563,7 @@ HandleChapterFiveMapEvent:
 MapEventText_Branch_ABB5:
         rts                                     ; ABB5 60                       `
 ; ----------------------------------------------------------------------------
-MapEventText_Branch_ABB6:
+RunChapterEndingSequence:
         pha                                     ; ABB6 48                       H
         txa                                     ; ABB7 8A                       .
         pha                                     ; ABB8 48                       H
@@ -3610,7 +3610,7 @@ MapEventText_Branch_ABB6:
         jsr     FadePaletteFromBlack            ; ABFF 20 BF C5                  ..
         inc     SaveCurrentChapterMinus1        ; AC02 EE 5A 61                 .Za
         lda     SaveCurrentChapterMinus1        ; AC05 AD 5A 61                 .Za
-        sta     $FD                             ; AC08 85 FD                    ..
+        sta     MessageNumberArgument           ; AC08 85 FD                    ..
         lda     #$00                            ; AC0A A9 00                    ..
         sta     $FE                             ; AC0C 85 FE                    ..
         sta     $FF                             ; AC0E 85 FF                    ..
@@ -3638,17 +3638,17 @@ MapEventText_Branch_AC27:
         brk                                     ; AC2C 00                       .
         db   $BE,$3B                         ; AC2D BE 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     PromptScriptedMapEventChoice    ; AC2F 20 43 AC                  C.
+        jsr     PromptChapterEndSaveYesNo       ; AC2F 20 43 AC                  C.
         bcc     MapEventText_Branch_AC4F        ; AC32 90 1B                    ..
         lda     #$00                            ; AC34 A9 00                    ..
         sta     $6BDE                           ; AC36 8D DE 6B                 ..k
         brk                                     ; AC39 00                       .
         db   $BF,$3B                         ; AC3A BF 3B                    .;
 ; ----------------------------------------------------------------------------
-        jsr     PromptScriptedMapEventChoice    ; AC3C 20 43 AC                  C.
+        jsr     PromptChapterEndSaveYesNo       ; AC3C 20 43 AC                  C.
         bcs     MapEventText_Branch_AC27        ; AC3F B0 E6                    ..
         bcc     MapEventText_Branch_AC52        ; AC41 90 0F                    ..
-PromptScriptedMapEventChoice:
+PromptChapterEndSaveYesNo:
         lda     #$80                            ; AC43 A9 80                    ..
         sta     $6BDE                           ; AC45 8D DE 6B                 ..k
         brk                                     ; AC48 00                       .
@@ -3667,7 +3667,7 @@ MapEventText_Branch_AC52:
 ; ----------------------------------------------------------------------------
         ldx     #$FF                            ; AC55 A2 FF                    ..
         txs                                     ; AC57 9A                       .
-        jmp     UpperFixedEngine_Branch_C974    ; AC58 4C 74 C9                 Lt.
+        jmp     StartChapterFromTitle           ; AC58 4C 74 C9                 Lt.
 ; ----------------------------------------------------------------------------
         db   $0D                             ; AC5B 0D                       .
         db   $AB,$39,$AB,$52,$AB,$75,$AB,$A6 ; AC5C AB 39 AB 52 AB 75 AB A6  .9.R.u..
@@ -3705,9 +3705,9 @@ MapEventText_Branch_AC90:
         ldx     #$78                            ; AC98 A2 78                    .x
         jsr     WaitFrames                      ; AC9A 20 0C C9                  ..
         jsr     BeginScrollingMapEventFinale    ; AC9D 20 4C B5                  L.
-ExitScriptedMapEventScene:
-        jsr     FixedTrampoline10               ; ACA0 20 31 C0                  1.
-        jmp     UpperFixedEngine_Branch_C0E9    ; ACA3 4C E9 C0                 L..
+HaltAfterEnding:
+        jsr     RunLowerFixedNoOpCompatibilityTrampoline; ACA0 20 31 C0          1.
+        jmp     HaltGame                        ; ACA3 4C E9 C0                 L..
 ; ----------------------------------------------------------------------------
 MapEventText_Branch_ACA6:
         lda     $0530                           ; ACA6 AD 30 05                 .0.
@@ -3785,7 +3785,7 @@ MapEventText_Branch_AD19:
         brk                                     ; AD21 00                       .
         db   $2A,$EB,$40                     ; AD22 2A EB 40                 *.@
 ; ----------------------------------------------------------------------------
-Bank1B_DormantMapHandlerRti:
+ContinuePreparingScriptedMapEventScene:
         beq     MapEventText_Branch_AD2F        ; AD25 F0 08                    ..
         lda     #$0F                            ; AD27 A9 0F                    ..
         sta     $060A                           ; AD29 8D 0A 06                 ...
@@ -3799,7 +3799,7 @@ MapEventText_Branch_AD2F:
         brk                                     ; AD36 00                       .
         db   $2A,$EB,$40                     ; AD37 2A EB 40                 *.@
 ; ----------------------------------------------------------------------------
-Bank1B_DormantMapHandlerRts:
+FinishPreparingScriptedMapEventScene:
         bne     MapEventText_Branch_AD48        ; AD3A D0 0C                    ..
         lda     #$0F                            ; AD3C A9 0F                    ..
         sta     $060A                           ; AD3E 8D 0A 06                 ...
@@ -3830,7 +3830,7 @@ MapEventText_Branch_AD4C:
         ldx     #$78                            ; AD66 A2 78                    .x
         jsr     WaitFrames                      ; AD68 20 0C C9                  ..
 RunScriptedMapEventPaletteSequence:
-        jsr     FixedTrampoline12               ; AD6B 20 37 C0                  7.
+        jsr     UploadTitleSceneArtworkTrampoline; AD6B 20 37 C0                 7.
         jsr     InitializeRasterScrollEffect    ; AD6E 20 CD FE                  ..
         jsr     WaitForNmi                      ; AD71 20 74 FF                  t.
         lda     #$00                            ; AD74 A9 00                    ..
@@ -4199,7 +4199,7 @@ BuildFirstGeneratedPpuReadProgram:
 MapEventText_Branch_B0F5:
         jsr     PatchFirstGeneratedPpuProgramBoundary; B0F5 20 58 B1             X.
         jsr     ExecuteGeneratedPpuTransfer     ; B0F8 20 C8 B2                  ..
-        jsr     AdvanceGeneratedPpuSourceByB0   ; B0FB 20 49 B1                  I.
+        jsr     AdvanceGeneratedPpuSourceFirstStride; B0FB 20 49 B1              I.
         lda     $4B                             ; B0FE A5 4B                    .K
         clc                                     ; B100 18                       .
         adc     #$B0                            ; B101 69 B0                    i.
@@ -4227,7 +4227,7 @@ MapEventText_Branch_B123:
         jsr     CopyGeneratedPpuProgramToSource ; B128 20 46 B3                  F.
         jsr     PatchSecondGeneratedPpuProgramBoundary; B12B 20 76 B1            v.
         jsr     ExecuteGeneratedPpuTransfer     ; B12E 20 C8 B2                  ..
-        jsr     AdvanceGeneratedPpuSourceBy0133 ; B131 20 64 B1                  d.
+        jsr     AdvanceGeneratedPpuSourceSecondStride; B131 20 64 B1             d.
         inc     $52                             ; B134 E6 52                    .R
         lda     $52                             ; B136 A5 52                    .R
         cmp     #$06                            ; B138 C9 06                    ..
@@ -4242,13 +4242,13 @@ TerminateSecondGeneratedPpuProgram:
         jsr     EmitSecondGeneratedPpuReadLoop  ; B143 20 98 B1                  ..
         jmp     AppendRtsToGeneratedPpuProgram  ; B146 4C C3 B2                 L..
 ; ----------------------------------------------------------------------------
-AdvanceGeneratedPpuSourceByB0:
+AdvanceGeneratedPpuSourceFirstStride:
         lda     $75C0                           ; B149 AD C0 75                 ..u
         clc                                     ; B14C 18                       .
         adc     #$B0                            ; B14D 69 B0                    i.
         sta     $75C0                           ; B14F 8D C0 75                 ..u
         bcc     MapEventText_Branch_B157        ; B152 90 03                    ..
-        inc     $75BB                           ; B154 EE BB 75                 ..u
+        inc     BattleAiScoreH                  ; B154 EE BB 75                 ..u
 MapEventText_Branch_B157:
         rts                                     ; B157 60                       `
 ; ----------------------------------------------------------------------------
@@ -4261,14 +4261,14 @@ PatchFirstGeneratedPpuProgramBoundary:
 MapEventText_Branch_B163:
         rts                                     ; B163 60                       `
 ; ----------------------------------------------------------------------------
-AdvanceGeneratedPpuSourceBy0133:
+AdvanceGeneratedPpuSourceSecondStride:
         lda     $75C0                           ; B164 AD C0 75                 ..u
         clc                                     ; B167 18                       .
         adc     #$33                            ; B168 69 33                    i3
         sta     $75C0                           ; B16A 8D C0 75                 ..u
-        lda     $75BB                           ; B16D AD BB 75                 ..u
+        lda     BattleAiScoreH                  ; B16D AD BB 75                 ..u
         adc     #$01                            ; B170 69 01                    i.
-        sta     $75BB                           ; B172 8D BB 75                 ..u
+        sta     BattleAiScoreH                  ; B172 8D BB 75                 ..u
         rts                                     ; B175 60                       `
 ; ----------------------------------------------------------------------------
 PatchSecondGeneratedPpuProgramBoundary:
@@ -4943,7 +4943,7 @@ BeginScrollingMapEventFinale:
         jsr     UploadFixedGraphicsPages        ; B554 20 FB F3                  ..
         jsr     ResetDisplayState               ; B557 20 4E C5                  N.
 RunScrollingMapEventFinale:
-        jsr     FixedTrampoline11               ; B55A 20 34 C0                  4.
+        jsr     LoadEndingCreditsTextTrampoline ; B55A 20 34 C0                  4.
         jsr     InitializeScrollingFinaleState  ; B55D 20 FF B5                  ..
         ldx     #$64                            ; B560 A2 64                    .d
         jsr     WaitFrames                      ; B562 20 0C C9                  ..

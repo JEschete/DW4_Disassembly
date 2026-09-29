@@ -26,7 +26,7 @@ Detailed per bank:
   bank $10: 16384 detailed (100.00%); code 12965; data  3419; overlap    0
   bank $11: 16384 detailed (100.00%); code 11895; data  4489; overlap    0
   bank $12: 16384 detailed (100.00%); code 11492; data  4892; overlap    0
-  bank $13: 16384 detailed (100.00%); code 12891; data  3497; overlap    4
+  bank $13: 16384 detailed (100.00%); code 12891; data  3493; overlap    0
   bank $14: 16384 detailed (100.00%); code 10677; data  5707; overlap    0
   bank $15: 16384 detailed (100.00%); code  8558; data  7826; overlap    0
   bank $16: 16384 detailed (100.00%); code 12581; data  3803; overlap    0
@@ -41,8 +41,8 @@ Detailed per bank:
   bank $1F: 16384 detailed (100.00%); code 12655; data  3739; overlap   10
 
 Verified instruction bytes: 163493 / 524288 (31.18%)
-Explicitly ranged data bytes: 361317 / 524288 (68.92%)
-Dual-use code/data overlap bytes: 522 / 524288 (0.10%)
+Explicitly ranged data bytes: 361313 / 524288 (68.91%)
+Dual-use code/data overlap bytes: 518 / 524288 (0.10%)
 Detailed classification union: 524288 / 524288 (100.00%)
 Unclassified PRG bytes: 0 / 524288 (0.00%)
 

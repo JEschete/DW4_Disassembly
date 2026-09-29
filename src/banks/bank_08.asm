@@ -4101,7 +4101,7 @@ MapTileSystem_Branch_B723:
         sec                                     ; B723 38                       8
         rts                                     ; B724 60                       `
 ; ----------------------------------------------------------------------------
-SelectRandomMappedFieldValue:
+RunSoldierIntruderAlert:
         jsr     LowerFixed_NextRandomByte       ; B725 20 91 C8                  ..
         sta     $DE                             ; B728 85 DE                    ..
         lda     #$00                            ; B72A A9 00                    ..
@@ -4137,7 +4137,7 @@ MapTileSystem_Branch_B753:
 ; ----------------------------------------------------------------------------
         db   $2A,$36,$37,$0D,$35,$34,$FF     ; B756 2A 36 37 0D 35 34 FF     *67.54.
 ; ----------------------------------------------------------------------------
-HandleZenithiaExteriorProgression:
+CheckZenithianEquipmentAtCastleGate:
         lda     CurrentMapNumber                ; B75D A5 63                    .c
         cmp     #$3E                            ; B75F C9 3E                    .>
         bne     MapTileSystem_Branch_B799       ; B761 D0 36                    .6
@@ -4153,25 +4153,25 @@ HandleZenithiaExteriorProgression:
         brk                                     ; B773 00                       .
         db   $66,$63,$40                     ; B774 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-ContinueZenithiaExteriorAfterEvent37:
+ContinueZenithianGateAfterArmorCheck:
         bcc     MapTileSystem_Branch_B79B       ; B777 90 22                    ."
         lda     #$44                            ; B779 A9 44                    .D
         brk                                     ; B77B 00                       .
         db   $66,$63,$40                     ; B77C 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-ContinueZenithiaExteriorAfterEvent44:
+ContinueZenithianGateAfterShieldCheck:
         bcc     MapTileSystem_Branch_B79B       ; B77F 90 1A                    ..
         lda     #$4B                            ; B781 A9 4B                    .K
         brk                                     ; B783 00                       .
         db   $66,$63,$40                     ; B784 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-ContinueZenithiaExteriorAfterEvent4B:
+ContinueZenithianGateAfterHelmCheck:
         bcc     MapTileSystem_Branch_B79B       ; B787 90 12                    ..
         lda     #$21                            ; B789 A9 21                    .!
         brk                                     ; B78B 00                       .
         db   $66,$63,$40                     ; B78C 66 63 40                 fc@
 ; ----------------------------------------------------------------------------
-ContinueZenithiaExteriorAfterEvent21:
+FinishZenithianGateAfterSwordCheck:
         bcs     MapTileSystem_Branch_B799       ; B78F B0 08                    ..
         lda     #$14                            ; B791 A9 14                    ..
         brk                                     ; B793 00                       .

@@ -1962,7 +1962,7 @@ Bank0E_CharacterSpriteGraphics:
         db   $03,$06,$3C,$68,$74,$7C,$5A,$2C ; BABF 03 06 3C 68 74 7C 5A 2C  ..<ht|Z,
         db   $00,$78,$BC,$7C,$F0,$B4,$02,$51 ; BAC7 00 78 BC 7C F0 B4 02 51  .x.|...Q
         db   $00,$78,$AC,$44,$E8,$3C,$06,$03 ; BACF 00 78 AC 44 E8 3C 06 03  .x.D.<..
-Bank0E_PostSpriteRegion:
+Bank0E_SpriteGraphicsEnd:
         db   $00,$01,$11,$10,$1A,$1F,$07,$23 ; BAD7 00 01 11 10 1A 1F 07 23  .......#
         db   $03,$06,$16,$17,$1F,$FD,$7C,$1F ; BADF 03 06 16 17 1F FD 7C 1F  ......|.
         db   $23,$11,$20,$49,$1E,$3F,$7F,$EB ; BAE7 23 11 20 49 1E 3F 7F EB  #. I.?..
@@ -2125,7 +2125,7 @@ Bank0E_PaletteColors:
         db   $07,$17,$0F,$17,$28,$1C,$0A,$27 ; BE02 07 17 0F 17 28 1C 0A 27  ....(..'
         db   $0C,$09,$26,$12,$02,$A4,$2E,$01 ; BE0A 0C 09 26 12 02 A4 2E 01  ..&.....
         db   $27                             ; BE12 27                       '
-Bank0E_PostPaletteData:
+Bank0E_PaletteDataEnd:
         db   $49,$06,$99,$45,$05,$74,$46,$03 ; BE13 49 06 99 45 05 74 46 03  I..E.tF.
         db   $A4,$CE,$04,$67,$65,$00,$40,$A6 ; BE1B A4 CE 04 67 65 00 40 A6  ...ge.@.
         db   $08,$C7,$2B,$07,$EB,$C9,$12,$9A ; BE23 08 C7 2B 07 EB C9 12 9A  ..+.....

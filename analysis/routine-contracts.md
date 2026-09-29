@@ -108,7 +108,7 @@
 - Side effects: Reads Huffman trees $87D8/$8835 and compressed text banks
 - Evidence: MSB-first tree traversal at $87A8-$87D7
 
-## Bank18_LoadFontTiles (`$18:$B798`)
+## LoadFullFontTiles (`$18:$B798`)
 
 - Calling convention: Runtime-observed entry; returns through graphics service
 - Inputs: Font tile selector and PPU destination state
@@ -117,7 +117,7 @@
 - Side effects: Reads font ranges $B83D-$BDBC and writes PPU data
 - Evidence: FCEUX execution and ROM-read evidence
 
-## Bank1C_DecodeMapEntityData (`$1C:$96C7`)
+## DecodeMapEntityData (`$1C:$96C7`)
 
 - Calling convention: Runtime-observed entry; returns to map loader
 - Inputs: Map/entity stream pointer and destination arrays
@@ -126,7 +126,7 @@
 - Side effects: Reads structured bank $1C data and writes entity arrays
 - Evidence: FCEUX-backed decoder path beginning $96C7
 
-## Bank1C_LoadMapEntityPointer (`$1C:$9B12`)
+## LoadMapEntityPointerByCurrentMap (`$1C:$9B12`)
 
 - Calling convention: JSR; returns with selected pointer
 - Inputs: CurrentMapNumber
@@ -180,14 +180,14 @@
 - Side effects: Reads PPUSTATUS
 - Evidence: Busy wait at $C043
 
-## ClearInternalRamLoop (`$1F:$C07E`)
+## ResetInitializeAndStartGame (`$1F:$C07E`)
 
 - Calling convention: Reset-internal loop
 - Inputs: X page offset and A=$00
-- Outputs: Selected internal RAM pages cleared
+- Outputs: Selected internal RAM pages cleared before main game flow
 - Clobbers: A,X,flags
-- Side effects: Writes internal RAM pages
-- Evidence: Bounded clear loop at $C07E
+- Side effects: Writes internal RAM pages and continues through mapper and PPU initialization
+- Evidence: Bounded clear loop at $C07E followed by the main-flow jump at $C965
 
 ## InitializeMmc1 (`$1F:$C104`)
 

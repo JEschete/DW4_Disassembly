@@ -58,6 +58,15 @@ this corrected 335 bank `$12` and 293 bank `$17` generated labels. The pass also
 battle fly-away block and replaces roughly 40 mechanical field, service, and story names using decoded text and
 main-path control flow.
 
+The 2026-09-29 sixth audit reviewed all 4,905 curated labels and all 4,577 Function/Code bodies. Its 126-item
+ledger is preserved at `analysis/audits/audit6-ledger.tsv`. The corrections identify bank `$13` as battle-AI
+scoring, bank `$14` as monster display and Necrosaro transformation code, bank `$15` as dialogue/shop event
+scripts, and bank `$1E:$8090` as the field-command menu. They also distinguish persistent character records,
+in-battle party records, and combatant records; decode capped additions, battle-message pacing, scripted fights,
+party joins, item searches, Repel, chapter endings, and debug-only chapter selection; and reclassify the audited
+music and monster-palette regions. `scripts/check_audit6_labels.py` enforces ledger totals, key mappings, stale
+name families, global uniqueness, and routine-contract synchronization.
+
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
 

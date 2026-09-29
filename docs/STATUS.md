@@ -1,6 +1,6 @@
 # Project Status
 
-Last verified: 2026-09-28
+Last verified: 2026-09-29
 
 This document is the authoritative human-readable status snapshot. Generated totals come from `../analysis/`; completion policy is enforced by `../verify-completion.cmd`.
 
@@ -57,6 +57,15 @@ assign evidenced subsystem prefixes to address ranges before falling back to eac
 correcting 335 bank `$12` and 293 bank `$17` generated definitions. Seven fly-away routines and roughly 40 field,
 service, and story routines now use decoded behavior. The naming review also flags failure-framed names that print
 direct battle text; the resulting review queue remains empty.
+
+The 2026-09-29 sixth audit covered all 4,905 curated labels and manually reviewed all 4,577 Function/Code bodies.
+All 126 findings (37 High, 46 Medium, 43 Low) are retained in `../analysis/audits/audit6-ledger.tsv`. Corrections
+include battle-AI scoring in bank `$13`, monster display and ordered Necrosaro form transitions in bank `$14`,
+shop/dialogue event scripts in bank `$15`, the field-command and found-item flows in bank `$1E`, scripted battles
+and party joins, fixed-bank encounter/world-trigger semantics, and the retail-unreachable chapter-selection path.
+The pass also separates CharacterRecord, BattlePartyRecord, and CombatantRecord vocabulary and corrects music,
+palette, handler-table, and debug-feature data classifications. `../scripts/check_audit6_labels.py` verifies the
+ledger totals and rejects stale audit names, duplicate labels, missing key mappings, and routine-contract drift.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

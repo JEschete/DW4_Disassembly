@@ -3,13 +3,13 @@ Every declared table is read as contiguous, non-overlapping two-byte little-endi
 
 Declared tables: 80
 Explicit pointer fields: 126
-Pointer entries: 2143
+Pointer entries: 2141
 Executable targets decoded: 2036 / 2036
 excluded-data: 78
 fixed-bank-code: 2
 local-bank-code: 2034
-non-code-value: 17
-unsupported-target-value: 11
+non-code-value: 16
+unsupported-target-value: 10
 vector-data-value: 1
 
 Bank $08:$8000-$803B (30 entries)
@@ -1005,7 +1005,7 @@ Bank $13:$8078-$8087 (8 entries)
   $8084 -> bank $13:$B049 [local-bank-code, decoded]
   $8086 -> bank $13:$B049 [local-bank-code, decoded]
 
-Bank $13:$8B8B-$8C5A (104 entries)
+Bank $13:$8B8B-$8C58 (103 entries)
   $8B8B -> bank $13:$8C5A [local-bank-code, decoded]
   $8B8D -> bank $13:$8C5A [local-bank-code, decoded]
   $8B8F -> bank $13:$8C5A [local-bank-code, decoded]
@@ -1109,7 +1109,6 @@ Bank $13:$8B8B-$8C5A (104 entries)
   $8C53 -> bank $13:$B392 [local-bank-code, decoded]
   $8C55 -> bank $13:$8D01 [local-bank-code, decoded]
   $8C57 -> bank $13:$B298 [local-bank-code, decoded]
-  $8C59 -> $2060 [non-code-value]
 
 Bank $13:$9100-$910F (8 entries)
   $9100 -> bank $13:$8FA2 [local-bank-code, decoded]
@@ -1121,7 +1120,7 @@ Bank $13:$9100-$910F (8 entries)
   $910C -> bank $13:$8FD3 [local-bank-code, decoded]
   $910E -> bank $13:$8FDC [local-bank-code, decoded]
 
-Bank $13:$91CD-$91F0 (18 entries)
+Bank $13:$91CD-$91EE (17 entries)
   $91CD -> bank $13:$9178 [local-bank-code, decoded]
   $91CF -> bank $13:$9178 [local-bank-code, decoded]
   $91D1 -> bank $13:$919A [local-bank-code, decoded]
@@ -1139,7 +1138,6 @@ Bank $13:$91CD-$91F0 (18 entries)
   $91E9 -> bank $13:$9176 [local-bank-code, decoded]
   $91EB -> bank $13:$919A [local-bank-code, decoded]
   $91ED -> bank $13:$9176 [local-bank-code, decoded]
-  $91EF -> bank $1F:$D3AD [unsupported-target-value]
 
 Bank $13:$A636-$A695 (48 entries)
   $A636 -> bank $13:$9533 [local-bank-code, decoded]
