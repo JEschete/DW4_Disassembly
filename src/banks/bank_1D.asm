@@ -3255,7 +3255,7 @@ MapEventSystem_Branch_9FA6:
         db   $AD,$F9,$AF,$FC,$FA,$FA,$FD,$FE ; 9FE9 AD F9 AF FC FA FA FD FE  ........
         db   $F5,$AE,$F8,$B0,$FB,$AE,$FF,$B0 ; 9FF1 F5 AE F8 B0 FB AE FF B0  ........
 ; ----------------------------------------------------------------------------
-HandleMapTriggerNearEntityRow0B:
+OperateColossusLever:
         brk                                     ; 9FF9 00                       .
         db   $0A,$EB,$04                     ; 9FFA 0A EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3967,7 +3967,7 @@ MapEventSystem_Branch_A4A3:
         clc                                     ; A4A6 18                       .
         rts                                     ; A4A7 60                       `
 ; ----------------------------------------------------------------------------
-StartEntityTransferAtRow17:
+RunKidnappedChildMotherReunion:
         lda     $6FC0                           ; A4A8 AD C0 6F                 ..o
         cmp     #$17                            ; A4AB C9 17                    ..
         bne     MapEventSystem_Branch_A507      ; A4AD D0 58                    .X
@@ -6617,7 +6617,7 @@ MapEventSystem_Branch_B546:
         cmp     #$10                            ; B54B C9 10                    ..
         rts                                     ; B54D 60                       `
 ; ----------------------------------------------------------------------------
-RunPartyMember0EMapEvent:
+ReviveLuciaAndReturnHerToZenithianCastle:
         lda     $629B                           ; B54E AD 9B 62                 ..b
         and     #$22                            ; B551 29 22                    )"
         cmp     #$20                            ; B553 C9 20                    .

@@ -3879,7 +3879,7 @@ DispatchMapEntityEventById:
         sta     $01                             ; AD69 85 01                    ..
         jmp     ($0000)                         ; AD6B 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-RunMapEntitySceneTransition05:
+RunSaroShadowDefeatScene:
         lda     #$05                            ; AD6E A9 05                    ..
         brk                                     ; AD70 00                       .
         db   $01,$8F                         ; AD71 01 8F                    ..
@@ -4090,7 +4090,7 @@ PositionEventEntityBesidePlayer:
 ; ----------------------------------------------------------------------------
         jmp     RunPresentationPulseAndAdvancePhase; AEF9 4C D6 BE              L..
 ; ----------------------------------------------------------------------------
-RunMapEventVariantSequence:
+RunEndorTournamentRoundSequence:
         lda     $6285                           ; AEFC AD 85 62                 ..b
         ora     #$20                            ; AEFF 09 20                    .
         sta     $6285                           ; AF01 8D 85 62                 ..b
@@ -5267,7 +5267,7 @@ RunPresentation12AndSetFlags:
         brk                                     ; B6F7 00                       .
         db   $1D,$CB,$40                     ; B6F8 1D CB 40                 ..@
 ; ----------------------------------------------------------------------------
-PositionPlayer05_08AndRunScene:
+RunGardenburThiefSurrenderScene:
         brk                                     ; B6FB 00                       .
         db   $0E,$CB,$08                     ; B6FC 0E CB 08                 ...
 ; ----------------------------------------------------------------------------
@@ -5790,7 +5790,7 @@ RunFirstBossDeathSpeech:
         brk                                     ; BA26 00                       .
         db   $65,$4B                         ; BA27 65 4B                    eK
 ; ----------------------------------------------------------------------------
-        jsr     RunThreePulseMapSceneEffect     ; BA29 20 CE BA                  ..
+        jsr     RunBarrierShieldBreakingScene   ; BA29 20 CE BA                  ..
         jmp     WaitThenCloseFieldMessage       ; BA2C 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 StartSecondBossDeathSpeech:
@@ -5824,7 +5824,7 @@ RunSecondBossDeathSpeechContinuation:
         brk                                     ; BA5B 00                       .
         db   $67,$4B                         ; BA5C 67 4B                    gK
 ; ----------------------------------------------------------------------------
-        jsr     RunThreePulseMapSceneEffect     ; BA5E 20 CE BA                  ..
+        jsr     RunBarrierShieldBreakingScene   ; BA5E 20 CE BA                  ..
         jmp     WaitThenCloseFieldMessage       ; BA61 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 RunThirdBossDeathSpeech:
@@ -5857,7 +5857,7 @@ RunThirdBossDeathSpeech:
         brk                                     ; BA90 00                       .
         db   $68,$4B                         ; BA91 68 4B                    hK
 ; ----------------------------------------------------------------------------
-        jsr     RunThreePulseMapSceneEffect     ; BA93 20 CE BA                  ..
+        jsr     RunBarrierShieldBreakingScene   ; BA93 20 CE BA                  ..
         jmp     WaitThenCloseFieldMessage       ; BA96 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
 RunFourthBossDeathSpeech:
@@ -5890,10 +5890,10 @@ RunFourthBossDeathSpeech:
         brk                                     ; BAC5 00                       .
         db   $69,$4B                         ; BAC6 69 4B                    iK
 ; ----------------------------------------------------------------------------
-        jsr     RunThreePulseMapSceneEffect     ; BAC8 20 CE BA                  ..
+        jsr     RunBarrierShieldBreakingScene   ; BAC8 20 CE BA                  ..
         jmp     WaitThenCloseFieldMessage       ; BACB 4C 0A D2                 L..
 ; ----------------------------------------------------------------------------
-RunThreePulseMapSceneEffect:
+RunBarrierShieldBreakingScene:
         brk                                     ; BACE 00                       .
         db   $84,$FB                         ; BACF 84 FB                    ..
 ; ----------------------------------------------------------------------------

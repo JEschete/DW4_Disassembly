@@ -748,7 +748,7 @@ BattleSetupServices_Branch_84A9:
         pla                                     ; 84B0 68                       h
         rts                                     ; 84B1 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_BuildEntrySelectionState:
+AnnounceEncounterAndInitializeCombatants:
         lda     $6E45                           ; 84B2 AD 45 6E                 .En
         cmp     #$AD                            ; 84B5 C9 AD                    ..
         beq     BattleSetupServices_Branch_84A9 ; 84B7 F0 F0                    ..
@@ -1448,7 +1448,7 @@ BattleSetupServices_Branch_88AA:
         sta     $F9                             ; 88AD 85 F9                    ..
         rts                                     ; 88AF 60                       `
 ; ----------------------------------------------------------------------------
-BattleSetup_HandleSelectionConfirmInput:
+HandleMonsterArenaOvertimeDraw:
         lda     $72E9                           ; 88B0 AD E9 72                 ..r
         bpl     BattleSetupServices_Branch_88E5 ; 88B3 10 30                    .0
         lda     $0553                           ; 88B5 AD 53 05                 .S.
@@ -2982,7 +2982,7 @@ BattleSetupServices_Branch_95BD:
         lda     $627A                           ; 95BD AD 7A 62                 .zb
         and     #$08                            ; 95C0 29 08                    ).
         beq     BattleSetupServices_Branch_95C7 ; 95C2 F0 03                    ..
-        jsr     FieldEffect_DispatchSavedBattleVariant; 95C4 20 88 97            ..
+        jsr     PrintItemBattleEffectAppraisal  ; 95C4 20 88 97                  ..
 BattleSetupServices_Branch_95C7:
         lda     $627A                           ; 95C7 AD 7A 62                 .zb
         and     #$04                            ; 95CA 29 04                    ).
@@ -3323,7 +3323,7 @@ FieldItem_ReadBankedItemSelectionByte:
         jsr     ReadBankedByteThroughPointer    ; 9784 20 EA C3                  ..
         rts                                     ; 9787 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_DispatchSavedBattleVariant:
+PrintItemBattleEffectAppraisal:
         jsr     FieldItem_ReadBankedItemSelectionByte; 9788 20 74 97             t.
         tax                                     ; 978B AA                       .
         beq     BattleSetupServices_Branch_97A8 ; 978C F0 1A                    ..
@@ -3358,13 +3358,13 @@ BattleSetupServices_Branch_97A1:
 BattleSetupServices_Branch_97A8:
         rts                                     ; 97A8 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_RunFieldEffectIntroSequence:
+RunLighthouseFireExtinguishingSequence:
         jsr     CloseFieldMessageWindow         ; 97A9 20 F3 D1                  ..
         brk                                     ; 97AC 00                       .
         db   $2A,$FB                         ; 97AD 2A FB                    *.
 ; ----------------------------------------------------------------------------
-        jsr     FieldEffect_RunFieldEffectSpritePlacementLoop; 97AF 20 F7 9A     ..
-        jsr     FieldEffect_AnimateFieldEffectScene; 97B2 20 BC 97               ..
+        jsr     RunLighthouseFireSpritePlacementLoop; 97AF 20 F7 9A              ..
+        jsr     AnimateLighthouseFireExtinguishing; 97B2 20 BC 97                ..
         brk                                     ; 97B5 00                       .
         db   $07,$9F                         ; 97B6 07 9F                    ..
 ; ----------------------------------------------------------------------------
@@ -3373,7 +3373,7 @@ FieldEffect_RunFieldEffectIntroSequence:
 ; ----------------------------------------------------------------------------
         rts                                     ; 97BB 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AnimateFieldEffectScene:
+AnimateLighthouseFireExtinguishing:
         lda     PlayerLocalX                    ; 97BC A5 44                    .D
         sec                                     ; 97BE 38                       8
         sbc     #$0B                            ; 97BF E9 0B                    ..
@@ -3382,10 +3382,10 @@ FieldEffect_AnimateFieldEffectScene:
         sec                                     ; 97C5 38                       8
         sbc     #$0B                            ; 97C6 E9 0B                    ..
         sta     $08                             ; 97C8 85 08                    ..
-        jsr     FieldEffect_PrimeFieldEffectSpriteBuffer; 97CA 20 5A 98          Z.
-        jsr     FieldEffect_RunFieldEffectIntroRevealLoop; 97CD 20 87 98         ..
+        jsr     PrimeLighthouseFireSpriteBuffer ; 97CA 20 5A 98                  Z.
+        jsr     RunLighthouseFireRevealLoop     ; 97CD 20 87 98                  ..
         ldx     #$06                            ; 97D0 A2 06                    ..
-        jsr     FieldEffect_LoadFieldEffectSpriteFrame; 97D2 20 F6 98            ..
+        jsr     LoadLighthouseFireSpriteFrame   ; 97D2 20 F6 98                  ..
         jsr     FadePaletteToBlack              ; 97D5 20 C5 C5                  ..
         lda     #$3C                            ; 97D8 A9 3C                    .<
         jsr     ConvertSpriteIndexToOamOffset   ; 97DA 20 8C C7                  ..
@@ -3394,29 +3394,29 @@ FieldEffect_AnimateFieldEffectScene:
         sta     $0203,y                         ; 97E2 99 03 02                 ...
         ldx     #$06                            ; 97E5 A2 06                    ..
         jsr     WaitFrames                      ; 97E7 20 0C C9                  ..
-        jsr     FieldEffect_CopyFieldEffectSpriteOamTemplate; 97EA 20 1A 99      ..
+        jsr     CopyLighthouseFireOamTemplate   ; 97EA 20 1A 99                  ..
         jsr     FadePaletteFromBlack            ; 97ED 20 BF C5                  ..
         lda     #$03                            ; 97F0 A9 03                    ..
         sta     $05                             ; 97F2 85 05                    ..
         ldx     #$00                            ; 97F4 A2 00                    ..
-        jsr     FieldEffect_QueueFieldEffectAttributeDiffs; 97F6 20 3E 99        >.
+        jsr     QueueLighthouseFireAttributeDiffs; 97F6 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 97F9 20 26 C6                  &.
         ldx     #$06                            ; 97FC A2 06                    ..
         jsr     WaitFrames                      ; 97FE 20 0C C9                  ..
-        jsr     FieldEffect_AnimateFieldEffectFrameSequence; 9801 20 AD 98       ..
+        jsr     AnimateLighthouseFireFrameSequence; 9801 20 AD 98                ..
         ldx     #$01                            ; 9804 A2 01                    ..
         stx     $05                             ; 9806 86 05                    ..
         inx                                     ; 9808 E8                       .
         inx                                     ; 9809 E8                       .
         stx     $06                             ; 980A 86 06                    ..
 BattleSetupServices_Branch_980C:
-        jsr     FieldEffect_QueueFieldEffectAttributeDiffs; 980C 20 3E 99        >.
+        jsr     QueueLighthouseFireAttributeDiffs; 980C 20 3E 99                 >.
         lda     $06                             ; 980F A5 06                    ..
         cmp     #$08                            ; 9811 C9 08                    ..
         bne     BattleSetupServices_Branch_981E ; 9813 D0 09                    ..
         jsr     RequestPpuUpdate                ; 9815 20 26 C6                  &.
         jsr     WaitForNmi                      ; 9818 20 74 FF                  t.
-        jsr     FieldEffect_QueueFieldEffectAttributeSweep; 981B 20 2F 98        /.
+        jsr     QueueLighthouseFireAttributeSweep; 981B 20 2F 98                 /.
 BattleSetupServices_Branch_981E:
         jsr     RequestPpuUpdate                ; 981E 20 26 C6                  &.
         ldx     #$05                            ; 9821 A2 05                    ..
@@ -3427,7 +3427,7 @@ BattleSetupServices_Branch_981E:
         bne     BattleSetupServices_Branch_980C ; 982C D0 DE                    ..
         rts                                     ; 982E 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_QueueFieldEffectAttributeSweep:
+QueueLighthouseFireAttributeSweep:
         lda     $08                             ; 982F A5 08                    ..
         bne     BattleSetupServices_Branch_9844 ; 9831 D0 11                    ..
         sta     $01                             ; 9833 85 01                    ..
@@ -3454,7 +3454,7 @@ BattleSetupServices_Branch_984E:
 BattleSetupServices_Branch_9859:
         rts                                     ; 9859 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_PrimeFieldEffectSpriteBuffer:
+PrimeLighthouseFireSpriteBuffer:
         lda     #$0F                            ; 985A A9 0F                    ..
         ldx     #$03                            ; 985C A2 03                    ..
 BattleSetupServices_Branch_985E:
@@ -3465,7 +3465,7 @@ BattleSetupServices_Branch_985E:
         jsr     WaitForNmi                      ; 9867 20 74 FF                  t.
         rts                                     ; 986A 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_QueueFullFieldEffectAttributeRefresh:
+QueueFullLighthouseFireAttributeRefresh:
         ldx     #$1F                            ; 986B A2 1F                    ..
         stx     $00                           ; 986D 86 00                    ..
 BattleSetupServices_Branch_986F:
@@ -3482,40 +3482,40 @@ BattleSetupServices_Branch_9873:
         bpl     BattleSetupServices_Branch_986F ; 9884 10 E9                    ..
         rts                                     ; 9886 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_RunFieldEffectIntroRevealLoop:
+RunLighthouseFireRevealLoop:
         lda     #$02                            ; 9887 A9 02                    ..
         sta     $05                             ; 9889 85 05                    ..
         ldx     #$09                            ; 988B A2 09                    ..
         stx     $06                             ; 988D 86 06                    ..
-        jsr     FieldEffect_QueueFieldEffectAttributeSweep; 988F 20 2F 98        /.
+        jsr     QueueLighthouseFireAttributeSweep; 988F 20 2F 98                 /.
         jsr     RequestPpuUpdate                ; 9892 20 26 C6                  &.
-        jsr     FieldEffect_AdvanceFieldEffectSpriteTileFrame; 9895 20 26 9B     &.
+        jsr     AdvanceLighthouseFireSpriteTileFrame; 9895 20 26 9B              &.
 BattleSetupServices_Branch_9898:
         dec     $06                             ; 9898 C6 06                    ..
         beq     BattleSetupServices_Branch_98AC ; 989A F0 10                    ..
         ldx     $06                             ; 989C A6 06                    ..
-        jsr     FieldEffect_QueueFieldEffectAttributeDiffs; 989E 20 3E 99        >.
+        jsr     QueueLighthouseFireAttributeDiffs; 989E 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 98A1 20 26 C6                  &.
         ldx     #$05                            ; 98A4 A2 05                    ..
-        jsr     FieldEffect_RunFieldEffectSpritePulse; 98A6 20 1C 9B             ..
+        jsr     RunLighthouseFireSpritePulse    ; 98A6 20 1C 9B                  ..
         jmp     BattleSetupServices_Branch_9898 ; 98A9 4C 98 98                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_98AC:
         rts                                     ; 98AC 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AnimateFieldEffectFrameSequence:
+AnimateLighthouseFireFrameSequence:
         ldy     #$00                            ; 98AD A0 00                    ..
 BattleSetupServices_Branch_98AF:
         sty     $0A                             ; 98AF 84 0A                    ..
         lda     $98EA,y                         ; 98B1 B9 EA 98                 ...
         sta     $05                             ; 98B4 85 05                    ..
         ldx     $98DE,y                         ; 98B6 BE DE 98                 ...
-        jsr     FieldEffect_QueueFieldEffectAttributeDiffs; 98B9 20 3E 99        >.
+        jsr     QueueLighthouseFireAttributeDiffs; 98B9 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 98BC 20 26 C6                  &.
         jsr     WaitForNmi                      ; 98BF 20 74 FF                  t.
         ldy     $0A                             ; 98C2 A4 0A                    ..
         ldx     $98D2,y                         ; 98C4 BE D2 98                 ...
-        jsr     FieldEffect_LoadFieldEffectSpriteFrame; 98C7 20 F6 98            ..
+        jsr     LoadLighthouseFireSpriteFrame   ; 98C7 20 F6 98                  ..
         ldy     $0A                             ; 98CA A4 0A                    ..
         iny                                     ; 98CC C8                       .
         cpy     #$0C                            ; 98CD C0 0C                    ..
@@ -3529,7 +3529,7 @@ BattleSetupServices_Branch_98AF:
         db   $01,$01,$02,$02,$01,$01,$01,$02 ; 98EA 01 01 02 02 01 01 01 02  ........
         db   $02,$02,$01,$01                 ; 98F2 02 02 01 01              ....
 ; ----------------------------------------------------------------------------
-FieldEffect_LoadFieldEffectSpriteFrame:
+LoadLighthouseFireSpriteFrame:
         ldy     #$02                            ; 98F6 A0 02                    ..
 BattleSetupServices_Branch_98F8:
         lda     $9911,x                         ; 98F8 BD 11 99                 ...
@@ -3548,7 +3548,7 @@ L990E = $+ 1
         db   $05,$28,$17,$15,$38,$27,$04,$18 ; 9911 05 28 17 15 38 27 04 18  .(..8'..
         db   $07                             ; 9919 07                       .
 ; ----------------------------------------------------------------------------
-FieldEffect_CopyFieldEffectSpriteOamTemplate:
+CopyLighthouseFireOamTemplate:
         ldy     #$18                            ; 991A A0 18                    ..
 BattleSetupServices_Branch_991C:
         lda     $9925,y                         ; 991C B9 25 99                 .%.
@@ -3561,7 +3561,7 @@ BattleSetupServices_Branch_991C:
         db   $0F,$07,$18,$04,$30,$12,$19,$30 ; 992E 0F 07 18 04 30 12 19 30  ....0..0
         db   $17,$26,$30,$24,$13,$30,$26,$04 ; 9936 17 26 30 24 13 30 26 04  .&0$.0&.
 ; ----------------------------------------------------------------------------
-FieldEffect_QueueFieldEffectAttributeDiffs:
+QueueLighthouseFireAttributeDiffs:
         lda     $99B6,x                         ; 993E BD B6 99                 ...
         sta     $02                           ; 9941 85 02                    ..
         txa                                     ; 9943 8A                       .
@@ -3665,17 +3665,17 @@ BattleSetupServices_Branch_999B:
         db   $E7,$E6,$E5,$E4,$E3,$E2,$F2,$F1 ; 9AEE E7 E6 E5 E4 E3 E2 F2 F1  ........
         db   $01                             ; 9AF6 01                       .
 ; ----------------------------------------------------------------------------
-FieldEffect_RunFieldEffectSpritePlacementLoop:
-        jsr     FieldEffect_ComputeFieldEffectOffsetMask; 9AF7 20 41 9B          A.
-        jsr     FieldEffect_CopyFieldEffectSpriteToOam; 9AFA 20 88 9B            ..
+RunLighthouseFireSpritePlacementLoop:
+        jsr     ComputeLighthouseFireOffsetMask ; 9AF7 20 41 9B                  A.
+        jsr     CopyLighthouseFireSpriteToOam   ; 9AFA 20 88 9B                  ..
 BattleSetupServices_Branch_9AFD:
         ldx     $02                           ; 9AFD A6 02                    ..
         lda     $9BDD,x                         ; 9AFF BD DD 9B                 ...
         beq     BattleSetupServices_Branch_9B1B ; 9B02 F0 17                    ..
-        jsr     FieldEffect_AdjustFieldEffectSpritePosition; 9B04 20 B3 9B       ..
+        jsr     AdjustLighthouseFireSpritePosition; 9B04 20 B3 9B                ..
         jsr     WaitForNmi                      ; 9B07 20 74 FF                  t.
         ldx     #$03                            ; 9B0A A2 03                    ..
-        jsr     FieldEffect_RunFieldEffectSpritePulse; 9B0C 20 1C 9B             ..
+        jsr     RunLighthouseFireSpritePulse    ; 9B0C 20 1C 9B                  ..
         bit     $03                             ; 9B0F 24 03                    $.
         bmi     BattleSetupServices_Branch_9B17 ; 9B11 30 04                    0.
         inc     $02                           ; 9B13 E6 02                    ..
@@ -3686,15 +3686,15 @@ BattleSetupServices_Branch_9B17:
 BattleSetupServices_Branch_9B1B:
         rts                                     ; 9B1B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_RunFieldEffectSpritePulse:
+RunLighthouseFireSpritePulse:
         stx     $0A                             ; 9B1C 86 0A                    ..
 BattleSetupServices_Branch_9B1E:
-        jsr     FieldEffect_AdvanceFieldEffectSpriteTileFrame; 9B1E 20 26 9B     &.
+        jsr     AdvanceLighthouseFireSpriteTileFrame; 9B1E 20 26 9B              &.
         dec     $0A                             ; 9B21 C6 0A                    ..
         bne     BattleSetupServices_Branch_9B1E ; 9B23 D0 F9                    ..
         rts                                     ; 9B25 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AdvanceFieldEffectSpriteTileFrame:
+AdvanceLighthouseFireSpriteTileFrame:
         lda     #$3C                            ; 9B26 A9 3C                    .<
         jsr     ConvertSpriteIndexToOamOffset   ; 9B28 20 8C C7                  ..
         tya                                     ; 9B2B 98                       .
@@ -3710,7 +3710,7 @@ BattleSetupServices_Branch_9B3D:
         jsr     WaitForNmi                      ; 9B3D 20 74 FF                  t.
         rts                                     ; 9B40 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ComputeFieldEffectOffsetMask:
+ComputeLighthouseFireOffsetMask:
         ldx     #$00                            ; 9B41 A2 00                    ..
         stx     $00                           ; 9B43 86 00                    ..
         stx     $01                             ; 9B45 86 01                    ..
@@ -3756,7 +3756,7 @@ BattleSetupServices_Branch_9B7D:
 ; ----------------------------------------------------------------------------
         db   $66,$67,$B6,$B7,$70,$71,$08,$09 ; 9B80 66 67 B6 B7 70 71 08 09  fg..pq..
 ; ----------------------------------------------------------------------------
-FieldEffect_CopyFieldEffectSpriteToOam:
+CopyLighthouseFireSpriteToOam:
         ldx     #$07                            ; 9B88 A2 07                    ..
         lda     $6FE6,x                         ; 9B8A BD E6 6F                 ..o
         jsr     SelectEntitySpriteDefinition    ; 9B8D 20 64 D8                  d.
@@ -3779,7 +3779,7 @@ FieldEffect_CopyFieldEffectSpriteToOam:
         sta     $0201,y                         ; 9BAF 99 01 02                 ...
         rts                                     ; 9BB2 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AdjustFieldEffectSpritePosition:
+AdjustLighthouseFireSpritePosition:
         pha                                     ; 9BB3 48                       H
         pha                                     ; 9BB4 48                       H
         lda     #$3C                            ; 9BB5 A9 3C                    .<
@@ -3810,7 +3810,7 @@ FieldEffect_AdjustFieldEffectSpritePosition:
         db   $37,$36,$35,$24,$21,$22,$23,$00 ; 9BED 37 36 35 24 21 22 23 00  765$!"#.
         db   $00,$01,$02,$04,$00,$FF,$FE,$FC ; 9BF5 00 01 02 04 00 FF FE FC  ........
 ; ----------------------------------------------------------------------------
-FieldEffect_BuildPartyMemberPositionTable:
+BuildPartyNextLevelExperienceTable:
         brk                                     ; 9BFD 00                       .
         db   $62,$23,$08                     ; 9BFE 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
@@ -3827,13 +3827,13 @@ BattleSetupServices_Branch_9C08:
         bvc     BattleSetupServices_Branch_9C17 ; 9C13 50 02                    P.
         lda     #$08                            ; 9C15 A9 08                    ..
 BattleSetupServices_Branch_9C17:
-        jsr     FieldEffect_WritePartyMemberPositionTriplet; 9C17 20 41 9D       A.
+        jsr     StoreCharacterNextLevelExperienceThreshold; 9C17 20 41 9D        A.
         inc     $6E                             ; 9C1A E6 6E                    .n
         dec     $6E3C                           ; 9C1C CE 3C 6E                 .<n
         bne     BattleSetupServices_Branch_9C08 ; 9C1F D0 E7                    ..
         rts                                     ; 9C21 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ResolvePartyMemberPositionDelta:
+CalculateExperienceNeededForNextLevel:
         brk                                     ; 9C22 00                       .
         db   $0F,$43,$08                     ; 9C23 0F 43 08                 .C.
 ; ----------------------------------------------------------------------------
@@ -3863,7 +3863,7 @@ FieldEffect_ResolvePartyMemberPositionDelta:
 BattleSetupServices_Branch_9C4F:
         rts                                     ; 9C4F 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ScanPartyMembersForPositionMatches:
+InitializePartyLevelThresholds:
         brk                                     ; 9C50 00                       .
         db   $62,$23,$08                     ; 9C51 62 23 08                 b#.
 ; ----------------------------------------------------------------------------
@@ -3878,7 +3878,7 @@ BattleSetupServices_Branch_9C5D:
         cmp     #$63                            ; 9C61 C9 63                    .c
         beq     BattleSetupServices_Branch_9C6A ; 9C63 F0 05                    ..
         sta     $0A                             ; 9C65 85 0A                    ..
-        jsr     FieldEffect_ScanPartyPartyMemberSlots; 9C67 20 29 9D             ).
+        jsr     BuildCharacterNextLevelExperienceTable; 9C67 20 29 9D            ).
 BattleSetupServices_Branch_9C6A:
         inc     $6E                             ; 9C6A E6 6E                    .n
         dec     $6E3C                           ; 9C6C CE 3C 6E                 .<n
@@ -3886,12 +3886,12 @@ BattleSetupServices_Branch_9C6A:
 BattleSetupServices_Branch_9C71:
         rts                                     ; 9C71 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_FilterPartyMembersByPosition:
+ProcessPartyLevelUps:
         lda     #$00                            ; 9C72 A9 00                    ..
         sta     $6E03                           ; 9C74 8D 03 6E                 ..n
         lda     $6BDE                           ; 9C77 AD DE 6B                 ..k
         bpl     BattleSetupServices_Branch_9C7F ; 9C7A 10 03                    ..
-        jsr     FieldEffect_ScanPartyPartyMemberSlots; 9C7C 20 29 9D             ).
+        jsr     BuildCharacterNextLevelExperienceTable; 9C7C 20 29 9D            ).
 BattleSetupServices_Branch_9C7F:
         brk                                     ; 9C7F 00                       .
         db   $62,$23,$09                     ; 9C80 62 23 09                 b#.
@@ -3922,14 +3922,14 @@ BattleSetupServices_Branch_9C8C:
         lda     $74                             ; 9CA8 A5 74                    .t
         cmp     $6E1B,x                         ; 9CAA DD 1B 6E                 ..n
         bcc     BattleSetupServices_Branch_9CC1 ; 9CAD 90 12                    ..
-        bne     FieldEffect_CommitPartyMemberMatchState; 9CAF D0 34             .4
+        bne     ProcessPartyMemberLevelUp       ; 9CAF D0 34                    .4
         lda     $73                             ; 9CB1 A5 73                    .s
         cmp     $6E1A,x                         ; 9CB3 DD 1A 6E                 ..n
         bcc     BattleSetupServices_Branch_9CC1 ; 9CB6 90 09                    ..
-        bne     FieldEffect_CommitPartyMemberMatchState; 9CB8 D0 2B             .+
+        bne     ProcessPartyMemberLevelUp       ; 9CB8 D0 2B                    .+
         lda     $72                             ; 9CBA A5 72                    .r
         cmp     $6E19,x                         ; 9CBC DD 19 6E                 ..n
-        bcs     FieldEffect_CommitPartyMemberMatchState; 9CBF B0 24             .$
+        bcs     ProcessPartyMemberLevelUp       ; 9CBF B0 24                    .$
 BattleSetupServices_Branch_9CC1:
         inc     $6E                             ; 9CC1 E6 6E                    .n
         dec     $6E3C                           ; 9CC3 CE 3C 6E                 .<n
@@ -3955,7 +3955,7 @@ BattleSetupServices_Branch_9CE3:
         clc                                     ; 9CE3 18                       .
         rts                                     ; 9CE4 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_CommitPartyMemberMatchState:
+ProcessPartyMemberLevelUp:
         lda     $6BDE                           ; 9CE5 AD DE 6B                 ..k
         bmi     BattleSetupServices_Branch_9D0B ; 9CE8 30 21                    0!
         lda     $6E03                           ; 9CEA AD 03 6E                 ..n
@@ -3987,15 +3987,15 @@ BattleSetupServices_Branch_9D0B:
         brk                                     ; 9D11 00                       .
         db   $6C,$23,$09                     ; 9D12 6C 23 09                 l#.
 ; ----------------------------------------------------------------------------
-        jsr     FieldEffect_PreparePartyMemberMatchTarget; 9D15 20 6D 9D         m.
+        jsr     RunLevelUpSequence              ; 9D15 20 6D 9D                  m.
         ldy     $6E0C                           ; 9D18 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; 9D1B B9 6A 61                 .ja
         and     #$7F                            ; 9D1E 29 7F                    ).
-        jsr     FieldEffect_WritePartyMemberPositionTriplet; 9D20 20 41 9D       A.
+        jsr     StoreCharacterNextLevelExperienceThreshold; 9D20 20 41 9D        A.
         inc     $6E03                           ; 9D23 EE 03 6E                 ..n
         jmp     BattleSetupServices_Branch_9C8C ; 9D26 4C 8C 9C                 L..
 ; ----------------------------------------------------------------------------
-FieldEffect_ScanPartyPartyMemberSlots:
+BuildCharacterNextLevelExperienceTable:
         ldx     #$07                            ; 9D29 A2 07                    ..
 BattleSetupServices_Branch_9D2B:
         txa                                     ; 9D2B 8A                       .
@@ -4006,14 +4006,14 @@ BattleSetupServices_Branch_9D2B:
         bvc     BattleSetupServices_Branch_9D38 ; 9D34 50 02                    P.
         lda     #$08                            ; 9D36 A9 08                    ..
 BattleSetupServices_Branch_9D38:
-        jsr     FieldEffect_WritePartyMemberPositionTriplet; 9D38 20 41 9D       A.
+        jsr     StoreCharacterNextLevelExperienceThreshold; 9D38 20 41 9D        A.
         pla                                     ; 9D3B 68                       h
         tax                                     ; 9D3C AA                       .
         dex                                     ; 9D3D CA                       .
         bpl     BattleSetupServices_Branch_9D2B ; 9D3E 10 EB                    ..
         rts                                     ; 9D40 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_WritePartyMemberPositionTriplet:
+StoreCharacterNextLevelExperienceThreshold:
         brk                                     ; 9D41 00                       .
         db   $11,$3F                         ; 9D42 11 3F                    .?
 ; ----------------------------------------------------------------------------
@@ -4025,7 +4025,7 @@ FieldEffect_WritePartyMemberPositionTriplet:
         inc     $0A                             ; 9D4E E6 0A                    ..
         lda     #$00                            ; 9D50 A9 00                    ..
         sta     $0B                             ; 9D52 85 0B                    ..
-        jsr     FieldEffect_LoadScaledTargetDescriptor; 9D54 20 7C 9F            |.
+        jsr     CalculateCharacterGrowthValue   ; 9D54 20 7C 9F                  |.
         lda     $09                             ; 9D57 A5 09                    ..
         asl     a                               ; 9D59 0A                       .
         adc     $09                             ; 9D5A 65 09                    e.
@@ -4039,7 +4039,7 @@ FieldEffect_WritePartyMemberPositionTriplet:
 BattleSetupServices_Branch_9D6C:
         rts                                     ; 9D6C 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_PreparePartyMemberMatchTarget:
+RunLevelUpSequence:
         brk                                     ; 9D6D 00                       .
         db   $01,$FB                         ; 9D6E 01 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4049,22 +4049,22 @@ FieldEffect_PreparePartyMemberMatchTarget:
         brk                                     ; 9D73 00                       .
         db   $09,$9F                         ; 9D74 09 9F                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FieldEffect_RunPartyMemberMatchTarget; 9D76 20 7A 9D             z.
+        jsr     ApplyLevelUpStatAndSpellGains   ; 9D76 20 7A 9D                  z.
         rts                                     ; 9D79 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_RunPartyMemberMatchTarget:
-        jsr     FieldEffect_SavePartyMemberTargetContext; 9D7A 20 83 9D          ..
-        jsr     FieldEffect_FilterPartyMembersByCoordinateBounds; 9D7D 20 A6 9D  ..
-        jmp     ScanBattleSetupSelectionMatches ; 9D80 4C 76 9E                 Lv.
+ApplyLevelUpStatAndSpellGains:
+        jsr     PrintLevelUpAnnouncement        ; 9D7A 20 83 9D                  ..
+        jsr     ApplyLevelUpStatGains           ; 9D7D 20 A6 9D                  ..
+        jmp     CheckNewlyLearnedSpells         ; 9D80 4C 76 9E                 Lv.
 ; ----------------------------------------------------------------------------
-FieldEffect_SavePartyMemberTargetContext:
+PrintLevelUpAnnouncement:
         brk                                     ; 9D83 00                       .
         db   $2E,$0F                         ; 9D84 2E 0F                    ..
 ; ----------------------------------------------------------------------------
         lda     $72                             ; 9D86 A5 72                    .r
         sta     $F9                             ; 9D88 85 F9                    ..
         ldx     #$00                            ; 9D8A A2 00                    ..
-        jsr     FieldEffect_InvokePartyMemberEntryService; 9D8C 20 40 9E         @.
+        jsr     PrintLevelUpGainMessage         ; 9D8C 20 40 9E                  @.
         lda     $09                             ; 9D8F A5 09                    ..
         pha                                     ; 9D91 48                       H
         lda     $0A                             ; 9D92 A5 0A                    ..
@@ -4082,7 +4082,7 @@ FieldEffect_SavePartyMemberTargetContext:
         sta     $09                             ; 9DA3 85 09                    ..
         rts                                     ; 9DA5 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_FilterPartyMembersByCoordinateBounds:
+ApplyLevelUpStatGains:
         ldx     #$01                            ; 9DA6 A2 01                    ..
         stx     $6E3D                           ; 9DA8 8E 3D 6E                 .=n
         dex                                     ; 9DAB CA                       .
@@ -4096,7 +4096,7 @@ BattleSetupServices_Branch_9DAF:
         bcs     BattleSetupServices_Branch_9E2F ; 9DBA B0 73                    .s
 BattleSetupServices_Branch_9DBC:
         sta     $0B                             ; 9DBC 85 0B                    ..
-        jsr     FieldEffect_LoadScaledTargetDescriptor; 9DBE 20 7C 9F            |.
+        jsr     CalculateCharacterGrowthValue   ; 9DBE 20 7C 9F                  |.
         lda     $6E3E                           ; 9DC1 AD 3E 6E                 .>n
         asl     a                               ; 9DC4 0A                       .
         tax                                     ; 9DC5 AA                       .
@@ -4163,7 +4163,7 @@ BattleSetupServices_Branch_9E16:
         db   $09,$03                         ; 9E27 09 03                    ..
 ; ----------------------------------------------------------------------------
         ldx     $6E3D                           ; 9E29 AE 3D 6E                 .=n
-        jsr     FieldEffect_InvokePartyMemberEntryService; 9E2C 20 40 9E         @.
+        jsr     PrintLevelUpGainMessage         ; 9E2C 20 40 9E                  @.
 BattleSetupServices_Branch_9E2F:
         inc     $6E3D                           ; 9E2F EE 3D 6E                 .=n
         inc     $6E3E                           ; 9E32 EE 3E 6E                 .>n
@@ -4175,7 +4175,7 @@ BattleSetupServices_Branch_9E2F:
 BattleSetupServices_Branch_9E3F:
         rts                                     ; 9E3F 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_InvokePartyMemberEntryService:
+PrintLevelUpGainMessage:
         lda     $09                             ; 9E40 A5 09                    ..
         pha                                     ; 9E42 48                       H
         lda     $0A                             ; 9E43 A5 0A                    ..
@@ -4208,17 +4208,17 @@ FieldEffect_InvokePartyMemberEntryService:
         db   $11,$70,$13,$1F,$20,$21,$22,$23 ; 9E69 11 70 13 1F 20 21 22 23  .p.. !"#
         db   $24,$01,$03,$08,$0A             ; 9E71 24 01 03 08 0A           $....
 ; ----------------------------------------------------------------------------
-ScanBattleSetupSelectionMatches:
+CheckNewlyLearnedSpells:
         lda     $09                             ; 9E76 A5 09                    ..
         cmp     #$05                            ; 9E78 C9 05                    ..
         bcs     BattleSetupServices_Branch_9E85 ; 9E7A B0 09                    ..
-        jsr     FieldEffect_CountTargetBoundHits; 9E7C 20 4C 9F                  L.
-        jsr     FieldEffect_LoadTargetTablePointers; 9E7F 20 33 9F               3.
-        jsr     FieldEffect_ScanPartyMemberMaskForMatches; 9E82 20 86 9E         ..
+        jsr     CalculateSpellLearningLevelWindow; 9E7C 20 4C 9F                 L.
+        jsr     LoadCharacterSpellLearningTables; 9E7F 20 33 9F                  3.
+        jsr     ScanCharacterSpellLearningBits  ; 9E82 20 86 9E                  ..
 BattleSetupServices_Branch_9E85:
         rts                                     ; 9E85 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ScanPartyMemberMaskForMatches:
+ScanCharacterSpellLearningBits:
         lda     #$00                            ; 9E86 A9 00                    ..
         sta     $7B                             ; 9E88 85 7B                    .{
         sta     $8C                             ; 9E8A 85 8C                    ..
@@ -4240,7 +4240,7 @@ BattleSetupServices_Branch_9E98:
         db   $6D,$23,$09                     ; 9EA5 6D 23 09                 m#.
 ; ----------------------------------------------------------------------------
         bcs     BattleSetupServices_Branch_9EAD ; 9EA8 B0 03                    ..
-        jsr     FieldEffect_EvaluatePartyMemberPlacementCandidate; 9EAA 20 C5 9E ..
+        jsr     TryLearnSpellAtNewLevel         ; 9EAA 20 C5 9E                  ..
 BattleSetupServices_Branch_9EAD:
         inc     $7B                             ; 9EAD E6 7B                    .{
 BattleSetupServices_Branch_9EAF:
@@ -4258,7 +4258,7 @@ BattleSetupServices_Branch_9EAF:
 BattleSetupServices_Branch_9EC4:
         rts                                     ; 9EC4 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_EvaluatePartyMemberPlacementCandidate:
+TryLearnSpellAtNewLevel:
         ldy     $7B                             ; 9EC5 A4 7B                    .{
         lda     ($02),y                       ; 9EC7 B1 02                    ..
         and     #$7F                            ; 9EC9 29 7F                    ).
@@ -4312,7 +4312,7 @@ BattleSetupServices_Branch_9EF9:
         pha                                     ; 9F16 48                       H
         lda     $0A                             ; 9F17 A5 0A                    ..
         pha                                     ; 9F19 48                       H
-        jsr     FieldEffect_InvokePartyMemberEntryService; 9F1A 20 40 9E         @.
+        jsr     PrintLevelUpGainMessage         ; 9F1A 20 40 9E                  @.
         pla                                     ; 9F1D 68                       h
         sta     $0A                             ; 9F1E 85 0A                    ..
         pla                                     ; 9F20 68                       h
@@ -4329,7 +4329,7 @@ BattleSetupServices_Branch_9EF9:
         sta     $7B                             ; 9F30 85 7B                    .{
         rts                                     ; 9F32 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_LoadTargetTablePointers:
+LoadCharacterSpellLearningTables:
         lda     $09                             ; 9F33 A5 09                    ..
         asl     a                               ; 9F35 0A                       .
         tax                                     ; 9F36 AA                       .
@@ -4343,12 +4343,12 @@ FieldEffect_LoadTargetTablePointers:
         sta     $03                             ; 9F49 85 03                    ..
         rts                                     ; 9F4B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_CountTargetBoundHits:
+CalculateSpellLearningLevelWindow:
         lda     #$00                            ; 9F4C A9 00                    ..
         sta     $6DFF                           ; 9F4E 8D FF 6D                 ..m
         lda     #$04                            ; 9F51 A9 04                    ..
         sta     $0B                             ; 9F53 85 0B                    ..
-        jsr     FieldEffect_LoadScaledTargetDescriptor; 9F55 20 7C 9F            |.
+        jsr     CalculateCharacterGrowthValue   ; 9F55 20 7C 9F                  |.
         brk                                     ; 9F58 00                       .
         db   $21,$23,$09                     ; 9F59 21 23 09                 !#.
 ; ----------------------------------------------------------------------------
@@ -4373,19 +4373,19 @@ BattleSetupServices_Branch_9F74:
         bcs     BattleSetupServices_Branch_9F70 ; 9F79 B0 F5                    ..
         rts                                     ; 9F7B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_LoadScaledTargetDescriptor:
+CalculateCharacterGrowthValue:
         lda     $0B                             ; 9F7C A5 0B                    ..
         cmp     #$06                            ; 9F7E C9 06                    ..
         beq     BattleSetupServices_Branch_9F88 ; 9F80 F0 06                    ..
-FieldEffect_LoadTargetDescriptor:
-        jsr     FieldEffect_ResolveTargetDescriptorPointer; 9F82 20 9C 9F        ..
+CalculateCharacterGrowthValueFromDescriptor:
+        jsr     ResolveCharacterGrowthDescriptorPointer; 9F82 20 9C 9F           ..
         jmp     BattleSetupServices_Branch_9FB9 ; 9F85 4C B9 9F                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9F88:
         pha                                     ; 9F88 48                       H
         lda     #$03                            ; 9F89 A9 03                    ..
         sta     $0B                             ; 9F8B 85 0B                    ..
-        jsr     FieldEffect_LoadTargetDescriptor; 9F8D 20 82 9F                  ..
+        jsr     CalculateCharacterGrowthValueFromDescriptor; 9F8D 20 82 9F       ..
         asl     $00                           ; 9F90 06 00                    ..
         rol     $01                             ; 9F92 26 01                    &.
         asl     $04                             ; 9F94 06 04                    ..
@@ -4394,7 +4394,7 @@ BattleSetupServices_Branch_9F88:
         sta     $0B                             ; 9F99 85 0B                    ..
         rts                                     ; 9F9B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ResolveTargetDescriptorPointer:
+ResolveCharacterGrowthDescriptorPointer:
         asl     a                               ; 9F9C 0A                       .
         tax                                     ; 9F9D AA                       .
         lda     $A0FB,x                         ; 9F9E BD FB A0                 ...
@@ -4402,7 +4402,7 @@ FieldEffect_ResolveTargetDescriptorPointer:
         lda     $A0FC,x                         ; 9FA3 BD FC A0                 ...
         sta     $0D                             ; 9FA6 85 0D                    ..
         lda     $09                             ; 9FA8 A5 09                    ..
-        jsr     FieldEffect_ScaleFieldEffectByteByFiveOrSix; 9FAA 20 6E A0       n.
+        jsr     CalculateCharacterGrowthDescriptorOffset; 9FAA 20 6E A0          n.
         clc                                     ; 9FAD 18                       .
         adc     $0C                             ; 9FAE 65 0C                    e.
         sta     $0C                             ; 9FB0 85 0C                    ..
@@ -4412,7 +4412,7 @@ FieldEffect_ResolveTargetDescriptorPointer:
         rts                                     ; 9FB8 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_9FB9:
-        jsr     FieldEffect_DecodeTargetDescriptorHeader; 9FB9 20 38 A0          8.
+        jsr     DecodeCharacterGrowthDescriptorHeader; 9FB9 20 38 A0             8.
         lda     #$00                            ; 9FBC A9 00                    ..
         sta     $6E3B                           ; 9FBE 8D 3B 6E                 .;n
         sta     $0E                             ; 9FC1 85 0E                    ..
@@ -4468,9 +4468,9 @@ BattleSetupServices_Branch_A01C:
         ldx     $6E3A                           ; A01C AE 3A 6E                 .:n
         lda     $A259,x                         ; A01F BD 59 A2                 .Y.
         ldx     #$04                            ; A022 A2 04                    ..
-        jsr     FieldEffect_MultiplyTripletByScalar; A024 20 7D A0               }.
+        jsr     ScaleCharacterGrowthValue       ; A024 20 7D A0                  }.
         ldy     #$00                            ; A027 A0 00                    ..
-        jsr     FieldEffect_AddTripletToZeroPageTriplet; A029 20 DF A0           ..
+        jsr     AddCharacterGrowthValue         ; A029 20 DF A0                  ..
         lda     $0E                             ; A02C A5 0E                    ..
         cmp     $0A                             ; A02E C5 0A                    ..
         beq     BattleSetupServices_Branch_A037 ; A030 F0 05                    ..
@@ -4480,7 +4480,7 @@ BattleSetupServices_Branch_A01C:
 BattleSetupServices_Branch_A037:
         rts                                     ; A037 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_DecodeTargetDescriptorHeader:
+DecodeCharacterGrowthDescriptorHeader:
         ldy     #$00                            ; A038 A0 00                    ..
         lda     ($0C),y                         ; A03A B1 0C                    ..
         pha                                     ; A03C 48                       H
@@ -4515,7 +4515,7 @@ BattleSetupServices_Branch_A06A:
         sta     $6E3A                           ; A06A 8D 3A 6E                 .:n
         rts                                     ; A06D 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ScaleFieldEffectByteByFiveOrSix:
+CalculateCharacterGrowthDescriptorOffset:
         sta     $0F                             ; A06E 85 0F                    ..
         asl     a                               ; A070 0A                       .
         asl     a                               ; A071 0A                       .
@@ -4528,7 +4528,7 @@ FieldEffect_ScaleFieldEffectByteByFiveOrSix:
 BattleSetupServices_Branch_A07C:
         rts                                     ; A07C 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_MultiplyTripletByScalar:
+ScaleCharacterGrowthValue:
         sta     $0F                             ; A07D 85 0F                    ..
         lda     #$00                            ; A07F A9 00                    ..
         sta     $8A                             ; A081 85 8A                    ..
@@ -4585,7 +4585,7 @@ BattleSetupServices_Branch_A0C7:
         sta     $02,x                         ; A0DC 95 02                    ..
         rts                                     ; A0DE 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AddTripletToZeroPageTriplet:
+AddCharacterGrowthValue:
         pha                                     ; A0DF 48                       H
         lda     $0000,y                         ; A0E0 B9 00 00                 ...
         clc                                     ; A0E3 18                       .
@@ -4674,11 +4674,11 @@ FieldEffect_AddTripletToZeroPageTriplet:
         db   $0B,$9B,$20,$9E,$99,$88,$03,$95 ; A2F6 0B 9B 20 9E 99 88 03 95  .. .....
         db   $8E,$13,$09,$87,$97,$91         ; A2FE 8E 13 09 87 97 91        ......
 ; ----------------------------------------------------------------------------
-FieldEffect_RunTransitionFrameLoop:
+RunTransitionFrameLoop:
         lda     $1F                             ; A304 A5 1F                    ..
         ora     #$08                            ; A306 09 08                    ..
         sta     $1F                             ; A308 85 1F                    ..
-        jsr     FieldEffect_SnapshotTransitionOam; A30A 20 75 A4                 u.
+        jsr     SnapshotTransitionOam           ; A30A 20 75 A4                  u.
         brk                                     ; A30D 00                       .
         db   $92,$FB                         ; A30E 92 FB                    ..
 ; ----------------------------------------------------------------------------
@@ -4701,7 +4701,7 @@ BattleSetupServices_Branch_A322:
 BattleSetupServices_Branch_A327:
         txa                                     ; A327 8A                       .
         pha                                     ; A328 48                       H
-        jsr     FieldEffect_AdvanceTransitionSpriteOffsets; A329 20 A0 A3        ..
+        jsr     AdvanceTransitionSpriteOffsets  ; A329 20 A0 A3                  ..
         jsr     WaitForNmi                      ; A32C 20 74 FF                  t.
         pla                                     ; A32F 68                       h
         tax                                     ; A330 AA                       .
@@ -4715,7 +4715,7 @@ BattleSetupServices_Branch_A327:
         lda     $8A                             ; A340 A5 8A                    ..
         cmp     #$00                            ; A342 C9 00                    ..
         bne     BattleSetupServices_Branch_A357 ; A344 D0 11                    ..
-        jsr     FieldEffect_PulseTransitionPalette; A346 20 89 A4                ..
+        jsr     PulseTransitionPalette          ; A346 20 89 A4                  ..
         jsr     FadePaletteToBlack              ; A349 20 C5 C5                  ..
         lda     #$FF                            ; A34C A9 FF                    ..
         sta     $05FC                           ; A34E 8D FC 05                 ...
@@ -4748,7 +4748,7 @@ BattleSetupServices_Branch_A372:
 BattleSetupServices_Branch_A374:
         txa                                     ; A374 8A                       .
         pha                                     ; A375 48                       H
-        jsr     FieldEffect_ApplyTransitionShiftFrame; A376 20 2B A4             +.
+        jsr     ApplyTransitionShiftFrame       ; A376 20 2B A4                  +.
         jsr     WaitForNmi                      ; A379 20 74 FF                  t.
         pla                                     ; A37C 68                       h
         tax                                     ; A37D AA                       .
@@ -4774,10 +4774,10 @@ BattleSetupServices_Branch_A394:
         sta     $1F                             ; A39B 85 1F                    ..
         jmp     WaitForNmi                      ; A39D 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-FieldEffect_AdvanceTransitionSpriteOffsets:
-        jsr     FieldEffect_ComputeTransitionStep; A3A0 20 10 A4                 ..
+AdvanceTransitionSpriteOffsets:
+        jsr     ComputeTransitionStep           ; A3A0 20 10 A4                  ..
         lda     $0509                           ; A3A3 AD 09 05                 ...
-        jsr     FieldEffect_AdjustTransitionShift; A3A6 20 DD A3                 ..
+        jsr     AdjustTransitionShift           ; A3A6 20 DD A3                  ..
         sta     $0509                           ; A3A9 8D 09 05                 ...
         ldx     #$00                            ; A3AC A2 00                    ..
 BattleSetupServices_Branch_A3AE:
@@ -4808,7 +4808,7 @@ BattleSetupServices_Branch_A3C2:
         bne     BattleSetupServices_Branch_A3AE ; A3DA D0 D2                    ..
         rts                                     ; A3DC 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_AdjustTransitionShift:
+AdjustTransitionShift:
         sta     $01                             ; A3DD 85 01                    ..
         lda     $0505                           ; A3DF AD 05 05                 ...
         and     #$02                            ; A3E2 29 02                    ).
@@ -4839,7 +4839,7 @@ BattleSetupServices_Branch_A3FE:
         sta     $0509                           ; A40C 8D 09 05                 ...
         rts                                     ; A40F 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ComputeTransitionStep:
+ComputeTransitionStep:
         sta     $00                           ; A410 85 00                    ..
         lda     #$00                            ; A412 A9 00                    ..
         sta     $01                             ; A414 85 01                    ..
@@ -4855,8 +4855,8 @@ FieldEffect_ComputeTransitionStep:
 BattleSetupServices_Branch_A42A:
         rts                                     ; A42A 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_ApplyTransitionShiftFrame:
-        jsr     FieldEffect_ComputeTransitionStep; A42B 20 10 A4                 ..
+ApplyTransitionShiftFrame:
+        jsr     ComputeTransitionStep           ; A42B 20 10 A4                  ..
         lda     $0509                           ; A42E AD 09 05                 ...
         clc                                     ; A431 18                       .
         adc     $00                           ; A432 65 00                    e.
@@ -4896,7 +4896,7 @@ BattleSetupServices_Branch_A46E:
         bne     BattleSetupServices_Branch_A451 ; A472 D0 DD                    ..
         rts                                     ; A474 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_SnapshotTransitionOam:
+SnapshotTransitionOam:
         ldx     #$00                            ; A475 A2 00                    ..
 BattleSetupServices_Branch_A477:
         lda     #$00                            ; A477 A9 00                    ..
@@ -4910,7 +4910,7 @@ BattleSetupServices_Branch_A477:
         bne     BattleSetupServices_Branch_A477 ; A486 D0 EF                    ..
         rts                                     ; A488 60                       `
 ; ----------------------------------------------------------------------------
-FieldEffect_PulseTransitionPalette:
+PulseTransitionPalette:
         ldx     #$03                            ; A489 A2 03                    ..
 BattleSetupServices_Branch_A48B:
         txa                                     ; A48B 8A                       .
@@ -4928,7 +4928,7 @@ BattleSetupServices_Branch_A48B:
 ; ----------------------------------------------------------------------------
         db   $31,$21,$11,$01                 ; A4A1 31 21 11 01              1!..
 ; ----------------------------------------------------------------------------
-FieldCommand_DispatchFieldCommandOperation:
+DispatchIndexedOperation:
         asl     a                               ; A4A5 0A                       .
         tay                                     ; A4A6 A8                       .
         lda     Bank12_FieldCommandOperationPointers,y; A4A7 B9 41 A5           .A.
@@ -4937,109 +4937,109 @@ FieldCommand_DispatchFieldCommandOperation:
         sta     $01                             ; A4AF 85 01                    ..
         jmp     ($0000)                         ; A4B1 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteFieldCommandFieldGroup:
-        jsr     FieldCommand_WriteOperationField06; A4B4 20 20 A5                 .
-        jsr     FieldCommand_WriteOperationField05; A4B7 20 2A A5                *.
+WriteOperationFieldGroup:
+        jsr     WriteOperationField06           ; A4B4 20 20 A5                   .
+        jsr     WriteOperationField05           ; A4B7 20 2A A5                  *.
 WriteBattleSetupFieldTail:
-        jsr     FieldCommand_WriteOperationField07; A4BA 20 25 A5                %.
-        jmp     FieldCommand_FinalizeOperationWrite; A4BD 4C 3A A5              L:.
+        jsr     WriteOperationField07           ; A4BA 20 25 A5                  %.
+        jmp     FinalizeOperationWrite          ; A4BD 4C 3A A5                 L:.
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteConditionalFieldGroup:
-        jsr     FieldCommand_TestOperationEqualsOne; A4C0 20 2F A5               /.
+WriteConditionalOperationFieldGroup:
+        jsr     TestOperationEqualsOne          ; A4C0 20 2F A5                  /.
         bcs     BattleSetupServices_Branch_A4C8 ; A4C3 B0 03                    ..
-        jsr     FieldCommand_WriteFieldCommandFieldGroup; A4C5 20 B4 A4          ..
+        jsr     WriteOperationFieldGroup        ; A4C5 20 B4 A4                  ..
 BattleSetupServices_Branch_A4C8:
         rts                                     ; A4C8 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteFieldCommandFieldTail:
+WriteOperationFieldTail:
         jmp     WriteBattleSetupFieldTail       ; A4C9 4C BA A4                 L..
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteConditionalFieldTail:
-        jsr     FieldCommand_TestOperationEqualsOne; A4CC 20 2F A5               /.
+WriteConditionalOperationFieldTail:
+        jsr     TestOperationEqualsOne          ; A4CC 20 2F A5                  /.
         bcs     BattleSetupServices_Branch_A4D4 ; A4CF B0 03                    ..
-        jsr     FieldCommand_FinalizeOperationWrite; A4D1 20 3A A5               :.
+        jsr     FinalizeOperationWrite          ; A4D1 20 3A A5                  :.
 BattleSetupServices_Branch_A4D4:
         rts                                     ; A4D4 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_RepeatFieldCommandFieldGroup:
-        jsr     FieldCommand_LoadOperationRepeatCount; A4D5 20 1B A5             ..
+RepeatOperationFieldGroup:
+        jsr     LoadOperationRepeatCount        ; A4D5 20 1B A5                  ..
         ldx     #$00                            ; A4D8 A2 00                    ..
 BattleSetupServices_Branch_A4DA:
-        jsr     FieldCommand_WriteFieldCommandFieldGroup; A4DA 20 B4 A4          ..
+        jsr     WriteOperationFieldGroup        ; A4DA 20 B4 A4                  ..
         inx                                     ; A4DD E8                       .
         dey                                     ; A4DE 88                       .
         bne     BattleSetupServices_Branch_A4DA ; A4DF D0 F9                    ..
         rts                                     ; A4E1 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_RepeatConditionalFieldGroup:
-        jsr     FieldCommand_LoadOperationRepeatCount; A4E2 20 1B A5             ..
+RepeatConditionalOperationFieldGroup:
+        jsr     LoadOperationRepeatCount        ; A4E2 20 1B A5                  ..
         ldx     #$00                            ; A4E5 A2 00                    ..
 BattleSetupServices_Branch_A4E7:
-        jsr     FieldCommand_WriteConditionalFieldGroup; A4E7 20 C0 A4           ..
+        jsr     WriteConditionalOperationFieldGroup; A4E7 20 C0 A4               ..
         inx                                     ; A4EA E8                       .
         dey                                     ; A4EB 88                       .
         bne     BattleSetupServices_Branch_A4E7 ; A4EC D0 F9                    ..
         rts                                     ; A4EE 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_RepeatFieldCommandFieldTail:
-        jsr     FieldCommand_LoadOperationRepeatCount; A4EF 20 1B A5             ..
+RepeatOperationFieldTail:
+        jsr     LoadOperationRepeatCount        ; A4EF 20 1B A5                  ..
         ldx     #$00                            ; A4F2 A2 00                    ..
 BattleSetupServices_Branch_A4F4:
-        jsr     FieldCommand_WriteFieldCommandFieldTail; A4F4 20 C9 A4           ..
+        jsr     WriteOperationFieldTail         ; A4F4 20 C9 A4                  ..
         inx                                     ; A4F7 E8                       .
         dey                                     ; A4F8 88                       .
         bne     BattleSetupServices_Branch_A4F4 ; A4F9 D0 F9                    ..
         rts                                     ; A4FB 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_RepeatConditionalFieldTail:
-        jsr     FieldCommand_LoadOperationRepeatCount; A4FC 20 1B A5             ..
+RepeatConditionalOperationFieldTail:
+        jsr     LoadOperationRepeatCount        ; A4FC 20 1B A5                  ..
         ldx     #$00                            ; A4FF A2 00                    ..
 BattleSetupServices_Branch_A501:
-        jsr     FieldCommand_WriteConditionalFieldTail; A501 20 CC A4            ..
+        jsr     WriteConditionalOperationFieldTail; A501 20 CC A4                ..
         inx                                     ; A504 E8                       .
         dey                                     ; A505 88                       .
         bne     BattleSetupServices_Branch_A501 ; A506 D0 F9                    ..
         rts                                     ; A508 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_RepeatFieldCommandGateAndWrite:
-        jsr     FieldCommand_LoadOperationRepeatCount; A509 20 1B A5             ..
+RepeatOperationGateAndWrite:
+        jsr     LoadOperationRepeatCount        ; A509 20 1B A5                  ..
         ldx     #$00                            ; A50C A2 00                    ..
 BattleSetupServices_Branch_A50E:
-        jsr     FieldCommand_TestOperationEqualsOne; A50E 20 2F A5               /.
+        jsr     TestOperationEqualsOne          ; A50E 20 2F A5                  /.
         bcs     BattleSetupServices_Branch_A516 ; A511 B0 03                    ..
-        jsr     FieldCommand_WriteOperationField05; A513 20 2A A5                *.
+        jsr     WriteOperationField05           ; A513 20 2A A5                  *.
 BattleSetupServices_Branch_A516:
         inx                                     ; A516 E8                       .
         dey                                     ; A517 88                       .
         bne     BattleSetupServices_Branch_A50E ; A518 D0 F4                    ..
         rts                                     ; A51A 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_LoadOperationRepeatCount:
+LoadOperationRepeatCount:
         brk                                     ; A51B 00                       .
         db   $62,$33                         ; A51C 62 33                    b3
 ; ----------------------------------------------------------------------------
         tay                                     ; A51E A8                       .
         rts                                     ; A51F 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteOperationField06:
+WriteOperationField06:
         brk                                     ; A520 00                       .
         db   $45,$93,$06                     ; A521 45 93 06                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A524 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteOperationField07:
+WriteOperationField07:
         brk                                     ; A525 00                       .
         db   $44,$93,$07                     ; A526 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         rts                                     ; A529 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_WriteOperationField05:
+WriteOperationField05:
         brk                                     ; A52A 00                       .
         db   $45,$93,$05                     ; A52B 45 93 05                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A52E 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_TestOperationEqualsOne:
+TestOperationEqualsOne:
         brk                                     ; A52F 00                       .
         db   $42,$53                         ; A530 42 53                    BS
 ; ----------------------------------------------------------------------------
@@ -5052,7 +5052,7 @@ BattleSetupServices_Branch_A538:
         sec                                     ; A538 38                       8
         rts                                     ; A539 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_FinalizeOperationWrite:
+FinalizeOperationWrite:
         brk                                     ; A53A 00                       .
         db   $05,$53                         ; A53B 05 53                    .S
 ; ----------------------------------------------------------------------------
@@ -5067,7 +5067,7 @@ Bank12_FieldCommandOperationPointers:
         db   $A4,$E2,$A4,$EF,$A4,$FC,$A4,$09 ; A54A A4 E2 A4 EF A4 FC A4 09  ........
         db   $A5                             ; A552 A5                       .
 ; ----------------------------------------------------------------------------
-FieldCommand_ProcessFieldCommandCommand:
+FieldCommand_ProcessCommand:
         brk                                     ; A553 00                       .
         db   $07,$6F,$04                     ; A554 07 6F 04                 .o.
 ; ----------------------------------------------------------------------------
@@ -5075,7 +5075,7 @@ FieldCommand_ProcessFieldCommandCommand:
         beq     BattleSetupServices_Branch_A58E ; A559 F0 33                    .3
         sta     $0590                           ; A55B 8D 90 05                 ...
         sta     $F9                             ; A55E 85 F9                    ..
-        jsr     FieldCommand_ValidateFieldOptionOption; A560 20 B7 A5            ..
+        jsr     FieldCommand_ValidateFieldOption; A560 20 B7 A5                  ..
         bcs     BattleSetupServices_Branch_A58E ; A563 B0 29                    .)
         lda     $0590                           ; A565 AD 90 05                 ...
         jsr     FieldCommand_QueryModeSelector  ; A568 20 B2 A5                  ..
@@ -5133,7 +5133,7 @@ FieldCommand_QueryModeSelector:
 ; ----------------------------------------------------------------------------
         rts                                     ; A5B6 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_ValidateFieldOptionOption:
+FieldCommand_ValidateFieldOption:
         tax                                     ; A5B7 AA                       .
         brk                                     ; A5B8 00                       .
         db   $3E,$53                         ; A5B9 3E 53                    >S
@@ -5217,7 +5217,7 @@ BattleSetupServices_Branch_A613:
         sec                                     ; A613 38                       8
         rts                                     ; A614 60                       `
 ; ----------------------------------------------------------------------------
-FieldCommand_QueryFieldOptionOption:
+FieldCommand_QueryFieldOption:
         tax                                     ; A615 AA                       .
         brk                                     ; A616 00                       .
         db   $42,$53                         ; A617 42 53                    BS
@@ -5252,7 +5252,7 @@ BattleSetupServices_Branch_A62D:
         lda     $0591                           ; A640 AD 91 05                 ...
         jmp     ($0000)                         ; A643 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-FieldSpell_LoadMapSpecificBackdrop:
+PrintStrangeForceContainsSpellMessage:
         jsr     FieldSpell_LatchFieldSpellOperands; A646 20 3B A9                ;.
         ldx     $41                             ; A649 A6 41                    .A
         bpl     BattleSetupServices_Branch_A66B ; A64B 10 1E                    ..
@@ -5320,7 +5320,7 @@ CastFieldSpellOrReportLowCeiling:
         brk                                     ; A6B2 00                       .
         db   $C3,$2B                         ; A6B3 C3 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; A6B5 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; A6B5 20 EF B5                  ..
         pla                                     ; A6B8 68                       h
         jsr     FieldSpell_CheckEligibilityByMap; A6B9 20 74 A9                  t.
         bcs     BattleSetupServices_Branch_A6CE ; A6BC B0 10                    ..
@@ -5802,7 +5802,7 @@ FieldSpell_DisplayPromptAndCommitOperands:
         brk                                     ; A96D 00                       .
         db   $C3,$2B                         ; A96E C3 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; A970 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; A970 20 EF B5                  ..
         rts                                     ; A973 60                       `
 ; ----------------------------------------------------------------------------
 FieldSpell_CheckEligibilityByMap:
@@ -5888,14 +5888,14 @@ Bank12_FieldSpellIds:
         db   $35,$33,$3B,$36,$37,$38,$39,$29 ; AA0D 35 33 3B 36 37 38 39 29  53;6789)
         db   $2A,$2B,$2C,$2E,$3A,$30,$31,$37 ; AA15 2A 2B 2C 2E 3A 30 31 37  *+,.:017
 ; ----------------------------------------------------------------------------
-AdventureLog_InitializeAdventureLogDisplayState:
+AdventureLog_InitializeDisplayState:
         lda     #$80                            ; AA1D A9 80                    ..
         sta     $6BDE                           ; AA1F 8D DE 6B                 ..k
         jsr     ResetDisplayState               ; AA22 20 4E C5                  N.
         jsr     ResumeRenderingAfterPpuWork     ; AA25 20 8F C5                  ..
         jsr     FadePaletteFromBlack            ; AA28 20 BF C5                  ..
-        jsr     AdventureLog_RefreshPrimaryAdventureLogMirrors; AA2B 20 41 AA    A.
-        jsr     AdventureLog_BuildThreeSlotAdventureLogList; AA2E 20 5B AA       [.
+        jsr     AdventureLog_RefreshPrimaryMirrors; AA2B 20 41 AA                A.
+        jsr     AdventureLog_BuildThreeSlotList ; AA2E 20 5B AA                  [.
         brk                                     ; AA31 00                       .
         db   $1F,$FB                         ; AA32 1F FB                    ..
 ; ----------------------------------------------------------------------------
@@ -5903,14 +5903,14 @@ BattleSetupServices_Branch_AA34:
         brk                                     ; AA34 00                       .
         db   $07,$6F,$53                     ; AA35 07 6F 53                 .oS
 ; ----------------------------------------------------------------------------
-        jsr     AdventureLog_DispatchAdventureLogOperationByIndex; AA38 20 B7 AA ..
-        jsr     AdventureLog_ClearAdventureLogWorkBuffer; AA3B 20 4A AD          J.
+        jsr     AdventureLog_DispatchOperationByIndex; AA38 20 B7 AA             ..
+        jsr     AdventureLog_ClearWorkBuffer    ; AA3B 20 4A AD                  J.
         jmp     BattleSetupServices_Branch_AA34 ; AA3E 4C 34 AA                 L4.
 ; ----------------------------------------------------------------------------
-AdventureLog_RefreshPrimaryAdventureLogMirrors:
-        jsr     AdventureLog_CheckAdventureLogHeaderMirror; AA41 20 73 AC        s.
+AdventureLog_RefreshPrimaryMirrors:
+        jsr     AdventureLog_CheckHeaderMirror  ; AA41 20 73 AC                  s.
         bcs     BattleSetupServices_Branch_AA5A ; AA44 B0 14                    ..
-        jsr     AdventureLog_CopyAdventureLogHeaderMirror; AA46 20 8C AC         ..
+        jsr     AdventureLog_CopyHeaderMirror   ; AA46 20 8C AC                  ..
         lda     #$00                            ; AA49 A9 00                    ..
         sta     $8A                             ; AA4B 85 8A                    ..
         jsr     AdventureLog_StoreSlotFlag10    ; AA4D 20 01 AC                  ..
@@ -5922,19 +5922,19 @@ AdventureLog_RefreshPrimaryAdventureLogMirrors:
 BattleSetupServices_Branch_AA5A:
         rts                                     ; AA5A 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_BuildThreeSlotAdventureLogList:
+AdventureLog_BuildThreeSlotList:
         lda     #$00                            ; AA5B A9 00                    ..
         sta     $6BDB                           ; AA5D 8D DB 6B                 ..k
         lda     #$02                            ; AA60 A9 02                    ..
         sta     $8A                             ; AA62 85 8A                    ..
 BattleSetupServices_Branch_AA64:
         lda     #$D6                            ; AA64 A9 D6                    ..
-        jsr     AdventureLog_StoreAdventureLogSlotByte; AA66 20 7F AA            ..
+        jsr     AdventureLog_StoreSlotByte      ; AA66 20 7F AA                  ..
         jsr     AdventureLog_ClassifyHeaderLengthMatch; AA69 20 BD AC            ..
         beq     BattleSetupServices_Branch_AA7A ; AA6C F0 0C                    ..
         pha                                     ; AA6E 48                       H
         lda     #$00                            ; AA6F A9 00                    ..
-        jsr     AdventureLog_StoreAdventureLogSlotByte; AA71 20 7F AA            ..
+        jsr     AdventureLog_StoreSlotByte      ; AA71 20 7F AA                  ..
         pla                                     ; AA74 68                       h
         bpl     BattleSetupServices_Branch_AA7A ; AA75 10 03                    ..
         jsr     EraseAdventureLog               ; AA77 20 85 AA                  ..
@@ -5943,7 +5943,7 @@ BattleSetupServices_Branch_AA7A:
         bpl     BattleSetupServices_Branch_AA64 ; AA7C 10 E6                    ..
         rts                                     ; AA7E 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_StoreAdventureLogSlotByte:
+AdventureLog_StoreSlotByte:
         ldx     $8A                             ; AA7F A6 8A                    ..
         sta     $6BEC,x                         ; AA81 9D EC 6B                 ..k
         rts                                     ; AA84 60                       `
@@ -5981,7 +5981,7 @@ EraseAdventureLog:
 BattleSetupServices_Branch_AAB6:
         rts                                     ; AAB6 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_DispatchAdventureLogOperationByIndex:
+AdventureLog_DispatchOperationByIndex:
         cmp     #$05                            ; AAB7 C9 05                    ..
         bcs     BattleSetupServices_Branch_AAB6 ; AAB9 B0 FB                    ..
         asl     a                               ; AABB 0A                       .
@@ -5996,10 +5996,10 @@ AdventureLog_DispatchAdventureLogOperationByIndex:
         db   $AA,$10,$AB,$36,$AB,$C1,$AB,$E9 ; AACB AA 10 AB 36 AB C1 AB E9  ...6....
         db   $AB                             ; AAD3 AB                       .
 ; ----------------------------------------------------------------------------
-AdventureLog_CommitAdventureLogBlockAndRestoreDisplay:
-        jsr     AdventureLog_LoadAdventureLogSlotIndex; AAD4 20 F0 AA            ..
+AdventureLog_CommitBlockAndRestoreDisplay:
+        jsr     AdventureLog_LoadSlotIndex      ; AAD4 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AAEF ; AAD7 B0 16                    ..
-        jsr     AdventureLog_CopyAdventureLogPayloadToWorkBuffer; AAD9 20 22 AC  ".
+        jsr     AdventureLog_CopyPayloadToWorkBuffer; AAD9 20 22 AC              ".
 BattleSetupServices_Branch_AADC:
         brk                                     ; AADC 00                       .
         db   $10,$2F                         ; AADD 10 2F                    ./
@@ -6016,7 +6016,7 @@ BattleSetupServices_Branch_AADC:
 BattleSetupServices_Branch_AAEF:
         rts                                     ; AAEF 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_LoadAdventureLogSlotIndex:
+AdventureLog_LoadSlotIndex:
         brk                                     ; AAF0 00                       .
         db   $07,$6F,$55                     ; AAF1 07 6F 55                 .oU
 ; ----------------------------------------------------------------------------
@@ -6024,7 +6024,7 @@ AdventureLog_LoadAdventureLogSlotIndex:
         cmp     #$03                            ; AAF6 C9 03                    ..
         rts                                     ; AAF8 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_LoadAdventureLogSlotIndexPreservingPointer:
+AdventureLog_LoadSlotIndexPreservingPointer:
         lda     $00                           ; AAF9 A5 00                    ..
         pha                                     ; AAFB 48                       H
         lda     $01                             ; AAFC A5 01                    ..
@@ -6041,8 +6041,8 @@ AdventureLog_LoadAdventureLogSlotIndexPreservingPointer:
         cmp     #$03                            ; AB0D C9 03                    ..
         rts                                     ; AB0F 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_WriteIndexedAdventureLogByte:
-        jsr     AdventureLog_LoadAdventureLogSlotIndex; AB10 20 F0 AA            ..
+AdventureLog_WriteIndexedByte:
+        jsr     AdventureLog_LoadSlotIndex      ; AB10 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AB35 ; AB13 B0 20                    .
         tax                                     ; AB15 AA                       .
         brk                                     ; AB16 00                       .
@@ -6050,9 +6050,9 @@ AdventureLog_WriteIndexedAdventureLogByte:
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; AB1A C9 08                    ..
         bcs     BattleSetupServices_Branch_AB35 ; AB1C B0 17                    ..
-AdventureLog_StoreIndexedAdventureLogByteAndTail:
+AdventureLog_StoreIndexedByteAndTail:
         pha                                     ; AB1E 48                       H
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AB1F 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AB1F 20 15 AD                  ..
         lda     $AD82                           ; AB22 AD 82 AD                 ...
         ldy     $AD83                           ; AB25 AC 83 AD                 ...
         ldx     #$00                            ; AB28 A2 00                    ..
@@ -6064,21 +6064,21 @@ AdventureLog_StoreIndexedAdventureLogByteAndTail:
 BattleSetupServices_Branch_AB35:
         rts                                     ; AB35 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_CloneAdventureLogBlockAndMarkSlots:
-        jsr     AdventureLog_LoadAdventureLogSlotIndexPreservingPointer; AB36 20 F9 AA ..
+AdventureLog_CloneBlockAndMarkSlots:
+        jsr     AdventureLog_LoadSlotIndexPreservingPointer; AB36 20 F9 AA       ..
         bcs     BattleSetupServices_Branch_AB35 ; AB39 B0 FA                    ..
         jsr     AdventureLog_LoadPrimaryRecordPointer; AB3B 20 3F AD             ?.
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AB3E 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AB3E 20 15 AD                  ..
 BattleSetupServices_Branch_AB41:
         ldy     #$00                            ; AB41 A0 00                    ..
         tya                                     ; AB43 98                       .
         sta     ($00),y                       ; AB44 91 00                    ..
-        jsr     AdventureLog_AdvanceAdventureLogPointer; AB46 20 03 AD           ..
+        jsr     AdventureLog_AdvancePointer     ; AB46 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AB41 ; AB49 D0 F6                    ..
         brk                                     ; AB4B 00                       .
         db   $07,$6F,$58                     ; AB4C 07 6F 58                 .oX
 ; ----------------------------------------------------------------------------
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AB4F 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AB4F 20 15 AD                  ..
         lda     $AD84                           ; AB52 AD 84 AD                 ...
         ldy     $AD85                           ; AB55 AC 85 AD                 ...
         ldx     #$00                            ; AB58 A2 00                    ..
@@ -6096,7 +6096,7 @@ BattleSetupServices_Branch_AB41:
         cmp     #$02                            ; AB6F C9 02                    ..
         bcs     BattleSetupServices_Branch_ABBE ; AB71 B0 4B                    .K
         pha                                     ; AB73 48                       H
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AB74 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AB74 20 15 AD                  ..
         lda     $AD86                           ; AB77 AD 86 AD                 ...
         ldy     $AD87                           ; AB7A AC 87 AD                 ...
         ldx     #$00                            ; AB7D A2 00                    ..
@@ -6110,11 +6110,11 @@ BattleSetupServices_Branch_AB41:
 ; ----------------------------------------------------------------------------
         cmp     #$08                            ; AB8D C9 08                    ..
         bcs     BattleSetupServices_Branch_ABBE ; AB8F B0 2D                    .-
-        jsr     AdventureLog_StoreIndexedAdventureLogByteAndTail; AB91 20 1E AB  ..
+        jsr     AdventureLog_StoreIndexedByteAndTail; AB91 20 1E AB              ..
         jsr     AdventureLog_WriteHeaderLengthPair; AB94 20 DF AC                ..
         lda     $8A                             ; AB97 A5 8A                    ..
         sta     $6BDC                           ; AB99 8D DC 6B                 ..k
-        jsr     AdventureLog_CopyAdventureLogPayloadToWorkBuffer; AB9C 20 22 AC  ".
+        jsr     AdventureLog_CopyPayloadToWorkBuffer; AB9C 20 22 AC              ".
         lda     #$42                            ; AB9F A9 42                    .B
         sta     $6285                           ; ABA1 8D 85 62                 ..b
         ldx     #$08                            ; ABA4 A2 08                    ..
@@ -6139,11 +6139,11 @@ BattleSetupServices_Branch_ABA6:
 BattleSetupServices_Branch_ABBE:
         jmp     BattleSetupServices_Branch_AC10 ; ABBE 4C 10 AC                 L..
 ; ----------------------------------------------------------------------------
-AdventureLog_CopyAdventureLogBlockBetweenPointers:
-        jsr     AdventureLog_LoadAdventureLogSlotIndex; ABC1 20 F0 AA            ..
+AdventureLog_CopyBlockBetweenPointers:
+        jsr     AdventureLog_LoadSlotIndex      ; ABC1 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_ABE8 ; ABC4 B0 22                    ."
-        jsr     AdventureLog_LoadAdventureLogBasePointer; ABC6 20 15 AD          ..
-        jsr     AdventureLog_LoadAdventureLogSlotIndexPreservingPointer; ABC9 20 F9 AA ..
+        jsr     AdventureLog_LoadBasePointer    ; ABC6 20 15 AD                  ..
+        jsr     AdventureLog_LoadSlotIndexPreservingPointer; ABC9 20 F9 AA       ..
         bcs     BattleSetupServices_Branch_ABE8 ; ABCC B0 1A                    ..
         jsr     AdventureLog_LoadIndexedBasePointer; ABCE 20 1A AD               ..
         jsr     AdventureLog_LoadPrimaryRecordPointer; ABD1 20 3F AD             ?.
@@ -6155,14 +6155,14 @@ BattleSetupServices_Branch_ABD4:
         bne     BattleSetupServices_Branch_ABE0 ; ABDC D0 02                    ..
         inc     $05                             ; ABDE E6 05                    ..
 BattleSetupServices_Branch_ABE0:
-        jsr     AdventureLog_AdvanceAdventureLogPointer; ABE0 20 03 AD           ..
+        jsr     AdventureLog_AdvancePointer     ; ABE0 20 03 AD                  ..
         bne     BattleSetupServices_Branch_ABD4 ; ABE3 D0 EF                    ..
-        jsr     AdventureLog_BuildThreeSlotAdventureLogList; ABE5 20 5B AA       [.
+        jsr     AdventureLog_BuildThreeSlotList ; ABE5 20 5B AA                  [.
 BattleSetupServices_Branch_ABE8:
         rts                                     ; ABE8 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_UpdateAdventureLogBlockConditionally:
-        jsr     AdventureLog_LoadAdventureLogSlotIndex; ABE9 20 F0 AA            ..
+AdventureLog_UpdateBlockConditionally:
+        jsr     AdventureLog_LoadSlotIndex      ; ABE9 20 F0 AA                  ..
         bcs     BattleSetupServices_Branch_AC00 ; ABEC B0 12                    ..
         ldx     $8A                             ; ABEE A6 8A                    ..
         brk                                     ; ABF0 00                       .
@@ -6173,7 +6173,7 @@ AdventureLog_UpdateAdventureLogBlockConditionally:
 ; ----------------------------------------------------------------------------
         bne     BattleSetupServices_Branch_AC00 ; ABF8 D0 06                    ..
         jsr     AdventureLog_StoreSlotFlag20    ; ABFA 20 09 AC                  ..
-        jsr     AdventureLog_BuildThreeSlotAdventureLogList; ABFD 20 5B AA       [.
+        jsr     AdventureLog_BuildThreeSlotList ; ABFD 20 5B AA                  [.
 BattleSetupServices_Branch_AC00:
         rts                                     ; AC00 60                       `
 ; ----------------------------------------------------------------------------
@@ -6189,18 +6189,18 @@ BattleSetupServices_Branch_AC0B:
         ldx     $8A                             ; AC0B A6 8A                    ..
         sta     $6BD9,x                         ; AC0D 9D D9 6B                 ..k
 BattleSetupServices_Branch_AC10:
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AC10 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AC10 20 15 AD                  ..
         jsr     AdventureLog_LoadPrimaryRecordPointer; AC13 20 3F AD             ?.
 BattleSetupServices_Branch_AC16:
         ldy     #$00                            ; AC16 A0 00                    ..
         lda     #$4B                            ; AC18 A9 4B                    .K
         sta     ($00),y                       ; AC1A 91 00                    ..
-        jsr     AdventureLog_AdvanceAdventureLogPointer; AC1C 20 03 AD           ..
+        jsr     AdventureLog_AdvancePointer     ; AC1C 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AC16 ; AC1F D0 F5                    ..
         rts                                     ; AC21 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_CopyAdventureLogPayloadToWorkBuffer:
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AC22 20 15 AD          ..
+AdventureLog_CopyPayloadToWorkBuffer:
+        jsr     AdventureLog_LoadBasePointer    ; AC22 20 15 AD                  ..
         lda     $AD8A                           ; AC25 AD 8A AD                 ...
         sta     $04                             ; AC28 85 04                    ..
         lda     $AD8B                           ; AC2A AD 8B AD                 ...
@@ -6209,7 +6209,7 @@ AdventureLog_CopyAdventureLogPayloadToWorkBuffer:
         ldx     #$00                            ; AC32 A2 00                    ..
         lda     #$02                            ; AC34 A9 02                    ..
         jsr     AddByteToPointer                ; AC36 20 13 C8                  ..
-AdventureLog_CopyAdventureLogPayloadChunk:
+AdventureLog_CopyPayloadChunk:
         jsr     AdventureLog_LoadAuxiliaryRecordPointer; AC39 20 34 AD           4.
 BattleSetupServices_Branch_AC3C:
         ldy     #$00                            ; AC3C A0 00                    ..
@@ -6219,7 +6219,7 @@ BattleSetupServices_Branch_AC3C:
         bne     BattleSetupServices_Branch_AC48 ; AC44 D0 02                    ..
         inc     $05                             ; AC46 E6 05                    ..
 BattleSetupServices_Branch_AC48:
-        jsr     AdventureLog_AdvanceAdventureLogPointer; AC48 20 03 AD           ..
+        jsr     AdventureLog_AdvancePointer     ; AC48 20 03 AD                  ..
         bne     BattleSetupServices_Branch_AC3C ; AC4B D0 EF                    ..
         lda     $8A                             ; AC4D A5 8A                    ..
         sta     $6BDC                           ; AC4F 8D DC 6B                 ..k
@@ -6236,11 +6236,11 @@ AdventureLog_RestoreSaveSlotIndexAndCopyPayload:
         ldx     #$04                            ; AC65 A2 04                    ..
         lda     #$02                            ; AC67 A9 02                    ..
         jsr     AddByteToPointer                ; AC69 20 13 C8                  ..
-        jsr     AdventureLog_CopyAdventureLogPayloadChunk; AC6C 20 39 AC         9.
+        jsr     AdventureLog_CopyPayloadChunk   ; AC6C 20 39 AC                  9.
         jsr     AdventureLog_WriteHeaderLengthPair; AC6F 20 DF AC                ..
         rts                                     ; AC72 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_CheckAdventureLogHeaderMirror:
+AdventureLog_CheckHeaderMirror:
         ldx     #$0C                            ; AC73 A2 0C                    ..
 BattleSetupServices_Branch_AC75:
         lda     $AD71,x                         ; AC75 BD 71 AD                 .q.
@@ -6251,7 +6251,7 @@ BattleSetupServices_Branch_AC75:
 BattleSetupServices_Branch_AC82:
         dex                                     ; AC82 CA                       .
         bpl     BattleSetupServices_Branch_AC75 ; AC83 10 F0                    ..
-        jsr     AdventureLog_CopyAdventureLogHeaderMirror; AC85 20 8C AC         ..
+        jsr     AdventureLog_CopyHeaderMirror   ; AC85 20 8C AC                  ..
         sec                                     ; AC88 38                       8
         rts                                     ; AC89 60                       `
 ; ----------------------------------------------------------------------------
@@ -6259,7 +6259,7 @@ BattleSetupServices_Branch_AC8A:
         clc                                     ; AC8A 18                       .
         rts                                     ; AC8B 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_CopyAdventureLogHeaderMirror:
+AdventureLog_CopyHeaderMirror:
         ldx     #$0C                            ; AC8C A2 0C                    ..
 BattleSetupServices_Branch_AC8E:
         lda     $AD71,x                         ; AC8E BD 71 AD                 .q.
@@ -6270,7 +6270,7 @@ BattleSetupServices_Branch_AC8E:
         rts                                     ; AC9A 60                       `
 ; ----------------------------------------------------------------------------
 AdventureLog_BuildWorkspacePointerFromIndex:
-        jsr     AdventureLog_LoadAdventureLogBasePointer; AC9B 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; AC9B 20 15 AD                  ..
         lda     #$02                            ; AC9E A9 02                    ..
         ldx     #$00                            ; ACA0 A2 00                    ..
         jsr     AddByteToPointer                ; ACA2 20 13 C8                  ..
@@ -6283,15 +6283,15 @@ BattleSetupServices_Branch_ACAE:
         lda     ($00),y                       ; ACB0 B1 00                    ..
         sta     $16                             ; ACB2 85 16                    ..
         jsr     AdvanceRandomStateByte          ; ACB4 20 AD C8                  ..
-        jsr     AdventureLog_AdvanceAdventureLogPointer; ACB7 20 03 AD           ..
+        jsr     AdventureLog_AdvancePointer     ; ACB7 20 03 AD                  ..
         bne     BattleSetupServices_Branch_ACAE ; ACBA D0 F2                    ..
         rts                                     ; ACBC 60                       `
 ; ----------------------------------------------------------------------------
 AdventureLog_ClassifyHeaderLengthMatch:
-        jsr     AdventureLog_CheckAdventureLogBodySentinel; ACBD 20 F1 AC        ..
+        jsr     AdventureLog_CheckBodySentinel  ; ACBD 20 F1 AC                  ..
         bcc     BattleSetupServices_Branch_ACD9 ; ACC0 90 17                    ..
         jsr     AdventureLog_BuildWorkspacePointerFromIndex; ACC2 20 9B AC       ..
-        jsr     AdventureLog_LoadAdventureLogBasePointer; ACC5 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; ACC5 20 15 AD                  ..
         sec                                     ; ACC8 38                       8
         ldy     #$00                            ; ACC9 A0 00                    ..
         lda     $12                             ; ACCB A5 12                    ..
@@ -6313,7 +6313,7 @@ BattleSetupServices_Branch_ACDC:
 ; ----------------------------------------------------------------------------
 AdventureLog_WriteHeaderLengthPair:
         jsr     AdventureLog_BuildWorkspacePointerFromIndex; ACDF 20 9B AC       ..
-        jsr     AdventureLog_LoadAdventureLogBasePointer; ACE2 20 15 AD          ..
+        jsr     AdventureLog_LoadBasePointer    ; ACE2 20 15 AD                  ..
         ldy     #$00                            ; ACE5 A0 00                    ..
         lda     $12                             ; ACE7 A5 12                    ..
         sta     ($00),y                       ; ACE9 91 00                    ..
@@ -6322,8 +6322,8 @@ AdventureLog_WriteHeaderLengthPair:
         sta     ($00),y                       ; ACEE 91 00                    ..
         rts                                     ; ACF0 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_CheckAdventureLogBodySentinel:
-        jsr     AdventureLog_LoadAdventureLogBasePointer; ACF1 20 15 AD          ..
+AdventureLog_CheckBodySentinel:
+        jsr     AdventureLog_LoadBasePointer    ; ACF1 20 15 AD                  ..
         ldy     #$04                            ; ACF4 A0 04                    ..
 BattleSetupServices_Branch_ACF6:
         lda     ($00),y                       ; ACF6 B1 00                    ..
@@ -6338,7 +6338,7 @@ BattleSetupServices_Branch_AD01:
         sec                                     ; AD01 38                       8
         rts                                     ; AD02 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_AdvanceAdventureLogPointer:
+AdventureLog_AdvancePointer:
         inc     $00                           ; AD03 E6 00                    ..
         bne     BattleSetupServices_Branch_AD09 ; AD05 D0 02                    ..
         inc     $01                             ; AD07 E6 01                    ..
@@ -6350,7 +6350,7 @@ BattleSetupServices_Branch_AD09:
         ora     $03                             ; AD12 05 03                    ..
         rts                                     ; AD14 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_LoadAdventureLogBasePointer:
+AdventureLog_LoadBasePointer:
         ldx     #$00                            ; AD15 A2 00                    ..
         jmp     ComputeIndexedBattleSetupPointer; AD17 4C 1C AD                 L..
 ; ----------------------------------------------------------------------------
@@ -6381,7 +6381,7 @@ AdventureLog_LoadPrimaryRecordPointer:
         sta     $03                             ; AD47 85 03                    ..
         rts                                     ; AD49 60                       `
 ; ----------------------------------------------------------------------------
-AdventureLog_ClearAdventureLogWorkBuffer:
+AdventureLog_ClearWorkBuffer:
         ldx     #$6F                            ; AD4A A2 6F                    .o
         lda     #$00                            ; AD4C A9 00                    ..
 BattleSetupServices_Branch_AD4E:
@@ -6423,7 +6423,7 @@ BattleSetupServices_Branch_AD5D:
         db   $01                             ; AD8A 01                       .
         db   $60                             ; AD8B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_ApplyChapterFieldEventGate:
+ItemUse_ApplyChapterGate:
         ldx     SaveCurrentChapterMinus1        ; AD8C AE 5A 61                 .Za
         lda     $AE31,x                         ; AD8F BD 31 AE                 .1.
         sta     $00                           ; AD92 85 00                    ..
@@ -6431,12 +6431,12 @@ FieldEvent_ApplyChapterFieldEventGate:
         db   $62,$23,$4B                     ; AD95 62 23 4B                 b#K
 ; ----------------------------------------------------------------------------
         bne     BattleSetupServices_Branch_ADBB ; AD98 D0 21                    .!
-        jsr     FieldEvent_FindTableEntryByByte ; AD9A 20 0F AE                  ..
+        jsr     ItemUse_FindHandlerById         ; AD9A 20 0F AE                  ..
         bcs     BattleSetupServices_Branch_ADA9 ; AD9D B0 0A                    ..
         lda     SaveCurrentChapterMinus1        ; AD9F AD 5A 61                 .Za
         cmp     #$04                            ; ADA2 C9 04                    ..
         bcc     BattleSetupServices_Branch_ADA9 ; ADA4 90 03                    ..
-        jsr     FieldEvent_ReturnDefaultTableIndex; ADA6 20 23 AE                #.
+        jsr     ItemUse_SelectDefaultHandlerIndex; ADA6 20 23 AE                 #.
 BattleSetupServices_Branch_ADA9:
         brk                                     ; ADA9 00                       .
         db   $44,$93,$07                     ; ADAA 44 93 07                 D..
@@ -6478,7 +6478,7 @@ BattleSetupServices_Branch_ADDE:
 BattleSetupServices_Branch_ADDF:
         lda     #$07                            ; ADDF A9 07                    ..
         sta     $00                           ; ADE1 85 00                    ..
-        jsr     FieldEvent_FindTableEntryByByte ; ADE3 20 0F AE                  ..
+        jsr     ItemUse_FindHandlerById         ; ADE3 20 0F AE                  ..
         bcc     BattleSetupServices_Branch_AE04 ; ADE6 90 1C                    ..
         brk                                     ; ADE8 00                       .
         db   $44,$93,$07                     ; ADE9 44 93 07                 D..
@@ -6505,16 +6505,16 @@ BattleSetupServices_Branch_ADDF:
 BattleSetupServices_Branch_AE04:
         rts                                     ; AE04 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_FindModeOperandInTable:
+ItemUse_FindModeOperandInTable:
         sta     $00                           ; AE05 85 00                    ..
         brk                                     ; AE07 00                       .
         db   $62,$33                         ; AE08 62 33                    b3
 ; ----------------------------------------------------------------------------
         jmp     BattleSetupServices_Branch_AE13 ; AE0A 4C 13 AE                 L..
 ; ----------------------------------------------------------------------------
-FieldEvent_FindModeOperandPreservingIndex:
+ItemUse_FindModeOperandPreservingIndex:
         sta     $00                           ; AE0D 85 00                    ..
-FieldEvent_FindTableEntryByByte:
+ItemUse_FindHandlerById:
         brk                                     ; AE0F 00                       .
         db   $62,$23,$40                     ; AE10 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -6530,7 +6530,7 @@ BattleSetupServices_Branch_AE17:
         inx                                     ; AE1E E8                       .
         cpx     $01                             ; AE1F E4 01                    ..
         bcc     BattleSetupServices_Branch_AE17 ; AE21 90 F4                    ..
-FieldEvent_ReturnDefaultTableIndex:
+ItemUse_SelectDefaultHandlerIndex:
         ldx     #$00                            ; AE23 A2 00                    ..
         stx     $6E                             ; AE25 86 6E                    .n
         lda     #$08                            ; AE27 A9 08                    ..
@@ -6555,7 +6555,7 @@ BattleSetupServices_Branch_AE36:
         sta     $FE                             ; AE3F 85 FE                    ..
         sta     $FF                             ; AE41 85 FF                    ..
         lda     #$2C                            ; AE43 A9 2C                    .,
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; AE45 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; AE45 20 26 B5                 &.
         sta     $00                           ; AE48 85 00                    ..
         brk                                     ; AE4A 00                       .
         db   $35,$0F                         ; AE4B 35 0F                    5.
@@ -6567,7 +6567,7 @@ BattleSetupServices_Branch_AE36:
         cmp     #$5E                            ; AE55 C9 5E                    .^
         beq     BattleSetupServices_Branch_AE60 ; AE57 F0 07                    ..
         pha                                     ; AE59 48                       H
-        jsr     FieldEvent_CopyPrimaryFieldStateToSecondaryIfAllowed; AE5A 20 47 B5 G.
+        jsr     ItemUse_CopyPrimarySelectionToSecondaryIfAllowed; AE5A 20 47 B5  G.
         pla                                     ; AE5D 68                       h
         bcs     BattleSetupServices_Branch_AE8E ; AE5E B0 2E                    ..
 BattleSetupServices_Branch_AE60:
@@ -6596,9 +6596,9 @@ BattleSetupServices_Branch_AE60:
 BattleSetupServices_Branch_AE83:
         pla                                     ; AE83 68                       h
         sta     $00                           ; AE84 85 00                    ..
-        jsr     FieldEvent_DispatchFieldEventById; AE86 20 0F AF                 ..
+        jsr     ItemUse_DispatchHandlerById     ; AE86 20 0F AF                  ..
         bcc     BattleSetupServices_Branch_AE8E ; AE89 90 03                    ..
-        jsr     FieldEvent_LoadFieldStateRowState; AE8B 20 04 AF                 ..
+        jsr     ItemUse_LoadSelectionRowState   ; AE8B 20 04 AF                  ..
 BattleSetupServices_Branch_AE8E:
         jmp     CloseFieldMessageWindow         ; AE8E 4C F3 D1                 L..
 ; ----------------------------------------------------------------------------
@@ -6622,7 +6622,7 @@ BattleSetupServices_Branch_AEA5:
         brk                                     ; AEAC 00                       .
         db   $9E,$1B                         ; AEAD 9E 1B                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; AEAF 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; AEAF 20 EF B5                  ..
         brk                                     ; AEB2 00                       .
         db   $C5,$2B                         ; AEB3 C5 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -6634,11 +6634,11 @@ BattleSetupServices_Branch_AEBB:
         lda     $6279                           ; AEBD AD 79 62                 .yb
         sta     $6F                             ; AEC0 85 6F                    .o
         lda     #$2C                            ; AEC2 A9 2C                    .,
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; AEC4 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; AEC4 20 26 B5                 &.
         lda     $73                             ; AEC7 A5 73                    .s
         bmi     BattleSetupServices_Branch_AED8 ; AEC9 30 0D                    0.
         lda     #$32                            ; AECB A9 32                    .2
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; AECD 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; AECD 20 26 B5                 &.
         bpl     BattleSetupServices_Branch_AEDE ; AED0 10 0C                    ..
         ldx     #$01                            ; AED2 A2 01                    ..
         lda     #$9F                            ; AED4 A9 9F                    ..
@@ -6666,22 +6666,22 @@ BattleSetupServices_Branch_AEF0:
         brk                                     ; AEF5 00                       .
         db   $E6,$2B                         ; AEF6 E6 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; AEF8 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; AEF8 20 EF B5                  ..
         brk                                     ; AEFB 00                       .
         db   $C5,$2B                         ; AEFC C5 2B                    .+
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonPress              ; AEFE 20 E1 C8                  ..
         jmp     BattleSetupServices_Branch_AE8E ; AF01 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
-FieldEvent_LoadFieldStateRowState:
+ItemUse_LoadSelectionRowState:
         lda     $6279                           ; AF04 AD 79 62                 .yb
         sta     $6F                             ; AF07 85 6F                    .o
         lda     #$30                            ; AF09 A9 30                    .0
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; AF0B 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; AF0B 20 26 B5                 &.
 BattleSetupServices_Branch_AF0E:
         rts                                     ; AF0E 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_DispatchFieldEventById:
+ItemUse_DispatchHandlerById:
         ldx     #$FF                            ; AF0F A2 FF                    ..
 BattleSetupServices_Branch_AF11:
         inx                                     ; AF11 E8                       .
@@ -6700,19 +6700,19 @@ BattleSetupServices_Branch_AF11:
         sta     $01                             ; AF2B 85 01                    ..
         jmp     ($0000)                         ; AF2D 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldStateConfirmationLoop:
-        jsr     FieldEvent_SelectFieldMode0     ; AF30 20 71 B5                  q.
+ItemUse_RunSelectionConfirmationLoop:
+        jsr     ItemUse_SelectMode0             ; AF30 20 71 B5                  q.
         jmp     RunBattleSelectionConfirmation  ; AF33 4C 39 AF                 L9.
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldStateConfirmationLoopFromReload:
-        jsr     FieldEvent_SelectFieldMode0     ; AF36 20 71 B5                  q.
+ItemUse_RunSelectionConfirmationLoopFromReload:
+        jsr     ItemUse_SelectMode0             ; AF36 20 71 B5                  q.
 RunBattleSelectionConfirmation:
-        jsr     FieldEvent_WaitTwentyFrames     ; AF39 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; AF39 20 EF B5                  ..
         lda     #$01                            ; AF3C A9 01                    ..
-        jsr     FieldEvent_CheckPrimaryFieldStateAgainstCurrentValue; AF3E 20 33 B5 3.
+        jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; AF3E 20 33 B5  3.
         bcs     BattleSetupServices_Branch_AF6D ; AF41 B0 2A                    .*
-        jsr     FieldEvent_SeedFieldStatePromptOperands; AF43 20 5A AF           Z.
-        jsr     FieldEvent_SelectFieldMode1     ; AF46 20 6D B5                  m.
+        jsr     ItemUse_SeedSelectionPromptOperands; AF43 20 5A AF               Z.
+        jsr     ItemUse_SelectMode1             ; AF46 20 6D B5                  m.
 BattleSetupServices_Branch_AF49:
         brk                                     ; AF49 00                       .
         db   $27,$0F                         ; AF4A 27 0F                    '.
@@ -6727,27 +6727,27 @@ WaitForBattleSelectionConfirmation:
         sec                                     ; AF58 38                       8
         rts                                     ; AF59 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_SeedFieldStatePromptOperands:
+ItemUse_SeedSelectionPromptOperands:
         lda     #$0B                            ; AF5A A9 0B                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; AF5C 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; AF5C 20 21 B5                  !.
         adc     #$1E                            ; AF5F 69 1E                    i.
         sta     $6F                             ; AF61 85 6F                    .o
         lda     #$00                            ; AF63 A9 00                    ..
         sta     $70                             ; AF65 85 70                    .p
         lda     #$02                            ; AF67 A9 02                    ..
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; AF69 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; AF69 20 2C B5               ,.
         rts                                     ; AF6C 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_AF6D:
-        jsr     FieldEvent_SelectFieldMode2     ; AF6D 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; AF6D 20 69 B5                  i.
         jmp     WaitForBattleSelectionConfirmation; AF70 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_ProjectCurrentValueIntoPrompt:
+ItemUse_ProjectCurrentValueIntoPrompt:
         ldx     #$00                            ; AF73 A2 00                    ..
         stx     $627A                           ; AF75 8E 7A 62                 .zb
         lda     $72                             ; AF78 A5 72                    .r
         sta     $6279                           ; AF7A 8D 79 62                 .yb
-        jsr     FieldEvent_SeedFieldStatePromptOperands; AF7D 20 5A AF           Z.
+        jsr     ItemUse_SeedSelectionPromptOperands; AF7D 20 5A AF               Z.
         lda     $6279                           ; AF80 AD 79 62                 .yb
         sta     $6F                             ; AF83 85 6F                    .o
         brk                                     ; AF85 00                       .
@@ -6755,18 +6755,18 @@ FieldEvent_ProjectCurrentValueIntoPrompt:
 ; ----------------------------------------------------------------------------
         rts                                     ; AF88 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldStateRefreshFlow:
-        jsr     FieldEvent_SelectFieldMode0     ; AF89 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; AF8C 20 EF B5                  ..
+ItemUse_RunSelectionRefreshFlow:
+        jsr     ItemUse_SelectMode0             ; AF89 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; AF8C 20 EF B5                  ..
         lda     #$05                            ; AF8F A9 05                    ..
         sta     $6F                             ; AF91 85 6F                    .o
         lda     #$45                            ; AF93 A9 45                    .E
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; AF95 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; AF95 20 2C B5               ,.
         bcc     BattleSetupServices_Branch_AF6D ; AF98 90 D3                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; AF9A 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; AF9A 20 6D B5                  m.
         jmp     WaitForBattleSelectionConfirmation; AF9D 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleFieldStateConfirmResult:
+ItemUse_HandleSelectionConfirmResult:
         ldx     $F6                             ; AFA0 A6 F6                    ..
         brk                                     ; AFA2 00                       .
         db   $07,$6F,$16                     ; AFA3 07 6F 16                 .o.
@@ -6778,7 +6778,7 @@ FieldEvent_HandleFieldStateConfirmResult:
         db   $07,$6F,$50                     ; AFAC 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
         stx     $F6                             ; AFAF 86 F6                    ..
-        jsr     FieldEvent_SelectFieldMode0     ; AFB1 20 71 B5                  q.
+        jsr     ItemUse_SelectMode0             ; AFB1 20 71 B5                  q.
         ldx     #$0C                            ; AFB4 A2 0C                    ..
         jsr     WaitFrames                      ; AFB6 20 0C C9                  ..
         pla                                     ; AFB9 68                       h
@@ -6791,7 +6791,7 @@ FieldEvent_HandleFieldStateConfirmResult:
         brk                                     ; AFC4 00                       .
         db   $07,$6F,$50                     ; AFC5 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_SelectFieldMode1     ; AFC8 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; AFC8 20 6D B5                  m.
 WaitForBattleSelectionInputAndCancel:
         jsr     WaitForButtonPress              ; AFCB 20 E1 C8                  ..
 BattleSetupServices_Branch_AFCE:
@@ -6820,24 +6820,24 @@ BattleSetupServices_Branch_AFD9:
         db   $3B,$13,$18,$11,$00,$19,$10,$00 ; AFEA 3B 13 18 11 00 19 10 00  ;.......
         db   $3B,$23,$20,$0F,$1C,$18,$40     ; AFF2 3B 23 20 0F 1C 18 40     ;# ...@
 ; ----------------------------------------------------------------------------
-FieldEvent_StartPrimaryFieldChoicePrompt:
+ItemUse_StartPrimaryChoicePrompt:
         lda     #$11                            ; AFF9 A9 11                    ..
         bne     BattleSetupServices_Branch_B003 ; AFFB D0 06                    ..
-FieldEvent_StartAlternateFieldChoicePrompt:
+ItemUse_StartAlternateChoicePrompt:
         lda     #$13                            ; AFFD A9 13                    ..
         bne     BattleSetupServices_Branch_B003 ; AFFF D0 02                    ..
-FieldEvent_RunDefaultFieldChoicePrompt:
+ItemUse_RunDefaultChoicePrompt:
         lda     #$24                            ; B001 A9 24                    .$
 BattleSetupServices_Branch_B003:
         pha                                     ; B003 48                       H
-        jsr     FieldEvent_SelectFieldMode0     ; B004 20 71 B5                  q.
-        jsr     FieldEvent_InitializeFieldChoicePrompt; B007 20 21 B0            !.
-        jsr     FieldEvent_WaitTwentyFrames     ; B00A 20 EF B5                  ..
+        jsr     ItemUse_SelectMode0             ; B004 20 71 B5                  q.
+        jsr     ItemUse_InitializeChoicePrompt  ; B007 20 21 B0                  !.
+        jsr     ItemUse_WaitTwentyFrames        ; B00A 20 EF B5                  ..
         pla                                     ; B00D 68                       h
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B00E 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B00E 20 2C B5               ,.
         beq     BattleSetupServices_Branch_B01B ; B011 F0 08                    ..
         sta     $FD                             ; B013 85 FD                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B015 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B015 20 6D B5                  m.
         jmp     WaitForBattleSelectionConfirmation; B018 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B01B:
@@ -6846,9 +6846,9 @@ BattleSetupServices_Branch_B01B:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionConfirmation; B01E 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_InitializeFieldChoicePrompt:
+ItemUse_InitializeChoicePrompt:
         lda     #$03                            ; B021 A9 03                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B023 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B023 20 21 B5                  !.
         adc     #$01                            ; B026 69 01                    i.
         sta     $6F                             ; B028 85 6F                    .o
         lda     #$00                            ; B02A A9 00                    ..
@@ -6857,24 +6857,24 @@ FieldEvent_InitializeFieldChoicePrompt:
         sta     $FF                             ; B030 85 FF                    ..
         rts                                     ; B032 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_RunBasicFieldChoice:
-        jsr     FieldEvent_SelectFieldMode0     ; B033 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B036 20 EF B5                  ..
+ItemUse_RunBasicChoice:
+        jsr     ItemUse_SelectMode0             ; B033 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B036 20 EF B5                  ..
         lda     #$03                            ; B039 A9 03                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B03B 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B03B 20 21 B5                  !.
         adc     #$04                            ; B03E 69 04                    i.
         sta     $6F                             ; B040 85 6F                    .o
         lda     #$00                            ; B042 A9 00                    ..
         sta     $70                             ; B044 85 70                    .p
         lda     #$03                            ; B046 A9 03                    ..
 BattleSetupServices_Branch_B048:
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B048 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B048 20 2C B5               ,.
         beq     BattleSetupServices_Branch_B05B ; B04B F0 0E                    ..
         sta     $FD                             ; B04D 85 FD                    ..
         lda     #$00                            ; B04F A9 00                    ..
         sta     $FE                             ; B051 85 FE                    ..
         sta     $FF                             ; B053 85 FF                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B055 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B055 20 6D B5                  m.
         jmp     WaitForBattleSelectionConfirmation; B058 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B05B:
@@ -6883,24 +6883,24 @@ BattleSetupServices_Branch_B05B:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionConfirmation; B05E 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_RunExtendedFieldChoice:
-        jsr     FieldEvent_SelectFieldMode0     ; B061 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B064 20 EF B5                  ..
+ItemUse_RunExtendedChoice:
+        jsr     ItemUse_SelectMode0             ; B061 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B064 20 EF B5                  ..
         lda     #$03                            ; B067 A9 03                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B069 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B069 20 21 B5                  !.
         adc     #$03                            ; B06C 69 03                    i.
         sta     $6F                             ; B06E 85 6F                    .o
         lda     #$0A                            ; B070 A9 0A                    ..
         bne     BattleSetupServices_Branch_B048 ; B072 D0 D4                    ..
-FieldEvent_RunFieldChoiceWithSuccessEffect:
-        jsr     FieldEvent_SelectFieldMode0     ; B074 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B077 20 EF B5                  ..
+ItemUse_RunChoiceWithSuccessEffect:
+        jsr     ItemUse_SelectMode0             ; B074 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B077 20 EF B5                  ..
         lda     #$06                            ; B07A A9 06                    ..
         sta     $6F                             ; B07C 85 6F                    .o
         lda     #$45                            ; B07E A9 45                    .E
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B080 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B080 20 2C B5               ,.
         bcc     BattleSetupServices_Branch_B08E ; B083 90 09                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B085 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B085 20 6D B5                  m.
         brk                                     ; B088 00                       .
         db   $27,$EF                         ; B089 27 EF                    '.
 ; ----------------------------------------------------------------------------
@@ -6912,10 +6912,10 @@ BattleSetupServices_Branch_B08E:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionConfirmation; B091 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldChoiceWithPostcheck:
-        jsr     FieldEvent_SelectFieldMode0     ; B094 20 71 B5                  q.
+ItemUse_RunChoiceWithPostcheck:
+        jsr     ItemUse_SelectMode0             ; B094 20 71 B5                  q.
         lda     #$0B                            ; B097 A9 0B                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B099 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B099 20 21 B5                  !.
         adc     #$14                            ; B09C 69 14                    i.
         sta     $6F                             ; B09E 85 6F                    .o
         lda     #$00                            ; B0A0 A9 00                    ..
@@ -6923,35 +6923,35 @@ FieldEvent_RunFieldChoiceWithPostcheck:
         sta     $FE                             ; B0A4 85 FE                    ..
         sta     $FF                             ; B0A6 85 FF                    ..
         lda     #$09                            ; B0A8 A9 09                    ..
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B0AA 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B0AA 20 2C B5               ,.
         sta     $FD                             ; B0AD 85 FD                    ..
         beq     BattleSetupServices_Branch_B0B7 ; B0AF F0 06                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B0B1 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B0B1 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_B0BA ; B0B4 4C BA B0                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0B7:
-        jsr     FieldEvent_SelectFieldMode2     ; B0B7 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B0B7 20 69 B5                  i.
 BattleSetupServices_Branch_B0BA:
         lda     #$08                            ; B0BA A9 08                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B0BC 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B0BC 20 21 B5                  !.
         bne     BattleSetupServices_Branch_B0CA ; B0BF D0 09                    ..
         brk                                     ; B0C1 00                       .
         db   $83,$2B                         ; B0C2 83 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_SelectFieldMode3     ; B0C4 20 65 B5                  e.
+        jsr     ItemUse_SelectMode3             ; B0C4 20 65 B5                  e.
         jmp     WaitForBattleSelectionConfirmation; B0C7 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0CA:
         jmp     WaitForBattleSelectionInputAndCancel; B0CA 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldChoiceWithPrimaryGate:
-        jsr     FieldEvent_SelectFieldMode0     ; B0CD 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B0D0 20 EF B5                  ..
+ItemUse_RunChoiceWithPrimaryGate:
+        jsr     ItemUse_SelectMode0             ; B0CD 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B0D0 20 EF B5                  ..
         lda     #$01                            ; B0D3 A9 01                    ..
-        jsr     FieldEvent_CheckPrimaryFieldStateAgainstCurrentValue; B0D5 20 33 B5 3.
+        jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; B0D5 20 33 B5  3.
         bcs     BattleSetupServices_Branch_B101 ; B0D8 B0 27                    .'
         lda     #$06                            ; B0DA A9 06                    ..
-        jsr     FieldEvent_ReadFieldChoiceValue ; B0DC 20 21 B5                  !.
+        jsr     ItemUse_ReadChoiceValue         ; B0DC 20 21 B5                  !.
         adc     #$0A                            ; B0DF 69 0A                    i.
         sta     $6F                             ; B0E1 85 6F                    .o
         lda     #$00                            ; B0E3 A9 00                    ..
@@ -6959,32 +6959,32 @@ FieldEvent_RunFieldChoiceWithPrimaryGate:
         sta     $FE                             ; B0E7 85 FE                    ..
         sta     $FF                             ; B0E9 85 FF                    ..
         lda     #$09                            ; B0EB A9 09                    ..
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B0ED 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B0ED 20 2C B5               ,.
         sta     $FD                             ; B0F0 85 FD                    ..
         tax                                     ; B0F2 AA                       .
         beq     BattleSetupServices_Branch_B0FB ; B0F3 F0 06                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B0F5 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B0F5 20 6D B5                  m.
         jmp     WaitForBattleSelectionConfirmation; B0F8 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B0FB:
-        jsr     FieldEvent_SelectFieldMode2     ; B0FB 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B0FB 20 69 B5                  i.
         jmp     WaitForBattleSelectionConfirmation; B0FE 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B101:
-        jsr     FieldEvent_SelectFieldMode3     ; B101 20 65 B5                  e.
+        jsr     ItemUse_SelectMode3             ; B101 20 65 B5                  e.
         jmp     WaitForBattleSelectionConfirmation; B104 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_RunNestedFieldChoice:
-        jsr     FieldEvent_SelectFieldMode0     ; B107 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B10A 20 EF B5                  ..
+ItemUse_RunNestedChoice:
+        jsr     ItemUse_SelectMode0             ; B107 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B10A 20 EF B5                  ..
         lda     #$07                            ; B10D A9 07                    ..
         sta     $6F                             ; B10F 85 6F                    .o
         lda     #$44                            ; B111 A9 44                    .D
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B113 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B113 20 2C B5               ,.
         bcc     BattleSetupServices_Branch_B144 ; B116 90 2C                    .,
         lda     #$05                            ; B118 A9 05                    ..
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B11A 20 2C B5           ,.
-        jsr     FieldEvent_SelectFieldMode1     ; B11D 20 6D B5                  m.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B11A 20 2C B5               ,.
+        jsr     ItemUse_SelectMode1             ; B11D 20 6D B5                  m.
         brk                                     ; B120 00                       .
         db   $27,$0F                         ; B121 27 0F                    '.
 ; ----------------------------------------------------------------------------
@@ -7017,16 +7017,16 @@ BattleSetupServices_Branch_B13E:
         jmp     WaitForBattleSelectionConfirmation; B141 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B144:
-        jsr     FieldEvent_SelectFieldMode2     ; B144 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B144 20 69 B5                  i.
         jmp     WaitForBattleSelectionConfirmation; B147 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_ClearTransitionFlag0539:
-        jsr     FieldEvent_SelectFieldMode0     ; B14A 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B14D 20 EF B5                  ..
+ItemUse_ClearTransitionFlag0539:
+        jsr     ItemUse_SelectMode0             ; B14A 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B14D 20 EF B5                  ..
         lda     #$00                            ; B150 A9 00                    ..
         sta     $0539                           ; B152 8D 39 05                 .9.
-        jsr     FieldEvent_SelectFieldMode1     ; B155 20 6D B5                  m.
-        jsr     FieldEvent_WaitTwentyFrames     ; B158 20 EF B5                  ..
+        jsr     ItemUse_SelectMode1             ; B155 20 6D B5                  m.
+        jsr     ItemUse_WaitTwentyFrames        ; B158 20 EF B5                  ..
         lda     #$FF                            ; B15B A9 FF                    ..
         brk                                     ; B15D 00                       .
         db   $24,$EF                         ; B15E 24 EF                    $.
@@ -7046,12 +7046,12 @@ BattleSetupServices_Branch_B171:
         brk                                     ; B171 00                       .
         db   $07,$6F,$50                     ; B172 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_SelectFieldMode2     ; B175 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B175 20 69 B5                  i.
         jmp     WaitForBattleSelectionInputAndCancel; B178 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_CountFieldStateIterationsInto6E:
-        jsr     FieldEvent_SelectFieldMode0     ; B17B 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B17E 20 EF B5                  ..
+ItemUse_CountSelectionIterationsInto6E:
+        jsr     ItemUse_SelectMode0             ; B17B 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B17E 20 EF B5                  ..
         brk                                     ; B181 00                       .
         db   $62,$23,$01                     ; B182 62 23 01                 b#.
 ; ----------------------------------------------------------------------------
@@ -7065,11 +7065,11 @@ BattleSetupServices_Branch_B18B:
         inc     $6E                             ; B18F E6 6E                    .n
         dec     $00                           ; B191 C6 00                    ..
         bne     BattleSetupServices_Branch_B18B ; B193 D0 F6                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B195 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B195 20 6D B5                  m.
         jmp     BattleSetupServices_Branch_AF49 ; B198 4C 49 AF                 LI.
 ; ----------------------------------------------------------------------------
-FieldEvent_CheckKeeleonTriggerList:
-        jsr     FieldEvent_SelectFieldMode0     ; B19B 20 71 B5                  q.
+HandleKeeleonItemUseTrigger:
+        jsr     ItemUse_SelectMode0             ; B19B 20 71 B5                  q.
         brk                                     ; B19E 00                       .
         db   $AA,$FB                         ; B19F AA FB                    ..
 ; ----------------------------------------------------------------------------
@@ -7118,13 +7118,13 @@ BattleSetupServices_Branch_B1D9:
         db   $1D,$18,$1D,$19,$1D,$17,$1E,$17 ; B1E7 1D 18 1D 19 1D 17 1E 17  ........
         db   $1F,$17,$20,$17,$21,$17,$22     ; B1EF 1F 17 20 17 21 17 22     .. .!."
 ; ----------------------------------------------------------------------------
-FieldEvent_ForceFieldState7F:
+ItemUse_ForceState7F:
         lda     #$7F                            ; B1F6 A9 7F                    ..
         sta     $6E41                           ; B1F8 8D 41 6E                 .An
-        jsr     FieldEvent_SelectFieldMode0     ; B1FB 20 71 B5                  q.
+        jsr     ItemUse_SelectMode0             ; B1FB 20 71 B5                  q.
         jmp     WaitForBattleSelectionConfirmation; B1FE 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleSanteemNightFieldGate:
+RestoreKingOfSanteemVoice:
         lda     $6283                           ; B201 AD 83 62                 ..b
         and     #$0C                            ; B204 29 0C                    ).
         cmp     #$0C                            ; B206 C9 0C                    ..
@@ -7144,7 +7144,7 @@ FieldEvent_HandleSanteemNightFieldGate:
         lda     CurrentSubmapNumber             ; B223 A5 64                    .d
         cmp     #$01                            ; B225 C9 01                    ..
         bne     BattleSetupServices_Branch_B264 ; B227 D0 3B                    .;
-        jsr     FieldEvent_SelectFieldMode2     ; B229 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B229 20 69 B5                  i.
         lda     $6283                           ; B22C AD 83 62                 ..b
         ora     #$02                            ; B22F 09 02                    ..
         and     #$F7                            ; B231 29 F7                    ).
@@ -7152,7 +7152,7 @@ FieldEvent_HandleSanteemNightFieldGate:
         brk                                     ; B236 00                       .
         db   $00,$CB,$02                     ; B237 00 CB 02                 ...
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; B23A 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B23A 20 EF B5                  ..
         brk                                     ; B23D 00                       .
         db   $5F,$3B                         ; B23E 5F 3B                    _;
 ; ----------------------------------------------------------------------------
@@ -7172,19 +7172,19 @@ BattleSetupServices_Branch_B243:
         sbc     #$03                            ; B255 E9 03                    ..
         cmp     #$03                            ; B257 C9 03                    ..
         bcs     BattleSetupServices_Branch_B264 ; B259 B0 09                    ..
-        jsr     FieldEvent_WaitTwentyFrames     ; B25B 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B25B 20 EF B5                  ..
         brk                                     ; B25E 00                       .
         db   $2A,$4B                         ; B25F 2A 4B                    *K
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B261 4C CB AF             L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B264:
-        jsr     FieldEvent_SelectFieldMode0     ; B264 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B267 20 EF B5                  ..
-        jsr     FieldEvent_SelectFieldMode1     ; B26A 20 6D B5                  m.
+        jsr     ItemUse_SelectMode0             ; B264 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B267 20 EF B5                  ..
+        jsr     ItemUse_SelectMode1             ; B26A 20 6D B5                  m.
         jmp     WaitForBattleSelectionInputAndCancel; B26D 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_MirrorFieldStatePairAndValidate:
+ItemUse_MirrorSelectionPairAndValidate:
         brk                                     ; B270 00                       .
         db   $62,$23,$40                     ; B271 62 23 40                 b#@
 ; ----------------------------------------------------------------------------
@@ -7202,7 +7202,7 @@ FieldEvent_MirrorFieldStatePairAndValidate:
         brk                                     ; B28C 00                       .
         db   $9E,$1B                         ; B28D 9E 1B                    ..
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; B28F 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B28F 20 EF B5                  ..
         brk                                     ; B292 00                       .
         db   $36,$EF                         ; B293 36 EF                    6.
 ; ----------------------------------------------------------------------------
@@ -7216,16 +7216,16 @@ BattleSetupServices_Branch_B299:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B29C 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_NotifyFieldStateState41AndReturnClear:
-        jsr     FieldEvent_SelectFieldMode0     ; B29F 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B2A2 20 EF B5                  ..
+ItemUse_NotifyState41AndReturnClear:
+        jsr     ItemUse_SelectMode0             ; B29F 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B2A2 20 EF B5                  ..
         brk                                     ; B2A5 00                       .
         db   $41,$EF                         ; B2A6 41 EF                    A.
 ; ----------------------------------------------------------------------------
         clc                                     ; B2A8 18                       .
         rts                                     ; B2A9 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleMintosFieldStateSwap:
+HandleMintosItemUseStateSwap:
         lda     $41                             ; B2AA A5 41                    .A
         bpl     BattleSetupServices_Branch_B2C6 ; B2AC 10 18                    ..
         lda     CurrentMapNumber                ; B2AE A5 63                    .c
@@ -7244,8 +7244,8 @@ BattleSetupServices_Branch_B2C6:
         brk                                     ; B2C6 00                       .
         db   $07,$6F,$50                     ; B2C7 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_SelectFieldMode0     ; B2CA 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B2CD 20 EF B5                  ..
+        jsr     ItemUse_SelectMode0             ; B2CA 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B2CD 20 EF B5                  ..
         brk                                     ; B2D0 00                       .
         db   $C5,$2B                         ; B2D1 C5 2B                    .+
 ; ----------------------------------------------------------------------------
@@ -7281,8 +7281,8 @@ BattleSetupServices_Branch_B2DB:
         sec                                     ; B2FD 38                       8
         rts                                     ; B2FE 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleBonmalmoFieldStateProgress:
-        jsr     FieldEvent_SelectFieldMode0     ; B2FF 20 71 B5                  q.
+HandleBonmalmoItemUseProgress:
+        jsr     ItemUse_SelectMode0             ; B2FF 20 71 B5                  q.
         lda     CurrentMapNumber                ; B302 A5 63                    .c
         cmp     #$05                            ; B304 C9 05                    ..
         bne     BattleSetupServices_Branch_B328 ; B306 D0 20                    .
@@ -7295,18 +7295,18 @@ FieldEvent_HandleBonmalmoFieldStateProgress:
         lda     PlayerLocalY                    ; B314 A5 45                    .E
         cmp     #$08                            ; B316 C9 08                    ..
         bne     BattleSetupServices_Branch_B328 ; B318 D0 0E                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B31A 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B31A 20 6D B5                  m.
         lda     $6283                           ; B31D AD 83 62                 ..b
         ora     #$01                            ; B320 09 01                    ..
         sta     $6283                           ; B322 8D 83 62                 ..b
         jmp     WaitForBattleSelectionConfirmation; B325 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B328:
-        jsr     FieldEvent_SelectFieldMode2     ; B328 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B328 20 69 B5                  i.
         jmp     WaitForBattleSelectionInputAndCancel; B32B 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleEndorFieldStateUpdate:
-        jsr     FieldEvent_SelectFieldMode0     ; B32E 20 71 B5                  q.
+HandleEndorItemUseStateUpdate:
+        jsr     ItemUse_SelectMode0             ; B32E 20 71 B5                  q.
         lda     CurrentMapNumber                ; B331 A5 63                    .c
         cmp     #$04                            ; B333 C9 04                    ..
         bne     BattleSetupServices_Branch_B362 ; B335 D0 2B                    .+
@@ -7319,7 +7319,7 @@ FieldEvent_HandleEndorFieldStateUpdate:
         lda     PlayerLocalY                    ; B343 A5 45                    .E
         cmp     #$0B                            ; B345 C9 0B                    ..
         bne     BattleSetupServices_Branch_B362 ; B347 D0 19                    ..
-        jsr     FieldEvent_SelectFieldMode1     ; B349 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B349 20 6D B5                  m.
         ldx     $6278                           ; B34C AE 78 62                 .xb
         lda     $6279                           ; B34F AD 79 62                 .yb
         brk                                     ; B352 00                       .
@@ -7337,10 +7337,10 @@ FieldEvent_HandleEndorFieldStateUpdate:
         rts                                     ; B361 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B362:
-        jsr     FieldEvent_SelectFieldMode2     ; B362 20 69 B5                  i.
+        jsr     ItemUse_SelectMode2             ; B362 20 69 B5                  i.
         jmp     WaitForBattleSelectionInputAndCancel; B365 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-UseEvilFireOrFireOfSerenityAtLighthouse:
+UseFireOfSerenityOnEvilFireAtLighthouse:
         lda     CurrentMapNumber                ; B368 A5 63                    .c
         cmp     #$42                            ; B36A C9 42                    .B
         bne     BattleSetupServices_Branch_B3AF ; B36C D0 41                    .A
@@ -7366,12 +7366,12 @@ UseEvilFireOrFireOfSerenityAtLighthouse:
         bne     BattleSetupServices_Branch_B3AF ; B391 D0 1C                    ..
         lda     $6278                           ; B393 AD 78 62                 .xb
         sta     $F9                             ; B396 85 F9                    ..
-        jsr     FieldEvent_SelectFieldMode0     ; B398 20 71 B5                  q.
+        jsr     ItemUse_SelectMode0             ; B398 20 71 B5                  q.
         brk                                     ; B39B 00                       .
         db   $18,$CB,$10                     ; B39C 18 CB 10                 ...
 ; ----------------------------------------------------------------------------
         jsr     WaitForButtonStateOneEightyFrames; B39F 20 18 D2                 ..
-        jsr     FieldEffect_RunFieldEffectIntroSequence; B3A2 20 A9 97           ..
+        jsr     RunLighthouseFireExtinguishingSequence; B3A2 20 A9 97            ..
         brk                                     ; B3A5 00                       .
         db   $07,$6F,$50                     ; B3A6 07 6F 50                 .oP
 ; ----------------------------------------------------------------------------
@@ -7381,12 +7381,12 @@ UseEvilFireOrFireOfSerenityAtLighthouse:
         jmp     WaitForBattleSelectionConfirmation; B3AC 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B3AF:
-        jsr     FieldEvent_SelectFieldMode1     ; B3AF 20 6D B5                  m.
-        jsr     FieldEvent_WaitTwentyFrames     ; B3B2 20 EF B5                  ..
-        jsr     FieldEvent_SelectFieldMode2     ; B3B5 20 69 B5                  i.
+        jsr     ItemUse_SelectMode1             ; B3AF 20 6D B5                  m.
+        jsr     ItemUse_WaitTwentyFrames        ; B3B2 20 EF B5                  ..
+        jsr     ItemUse_SelectMode2             ; B3B5 20 69 B5                  i.
         jmp     WaitForBattleSelectionInputAndCancel; B3B8 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleRosavilleEventIntro:
+HandleRosavilleItemUseIntro:
         lda     $41                             ; B3BB A5 41                    .A
         bpl     BattleSetupServices_Branch_B3FC ; B3BD 10 3D                    .=
         lda     CurrentMapNumber                ; B3BF A5 63                    .c
@@ -7424,7 +7424,7 @@ FieldEvent_HandleRosavilleEventIntro:
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B3FC:
         jsr     UseFluteOfUncovering            ; B3FC 20 0E B4                  ..
-        jsr     FieldEvent_SelectFieldMode0     ; B3FF 20 71 B5                  q.
+        jsr     ItemUse_SelectMode0             ; B3FF 20 71 B5                  q.
         jmp     WaitForBattleSelectionInputAndCancel; B402 4C CB AF             L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B405:
@@ -7446,7 +7446,7 @@ UseFluteOfUncovering:
         brk                                     ; B41B 00                       .
         db   $53,$4B                         ; B41C 53 4B                    SK
 ; ----------------------------------------------------------------------------
-        jsr     FieldEvent_WaitTwentyFrames     ; B41E 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B41E 20 EF B5                  ..
         brk                                     ; B421 00                       .
         db   $29,$FB                         ; B422 29 FB                    ).
 ; ----------------------------------------------------------------------------
@@ -7458,9 +7458,9 @@ UseFluteOfUncovering:
 ; ----------------------------------------------------------------------------
         rts                                     ; B42A 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldEventEligibilityGate:
-        jsr     FieldEvent_SelectFieldMode0     ; B42B 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B42E 20 EF B5                  ..
+ItemUse_RunEligibilityGate:
+        jsr     ItemUse_SelectMode0             ; B42B 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B42E 20 EF B5                  ..
         jsr     FieldSpell_CheckEligibilityByMap; B431 20 74 A9                  t.
         bcs     BattleSetupServices_Branch_B458 ; B434 B0 22                    ."
         jsr     FieldSpell_ShouldBlockFieldStart; B436 20 21 A7                  !.
@@ -7493,9 +7493,9 @@ BattleSetupServices_Branch_B45E:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B461 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleWorldTriggerC22F:
-        jsr     FieldEvent_SelectFieldMode0     ; B464 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B467 20 EF B5                  ..
+HandleWorldItemUseTriggerC22F:
+        jsr     ItemUse_SelectMode0             ; B464 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B467 20 EF B5                  ..
         lda     $62A1                           ; B46A AD A1 62                 ..b
         bmi     BattleSetupServices_Branch_B48E ; B46D 30 1F                    0.
         lda     $41                             ; B46F A5 41                    .A
@@ -7516,7 +7516,7 @@ FieldEvent_HandleWorldTriggerC22F:
         rts                                     ; B487 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B488:
-        jsr     FieldEvent_SelectFieldMode1     ; B488 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B488 20 6D B5                  m.
         jmp     WaitForBattleSelectionInputAndCancel; B48B 4C CB AF             L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B48E:
@@ -7525,8 +7525,8 @@ BattleSetupServices_Branch_B48E:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B491 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleCascadeCaveFieldTrigger:
-        jsr     FieldEvent_SelectFieldMode0     ; B494 20 71 B5                  q.
+HandleCascadeCaveItemUseTrigger:
+        jsr     ItemUse_SelectMode0             ; B494 20 71 B5                  q.
         bit     $62A1                           ; B497 2C A1 62                 ,.b
         bvs     BattleSetupServices_Branch_B48E ; B49A 70 F2                    p.
         lda     $41                             ; B49C A5 41                    .A
@@ -7552,15 +7552,15 @@ FieldEvent_HandleCascadeCaveFieldTrigger:
         clc                                     ; B4BF 18                       .
         rts                                     ; B4C0 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_HandleIronSafeCaveFieldGate:
-        jsr     FieldEvent_SelectFieldMode0     ; B4C1 20 71 B5                  q.
+HandleIronSafeCaveItemUseGate:
+        jsr     ItemUse_SelectMode0             ; B4C1 20 71 B5                  q.
         lda     $41                             ; B4C4 A5 41                    .A
         bpl     BattleSetupServices_Branch_B4CE ; B4C6 10 06                    ..
         lda     CurrentMapNumber                ; B4C8 A5 63                    .c
         cmp     #$36                            ; B4CA C9 36                    .6
         beq     BattleSetupServices_Branch_B4D6 ; B4CC F0 08                    ..
 BattleSetupServices_Branch_B4CE:
-        jsr     FieldEvent_WaitTwentyFrames     ; B4CE 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B4CE 20 EF B5                  ..
         brk                                     ; B4D1 00                       .
         db   $01,$DF                         ; B4D2 01 DF                    ..
 ; ----------------------------------------------------------------------------
@@ -7573,9 +7573,9 @@ BattleSetupServices_Branch_B4D6:
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B4D9 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_ForceFieldEventState32:
-        jsr     FieldEvent_SelectFieldMode0     ; B4DC 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B4DF 20 EF B5                  ..
+ItemUse_ForceState32:
+        jsr     ItemUse_SelectMode0             ; B4DC 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B4DF 20 EF B5                  ..
         brk                                     ; B4E2 00                       .
         db   $5F,$0B                         ; B4E3 5F 0B                    _.
 ; ----------------------------------------------------------------------------
@@ -7583,9 +7583,9 @@ FieldEvent_ForceFieldEventState32:
         sta     $6BEB                           ; B4E7 8D EB 6B                 ..k
         jmp     WaitForBattleSelectionConfirmation; B4EA 4C 55 AF               LU.
 ; ----------------------------------------------------------------------------
-FieldEvent_RunFieldIntroOverlayOrMode1Fallback:
-        jsr     FieldEvent_SelectFieldMode0     ; B4ED 20 71 B5                  q.
-        jsr     FieldEvent_WaitTwentyFrames     ; B4F0 20 EF B5                  ..
+ItemUse_RunIntroOverlayOrMode1Fallback:
+        jsr     ItemUse_SelectMode0             ; B4ED 20 71 B5                  q.
+        jsr     ItemUse_WaitTwentyFrames        ; B4F0 20 EF B5                  ..
         lda     $41                             ; B4F3 A5 41                    .A
         bmi     BattleSetupServices_Branch_B518 ; B4F5 30 21                    0!
         lda     $62A1                           ; B4F7 AD A1 62                 ..b
@@ -7611,28 +7611,28 @@ FieldEvent_RunFieldIntroOverlayOrMode1Fallback:
         rts                                     ; B511 60                       `
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B512:
-        jsr     FieldEvent_SelectFieldMode1     ; B512 20 6D B5                  m.
+        jsr     ItemUse_SelectMode1             ; B512 20 6D B5                  m.
         jmp     WaitForBattleSelectionInputAndCancel; B515 4C CB AF             L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B518:
-        jsr     FieldEvent_WaitTwentyFrames     ; B518 20 EF B5                  ..
+        jsr     ItemUse_WaitTwentyFrames        ; B518 20 EF B5                  ..
         brk                                     ; B51B 00                       .
         db   $4B,$0B                         ; B51C 4B 0B                    K.
 ; ----------------------------------------------------------------------------
         jmp     WaitForBattleSelectionInputAndCancel; B51E 4C CB AF             L..
 ; ----------------------------------------------------------------------------
-FieldEvent_ReadFieldChoiceValue:
+ItemUse_ReadChoiceValue:
         brk                                     ; B521 00                       .
         db   $17,$0F                         ; B522 17 0F                    ..
 ; ----------------------------------------------------------------------------
         clc                                     ; B524 18                       .
         rts                                     ; B525 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_ReadPrimaryFieldStateIndex:
+ItemUse_ReadPrimarySelectionIndex:
         ldx     $6278                           ; B526 AE 78 62                 .xb
         jmp     ReadBattleSelectionIndexValue   ; B529 4C 2F B5                 L/.
 ; ----------------------------------------------------------------------------
-FieldEvent_ReadSecondaryFieldStateIndex:
+ItemUse_ReadSecondarySelectionIndex:
         ldx     $627A                           ; B52C AE 7A 62                 .zb
 ReadBattleSelectionIndexValue:
         brk                                     ; B52F 00                       .
@@ -7640,24 +7640,24 @@ ReadBattleSelectionIndexValue:
 ; ----------------------------------------------------------------------------
         rts                                     ; B532 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_CheckPrimaryFieldStateAgainstCurrentValue:
+ItemUse_CheckPrimarySelectionAgainstCurrentValue:
         pha                                     ; B533 48                       H
         lda     #$42                            ; B534 A9 42                    .B
-        jsr     FieldEvent_ReadSecondaryFieldStateIndex; B536 20 2C B5           ,.
+        jsr     ItemUse_ReadSecondarySelectionIndex; B536 20 2C B5               ,.
         pla                                     ; B539 68                       h
         cmp     $72                             ; B53A C5 72                    .r
         beq     BattleSetupServices_Branch_B55A ; B53C F0 1C                    ..
         clc                                     ; B53E 18                       .
         rts                                     ; B53F 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_QuerySecondaryFieldChoice:
+ItemUse_QuerySecondaryChoice:
         ldx     $627A                           ; B540 AE 7A 62                 .zb
         brk                                     ; B543 00                       .
         db   $02,$73                         ; B544 02 73                    .s
 ; ----------------------------------------------------------------------------
         rts                                     ; B546 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_CopyPrimaryFieldStateToSecondaryIfAllowed:
+ItemUse_CopyPrimarySelectionToSecondaryIfAllowed:
         brk                                     ; B547 00                       .
         db   $14,$0F                         ; B548 14 0F                    ..
 ; ----------------------------------------------------------------------------
@@ -7676,7 +7676,7 @@ BattleSetupServices_Branch_B55A:
         sec                                     ; B55A 38                       8
         rts                                     ; B55B 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_CheckSecondaryFieldStateBelowEight:
+ItemUse_CheckSecondarySelectionBelowEight:
         ldx     $627A                           ; B55C AE 7A 62                 .zb
         brk                                     ; B55F 00                       .
         db   $2B,$73                         ; B560 2B 73                    +s
@@ -7684,16 +7684,16 @@ FieldEvent_CheckSecondaryFieldStateBelowEight:
         cmp     #$08                            ; B562 C9 08                    ..
         rts                                     ; B564 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_SelectFieldMode3:
+ItemUse_SelectMode3:
         lda     #$03                            ; B565 A9 03                    ..
         bne     BattleSetupServices_Branch_B573 ; B567 D0 0A                    ..
-FieldEvent_SelectFieldMode2:
+ItemUse_SelectMode2:
         lda     #$02                            ; B569 A9 02                    ..
         bne     BattleSetupServices_Branch_B573 ; B56B D0 06                    ..
-FieldEvent_SelectFieldMode1:
+ItemUse_SelectMode1:
         lda     #$01                            ; B56D A9 01                    ..
         bne     BattleSetupServices_Branch_B573 ; B56F D0 02                    ..
-FieldEvent_SelectFieldMode0:
+ItemUse_SelectMode0:
         lda     #$00                            ; B571 A9 00                    ..
 BattleSetupServices_Branch_B573:
         pha                                     ; B573 48                       H
@@ -7744,14 +7744,14 @@ BattleSetupServices_Branch_B5C1:
         lda     $6279                           ; B5C1 AD 79 62                 .yb
         sta     $6F                             ; B5C4 85 6F                    .o
         lda     #$2C                            ; B5C6 A9 2C                    .,
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; B5C8 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; B5C8 20 26 B5                 &.
         jmp     BattleSetupServices_Branch_B5E3 ; B5CB 4C E3 B5                 L..
 ; ----------------------------------------------------------------------------
 BattleSetupServices_Branch_B5CE:
         lda     $6279                           ; B5CE AD 79 62                 .yb
         sta     $6F                             ; B5D1 85 6F                    .o
         lda     #$2C                            ; B5D3 A9 2C                    .,
-        jsr     FieldEvent_ReadPrimaryFieldStateIndex; B5D5 20 26 B5             &.
+        jsr     ItemUse_ReadPrimarySelectionIndex; B5D5 20 26 B5                 &.
         sta     $FA                             ; B5D8 85 FA                    ..
         lda     $6278                           ; B5DA AD 78 62                 .xb
         jmp     BattleSetupServices_Branch_B5E3 ; B5DD 4C E3 B5                 L..
@@ -7770,7 +7770,7 @@ BattleSetupServices_Branch_B5E5:
 ; ----------------------------------------------------------------------------
         rts                                     ; B5EE 60                       `
 ; ----------------------------------------------------------------------------
-FieldEvent_WaitTwentyFrames:
+ItemUse_WaitTwentyFrames:
         ldx     #$14                            ; B5EF A2 14                    ..
         jmp     WaitFrames                      ; B5F1 4C 0C C9                 L..
 ; ----------------------------------------------------------------------------

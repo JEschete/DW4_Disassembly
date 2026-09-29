@@ -32,8 +32,10 @@ fields; 9 runtime paths; exact ROM match.
 The 2026-09-28 routine-name audit checked all 2,354 interfaces in banks `$00-$15` against their generated ASM
 bodies and interface evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call
 targets, increasing the all-bank inventory from 4,315 to 4,562 routines. Confirmed semantic errors, operand-derived
-names, and generic subsystem prefixes were corrected. The strengthened naming audit reports zero review flags;
-duplicate-address, duplicate-global-name, and byte-identical fixed-bank semantic-name checks are also clean.
+names, and generic subsystem prefixes were corrected. The audit now resolves direct `$D3` battle-message calls
+against decoded text and flags generic selection, accumulator, marker, route, action, result, and state names on
+their owning routines. It reports zero review flags; duplicate-address, duplicate-global-name, and byte-identical
+fixed-bank semantic-name checks are also clean.
 
 The follow-up audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
 flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. It also
@@ -41,10 +43,12 @@ corrected physical damage, victory rewards, monster stats, agility-based turn or
 feedback, and map-event jingles. The naming report now warns on audio-only display/print/message labels and on
 `Dormant` labels with direct or tail callers; both queues are empty.
 
-The field/story audit identified selector `$D3` as battle-message dispatch, reclassified bank `$12`
-`$9300-$B5FF` as field ITEM, SPELL, Adventure Log, and story-item behavior, and named the bank `$15` shop and
-service roots. Banks `$1C-$1E` now identify their major story scenes; chapter labels consistently use displayed
-values 1-5; all byte-identical `$0F/$1F` routine pairs now share one semantic stem.
+The corrective field/story audit registered selector `$D3` as battle-message dispatch and `$04,$6F` as the direct
+field-message service. Bank `$12:$9300-$B5FF` now distinguishes item use, field spells, Adventure Log handling,
+level growth and spell learning, the Lighthouse fire scene, and neutral transition/operation helpers whose owning
+subsystem is not proven. Banks `$1C-$1E` identify their evidenced story scenes; chapter labels consistently use
+displayed values 1-5. All 100 changed lower-fixed names were compared with their prior semantics; stronger Select,
+field-frame, Start-menu, entity visibility, map-object animation, and Coin Seller names were restored in both twins.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

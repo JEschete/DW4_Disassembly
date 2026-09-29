@@ -2098,6 +2098,14 @@ internal static class Program
             {
                 reasons.Add("dormant-name-has-callers");
             }
+            if (Regex.IsMatch(
+                    name,
+                    "Selection|Accumulator|Marker|Route|Action[0-9A-F]|Result[0-9A-F]|State[0-9A-F]|Presentation[0-9A-F]",
+                    RegexOptions.IgnoreCase) &&
+                RoutinePrintsBattleMessage(location.Bank, location.Address))
+            {
+                reasons.Add("generic-name-prints-battle-message");
+            }
             if (reasons.Count == 0)
             {
                 continue;
@@ -2181,6 +2189,27 @@ internal static class Program
                 byte service = rom[romOffset + 1];
                 byte selector = rom[romOffset + 2];
                 return selector == 0xFB || (selector == 0x9F && service is >= 0x02 and <= 0x09);
+            });
+        }
+
+        bool RoutinePrintsBattleMessage(int bank, int entryAddress)
+        {
+            int endAddress = routineTargets.Keys
+                .Where(location => location.Bank == bank && location.Address > entryAddress)
+                .Select(location => location.Address)
+                .DefaultIfEmpty(CodeAnalyzer.CpuBase(bank) + PrgBankSize)
+                .Min();
+            return analyses[bank].Instructions.Values.Any(instruction =>
+            {
+                if (instruction.Address < entryAddress ||
+                    instruction.Address >= endAddress ||
+                    instruction.Opcode.Mnemonic != "brk")
+                {
+                    return false;
+                }
+                int romOffset = HeaderSize + (bank * PrgBankSize) +
+                    instruction.Address - CodeAnalyzer.CpuBase(bank);
+                return rom[romOffset + 2] == 0xD3 && (rom[romOffset + 1] & 0x03) <= 1;
             });
         }
     }

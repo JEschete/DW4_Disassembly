@@ -2776,7 +2776,7 @@ MapInteractionSystem_Branch_92DF:
 InitializeMapAfterTransition:
         jsr     ResetMapStateAfterTransition    ; 92E3 20 EC 92                  ..
         jsr     FadePaletteFromBlack            ; 92E6 20 BF C5                  ..
-        jmp     RunChapterSpecificMapEvents     ; 92E9 4C 85 94                 L..
+        jmp     RunChapter3And5WorldMapEvents   ; 92E9 4C 85 94                 L..
 ; ----------------------------------------------------------------------------
 ResetMapStateAfterTransition:
         bit     $41                             ; 92EC 24 41                    $A
@@ -2960,7 +2960,7 @@ MapInteractionSystem_Branch_9441:
 MapInteractionSystem_Branch_9484:
         rts                                     ; 9484 60                       `
 ; ----------------------------------------------------------------------------
-RunChapterSpecificMapEvents:
+RunChapter3And5WorldMapEvents:
         lda     $41                             ; 9485 A5 41                    .A
         bmi     MapInteractionSystem_Branch_94A3; 9487 30 1A                    0.
         lda     SaveCurrentChapterMinus1        ; 9489 AD 5A 61                 .Za
@@ -2974,7 +2974,7 @@ RunChapterSpecificMapEvents:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_949D:
         jsr     RunChapter3LaurentDeparture     ; 949D 20 A4 94                  ..
-        jsr     RunChapter3VehicleDepartureEvent; 94A0 20 D7 94                  ..
+        jsr     RunChapter3StromDeparture       ; 94A0 20 D7 94                  ..
 MapInteractionSystem_Branch_94A3:
         rts                                     ; 94A3 60                       `
 ; ----------------------------------------------------------------------------
@@ -3014,7 +3014,7 @@ MapInteractionSystem_Branch_94D3:
 MapInteractionSystem_Branch_94D6:
         rts                                     ; 94D6 60                       `
 ; ----------------------------------------------------------------------------
-RunChapter3VehicleDepartureEvent:
+RunChapter3StromDeparture:
         lda     SaveVehicleFlags                ; 94D7 AD 8E 62                 ..b
         bpl     MapInteractionSystem_Branch_94FB; 94DA 10 1F                    ..
         lda     $628C                           ; 94DC AD 8C 62                 ..b
@@ -3566,7 +3566,7 @@ MapInteractionSystem_Branch_984B:
 ; ----------------------------------------------------------------------------
 UpdateMapPartyEntityScene:
         jsr     AdvanceTransformCountdown       ; 984C 20 6B 9E                  k.
-        jsr     RunChapterSpecificMapEvents     ; 984F 20 85 94                  ..
+        jsr     RunChapter3And5WorldMapEvents   ; 984F 20 85 94                  ..
         lda     $41                             ; 9852 A5 41                    .A
         bmi     MapInteractionSystem_Branch_98B6; 9854 30 60                    0`
         lda     SaveCurrentChapterMinus1        ; 9856 AD 5A 61                 .Za
@@ -3616,7 +3616,7 @@ UpdateMapPartyEntityScene:
         ldy     #$01                            ; 98AB A0 01                    ..
         jsr     InitializeAuxiliaryMapEntitySlot; 98AD 20 39 99                  9.
         jsr     RenderTwentyThreeMapEntityFrames; 98B0 20 2F 9E                  /.
-        jsr     RunMapEntityDirectionFlipAnimation; 98B3 20 05 9D                ..
+        jsr     RunBreyAndCristoJoinPartyScene  ; 98B3 20 05 9D                  ..
 MapInteractionSystem_Branch_98B6:
         bit     $6288                           ; 98B6 2C 88 62                 ,.b
         bmi     MapInteractionSystem_Branch_984B; 98B9 30 90                    0.
@@ -3651,7 +3651,7 @@ MapInteractionSystem_Branch_98F3:
 ; ----------------------------------------------------------------------------
 MapInteractionSystem_Branch_98FB:
         jsr     RunMapPartyPresentationByClass  ; 98FB 20 85 9A                  ..
-        jsr     BuildAndPresentEligibleMapPartyList; 98FE 20 1C 9B               ..
+        jsr     ReportPartyDefeatAndPresentEligibleMembers; 98FE 20 1C 9B        ..
         rts                                     ; 9901 60                       `
 ; ----------------------------------------------------------------------------
 RandomlyClearPartyTransformFlag:
@@ -3783,7 +3783,7 @@ InitializeActiveMapEntitySubset:
         jsr     ClassifyPartyEntityForMapDisplay; 99D5 20 E1 99                  ..
         jsr     ClassifyPartyEntityForMapDisplay; 99D8 20 E1 99                  ..
         jsr     RunMapPartyPresentationByClass  ; 99DB 20 85 9A                  ..
-        jmp     BuildAndPresentEligibleMapPartyList; 99DE 4C 1C 9B              L..
+        jmp     ReportPartyDefeatAndPresentEligibleMembers; 99DE 4C 1C 9B       L..
 ; ----------------------------------------------------------------------------
 ClassifyPartyEntityForMapDisplay:
         lda     $052A,x                         ; 99E1 BD 2A 05                 .*.
@@ -3984,7 +3984,7 @@ ApplyMapEntityClass4Flag:
 MapInteractionSystem_Branch_9B1B:
         rts                                     ; 9B1B 60                       `
 ; ----------------------------------------------------------------------------
-BuildAndPresentEligibleMapPartyList:
+ReportPartyDefeatAndPresentEligibleMembers:
         ldx     #$03                            ; 9B1C A2 03                    ..
         lda     #$FF                            ; 9B1E A9 FF                    ..
 MapInteractionSystem_Branch_9B20:
@@ -4251,7 +4251,7 @@ MapInteractionSystem_Branch_9C69:
 ; ----------------------------------------------------------------------------
         and     ($2B,x)                         ; 9D01 21 2B                    !+
         and     $3F,x                           ; 9D03 35 3F                    5?
-RunMapEntityDirectionFlipAnimation:
+RunBreyAndCristoJoinPartyScene:
         jsr     ComputeTwoForwardMapEntityTargets; 9D05 20 08 9E                 ..
         jsr     LoopMapEntityTargetAnimation    ; 9D08 20 8A 9D                  ..
         ldx     #$10                            ; 9D0B A2 10                    ..
@@ -5253,7 +5253,7 @@ MapInteractionSystem_Branch_A3A1:
         lda     #$00                            ; A3B7 A9 00                    ..
         rts                                     ; A3B9 60                       `
 ; ----------------------------------------------------------------------------
-RunChapterMapInteractionSetup:
+RunChapter2TournamentRecoveryDialogue:
         pha                                     ; A3BA 48                       H
         txa                                     ; A3BB 8A                       .
         pha                                     ; A3BC 48                       H
@@ -6900,7 +6900,7 @@ MapInteractionSystem_Branch_AEC6:
         pla                                     ; AEDA 68                       h
         cmp     #$FF                            ; AEDB C9 FF                    ..
         jsr     AnimateMapEntityOamSweepFromF7To6F; AEDD 20 51 8C                Q.
-        jsr     RunChapterSpecificMapEvents     ; AEE0 20 85 94                  ..
+        jsr     RunChapter3And5WorldMapEvents   ; AEE0 20 85 94                  ..
         sec                                     ; AEE3 38                       8
         rts                                     ; AEE4 60                       `
 ; ----------------------------------------------------------------------------
@@ -7063,7 +7063,7 @@ MapInteractionSystem_Branch_B069:
         db   $25,$26,$2A,$39,$3D,$3E,$40,$42 ; B0A1 25 26 2A 39 3D 3E 40 42  %&*9=>@B
         db   $43,$44,$45,$46                 ; B0A9 43 44 45 46              CDEF
 ; ----------------------------------------------------------------------------
-RunMapPartySlotSixEvent:
+RunPadequiaRecoveryAndAlenaPartyJoinEvents:
         jsr     CloseFieldMessageWindow         ; B0AD 20 F3 D1                  ..
         brk                                     ; B0B0 00                       .
         db   $07,$6F,$43                     ; B0B1 07 6F 43                 .oC

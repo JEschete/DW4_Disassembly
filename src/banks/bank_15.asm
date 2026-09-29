@@ -865,7 +865,7 @@ EffectScript_InitializeInterpreterContext:
 ; ----------------------------------------------------------------------------
         jsr     EffectCallback_AbortWhenEffectChoiceMissing; 9939 20 BB B0       ..
         jsr     EffectScript_LoadReferencedEntryValue; 993C 20 56 99             V.
-        jsr     EffectCallback_ProcessMapDependentDaDispatch; 993F 20 E6 B0      ..
+        jsr     RunCaptivePrisonerRescueDialogue; 993F 20 E6 B0                  ..
         jsr     EffectScript_ResolveInitialSelector; 9942 20 62 99               b.
         lda     $00                             ; 9945 A5 00                    ..
         sec                                     ; 9947 38                       8
@@ -3338,7 +3338,7 @@ ItemEffectInventory_Branch_A7A8:
         brk                                     ; A7E0 00                       .
         db   $10,$3F                         ; A7E1 10 3F                    .?
 ; ----------------------------------------------------------------------------
-        jsr     ClampPartyGoldTo9999999         ; A7E3 20 2C E5                  ,.
+        jsr     ClampCoinSellerPriceTo9999999   ; A7E3 20 2C E5                  ,.
         brk                                     ; A7E6 00                       .
         db   $8D,$3B                         ; A7E7 8D 3B                    .;
 ; ----------------------------------------------------------------------------
@@ -3648,7 +3648,7 @@ ItemEffectInventory_Branch_A98A:
         lda     $01                             ; A997 A5 01                    ..
         rts                                     ; A999 60                       `
 ; ----------------------------------------------------------------------------
-EffectCallback_RunSmallMedalRewardFlow:
+RunSmallMedalKingRewardExchange:
         jsr     EffectCallback_LoadPrimaryItemCandidateList; A99A 20 60 A9       `.
         jsr     EffectCallback_CountMatchingItemCandidates; A99D 20 6D A9        m.
         sta     $DB                             ; A9A0 85 DB                    ..
@@ -3936,7 +3936,7 @@ ItemEffectInventory_Branch_AB13:
 ItemEffectInventory_Branch_AB2D:
         jmp     EffectCallback_InvokeEighthEffectHandler; AB2D 4C 4C A6         LL.
 ; ----------------------------------------------------------------------------
-EffectCallback_WaitForSelectionStateToggle:
+RunTaloonLighthouseRequestDialogue:
         jsr     EffectCallback_InvokeMapRefreshPreservingPointers; AB30 20 C9 A4 ..
         brk                                     ; AB33 00                       .
         db   $18,$CB,$20                     ; AB34 18 CB 20                 ..
@@ -4006,7 +4006,7 @@ ItemEffectInventory_Branch_AB86:
 ; ----------------------------------------------------------------------------
 EffectCallback_InitializeAndProcessEffectChoice:
         lda     #$FF                            ; AB89 A9 FF                    ..
-EffectCallback_ProcessEffectChoice:
+RunAlenaPartyJoinAndPadequiaDialogue:
         sta     $DA                             ; AB8B 85 DA                    ..
         brk                                     ; AB8D 00                       .
         db   $16,$EB,$08                     ; AB8E 16 EB 08                 ...
@@ -4289,7 +4289,7 @@ ItemEffectInventory_Branch_AD11:
 ; ----------------------------------------------------------------------------
         jmp     EffectCallback_SetInterpreterStatus01; AD16 4C AE B0            L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunInventoryEntrySelectionLoop:
+RunGardenburHostageSelection:
         brk                                     ; AD19 00                       .
         db   $42,$4B                         ; AD1A 42 4B                    BK
 ; ----------------------------------------------------------------------------
@@ -4345,7 +4345,7 @@ ItemEffectInventory_Branch_AD5F:
         db   $4E,$4B                         ; AD60 4E 4B                    NK
 ; ----------------------------------------------------------------------------
         bcs     ItemEffectInventory_Branch_AD24 ; AD62 B0 C0                    ..
-EffectCallback_RefreshMapAndWaitForSelectionClear:
+RunGardenburQueenTrial:
         jsr     EffectCallback_InvokeMapRefreshPreservingPointers; AD64 20 C9 A4 ..
         brk                                     ; AD67 00                       .
         db   $3B,$4B                         ; AD68 3B 4B                    ;K
@@ -4648,7 +4648,7 @@ ItemEffectInventory_Branch_AF00:
         jsr     EffectCallback_InvokeSixthEffectHandler; AF09 20 54 A6           T.
         jmp     ItemEffectInventory_Branch_AEE9 ; AF0C 4C E9 AE                 L..
 ; ----------------------------------------------------------------------------
-EffectCallback_RunBaseThenSetFlag29IfEb08Clear:
+RunLuciaFarewell:
         brk                                     ; AF0F 00                       .
         db   $20,$EB,$08                     ; AF10 20 EB 08                  ..
 ; ----------------------------------------------------------------------------
@@ -4809,7 +4809,7 @@ EffectCallback_WaitShortThenSetFlag31:
         lda     #$31                            ; B012 A9 31                    .1
         jmp     EffectCallback_WaitShortThenSetFlagAndStatus01; B014 4C CE B0   L..
 ; ----------------------------------------------------------------------------
-EffectCallback_BranchOnEffectFlag:
+ShowHectorWorkingAtTunnel:
         brk                                     ; B017 00                       .
         db   $62,$23,$49                     ; B018 62 23 49                 b#I
 ; ----------------------------------------------------------------------------
@@ -4986,7 +4986,7 @@ FinishEffectDelayAndSetStatus:
 ; ----------------------------------------------------------------------------
         jmp     EffectCallback_SetInterpreterStatus01; B0E3 4C AE B0            L..
 ; ----------------------------------------------------------------------------
-EffectCallback_ProcessMapDependentDaDispatch:
+RunCaptivePrisonerRescueDialogue:
         sta     $DA                             ; B0E6 85 DA                    ..
         lda     CurrentTilesetCandidate         ; B0E8 A5 65                    .e
         cmp     #$03                            ; B0EA C9 03                    ..

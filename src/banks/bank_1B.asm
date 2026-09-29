@@ -3725,7 +3725,7 @@ MapEventText_Branch_ACB7:
         txa                                     ; ACB7 8A                       .
         pha                                     ; ACB8 48                       H
         jsr     ResetScriptedMapEventObjects    ; ACB9 20 C5 AC                  ..
-        jsr     UpdateMapFrameSystems           ; ACBC 20 ED C9                  ..
+        jsr     RunFieldFrame                   ; ACBC 20 ED C9                  ..
         pla                                     ; ACBF 68                       h
         tax                                     ; ACC0 AA                       .
         dex                                     ; ACC1 CA                       .

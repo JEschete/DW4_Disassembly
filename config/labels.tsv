@@ -141,9 +141,9 @@
 1F	C8E1	WaitForButtonPress	Function	Waits on NMI and controller polling until either controller reports a pressed button
 1F	C913	PreserveRegistersAndRotateOam	Function	Preserves X and Y while advancing the OAM block-rotation animation
 1F	C91F	RotateAnimatedOamBlocks	Function	Swaps alternating forty-eight-byte OAM blocks and advances the ten-phase rotation index
-1F	C9ED	UpdateMapFrameSystems	Function	Updates animation, controller state, map input, entity scripts, rendering, timing, and party state for one frame
-1F	CA17	WaitForButton04Release	Function	Polls input until controller bit $04 is released
-1F	CA21	UpdatePlayerMapInput	Function	Applies the active input-mode mask and updates movement, actions, direction, and interaction timing
+1F	C9ED	RunFieldFrame	Function	Runs one field-engine frame of animation, input, movement, entity scripts, rendering, timing, and party state
+1F	CA17	WaitForSelectRelease	Function	Polls controller input until the Select-button pressed bit is clear
+1F	CA21	ProcessScheduledFieldInput	Function	Uses the configured frame mask to schedule map movement, action, direction, and interaction updates
 1F	CA41	ResolveMapMovementInput	Function	Selects scripted, vehicle-derived, repeated, or live directional input and updates party movement mode
 1F	CABE	ResetPartyFollowerMotionSlot	Function	Clears one follower motion state, copies saved coordinates, and marks its entity slot inactive
 1F	CADF	SetInputModeAndReadControllers	Function	Stores input mode A, sets its repeat threshold to $20, and polls input unless suppressed
@@ -167,7 +167,7 @@
 1F	CE09	ProcessMapInputAndEvents	Function	Processes movement completion, terrain events, scripted paths, interaction handlers, and frame exit
 1F	CE72	CompleteActiveEntityPath	Function	Clears active path state and invokes path completion with operands $0593-$0594
 1F	CE80	ProcessInteriorMapInput	Function	Processes interior movement completion, map events, special terrain, and frame exit
-1F	CEA9	HandleMapLoopExitInput	Function	Records stack position and invokes exit service when fixed state bit $40 or input bit $08 is active
+1F	CEA9	OpenFieldMenuOnStart	Function	Records the stack position and opens the field menu when Start is pressed or menu state is forced
 1F	CEBE	DispatchTerrainEvent	Function	Matches terrain event ID $059E and dispatches its specialized event service with carry result
 1F	CF03	HandleSpecialWorldTerrainPair	Function	Adjusts player X and invokes terrain service one for world tile pair six and seven
 1F	CF38	TryStartRandomEncounter	Function	Invokes encounter service $10/$87 and follow-up service $06/$EF when carry is set
@@ -212,11 +212,11 @@
 1F	D6E8	ValidateMapObjectTerrainClass	Function	Rejects a target whose high terrain-class bits differ from the object's cached tile
 1F	D6F4	UpdateMapObjectViewportInteraction	Function	Tests object coordinates against the sixteen-by-fifteen viewport and sets state bit $10 on service match
 1F	D931	SetMapObjectInactiveCommand	Function	Sets the current object's inactive flag, advances its script, and ends command dispatch
-1F	D937	DeactivateEntityCoordinatesCommand	Function	Marks motion active, replaces four entity coordinate fields with $81, and yields
-1F	D94B	AnimateEntityMotionCountdown	Function	Advances the descending entity motion timer, coordinates script completion, and toggles active state
+1F	D937	RemoveMapObjectCommand	Function	Sets the entity hidden bit, replaces its current and saved coordinates with $81, and yields
+1F	D94B	AnimateMapObjectRemoval	Function	Blinks the current map object while its removal timer counts down, then hides it and moves its coordinates off-map
 1F	D9AB	SetMapObjectInactiveAndAdvanceScript	Function	Sets object state bit seven and advances its script pointer by one byte
-1F	D9B8	ClearEntityMotionAndSavePosition	Function	Clears entity motion bit $80, snapshots coordinates, advances the script, and yields
-1F	D9CB	AnimateEntityMotionCountup	Function	Advances the ascending entity motion timer and completes the script after phase $30
+1F	D9B8	ActivateMapObjectCommand	Function	Clears the entity hidden bit, saves its coordinates, advances the script, and yields
+1F	D9CB	AnimateMapObjectAppearance	Function	Runs the timed object-appearance animation and clears the hidden bit as each frame becomes visible
 1F	DA1E	ApplyPlayerFacingToMovingEntity	Function	Applies player facing $3D to the current entity while movement counter $3E is active
 1F	DAA4	RunBank1CMapObjectPresentationCommand	Function	Temporarily selects bank $1C, initializes its presentation, advances the script, and restores the bank
 1F	DAC6	InitializeBank1CMapObjectPresentation	Function	Decodes a bank-$1C duration stream and installs its pointer and initial frame in $0530-$0533
@@ -245,7 +245,7 @@
 1F	E419	ResolveOneEntitySpriteConflict	Function	Finds another moving entity, transfers its OAM allocation, and rerenders the current entity
 1F	E45C	AllocateEntityOamBlock	Function	Allocates the first free four-sprite block from occupancy masks $61-$62 or marks deferred rendering
 1F	E4BB	ReleaseEntityOamBlock	Function	Clears the occupancy bit corresponding to OAM block selector A in masks $61-$62
-1F	E52C	ClampPartyGoldTo9999999	Function	Clamps the 24-bit value $FD-$FF to decimal 9,999,999 when carry-state $1A requires it
+1F	E52C	ClampCoinSellerPriceTo9999999	Function	Clamps the Coin Seller's 24-bit coins-times-price value at $FD-$FF to decimal 9,999,999
 1F	E739	UpdateAudioChannelOutput	Function	Updates one active audio channel's sequencer, envelope, period, and APU enable state
 1F	E77C	ProcessAudioChannelSequence	Function	Counts channel duration and dispatches note or command bytes from its advancing sequence pointer
 1F	E842	SetAudioPatternTablePointer	Function	Reads a two-byte pattern pointer into $6C03-$6C04 and clears its per-channel index
@@ -764,7 +764,7 @@
 11	8324	CheckBattleSlotCandidateAtX	Function	Checks slot X against battle-value tables and service-provided eligibility conditions
 11	8364	InvokeBattleServicePreservingXY	Function	Preserves X and Y around BRK battle service $32,$0F and returns carry clear
 11	8371	SelectBattleActionTier	Function	Selects a table-driven action tier from battle state and prior-slot scan results
-11	8403	CompleteBattleActionTransition	Function	Commits the selected tier or marks battle action failure bits $20 and $40
+11	8403	ResolveFailedBattleEscape	Function	Prints the no-escape message and marks battle action failure bits $20 and $40 when escape is blocked
 11	85EA	EnableAlternateBattleChoiceState	Function	Sets battle choice state bit seven before entering the shared choice update loop
 11	85F1	DisableAlternateBattleChoiceState	Function	Clears battle choice state bit seven before entering the shared choice update loop
 11	85F6	UpdateBattleChoiceState	Function	Selects battle choice code $33 or $2E and toggles its state when the input service returns $FE
@@ -788,17 +788,17 @@
 11	885B	IterateBattleSlotsByLowNibbleGroup	Function	Scans battle slot descriptor nibbles by group and reruns action resolution for each match
 11	8894	RunBattleActionResolutionPipeline	Function	Runs action state gates, countdown updates, selection filters, and the fallback transition
 11	88CA	WalkBattleActionResolutionLoop	Function	Initializes the action group cursor and loops target and group resolution until its limit
-11	893A	RunBattleActionTargetingLoop	Function	Repeats target, effect, and action-vector processing until the action path completes
-11	89F1	UpdateBattleActionCountdownState	Function	Updates high countdown bits and clears the pending-action high bit on fallback
+11	893A	RejectBattleTargetInWagon	Function	Repeats target resolution and reports when the selected combatant is unavailable because they are in the wagon
+11	89F1	RestartTimeAndUpdateCountdown	Function	Prints Time restarts, updates high countdown bits, and clears the pending-action high bit on fallback
 11	8A3A	CaptureBattleSlotGroupIndex	Function	Initializes the group cursor and derives its limit from the active slot descriptor
 11	8A55	SelectBattleActionGroupOrdinal	Function	Uses the group cursor and service predicates to select a battle action ordinal
-11	8ACF	CheckCombatantActionAvailability	Function	Checks paralysis, sleep, waking, fear, and action-specific state before allowing the combatant to act, printing the matching status message on rejection
-11	8B91	AcceptCombatantActionAfterStatusCheck	Function	Prints the matching status transition for the accepted special case and returns carry set
+11	8ACF	ReportCombatantStatusAndCheckTurnAvailability	Function	Reports Ironize expiration, laughter, tripping, a hole, fear, or paralysis before deciding whether the combatant can act
+11	8B91	AcceptCombatantTurnAfterStatusCheck	Function	Prints the accepted confusion status transition and returns carry set for the combatant's turn
 11	8BB8	ReportCombatantUnableToAct	Function	Prints the selected incapacitation message and returns carry clear
 11	8C49	CheckBattleActionIdBelowDispatchThreshold	Function	Reports whether the action identifier is below dispatch threshold $3C
-11	8C50	GateBattleActionFollowupByPhaseState	Function	Uses action phase and nested service tests to decide whether follow-up processing runs
+11	8C50	ReportContainedOrNullifiedSpell	Function	Uses action phase and service tests to report when a spell is contained or nullified
 11	8C88	JumpThroughBattleActionVectorByOffset	Function	Offsets into the battle action vector table and jumps through the fetched pointer
-11	8D0D	ValidateBattleActionTargetState	Function	Validates the resolved action, active target, and lookup results before follow-up dispatch
+11	8D0D	ReportSpellBlockedByRangeOrWallOfLights	Function	Validates the spell target and reports when the spell cannot reach it or bounces off the Wall of Lights
 11	8D9D	IsBattleActionHoldFlagSet	Function	Returns carry from battle setup mode bit seven
 11	8DAB	CheckBattlePhaseModeBits	Function	Tests phase mode bits and a service result to decide whether the current phase continues
 11	8DCC	CheckBattleTransitionFlagsClear	Function	Returns carry only when transition mask bits $30 are clear
@@ -820,13 +820,13 @@
 11	8EE4	PlayBattleSound83	Function	Plays battle sound $83 through the accumulator sound dispatcher
 11	8EE9	FinalizeBattleSoundState	Function	Finalizes the current battle sound and action-state sequence
 11	8EEE	RunEarthquakeBattleSequence	Function	Plays battle sounds $98 and $88 while printing the earthquake and unstable-ground battle messages
-11	8F02	PlayBattleSound98AndSetActionState91	Function	Plays battle sound $98 and commits action state $91 through the follow-up services
-11	8F15	SetBattleActionState84	Function	Commits battle action state $84 through service $E5,$D3
-11	8F1A	SetBattleActionState98	Function	Commits battle action state $98 through service $E5,$D3
+11	8F02	RunGroundCrackingEarthquakeSequence	Function	Plays the earthquake sound, prints the earthquake and cracking-ground messages, and commits action state $91
+11	8F15	SummonMostFearfulThing	Function	Prints that the combatant calls the most fearful thing and commits battle action state $84
+11	8F1A	SummonSnowWhiteDragon	Function	Prints the blinding-light arrival of a snow-white dragon and commits battle action state $98
 11	8F1F	PlayBattleSound9CAndAdvance	Function	Plays battle sound $9C and performs the shared follow-up advance
 11	8F26	AbortBattleSoundSequence	Function	Aborts the active battle sound and action-state sequence through its terminal path
-11	8F2D	PlayBattleSound88AndDelay	Function	Plays battle sound $88, dispatches effect code $20, and terminates through delay service $76
-11	8F3B	HandlePendingBattleActionModeOne	Function	Handles pending mode one, stores the masked action byte, and updates action state
+11	8F2D	RunGlitteringThorAttack	Function	Announces Glittering Thor's attack on Nara's group, plays battle sound $88, and terminates through delay service $76
+11	8F3B	AnnounceCombatantHeldItem	Function	Prints that the combatant holds the selected item, stores the masked action byte, and updates action state
 11	8F8B	HandlePendingBattleActionModeTwo	Function	Handles pending mode two, stores the masked action byte, and runs its follow-up
 11	8F9C	StoreBattleActionMaskedByte	Function	Clears bit seven of A and stores it in pending action byte $7355
 11	8FA5	Bank11_BattleActionIds	Table	Fifty-five sorted action IDs
@@ -841,7 +841,7 @@
 11	91F3	AccumulateDefeatedMonsterRewards	Function	Adds the defeated monster's experience reward, marks the reward-present flag, then accumulates gold
 11	91FE	AccumulateDefeatedMonsterGoldAndIndex	Function	Adds the defeated monster's gold reward and records its battle slot index
 11	9204	AdvanceBattlePhaseRecord	Function	Advances the special phase counter and dispatches marker, target, and mode updates
-11	9223	LoadNextBattlePhaseCode	Function	Loads the next special phase code and clears its packed action cursor
+11	9223	AdvanceNecrosaroTransformationPhase	Function	Prints Necrosaro's grotesque transformation message, loads the next phase code, and clears its packed action cursor
 11	9272	DispatchBattlePhaseUpdate	Function	Service bridge into shared battle phase mode resolution
 11	927C	WriteBattleResultParameter0	Function	Preserves X while writing it through battle result parameter service zero
 11	9286	WriteBattleResultParameter1	Function	Preserves X while writing it through battle result parameter service one
@@ -855,14 +855,14 @@
 11	9393	ClearBattleActionPendingFlag	Function	Clears pending-action bit zero in $72E7
 11	939C	BuildBattleCandidateTable	Function	Clears and populates the sixteen-byte battle candidate table at $7374-$7383
 11	94B2	PopulateBattleCandidateSlots	Function	Walks the candidate mask and fills candidate slot values and selection words
-11	9518	SelectSpecialBattleStateMask	Function	Handles special action bytes and derives the corresponding selection-state mask
+11	9518	RejectDefeatedBattleTarget	Function	Reports when the selected combatant is not alive and derives the valid target-state mask for special actions
 11	95D2	CommitBattleSelectionMask	Function	Loads selection mask $00 and sets bit seven in state byte $7363
 11	9611	ValidateBattleSelectionMask	Function	Normalizes special action values and validates the requested mask against current state
 11	96C3	RouteBattleSelectionCheck	Function	Routes signed and unsigned selection cases to their appropriate validation paths
 11	96D1	ShiftBattleMaskByCount	Function	Right-shifts mask $00 by the selected count and exposes the chosen bit in carry
 11	96DB	ClearBattleModeBitZero	Function	Clears battle state bit zero and initializes selection counters when required
-11	970C	RunBattleSelectionStateMachine	Function	Builds candidates and runs the complete battle selection and follow-up state machine
-11	97E6	IsBattleByteBelowC0	Function	Returns the service-prefixed comparison result for A below $C0
+11	970C	ResolveCoverAllyBattleAction	Function	Builds eligible targets, resolves an ally taking the attack, and runs the follow-up action state machine
+11	97E6	ReportBattleMissForTargetSide	Function	Prints the target-side miss message and returns the service-prefixed comparison result for A below $C0
 11	9817	ShiftBattleSelectionWordLeftOneBit	Function	Shifts battle selection word $7361-$7362 left one bit
 11	981E	RescaleBattleSelectionWordByThreeHalves	Function	Multiplies the selection word by three and divides it by two
 11	9832	LoadBattleEffectMagnitudeToMathBuffer	Function	Copies battle effect magnitude $7361-$7362 into math buffer $00-$01
@@ -871,7 +871,7 @@
 11	9851	SetBattleActionModeBit3	Function	Sets mode bit three in battle state $72E7
 11	985A	ClearBattleActionModeBit3	Function	Clears mode bit three in battle state $72E7
 11	9863	AdvanceBattleSelectionWordByQuarterStep	Function	Divides the selection word by four and increments the resulting word
-11	9878	TryQueueRandomBattleActionInterruption	Function	Uses RNG and battle-state gates to queue a special action interruption
+11	9878	RunGoofOffNoDamageOrSplitInterruption	Function	Uses RNG and battle-state gates to report a harmless goof-off or a combatant splitting, then queues the interruption
 11	98E2	AdvanceBattleEffectMagnitudeOrResetMode	Function	Advances the battle effect magnitude or clears mode bit zero according to the packed source result
 11	98FA	RescaleBattleSelectionWordByFive	Function	Selects a source word, multiplies it by five, and stores it as the selection word
 11	9916	LoadBattleSelectionWordFromPackedTable	Function	Computes the packed source value and loads it into $7361-$7362
@@ -885,13 +885,13 @@
 11	9A33	ComputeBasePhysicalDamage	Function	Computes max zero or attacker attack minus half target defense, then halves the result, including two special battle-state attack sources
 11	9A84	Divide24BitBattleCandidateByWordAtY	Function	Divides a 24-bit candidate value by the two-byte divisor selected by Y
 11	9AE2	ApplyPendingBattleDamageAndResolveDefeat	Function	Loads the active combatant and pending damage magnitude, then tail-calls shared damage and defeat resolution
-11	9AEB	ResolveBattleSelectionAccumulatorAndAdvance	Function	Chooses primary or alternate normalization and advances the selection accumulator
+11	9AEB	ResolveRollOverBattleAction	Function	Prints that the combatant rolls over, normalizes the active effect magnitude, and advances the action
 11	9B0C	PlayBattleSound9EAndAdvanceRewardTimer	Function	Plays sound $9E and advances defeated-monster rewards and the upper battle timer when target gates pass
 11	9B53	AdvanceBattlePhaseForResult0F	Function	Advances battle phase and commits result code $0F when target gates pass
 11	9B86	ApplyBattleEffectMagnitudeToResult	Function	Copies the active effect magnitude into battle result state before emitting the result parameter
 11	9C20	RouteBattleResultByTargetSide	Function	Chooses the primary or alternate battle result path from carry and overflow target-side state
 11	9C2B	ComputeBattleResultRecordOffset	Function	Multiplies the selected index by thirteen and returns its adjusted byte pair
-11	9C50	AdvanceBattlePhaseOrTimerBySelectionState	Function	Advances the phase record or dispatches phase update according to selection state
+11	9C50	ResolveExhaustionDefeat	Function	Prints the exhaustion death message and advances the applicable battle phase or timer state
 11	9C9B	PlayBattleSoundForNonzeroResult	Function	Sets bit seven on a nonzero battle result and plays it through the accumulator sound dispatcher
 11	9CAD	QueueBattleResult13Index03WhenEligible	Function	Queues battle result $13 with index three for the matching target special case
 11	9CBC	QueueBattleResult13Index00	Function	Queues battle result $13 with index zero
@@ -908,7 +908,7 @@
 11	9D42	SetBattleActionDispatchBit4	Function	Sets action dispatch bit four in battle state $72E7
 11	9D4F	QueueBattleResultPairAndResolve	Function	Stores a battle result and index, then gates their resolution on target-side state
 11	9D90	QueueBattleResult11ByTargetState	Function	Queues battle result $11 through target-state gates
-11	9DB4	ResolveBattleResultAgainstTarget	Function	Compares current effect state with the active target before writing battle result parameters
+11	9DB4	ResolveNoEffectAgainstTarget	Function	Prints But nothing happens when the effect fails its target checks, otherwise commits the applicable effect
 11	9E4C	ConditionallyScaleSelectionByteByEight	Function	Shifts A left three bits only when the indexed source byte is zero
 11	9E5C	BuildAlternateBattleResultSequence	Function	Preserves $7D while emitting the marker sequence derived from $7D and $7B
 11	9E91	BuildPrimaryBattleResultSequence	Function	Preserves $70 while emitting the marker sequence derived from $70 and $6E
@@ -924,7 +924,7 @@
 11	9FED	EmitBattleResultWithFallback	Function	Emits the resolved effect value with carry and overflow fallback handling
 11	A011	AdvancePrimaryBattleResultMagnitude	Function	Gates and shifts primary battle result pair $6F-$70 left one bit
 11	A01F	AdvanceAlternateBattleResultMagnitude	Function	Gates and shifts alternate battle result pair $7C-$7D left one bit
-11	A02D	SetBattleRouteByte71To06	Function	Sets route byte $71 to six before running the shared route chain
+11	A02D	ResolveNoEffectWithPath06	Function	Selects battle path six, prints But nothing happens for the failed branch, and otherwise continues effect resolution
 11	A047	SetBattleRouteByte71To05	Function	Sets route byte $71 to five before running the alternate route chain
 11	A08E	CompareActiveBattleTargetState	Function	Compares A with battle selection state $7363 and routes mismatches
 11	A096	RouteBattleActionOnTargetMismatch	Function	Uses carry, route byte $71, and selection state to choose the mismatch path
@@ -949,7 +949,7 @@
 11	A1D0	SaveBattleActionStateAroundResolution	Function	Preserves slot and selection state around the battle resolution service calls
 11	A228	AdjustBattleActionByteForCurrentGroup	Function	Offsets the current group action byte and sets target $7D to $FF on fallback
 11	A293	ClearBattleScratchByte06AndSetCarry	Function	Clears battle scratch byte $06 and returns carry set
-11	A2A2	InitializeBattleSlotActionState	Function	Initializes active slot action bytes, scan state, and selection latches
+11	A2A2	InitializeTransformationBattleAction	Function	Initializes the transformation action that prints Turns into, including active-slot state and target latches
 11	A2D8	ReadCurrentBattleSlotDescriptorMasked	Function	Returns the current slot descriptor masked with $8F
 11	A2E4	ResolveBattleSlotIndexFromDescriptor	Function	Converts the current descriptor into an array index or low-bit slot key
 11	A304	ReadComputedBattleSlotStateMasked	Function	Returns computed slot state $7300,X masked with $8F
@@ -969,14 +969,14 @@
 11	A3F7	QueueBattleActionInterruptionIfEligible	Function	Queues the eligible action-$0D/$9F interruption when setup mode is nonnegative
 11	A40A	Bank11_BattleActionPointers	Table	266-entry routine pointer table consumed by the indirect dispatcher at $8CFC
 11	A61E	Bank11_BattleActionMasks	Table	Thirty-two indexed battle-action mask bytes
-11	A63E	QueueBattleReactionFromTargetState	Function	Chooses a target threshold, queues reaction code $8C or $8D, and sets pending state
-11	A69F	HandleResolvedAction8FSelectionTransition	Function	Handles action $8F by clearing mode bit three, optionally queuing marker $99, and advancing the timer
+11	A63E	ResolveNimbleEvasionReaction	Function	Chooses a target threshold, prints the nimble-evasion message, queues reaction code $8C or $8D, and sets pending state
+11	A69F	ResolvePoisonNeedleCriticalHit	Function	Handles the Poison Needle vital-spot action, prints its critical-hit or defeat message, and advances reward state
 11	A6E3	AdjustSpecialBattleActionMagnitude	Function	Applies action-specific effect resets, scaling, halving, and fixed magnitudes for the first special-action group
-11	A78B	HandleResolvedActionA0Interruption	Function	Handles action $A0 by exporting the selection word and unwinding the interrupted path
+11	A78B	ResolveWoundHealingInterruption	Function	Handles action $A0 by printing that the target's wounds heal, exporting the effect magnitude, and unwinding the interrupted path
 11	A7AB	ExportBattleSelectionWordTo70Or7D	Function	Copies the selection word into pair $6F-$70 or $7C-$7D according to carry
-11	A7C4	ResolveSpecialBattleActionEffects	Function	Dispatches the second special-action group and updates effect magnitude, phase, interruption, or mode state
+11	A7C4	ResolveHealingOrAffectionBattleAction	Function	Dispatches the special actions that heal wounds or make a target smile affectionately and updates their effect state
 11	A86D	TestResolvedBattleActionId82	Function	Runs the action service and compares its resolved identifier with $82
-11	A873	ResolveTargetSensitiveBattleActions	Function	Applies nested target-state probes to two special battle actions and updates their effect magnitude
+11	A873	ResolveMpDrainBattleAction	Function	Applies target-state probes, prints the MP-drain result, and updates the drained magnitude
 11	A8BC	ResolveLowRangeBattleAction	Function	Applies the low-range target-state path to its matching special battle action
 11	A8D5	QueueBattleReactionAfterEligibilityChecks	Function	Queues reaction code $80 only when the relevant target checks succeed
 11	A8EC	RefreshBattleSlotsAndTransitions	Function	Walks all twelve slots and dispatches descriptor-specific refresh handlers
@@ -987,21 +987,21 @@
 11	AA4C	RefreshBattleSlotSelectionState	Function	Increments refresh state and runs the complete slot selection update chain
 11	AA62	SweepBattleSlotsAndApplyHooks	Function	Scans twelve descriptors and dispatches hooks for full, negative, and positive slots
 11	AA8C	ClearBattleModeLowBits	Function	Clears the low two mode bits in battle mode byte $6E44
-11	AA95	ClearBattleStatusBit7WhenIdle	Function	Clears status bit seven when countdown high bits are idle and queues follow-up services
+11	AA95	RestartTimeWhenBattleIdle	Function	Prints Time restarts and clears status bit seven when countdown high bits are idle
 11	AAB1	DecrementBattleSelectionNibbleAndReset	Function	Subtracts $10 from the selection countdown and resets state when its nibble empties
 11	AAE0	HandleBattleActionBATargetCue	Function	For action $BA, queues target cue services $16 and $15
 11	AAEE	ResolveBattleActionBBSelection	Function	Handles chapter-four action $BB or uses the table-driven fallback selection
 11	AB2A	ClearBattleActionInterruptionBuffers	Function	Clears interruption buffer rows $7215-$7216 before queuing an eligible interruption
 11	AB49	MatchBattleActionPairAgainstLookup	Function	Matches an action pair through table probes and reports the comparison in carry and zero
-11	ABB5	DispatchBattleActionPairMatcher	Function	Routes the action-pair match result to one of four outcome handlers
+11	ABB5	ReportBattleActionRequirementFailure	Function	Reports insufficient MP, a blocked spell, or missing party members and routes the matched failure to its outcome handler
 11	AC3A	RejectBattleActionIds3E3FF3F4	Function	Rejects action IDs $3E, $3F, $F3, and $F4 before deeper routing
 11	AC4D	ProbeBattleActionEligibility	Function	Runs the active-side action probe and queues the accepted path when it succeeds
 11	AC5C	PreserveBattlePointerPairAroundProbe	Function	Preserves battle pointer bytes $6F and $7C around the selection probe
-11	AC79	RouteBattleActionThroughSelectionChecks	Function	Validates the slot against selection state and routes to marker or mask checks
+11	AC79	ResolveMirageBattleTarget	Function	Validates the target slot, reports when it was a mirage, and routes the surviving action through target checks
 11	ACB0	TestFourBattleTargetMasks	Function	Tests four battle target masks and returns clear only when one matches
 11	ACBF	ResolveBattleActionModeTransition	Function	Combines whitelist and mode gates to allow or reject a selection-state transition
-11	ACC4	ValidateBattleActionCountdownMode	Function	Checks countdown mode bits $30 before accepting the battle action transition
-11	ACDC	HandleBattleActionMode43Transition	Function	Clears selection state and queues the accepted mode-$43 transition service
+11	ACC4	IronizeBattleTarget	Function	Checks countdown mode, prints that the target becomes impervious through Ironize, and accepts the transition
+11	ACDC	IronizeBattleParty	Function	Clears pending target state and prints that the entire party becomes impervious through Ironize
 11	AD00	ReadBattleModeBits30	Function	Returns battle countdown mode bits $30
 11	AD06	MatchBattleActionCodeInWhitelist	Function	Searches the sixteen-entry action whitelist and returns clear on a match
 11	AD25	SetBattleActionFlag04OrRandomGate	Function	Sets battle flag bit two under the chapter/mode gate or falls through to RNG testing
@@ -1020,10 +1020,10 @@
 11	AE84	AdvanceBattlePhaseForAlternateResult	Function	Handles service $92 through the shared battle phase advance path
 11	AE8B	AdvanceBattlePhaseAndMarkResult	Function	Handles service $83 and marks the phase through the alternate branch
 11	AE9D	AdvanceAlternateBattleResultBy101	Function	Seeds alternate result pair $7C-$7D to 500, adds 101, and advances it left
-11	AEBF	HandleBattleAction56SelectionRouting	Function	Routes action $56 through target selection and its queued marker sequence
+11	AEBF	ClearBattleTransformationsAndSpellEffects	Function	Prints the blinding-light, original-form, and spell-effect removal messages while clearing affected target states
 11	AF9F	CopyAlternateBattleEffectMagnitude	Function	Copies selection pair $7E-$7F into $7C-$7D and A
 11	AFA6	CopyPrimaryBattleEffectMagnitude	Function	Copies selection pair $72-$73 into $6F-$70 and A
-11	AFAD	AdvanceBattleSelectionCountdownOrAbort	Function	Decrements the selection countdown, updates mode bits, or exits to engine reset
+11	AFAD	ResolveCeilingOrStrangeForceBarrier	Function	Reports a ceiling collision or strange-force pullback, updates barrier state, or aborts the blocked movement path
 11	AFEA	QueueBattleResult05WhenAllowed	Function	Queues battle result $05 when the target-state gate allows it
 11	AFF4	QueueBattleResultAndRefreshModes	Function	Queues the standard paired battle result and refreshes battle mode flags
 11	AFFF	ProjectBattleStatusFromSelectionFlags	Function	Projects pending selection byte $7355 into battle status when chapter and state gates pass
@@ -1031,10 +1031,10 @@
 11	B025	CopyPendingBattleActionBytes	Function	Propagates pending action byte $7355 through the carry-gated action path
 11	B034	SignalBattleActionCommit	Function	Signals battle action commit through the D3E6 service
 11	B039	PlayBattleSound93AndAdvancePhase	Function	Plays battle sound $93, advances battle phase, and marks the follow-up commit
-11	B055	ResolveBattleActionOutcome	Function	Applies route, action-ID, and pending-action checks before committing the current outcome
+11	B055	ResolveCrumblingRingBattleAction	Function	Prints that the ring crumbles away and applies the action and target checks before committing the outcome
 11	B077	ResolveBattleActionOutcomeOrReturn	Function	Alternate entry that resolves the same outcome and returns through the shared completion service
 11	B07E	DispatchBattleOutcomeByTargetSide	Function	Routes the current outcome through carry- and overflow-dependent battle result services
-11	B0A4	QueueDefaultBattleResultForActiveTarget	Function	Queues default result code five or aborts according to active target state
+11	B0A4	QueueNoEffectForActiveTarget	Function	Prints But nothing happens and queues the default no-effect outcome for the active target
 11	B0B3	QueueBattleResult23Index14	Function	Queues battle result $23 with index $14
 11	B0BA	DisplayBattleActionNarration	Function	Selects narration code $11 and enters the shared battle action message display path
 11	B0BF	DisplayBattleActionMessage13	Function	Displays battle action message $13 through the shared message path
@@ -1042,17 +1042,17 @@
 11	B0C9	DisplayBattleActionMessage03	Function	Displays battle action message $03 through the shared message path
 11	B0CE	DisplayBattleActionMessage0A	Function	Displays battle action message $0A through the shared message path
 11	B0E4	AbortBattleActionViaRoute05	Function	Forces route state five and exits through the shared action-abort service
-11	B0EB	ResolveBattleActionChoiceAndTargeting	Function	Routes action and target bytes from selection state before pair resolution
+11	B0EB	ResolveMirrorOfRaBattleAction	Function	Reveals a disguised target or prints the reflected image before resolving the Mirror of Ra action
 11	B11F	ResolveBattleActionSelectionPair	Function	Loads the $7D/$70 selection pair and seeds the shared selection-state path
 11	B17C	ClearBattleActionModeBitZeroDirect	Function	Clears bit zero in battle action state $72E7
-11	B180	StepBattleSelectionAndTargetResolution	Function	Advances selection routing, the low timer, and battle phase decision state
+11	B180	ResolveCalmingBattleAction	Function	Reports foes withdrawing when calmed or becoming more infuriated, then resolves all affected targets
 11	B1D0	QueueBattleResult24Index15	Function	Queues battle result $24 with index $15
 11	B1D7	QueueBattleResult25Index16	Function	Queues battle result $25 with index $16
-11	B1DE	ResolveBattleAction51AndAdvanceSelection	Function	Handles action $51 by loading and advancing the selection word
+11	B1DE	ResolveSuddenWeaponStrike	Function	Announces the sudden weapon strike and terrific blow, loads its damage magnitude, and applies the hit
 11	B1F5	RunMerchantArmyAttackSequence	Function	Prints the traveling-merchants arrival and merchant-army attack messages while running the action-$55 battle sequence
-11	B21F	BuildSelectionStateForAction34	Function	Builds pending and active selection state for action $34
+11	B21F	ResolveTreasureChestSteal	Function	Selects the victim for action $34 and prints that a treasure chest was stolen from the surprised target
 11	B286	HandleBattleAction5COrRandomSelection	Function	Handles action $5C through table selection or the random-gated fallback
-11	B2F5	TryQueueBattleAction63Interruption	Function	Uses chapter and RNG gates to queue action $63 as an interruption
+11	B2F5	ResolveMouthCoverInterruption	Function	Uses chapter and RNG gates to print that the target covers its mouth and queues action $63 as an interruption
 11	B31F	ResolveBattleActionSelectionIndex	Function	Searches the action-count table and returns its matching indexed source byte
 11	B34C	ResetBattleActionChoiceState	Function	Clears the current action and target choice fields and returns zero
 11	B365	SeedBattleAction7FAndRaiseCommitFlag	Function	Stores action $7F in pending state and raises the selection commit flag
@@ -1061,14 +1061,14 @@
 11	B392	AdvanceBattleSelectionAfterAction51	Function	Seeds action-$51 selection state and advances the accumulator
 11	B39C	QueueBattleResult24Index17	Function	Queues battle result $24 with index $17
 11	B3A4	SnapshotBattlePointerTriple	Function	Copies battle pointer bytes $73-$75 into $FD-$FF
-11	B3B6	ResolveBattleActionResult10Or11	Function	Selects battle action result $10 or $11 from target state and enters shared reset
+11	B3B6	ResolveRaiseItemOrHandBattleAction	Function	Prints that the combatant raises an item or hand overhead and selects result $10 or $11
 11	B3D4	AdvanceBattleSelectionAfterAction51Again	Function	Repeats action-$51 setup and advances the selection accumulator
-11	B3DE	ResolveBattleAction8CAndTransition	Function	Queues marker $8C, marks battle state, and advances the transition
-11	B402	PlayBattleSounds89And8CForActionPair	Function	Plays battle sounds $89 and $8C twice through the paired action flow
-11	B41C	AdvanceBattleSelectionForAction93	Function	Queues marker $93, adds ten to the selection word, and advances it
-11	B437	ClearAlternateBattleValueAndCommitResult14	Function	Clears alternate battle value $70, seeds the pending action, and commits result $14
-11	B453	ClearAlternateBattleValueAndCommitResult27	Function	Clears alternate battle value $70, seeds the pending action, and conditionally commits result $27
-11	B47F	WalkBattleActionTripletAndResolve	Function	Tries actions $2B, $2A, and $29 and runs targeting on the first success
+11	B3DE	ResolveBodySlamBattleAction	Function	Prints the body slam, evasion, or pass-through disappearance result and advances action $8C
+11	B402	ResolveStandardAttackSoundAndMiss	Function	Prints the standard attack or miss result while playing the paired battle sounds
+11	B41C	ResolveGrabAndThrowBattleAction	Function	Prints that one combatant grabs and throws another, adds ten to the effect magnitude, and advances action $93
+11	B437	ResolveThrowAwayHeldItemAction	Function	Prints that the combatant throws away the held item and commits result $14
+11	B453	ResolveEquipmentRemovalOrCharmAction	Function	Prints the equipment-removal or charm result and conditionally commits result $27
+11	B47F	ResolveBattleSpellCast	Function	Prints the selected spell cast, tries actions $2B, $2A, and $29, and resolves the first valid target path
 11	B4A8	CountMatchingBattleDescriptors	Function	Counts descriptor-group matches for the requested byte and reports any hit
 11	B4C6	ValidateBattleActionAndUpdateDialogue	Function	Applies mode and selection gates, refreshes dialogue rows, and queues interruption state
 11	B4E4	NormalizeBattleActionSlotsFromCounter	Function	Clears and repacks active battle slot bytes before the follow-up interruption path
@@ -1084,10 +1084,10 @@
 11	B6F2	LoadBattleEffectMagnitudeAndAccumulate	Function	Loads the effect magnitude from result state and advances the battle accumulator
 11	B700	ResolveBattleOutcomeAfterMagnitudeAdvance	Function	Routes result code $93 through shared outcome and phase dispatch after magnitude advancement
 11	B705	RunGiantAttackAndWithdrawalSequence	Function	Sweeps the active battle slots while printing the giant attack and laughing-withdrawal messages
-11	B73D	ClearBattleActionBuffersAndResetSelection	Function	Clears action buffers, reinitializes the selection word, and runs the accumulator loop
+11	B73D	ResolveMetalSlimeTransformation	Function	Prints the single-target or group Metal Slime transformation and rebuilds the affected action state
 11	B79D	ResolveBattleOutcomeForPhaseDispatch	Function	Feeds zero into shared battle outcome and phase dispatch
 11	B7A2	SetBattleStatusFlag0	Function	Sets bit zero in battle status byte $72E5
-11	B7AF	BuildBattleSelectionAccumulatorFromMask	Function	Expands the mask through pointer arithmetic and advances the resulting selection word
+11	B7AF	ResolveGlitteringDragonTransformation	Function	Expands the target mask, prints the glittering-dragon transformation, and advances the resulting effect magnitude
 11	B7F8	AdvanceBattleActionTargetLoop	Function	Applies target setup and runs the battle action targeting loop
 11	B808	RunBattleResolutionLoopWithInjectedActionId	Function	Preserves slot state, injects action A, runs setup and resolution, then restores state
 11	B871	SelectFollowupBattleIdFromTables	Function	Selects a randomized follow-up battle ID from the battle ID tables and stores an accepted result
@@ -1122,7 +1122,7 @@
 11	BBFA	EmitPrimaryStoredTargetToken	Function	Classifies and emits the primary stored-target dialogue token
 11	BC06	EmitSecondaryStoredTargetToken	Function	Classifies and emits the secondary stored-target dialogue token
 11	BC12	ClassifyCurrentStoredTargetForDialogue	Function	Classifies the stored target into one of three dialogue token variants and caches its slot
-11	BC5A	HandleNoMatchingBattleSlotGroup	Function	Collects fallback service values, rebuilds dialogue, queues interruption, and updates mode state
+11	BC5A	ResolveWagonExitBattleAction	Function	Prints that the combatant jumps out of the wagon, rebuilds battle dialogue, and updates the action state
 11	BCF1	RunNaraTarotCardSequence	Function	Loads Nara's selected Tarot result text, animates its palette, plays its cues, and applies the resulting battle state
 11	BD52	LoadBattleDisplayRecordToDialogueBuffer	Function	Copies one of nine fifteen-byte display records into dialogue buffer $0554-$0562
 11	BD83	PlayBattleSound9FAndAnimatePalette	Function	Plays battle sound $9F, then builds, fades, and blinks the display palette buffer through queued palette uploads
@@ -1170,7 +1170,7 @@
 12	842C	BattleSetup_FindMaskedHeaderEntry	Function	Scans setup header bytes with the current mask and returns the matched row
 12	848D	Bank12_BattleSetupDataPointers	Table	Parser base $8BBC followed by selector-map bases $8A36 and $8AC1
 12	8493	Bank12_BattleSetupHandlerPointers	Table	Seven handlers selected from nonzero three-bit setup fields and dispatched through $83DF
-12	84B2	BattleSetup_BuildEntrySelectionState	Function	Scans setup entries and builds cursor selection state from each lowest set bit
+12	84B2	AnnounceEncounterAndInitializeCombatants	Function	Prints each combatant's appears message, initializes encounter targets, and prepares the opening battle state
 12	8536	BattleSetup_BuildThresholdSelectionState	Function	Applies mask and threshold tables across eight candidates and counts accepted entries
 12	85AB	BattleSetup_FindLowestSetBitIndex	Function	Shifts A until its first set bit and returns that bit index in X
 12	85CA	BattleSetup_StartDelayWindow	Function	Loads the configured speed delay into the setup timing window
@@ -1188,7 +1188,7 @@
 12	87AB	AwardVictoryExperienceDropAndGold	Function	Plays the victory cue, reports defeated monsters, applies doubled experience when enabled, rolls the item drop, awards gold, and prints reward messages
 12	888E	BattleSetup_RequireAEHeader	Function	Compares the current setup header with $AE before entering its service path
 12	889C	BattleSetup_EncodeSelectionMask	Function	Finds the selected bit index and stores it with high bits $C0 in $F9
-12	88B0	BattleSetup_HandleSelectionConfirmInput	Function	Waits for confirmation, updates selection high bits, and applies the configured delay
+12	88B0	HandleMonsterArenaOvertimeDraw	Function	Handles the Monster Arena overtime announcement, returns wagers, and restores input after the configured delay
 12	892B	BattleSetup_EnablePlayerInput	Function	Clears setup control bits five and six in $72E7 and enables player-input bit five
 12	8936	BattleSetup_RunTransitionOpen	Function	Opens the battle transition by shifting sprite X positions and stepping palette state
 12	895C	BattleSetup_RunTransitionClose	Function	Closes the battle transition, queues the final palette, and restores mapper and OAM state
@@ -1210,202 +1210,202 @@
 12	91DD	RollPostVictoryItemDrop	Function	Rolls the defeated monster's item drop, using the Chapter 3-specific drop table when chapter index equals two
 12	92AD	BattleSetup_PickSetupCandidateByThreshold	Function	Tests four setup candidates and stores the chosen index and pass selector
 12	92EF	BattleSetup_ResolveSelectionIndex	Function	Scans four setup entries and copies the selected slot index into $C7
-12	930C	FieldItem_NormalizeItemSelectionState	Function	Validates and rewrites setup selection bytes $6278-$627A
+12	930C	FieldItem_NormalizeItemSelectionState	Function	Validates and rewrites item-use selection bytes $6278-$627A
 12	9461	TransferSelectedItemToPartyMemberOrToolBag	Function	Hands the selected item to another party member when possible, otherwise places it in the Tool Bag and prints the matching field message
-12	9507	FieldItem_CompareItemSelectionStateWithFallback	Function	Seeds fallback scratch and enters shared selection-state comparison
-12	952A	FieldItem_SwapItemSelectionBytes	Function	Swaps setup selection bytes $6278-$6279 while preserving the prior secondary value
-12	953E	FieldItem_ClearModeByte	Function	Clears setup mode byte $6E and invokes the common reset service
+12	9507	FieldItem_CompareItemSelectionStateWithFallback	Function	Seeds fallback scratch and enters shared item-selection comparison
+12	952A	FieldItem_SwapItemSelectionBytes	Function	Swaps item-selection bytes $6278-$6279 while preserving the prior secondary value
+12	953E	FieldItem_ClearModeByte	Function	Clears item-use mode byte $6E and invokes the common reset service
 12	9548	FieldItem_LoadModeByteFromSelector8	Function	Clears mode state, invokes selector eight, and stores returned value $72 in $6E
 12	955E	AppraiseSelectedItem	Function	Identifies the selected item, reports whether it is a weapon or other equipment, and prints its shop value and special appraisal text
-12	9619	FieldItem_TestItemSelectionCode	Function	Accepts setup codes $03, $0C, and $29 and seeds $6F for code $03
-12	963D	FieldItem_TestItemSelectionThreshold	Function	Passes selection byte $6279 through the indexed threshold service
-12	964F	FieldItem_ValidateItemSelectionState	Function	Applies chapter-specific selection code, bit-count, and threshold validation
-12	9662	FieldItem_CountItemSelectionBits	Function	Scans eight positions and accumulates the setup selection bit count
-12	9720	FieldItem_ReadIndexedByte	Function	Builds a banked setup pointer, indexes it by selection state, and returns the byte
-12	974A	FieldItem_ValidatePrimaryAndSecondaryItemSelection	Function	Checks both selection bytes against current state and optionally commits side effects
+12	9619	FieldItem_TestItemSelectionCode	Function	Accepts item-use codes $03, $0C, and $29 and seeds $6F for code $03
+12	963D	FieldItem_TestItemSelectionThreshold	Function	Passes item-selection byte $6279 through the indexed threshold service
+12	964F	FieldItem_ValidateItemSelectionState	Function	Applies chapter-specific item code, bit-count, and threshold validation
+12	9662	FieldItem_CountItemSelectionBits	Function	Scans eight positions and accumulates the item-selection bit count
+12	9720	FieldItem_ReadIndexedByte	Function	Builds a banked item-data pointer, indexes it by item-use state, and returns the byte
+12	974A	FieldItem_ValidatePrimaryAndSecondaryItemSelection	Function	Checks both item-selection bytes against current state and optionally commits side effects
 12	9767	ShowCursedEquipmentMessage	Function	Plays the curse jingle, prints the cursed-equipment message, waits for audio completion, and resumes current map music
-12	9774	FieldItem_ReadBankedItemSelectionByte	Function	Builds the banked pointer and reads the byte indexed by secondary selection
-12	9788	FieldEffect_DispatchSavedBattleVariant	Function	Maps the saved banked battle variant to its setup service sequence
-12	97A9	FieldEffect_RunFieldEffectIntroSequence	Function	Runs encounter intro setup followed by scene animation and finalization
-12	97BC	FieldEffect_AnimateFieldEffectScene	Function	Offsets player coordinates and drives repeated PPU/OAM encounter-intro animation steps
-12	982F	FieldEffect_QueueFieldEffectAttributeSweep	Function	Queues repeated nametable attribute updates from the encounter reveal counters
-12	985A	FieldEffect_PrimeFieldEffectSpriteBuffer	Function	Initializes encounter sprite buffer bytes, queues the update, and waits for NMI
-12	986B	FieldEffect_QueueFullFieldEffectAttributeRefresh	Function	Queues the full nested attribute refresh and waits for the PPU update
-12	9887	FieldEffect_RunFieldEffectIntroRevealLoop	Function	Runs attribute, frame, and sprite passes through the repeated reveal loop
-12	98AD	FieldEffect_AnimateFieldEffectFrameSequence	Function	Walks twelve table-driven reveal frames and queues each transition step
-12	98F6	FieldEffect_LoadFieldEffectSpriteFrame	Function	Copies the selected encounter frame bytes into the sprite staging buffer
-12	991A	FieldEffect_CopyFieldEffectSpriteOamTemplate	Function	Copies the 24-byte encounter OAM template into sprite buffer $05FC
-12	993E	FieldEffect_QueueFieldEffectAttributeDiffs	Function	Compares packed attribute nibbles and queues only changed nametable attributes
-12	9AF7	FieldEffect_RunFieldEffectSpritePlacementLoop	Function	Builds encounter sprite state and walks the placement table with animation pulses
-12	9B1C	FieldEffect_RunFieldEffectSpritePulse	Function	Repeats encounter sprite tile advancement using counter $0A
-12	9B26	FieldEffect_AdvanceFieldEffectSpriteTileFrame	Function	Resolves an OAM slot and advances its encounter animation tile
-12	9B41	FieldEffect_ComputeFieldEffectOffsetMask	Function	Derives encounter coordinate and bitmask scratch from player local position
-12	9B88	FieldEffect_CopyFieldEffectSpriteToOam	Function	Loads a sprite definition and writes its four-byte OAM record
-12	9BB3	FieldEffect_AdjustFieldEffectSpritePosition	Function	Offsets the selected OAM sprite through the encounter position delta table
-12	9BFD	FieldEffect_BuildPartyMemberPositionTable	Function	Initializes and fills the combatant position triplet table at $6E19-$6E1B
-12	9C22	FieldEffect_ResolvePartyMemberPositionDelta	Function	Loads a combatant coordinate triplet and subtracts the current reference position
-12	9C50	FieldEffect_ScanPartyMembersForPositionMatches	Function	Scans selected combatants for triplets matching the current position table
-12	9C72	FieldEffect_FilterPartyMembersByPosition	Function	Runs the secondary position filter and resets its accepted combatant count
-12	9CE5	FieldEffect_CommitPartyMemberMatchState	Function	Preserves scan state, invokes the match service, and resumes target selection
-12	9D29	FieldEffect_ScanPartyPartyMemberSlots	Function	Scans the eight party combatant slots and records each accepted position
-12	9D41	FieldEffect_WritePartyMemberPositionTriplet	Function	Resolves one combatant record and writes its position triplet to setup state
-12	9D6D	FieldEffect_PreparePartyMemberMatchTarget	Function	Runs three setup probes before entering shared combatant selection
-12	9D7A	FieldEffect_RunPartyMemberMatchTarget	Function	Saves context, filters coordinate bounds, and enters the shared post-pass
-12	9D83	FieldEffect_SavePartyMemberTargetContext	Function	Preserves selection scratch around indexed service dispatch
-12	9DA6	FieldEffect_FilterPartyMembersByCoordinateBounds	Function	Filters the combatant candidate window against coordinate bounds
-12	9E40	FieldEffect_InvokePartyMemberEntryService	Function	Preserves setup state, initializes the service operands, and invokes the indexed combatant entry
-12	9E86	FieldEffect_ScanPartyMemberMaskForMatches	Function	Scans a 64-bit combatant mask and evaluates each selected candidate
-12	9EC5	FieldEffect_EvaluatePartyMemberPlacementCandidate	Function	Evaluates one packed combatant candidate against placement bounds and resolves ties with RNG
-12	9F33	FieldEffect_LoadTargetTablePointers	Function	Loads two setup selection table pointers from the indexed pointer arrays
-12	9F4C	FieldEffect_CountTargetBoundHits	Function	Counts selection boundary hits around the active candidate window
-12	9F7C	FieldEffect_LoadScaledTargetDescriptor	Function	Loads a selection descriptor pointer with the selector-six doubled special case
-12	9F82	FieldEffect_LoadTargetDescriptor	Function	Loads the selected descriptor and enters shared unpacking
-12	9F9C	FieldEffect_ResolveTargetDescriptorPointer	Function	Loads a base descriptor pointer and offsets it by the selected record stride
-12	A038	FieldEffect_DecodeTargetDescriptorHeader	Function	Reads a five-byte descriptor header and derives its packed selector count
-12	A06E	FieldEffect_ScaleFieldEffectByteByFiveOrSix	Function	Scales A by five or six according to selector byte $0B
-12	A07D	FieldEffect_MultiplyTripletByScalar	Function	Multiplies the three-byte value at $00 by a scalar into a four-byte result
-12	A0DF	FieldEffect_AddTripletToZeroPageTriplet	Function	Adds one three-byte setup value into the triplet selected by Y
-12	A304	FieldEffect_RunTransitionFrameLoop	Function	Snapshots OAM and runs the setup transition frame loop with NMI waits
-12	A3A0	FieldEffect_AdvanceTransitionSpriteOffsets	Function	Computes transition movement and shifts live and backup sprite buffers
-12	A3DD	FieldEffect_AdjustTransitionShift	Function	Derives the active shift and reseeds opening transition state when needed
-12	A410	FieldEffect_ComputeTransitionStep	Function	Computes and caps the transition step using multiply and divide helpers
-12	A42B	FieldEffect_ApplyTransitionShiftFrame	Function	Applies the step to scroll and sprite positions and clears active state at the clamp
-12	A475	FieldEffect_SnapshotTransitionOam	Function	Copies live OAM into transition backup and clears paired high bytes
-12	A489	FieldEffect_PulseTransitionPalette	Function	Steps the fixed transition palette sequence with frame delays
-12	A4A5	FieldCommand_DispatchFieldCommandOperation	Function	Loads a handler from the nine-entry setup operation table and jumps through it
-12	A4B4	FieldCommand_WriteFieldCommandFieldGroup	Function	Runs the base setup field-group write sequence
-12	A4C0	FieldCommand_WriteConditionalFieldGroup	Function	Writes the setup field group only when operation mode equals one
-12	A4C9	FieldCommand_WriteFieldCommandFieldTail	Function	Runs the trailing setup field write sequence
-12	A4CC	FieldCommand_WriteConditionalFieldTail	Function	Writes the trailing fields only when operation mode equals one
-12	A4D5	FieldCommand_RepeatFieldCommandFieldGroup	Function	Runs the setup field-group writer for the service-provided repeat count
-12	A4E2	FieldCommand_RepeatConditionalFieldGroup	Function	Repeats the conditional setup field-group writer
-12	A4EF	FieldCommand_RepeatFieldCommandFieldTail	Function	Repeats the setup field-tail writer
-12	A4FC	FieldCommand_RepeatConditionalFieldTail	Function	Repeats the conditional setup field-tail writer
-12	A509	FieldCommand_RepeatFieldCommandGateAndWrite	Function	Repeats the operation-equals-one gate and field write pair
-12	A51B	FieldCommand_LoadOperationRepeatCount	Function	Loads the setup operation repeat count into Y
-12	A520	FieldCommand_WriteOperationField06	Function	Invokes the setup operation service for field six
-12	A525	FieldCommand_WriteOperationField07	Function	Invokes the setup operation service for field seven
-12	A52A	FieldCommand_WriteOperationField05	Function	Invokes the setup operation service for field five
-12	A52F	FieldCommand_TestOperationEqualsOne	Function	Returns carry when the current setup operation value equals one
-12	A53A	FieldCommand_FinalizeOperationWrite	Function	Runs the pair of services that finalize a setup operation write
-12	A553	FieldCommand_ProcessFieldCommandCommand	Function	Stores the selected mode, applies mode gates, and dispatches the field command path
+12	9774	FieldItem_ReadBankedItemSelectionByte	Function	Builds the banked item-data pointer and reads the byte indexed by the secondary item selection
+12	9788	PrintItemBattleEffectAppraisal	Function	Maps the selected item's saved battle-effect variant to its appraisal remark
+12	97A9	RunLighthouseFireExtinguishingSequence	Function	Closes the field message, runs the Lighthouse fire animation, and restores map music afterward
+12	97BC	AnimateLighthouseFireExtinguishing	Function	Offsets the Lighthouse fire sprites and drives the repeated PPU and OAM animation steps
+12	982F	QueueLighthouseFireAttributeSweep	Function	Queues repeated nametable attribute updates for the Lighthouse fire animation
+12	985A	PrimeLighthouseFireSpriteBuffer	Function	Initializes the Lighthouse fire sprite buffer, queues the update, and waits for NMI
+12	986B	QueueFullLighthouseFireAttributeRefresh	Function	Queues the full Lighthouse fire attribute refresh and waits for the PPU update
+12	9887	RunLighthouseFireRevealLoop	Function	Runs attribute, frame, and sprite passes through the Lighthouse fire reveal loop
+12	98AD	AnimateLighthouseFireFrameSequence	Function	Walks twelve table-driven Lighthouse fire frames and queues each transition step
+12	98F6	LoadLighthouseFireSpriteFrame	Function	Copies the selected Lighthouse fire frame bytes into the sprite staging buffer
+12	991A	CopyLighthouseFireOamTemplate	Function	Copies the 24-byte Lighthouse fire OAM template into sprite buffer $05FC
+12	993E	QueueLighthouseFireAttributeDiffs	Function	Compares packed attribute nibbles and queues only changed Lighthouse fire attributes
+12	9AF7	RunLighthouseFireSpritePlacementLoop	Function	Builds Lighthouse fire sprite state and walks the placement table with animation pulses
+12	9B1C	RunLighthouseFireSpritePulse	Function	Repeats Lighthouse fire sprite tile advancement using counter $0A
+12	9B26	AdvanceLighthouseFireSpriteTileFrame	Function	Resolves an OAM slot and advances its Lighthouse fire animation tile
+12	9B41	ComputeLighthouseFireOffsetMask	Function	Derives Lighthouse fire coordinates and bitmask scratch from the player's local position
+12	9B88	CopyLighthouseFireSpriteToOam	Function	Loads a Lighthouse fire sprite definition and writes its four-byte OAM record
+12	9BB3	AdjustLighthouseFireSpritePosition	Function	Offsets the selected OAM sprite through the Lighthouse fire position-delta table
+12	9BFD	BuildPartyNextLevelExperienceTable	Function	Stores each party member's experience threshold for the next level in the three-byte table at $6E19-$6E1B, skipping level 99
+12	9C22	CalculateExperienceNeededForNextLevel	Function	Subtracts the selected party member's current experience from the cached next-level threshold and returns the three-byte remainder
+12	9C50	InitializePartyLevelThresholds	Function	Walks the active party and rebuilds the character next-level experience thresholds used by the level-up checks
+12	9C72	ProcessPartyLevelUps	Function	Checks each active party member against the cached experience threshold and applies every earned level
+12	9CE5	ProcessPartyMemberLevelUp	Function	Announces and applies one earned level, refreshes the member's next threshold, and repeats while enough experience remains
+12	9D29	BuildCharacterNextLevelExperienceTable	Function	Computes the next-level experience threshold for all eight character records
+12	9D41	StoreCharacterNextLevelExperienceThreshold	Function	Reads one character's level, computes the next experience threshold unless level 99, and stores the three-byte result
+12	9D6D	RunLevelUpSequence	Function	Plays the level-up fanfare, waits for it to finish, resumes map music, and applies the member's gains
+12	9D7A	ApplyLevelUpStatAndSpellGains	Function	Prints the level-up announcement, applies all stat gains, and checks for newly learned spells
+12	9D83	PrintLevelUpAnnouncement	Function	Selects the leveling party member and prints the Level goes up message while preserving the active member context
+12	9DA6	ApplyLevelUpStatGains	Function	Calculates each level-dependent stat increase, applies nonzero gains, and prints the corresponding increase message
+12	9E40	PrintLevelUpGainMessage	Function	Prints the indexed level-up, stat-gain, or spell-learned message while preserving party-member state
+12	9E86	ScanCharacterSpellLearningBits	Function	Scans all 64 spell bits in the selected character's learning table and tests each configured spell
+12	9EC5	TryLearnSpellAtNewLevel	Function	Checks a spell's required level and optional random learning window, grants eligible spells, and prints the learned-spell message
+12	9F33	LoadCharacterSpellLearningTables	Function	Loads the spell-bit mask and required-level table pointers for the selected character
+12	9F4C	CalculateSpellLearningLevelWindow	Function	Derives the character-specific random level window used by eligible spell-learning entries
+12	9F7C	CalculateCharacterGrowthValue	Function	Calculates the selected character's experience or stat value at a target level, including the doubled selector-six case
+12	9F82	CalculateCharacterGrowthValueFromDescriptor	Function	Resolves and evaluates the selected character growth descriptor
+12	9F9C	ResolveCharacterGrowthDescriptorPointer	Function	Selects the growth-data family and offsets it to the chosen character's descriptor
+12	A038	DecodeCharacterGrowthDescriptorHeader	Function	Decodes the five-byte character growth header and initializes its segment and selector state
+12	A06E	CalculateCharacterGrowthDescriptorOffset	Function	Multiplies the character index by the five- or six-byte growth descriptor stride
+12	A07D	ScaleCharacterGrowthValue	Function	Multiplies a three-byte growth value by the segment scalar and divides by sixteen with stat rounding
+12	A0DF	AddCharacterGrowthValue	Function	Adds a calculated three-byte growth contribution to the selected zero-page result
+12	A304	RunTransitionFrameLoop	Function	Snapshots OAM and runs the transition frame loop with NMI waits
+12	A3A0	AdvanceTransitionSpriteOffsets	Function	Computes transition movement and shifts live and backup sprite buffers
+12	A3DD	AdjustTransitionShift	Function	Derives the active shift and reseeds opening transition state when needed
+12	A410	ComputeTransitionStep	Function	Computes and caps the transition step using multiply and divide helpers
+12	A42B	ApplyTransitionShiftFrame	Function	Applies the step to scroll and sprite positions and clears active state at the clamp
+12	A475	SnapshotTransitionOam	Function	Copies live OAM into the transition backup and clears paired high bytes
+12	A489	PulseTransitionPalette	Function	Steps the fixed four-palette transition sequence with three-frame delays
+12	A4A5	DispatchIndexedOperation	Function	Loads a handler from the nine-entry operation table and jumps through it
+12	A4B4	WriteOperationFieldGroup	Function	Runs the base operation field-group write sequence
+12	A4C0	WriteConditionalOperationFieldGroup	Function	Writes the operation field group only when operation mode equals one
+12	A4C9	WriteOperationFieldTail	Function	Runs the trailing operation field write sequence
+12	A4CC	WriteConditionalOperationFieldTail	Function	Writes the trailing operation fields only when operation mode equals one
+12	A4D5	RepeatOperationFieldGroup	Function	Runs the operation field-group writer for the service-provided repeat count
+12	A4E2	RepeatConditionalOperationFieldGroup	Function	Repeats the conditional operation field-group writer
+12	A4EF	RepeatOperationFieldTail	Function	Repeats the operation field-tail writer
+12	A4FC	RepeatConditionalOperationFieldTail	Function	Repeats the conditional operation field-tail writer
+12	A509	RepeatOperationGateAndWrite	Function	Repeats the operation-equals-one gate and field-write pair
+12	A51B	LoadOperationRepeatCount	Function	Loads the operation repeat count into Y
+12	A520	WriteOperationField06	Function	Invokes the operation service for field six
+12	A525	WriteOperationField07	Function	Invokes the operation service for field seven
+12	A52A	WriteOperationField05	Function	Invokes the operation service for field five
+12	A52F	TestOperationEqualsOne	Function	Returns carry when the current operation value equals one
+12	A53A	FinalizeOperationWrite	Function	Runs the pair of services that finalize an operation write
+12	A553	FieldCommand_ProcessCommand	Function	Stores the selected mode, applies mode gates, and dispatches the field command path
 12	A5B2	FieldCommand_QueryModeSelector	Function	Transfers A to X and invokes the mode selector service
-12	A5B7	FieldCommand_ValidateFieldOptionOption	Function	Returns carry when either special encounter option service accepts the indexed value
+12	A5B7	FieldCommand_ValidateFieldOption	Function	Returns carry when either special field-option service accepts the indexed value
 12	A5DA	FieldCommand_StoreSelectedMode	Function	Stores the selected mode service result in $0592
 12	A5E4	FieldCommand_CheckStoredModeRange	Function	Compares stored mode $0592 with the current mode and reports the in-range case
 12	A5FE	FieldCommand_StoreSecondaryMode	Function	Reads secondary mode state, optionally mirrors it to $0591, and reports the $FF sentinel
-12	A615	FieldCommand_QueryFieldOptionOption	Function	Copies the requested option to X and returns its setup-service value
+12	A615	FieldCommand_QueryFieldOption	Function	Copies the requested option to X and returns its field-command service value
 12	A61A	PlayFieldSpellSound	Function	Plays sound effect $8E for the two active field command call sites
 12	A61E	DispatchFieldSpellById	Function	Finds the selected field spell ID and jumps through the parallel field-spell handler table
-12	A646	FieldSpell_LoadMapSpecificBackdrop	Function	Loads an eight-byte map-specific battle backdrop into $0554 and dispatches it
+12	A646	PrintStrangeForceContainsSpellMessage	Function	Prints that the strange force contains the selected spell on maps where the field spell cannot proceed
 12	A690	CastFieldSpellOrReportLowCeiling	Function	Prints the spell chant, plays its sound, validates the current map, and either applies the field spell or reports that the party bumped into the ceiling
 12	A6E8	FieldSpell_ForceFieldStateFF	Function	Sets field command state $6E41 to $FF and exits through the fixed engine
 12	A6F2	FieldSpell_SelectTransitionServiceCode	Function	Selects transition service code $C5 or $C9 and steps it by Y
 12	A714	FieldSpell_SetTransitionFlags60	Function	Sets transition flags $60 in save-state byte $627F after the map gate
-12	A721	FieldSpell_ShouldBlockFieldStart	Function	Reports whether current tileset and map state block battle entry
-12	A755	FieldSpell_RunFieldSpellGate	Function	Runs battle-entry validation and dispatches the blocked or success path
+12	A721	FieldSpell_ShouldBlockFieldStart	Function	Reports whether the current tileset and map state block the selected field spell
+12	A755	FieldSpell_RunFieldSpellGate	Function	Validates the current map and dispatches the blocked or successful field-spell path
 12	A773	FieldSpell_ShowFieldSpellBlockedPrompt	Function	Displays the blocked-entry prompt before returning through the fixed engine
-12	A783	FieldSpell_CheckFieldSpellGate	Function	Applies the map gate and service-$35 condition for entering battle
-12	A78C	FieldSpell_RunFieldSpellChoice	Function	Queries setup mode and routes to transition or table-driven entry setup
-12	A7D1	FieldSpell_RunFieldSpellChoiceFromScriptOffset2	Function	Rejects mode one, clears the operand index, and enters the shared setup path at script offset two
+12	A783	FieldSpell_CheckFieldSpellGate	Function	Applies the map gate and service-$35 condition for the selected field spell
+12	A78C	FieldSpell_RunFieldSpellChoice	Function	Queries field-spell mode and routes to transition or table-driven spell handling
+12	A7D1	FieldSpell_RunFieldSpellChoiceFromScriptOffset2	Function	Rejects mode one, clears the operand index, and enters the shared field-spell path at script offset two
 12	A7E3	FieldSpell_RunFieldSpellChoiceLatch	Function	Reloads the latched secondary mode and enters shared choice handling
-12	A7F9	FieldSpell_AccumulateFieldSpellData	Function	Sums counted setup data pairs and writes the resulting battle entry value
-12	A852	FieldSpell_ReturnToUpperEngine	Function	Shared setup failure tail that returns through the upper fixed engine
-12	A858	FieldSpell_CompareOperandAcrossWindow	Function	Compares the derived setup operand across an indexed service window
+12	A7F9	FieldSpell_AccumulateFieldSpellData	Function	Sums counted spell-data pairs and writes the resulting field-spell value
+12	A852	FieldSpell_ReturnToUpperEngine	Function	Shared field-spell failure tail that returns through the upper fixed engine
+12	A858	FieldSpell_CompareOperandAcrossWindow	Function	Compares the derived field-spell operand across an indexed service window
 12	A8B7	CurePartyMemberPoison	Function	Validates the selected poisoned party member, applies the poison cure, and prints the result
-12	A8D0	FieldSpell_RandomlyCommitFieldSpellOptionOne	Function	Requires encounter option one and an RNG gate before dispatching confirmation
+12	A8D0	FieldSpell_RandomlyCommitFieldSpellOptionOne	Function	Requires field-spell option one and an RNG gate before dispatching confirmation
 12	A8EE	RevivePartyMember	Function	Validates the selected fallen party member, applies revival, and prints the result
-12	A93B	FieldSpell_LatchFieldSpellOperands	Function	Loads primary and secondary setup operands while preserving A
-12	A94A	FieldSpell_ClearFieldSpellOperandIndex	Function	Clears X and invokes the setup operand helper
-12	A950	FieldSpell_ReadFieldSpellByteFromScript	Function	Reads one setup script byte from bank $13
-12	A957	FieldSpell_DisplayPromptAndCommitOperands	Function	Displays the setup prompt, commits mode operands, and finalizes selection
+12	A93B	FieldSpell_LatchFieldSpellOperands	Function	Loads primary and secondary field-spell operands while preserving A
+12	A94A	FieldSpell_ClearFieldSpellOperandIndex	Function	Clears X and invokes the field-spell operand helper
+12	A950	FieldSpell_ReadFieldSpellByteFromScript	Function	Reads one field-spell script byte from bank $13
+12	A957	FieldSpell_DisplayPromptAndCommitOperands	Function	Displays the field-spell prompt, commits its operands, and finalizes selection
 12	A974	FieldSpell_CheckEligibilityByMap	Function	Applies map, submap, chapter, and coordinate exclusions to field command
-12	AA1D	AdventureLog_InitializeAdventureLogDisplayState	Function	Initializes Adventure Log display state and builds mirrored slot data
-12	AA41	AdventureLog_RefreshPrimaryAdventureLogMirrors	Function	Synchronizes the Adventure Log signature into both mirrors and seeds slot flags
-12	AA5B	AdventureLog_BuildThreeSlotAdventureLogList	Function	Builds the three-slot Adventure Log list in $6BEC
-12	AA7F	AdventureLog_StoreAdventureLogSlotByte	Function	Stores A into Adventure Log slot list $6BEC at index $8A
+12	AA1D	AdventureLog_InitializeDisplayState	Function	Initializes Adventure Log display state and builds mirrored slot data
+12	AA41	AdventureLog_RefreshPrimaryMirrors	Function	Synchronizes the Adventure Log signature into both mirrors and seeds slot flags
+12	AA5B	AdventureLog_BuildThreeSlotList	Function	Builds the three-slot Adventure Log list in $6BEC
+12	AA7F	AdventureLog_StoreSlotByte	Function	Stores A into Adventure Log slot list $6BEC at index $8A
 12	AA85	EraseAdventureLog	Function	Erases the selected Adventure Log slot, rebuilds the slot list, and restores the log-selection display
-12	AAB7	AdventureLog_DispatchAdventureLogOperationByIndex	Function	Dispatches one of five indexed Adventure Log operation routines
-12	AAD4	AdventureLog_CommitAdventureLogBlockAndRestoreDisplay	Function	Copies the Adventure Log block, restores display state, and clears the active Adventure Log flag
-12	AAF0	AdventureLog_LoadAdventureLogSlotIndex	Function	Loads Adventure Log slot index $8A and reports indices at least three
-12	AAF9	AdventureLog_LoadAdventureLogSlotIndexPreservingPointer	Function	Loads Adventure Log slot index while preserving pointer $00-$01
-12	AB10	AdventureLog_WriteIndexedAdventureLogByte	Function	Loads and validates a Adventure Log index below eight before writing its byte
-12	AB1E	AdventureLog_StoreIndexedAdventureLogByteAndTail	Function	Stores A through the indexed record pointer and appends the header-length tail
-12	AB36	AdventureLog_CloneAdventureLogBlockAndMarkSlots	Function	Copies a Adventure Log block, seeds control bytes, and marks its eight records
-12	ABC1	AdventureLog_CopyAdventureLogBlockBetweenPointers	Function	Copies a variable-length Adventure Log block between pointers and restores slot-list state
-12	ABE9	AdventureLog_UpdateAdventureLogBlockConditionally	Function	Loads the slot index and dispatches special Adventure Log-block updates
+12	AAB7	AdventureLog_DispatchOperationByIndex	Function	Dispatches one of five indexed Adventure Log operation routines
+12	AAD4	AdventureLog_CommitBlockAndRestoreDisplay	Function	Copies the Adventure Log block, restores display state, and clears the active Adventure Log flag
+12	AAF0	AdventureLog_LoadSlotIndex	Function	Loads Adventure Log slot index $8A and reports indices at least three
+12	AAF9	AdventureLog_LoadSlotIndexPreservingPointer	Function	Loads Adventure Log slot index while preserving pointer $00-$01
+12	AB10	AdventureLog_WriteIndexedByte	Function	Loads and validates an Adventure Log index below eight before writing its byte
+12	AB1E	AdventureLog_StoreIndexedByteAndTail	Function	Stores A through the indexed record pointer and appends the header-length tail
+12	AB36	AdventureLog_CloneBlockAndMarkSlots	Function	Copies an Adventure Log block, seeds control bytes, and marks its eight records
+12	ABC1	AdventureLog_CopyBlockBetweenPointers	Function	Copies a variable-length Adventure Log block between pointers and restores slot-list state
+12	ABE9	AdventureLog_UpdateBlockConditionally	Function	Loads the slot index and dispatches special Adventure Log block updates
 12	AC01	AdventureLog_StoreSlotFlag10	Function	Writes flag $10 into Adventure Log slot state $6BD9,X
 12	AC05	AdventureLog_StoreSlotFlag40	Function	Writes flag $40 into Adventure Log slot state $6BD9,X
 12	AC09	AdventureLog_StoreSlotFlag20	Function	Writes flag $20 into Adventure Log slot state $6BD9,X
-12	AC22	AdventureLog_CopyAdventureLogPayloadToWorkBuffer	Function	Copies the selected Adventure Log payload into the destination record body
-12	AC39	AdventureLog_CopyAdventureLogPayloadChunk	Function	Copies one variable-length Adventure Log payload chunk
+12	AC22	AdventureLog_CopyPayloadToWorkBuffer	Function	Copies the selected Adventure Log payload into the destination record body
+12	AC39	AdventureLog_CopyPayloadChunk	Function	Copies one variable-length Adventure Log payload chunk
 12	AC53	AdventureLog_RestoreSaveSlotIndexAndCopyPayload	Function	Restores the Adventure Log index, rebuilds the source pointer, and completes payload copying
-12	AC73	AdventureLog_CheckAdventureLogHeaderMirror	Function	Checks the Adventure Log signature against both mirrors and refreshes them on a match
-12	AC8C	AdventureLog_CopyAdventureLogHeaderMirror	Function	Copies the Adventure Log signature into mirror buffers $6BBF and $6BCC
+12	AC73	AdventureLog_CheckHeaderMirror	Function	Checks the Adventure Log signature against both mirrors and refreshes them on a match
+12	AC8C	AdventureLog_CopyHeaderMirror	Function	Copies the Adventure Log signature into mirror buffers $6BBF and $6BCC
 12	AC9B	AdventureLog_BuildWorkspacePointerFromIndex	Function	Builds the Adventure Log workspace pointer from index $8A and initializes copy state
 12	ACBD	AdventureLog_ClassifyHeaderLengthMatch	Function	Classifies the working record by comparing its pointer with the sentinel block
 12	ACDF	AdventureLog_WriteHeaderLengthPair	Function	Writes Adventure Log header length bytes $12-$13 through the current record pointer
-12	ACF1	AdventureLog_CheckAdventureLogBodySentinel	Function	Checks whether the five-byte Adventure Log body still contains sentinel $4B
-12	AD03	AdventureLog_AdvanceAdventureLogPointer	Function	Advances the Adventure Log source pointer and decrements its remaining length
-12	AD15	AdventureLog_LoadAdventureLogBasePointer	Function	Loads the primary Adventure Log record base into pointer $00-$01
+12	ACF1	AdventureLog_CheckBodySentinel	Function	Checks whether the five-byte Adventure Log body still contains sentinel $4B
+12	AD03	AdventureLog_AdvancePointer	Function	Advances the Adventure Log source pointer and decrements its remaining length
+12	AD15	AdventureLog_LoadBasePointer	Function	Loads the primary Adventure Log record base into pointer $00-$01
 12	AD1A	AdventureLog_LoadIndexedBasePointer	Function	Loads the alternate Adventure Log base and applies the scaled Adventure Log index and offset
 12	AD34	AdventureLog_LoadAuxiliaryRecordPointer	Function	Loads the auxiliary Adventure Log record pointer into $02-$03
 12	AD3F	AdventureLog_LoadPrimaryRecordPointer	Function	Loads the primary Adventure Log record pointer into $02-$03
-12	AD4A	AdventureLog_ClearAdventureLogWorkBuffer	Function	Clears Adventure Log work buffer $0480-$04EF and seeds its descending pattern
-12	AD8C	FieldEvent_ApplyChapterFieldEventGate	Function	Applies chapter-specific battle entry gates and state side effects
-12	AE05	FieldEvent_FindModeOperandInTable	Function	Loads the indexed mode operand and enters the shared table search
-12	AE0D	FieldEvent_FindModeOperandPreservingIndex	Function	Runs the same mode operand search while preserving pointer state
-12	AE0F	FieldEvent_FindTableEntryByByte	Function	Searches the setup selector table and dispatches the matching handler
-12	AE23	FieldEvent_ReturnDefaultTableIndex	Function	Clears selection state and returns default table index eight
-12	AF04	FieldEvent_LoadFieldStateRowState	Function	Copies saved selection to $6F and seeds prompt mode $30
-12	AF0F	FieldEvent_DispatchFieldEventById	Function	Finds the setup event ID, stores its index, and jumps through the handler table
-12	AF30	FieldEvent_RunFieldStateConfirmationLoop	Function	Starts the setup selection confirmation loop
-12	AF36	FieldEvent_RunFieldStateConfirmationLoopFromReload	Function	Alternate entry into setup selection confirmation after state reload
-12	AF5A	FieldEvent_SeedFieldStatePromptOperands	Function	Builds selection prompt operands from selector $0B into $6F-$70
-12	AF73	FieldEvent_ProjectCurrentValueIntoPrompt	Function	Projects value $72 into saved selection and rebuilds prompt operands
-12	AF89	FieldEvent_RunFieldStateRefreshFlow	Function	Runs alternate selection confirmation with selector five and value $45
-12	AFA0	FieldEvent_HandleFieldStateConfirmResult	Function	Handles pending confirmation and copies the accepted fifteen-byte record into $0554
-12	AFF9	FieldEvent_StartPrimaryFieldChoicePrompt	Function	Starts the shared setup prompt flow with primary selector $11
-12	AFFD	FieldEvent_StartAlternateFieldChoicePrompt	Function	Starts the shared setup prompt flow with alternate selector $13
-12	B001	FieldEvent_RunDefaultFieldChoicePrompt	Function	Runs the default battle choice flow and commits its nonzero result or failure service
-12	B021	FieldEvent_InitializeFieldChoicePrompt	Function	Seeds prompt state from mode three and clears the extended result bytes
-12	B033	FieldEvent_RunBasicFieldChoice	Function	Runs the basic battle choice flow and commits its nonzero result
-12	B061	FieldEvent_RunExtendedFieldChoice	Function	Runs the extended battle choice flow and commits its nonzero result
-12	B074	FieldEvent_RunFieldChoiceWithSuccessEffect	Function	Runs the prompt-seeded battle choice and dispatches its success or failure effect
-12	B094	FieldEvent_RunFieldChoiceWithPostcheck	Function	Builds battle choice state, reads the secondary action index, and applies its follow-up availability check
-12	B0CD	FieldEvent_RunFieldChoiceWithPrimaryGate	Function	Checks the primary choice, builds secondary state, and chooses the resulting battle input behavior
-12	B107	FieldEvent_RunNestedFieldChoice	Function	Runs the primary battle choice followed by its nested secondary-action gate
-12	B14A	FieldEvent_ClearTransitionFlag0539	Function	Clears transition flag $0539 and conditionally clears save-state bit two
-12	B17B	FieldEvent_CountFieldStateIterationsInto6E	Function	Loads a service loop count and accumulates it into setup byte $6E
-12	B19B	FieldEvent_CheckKeeleonTriggerList	Function	Checks eight local Keeleon submap trigger coordinates and sets world-state bit zero on a match
-12	B1F6	FieldEvent_ForceFieldState7F	Function	Sets field command state $6E41 to $7F and enters the success tail
-12	B201	FieldEvent_HandleSanteemNightFieldGate	Function	Applies Santeem, time-of-day, coordinate, and save-state battle gates
-12	B270	FieldEvent_MirrorFieldStatePairAndValidate	Function	Mirrors primary selection bytes to scratch and validates the pair through its service
-12	B29F	FieldEvent_NotifyFieldStateState41AndReturnClear	Function	Dispatches selection-state notification $41 and returns carry clear
-12	B2AA	FieldEvent_HandleMintosFieldStateSwap	Function	At the Mintos submap-one coordinate trigger, swaps and updates selection bytes
-12	B2FF	FieldEvent_HandleBonmalmoFieldStateProgress	Function	At the Bonmalmo submap-one trigger, sets save-state selection progress bit zero
-12	B32E	FieldEvent_HandleEndorFieldStateUpdate	Function	At the Endor submap-six trigger, patches primary and secondary selection state
-12	B368	UseEvilFireOrFireOfSerenityAtLighthouse	Function	Handles the Lighthouse Evil Fire and Fire of Serenity event inside the entrance coordinate box
-12	B3BB	FieldEvent_HandleRosavilleEventIntro	Function	Runs the special encounter intro within the Rosaville coordinate box
+12	AD4A	AdventureLog_ClearWorkBuffer	Function	Clears Adventure Log work buffer $0480-$04EF and seeds its descending pattern
+12	AD8C	ItemUse_ApplyChapterGate	Function	Applies chapter-specific item-use gates and state side effects
+12	AE05	ItemUse_FindModeOperandInTable	Function	Loads the indexed item-use operand and enters the shared table search
+12	AE0D	ItemUse_FindModeOperandPreservingIndex	Function	Runs the same item-use operand search while preserving pointer state
+12	AE0F	ItemUse_FindHandlerById	Function	Searches the item-use ID table and dispatches the matching handler
+12	AE23	ItemUse_SelectDefaultHandlerIndex	Function	Clears item-use selection state and returns default handler index eight
+12	AF04	ItemUse_LoadSelectionRowState	Function	Copies the saved item selection to $6F and seeds prompt mode $30
+12	AF0F	ItemUse_DispatchHandlerById	Function	Finds the item-use ID, stores its index, and jumps through the handler table
+12	AF30	ItemUse_RunSelectionConfirmationLoop	Function	Starts the item-use selection confirmation loop
+12	AF36	ItemUse_RunSelectionConfirmationLoopFromReload	Function	Alternate entry into item-use confirmation after state reload
+12	AF5A	ItemUse_SeedSelectionPromptOperands	Function	Builds item-use prompt operands from selector $0B into $6F-$70
+12	AF73	ItemUse_ProjectCurrentValueIntoPrompt	Function	Projects value $72 into saved item selection and rebuilds prompt operands
+12	AF89	ItemUse_RunSelectionRefreshFlow	Function	Runs alternate item-use confirmation with selector five and value $45
+12	AFA0	ItemUse_HandleSelectionConfirmResult	Function	Handles item-use confirmation and copies the accepted fifteen-byte record into $0554
+12	AFF9	ItemUse_StartPrimaryChoicePrompt	Function	Starts the shared item-use prompt flow with primary selector $11
+12	AFFD	ItemUse_StartAlternateChoicePrompt	Function	Starts the shared item-use prompt flow with alternate selector $13
+12	B001	ItemUse_RunDefaultChoicePrompt	Function	Runs the default item-use choice flow and commits its nonzero result or failure service
+12	B021	ItemUse_InitializeChoicePrompt	Function	Seeds item-use prompt state from mode three and clears the extended result bytes
+12	B033	ItemUse_RunBasicChoice	Function	Runs the basic item-use choice flow and commits its nonzero result
+12	B061	ItemUse_RunExtendedChoice	Function	Runs the extended item-use choice flow and commits its nonzero result
+12	B074	ItemUse_RunChoiceWithSuccessEffect	Function	Runs the prompt-seeded item choice and dispatches its success or failure effect
+12	B094	ItemUse_RunChoiceWithPostcheck	Function	Builds item-use choice state, reads the secondary action index, and applies its follow-up availability check
+12	B0CD	ItemUse_RunChoiceWithPrimaryGate	Function	Checks the primary item choice, builds secondary state, and chooses the resulting input behavior
+12	B107	ItemUse_RunNestedChoice	Function	Runs the primary item choice followed by its nested secondary-action gate
+12	B14A	ItemUse_ClearTransitionFlag0539	Function	Clears item-use transition flag $0539 and conditionally clears save-state bit two
+12	B17B	ItemUse_CountSelectionIterationsInto6E	Function	Loads a service loop count and accumulates it into item-use byte $6E
+12	B19B	HandleKeeleonItemUseTrigger	Function	Checks eight local Keeleon item-use coordinates and sets world-state bit zero on a match
+12	B1F6	ItemUse_ForceState7F	Function	Sets item-use state $6E41 to $7F and enters the success tail
+12	B201	RestoreKingOfSanteemVoice	Function	Handles using the Birdsong Nectar on the King of Santeem, restores his voice, and updates the story state
+12	B270	ItemUse_MirrorSelectionPairAndValidate	Function	Mirrors the primary item-selection bytes to scratch and validates the pair through its service
+12	B29F	ItemUse_NotifyState41AndReturnClear	Function	Dispatches item-use state notification $41 and returns carry clear
+12	B2AA	HandleMintosItemUseStateSwap	Function	At the Mintos submap-one item-use trigger, swaps and updates selection bytes
+12	B2FF	HandleBonmalmoItemUseProgress	Function	At the Bonmalmo submap-one item-use trigger, sets save-state progress bit zero
+12	B32E	HandleEndorItemUseStateUpdate	Function	At the Endor submap-six item-use trigger, patches primary and secondary selection state
+12	B368	UseFireOfSerenityOnEvilFireAtLighthouse	Function	Uses the Fire of Serenity on the Evil Fire inside the Lighthouse entrance coordinate box
+12	B3BB	HandleRosavilleItemUseIntro	Function	Runs the Rosaville item-use animation inside its coordinate box
 12	B40E	UseFluteOfUncovering	Function	Uses the Flute of Uncovering, updates the field-event state, and waits for the reveal sequence
-12	B42B	FieldEvent_RunFieldEventEligibilityGate	Function	Combines map eligibility, blocked-entry, and time-of-day battle gates
-12	B464	FieldEvent_HandleWorldTriggerC22F	Function	Checks world coordinate $C2,$2F and save-state gates for the battle trigger
-12	B494	FieldEvent_HandleCascadeCaveFieldTrigger	Function	Checks the Cascade Cave entrance trigger and runs its success service path
-12	B4C1	FieldEvent_HandleIronSafeCaveFieldGate	Function	Applies the Iron Safe Cave battle gate and dispatches success or failure
-12	B4DC	FieldEvent_ForceFieldEventState32	Function	Sets setup state $6BEB to $32 and enters the success tail
-12	B4ED	FieldEvent_RunFieldIntroOverlayOrMode1Fallback	Function	Runs the gated overlay palette and display sequence or falls back to mode one
-12	B521	FieldEvent_ReadFieldChoiceValue	Function	Queries the current battle choice value and returns carry clear
-12	B526	FieldEvent_ReadPrimaryFieldStateIndex	Function	Reads the service value indexed by primary selection $6278
-12	B52C	FieldEvent_ReadSecondaryFieldStateIndex	Function	Reads the service value indexed by secondary selection $627A
-12	B533	FieldEvent_CheckPrimaryFieldStateAgainstCurrentValue	Function	Compares a saved selector with the current secondary selection service result
-12	B540	FieldEvent_QuerySecondaryFieldChoice	Function	Queries the secondary battle choice using saved index $627A
-12	B547	FieldEvent_CopyPrimaryFieldStateToSecondaryIfAllowed	Function	Copies primary selection $6278 to $627A when the service gate permits it
-12	B55C	FieldEvent_CheckSecondaryFieldStateBelowEight	Function	Queries secondary selection state and compares its result with eight
-12	B565	FieldEvent_SelectFieldMode3	Function	Selects field command mode three
-12	B569	FieldEvent_SelectFieldMode2	Function	Selects field command mode two
-12	B56D	FieldEvent_SelectFieldMode1	Function	Selects field command mode one
-12	B571	FieldEvent_SelectFieldMode0	Function	Selects field command mode zero
-12	B5EF	FieldEvent_WaitTwentyFrames	Function	Waits twenty frames through the shared frame-delay routine
+12	B42B	ItemUse_RunEligibilityGate	Function	Combines map eligibility, blocked-use, and time-of-day gates for the selected item
+12	B464	HandleWorldItemUseTriggerC22F	Function	Checks world coordinate $C2,$2F and save-state gates for the item-use trigger
+12	B494	HandleCascadeCaveItemUseTrigger	Function	Checks the Cascade Cave entrance and runs the matching item-use success path
+12	B4C1	HandleIronSafeCaveItemUseGate	Function	Applies the Iron Safe Cave item-use gate and dispatches success or failure
+12	B4DC	ItemUse_ForceState32	Function	Sets item-use state $6BEB to $32 and enters the success tail
+12	B4ED	ItemUse_RunIntroOverlayOrMode1Fallback	Function	Runs the gated item-use overlay and display sequence or falls back to mode one
+12	B521	ItemUse_ReadChoiceValue	Function	Queries the current item-use choice value and returns carry clear
+12	B526	ItemUse_ReadPrimarySelectionIndex	Function	Reads the service value indexed by primary item selection $6278
+12	B52C	ItemUse_ReadSecondarySelectionIndex	Function	Reads the service value indexed by secondary item selection $627A
+12	B533	ItemUse_CheckPrimarySelectionAgainstCurrentValue	Function	Compares a saved item selector with the current secondary-selection service result
+12	B540	ItemUse_QuerySecondaryChoice	Function	Queries the secondary item-use choice using saved index $627A
+12	B547	ItemUse_CopyPrimarySelectionToSecondaryIfAllowed	Function	Copies primary item selection $6278 to $627A when the service gate permits it
+12	B55C	ItemUse_CheckSecondarySelectionBelowEight	Function	Queries secondary item-selection state and compares its result with eight
+12	B565	ItemUse_SelectMode3	Function	Selects item-use mode three
+12	B569	ItemUse_SelectMode2	Function	Selects item-use mode two
+12	B56D	ItemUse_SelectMode1	Function	Selects item-use mode one
+12	B571	ItemUse_SelectMode0	Function	Selects item-use mode zero
+12	B5EF	ItemUse_WaitTwentyFrames	Function	Waits twenty frames through the shared frame-delay routine
 12	B6DE	BattleSetup_ApplyMapTransitionRules	Function	Applies map-specific branches or parses the battle transition rule stream
 12	B856	BattleSetup_CheckPlayerWithinPackedTransitionBounds	Function	Tests player local coordinates against the packed inclusive transition rectangle
 12	BA3E	BattleSetup_StoreTextInputBuffer	Function	Writes staged text input bytes to the configured destination, including the eight-byte mode
@@ -2137,7 +2137,7 @@
 15	A870	EffectCallback_RunCasinoSpendFlow	Function	Runs the casino spending loop: loads the candidate list, checks the player's coin balance and cap, applies the selected cost, and repeats until the exit path fires
 15	A960	EffectCallback_LoadPrimaryItemCandidateList	Function	Selects the primary item-list policy, loads the current list length, and populates its candidate buffer
 15	A96D	EffectCallback_CountMatchingItemCandidates	Function	Counts how many entries in the current candidate list resolve to lookup value $69
-15	A99A	EffectCallback_RunSmallMedalRewardFlow	Function	Loads the mode-one candidate list, updates SaveSmallMedals, and drives the lookup-$3F/$40 reward exchange flow
+15	A99A	RunSmallMedalKingRewardExchange	Function	Runs the Small Medal King's collection and reward exchange, updates SaveSmallMedals, and handles recipient selection
 15	AA6E	EffectCallback_FinalizeEffectWithStatusC0	Function	Runs BRK service $00,$7F and then forces interpreter status $C0
 15	AA74	EffectCallback_CompleteDelayedEffectAndSetStatus	Function	Runs the short-delay helper, invokes BRK service $0A,$DF, and then sets interpreter status $01
 15	AA7D	EffectCallback_RunEffectOperationAndSetStatus	Function	Invokes BRK service $14,$8F and then sets interpreter status $01
@@ -2152,12 +2152,12 @@
 15	AAD9	EffectCallback_RunBaseLoopThenSetFlag0D	Function	Runs the base lookup-$04 path, loops through the one-offset path while lookup-$48 stays set, then lands on the two-offset path, sets BRK flag $0D, and finishes with status $01
 15	AAF5	EffectCallback_SetFlag0C	Function	Invokes BRK service $07,$CF with value $0C
 15	AAFB	EffectCallback_ProcessIndexedEffectHandlerChain	Function	Stores A in $F9, runs the base lookup-$04 path, and then routes through follow-up lookup-$04 offsets based on lookup-$48 and lookup-$65/$2E outcomes
-15	AB30	EffectCallback_WaitForSelectionStateToggle	Function	Refreshes lookup-$43 state, waits until lookup-$48 clears and then sets again, and finally returns through the shared wait path
+15	AB30	RunTaloonLighthouseRequestDialogue	Function	Runs Taloon's request to extinguish the Evil Fire, explains the Fire of Serenity, and waits through the dialogue choices
 15	AB55	EffectCallback_SetSlot3Command11ThenFlag15	Function	Writes command $11 into scripted slot three, runs the local BRK gate, and then enters the long-delay helper with BRK flag $15
 15	AB65	EffectCallback_CopyResolvedEffectValueAndSelectEntry	Function	Copies the resolved effect value into $F9 and selects entry $7B through service $2E,$73
 15	AB78	EffectCallback_PromoteEffectWhenMapStateSet	Function	Runs the base lookup-$04 path and promotes to the one-offset path when BRK $62,$23,$40 returns at least one before landing on the two-offset path
 15	AB89	EffectCallback_InitializeAndProcessEffectChoice	Function	Presets $DA to $FF and then enters the shared lookup-$41 branch flow at $AB8B
-15	AB8B	EffectCallback_ProcessEffectChoice	Function	Processes the $DA-driven lookup-$41 branch flow, including the local threshold checks, short-delay path, and message exits
+15	AB8B	RunAlenaPartyJoinAndPadequiaDialogue	Function	Runs the Padequia and Alena-party dialogue branches, including Alena's party joining the Hero
 15	ABCB	EffectCallback_RouteSpecialActorThreshold	Function	Checks for the special actor type and variant, then routes the threshold-five result between the first two effect handlers
 15	ABEE	EffectCallback_Wait180FramesThenSetFlag0E	Function	Runs the long-delay helper with BRK flag $0E and then sets interpreter status $01
 15	ABF3	EffectCallback_Wait180FramesThenSetFlag0F	Function	Runs the long-delay helper with BRK flag $0F and then sets interpreter status $01
@@ -2175,8 +2175,8 @@
 15	ACB5	EffectCallback_Check6299ClassSetForState00Or01	Function	Checks whether the low six bits of $6299 are in the {2,3,7} class set and chooses the zero-offset or one-offset lookup path accordingly
 15	ACD2	EffectCallback_BranchOn6299ClassSetAndE9	Function	Loads Y from $E9, runs the BRK $1E,$EB,$40 gate, and then enters the shared 6299 class-set branch flow at $ACDB
 15	ACDB	EffectCallback_Process6299ClassSetAndE9Branch	Function	Combines the low six bits of $6299 with the $E9 selector to choose a direct lookup-$04 offset before setting BRK flag $1F
-15	AD19	EffectCallback_RunInventoryEntrySelectionLoop	Function	Runs inventory-entry selection until a valid entry is chosen or a terminal message path exits
-15	AD64	EffectCallback_RefreshMapAndWaitForSelectionClear	Function	Refreshes lookup-$43 state, waits for lookup-$48 to clear and then set again, and exits through the shared wait path
+15	AD19	RunGardenburHostageSelection	Function	Runs the Gardenbur hostage-change prompts until an eligible party member is selected or the exchange is canceled
+15	AD64	RunGardenburQueenTrial	Function	Runs the Gardenbur Queen's trial sequence, refreshing the map and advancing each selection-state phase
 15	AD8A	EffectCallback_Wait180FramesThenSetFlag1D	Function	Runs the long-delay helper with BRK flag $1D and then sets interpreter status $01
 15	AD8F	EffectCallback_DispatchActorTargetPolicy	Function	Dispatches between two actor-type target policies, including the special subtype-$12 exit, before handing off to fixed-bank handlers
 15	ADB0	EffectCallback_RunEffectStatesUntilSelectionClears	Function	Runs the zero-offset path, optionally the one-offset path, then the two-offset path, loops the three-offset path while lookup-$48 stays set, and finally lands on the four-offset path
@@ -2189,7 +2189,7 @@
 15	AEBC	EffectCallback_ClearF9ToFbAndRunState00	Function	Clears $F9-$FB and then enters the zero-offset lookup path
 15	AECA	EffectCallback_CopyHeroNameThenRunState00	Function	Copies the hero name into $0554-$0558 through $B067 and then enters the zero-offset lookup path
 15	AED0	EffectCallback_ProcessEffectAvailabilityBranches	Function	Processes the progression gate and effect-availability tests to route among six effect handlers
-15	AF0F	EffectCallback_RunBaseThenSetFlag29IfEb08Clear	Function	Runs the base lookup-$04 path and, when the EB08 gate is clear, sets BRK flag $29 before forcing interpreter status $01
+15	AF0F	RunLuciaFarewell	Function	Prints Lucia's farewell, applies the departure effect, and records story flag $29 when the event gate permits it
 15	AF24	EffectCallback_ProcessPackedWorldState	Function	Runs the base effect handler, branches on packed world-state high bits, invokes the repeated effect helper, and finishes across four follow-up handlers
 15	AF65	EffectCallback_Wait180FramesThenSetFlag25	Function	Runs the long-delay helper with BRK flag $25 and then sets interpreter status $01
 15	AF69	EffectCallback_Wait180FramesThenSetFlag26	Function	Runs the long-delay helper with BRK flag $26 and then sets interpreter status $01
@@ -2199,7 +2199,7 @@
 15	AFB4	EffectCallback_CompleteDelayedInteractionAndSetStatus	Function	Runs the short-delay helper, invokes BRK service $11,$DF, and then sets interpreter status $01
 15	AFBD	EffectCallback_CopyActorFieldAndRender	Function	Copies the actor source field from entity slot one to zero, applies command and direction state, renders entity six, and waits for NMI
 15	B012	EffectCallback_WaitShortThenSetFlag31	Function	Runs the short-delay helper with BRK flag $31 and then sets interpreter status $01
-15	B017	EffectCallback_BranchOnEffectFlag	Function	Tests BRK $62,$23,$49 and the follow-up lookup-$63 gate to choose between the BF06 and BF0E branches
+15	B017	ShowHectorWorkingAtTunnel	Function	Prints Hector's tunnel-work dialogue and routes the interaction according to its completion flag
 15	B030	PlayJingle10AndResumeMapMusic	Function	Plays one-shot jingle $10, waits for audio completion, and resumes current map music
 15	B036	PlayJingle33AndResumeMapMusic	Function	Plays one-shot jingle $33, waits for audio completion, and resumes current map music
 15	B03C	PlayJingle2DAndResumeMapMusic	Function	Plays one-shot jingle $2D, waits for audio completion, and resumes current map music
@@ -2213,7 +2213,7 @@
 15	B0BB	EffectCallback_AbortWhenEffectChoiceMissing	Function	If BRK $62,$23,$41 returns zero, invokes lookup $50 and forces the local abort path before unwinding the caller stack
 15	B0CE	EffectCallback_WaitShortThenSetFlagAndStatus01	Function	Runs the short-delay helper, invokes BRK $07,$CF with the supplied flag, and stores interpreter status $01
 15	B0D7	EffectCallback_Wait180FramesThenSetFlagAndStatus01	Function	Runs the long-delay helper, invokes BRK $07,$CF with the supplied flag, and stores interpreter status $01
-15	B0E6	EffectCallback_ProcessMapDependentDaDispatch	Function	Processes the DA selector against tileset, map, submap, and lookup gates and dispatches the surviving cases through the B1B3/B1D1 table pair
+15	B0E6	RunCaptivePrisonerRescueDialogue	Function	Runs the captive prisoners' plea and rescue branches, including the selected prisoner's disappearance
 15	B1EF	EffectCallback_LoadItemCandidatesForTargetPolicy	Function	Loads the item candidates selected by target policy $07C5 and appends context-specific entries
 15	B243	EffectCallback_AppendSpecialCandidates	Function	Appends the special A479 entries when the current map and mode satisfy the carry test at $B28C
 15	B28C	EffectCallback_TestMap16Sub0Mode1	Function	Returns carry set only for map $16, submap $00, in candidate-list mode one
@@ -3383,8 +3383,8 @@
 0F	D76E	LowerFixed_MoveAndRenderMapObject	Function	Commits facing coordinates, advances sub-tile position, saves coordinates when required, and renders the object
 0F	D8AB	LowerFixed_DispatchStandardMapObjectCommand	Function	Dispatches a nonnegative map-object opcode through the standard command table
 0F	D910	LowerFixed_SetRotatedEntityFacing	Function	Normalizes and stores a rotated facing direction, advances the script, and yields
-0F	D974	LowerFixed_ClearEntityMotionFlagAndYield	Function	Clears entity motion bit $80 and returns through the map-object command yield path
-0F	D99D	LowerFixed_StoreEntityMotionTimerAndActivate	Function	Stores the entity motion timer, marks motion active, and yields the command dispatcher
+0F	D974	LowerFixed_ActivateMapObjectAndYield	Function	Clears the entity hidden bit and returns through the map-object command yield path
+0F	D99D	LowerFixed_StoreEntityMotionTimerAndHide	Function	Stores the entity motion timer, sets the entity hidden bit, and yields the command dispatcher
 0F	DC9F	LowerFixed_MoveEntityTowardExplicitTarget	Function	Builds valid directions toward explicit target coordinates and selects the next facing
 0F	DDF0	LowerFixed_ReturnFromMapObjectCommand	Function	Unwinds the nested map-object dispatcher frame and returns to its caller
 0F	DE12	LowerFixed_RestoreMapObjectLoopPointerBody	Function	Restores the saved entity loop script pointer and resumes command dispatch
@@ -3411,8 +3411,8 @@
 1F	D76E	MoveAndRenderMapObject	Function	Commits facing coordinates, advances sub-tile position, saves coordinates when required, and renders the object
 1F	D8AB	DispatchStandardMapObjectCommand	Function	Dispatches a nonnegative map-object opcode through the standard command table
 1F	D910	SetRotatedEntityFacing	Function	Normalizes and stores a rotated facing direction, advances the script, and yields
-1F	D974	ClearEntityMotionFlagAndYield	Function	Clears entity motion bit $80 and returns through the map-object command yield path
-1F	D99D	StoreEntityMotionTimerAndActivate	Function	Stores the entity motion timer, marks motion active, and yields the command dispatcher
+1F	D974	ActivateMapObjectAndYield	Function	Clears the entity hidden bit and returns through the map-object command yield path
+1F	D99D	StoreEntityMotionTimerAndHide	Function	Stores the entity motion timer, sets the entity hidden bit, and yields the command dispatcher
 1F	DC9F	MoveEntityTowardExplicitTarget	Function	Builds valid directions toward explicit target coordinates and selects the next facing
 1F	DDF0	ReturnFromMapObjectCommand	Function	Unwinds the nested map-object dispatcher frame and returns to its caller
 1F	DE12	RestoreMapObjectLoopPointerBody	Function	Restores the saved entity loop script pointer and resumes command dispatch
@@ -3464,7 +3464,7 @@
 12	8180	PrintBattleMessage	Function	Decodes and remaps the battle message, waits for configured text timing, updates message state, prints it, and latches its delay
 12	8221	RemapMonsterArenaDefeatMessage	Function	Replaces battle message $001B, passes away, with Monster Arena message $006B, was defeated, for group zero
 12	83F1	NormalizeBattleSetupHandlerField	Function	Normalizes a signed setup handler field through the masked header table while preserving direct values
-12	9E76	ScanBattleSetupSelectionMatches	Function	Loads selection tables and scans the combatant mask for eligible matches when selection index is below five
+12	9E76	CheckNewlyLearnedSpells	Function	For spell-learning characters, loads their spell tables and checks each spell against the newly reached level
 12	A4BA	WriteBattleSetupFieldTail	Function	Writes setup operation field seven and finalizes the current record update
 12	A79F	RunBattleEntryChoiceScript	Function	Reads two setup-script operands, computes the choice value, presents it, and waits for acknowledgement
 12	AD1C	ComputeIndexedBattleSetupPointer	Function	Builds an indexed Adventure Log-record pointer from base table data and Adventure Log index $8A
@@ -3698,11 +3698,11 @@
 1C	AD1E	CacheTileUnderMapEntity	Function	Reads and stores the map tile beneath entity X
 1C	AD32	ApplyChapterSpecificEntitySuppression	Function	Matches map/submap records and hides the configured entity when the chapter does not match
 1C	AD5F	DispatchMapEntityEventById	Function	Dispatches map event A through the fifty-one-entry pointer table
-1C	AD6E	RunMapEntitySceneTransition05	Function	Runs presentation five, positions event entities, executes dialogue, and starts presentation $8F phase four
+1C	AD6E	RunSaroShadowDefeatScene	Function	Runs Saro's Shadow's defeat speech, removes the defeated entities, and begins the freed-children follow-up presentation
 1C	ADCA	ActivateEntitiesTwoThroughFourAndStart85	Function	Activates entities two through four, sets state $6280 bit $40, and starts presentation $85
 1C	ADF0	RunScriptedFourEntityScene	Function	Runs a multi-stage four-entity scene, updates local and world coordinates, and resets time of day
 1C	AEDF	PositionEventEntityBesidePlayer	Function	Places entity X at horizontal coordinate Y on the player's row with direction A and refreshes entity state
-1C	AEFC	RunMapEventVariantSequence	Function	Selects a presentation from state $6287, runs variant-specific dialogue, and activates the resulting entities
+1C	AEFC	RunEndorTournamentRoundSequence	Function	Runs Alena's Endor tournament victory, Medical Herb, next-opponent, and final-match dialogue branches
 1C	AFD7	LoadMapEventScriptOffsetPlusFour	Function	Adds four to A before selecting and copying a map-event script record
 1C	AFDA	LoadMapEventScriptRecord	Function	Offsets script selector A by $1B, invokes service $04/$B7, and copies its record to $0554
 1C	AFF4	RunEntitySourceSwapScene	Function	Starts default presentation, swaps entity-one/two source IDs, updates directions, and activates entity three
@@ -3740,7 +3740,7 @@
 1C	B652	InitializeCoordinateSelectedScene	Function	Activates entities zero through three and loads eight presentation parameters selected by player position
 1C	B6E8	ActivateEntityTwelveAndPresent	Function	Activates entity twelve and starts default map presentation
 1C	B6F2	RunPresentation12AndSetFlags	Function	Starts presentation $12 and sets save flags $1D bit $40 and $0E bit eight
-1C	B6FB	PositionPlayer05_08AndRunScene	Function	Moves player/entity zero to $05,$08, starts presentation $88, and runs the scripted transition
+1C	B6FB	RunGardenburThiefSurrenderScene	Function	Positions the party for the Gardenbur thief's surrender, prints his confession, and runs the scripted transition
 1C	B733	RunSelectedWorldMapEntityTransition	Function	Selects a party entity, saves presentation state, renders it, and runs the selected world transition
 1C	B78E	NormalizeWorldMapSelectionId	Function	Maps state $6299 to a bounded world-map selection ID with special values $0E and $14
 1C	B7A5	RunMap1BTransitionSequence	Function	Runs the multi-stage map $1B transition and branches on save flag $1D bit one
@@ -3765,7 +3765,7 @@
 1C	BA38	RunSecondBossDeathSpeechContinuation	Function	Redraws entity six for the second boss death speech and runs its completion animation
 1C	BA64	RunThirdBossDeathSpeech	Function	Runs the third boss death speech and entity-six death animation
 1C	BA99	RunFourthBossDeathSpeech	Function	Runs the fourth boss death speech and entity-six death animation
-1C	BACE	RunThreePulseMapSceneEffect	Function	Runs three presentation pulses separated by ten-frame waits
+1C	BACE	RunBarrierShieldBreakingScene	Function	Runs the three pulses for the scene where one of the barrier shields breaks
 1C	BAE5	ActivateEntityTwoAndPresentation8F	Function	Turns entity two, runs dialogue $6D, activates entity zero, and starts default presentation
 1C	BB02	RunFlag20EntityTwoTransition	Function	When flag $20 bit eight is clear, turns entity two, runs transition $0F, hides entity zero, and clears presentation
 1C	BB3F	RunMasterDragonEndingSpeech	Function	Runs Master Dragon's ending speech, starts the ending presentation, resets time and tileset, and positions the Hero for the finale
@@ -3919,7 +3919,7 @@
 1D	9F51	PlaceMapFormationTile	Function	Places tile A at X,Y and handles the edge-column companion placement at columns two and $0D
 1D	9F79	PlaceConditionalMapFormationTile	Function	Adjusts X according to save flags $1F bits one, two, and $40 before placing tile A
 1D	9F8F	LoadMapEntityFormationTemplate	Function	Copies one of three twenty-four-byte formation templates to $7664 according to state flags
-1D	9FF9	HandleMapTriggerNearEntityRow0B	Function	Handles the row-$0B trigger near X $06-$08, updates save flag $26 bit eight, and starts presentation $8F
+1D	9FF9	OperateColossusLever	Function	Handles the Colossus lever trigger, updates save flag $26 bit eight, and starts presentation $8F
 1D	A04E	CompleteMapTriggerSequence	Function	Sets save flag $0A bit four, invokes service $30/$07, and returns result value six in $51
 1D	A05D	RunMapEventResource76Sequence	Function	Runs dialogue and presentation services for resource $76 and returns the resulting event branch in $51
 1D	A097	StartPresentationAndCopyEntityCounters	Function	Starts presentation $8F and copies entity fifteen's counter pair to entities seven and eight
@@ -3956,7 +3956,7 @@
 1D	A443	HideMapEntityOne	Function	Sets the hidden bit on entity one and returns carry set
 1D	A44D	CompleteMapEventAndClearPresentation	Function	Runs the event completion helper, sets save flag $08 bit $20, and clears presentation ID $0530
 1D	A45B	HandleEntityZeroTriggerAcrossColumns10To14	Function	Handles the north-facing entity-zero trigger at Y=$03,X=$10-$14 and updates save flag $0F bit one
-1D	A4A8	StartEntityTransferAtRow17	Function	At entity-zero row $17, starts presentation $8F and transfers one or two queued entities into active slots
+1D	A4A8	RunKidnappedChildMotherReunion	Function	At entity-zero row $17, transfers the rescued child and prints the reunion with their mother
 1D	A509	SynchronizePlayerWithEntityZero	Function	Copies entity-zero target coordinates into current coordinates and player position, then clears movement state $3E
 1D	A51F	ActivateEntityFromQueuedSlot	Function	Copies queued coordinates from slot Y plus one to active entity X, hides the queued slot, and advances Y
 1D	A53E	UpdateMapEventActorState	Function	Preserves actor state $51 while invoking map-event service $12/$5F and returns carry set
@@ -4058,7 +4058,7 @@
 1D	B4E3	TestResourceAndReturn	Function	Tests resource A through the common selection helper and returns its carry result
 1D	B4E7	TestResourceOrUnwindEvent	Function	Invokes resource service $31/$73 and unwinds the event when unavailable or not negative
 1D	B4F6	TransitionWhenSelectedEntityAdjacent	Function	When entity $51 is orthogonally adjacent to entity zero, transitions to submap zero at $0B,$15
-1D	B54E	RunPartyMember0EMapEvent	Function	Finds party member ID $0E, transfers its entity to slot two, and starts presentation $85
+1D	B54E	ReviveLuciaAndReturnHerToZenithianCastle	Function	Finds Lucia in the party, revives her when required, returns her to Zenithian Castle, and runs her farewell
 1D	B5D5	RunMapEventDialogue2A	Function	Preserves $51 while invoking dialogue service $2A/$07 and returns carry clear
 1D	B5E2	StartPresentationAtColumns14_15Row04	Function	Starts presentation $8F when player X is $14 or $15 and Y is four
 1D	B5F9	StartMapTileEventPresentation	Function	Starts presentation $84 when the player reaches tile $07,$07
@@ -4214,9 +4214,9 @@
 1E	9290	ResolveMapBoundaryTransition	Function	Resolves transition service state, applies map-specific coordinate correction, and stores world coordinates
 1E	92E3	InitializeMapAfterTransition	Function	Resets transition state, refreshes display, and enters the map initialization sequence
 1E	92EC	ResetMapStateAfterTransition	Function	Clears local-map state, applies chapter defaults, restores player/entity coordinates, and resets map flags
-1E	9485	RunChapterSpecificMapEvents	Function	Runs the chapter-two or chapter-four map event handlers when the game is in world-map mode
+1E	9485	RunChapter3And5WorldMapEvents	Function	Runs the displayed Chapter 3 and Chapter 5 world-map event handlers
 1E	94A4	RunChapter3LaurentDeparture	Function	During displayed Chapter 3, runs Laurent's departure once the day counter reaches five and the service gates pass
-1E	94D7	RunChapter3VehicleDepartureEvent	Function	During displayed Chapter 3, runs the vehicle-gated companion departure once the day counter reaches five
+1E	94D7	RunChapter3StromDeparture	Function	During displayed Chapter 3, runs Strom's departure once the day counter reaches five
 1E	94FC	RunChapter5PanonDeparture	Function	During displayed Chapter 5, runs Panon's departure when save flag $629B and the event service gates are active
 1E	951C	RunChapter5HectorDeparture	Function	During displayed Chapter 5, runs Hector's departure when save flag $6299 and its service checks are active
 1E	955F	RunMapEventSelector0A	Function	Runs event service $13/$DB/$BF and dispatches event selector $0A
@@ -4256,10 +4256,10 @@
 1E	9A85	RunMapPartyPresentationByClass	Function	Builds the presentation buffer for class one or two and runs its rendering service sequence
 1E	9ACA	AccumulateMapEntityClassCounts	Function	Adds the current entity's class contribution to counters $52-$53 and increments active count $60
 1E	9B08	ApplyMapEntityClass4Flag	Function	Invokes class-four helper $B157 when party-state bit $08 is set
-1E	9B1C	BuildAndPresentEligibleMapPartyList	Function	Builds the eligible party entity list, renders each entry, and runs the chapter-gated follow-up presentation
+1E	9B1C	ReportPartyDefeatAndPresentEligibleMembers	Function	Prints the member or party defeat message, builds the eligible party entity list, and runs the follow-up presentation
 1E	9C13	UpdateSpecialTilesetCandidateAtWorldRegion	Function	Activates or clears the special tileset candidate and repositions entities for the bounded world-map region
 1E	9C51	ActivateSpecialTilesetAndRecenterEntities	Function	Activates tileset candidate one, saves prior coordinates, and recenters player and entity coordinate arrays
-1E	9D05	RunMapEntityDirectionFlipAnimation	Function	Initializes target coordinates, renders sixteen motion frames, flips entity directions, and marks save state complete
+1E	9D05	RunBreyAndCristoJoinPartyScene	Function	Runs the map-entity animation for Brey and Cristo joining Alena's party and records completion
 1E	9D8A	LoopMapEntityTargetAnimation	Function	Repeatedly advances target entities and renders frames until a target helper exits the loop
 1E	9D93	AdvanceAndRenderMapEntityFrame	Function	Updates map state, renders party entities, waits for NMI, and increments animation phase $3C
 1E	9D96	RenderMapEntityFrameAndAdvancePhase	Function	Renders party entities, waits for NMI, and increments animation phase $3C
@@ -4292,7 +4292,7 @@
 1E	A296	CopySelectedMapPaletteRow	Function	Selects a palette row and copies twelve bytes from $A2E3 into $05FD-$0608
 1E	A2A8	SelectMapPaletteRow	Function	Selects the time-of-day palette row or returns the current local palette byte
 1E	A34F	InitializeChapterMapState	Function	Runs the chapter setup services, selects initial direction, loads chapter map state, and initializes presentation
-1E	A3BA	RunChapterMapInteractionSetup	Function	Preserves caller registers while running chapter map setup, entity initialization, and interaction prompts
+1E	A3BA	RunChapter2TournamentRecoveryDialogue	Function	Runs Cristo and Brey's post-tournament recovery advice for Alena and prepares the chapter map state
 1E	A447	TestPrimaryMapStateBits	Function	Returns bits $60 from map-state byte $6BE9
 1E	A44D	TestSecondaryMapStateBits	Function	Returns bits $60 from map-state byte $6BE8
 1E	A461	EnterChapterMapScene	Function	Switches to world-map state, initializes party entities and presentation mask, and prepares the scene direction
@@ -4358,7 +4358,7 @@
 1E	AEEE	TestMapTransitionAllowed	Function	Returns carry clear only when the local-map transition service rejects selector A
 1E	AFE0	HandleSpecialMapExitTransition	Function	Handles special exits for maps $2E and $37, fades entities, and reinitializes the destination map
 1E	B02F	StartRandomMapTransformation	Function	Seeds transform countdown $78 and selects the transformed shape through the bounded map-state lookup
-1E	B0AD	RunMapPartySlotSixEvent	Function	Runs the scripted slot-six event, allocates an empty party position, and updates map entity state
+1E	B0AD	RunPadequiaRecoveryAndAlenaPartyJoinEvents	Function	Runs Cristo's Padequia recovery and the later dialogue where Alena's party joins the Hero
 1E	B148	HideMapEntityCoordinateCopies	Function	Writes $80 to all four coordinate copies for entity offset X
 1E	B157	ApplyPartyCharacterRecordOperation	Function	Selects a party character record and dispatches add, subtract, test, flag, or increment operation A
 1E	B1CD	LoadSelectedCharacterRecordFlags	Function	Loads byte zero from the character record selected in pointer $79-$7A
@@ -4699,9 +4699,9 @@
 0F	C7FA	LowerFixed_SubtractByteFromPointerEntry	Function	Compatibility entry that executes a NOP before subtracting A from the pointer selected by X Byte-identical lower fixed-bank implementation.
 0F	C913	LowerFixed_PreserveRegistersAndRotateOam	Function	Preserves X and Y while advancing the OAM block-rotation animation Byte-identical lower fixed-bank implementation.
 0F	C91F	LowerFixed_RotateAnimatedOamBlocks	Function	Swaps alternating forty-eight-byte OAM blocks and advances the ten-phase rotation index Byte-identical lower fixed-bank implementation.
-0F	C9ED	LowerFixed_UpdateMapFrameSystems	Function	Updates animation, controller state, map input, entity scripts, rendering, timing, and party state for one frame Byte-identical lower fixed-bank implementation.
-0F	CA17	LowerFixed_WaitForButton04Release	Function	Polls input until controller bit $04 is released Byte-identical lower fixed-bank implementation.
-0F	CA21	LowerFixed_UpdatePlayerMapInput	Function	Applies the active input-mode mask and updates movement, actions, direction, and interaction timing Byte-identical lower fixed-bank implementation.
+0F	C9ED	LowerFixed_RunFieldFrame	Function	Runs one field-engine frame of animation, input, movement, entity scripts, rendering, timing, and party state Byte-identical lower fixed-bank implementation.
+0F	CA17	LowerFixed_WaitForSelectRelease	Function	Polls controller input until the Select-button pressed bit is clear Byte-identical lower fixed-bank implementation.
+0F	CA21	LowerFixed_ProcessScheduledFieldInput	Function	Uses the configured frame mask to schedule map movement, action, direction, and interaction updates Byte-identical lower fixed-bank implementation.
 0F	CA41	LowerFixed_ResolveMapMovementInput	Function	Selects scripted, vehicle-derived, repeated, or live directional input and updates party movement mode Byte-identical lower fixed-bank implementation.
 0F	CABE	LowerFixed_ResetPartyFollowerMotionSlot	Function	Clears one follower motion state, copies saved coordinates, and marks its entity slot inactive Byte-identical lower fixed-bank implementation.
 0F	CADF	LowerFixed_SetInputModeAndReadControllers	Function	Stores input mode A, sets its repeat threshold to $20, and polls input unless suppressed Byte-identical lower fixed-bank implementation.
@@ -4723,7 +4723,7 @@
 0F	CDDC	LowerFixed_AdvanceTimeOfDayClock	Function	Randomly advances time of day, wraps at $CC, and increments day counters Byte-identical lower fixed-bank implementation.
 0F	CE09	LowerFixed_ProcessMapInputAndEvents	Function	Processes movement completion, terrain events, scripted paths, interaction handlers, and frame exit Byte-identical lower fixed-bank implementation.
 0F	CE72	LowerFixed_FinishScriptedMovement	Function	Clears the pending movement state and dispatches its stored script command and argument
-0F	CEA9	LowerFixed_HandleMapLoopExitInput	Function	Records stack position and invokes exit service when fixed state bit $40 or input bit $08 is active Byte-identical lower fixed-bank implementation.
+0F	CEA9	LowerFixed_OpenFieldMenuOnStart	Function	Records the stack position and opens the field menu when Start is pressed or menu state is forced Byte-identical lower fixed-bank implementation.
 0F	CEBE	LowerFixed_DispatchTerrainEvent	Function	Matches terrain event ID $059E and dispatches its specialized event service with carry result Byte-identical lower fixed-bank implementation.
 0F	CF03	LowerFixed_HandleSpecialWorldTerrainPair	Function	Adjusts player X and invokes terrain service one for world tile pair six and seven Byte-identical lower fixed-bank implementation.
 0F	CF38	LowerFixed_TryStartRandomEncounter	Function	Invokes encounter service $10/$87 and follow-up service $06/$EF when carry is set Byte-identical lower fixed-bank implementation.
@@ -4769,11 +4769,11 @@
 0F	D6E8	LowerFixed_ValidateMapObjectTerrainClass	Function	Rejects a target whose high terrain-class bits differ from the object's cached tile Byte-identical lower fixed-bank implementation.
 0F	D6F4	LowerFixed_UpdateMapObjectViewportInteraction	Function	Tests object coordinates against the sixteen-by-fifteen viewport and sets state bit $10 on service match Byte-identical lower fixed-bank implementation.
 0F	D931	LowerFixed_SetMapObjectInactiveCommand	Function	Sets the current object's inactive flag, advances its script, and ends command dispatch
-0F	D937	LowerFixed_DeactivateEntityCoordinatesCommand	Function	Marks motion active, replaces four entity coordinate fields with $81, and yields Byte-identical lower fixed-bank implementation.
-0F	D94B	LowerFixed_AnimateEntityMotionCountdown	Function	Advances the descending entity motion timer, coordinates script completion, and toggles active state Byte-identical lower fixed-bank implementation.
+0F	D937	LowerFixed_RemoveMapObjectCommand	Function	Sets the entity hidden bit, replaces its current and saved coordinates with $81, and yields Byte-identical lower fixed-bank implementation.
+0F	D94B	LowerFixed_AnimateMapObjectRemoval	Function	Blinks the current map object while its removal timer counts down, then hides it and moves its coordinates off-map Byte-identical lower fixed-bank implementation.
 0F	D9AB	LowerFixed_SetMapObjectInactiveAndAdvanceScript	Function	Sets object state bit seven and advances its script pointer by one byte
-0F	D9B8	LowerFixed_ClearEntityMotionAndSavePosition	Function	Clears entity motion bit $80, snapshots coordinates, advances the script, and yields Byte-identical lower fixed-bank implementation.
-0F	D9CB	LowerFixed_AnimateEntityMotionCountup	Function	Advances the ascending entity motion timer and completes the script after phase $30 Byte-identical lower fixed-bank implementation.
+0F	D9B8	LowerFixed_ActivateMapObjectCommand	Function	Clears the entity hidden bit, saves its coordinates, advances the script, and yields Byte-identical lower fixed-bank implementation.
+0F	D9CB	LowerFixed_AnimateMapObjectAppearance	Function	Runs the timed object-appearance animation and clears the hidden bit as each frame becomes visible Byte-identical lower fixed-bank implementation.
 0F	DA1E	LowerFixed_ApplyPlayerFacingToMovingEntity	Function	Applies player facing $3D to the current entity while movement counter $3E is active Byte-identical lower fixed-bank implementation.
 0F	DAA4	LowerFixed_RunBank1CMapObjectPresentationCommand	Function	Temporarily selects bank $1C, initializes its presentation, advances the script, and restores the bank Byte-identical lower fixed-bank implementation.
 0F	DAC6	LowerFixed_InitializeBank1CMapObjectPresentation	Function	Decodes a bank-$1C duration stream and installs its pointer and initial frame in $0530-$0533 Byte-identical lower fixed-bank implementation.
@@ -4802,7 +4802,7 @@
 0F	E419	LowerFixed_ResolveOneEntitySpriteConflict	Function	Finds another moving entity, transfers its OAM allocation, and rerenders the current entity Byte-identical lower fixed-bank implementation.
 0F	E45C	LowerFixed_AllocateEntityOamBlock	Function	Allocates the first free four-sprite block from occupancy masks $61-$62 or marks deferred rendering Byte-identical lower fixed-bank implementation.
 0F	E4BB	LowerFixed_ReleaseEntityOamBlock	Function	Clears the occupancy bit corresponding to OAM block selector A in masks $61-$62 Byte-identical lower fixed-bank implementation.
-0F	E52C	LowerFixed_ClampPartyGoldTo9999999	Function	Clamps the 24-bit party-gold value at $FD-$FF to decimal 9,999,999 when carry-state $1A requires it
+0F	E52C	LowerFixed_ClampCoinSellerPriceTo9999999	Function	Clamps the Coin Seller's 24-bit coins-times-price value at $FD-$FF to decimal 9,999,999
 0F	E584	LowerFixed_ResetPackedDecodeStateAndDispatch	Function	Clears packed decoder state, seeds its scratch output, and enters mode dispatch
 0F	E58A	LowerFixed_DispatchPackedDecodeMode	Function	Reads the current packed decode mode and dispatches to one of three mode handlers
 0F	E5A5	LowerFixed_PrimePackedDecodeState	Function	Initializes the packed decode selector and re-enters mode dispatch when it is nonzero

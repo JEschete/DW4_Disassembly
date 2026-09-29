@@ -37,7 +37,12 @@ BrkSelector	EB	3	1F:C4A1	$C4A1 increments the stacked return for $CB <= selector
 BrkSelector	FB	2	1F:C46C	Selector $FB takes $C46C directly to bank $19 audio entry $03, StartAudioTrack at $1F:$EF5B, through $C38B without touching the stacked return; RTS resumes at BRK+3
 BrkService	10:2A	2	10:A240	Selector $0F maps to bank $10; service $2A masks A to its low nibble and selects one set-bit index through $A268 without advancing the stacked return
 BrkService	10:2B	2	10:A256	Selector $0F maps to bank $10; service $2B selects one set-bit index from all eight bits through $A268 without advancing the stacked return
+BrkService	12:08	2	12:9C72	Selector $2F maps entry $08 to ProcessPartyLevelUps, which checks and applies earned levels without advancing the stacked return
+BrkService	12:0F	2	12:9C22	Selector $2F maps entry $0F to CalculateExperienceNeededForNextLevel, which returns the selected member's remaining experience without advancing the stacked return
+BrkService	12:10	2	12:9D29	Selector $2F maps entry $10 to BuildCharacterNextLevelExperienceTable, which refreshes all eight character thresholds without advancing the stacked return
+BrkService	12:22	2	12:9BFD	Selector $2F maps entry $22 to BuildPartyNextLevelExperienceTable, which caches active-party thresholds without advancing the stacked return
 BrkService	16:01	3	16:8A18	TSX and INC $0105,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
+BrkService	16:04	2	16:8028	Selector $6F maps entry $04 through bank $16:$8008 to the direct text service at $8028; A selects the message and X selects its group, and the stacked return is unchanged
 BrkService	16:07	3	16:8A45	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
 BrkService	16:09	3	16:8A72	TSX and INC $0106,x advance the stacked BRK return, then BRK+3 is read into $F6; RTS resumes at BRK+4
 BrkService	19:02	2	1F:F08A	Selector $9F maps entry $02 through bank $19:$8014 and fixed trampoline $09 to ResetApuChannels; the stacked return is unchanged

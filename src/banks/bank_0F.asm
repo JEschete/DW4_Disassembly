@@ -1465,7 +1465,7 @@ LowerFixedEngine_Branch_C968:
         db   $22,$EF                         ; C97B 22 EF                    ".
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_C97D:
-        jsr     LowerFixed_UpdateMapFrameSystems; C97D 20 ED C9                  ..
+        jsr     LowerFixed_RunFieldFrame        ; C97D 20 ED C9                  ..
         jmp     LowerFixedEngine_Branch_C97D    ; C980 4C 7D C9                 L}.
 ; ----------------------------------------------------------------------------
 LowerFixed_InstallRamBankSwitchCode:
@@ -1490,10 +1490,10 @@ LowerFixedEngine_Branch_C985:
         db   $BF,$EA,$EA,$AD,$CC,$07,$20,$91 ; C9DF BF EA EA AD CC 07 20 91  ...... .
         db   $FF,$AD,$CA,$07,$28,$60         ; C9E7 FF AD CA 07 28 60        ....(`
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdateMapFrameSystems:
+LowerFixed_RunFieldFrame:
         jsr     LowerFixed_AdvancePlayerAnimationCounter; C9ED 20 B4 CB          ..
         jsr     LowerFixed_PollPrimaryButtonWithDelay; C9F0 20 98 CB             ..
-        jsr     LowerFixed_UpdatePlayerMapInput ; C9F3 20 21 CA                  !.
+        jsr     LowerFixed_ProcessScheduledFieldInput; C9F3 20 21 CA             !.
         jsr     LowerFixed_UpdateMapObjects     ; C9F6 20 42 D5                  B.
         jsr     LowerFixed_UpdateMapEntityRendering; C9F9 20 6E E0               n.
         brk                                     ; C9FC 00                       .
@@ -1504,19 +1504,19 @@ LowerFixed_UpdateMapFrameSystems:
         jsr     LowerFixed_RenderPartyMapEntities; CA05 20 D5 D7                 ..
         ldx     $052F                           ; CA08 AE 2F 05                 ./.
         jsr     LowerFixed_WaitFrames           ; CA0B 20 0C C9                  ..
-        jsr     LowerFixed_WaitForButton04Release; CA0E 20 17 CA                 ..
+        jsr     LowerFixed_WaitForSelectRelease ; CA0E 20 17 CA                  ..
         jsr     LowerFixed_WaitForMapTransitionCompletion; CA11 20 E1 D1         ..
         inc     $3C                             ; CA14 E6 3C                    .<
         rts                                     ; CA16 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_WaitForButton04Release:
+LowerFixed_WaitForSelectRelease:
         jsr     LowerFixed_ReadButtonsUnlessInputSuppressed; CA17 20 41 D2       A.
         lda     ButtonsPressed                  ; CA1A A5 14                    ..
         and     #$04                            ; CA1C 29 04                    ).
-        bne     LowerFixed_WaitForButton04Release; CA1E D0 F7                   ..
+        bne     LowerFixed_WaitForSelectRelease ; CA1E D0 F7                    ..
         rts                                     ; CA20 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_UpdatePlayerMapInput:
+LowerFixed_ProcessScheduledFieldInput:
         ldx     $058E                           ; CA21 AE 8E 05                 ...
         lda     LowerFixedEngine_Branch_CA3C,x  ; CA24 BD 3C CA                 .<.
         and     $3C                             ; CA27 25 3C                    %<
@@ -2129,7 +2129,7 @@ LowerFixedEngine_Branch_CE31:
 LowerFixedEngine_Branch_CE47:
         jsr     LowerFixed_InvokeStepEventWhenOnWorldMap; CE47 20 56 CF          V.
 LowerFixedEngine_Branch_CE4A:
-        jsr     LowerFixed_HandleMapLoopExitInput; CE4A 20 A9 CE                 ..
+        jsr     LowerFixed_OpenFieldMenuOnStart ; CE4A 20 A9 CE                  ..
         jmp     LowerFixed_SynchronizeLinkedEntityFacingFlags; CE4D 4C 10 C0    L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_CE50:
@@ -2183,10 +2183,10 @@ LowerFixedEngine_Branch_CE9A:
         jsr     LowerFixed_HandleSpecialWorldTerrainPair; CE9A 20 03 CF          ..
         jsr     LowerFixed_TryStartRandomEncounter; CE9D 20 38 CF                8.
         jsr     LowerFixed_HandleChapterFourWorldCoordinate; CEA0 20 41 CF       A.
-        jsr     LowerFixed_HandleMapLoopExitInput; CEA3 20 A9 CE                 ..
+        jsr     LowerFixed_OpenFieldMenuOnStart ; CEA3 20 A9 CE                  ..
         jmp     LowerFixed_SynchronizeLinkedEntityFacingFlags; CEA6 4C 10 C0    L..
 ; ----------------------------------------------------------------------------
-LowerFixed_HandleMapLoopExitInput:
+LowerFixed_OpenFieldMenuOnStart:
         lda     Bank0F_LowerFixedEngine         ; CEA9 AD 00 C0                 ...
         and     #$40                            ; CEAC 29 40                    )@
         bne     LowerFixedEngine_Branch_CEB6    ; CEAE D0 06                    ..
@@ -3354,7 +3354,7 @@ LowerFixed_ProcessNextAnimatedMapObject:
         jmp     LowerFixedEngine_Branch_D5DD    ; D5D7 4C DD D5                 L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D5DA:
-        jsr     LowerFixed_AnimateEntityMotionCountup; D5DA 20 CB D9             ..
+        jsr     LowerFixed_AnimateMapObjectAppearance; D5DA 20 CB D9             ..
 LowerFixedEngine_Branch_D5DD:
         inc     $51                             ; D5DD E6 51                    .Q
         lda     $51                             ; D5DF A5 51                    .Q
@@ -3366,7 +3366,7 @@ LowerFixedEngine_Branch_D5E5:
         rts                                     ; D5E9 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixed_UpdateCurrentMapObjectAnimation:
-        jsr     LowerFixed_AnimateEntityMotionCountdown; D5EA 20 4B D9           K.
+        jsr     LowerFixed_AnimateMapObjectRemoval; D5EA 20 4B D9                K.
         rts                                     ; D5ED 60                       `
 ; ----------------------------------------------------------------------------
 LowerFixed_AdvanceMapObjectIndexOrExit:
@@ -3871,7 +3871,7 @@ LowerFixed_SetMapObjectInactiveCommand:
         jsr     LowerFixed_SetMapObjectInactiveAndAdvanceScript; D931 20 AB D9   ..
         jmp     LowerFixed_ReturnFromMapObjectCommand; D934 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_DeactivateEntityCoordinatesCommand:
+LowerFixed_RemoveMapObjectCommand:
         jsr     LowerFixed_SetMapObjectInactiveAndAdvanceScript; D937 20 AB D9   ..
         lda     #$81                            ; D93A A9 81                    ..
         sta     $6F60,x                         ; D93C 9D 60 6F                 .`o
@@ -3880,14 +3880,14 @@ LowerFixed_DeactivateEntityCoordinatesCommand:
         sta     $6FC0,x                         ; D945 9D C0 6F                 ..o
         jmp     LowerFixed_ReturnFromMapObjectCommand; D948 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_AnimateEntityMotionCountdown:
+LowerFixed_AnimateMapObjectRemoval:
         ldx     $51                             ; D94B A6 51                    .Q
         lda     $7160,x                         ; D94D BD 60 71                 .`q
         beq     LowerFixedEngine_Branch_D99B    ; D950 F0 49                    .I
         dec     $7160,x                         ; D952 DE 60 71                 .`q
         lda     $7160,x                         ; D955 BD 60 71                 .`q
         and     #$07                            ; D958 29 07                    ).
-        bne     LowerFixed_ClearEntityMotionFlagAndYield; D95A D0 18            ..
+        bne     LowerFixed_ActivateMapObjectAndYield; D95A D0 18                ..
         lda     $7160,x                         ; D95C BD 60 71                 .`q
         sec                                     ; D95F 38                       8
         sbc     #$08                            ; D960 E9 08                    ..
@@ -3899,9 +3899,9 @@ LowerFixed_AnimateEntityMotionCountdown:
         lsr     a                               ; D96C 4A                       J
         lsr     a                               ; D96D 4A                       J
         ora     $7160,x                         ; D96E 1D 60 71                 .`q
-        jmp     LowerFixed_StoreEntityMotionTimerAndActivate; D971 4C 9D D9     L..
+        jmp     LowerFixed_StoreEntityMotionTimerAndHide; D971 4C 9D D9         L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ClearEntityMotionFlagAndYield:
+LowerFixed_ActivateMapObjectAndYield:
         lda     $7020,x                         ; D974 BD 20 70                 . p
         and     #$7F                            ; D977 29 7F                    ).
         sta     $7020,x                         ; D979 9D 20 70                 . p
@@ -3919,11 +3919,11 @@ LowerFixedEngine_Branch_D97F:
         sta     $6FC0,x                         ; D993 9D C0 6F                 ..o
 LowerFixedEngine_Branch_D996:
         lda     #$00                            ; D996 A9 00                    ..
-        jmp     LowerFixed_StoreEntityMotionTimerAndActivate; D998 4C 9D D9     L..
+        jmp     LowerFixed_StoreEntityMotionTimerAndHide; D998 4C 9D D9         L..
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_D99B:
         lda     #$36                            ; D99B A9 36                    .6
-LowerFixed_StoreEntityMotionTimerAndActivate:
+LowerFixed_StoreEntityMotionTimerAndHide:
         sta     $7160,x                         ; D99D 9D 60 71                 .`q
 LowerFixedEngine_Branch_D9A0:
         lda     $7020,x                         ; D9A0 BD 20 70                 . p
@@ -3938,7 +3938,7 @@ LowerFixed_SetMapObjectInactiveAndAdvanceScript:
         sta     $7020,x                         ; D9B2 9D 20 70                 . p
         jmp     LowerFixed_AdvanceMapObjectScriptOneByte; D9B5 4C E3 DD         L..
 ; ----------------------------------------------------------------------------
-LowerFixed_ClearEntityMotionAndSavePosition:
+LowerFixed_ActivateMapObjectCommand:
         ldx     $51                             ; D9B8 A6 51                    .Q
         lda     $7020,x                         ; D9BA BD 20 70                 . p
         and     #$7F                            ; D9BD 29 7F                    ).
@@ -3947,14 +3947,14 @@ LowerFixed_ClearEntityMotionAndSavePosition:
         jsr     LowerFixed_AdvanceMapObjectScriptOneByte; D9C5 20 E3 DD          ..
         jmp     LowerFixed_ReturnFromMapObjectCommand; D9C8 4C F0 DD            L..
 ; ----------------------------------------------------------------------------
-LowerFixed_AnimateEntityMotionCountup:
+LowerFixed_AnimateMapObjectAppearance:
         ldx     $51                             ; D9CB A6 51                    .Q
         lda     $7160,x                         ; D9CD BD 60 71                 .`q
         beq     LowerFixedEngine_Branch_DA06    ; D9D0 F0 34                    .4
         dec     $7160,x                         ; D9D2 DE 60 71                 .`q
         lda     $7160,x                         ; D9D5 BD 60 71                 .`q
         and     #$07                            ; D9D8 29 07                    ).
-        bne     LowerFixed_ClearEntityMotionFlagAndYield; D9DA D0 98            ..
+        bne     LowerFixed_ActivateMapObjectAndYield; D9DA D0 98                ..
         lda     $7160,x                         ; D9DC BD 60 71                 .`q
         clc                                     ; D9DF 18                       .
         adc     #$08                            ; D9E0 69 08                    i.
@@ -3975,13 +3975,13 @@ LowerFixedEngine_Branch_D9FB:
         jsr     LowerFixed_AdvanceMapObjectScriptOneByte; D9FB 20 E3 DD          ..
         lda     #$00                            ; D9FE A9 00                    ..
         sta     $7160,x                         ; DA00 9D 60 71                 .`q
-        jmp     LowerFixed_ClearEntityMotionFlagAndYield; DA03 4C 74 D9         Lt.
+        jmp     LowerFixed_ActivateMapObjectAndYield; DA03 4C 74 D9             Lt.
 ; ----------------------------------------------------------------------------
 LowerFixedEngine_Branch_DA06:
         lda     #$89                            ; DA06 A9 89                    ..
         sta     $7160,x                         ; DA08 9D 60 71                 .`q
         jsr     LowerFixed_SaveEntityCoordinates; DA0B 20 11 DA                  ..
-        jmp     LowerFixed_ClearEntityMotionFlagAndYield; DA0E 4C 74 D9         Lt.
+        jmp     LowerFixed_ActivateMapObjectAndYield; DA0E 4C 74 D9             Lt.
 ; ----------------------------------------------------------------------------
 LowerFixed_SaveEntityCoordinates:
         lda     $6F60,x                         ; DA11 BD 60 6F                 .`o
@@ -5585,7 +5585,7 @@ LowerFixedEngine_Branch_E517:
 LowerFixedEngine_Branch_E52B:
         rts                                     ; E52B 60                       `
 ; ----------------------------------------------------------------------------
-LowerFixed_ClampPartyGoldTo9999999:
+LowerFixed_ClampCoinSellerPriceTo9999999:
         lda     $1A                             ; E52C A5 1A                    ..
         bne     LowerFixedEngine_Branch_E53E    ; E52E D0 0E                    ..
         lda     $FD                             ; E530 A5 FD                    ..
