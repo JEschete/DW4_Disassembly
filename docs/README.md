@@ -3,7 +3,7 @@
 This directory contains human-authored project documentation. Generated reports remain under `analysis/`; machine-readable ledgers remain under `config/`.
 
 | Document | Authority |
-|---|---|
+| --- | --- |
 | [STATUS.md](STATUS.md) | Current metrics, remaining work, and completion criteria |
 | [BANK_MAP.md](BANK_MAP.md) | Human-readable physical bank roles and important ranges |
 | [BUILDING.md](BUILDING.md) | Portable build, extraction, analysis, and verification setup |

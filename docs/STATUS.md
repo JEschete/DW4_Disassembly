@@ -22,15 +22,15 @@ The instruction, content-range, and overlap figures are classification component
 targets. Their union is complete: 163,493 instruction bytes + 361,313 content-range bytes - 518 bytes present in
 both inventories = 524,288 classified PRG bytes.
 
-All-bank entry-point pass: 2,143 pointer entries across declared tables, mixed records, text/UI escape handlers,
+All-bank entry-point pass: 2,141 pointer entries across declared tables, mixed records, text/UI escape handlers,
 and explicit pointer fields. All 2,036 executable targets decode; RTS-dispatch tables are registered with their
 value+1 targets. All 38 decoded indirect jumps have reviewed dispositions. Correcting the two RTS-biased
 subtables at `$16:$A73B/$A777` removed a false operand entry, and progression-state tracing recovered the
 handler at `$16:$AAEF` from a stale variable-record boundary.
 
 The completion gate (`verify-completion.cmd`) passes end to end: 0 current analyzer warnings; 215 warning
-identities ledgered, including all 143 original warnings; 2,143 pointers typed; 2,036/2,036 executable targets
-decoded; 38/38 indirect jumps audited; 4,562 routine interfaces; 4,562 semantic contracts; 26 asset slices; 15 save
+identities ledgered, including all 143 original warnings; 2,141 pointers typed; 2,036/2,036 executable targets
+decoded; 38/38 indirect jumps audited; 4,562 routine interfaces; 4,562 semantic contracts; 26 asset slices; 17 save
 fields; 9 runtime paths; exact ROM match.
 
 The 2026-09-28 routine-name audit checked all 2,354 interfaces in banks `$00-$15` against their generated ASM
