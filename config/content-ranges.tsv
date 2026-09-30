@@ -407,7 +407,7 @@
 14	A019	A01B	ConstantData	Verified	2 bytes read directly by ADC $A019 at $9FBF, LDA $A01A at $9FC4
 14	A02A	A02E	ReviewedUnusedData	Verified	Reviewed unused: no decoded code, inline operand, pointer target, code exclusion, static absolute reference, source-attributed runtime read, or runtime execution across the 31-state progression corpus
 14	A111	A3F1	Graphics	Verified	Forty-six aligned 16-byte NES 2bpp battle tiles with coherent mirrored forms, blank tiles, and multi-tile artwork
-14	A40D	A41B	ServiceDirectory	Verified	Seven-entry nested battle presentation dispatch table
+14	A40D	A41B	ServiceDirectory	Verified	Seven-entry nested Necrosaro transformation dispatch table
 14	A621	A628	StepTable	Verified	Seven entries read by LDX $A621,Y at $A4DB with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)
 14	A628	A629	ReviewedUnusedData	Verified	Reviewed unused: no decoded code, inline operand, pointer target, code exclusion, static absolute reference, source-attributed runtime read, or runtime execution across the 31-state progression corpus
 14	A629	A630	StepTable	Verified	Seven entries read by LDX $A629,Y at $A4F3 with Y = $0F - 1 while $0F runs from 1 to 7 (LDY #$01 / STY $0F at $A4D6-$A4D8, INC $0F / CPY #$08 at $A50E-$A512)

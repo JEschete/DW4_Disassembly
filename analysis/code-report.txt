@@ -1467,54 +1467,54 @@ Seeds:
   bank $13:$8FC7 | Entry pointer table | Bank $13 pointer at $910A: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
   bank $13:$8FD3 | Entry pointer table | Bank $13 pointer at $910C: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
   bank $13:$8FDC | Entry pointer table | Bank $13 pointer at $910E: Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A636: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A638: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A63A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A63C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BA6 | Entry pointer table | Bank $13 pointer at $A63E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9F9F | Entry pointer table | Bank $13 pointer at $A640: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A642: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A644: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A646: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9D9C | Entry pointer table | Bank $13 pointer at $A648: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9E31 | Entry pointer table | Bank $13 pointer at $A64A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9E8B | Entry pointer table | Bank $13 pointer at $A64C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9554 | Entry pointer table | Bank $13 pointer at $A64E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9569 | Entry pointer table | Bank $13 pointer at $A650: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A652: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A654: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9FE2 | Entry pointer table | Bank $13 pointer at $A656: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$A00D | Entry pointer table | Bank $13 pointer at $A658: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$984D | Entry pointer table | Bank $13 pointer at $A660: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9E31 | Entry pointer table | Bank $13 pointer at $A662: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9E35 | Entry pointer table | Bank $13 pointer at $A664: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A666: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A668: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A66A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A66C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A66E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A670: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A672: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A674: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A676: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9EC3 | Entry pointer table | Bank $13 pointer at $A678: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9F5A | Entry pointer table | Bank $13 pointer at $A67A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9FB8 | Entry pointer table | Bank $13 pointer at $A67C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A67E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A680: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A682: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A684: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BCD | Entry pointer table | Bank $13 pointer at $A686: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9EC3 | Entry pointer table | Bank $13 pointer at $A688: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9BE2 | Entry pointer table | Bank $13 pointer at $A68A: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9F5A | Entry pointer table | Bank $13 pointer at $A68C: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9F76 | Entry pointer table | Bank $13 pointer at $A68E: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9F8D | Entry pointer table | Bank $13 pointer at $A690: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$9FC7 | Entry pointer table | Bank $13 pointer at $A692: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
-  bank $13:$A54C | Entry pointer table | Bank $13 pointer at $A694: Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A636: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A638: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A63A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A63C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BA6 | Entry pointer table | Bank $13 pointer at $A63E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9F9F | Entry pointer table | Bank $13 pointer at $A640: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A642: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A644: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A646: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9D9C | Entry pointer table | Bank $13 pointer at $A648: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9E31 | Entry pointer table | Bank $13 pointer at $A64A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9E8B | Entry pointer table | Bank $13 pointer at $A64C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9554 | Entry pointer table | Bank $13 pointer at $A64E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9569 | Entry pointer table | Bank $13 pointer at $A650: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A652: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BBB | Entry pointer table | Bank $13 pointer at $A654: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9FE2 | Entry pointer table | Bank $13 pointer at $A656: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$A00D | Entry pointer table | Bank $13 pointer at $A658: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$980B | Entry pointer table | Bank $13 pointer at $A65E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$984D | Entry pointer table | Bank $13 pointer at $A660: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9E31 | Entry pointer table | Bank $13 pointer at $A662: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9E35 | Entry pointer table | Bank $13 pointer at $A664: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A666: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A668: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A66A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A66C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A66E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A670: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A672: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A674: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A676: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9EC3 | Entry pointer table | Bank $13 pointer at $A678: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9F5A | Entry pointer table | Bank $13 pointer at $A67A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9FB8 | Entry pointer table | Bank $13 pointer at $A67C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$951B | Entry pointer table | Bank $13 pointer at $A67E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A680: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9548 | Entry pointer table | Bank $13 pointer at $A682: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A684: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BCD | Entry pointer table | Bank $13 pointer at $A686: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9EC3 | Entry pointer table | Bank $13 pointer at $A688: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9BE2 | Entry pointer table | Bank $13 pointer at $A68A: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9F5A | Entry pointer table | Bank $13 pointer at $A68C: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9F76 | Entry pointer table | Bank $13 pointer at $A68E: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9F8D | Entry pointer table | Bank $13 pointer at $A690: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$9FC7 | Entry pointer table | Bank $13 pointer at $A692: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
+  bank $13:$A54C | Entry pointer table | Bank $13 pointer at $A694: Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
   bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A751: Callback field in the first battle-effect record list dispatched at $A744
   bank $13:$9533 | Entry pointer table | Bank $13 pointer at $A755: Callback field in the first battle-effect record list dispatched at $A744
   bank $13:$9BA6 | Entry pointer table | Bank $13 pointer at $A759: Callback field in the first battle-effect record list dispatched at $A744
@@ -1558,13 +1558,13 @@ Seeds:
   bank $14:$9A40 | Entry pointer table | Bank $14 pointer at $802E: 26-entry code dispatch table followed by code at $8034
   bank $14:$90BE | Entry pointer table | Bank $14 pointer at $8030: 26-entry code dispatch table followed by code at $8034
   bank $14:$8454 | Entry pointer table | Bank $14 pointer at $8032: 26-entry code dispatch table followed by code at $8034
-  bank $14:$A41B | Entry pointer table | Bank $14 pointer at $A40D: Seven-entry nested battle presentation dispatch table
-  bank $14:$A46A | Entry pointer table | Bank $14 pointer at $A40F: Seven-entry nested battle presentation dispatch table
-  bank $14:$A499 | Entry pointer table | Bank $14 pointer at $A411: Seven-entry nested battle presentation dispatch table
-  bank $14:$A4D0 | Entry pointer table | Bank $14 pointer at $A413: Seven-entry nested battle presentation dispatch table
-  bank $14:$A67F | Entry pointer table | Bank $14 pointer at $A415: Seven-entry nested battle presentation dispatch table
-  bank $14:$A736 | Entry pointer table | Bank $14 pointer at $A417: Seven-entry nested battle presentation dispatch table
-  bank $14:$A888 | Entry pointer table | Bank $14 pointer at $A419: Seven-entry nested battle presentation dispatch table
+  bank $14:$A41B | Entry pointer table | Bank $14 pointer at $A40D: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A46A | Entry pointer table | Bank $14 pointer at $A40F: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A499 | Entry pointer table | Bank $14 pointer at $A411: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A4D0 | Entry pointer table | Bank $14 pointer at $A413: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A67F | Entry pointer table | Bank $14 pointer at $A415: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A736 | Entry pointer table | Bank $14 pointer at $A417: Seven-entry nested Necrosaro transformation dispatch table
+  bank $14:$A888 | Entry pointer table | Bank $14 pointer at $A419: Seven-entry nested Necrosaro transformation dispatch table
   bank $15:$B1EF | Entry pointer table | Bank $15 pointer at $8000: 26-entry code dispatch table
   bank $15:$B432 | Entry pointer table | Bank $15 pointer at $8002: 26-entry code dispatch table
   bank $15:$B35F | Entry pointer table | Bank $15 pointer at $8004: 26-entry code dispatch table

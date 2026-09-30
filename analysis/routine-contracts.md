@@ -15136,7 +15136,7 @@
 - Outputs: Loads the state limit and mask, then accumulates effect totals for eight converted action states
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $81; Direct calls: $91EF,$9201,$9276,$93AB,$95B8
-- Evidence: Static interface analysis at $13:$951B: Pointer $13:$A666 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A668 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A67E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A75D (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$951B: Pointer $13:$A666 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A668 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A67E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A75D (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunFourGroupedEffectTotalPassesWithLimit (`$13:$9533`)
 
@@ -15145,7 +15145,7 @@
 - Outputs: Loads the state limit and mask, then accumulates grouped effect totals for four action states
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $8D; Direct calls: $91EF,$9201,$93B4,$9611
-- Evidence: Static interface analysis at $13:$9533: Pointer $13:$A636 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A638 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A63A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A670 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A680 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A684 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A751 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A755 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A761 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A771 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9533: Pointer $13:$A636 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A638 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A63A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A66E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A670 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A680 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A684 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A751 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A755 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A761 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A771 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunSingleStateEffectTotalsWithLimit (`$13:$9548`)
 
@@ -15154,7 +15154,7 @@
 - Outputs: Loads the state limit and mask, sets action-state bit $80, and runs the single-state totals path
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0F,$75D4,$75D5,$75D6,$75D9,$75DB,$75E5,$75EC,$81; Direct calls: $91EF,$9201,$9276,$93BD,$95C5,$9658,$966B,$967D,$9695,$AA54,$AA67,$AB59
-- Evidence: Static interface analysis at $13:$9548: Pointer $13:$A672 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A674 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A676 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A682 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A769 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9548: Pointer $13:$A672 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A674 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A676 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A682 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A769 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunEightStateEffectPhaseA (`$13:$9554`)
 
@@ -15163,7 +15163,7 @@
 - Outputs: Loads the state mask and runs effect phase A for eight converted action states
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $81; Direct calls: $9201,$9276,$93AB,$96A0
-- Evidence: Static interface analysis at $13:$9554: Pointer $13:$A64E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9554: Pointer $13:$A64E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunFourStateEffectPhaseB (`$13:$9569`)
 
@@ -15172,7 +15172,7 @@
 - Outputs: Loads the state mask and runs effect phase B for four action states
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $8D; Direct calls: $9201,$93B4,$96F3
-- Evidence: Static interface analysis at $13:$9569: Pointer $13:$A650 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9569: Pointer $13:$A650 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunSingleStateEffectPhaseC (`$13:$957B`)
 
@@ -15397,7 +15397,7 @@
 - Outputs: Initializes the battle-action scan over the four slot states
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $75D2,$7B,$82,$8D; Direct calls: $8AB5,$9201,$934A,$93C2,$9948,$99C5,$AD26
-- Evidence: Static interface analysis at $13:$980B: Pointer $13:$A642 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A644 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A646 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Tail jump from $13:$98E6; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$980B: Pointer $13:$A642 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A644 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A646 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A65E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Tail jump from $13:$98E6; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## EvaluateBattleActionScan (`$13:$984D`)
 
@@ -15406,7 +15406,7 @@
 - Outputs: Evaluates the scan and dispatches the special branches
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $02,$03,$75D2,$75D4,$75D5,$75D7,$75D8,$75DB,$75E5,$75E6,$75E7,$7B,$82,$8A,$8C,$8D; Direct calls: $8610,$861C,$93C2,$99C5,$AA54
-- Evidence: Static interface analysis at $13:$984D: Pointer $13:$A660 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$984D: Pointer $13:$A660 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## StartActionScanUnlessSelector1ExcludesId29 (`$13:$98AC`)
 
@@ -15559,7 +15559,7 @@
 - Outputs: Converts eight indexed action bytes and evaluates the bit-zero effect path for each
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $81; Direct calls: $9201,$9276,$93AB,$9CA8
-- Evidence: Static interface analysis at $13:$9BA6: Pointer $13:$A63E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A759 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9BA6: Pointer $13:$A63E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A759 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ClearEffectTotalsForFourActionStates (`$13:$9BBB`)
 
@@ -15568,7 +15568,7 @@
 - Outputs: Builds four states from counter $8D and clears the effect totals for each
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $8D; Direct calls: $9201,$93B4,$9C3A
-- Evidence: Static interface analysis at $13:$9BBB: Pointer $13:$A63C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A652 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A654 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A765 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A76D (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A779 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9BBB: Pointer $13:$A63C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A652 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A654 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A765 (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A76D (Callback field in the first battle-effect record list dispatched at $A744); Pointer $13:$A779 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunEightConvertedActionsThroughEffectBit2 (`$13:$9BCD`)
 
@@ -15577,7 +15577,7 @@
 - Outputs: Converts eight indexed action bytes and evaluates the bit-two effect path for each
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $81; Direct calls: $9201,$9276,$93AB,$9D4B
-- Evidence: Static interface analysis at $13:$9BCD: Pointer $13:$A686 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9BCD: Pointer $13:$A686 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## AverageEightRecordExtentGroups (`$13:$9BE2`)
 
@@ -15586,7 +15586,7 @@
 - Outputs: Sums record offsets $08, $18, $1C, and $20 across eight groups, averages them, and dispatches the result
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$75D1,$75D2,$75E1,$75E2,$81,$8C; Direct calls: $8216,$89F5,$8D77,$9201,$9477,$A9C2
-- Evidence: Static interface analysis at $13:$9BE2: Pointer $13:$A68A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A775 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9BE2: Pointer $13:$A68A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A775 (Callback field in the first battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ClearActionScoreTotals (`$13:$9C3A`)
 
@@ -15685,7 +15685,7 @@
 - Outputs: Initializes the battle-action resolution scan
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $75D2,$8C; Direct calls: $9DB0,$AC63
-- Evidence: Static interface analysis at $13:$9D9C: Pointer $13:$A648 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9D9C: Pointer $13:$A648 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ResolveBattleSlotsForAction (`$13:$9DB0`)
 
@@ -15712,7 +15712,7 @@
 - Outputs: Entry that falls through to initialize and scan four records for the minimum eligible slot pair
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$75D2,$82,$8A,$8C; Direct calls: $861C,$8A6B,$8AB5,$AC63
-- Evidence: Static interface analysis at $13:$9E31: Pointer $13:$A64A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A662 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9E31: Pointer $13:$A64A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A662 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## SelectMinimumEligibleSlotAcrossFourRecords (`$13:$9E35`)
 
@@ -15721,7 +15721,7 @@
 - Outputs: Initializes selection state and scans four records for the minimum eligible extended pair
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$75D2,$82,$8A,$8C; Direct calls: $861C,$8A6B,$8AB5,$AC63
-- Evidence: Static interface analysis at $13:$9E35: Pointer $13:$A664 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9E35: Pointer $13:$A664 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ResolveBattleActionModeThree (`$13:$9E8B`)
 
@@ -15730,7 +15730,7 @@
 - Outputs: Resolves the mode-three battle-action path when the slot-count gate passes
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $75D2,$82,$8A,$8C; Direct calls: $8A6B,$AC63
-- Evidence: Static interface analysis at $13:$9E8B: Pointer $13:$A64C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9E8B: Pointer $13:$A64C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## SelectBattleActionByWeight (`$13:$9EC3`)
 
@@ -15739,7 +15739,7 @@
 - Outputs: Selects a battle action target by weighted random comparison
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $00,$75D2,$75DA,$75DB,$81,$94,$95; Direct calls: $9F24,$9F4E,$C827,$C891
-- Evidence: Static interface analysis at $13:$9EC3: Pointer $13:$A678 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A688 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9EC3: Pointer $13:$A678 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A688 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ComputeBattleActionWeight (`$13:$9F24`)
 
@@ -15766,7 +15766,7 @@
 - Outputs: Runs the first state-A battle-action selection pass
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $81; Direct calls: $93AB,$A3B2,$A3D9,$A3F1,$ACB1
-- Evidence: Static interface analysis at $13:$9F5A: Pointer $13:$A67A (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A68C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9F5A: Pointer $13:$A67A (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A68C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunBattleActionStateBSelection (`$13:$9F76`)
 
@@ -15775,7 +15775,7 @@
 - Outputs: Runs the second state-B battle-action selection pass
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $8D; Direct calls: $93B4,$A366,$A3D9,$A3F1
-- Evidence: Static interface analysis at $13:$9F76: Pointer $13:$A68E (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A794 (Callback field in the fourth battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9F76: Pointer $13:$A68E (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); Pointer $13:$A794 (Callback field in the fourth battle-effect record list dispatched at $A744); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## CheckBattleActionGateA (`$13:$9F8D`)
 
@@ -15784,7 +15784,7 @@
 - Outputs: Checks the first battle-action gate before applying follow-up logic
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct calls: $9406,$A2E7,$A4DC
-- Evidence: Static interface analysis at $13:$9F8D: Pointer $13:$A690 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9F8D: Pointer $13:$A690 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## CheckBattleActionGateB (`$13:$9F9F`)
 
@@ -15793,7 +15793,7 @@
 - Outputs: Checks the second battle-action gate before applying follow-up logic
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $9406,$A276,$A4DC
-- Evidence: Static interface analysis at $13:$9F9F: Pointer $13:$A640 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9F9F: Pointer $13:$A640 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## CheckBattleActionGateC (`$13:$9FB8`)
 
@@ -15802,7 +15802,7 @@
 - Outputs: Checks the third battle-action gate before applying follow-up logic
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: Direct calls: $A1F2,$A4DC
-- Evidence: Static interface analysis at $13:$9FB8: Pointer $13:$A67C (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9FB8: Pointer $13:$A67C (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## SelectBattleActionSlot (`$13:$9FC7`)
 
@@ -15811,7 +15811,7 @@
 - Outputs: Selects the battle-action slot and updates the resolved target state
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $75DA,$75DB,$82; Direct calls: $8AB5,$A0E5,$A113
-- Evidence: Static interface analysis at $13:$9FC7: Pointer $13:$A692 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9FC7: Pointer $13:$A692 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## SelectEligibleFallbackSlotAcrossFourRecords (`$13:$9FE2`)
 
@@ -15820,7 +15820,7 @@
 - Outputs: For nonclass-four actions passing the score threshold, scans four eligible records and updates the resolved target
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $75D2,$82; Direct calls: $8AB5,$9406,$A043,$A085,$AD0E
-- Evidence: Static interface analysis at $13:$9FE2: Pointer $13:$A656 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$9FE2: Pointer $13:$A656 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## ResetState21SelectionWhenTwoSlotsQualify (`$13:$A00D`)
 
@@ -15829,7 +15829,7 @@
 - Outputs: When state $21 has at least two qualifying slots, copies $75D3 to $75DB and clears $75DA
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $75D2,$75DA,$75DB,$7B,$82; Direct calls: $8AB5,$A043
-- Evidence: Static interface analysis at $13:$A00D: Pointer $13:$A658 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$A00D: Pointer $13:$A658 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## CheckBattleSlotEligibleForStateSelection (`$13:$A043`)
 
@@ -16045,7 +16045,7 @@
 - Outputs: Empty battle-AI callback used by the dispatch table
 - Clobbers: flags (conservative static analysis)
 - Side effects: No direct memory writes or calls identified by static interface analysis
-- Evidence: Static interface analysis at $13:$A54C: Pointer $13:$A694 (Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $13:$A54C: Pointer $13:$A694 (Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## DispatchBattleAiCallback (`$13:$A54D`)
 
@@ -18592,7 +18592,7 @@
 - Outputs: Runs the first ordered Necrosaro form transition with the primed single-panel reveal
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $01,$0300,$0301,$0302,$0303+X,$04,$050B,$0F; Direct calls: $A07C,$AC1A,$B0ED,$B100,$C62D,$C73E,$C770,$FF74
-- Evidence: Static interface analysis at $14:$A41B: Pointer $14:$A40D (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A41B: Pointer $14:$A40D (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunNecrosaroSecondFormTransition (`$14:$A46A`)
 
@@ -18601,7 +18601,7 @@
 - Outputs: Runs the second ordered Necrosaro form transition with the alternate single-panel reveal
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0F; Direct calls: $A07C,$AC1A,$B100
-- Evidence: Static interface analysis at $14:$A46A: Pointer $14:$A40F (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A46A: Pointer $14:$A40F (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunNecrosaroThirdFormTransition (`$14:$A499`)
 
@@ -18610,7 +18610,7 @@
 - Outputs: Runs the third ordered Necrosaro form transition with the dual-panel reveal
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0F; Direct calls: $A07C,$AC1A
-- Evidence: Static interface analysis at $14:$A499: Pointer $14:$A411 (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A499: Pointer $14:$A411 (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunNecrosaroFourthFormTransition (`$14:$A4D0`)
 
@@ -18619,7 +18619,7 @@
 - Outputs: Runs the fourth ordered Necrosaro form transition with progressive panel and palette assembly
 - Clobbers: flags (conservative static analysis)
 - Side effects: No direct memory writes or calls identified by static interface analysis
-- Evidence: Static interface analysis at $14:$A4D0: Pointer $14:$A413 (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A4D0: Pointer $14:$A413 (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## NecrosaroTransformation_UploadConsecutiveTransformationPanels (`$14:$A5ED`)
 
@@ -18655,7 +18655,7 @@
 - Outputs: Runs the fifth ordered Necrosaro form transition with twin sweeps and overlay dissolves
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $04,$05,$08,$09,$0A,$0B; Direct calls: $AC1A,$B0ED
-- Evidence: Static interface analysis at $14:$A67F: Pointer $14:$A415 (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A67F: Pointer $14:$A415 (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunNecrosaroSixthFormTransition (`$14:$A736`)
 
@@ -18664,7 +18664,7 @@
 - Outputs: Runs the sixth ordered Necrosaro form transition with multiwave panel and palette assembly
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0F; Direct calls: $A07C,$AA43,$AC1A,$B0ED,$B100
-- Evidence: Static interface analysis at $14:$A736: Pointer $14:$A417 (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A736: Pointer $14:$A417 (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## RunNecrosaroFinalFormTransition (`$14:$A888`)
 
@@ -18673,7 +18673,7 @@
 - Outputs: Runs the final ordered Necrosaro form transition with attribute flashes and sprite sweeps
 - Clobbers: flags (conservative static analysis)
 - Side effects: No direct memory writes or calls identified by static interface analysis
-- Evidence: Static interface analysis at $14:$A888: Pointer $14:$A419 (Seven-entry nested battle presentation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
+- Evidence: Static interface analysis at $14:$A888: Pointer $14:$A419 (Seven-entry nested Necrosaro transformation dispatch table); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
 ## NecrosaroTransformation_DrawIndexedOffsetSpritePair (`$14:$A9FD`)
 

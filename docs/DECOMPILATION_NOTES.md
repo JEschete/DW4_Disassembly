@@ -84,7 +84,8 @@ Interpreted as little-endian 6502 vectors:
 - RESET: `$FFD8`
 - IRQ/BRK: `$C408`
 
-The NMI target is in internal RAM. That is unusual but legal if startup copies an interrupt routine to RAM before enabling NMI. It is an observation, not yet a completed behavioral proof.
+The NMI target is in internal RAM. Later reset analysis proved that startup writes a `JMP $C15A` trampoline at
+`$0502`; the byte-level proof is retained under "First Static Code Pass" below.
 
 ### Offline Reference Material
 
@@ -105,7 +106,7 @@ The references are useful but not treated as authoritative when they disagree wi
 
 The supplied page's known-dump table gives the US ROM MD5 `e45105e8f82d8aa29b39260fd531498d` and SHA-1 `f4759104bd0241ce3c038209446aeda79f170fdd`. Those differ from the complete input file because this input carries a populated NES 2.0 header. An in-memory test replaced only header bytes 7-15 with zeroes, leaving all PRG bytes untouched. The resulting complete-file hashes exactly matched both supplied known-dump values. Therefore the project ROM has the same US PRG payload as the documented dump; its header metadata is the only difference relevant to those hashes.
 
-The supplied ROM map currently documents only selected banks and regions:
+At the initial discovery checkpoint, the supplied ROM map documented only selected banks and regions:
 
 - Bank `$08`: tileset tables and tile definitions
 - Banks `$09-$0B`: compressed map data and overworld data
@@ -113,7 +114,8 @@ The supplied ROM map currently documents only selected banks and regions:
 - Bank `$0F`: a map-bank selection routine identified by headerless file address `$3E9AD`
 - Bank `$17`: map information pointer and metadata tables
 
-The labels seeded in `config\labels.tsv` are limited to these explicit observations. They are prefixed with a bank number because switchable banks share the same `$8000-$BFFF` CPU address window.
+The initial labels seeded in `config\labels.tsv` were limited to these explicit observations. Later static/runtime
+evidence and all-body audits replaced that seed vocabulary with the complete curated inventory tracked today.
 
 The saved RetroAchievements page states that its address values use an emulator memory layout. The low addresses used for initial RAM symbols correspond directly to CPU RAM or cartridge WRAM. These descriptions are third-party observations and must be validated against instruction references before being upgraded from provisional documentation.
 
@@ -224,9 +226,14 @@ Additional structural checks are:
 - output contains 524,288 PRG bytes and no CHR ROM bytes
 - vectors remain NMI `$0502`, RESET `$FFD8`, IRQ/BRK `$C408`
 
-The exact-hash test is deliberately stronger than testing in an emulator. An emulator smoke test will be added after the exact source build is established, but successful emulation cannot prove byte identity.
+The exact-hash test is deliberately stronger than testing in an emulator. FCEUX runtime tracing was added later
+and now supplies the tracked execution/read/write evidence, but successful emulation still cannot prove byte
+identity.
 
-## Planned Semantic Passes
+## Initial Semantic Plan
+
+This was the original ordered plan. Its code discovery, classification, naming, and exact-build work is complete;
+current completion state and remaining work live in [STATUS.md](STATUS.md).
 
 The semantic work should proceed in this order:
 
@@ -241,17 +248,19 @@ The semantic work should proceed in this order:
 9. Split verified structured data into tables using the supplied map, graphics, palette, and text-format notes.
 10. Rebuild and exact-compare after each small conversion.
 
-## Open Questions
+## Initial Questions And Resolution
 
-- Why is NMI vectored directly to RAM `$0502`, and exactly when is that code installed?
-- Which MMC1 control mode is active after reset and during normal gameplay?
-- How does the 512 KiB board select PRG bit 4: CHR register high bit, board wiring, or another convention?
-- Which banks are predominantly code, graphics, compressed maps, scripts, or text?
-- Which supplied RAM names are stable engine variables versus temporary values observed in one game state?
-- Does the Japanese-targeted RetroAchievements note set align fully with this USA ROM's RAM layout?
-- Which portions of the supplied ROM map were tested against the USA revision rather than another region?
+These were the questions at the first checkpoint; they are retained to show how the evidence plan developed.
 
-Every answer should be tied to ROM bytes, a trace, a cross-reference, or a repeatable experiment and then added to this journal.
+| Initial question | Resolution |
+| --- | --- |
+| Why is NMI vectored to RAM `$0502`? | Resolved: reset installs a `JMP $C15A` trampoline at `$0502`. |
+| Which MMC1 mode is used? | Resolved for the source model through the fixed-bank writers at `$C118/$C12F/$C146` and runtime mapper tracing. |
+| How is PRG bit 4 selected? | Resolved: `$FF91` propagates bit 4 through MMC1 CHR bank 0, matching SUROM outer-bank behavior. |
+| Which banks hold code, graphics, maps, scripts, or text? | Resolved: all 32 dominant roles and every detailed byte are classified; see [BANK_MAP.md](BANK_MAP.md) and [STATUS.md](STATUS.md). |
+| Which supplied RAM names are stable? | Resolved by policy: only names supported by decoded references or runtime evidence were curated; the third-party list was not imported wholesale. |
+| Does the Japanese-targeted RetroAchievements note set align with the USA ROM? | Handled conservatively: individual observations were accepted only when the exact USA ROM independently confirmed them. |
+| Which supplied ROM-map claims apply to the USA revision? | Handled per claim through exact-ROM bytes, consumers, and traces rather than assuming revision-wide authority. |
 
 ## Baseline Build Result - 2026-09-19
 
@@ -434,7 +443,8 @@ The generated `analysis\code-report.txt` is the concise machine-produced record 
 
 After correcting physical bank `$0F` to CPU base `$C000`, its supplied map-bank routine appears at `$E9AD`, as predicted by the headerless file-offset calculation. Static analysis then recovered 3,476 instructions / 7,001 bytes in lower fixed bank `$0F`.
 
-Adding byte-verified trampoline call sites in switchable banks expanded the analysis again. The current accepted coverage is:
+Adding byte-verified trampoline call sites in switchable banks expanded the analysis again. The accepted coverage
+at this checkpoint was:
 
 | Physical bank | Instructions | Bytes emitted as instructions |
 | --- | ---: | ---: |
@@ -531,7 +541,7 @@ FCEUX changes its working directory and Lua 5.1 cannot yield through `dofile`. T
 
 Three 1,800-frame deterministic profiles (`explore`, `buttons`, and `wander`) produced 11,228 unique executed instruction starts across 16 banks. Runtime observations are imported as exact one-instruction, non-recursive evidence; adjacent bytes are not inferred solely from execution coverage.
 
-### Current Conversion Result
+### Conversion Result At This Checkpoint
 
 After feeding runtime observations back through Ghidra and then through da65, the accepted source contains:
 
@@ -654,7 +664,8 @@ The next pass classified every physical PRG bank before adding semantic labels. 
 
 The fixed-bank IRQ/BRK dispatcher treats the two bytes following a `BRK` as a bank-local service request. The first byte selects an entry in a little-endian pointer directory at CPU `$8000`; the encoded second byte selects the physical bank and call mode. This explains why many switchable banks begin with pointers and why their code was invisible to vector-only recursive analysis.
 
-`config\code-entry-tables.tsv` now records verified directory bounds. `Dw4Tool` and Ghidra both read this file and seed only in-window, non-null targets. The currently registered directories are:
+`config\code-entry-tables.tsv` records verified directory bounds. `Dw4Tool` and Ghidra both read this file and seed
+only in-window, non-null targets. The directories registered by this checkpoint were:
 
 | Bank | Range | Entries | Broad subsystem |
 | --- | --- | ---: | --- |
@@ -663,8 +674,8 @@ The fixed-bank IRQ/BRK dispatcher treats the two bytes following a `BRK` as a ba
 | `$10` | `$8000-$807F` | 64 | battle-side party/status services |
 | `$11` | `$8000-$8031` | 25 | battle action/state services |
 | `$12` | `$8000-$8063` | 50 | battle setup/combat services |
-| `$13` | `$8000-$8037` | 28 | battle presentation/state routing |
-| `$14` | `$8000-$8033` | 26 | battle turn engine |
+| `$13` | `$8000-$8037` | 28 | battle AI, action effects, resistance, and state routing |
+| `$14` | `$8000-$8033` | 26 | monster graphics, battle display, and Necrosaro transformations |
 | `$15` | `$8000-$8033` | 26 | item/effect scripts and inventory |
 | `$16` | `$8000-$8027` | 20 | text and UI services |
 | `$17` | `$8000-$804B` | 38 | map services and information |
@@ -672,13 +683,13 @@ The fixed-bank IRQ/BRK dispatcher treats the two bytes following a `BRK` as a ba
 | `$19` | `$8000-$8013` | 10 | map/tileset asset selection |
 | `$1B` | `$8000-$801F` | 16 | mixed map-event services and text overlay |
 | `$1C` | `$8000-$802B` | 22 | mixed map/entity services |
-| `$1E` | `$8000-$808F` | 72 | map interaction and movement services |
+| `$1E` | `$8000-$808F` | 72 | map and field-command services |
 
 Bank `$10:$8080` is a coherent wrapper immediately after its directory but is not itself a directory target, so it has a separate direct seed. Bank `$18` demonstrates why directory parsing must still be conservative: entry `$0A` points to a record table at `$8046`, not executable code.
 
-After these targets were integrated, static output initially reached 42,191 instructions / 84,800 bytes across 19 physical banks. Subsequent exclusion fixes, BRK-aware continuation analysis, inline-call handling, nested dispatch-table recovery, and missing-directory registration produced the current result of 62,799 instructions occupying 125,270 unique PRG byte positions across 18 banks.
+After these targets were integrated, static output initially reached 42,191 instructions / 84,800 bytes across 19 physical banks. Subsequent exclusion fixes, BRK-aware continuation analysis, inline-call handling, nested dispatch-table recovery, and missing-directory registration produced the checkpoint result of 62,799 instructions occupying 125,270 unique PRG byte positions across 18 banks.
 
-`config\bank-classifications.tsv` records one Verified dominant classification for each of the 32 physical banks, so dominant PRG classification is 524,288 / 524,288 bytes (100%). `config\content-ranges.tsv` supplies the more granular bounded data classifications. `Dw4Tool extract` unions those ranges with unique instruction-byte positions and writes `analysis\classification-report.txt`. Detailed classification is 444,702 / 524,288 PRG bytes (84.82%): 125,270 instruction bytes, 320,998 ranged data bytes, and 1,566 intentional dual-use bytes counted once. The remaining 79,586 bytes still need table/routine-level classification.
+`config\bank-classifications.tsv` records one Verified dominant classification for each of the 32 physical banks, so dominant PRG classification is 524,288 / 524,288 bytes (100%). `config\content-ranges.tsv` supplies the more granular bounded data classifications. `Dw4Tool extract` unions those ranges with unique instruction-byte positions and writes `analysis\classification-report.txt`. Detailed classification at this checkpoint was 444,702 / 524,288 PRG bytes (84.82%): 125,270 instruction bytes, 320,998 ranged data bytes, and 1,566 intentional dual-use bytes counted once. The remaining 79,586 bytes still needed table/routine-level classification.
 
 ### Asset Banks Are Not Code-Coverage Targets
 
@@ -749,10 +760,11 @@ These banks are linked by the fixed-bank service-directory ABI and shared battle
 - `$10` repeatedly reads/writes party save slots and battle records, including `$72EA`, `$72E6`, and `$7274`; its services cover party membership, statistics, status, and rewards.
 - `$11` manipulates battle state in `$72E7-$735C` and arena state `$6E81`; it is labeled battle action/state services.
 - `$12:$8064` initializes battle globals, `$80B4` clears `$7274-$72E3`, and `$810E` copies active party combatants from `$6E45-$6E48` to battle RAM. This is direct battle setup evidence.
-- `$13` routes on battle state `$6E80`, indexes combatant arrays in `$72xx/$73xx`, and maintains presentation state in `$75xx`.
-- `$14` loops over active combatants in `$6E45-$6E4C`, updates per-combatant arrays `$7385/$738D/$7392`, and synchronizes with NMI. This is the battle turn engine.
+- `$13` routes on battle state `$6E80`, indexes combatant arrays in `$72xx/$73xx`, and evaluates battle-AI actions, effect rolls, resistance, and state transitions.
+- `$14` decodes monster graphics, places monster display slots, drives battle-screen animation, and performs the ordered Necrosaro transformations while synchronizing display work with NMI.
 
-The labels remain subsystem-level. Individual attack, spell, AI, and animation routines still need names.
+At this checkpoint the labels remained subsystem-level. The 2026-09-28/29 all-body naming audits later completed
+the individual attack, spell, AI, display, and animation routine names.
 
 ### Bank $15: Effect Scripts And Inventory
 
@@ -848,7 +860,7 @@ This checkpoint stops at 444,702 detailed bytes (84.82%), with 79,586 bytes uncl
 - Bank `$18:$92AA-$9959` contains 107 fixed-size 16-byte encounter records. Every one of the 1,498 list slots is either a valid monster ID `$00-$D5` or sentinel `$FF`.
 - Bank `$18:$A27B-$A812` contains encounter-rate and weight tables, 35 eight-byte battle formations, a 73-entry map stride table, three 256-byte world encounter grids, two map-keyed encounter streams, and the battle-data pointer used at `$A876`.
 - Registering bank `$1D`'s verified 21-entry service directory recovered its previously omitted map-transition code. Pointers at `$925A/$944E` prove NMI callback continuations at `$9273/$9467`; their motion and PPU tables are typed separately.
-- Bank `$14:$B77B-$BCFF` appears to participate in an 81-entry compressed graphics stream corpus selected through `$B1BA`, but stream consumption and the dual-use boundary across code at `$BD00` are not yet bounded. It remains unclassified for review.
+- Bank `$14:$B77B-$BCFF` appeared to participate in an 81-entry compressed graphics stream corpus selected through `$B1BA`, but stream consumption and the dual-use boundary across code at `$BD00` were not yet bounded. It remained unclassified at this checkpoint.
 
 From the preceding 83.52% checkpoint, this pass added 6,822 detailed byte positions: 1,970 instruction bytes and 4,854 ranged-data bytes, with two new dual-use positions. The exact 524,304-byte build remains the acceptance gate.
 
@@ -856,7 +868,7 @@ No broad unknown ranges were added. Orphaned opcode-like regions such as bank `$
 
 ### Remaining Priority At That Checkpoint
 
-The largest current unclassified intervals are:
+The largest unclassified intervals at this checkpoint were:
 
 | Bank and range | Bytes |
 | --- | ---: |
@@ -899,7 +911,7 @@ The descending pass then established four additional data domains:
 - Bank `$10:$BD2A-$BF53` is the compressed monster stream selected for monster ID `$B1` by descriptor `$14:$B726`; `$BF54-$BFD7` is contiguous `$FF` padding.
 - Bank `$12:$8A36-$8EAC` contains two 139-byte selector maps addressed through `$848F`, followed by variable setup records parsed from pointer `$8BBC`. Correcting the nested handler table from `$8491` to seven entries at `$8493` removed the false executable target at `$8AC1`.
 - Five special monster descriptors select bank `$14` and stream pointer `$BE53`; `$BE4F-$BE52` holds four consumed destination offsets, `$BE53-$BFCF` is compressed graphics, and `$BFD0-$BFD7` is padding.
-- Bank `$13:$B80B-$B90A` is a full 256-byte battle-presentation lookup page with several direct indexed consumers and verified code beginning at `$B90B`.
+- Bank `$13:$B80B-$B90A` is a full 256-byte battle-AI action lookup page with several direct indexed consumers and verified code beginning at `$B90B`.
 
 At that checkpoint, these classifications had reduced the original backlog by 3,174 bytes and raised detailed coverage to 506,243 / 524,288 (96.56%).
 
@@ -980,8 +992,9 @@ Extraction rejects any causal observation that disagrees with the handler-derive
 - Bank `$0F:$C019-$C02D` holds zero-filled trampoline slots, not JMP trampolines.
 - `$0E` palette data ends at `$BE0A`. The next 223 bytes are map-coordinate link records fetched through
   directory entry `$02`.
-- `$17:$9DC6` is `BCS $9D70`, not the first entry of a "ten-value table". The remaining 8 bytes have no consumer
-  and are unclassified.
+- `$17:$9DC6` is `BCS $9D70`, not the first entry of a "ten-value table". The remaining eight bytes had no
+  consumer at this checkpoint; the later final pass proved the branch is always taken and accepted them as
+  `ReviewedUnusedData`.
 
 ### Warning accounting by identity
 
@@ -1041,16 +1054,16 @@ tables in banks `$10/$13`, fixed-size battle and map records in banks `$12-$1E`,
 24-entry bank `$1F:$E812-$E841` audio RTS-dispatch table. Registering that table recovered all 36 handler bytes at
 `$E842-$E865` as code through value+1 targets rather than opcode appearance.
 
-The remaining large ranges are intentionally open. Directory targets alone do not prove the extents of bank `$10`
-and `$12` data, `$12:$B977-$BA3D` has no consumer, bank `$18:$ADA3-$AE4E` depends on the unbounded value `$62D5`,
-and the larger bank `$13/$1E` tables still have variable-derived endpoints. Further classification requires new
-interpreter discovery, variable-range proof, or targeted runtime reads.
+The remaining large ranges were intentionally open at this checkpoint. Directory targets alone did not prove the
+extents of bank `$10` and `$12` data, `$12:$B977-$BA3D` had no consumer, bank `$18:$ADA3-$AE4E` depended on the
+unbounded value `$62D5`, and the larger bank `$13/$1E` tables still had variable-derived endpoints. Later passes
+closed these ranges through interpreter discovery, variable-range proofs, and targeted runtime reads.
 
 ## Index-Bound Ledger And Title-Menu Pass - 2026-09-27
 
 This pass took detailed coverage from 523,911 bytes (99.93%, 377 bytes in 42 ranges) to 524,226 / 524,288 bytes
-(99.99%). It leaves 62 bytes in 13 ranges, each listed in [STATUS.md](STATUS.md) with its blocker. Some earlier
-claims were wrong and are recorded below, including changes that lowered the metric.
+(99.99%). It left 62 bytes in 13 ranges, recorded at that checkpoint with their blockers. Some earlier claims were
+wrong and are recorded below, including changes that lowered the metric.
 
 ### New enforcement
 
@@ -1149,8 +1162,7 @@ Tooling:
 - It reproduces all 181 runtime-fetched command sites.
 - It shows that script memory writes target only `$00F9`, `$0530`, and flags `$627B-$62AA`.
 
-The remaining 15 bytes at this checkpoint are described in [STATUS.md](STATUS.md); the final closure is recorded
-below.
+The remaining 15 bytes were recorded with their blockers at this checkpoint; the final closure is recorded below.
 
 ### Final byte-classification closure
 

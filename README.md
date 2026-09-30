@@ -30,102 +30,11 @@ These three figures describe the completed classification partition rather than 
 163,493 instruction bytes + 361,313 content-range bytes - 518 bytes in both inventories = 524,288 classified
 PRG bytes.
 
-## Routine Naming Backlog
+## Semantic Status
 
-`Named` counts curated code/function/interrupt/vector labels that coincide with an entry in
-`analysis/routine-interfaces.tsv`. `Remaining %` uses each bank's routine count as its denominator. Pure-data banks
-have no routine interfaces and report `n/a`.
-
-The 2026-09-28 audit checked all 2,354 routine interfaces in banks `$00-$15` against generated ASM and interface
-evidence. A follow-up control-flow pass added absolute JMP trampolines and bounded tail-call targets, increasing the
-all-bank inventory from 4,315 to 4,562 routines. The strengthened semantic-name review reports zero generated,
-numeric-operand, stacked-jargon, broad-prefix, generic-name-with-direct-battle-message, audio-only display-name,
-Dormant-with-callers, failure-framed-name-with-direct-battle-message, duplicate-address, duplicate-global-name, or
-byte-identical fixed-bank semantic-mismatch findings.
-
-The corrective audio audit decoded bank `$19` entries `$02-$09` as APU reset, track start, completion flags,
-flagged track start, global audio setting, completion wait, map-track selection, and map-music playback. Battle,
-casino, poker, item-effect, and map-event callers now use sound, jingle, narration, or map-music names instead of
-presentation, marker, glyph, palette, setup-hook, or raw-BRK terminology.
-
-The corrective field/story audit registered selector `$D3` as the battle-message ABI and `$04,$6F` as direct field
-message output. Bank `$12:$9300-$B5FF` now distinguishes item use, field spells, Adventure Log handling, level
-growth and spell learning, the Lighthouse fire scene, and neutral transition/operation helpers whose ownership is
-not proven. Story scenes in banks `$1C-$1E` use evidenced in-game events, chapter names use displayed values 1-5,
-and reviewed byte-identical `$0F/$1F` routines share one semantic stem.
-
-The fifth corrective naming pass names core battle routines for their main path instead of one failure branch,
-standardizes `$7361-$7362` as `BattleDamageAmountLow-High`, and identifies the battle command menu without
-guessing the two still-unverified command identities. Sparse overrides in `config/generated-label-ranges.tsv`
-assign generated helpers by evidenced address range before falling back to each bank's dominant classification;
-this corrected 335 bank `$12` and 293 bank `$17` generated labels. The pass also identifies the seven-routine
-battle fly-away block and replaces roughly 40 mechanical field, service, and story names using decoded text and
-main-path control flow.
-
-The 2026-09-29 sixth audit reviewed all 4,905 curated labels and all 4,577 Function/Code bodies. Its 126-item
-ledger is preserved at `analysis/audits/audit6-ledger.tsv`. The corrections identify bank `$13` as battle-AI
-scoring, bank `$14` as monster display and Necrosaro transformation code, bank `$15` as dialogue/shop event
-scripts, and bank `$1E:$8090` as the field-command menu. They also distinguish persistent character records,
-in-battle party records, and combatant records; decode capped additions, battle-message pacing, scripted fights,
-party joins, item searches, Repel, chapter endings, and debug-only chapter selection; and reclassify the audited
-music and monster-palette regions. `scripts/check_audit6_labels.py` enforces ledger totals, key mappings, stale
-name families, global uniqueness, and routine-contract synchronization.
-
-The follow-up sweep corrected 14 residual findings: the Clay Doll battle entry at `$1D:$9C52`, three inverted
-character-record bit operations, the capped add at `$10:$865B`, inventory search at `$10:$996C`, packed-record
-selectors previously called tactics, and nine naming/data-context issues. All bank `$1C` and `$1D` map-specific
-initializers now use canonical location names from `assets/maps/index.json`; casino restoration, treasure/search,
-Iron Safe return, boss-ID, shared-RAM, trampoline, and battle-display wording are also explicit.
-
-An eight-regression correction fixed four shifted map-handler names around `$1C:$A850-$A88E`, Haville submap-one
-ownership, and six over-specific bank `$1E` names. The bank `$13:$91A9` note now distinguishes its eighteen IDs
-from the seventeen-entry handler table and records that action ID `$60` has no real handler.
-
-The final audit correction names `$1E:$9E7A` as the Hero party-ordinal lookup used by chapter startup and removes
-unsupported chapter-setup wording from the scene-transition helper at `$1E:$8FA5`.
-
-Routine contracts now cover all 4,562 verified interfaces. Thirty-two specialized contracts retain manually
-written register and state semantics; the remaining 4,530 combine the reviewed all-body label notes with the
-extractor's conservative register, memory-write, call, and entry evidence. `scripts/sync_routine_contracts.py`
-reproduces this inventory, and extraction rejects any missing, stale, duplicate, or label-mismatched contract.
-
-The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
-both generated assembly and the routine-interface inventory.
-
-| Bank | Named | Total | Remaining | Remaining % |
-| --- | --- | ---: | --- | ---: |
-| `$00` | 0 | 0 | 0 | n/a |
-| `$01` | 0 | 0 | 0 | n/a |
-| `$02` | 0 | 0 | 0 | n/a |
-| `$03` | 0 | 0 | 0 | n/a |
-| `$04` | 0 | 0 | 0 | n/a |
-| `$05` | 0 | 0 | 0 | n/a |
-| `$06` | 0 | 0 | 0 | n/a |
-| `$07` | 0 | 0 | 0 | n/a |
-| `$08` | 84 | 84 | 0 | 0.00% |
-| `$09` | 0 | 0 | 0 | n/a |
-| `$0A` | 0 | 0 | 0 | n/a |
-| `$0B` | 10 | 10 | 0 | 0.00% |
-| `$0C` | 0 | 0 | 0 | n/a |
-| `$0D` | 0 | 0 | 0 | n/a |
-| `$0E` | 6 | 6 | 0 | 0.00% |
-| `$0F` | 360 | 360 | 0 | 0.00% |
-| `$10` | 392 | 392 | 0 | 0.00% |
-| `$11` | 374 | 374 | 0 | 0.00% |
-| `$12` | 283 | 283 | 0 | 0.00% |
-| `$13` | 393 | 393 | 0 | 0.00% |
-| `$14` | 196 | 196 | 0 | 0.00% |
-| `$15` | 256 | 256 | 0 | 0.00% |
-| `$16` | 418 | 418 | 0 | 0.00% |
-| `$17` | 258 | 258 | 0 | 0.00% |
-| `$18` | 92 | 92 | 0 | 0.00% |
-| `$19` | 12 | 12 | 0 | 0.00% |
-| `$1A` | 0 | 0 | 0 | n/a |
-| `$1B` | 184 | 184 | 0 | 0.00% |
-| `$1C` | 221 | 221 | 0 | 0.00% |
-| `$1D` | 318 | 318 | 0 | 0.00% |
-| `$1E` | 340 | 340 | 0 | 0.00% |
-| `$1F` | 365 | 365 | 0 | 0.00% |
+Routine naming and semantic-contract coverage are complete for all 4,562 verified interfaces. The authoritative
+per-bank completion table, audit history, evidence checks, and remaining work are maintained in
+[docs/STATUS.md](docs/STATUS.md); detailed audit findings remain in `analysis/audits/`.
 
 ## Quick Start
 

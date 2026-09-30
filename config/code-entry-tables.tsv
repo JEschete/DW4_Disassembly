@@ -23,7 +23,7 @@
 13	8B8B	8C59	Direct ROM analysis	103-entry battle-action handler table for IDs $00-$66; bytes $8C59-$8C5A begin following code
 13	91CD	91EF	Direct ROM analysis	Seventeen-entry battle-action handler table for IDs $00-$10; bytes $91EF-$91F0 begin following code
 13	9100	9110	Direct ROM analysis	Eight-entry arithmetic handler table consumed by the indirect jump at $8F93-$8F9F
-13	A636	A696	Direct ROM analysis	Four 12-entry battle presentation callback tables selected through $A626 and dispatched at $A559-$A589
+13	A636	A696	Direct ROM analysis	Four 12-entry battle-AI action/effect callback tables selected through $A626 and dispatched at $A559-$A589
 13	A751	A753	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
 13	A755	A757	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
 13	A759	A75B	Direct ROM analysis	Callback field in the first battle-effect record list dispatched at $A744
@@ -42,7 +42,7 @@
 13	A78F	A791	Direct ROM analysis	Callback field in the third battle-effect record list dispatched at $A744
 13	A794	A796	Direct ROM analysis	Callback field in the fourth battle-effect record list dispatched at $A744
 14	8000	8034	Direct ROM analysis	26-entry code dispatch table followed by code at $8034
-14	A40D	A41B	Direct ROM analysis	Seven-entry nested battle presentation dispatch table
+14	A40D	A41B	Direct ROM analysis	Seven-entry nested Necrosaro transformation dispatch table
 15	8000	8034	Direct ROM analysis	26-entry code dispatch table
 16	8000	8028	Direct ROM analysis	20-entry text and user-interface service directory
 16	80C4	80EA	Direct ROM analysis	Nineteen-entry text/UI command handler table selected by clamped command values $40-$52 at $8094-$80B2

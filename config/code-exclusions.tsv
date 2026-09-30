@@ -92,7 +92,7 @@
 12	BED0	BED2	Ghidra headless	Isolated STX $04 decode inside the pointer-delimited stream selected by directory entry $31; no code predecessor, target, or runtime execution reaches it
 12	BF68	BFD8	Content classification	Contiguous $FF padding before the compatibility footer
 11	9933	9934	Content classification	Low byte of jsr operand at $9932
-13	8000	8038	Content classification	Battle presentation and state pointer directory
+13	8000	8038	Content classification	Battle-AI scoring, effect-roll, resistance, and state pointer directory
 13	8AEF	8B8B	Content classification	Two explicitly bounded battle-presentation lookup arrays before the action-handler pointer table
 13	90EC	9110	Content classification	Battle field offsets and arithmetic handler pointers
 13	8594	8595	Ghidra headless	Ghidra starts at the relative operand of the verified BEQ $8592 at $8593; fallthrough resumes at $8595
@@ -103,11 +103,11 @@
 13	A102	A103	Ghidra headless	Ghidra starts at the zero-page operand of the verified STA $94 at $A101; fallthrough resumes at LDA $7C at $A103
 13	B7B0	B7BA	Ghidra headless	Supplementary Ghidra decode has no static or runtime code predecessor and lies inside the larger $B74D-$B80A indexed battle-presentation data neighborhood; keep unclassified until an exact data reader or code path proves these bytes
 13	B7E3	B7E4	Content classification	Data target of service directory entry $0F at $801E: the only decoded caller, BRK $8F,$3F at bank $12:$A94C, sets bit 7 of the entry byte, so dispatcher path $C3CE returns the pointer instead of calling it
-13	B80B	B90B	Content classification	Directly indexed 256-byte battle presentation lookup table before code at $B90B
-13	B967	BA4E	Content classification	Directly indexed battle presentation lookup table misidentified as code by the Ghidra range ending at $B96F
+13	B80B	B90B	Content classification	Directly indexed 256-byte battle-AI action lookup table before code at $B90B
+13	B967	BA4E	Content classification	Directly indexed battle-AI state lookup table misidentified as code by the Ghidra range ending at $B96F
 13	BBCB	BFD8	Content classification	Seven directory-delimited battle-presentation command streams followed by contiguous $FF padding
 14	8000	8034	Content classification	Battle-turn service pointer directory
-14	A40D	A41B	Content classification	Nested battle presentation service pointer directory before dual-use handler bytes at $A41B
+14	A40D	A41B	Content classification	Nested Necrosaro transformation pointer directory before dual-use handler bytes at $A41B
 14	BE4F	BFD8	Content classification	Monster graphics destination offsets, special embedded compressed stream, and trailing padding
 15	8000	98F8	Content classification	Item/effect directory, command streams, and script pointers
 15	BB1A	BBCE	Content classification	Three parallel 30-entry item/effect lookup tables

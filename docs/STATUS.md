@@ -95,7 +95,7 @@ reproduces the inventory; extraction rejects missing, stale, duplicate, or label
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
 
-## Routine Naming Backlog
+## Routine Naming Completion
 
 `Named` counts curated code/function/interrupt/vector labels that coincide with an entry in
 `analysis/routine-interfaces.tsv`. `Remaining %` uses each bank's routine count as its denominator. Pure-data banks
@@ -204,36 +204,28 @@ Corrections made in the 2026-09-27 pass:
 
 ## Completion Definition
 
-Semantic assembly is done only when there are:
+Semantic assembly is done only when all of these conditions hold:
 
-- Zero unclassified byte ranges.
-- Zero generated routine-entry names.
-- Complete reviewed routine contracts.
-- Structured lossless encoders for all five asset classes.
-- Fully proven save/load and validation behavior.
-- Deterministic end-to-end runtime scenarios for all nine domains.
-- Continued exact-ROM reproduction.
+- Zero unclassified byte ranges. **Done.**
+- Zero generated routine-entry names. **Done.**
+- Complete reviewed routine contracts. **Done.**
+- Structured lossless encoders for all five asset classes. **Open: 0/5.**
+- Fully proven save/load and validation behavior. **Open beyond the currently observed direct-SRAM paths.**
+- Deterministic end-to-end runtime scenarios for all nine domains. **Open; current trace assertions pass but are
+  evidence checks rather than complete scenarios.**
+- Continued exact-ROM reproduction. **Mandatory gate; currently passing.**
 
-## Work Priorities
+## Remaining Work
 
-1. Recover entry points and indirect calls: complete for all currently decoded indirect jumps; rerun the audit whenever new code paths appear.
-2. Type mixed-bank records and pointer boundaries: directly classifies data and often reveals dispatch targets.
-3. Exercise runtime paths: provides proof for otherwise unreachable code and ROM-read boundaries.
-4. Classify opcode/data-walk warnings: identifies hidden data structures and bad control-flow paths.
-5. Build structured asset decoders/encoders: helps classify mixed-bank assets; raw binary round-tripping alone does not.
-6. Verify RAM/save behavior: can reveal initialization tables and save routines, but offers narrower PRG coverage gains.
-7. Meaningful naming and routine contracts: aid investigation but do not increase byte coverage directly.
-8. Exact-ROM rebuild gate: adds no coverage, but remains mandatory for every change.
+1. Build structured lossless decoders and encoders for text, maps, graphics, palettes, and audio.
+2. Define engine-neutral game-state and content schemas from the completed assembly and asset models.
+3. Implement a headless deterministic simulation and compare combat, movement, events, RNG, and save/load behavior
+   against emulator traces.
+4. Turn the nine passing runtime-evidence domains into deterministic end-to-end scenarios.
+5. Build one vertical slice in the chosen engine, then add editing tools and intentional gameplay changes.
 
-## Long-Term Direction
-
-1. Finish semantic disassembly and content typing. - Done
-2. Build lossless asset decoders and encoders.
-3. Define engine-neutral game-state and content schemas.
-4. Implement a headless deterministic simulation.
-5. Validate combat, movement, events, and RNG against emulator traces.
-6. Build one vertical slice in the chosen engine.
-7. Add editing tools and begin intentional gameplay changes.
+Entry-point recovery, byte classification, warning disposition, routine naming, routine contracts, and the exact-ROM
+gate are maintenance checks now; rerun them whenever new evidence changes code or data boundaries.
 
 ## Control-Flow Conflicts
 

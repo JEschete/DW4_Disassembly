@@ -52,6 +52,17 @@ A path may be supplied directly instead:
 extract.cmd <path-to-reference-rom>
 ```
 
+To synchronize contracts from the current tracked routine-interface report, use Python and rerun extraction:
+
+```bat
+python scripts\sync_routine_contracts.py --write
+extract.cmd <path-to-reference-rom>
+```
+
+The synchronizer preserves specialized hand-authored contracts and derives remaining entries from reviewed label
+notes plus conservative interface evidence. Running it without `--write` checks that the tracked inventory is
+already synchronized.
+
 ## Full Acceptance Gate
 
 ```bat
