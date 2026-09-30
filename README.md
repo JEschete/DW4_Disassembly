@@ -16,15 +16,19 @@ The fixed `$C000-$FFFF` banks are physical banks `$0F` and `$1F` for the two SUR
 
 - Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
 - Detailed semantic classification: 100% (524,288 / 524,288) - Done
-- Verified instruction bytes: 163,493 (31.18%)
-- Explicitly ranged data bytes: 361,317 (68.92%)
-- Dual-use code/data overlap: 522 bytes (0.10%)
+- Verified instruction-byte inventory: 163,493 (31.18% of PRG) - Done under current decoded evidence
+- Explicit content-range inventory: 361,313 (68.91% of PRG) - Done
+- Reviewed dual-use code/data overlap ledger: 518/518 bytes (0.10%) - Done
 - Curated code/function labels: 4,572
 - Meaningfully named routines: 4,562/4,562 (100%)
-- Semantic contracts: 37/4,562 (0.81%)
+- Semantic contracts: 4,562/4,562 (100%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
 - Structured asset encoders: 0/5 complete
+
+These three figures describe the completed classification partition rather than separate progress targets:
+163,493 instruction bytes + 361,313 content-range bytes - 518 bytes in both inventories = 524,288 classified
+PRG bytes.
 
 ## Routine Naming Backlog
 
@@ -79,6 +83,11 @@ from the seventeen-entry handler table and records that action ID `$60` has no r
 
 The final audit correction names `$1E:$9E7A` as the Hero party-ordinal lookup used by chapter startup and removes
 unsupported chapter-setup wording from the scene-transition helper at `$1E:$8FA5`.
+
+Routine contracts now cover all 4,562 verified interfaces. Thirty-two specialized contracts retain manually
+written register and state semantics; the remaining 4,530 combine the reviewed all-body label notes with the
+extractor's conservative register, memory-write, call, and entry evidence. `scripts/sync_routine_contracts.py`
+reproduces this inventory, and extraction rejects any missing, stale, duplicate, or label-mismatched contract.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

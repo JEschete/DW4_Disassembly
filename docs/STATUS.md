@@ -8,15 +8,19 @@ This document is the authoritative human-readable status snapshot. Generated tot
 
 - Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
 - Detailed semantic classification: 100% (524,288 / 524,288) - Done
-- Verified instruction bytes: 163,493 (31.18%)
-- Explicitly ranged data bytes: 361,317 (68.92%)
-- Dual-use code/data overlap: 522 bytes (0.10%)
+- Verified instruction-byte inventory: 163,493 (31.18% of PRG) - Done under current decoded evidence
+- Explicit content-range inventory: 361,313 (68.91% of PRG) - Done
+- Reviewed dual-use code/data overlap ledger: 518/518 bytes (0.10%) - Done
 - Curated code/function labels: 4,572
 - Meaningfully named routines: 4,562/4,562 (100%)
-- Semantic contracts: 37/4,562 (0.81%)
+- Semantic contracts: 4,562/4,562 (100%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
 - Structured asset encoders: 0/5 complete
+
+The instruction, content-range, and overlap figures are classification components, not independent progress
+targets. Their union is complete: 163,493 instruction bytes + 361,313 content-range bytes - 518 bytes present in
+both inventories = 524,288 classified PRG bytes.
 
 All-bank entry-point pass: 2,143 pointer entries across declared tables, mixed records, text/UI escape handlers,
 and explicit pointer fields. All 2,036 executable targets decode; RTS-dispatch tables are registered with their
@@ -26,7 +30,7 @@ handler at `$16:$AAEF` from a stale variable-record boundary.
 
 The completion gate (`verify-completion.cmd`) passes end to end: 0 current analyzer warnings; 215 warning
 identities ledgered, including all 143 original warnings; 2,143 pointers typed; 2,036/2,036 executable targets
-decoded; 38/38 indirect jumps audited; 4,562 routine interfaces; 37 semantic contracts; 26 asset slices; 15 save
+decoded; 38/38 indirect jumps audited; 4,562 routine interfaces; 4,562 semantic contracts; 26 asset slices; 15 save
 fields; 9 runtime paths; exact ROM match.
 
 The 2026-09-28 routine-name audit checked all 2,354 interfaces in banks `$00-$15` against their generated ASM
@@ -82,6 +86,11 @@ eighteen action IDs versus seventeen real handlers, leaving action ID `$60` with
 
 The final one-issue audit correction identifies `$1E:$9E7A` as `FindHeroPartyOrdinalOrFallback`, called only by
 chapter startup, and limits `$1E:$8FA5` to its verified scene-transition caller.
+
+The contract-completion pass now covers all 4,562 verified routine interfaces. It preserves 32 specialized,
+hand-authored contracts and derives 4,530 evidence-bounded contracts from the reviewed all-body label notes plus
+conservative decoded register, memory-write, call, and entry evidence. `../scripts/sync_routine_contracts.py`
+reproduces the inventory; extraction rejects missing, stale, duplicate, or label-mismatched contracts.
 
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.

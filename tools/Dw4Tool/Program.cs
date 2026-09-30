@@ -203,11 +203,6 @@ internal static class Program
             Path.Combine(projectRoot, "analysis", "entry-point-report.txt"),
             entryTables.Entries,
             analyses);
-        WriteRoutineContractReport(
-            Path.Combine(projectRoot, "analysis", "routine-contracts.md"),
-            LoadRoutineContracts(Path.Combine(projectRoot, "config", "routine-contracts.tsv")),
-            labels,
-            analyses);
         Dictionary<(int Bank, int Address), SortedSet<string>> routineTargets = BuildRoutineTargets(
             codeSeeds,
             entryTables.Entries,
@@ -218,6 +213,12 @@ internal static class Program
             bankClassifications,
             generatedLabelRanges,
             routineTargets.Keys.ToHashSet());
+        WriteRoutineContractReport(
+            Path.Combine(projectRoot, "analysis", "routine-contracts.md"),
+            LoadRoutineContracts(Path.Combine(projectRoot, "config", "routine-contracts.tsv")),
+            routineTargets,
+            effectiveLabels,
+            analyses);
         WriteRoutineInterfaceReport(
             Path.Combine(projectRoot, "analysis", "routine-interfaces.tsv"),
             routineTargets,
@@ -508,6 +509,10 @@ internal static class Program
             if (columns.Length != 9)
             {
                 throw new InvalidDataException($"invalid routine contract: {line}");
+            }
+            if (columns.Skip(2).Any(string.IsNullOrWhiteSpace))
+            {
+                throw new InvalidDataException($"routine contract contains an empty semantic field: {line}");
             }
 
             contracts.Add(new RoutineContract(
@@ -2046,6 +2051,7 @@ internal static class Program
     private static void WriteRoutineContractReport(
         string path,
         IReadOnlyList<RoutineContract> contracts,
+        IReadOnlyDictionary<(int Bank, int Address), SortedSet<string>> routineTargets,
         IReadOnlyDictionary<int, List<BankLabel>> labels,
         IReadOnlyDictionary<int, BankAnalysis> analyses)
     {
@@ -2081,6 +2087,28 @@ internal static class Program
             report.AppendLine($"- Clobbers: {contract.Clobbers}");
             report.AppendLine($"- Side effects: {contract.SideEffects}");
             report.AppendLine($"- Evidence: {contract.Evidence}");
+        }
+        (int Bank, int Address)[] missingContracts = routineTargets.Keys
+            .Where(location => !locations.Contains(location))
+            .OrderBy(location => location.Bank)
+            .ThenBy(location => location.Address)
+            .ToArray();
+        (int Bank, int Address)[] staleContracts = locations
+            .Where(location => !routineTargets.ContainsKey(location))
+            .OrderBy(location => location.Bank)
+            .ThenBy(location => location.Address)
+            .ToArray();
+        if (missingContracts.Length != 0 || staleContracts.Length != 0)
+        {
+            string missingSummary = string.Join(", ", missingContracts
+                .Take(10)
+                .Select(location => $"${location.Bank:X2}:${location.Address:X4}"));
+            string staleSummary = string.Join(", ", staleContracts
+                .Take(10)
+                .Select(location => $"${location.Bank:X2}:${location.Address:X4}"));
+            throw new InvalidDataException(
+                $"routine contract inventory mismatch: {missingContracts.Length} missing ({missingSummary}) and " +
+                $"{staleContracts.Length} stale ({staleSummary}) contracts");
         }
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
     }

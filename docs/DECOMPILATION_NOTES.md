@@ -880,7 +880,7 @@ These intervals remain unclassified at table/routine granularity. Their containi
 - all 143 original unsupported-opcode/data-walk cases remain accounted for, and 45 additional warnings exposed by later control-flow recovery are also classified
 - all 1,955 pointer entries have verified boundaries; all 1,871 executable targets decode, and all 42 currently decoded indirect jumps have reviewed dispositions
 - all 7,123 former `BankXX_Code_XXXX` labels are replaced by subsystem-qualified entry or branch labels while curated semantic labels take precedence
-- 3,992 pointer-, call-, or seed-proven routine starts have generated register/memory/call interfaces; 35 high-confidence routines additionally have extraction-validated semantic contracts
+- at this milestone, 3,992 pointer-, call-, or seed-proven routine starts had generated register/memory/call interfaces and 35 high-confidence routines had extraction-validated semantic contracts; current totals are maintained in [STATUS.md](STATUS.md)
 - 26 manifest slices cover text, maps, graphics, palettes, and audio and round-trip to the exact ROM hash
 - FCEUX evidence passes 12 assertions across startup, banking, menus, maps, battle, text, save/load initialization, audio, and graphics
 - SRAM tracing observes complete writes for 15 named fields and the contiguous `$6001-$62EE` initialization span; recovered code uses battery SRAM directly and contains no verified separate serializer or checksum pass

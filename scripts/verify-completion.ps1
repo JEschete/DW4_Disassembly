@@ -67,9 +67,11 @@ try {
     $originalWarningCount = [int]$originalWarnings.Matches[0].Groups['total'].Value
     $ledgerCount = [int]$ledgerIdentities.Matches[0].Groups['count'].Value
 
-    $contracts = @(Select-String -Path analysis\routine-contracts.md -Pattern '^## ')
-    if ($contracts.Count -eq 0) { throw "no validated routine contracts were generated" }
     $interfaces = @(Import-Csv analysis\routine-interfaces.tsv -Delimiter "`t")
+    $contracts = @(Select-String -Path analysis\routine-contracts.md -Pattern '^## ')
+    if ($contracts.Count -ne $interfaces.Count) {
+        throw "semantic contract coverage is $($contracts.Count)/$($interfaces.Count); complete coverage is required"
+    }
     $interfaceKeys = @($interfaces | ForEach-Object { "$($_.Bank):$($_.Address)" })
     $entryTargets = @((Get-Content analysis\entry-point-report.txt) | Select-String -Pattern '\[(?:local|fixed)-bank-code, decoded\]' | ForEach-Object {
         if ($_.Line -match 'bank \$([0-9A-F]{2}):\$([0-9A-F]{4})') { "$($matches[1]):$($matches[2])" }

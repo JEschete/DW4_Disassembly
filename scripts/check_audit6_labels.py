@@ -260,11 +260,17 @@ for contract in contracts:
             f"contract mismatch {location[0]}:{location[1]}: {contract['name']} != {label['label']}"
         )
 
+contract_locations = [(contract["bank"], contract["address"]) for contract in contracts]
+if len(contracts) != 4562:
+    errors.append(f"semantic contract count changed: {len(contracts)}, expected 4562")
+if len(set(contract_locations)) != len(contract_locations):
+    errors.append("duplicate semantic contract locations")
+
 if errors:
     print("\n".join(errors))
     sys.exit(1)
 
 print(
     "Label audits passed: 126-row audit 6, 14-item follow-up, 8-regression correction, and final low fix; "
-    "no stale families, legacy labels, duplicates, or contract mismatches"
+    "4,562/4,562 semantic contracts; no stale families, legacy labels, duplicates, or contract mismatches"
 )
