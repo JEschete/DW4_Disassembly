@@ -5,7 +5,7 @@ This map classifies all 32 physical 16 KiB PRG banks in the exact US ROM. It is 
 All bank numbers are hexadecimal. Banks `$00-$0E` and `$10-$1E` map at CPU `$8000-$BFFF`; `$0F` and `$1F` are the fixed `$C000-$FFFF` banks in the lower and upper SUROM regions.
 
 | Bank | Dominant content | Confidence | Evidence and important ranges |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `$00` | Huffman dialogue | Verified | Groups `$00-$19`, 832 messages. Stream `$8000-$BFD7`; compatibility footer `$BFD8-$BFFF`. |
 | `$01` | Huffman dialogue | Verified | Group `$19` continuation `$8000-$8025`; groups `$1A-$27`, 448 messages; compatibility footer `$BFD8-$BFFF`. |
 | `$02` | Huffman dialogue | Verified | Group `$26` continuation `$8000-$83E4`; groups `$28-$35`, 448 messages; compatibility footer `$BFD8-$BFFF`. |
@@ -44,7 +44,7 @@ All bank numbers are hexadecimal. Banks `$00-$0E` and `$10-$1E` map at CPU `$800
 The decoder emits 88 groups and 2,816 messages to `analysis\text.tsv`, with one Markdown report per physical text bank. The group-to-bank mapping is:
 
 | Physical bank | Groups | Messages |
-|---|---:|---:|
+| --- | --- | ---: |
 | `$00` | `$00-$19` | 832 |
 | `$01` | `$1A-$27` | 448 |
 | `$02` | `$28-$35` | 448 |

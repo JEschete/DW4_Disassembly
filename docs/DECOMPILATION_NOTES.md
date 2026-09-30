@@ -310,9 +310,9 @@ The RESET vector points to `$FFD8`. The reset stub is:
 
 ```asm
 Reset:
-	sei
-	inc $FFDF
-	jmp $C03D
+  sei
+  inc $FFDF
+  jmp $C03D
 ```
 
 `$FFDF` contains `$80`. On MMC1, a write with bit 7 set resets the serial shift register. The read-modify-write behavior of `INC` therefore supplies an MMC1 reset write before execution continues at `$C03D`.
@@ -401,7 +401,7 @@ ldy CurrentSubmapNumber
 After dual-fixed-bank correction and validated trampoline-call seeding, the static report contains:
 
 | Physical bank | Instructions | Bytes emitted as instructions |
-|---:|---:|---:|
+| --- | ---: | ---: |
 | `$0E` | 52 | 100 |
 | `$0F` | 3,476 | 7,001 |
 | `$19` | 6 | 18 |
@@ -437,7 +437,7 @@ After correcting physical bank `$0F` to CPU base `$C000`, its supplied map-bank 
 Adding byte-verified trampoline call sites in switchable banks expanded the analysis again. The current accepted coverage is:
 
 | Physical bank | Instructions | Bytes emitted as instructions |
-|---:|---:|---:|
+| --- | ---: | ---: |
 | `$0E` | 52 | 100 |
 | `$0F` | 3,476 | 7,001 |
 | `$19` | 6 | 18 |
@@ -561,7 +561,7 @@ The first two-bank probe (`$08,$0B`) verified that a shard exported only assigne
 Shard results:
 
 | Shard | Instructions | Ranges | Notes |
-|---|---:|---:|---|
+| --- | ---: | ---: | ---: |
 | `$00-$07` | 0 | 0 | No curated/runtime entry points in these banks |
 | `$08-$0F` | 7,706 | 147 | Added lower fixed-bank paths |
 | `$10-$17` | 8,434 | 148 | Matched monolithic instruction total |
@@ -639,7 +639,7 @@ Known characters and punctuation are rendered as ASCII. Unresolved symbols remai
 The bank footer is separately labeled:
 
 - `$BFD8`: compatibility reset stub/stream rollover boundary
-- `$BFE0`: ` DRAGON QUEST IV` title signature
+- `$BFE0`: `DRAGON QUEST IV` title signature
 - `$BFFA`: three vectors targeting `$BFD8`
 
 Adding labels and comments does not change the compressed payload. The rebuilt ROM remains byte-identical.
@@ -657,7 +657,7 @@ The fixed-bank IRQ/BRK dispatcher treats the two bytes following a `BRK` as a ba
 `config\code-entry-tables.tsv` now records verified directory bounds. `Dw4Tool` and Ghidra both read this file and seed only in-window, non-null targets. The currently registered directories are:
 
 | Bank | Range | Entries | Broad subsystem |
-|---|---|---:|---|
+| --- | --- | ---: | --- |
 | `$08` | `$8000-$803B` | 30 | map tile and tileset services |
 | `$0E` | `$8000-$8007` | 4 | graphics and palette services |
 | `$10` | `$8000-$807F` | 64 | battle-side party/status services |
@@ -703,7 +703,7 @@ The fixed reader's rollover behavior was reproduced exactly:
 Several groups cross those boundaries. Because the decoder fetches three-byte bit buffers, adjacent streams can share one or two source bytes:
 
 | Group | Initial pointer | Continuation consumed |
-|---|---|---|
+| --- | --- | --- |
 | `$19` | `$00:$BBD8` | `$01:$8000-$8025` |
 | `$26` | `$01:$BE35` | `$02:$8000-$83E4` |
 | `$35` | `$02:$BCF3` | `$03:$8000-$833B` |
@@ -859,7 +859,7 @@ No broad unknown ranges were added. Orphaned opcode-like regions such as bank `$
 The largest current unclassified intervals are:
 
 | Bank and range | Bytes |
-|---|---:|
+| --- | ---: |
 | `$13:$9276-$A4E7` | 4,722 |
 | `$12:$AF89-$B520` | 1,432 |
 | `$14:$B77B-$BCFF` | 1,413 |
@@ -913,6 +913,7 @@ The next pass raised detailed coverage by another 4,237 bytes, from 96.56% to 97
 - Several false instruction paths were removed, including bank `$13` command streams and the lookup table beginning at `$B967`; this reduced decoded indirect jumps from 42 to 41 and recovered-path warning cases from 45 to 42.
 
 Cumulative unclassified PRG fell by 7,411 bytes from the original 21,219-byte checkpoint to 13,808 bytes in 708 ranges. The completion gate passes with 2,066 typed pointers, 1,968/1,968 executable targets decoded, 41/41 indirect jumps audited, 3/3 control-flow conflicts audited, and exact ROM reproduction.
+
 ## Inline-Operand ABI And Evidence-Priority Pass - 2026-09-23/24
 
 This pass started from a provisional 99.41% claim and first reduced it to 98.38%, from 510,480 bytes (97.37%) at
@@ -1086,7 +1087,7 @@ snapshots ("`<frame> <count> <buttons>`" or "`<frame> shot`"). It also gained `-
 archive's battery RAM without loading its snapshot, and `-TimeoutSeconds`. All data from these runs merges into the
 normal `analysis/fceux-*.tsv` corpus.
 
-### Newly typed content
+### Newly typed content part 2
 
 - Guest-class tables `$10:$8540`, `$10:$8F28`, `$10:$8FE5`, `$1E:$96A3`, and `$16:$AB50`. Guest classes 8-14
   come from the join handler at `$10:$93DA-$93F7` with arguments at `$1D:$B787`, `$1C:$B667`, and `$1C:$B63D`.

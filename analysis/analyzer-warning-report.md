@@ -9,7 +9,7 @@ Warnings added after the original inventory: 72; 0 current
 Ledger identities: 215
 
 | Status | Disposition | Count |
-|---|---|---:|
+| --- | --- | ---: |
 | resolved | decoded-instruction | 37 |
 | resolved | inline-operand | 130 |
 | resolved | typed-data | 48 |

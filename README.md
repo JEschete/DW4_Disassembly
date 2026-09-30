@@ -93,7 +93,7 @@ The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero ge
 both generated assembly and the routine-interface inventory.
 
 | Bank | Named | Total | Remaining | Remaining % |
-|---:|---:|---:|---:|---:|
+| --- | --- | ---: | --- | ---: |
 | `$00` | 0 | 0 | 0 | n/a |
 | `$01` | 0 | 0 | 0 | n/a |
 | `$02` | 0 | 0 | 0 | n/a |
@@ -152,7 +152,7 @@ See [docs/BUILDING.md](docs/BUILDING.md) for prerequisites, environment variable
 ## Repository Layout
 
 | Path | Purpose |
-|---|---|
+| --- | --- |
 | `src/` | Exact assembly source, constants, and 32 generated bank files |
 | `config/` | Curated classification, labels, pointer, contract, and verification ledgers |
 | `analysis/` | Tracked generated evidence and reports used by the acceptance gate |

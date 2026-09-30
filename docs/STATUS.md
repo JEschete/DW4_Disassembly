@@ -102,7 +102,7 @@ both generated assembly and the routine-interface inventory.
 have no routine interfaces and report `n/a`.
 
 | Bank | Named | Total | Remaining | Remaining % |
-|---:|---:|---:|---:|---:|
+| --- | --- | --- | --- | --- |
 | `$00` | 0 | 0 | 0 | n/a |
 | `$01` | 0 | 0 | 0 | n/a |
 | `$02` | 0 | 0 | 0 | n/a |

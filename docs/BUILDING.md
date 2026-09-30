@@ -19,7 +19,7 @@ git submodule update --init --recursive
 No script depends on a machine-specific drive path.
 
 | Variable | Purpose |
-|---|---|
+| --- | --- |
 | `DW4_ROM` | Reference ROM used by extraction and the completion gate |
 | `GHIDRA_HOME` | Ghidra installation root containing `support\analyzeHeadless.bat` |
 | `DW4_FCEUX` | FCEUX executable used for runtime tracing |
