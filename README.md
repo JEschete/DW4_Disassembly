@@ -16,15 +16,10 @@ The fixed `$C000-$FFFF` banks are physical banks `$0F` and `$1F` for the two SUR
 
 - Reassemblable assembly: 100% (verified: build reproduces SHA-256 `373BE958CB33651FE599A6B282D2A232EB3B99559C258B2C70B53DF0FA31E34A`)
 - Detailed semantic classification: 100% (524,288 / 524,288) - Done
-- Verified instruction-byte inventory: 163,493 (31.18% of PRG) - Done under current decoded evidence
-- Explicit content-range inventory: 361,313 (68.91% of PRG) - Done
-- Reviewed dual-use code/data overlap ledger: 518/518 bytes (0.10%) - Done
-- Curated code/function labels: 4,572
 - Meaningfully named routines: 4,562/4,562 (100%)
 - Semantic contracts: 4,562/4,562 (100%)
 - Pointer recovery, indirect-jump audit, and analyzer-warning disposition: 100%
 - Current analyzer warnings and control-flow conflicts: 0
-- Structured asset encoders: 0/5 complete
 
 These three figures describe the completed classification partition rather than separate progress targets:
 163,493 instruction bytes + 361,313 content-range bytes - 518 bytes in both inventories = 524,288 classified
