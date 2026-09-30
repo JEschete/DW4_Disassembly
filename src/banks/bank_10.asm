@@ -984,7 +984,7 @@ BattlePartyServices_Branch_8640:
         sta     $75                             ; 8658 85 75                    .u
         rts                                     ; 865A 60                       `
 ; ----------------------------------------------------------------------------
-SubtractPartyRecordCurrentValue:
+AddToPartyRecordValueCappedAtCurrentLimit:
         ldy     #$0C                            ; 865B A0 0C                    ..
         jmp     LoadCapAndAddToPartyRecordValue ; 865D 4C 1E 84                 L..
 ; ----------------------------------------------------------------------------
@@ -3750,7 +3750,7 @@ BattlePartyServices_Branch_9962:
         sta     $6E0B                           ; 9968 8D 0B 6E                 ..n
         rts                                     ; 996B 60                       `
 ; ----------------------------------------------------------------------------
-FindEligibleMemberByMaskedRecordByte:
+FindPartyMemberHoldingItem:
         lda     $6E0B                           ; 996C AD 0B 6E                 ..n
         pha                                     ; 996F 48                       H
         lda     #$00                            ; 9970 A9 00                    ..
@@ -7941,19 +7941,19 @@ MergeBattleEffectSelectionSources:
         tay                                     ; B5CD A8                       .
         bmi     BattlePartyServices_Branch_B5D7 ; B5CE 30 07                    0.
         lda     #$04                            ; B5D0 A9 04                    ..
-        jsr     SeedCurrentSlotSelectorAndMask  ; B5D2 20 4F B7                  O.
+        jsr     SeedCurrentSlotAndPackedFieldMask; B5D2 20 4F B7                 O.
         bcs     BattlePartyServices_Branch_B5DF ; B5D5 B0 08                    ..
 BattlePartyServices_Branch_B5D7:
         lda     #$04                            ; B5D7 A9 04                    ..
         jsr     BuildCandidateMaskFromEnabledSlots; B5D9 20 57 B9                W.
-        jsr     PruneCandidateMaskByTacticGroup ; B5DC 20 DA B8                  ..
+        jsr     PruneCandidateMaskByPackedRecordField; B5DC 20 DA B8             ..
 BattlePartyServices_Branch_B5DF:
         pla                                     ; B5DF 68                       h
         ldx     #$13                            ; B5E0 A2 13                    ..
         stx     $0D                             ; B5E2 86 0D                    ..
         ldx     #$03                            ; B5E4 A2 03                    ..
         stx     $0E                             ; B5E6 86 0E                    ..
-        jmp     ApplyTacticGroupMaskToTargetSelection; B5E8 4C B8 B8            L..
+        jmp     ApplyPackedRecordFieldMaskToTargetSelection; B5E8 4C B8 B8      L..
 ; ----------------------------------------------------------------------------
 RequireHighBattleSlotIndex:
         lda     $96                             ; B5EB A5 96                    ..
@@ -8056,11 +8056,11 @@ BattlePartyServices_Branch_B665:
         lda     $0D                             ; B66A A5 0D                    ..
         jmp     AcceptAndIntersectCandidateMask ; B66C 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-RequireTacticGroupValuesNonzero:
+RequirePackedRecordFieldValuesNonzero:
         cpy     #$03                            ; B66F C0 03                    ..
         bne     BattlePartyServices_Branch_B67A ; B671 D0 07                    ..
         pha                                     ; B673 48                       H
-        jsr     RequireTacticFilteredCandidateSurvives; B674 20 75 B8            u.
+        jsr     RequirePackedFieldFilteredCandidateSurvives; B674 20 75 B8       u.
         pla                                     ; B677 68                       h
         bcc     BattlePartyServices_Branch_B688 ; B678 90 0E                    ..
 BattlePartyServices_Branch_B67A:
@@ -8093,9 +8093,9 @@ BattlePartyServices_Branch_B697:
         rol     $0D                             ; B697 26 0D                    &.
         dex                                     ; B699 CA                       .
         bpl     BattlePartyServices_Branch_B690 ; B69A 10 F4                    ..
-        jmp     PruneCandidateMaskByTacticGroup ; B69C 4C DA B8                 L..
+        jmp     PruneCandidateMaskByPackedRecordField; B69C 4C DA B8            L..
 ; ----------------------------------------------------------------------------
-BuildInvertedHpThresholdMask:
+BuildInvertedPackedFieldThresholdMask:
         bmi     BattlePartyServices_Branch_B6BF ; B69F 30 1E                    0.
         lda     #$FF                            ; B6A1 A9 FF                    ..
         sta     $0D                             ; B6A3 85 0D                    ..
@@ -8136,7 +8136,7 @@ BattlePartyServices_Branch_B6D0:
         eor     #$FF                            ; B6D7 49 FF                    I.
         jmp     AcceptAndIntersectCandidateMask ; B6D9 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-RequireTacticGroupHpThreshold:
+RequirePackedRecordFieldThreshold:
         tay                                     ; B6DC A8                       .
         bmi     BattlePartyServices_Branch_B6F6 ; B6DD 30 17                    0.
         ldx     $D6                             ; B6DF A6 D6                    ..
@@ -8186,7 +8186,7 @@ BattlePartyServices_Branch_B710:
 BattlePartyServices_Branch_B714:
         sec                                     ; B714 38                       8
         bcs     BattlePartyServices_Branch_B710 ; B715 B0 F9                    ..
-RequireTacticGroupValueNotFF:
+RequirePackedRecordFieldValueNotFF:
         tay                                     ; B717 A8                       .
         bmi     BattlePartyServices_Branch_B729 ; B718 30 0F                    0.
         ldx     $D6                             ; B71A A6 D6                    ..
@@ -8225,17 +8225,17 @@ BattlePartyServices_Branch_B73E:
         sta     $09                             ; B73F 85 09                    ..
         rts                                     ; B741 60                       `
 ; ----------------------------------------------------------------------------
-BuildCurrentBattleEffectGroupMask:
+BuildCurrentPackedRecordFieldMask:
         dey                                     ; B742 88                       .
-        beq     BuildDefaultTacticGroupMask     ; B743 F0 05                    ..
+        beq     BuildDefaultPackedRecordFieldMask; B743 F0 05                   ..
         pha                                     ; B745 48                       H
         jsr     IntersectCandidatesByDualStatePairs; B746 20 4E B8               N.
         pla                                     ; B749 68                       h
-BuildDefaultTacticGroupMask:
+BuildDefaultPackedRecordFieldMask:
         tay                                     ; B74A A8                       .
         bmi     BattlePartyServices_Branch_B765 ; B74B 30 18                    0.
         lda     #$01                            ; B74D A9 01                    ..
-SeedCurrentSlotSelectorAndMask:
+SeedCurrentSlotAndPackedFieldMask:
         sta     $6F                             ; B74F 85 6F                    .o
         lda     #$00                            ; B751 A9 00                    ..
         sta     $0D                             ; B753 85 0D                    ..
@@ -8296,17 +8296,17 @@ BattlePartyServices_Branch_B79D:
         sec                                     ; B79D 38                       8
         rts                                     ; B79E 60                       `
 ; ----------------------------------------------------------------------------
-TestTactic10CandidateIndex0WithMaskBuilder:
+TestPackedField10CandidateIndex0WithMaskBuilder:
         ldx     #$10                            ; B79F A2 10                    ..
         stx     $0D                             ; B7A1 86 0D                    ..
         ldx     #$00                            ; B7A3 A2 00                    ..
         beq     BattlePartyServices_Branch_B7F9 ; B7A5 F0 52                    .R
-TestTactic10CandidateIndex0WithSlotScan:
+TestPackedField10CandidateIndex0WithSlotScan:
         ldx     #$10                            ; B7A7 A2 10                    ..
         stx     $0D                             ; B7A9 86 0D                    ..
         ldx     #$00                            ; B7AB A2 00                    ..
         beq     BattlePartyServices_Branch_B7B5 ; B7AD F0 06                    ..
-TestTactic11CandidateIndex1WithSlotScan:
+TestPackedField11CandidateIndex1WithSlotScan:
         ldx     #$11                            ; B7AF A2 11                    ..
         stx     $0D                             ; B7B1 86 0D                    ..
         ldx     #$01                            ; B7B3 A2 01                    ..
@@ -8337,12 +8337,12 @@ BattlePartyServices_Branch_B7D5:
         bcs     IntersectCandidatesByDualStatePairs; B7D5 B0 77                 .w
         rts                                     ; B7D7 60                       `
 ; ----------------------------------------------------------------------------
-RequireThirdSlotSelectorWithTacticTest:
+RequireThirdSlotSelectorWithPackedFieldTest:
         cpy     #$03                            ; B7D8 C0 03                    ..
         bne     BattlePartyServices_Branch_B79D ; B7DA D0 C1                    ..
-        jmp     RequireTacticFilteredCandidateSurvives; B7DC 4C 75 B8           Lu.
+        jmp     RequirePackedFieldFilteredCandidateSurvives; B7DC 4C 75 B8      Lu.
 ; ----------------------------------------------------------------------------
-RequireThirdSlotSelectorWithSignedTacticTest:
+RequireThirdSlotSelectorWithSignedPackedFieldTest:
         cpy     #$03                            ; B7DF C0 03                    ..
         bne     BattlePartyServices_Branch_B79D ; B7E1 D0 BA                    ..
         tay                                     ; B7E3 A8                       .
@@ -8359,15 +8359,15 @@ BattlePartyServices_Branch_B7F1:
         clc                                     ; B7F1 18                       .
         rts                                     ; B7F2 60                       `
 ; ----------------------------------------------------------------------------
-TestTactic14CandidateIndex4WithMaskBuilder:
+TestPackedField14CandidateIndex4WithMaskBuilder:
         ldx     #$14                            ; B7F3 A2 14                    ..
         stx     $0D                             ; B7F5 86 0D                    ..
         ldx     #$04                            ; B7F7 A2 04                    ..
 BattlePartyServices_Branch_B7F9:
         stx     $0E                             ; B7F9 86 0E                    ..
-        jmp     ApplyTacticFilteredTargetMask   ; B7FB 4C 31 B8                 L1.
+        jmp     ApplyPackedFieldFilteredTargetMask; B7FB 4C 31 B8               L1.
 ; ----------------------------------------------------------------------------
-IntersectCandidatesByTactic10Index0AndState:
+IntersectCandidatesByPackedField10Index0AndState:
         ldx     #$10                            ; B7FE A2 10                    ..
         stx     $0D                             ; B800 86 0D                    ..
         ldx     #$00                            ; B802 A2 00                    ..
@@ -8403,7 +8403,7 @@ BattlePartyServices_Branch_B823:
         eor     #$FF                            ; B82C 49 FF                    I.
         jmp     AcceptAndIntersectCandidateMask ; B82E 4C 1B B9                 L..
 ; ----------------------------------------------------------------------------
-ApplyTacticFilteredTargetMask:
+ApplyPackedFieldFilteredTargetMask:
         cpy     #$03                            ; B831 C0 03                    ..
         bne     BattlePartyServices_Branch_B84B ; B833 D0 16                    ..
         pha                                     ; B835 48                       H
@@ -8413,7 +8413,7 @@ ApplyTacticFilteredTargetMask:
         lda     $0E                             ; B83A A5 0E                    ..
         pha                                     ; B83C 48                       H
         txa                                     ; B83D 8A                       .
-        jsr     RequireTacticFilteredCandidateSurvives; B83E 20 75 B8            u.
+        jsr     RequirePackedFieldFilteredCandidateSurvives; B83E 20 75 B8       u.
         pla                                     ; B841 68                       h
         sta     $0E                             ; B842 85 0E                    ..
         pla                                     ; B844 68                       h
@@ -8423,7 +8423,7 @@ ApplyTacticFilteredTargetMask:
         rts                                     ; B84A 60                       `
 ; ----------------------------------------------------------------------------
 BattlePartyServices_Branch_B84B:
-        jmp     ApplyTacticGroupMaskToTargetSelection; B84B 4C B8 B8            L..
+        jmp     ApplyPackedRecordFieldMaskToTargetSelection; B84B 4C B8 B8      L..
 ; ----------------------------------------------------------------------------
 IntersectCandidatesByDualStatePairs:
         tax                                     ; B84E AA                       .
@@ -8450,7 +8450,7 @@ IntersectCandidatesByDualStatePairs:
         sta     $0D                             ; B872 85 0D                    ..
         rts                                     ; B874 60                       `
 ; ----------------------------------------------------------------------------
-RequireTacticFilteredCandidateSurvives:
+RequirePackedFieldFilteredCandidateSurvives:
         tay                                     ; B875 A8                       .
         bmi     BattlePartyServices_Branch_B882 ; B876 30 0A                    0.
 BattlePartyServices_Branch_B878:
@@ -8503,7 +8503,7 @@ BattlePartyServices_Branch_B8B6:
         sec                                     ; B8B6 38                       8
         rts                                     ; B8B7 60                       `
 ; ----------------------------------------------------------------------------
-ApplyTacticGroupMaskToTargetSelection:
+ApplyPackedRecordFieldMaskToTargetSelection:
         tay                                     ; B8B8 A8                       .
         bmi     BattlePartyServices_Branch_B8C5 ; B8B9 30 0A                    0.
         lda     $0D                             ; B8BB A5 0D                    ..
@@ -8527,7 +8527,7 @@ BattlePartyServices_Branch_B8C5:
 ; ----------------------------------------------------------------------------
         and     $0D                             ; B8D6 25 0D                    %.
         sta     $0D                             ; B8D8 85 0D                    ..
-PruneCandidateMaskByTacticGroup:
+PruneCandidateMaskByPackedRecordField:
         lda     $09                             ; B8DA A5 09                    ..
         sta     $0E                             ; B8DC 85 0E                    ..
         lda     #$00                            ; B8DE A9 00                    ..

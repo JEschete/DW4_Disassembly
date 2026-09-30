@@ -1547,26 +1547,26 @@ RestoreCasinoExitEntitySetup:
         brk                                     ; 8A70 00                       .
         db   $0D,$87                         ; 8A71 0D 87                    ..
 ; ----------------------------------------------------------------------------
-RestoreCasinoExitDisplayState:
+ReloadFullFontTilesAfterCasino:
         brk                                     ; 8A73 00                       .
         db   $08,$8F                         ; 8A74 08 8F                    ..
 ; ----------------------------------------------------------------------------
-SuspendRenderingForCasinoExit:
+RebuildMapTileUsageAfterCasino:
         jsr     SuspendRenderingUpdates         ; 8A76 20 AF C5                  ..
         brk                                     ; 8A79 00                       .
         db   $1D,$EF                         ; 8A7A 1D EF                    ..
 ; ----------------------------------------------------------------------------
-RestoreMapConfigurationAfterCasino:
+ReloadTilesetGraphicsAfterCasino:
         lda     $28                             ; 8A7C A5 28                    .(
         brk                                     ; 8A7E 00                       .
         db   $02,$87                         ; 8A7F 02 87                    ..
 ; ----------------------------------------------------------------------------
-ReloadTrackedMapEntityAfterCasino:
+ReloadSpecialMapTileGraphicsAfterCasino:
         lda     $0572                           ; 8A81 AD 72 05                 .r.
         brk                                     ; 8A84 00                       .
         db   $11,$87                         ; 8A85 11 87                    ..
 ; ----------------------------------------------------------------------------
-RefreshMapEntitiesAfterCasino:
+ReloadMapPaletteAfterCasino:
         brk                                     ; 8A87 00                       .
         db   $07,$87                         ; 8A88 07 87                    ..
 ; ----------------------------------------------------------------------------

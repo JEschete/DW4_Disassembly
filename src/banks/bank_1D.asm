@@ -1948,7 +1948,7 @@ Bank1D_MapSubmapHandlerPointers:
         db   $96,$EE,$96,$FA,$96,$13,$97,$3E ; 96D2 96 EE 96 FA 96 13 97 3E  .......>
         db   $97,$24,$97,$30,$97             ; 96DA 97 24 97 30 97           .$.0.
 ; ----------------------------------------------------------------------------
-ClearMapEventTileState:
+InitializeFinalCaveSubmap7State:
         lda     #$00                            ; 96DF A9 00                    ..
         sta     $7684                           ; 96E1 8D 84 76                 ..v
         sta     $7685                           ; 96E4 8D 85 76                 ..v
@@ -1956,7 +1956,7 @@ ClearMapEventTileState:
         sta     $7687                           ; 96EA 8D 87 76                 ..v
         rts                                     ; 96ED 60                       `
 ; ----------------------------------------------------------------------------
-SetMapEventRecordFromPrimaryProgress:
+InitializeSanteemSubmap2State:
         brk                                     ; 96EE 00                       .
         db   $04,$EB,$02                     ; 96EF 04 EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -1966,7 +1966,7 @@ SetMapEventRecordFromPrimaryProgress:
 MapEventSystem_Branch_96F9:
         rts                                     ; 96F9 60                       `
 ; ----------------------------------------------------------------------------
-SetMapEventEntityRecordsFromSecondaryProgress:
+InitializeCaveOfBetrayalState:
         brk                                     ; 96FA 00                       .
         db   $0A,$EB,$80                     ; 96FB 0A EB 80                 ...
 ; ----------------------------------------------------------------------------
@@ -1982,7 +1982,7 @@ SetMapEventEntityRecordsFromSecondaryProgress:
 MapEventSystem_Branch_9712:
         rts                                     ; 9712 60                       `
 ; ----------------------------------------------------------------------------
-CopyMapTileClassWhenProgressSet:
+InitializeKeeleonSubmap1State:
         brk                                     ; 9713 00                       .
         db   $16,$EB,$02                     ; 9714 16 EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -1994,7 +1994,7 @@ CopyMapTileClassWhenProgressSet:
 MapEventSystem_Branch_9723:
         rts                                     ; 9723 60                       `
 ; ----------------------------------------------------------------------------
-SetLateProgressMapEventMarker:
+InitializeCascadeCaveState:
         brk                                     ; 9724 00                       .
         db   $26,$EB,$40                     ; 9725 26 EB 40                 &.@
 ; ----------------------------------------------------------------------------
@@ -2004,7 +2004,7 @@ SetLateProgressMapEventMarker:
 MapEventSystem_Branch_972F:
         rts                                     ; 972F 60                       `
 ; ----------------------------------------------------------------------------
-ConfigureMapEventRecordForWorldState:
+InitializeKievsState:
         lda     $62A5                           ; 9730 AD A5 62                 ..b
         bpl     MapEventSystem_Branch_973D      ; 9733 10 08                    ..
         lda     #$05                            ; 9735 A9 05                    ..
@@ -2013,7 +2013,7 @@ ConfigureMapEventRecordForWorldState:
 MapEventSystem_Branch_973D:
         rts                                     ; 973D 60                       `
 ; ----------------------------------------------------------------------------
-InitializeSpecialMapEventGraphics:
+InitializeIronSafeCaveSubmap4State:
         tsx                                     ; 973E BA                       .
         lda     $0108,x                         ; 973F BD 08 01                 ...
         and     #$FE                            ; 9742 29 FE                    ).
@@ -2720,7 +2720,7 @@ MapEventSystem_Branch_9C50:
         clc                                     ; 9C50 18                       .
         rts                                     ; 9C51 60                       `
 ; ----------------------------------------------------------------------------
-HideNearbyMapEntityAndRefresh:
+StartClayDollBattle:
         ldx     $51                             ; 9C52 A6 51                    .Q
         lda     $6F60,x                         ; 9C54 BD 60 6F                 .`o
         sec                                     ; 9C57 38                       8
@@ -2775,7 +2775,7 @@ MapEventSystem_Branch_9C99:
         bne     MapEventSystem_Branch_9C99      ; 9CAE D0 E9                    ..
         lda     #$00                            ; 9CB0 A9 00                    ..
         sta     $3E                             ; 9CB2 85 3E                    .>
-RunMapEventTrampoline05:
+SynchronizeFollowerFacingForMapEvent:
         jmp     SynchronizeFollowerFacingStateTrampoline; 9CB4 4C 10 C0         L..
 ; ----------------------------------------------------------------------------
 HandlePairedMapTrigger:
@@ -3468,7 +3468,7 @@ MovePlayerUpAndToggleFirstEntities:
         lda     #$00                            ; A16F A9 00                    ..
         sta     $3E                             ; A171 85 3E                    .>
         jsr     ToggleFirstThreeEntityStateBits ; A173 20 79 A1                  y.
-RunTrampoline02AndToggleFirstEntities:
+PropagateFollowerOffsetsAndToggleFirstEntities:
         jsr     PropagatePartyFollowerOffsetsTrampoline; A176 20 07 C0           ..
 ToggleFirstThreeEntityStateBits:
         ldx     #$02                            ; A179 A2 02                    ..
@@ -5391,7 +5391,7 @@ PromptMapButtonPress:
         jsr     CloseFieldMessageWindow         ; ADD1 20 F3 D1                  ..
         lda     #$02                            ; ADD4 A9 02                    ..
         sta     CurrentSubmapNumber             ; ADD6 85 64                    .d
-RunTrampoline07ThenEntityHideSequence:
+InitializeMapDecoderThenHideEntitySequence:
         jsr     InitializeCurrentMapDecoderTrampoline; ADD8 20 16 C0             ..
         clc                                     ; ADDB 18                       .
 RunEntityHideScrollPulseSequence:

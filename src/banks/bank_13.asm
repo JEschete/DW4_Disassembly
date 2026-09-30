@@ -413,8 +413,8 @@ AddScaledOffsetToBattleAiScoreH:
         jsr     LoadScaledBattleRecordOffset    ; 82B4 20 36 82                  6.
         lda     $94                             ; 82B7 A5 94                    ..
         clc                                     ; 82B9 18                       .
-        adc     BattleAiScoreH                  ; 82BA 6D BB 75                 m.u
-        sta     BattleAiScoreH                  ; 82BD 8D BB 75                 ..u
+        adc     SharedWork75BB                  ; 82BA 6D BB 75                 m.u
+        sta     SharedWork75BB                  ; 82BD 8D BB 75                 ..u
         lda     $95                             ; 82C0 A5 95                    ..
         adc     $75BC                           ; 82C2 6D BC 75                 m.u
         sta     $75BC                           ; 82C5 8D BC 75                 ..u
@@ -2079,7 +2079,7 @@ WriteBattleRecordWordGroup:
         ldx     $75B8                           ; 8EAC AE B8 75                 ..u
         ldy     #$1E                            ; 8EAF A0 1E                    ..
         jsr     WriteBattleRecordWordBody       ; 8EB1 20 C7 8E                  ..
-        lda     BattleAiScoreH                  ; 8EB4 AD BB 75                 ..u
+        lda     SharedWork75BB                  ; 8EB4 AD BB 75                 ..u
         ldx     $75BC                           ; 8EB7 AE BC 75                 ..u
         ldy     #$22                            ; 8EBA A0 22                    ."
         jsr     WriteBattleRecordWordBody       ; 8EBC 20 C7 8E                  ..

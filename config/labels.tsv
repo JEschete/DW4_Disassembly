@@ -419,7 +419,7 @@
 10	856A	BuildBattleNameScratchFromHeroOrRecord	Function	Builds a name in $03E3 from hero or record data and copies its first four bytes to $72-$75
 10	85BB	AccumulateBattleValueWithFallbackScan	Function	Selects a banked or scan-derived value and returns the combined result in $72-$73
 10	85FE	AccumulateFourBattleValuesWithFallbackScan	Function	Sums four scan-derived values into $72-$73 and applies the record-selector post-check
-10	865B	SubtractPartyRecordCurrentValue	Function	Runs shared variable-width subtraction against the selected party record span at offset $0C
+10	865B	AddToPartyRecordValueCappedAtCurrentLimit	Function	Uses the selected party-record value at offset $0C as the cap and enters the shared capped-add path
 10	8660	AddToPartyRecordValueCappedAtMaximum	Function	Adds the requested amount to the selected record value without exceeding the record maximum at offset $0E
 10	8669	AddToBattleValueCappedAt255	Function	Adds the requested amount through the shared capped-add path with a maximum of 255
 10	866D	AddToBattleValueCappedAt99	Function	Adds the requested amount through the shared one-byte capped-add path with a maximum of 99
@@ -539,7 +539,7 @@
 10	9849	FindEligibleMemberMatchingCurrentClassCode	Function	Finds an eligible member whose resolved class code equals $72 and returns its ordinal
 10	98F7	SelectHighestEligibleMemberByRecordByte5	Function	Selects the eligible member with the largest battle-record byte five
 10	9936	FindFirstEligibleMemberWithFreeRosterSpace	Function	Finds the first eligible member whose roster contains fewer than eight occupied slots
-10	996C	FindEligibleMemberByMaskedRecordByte	Function	Finds an eligible member with a masked record-byte match and returns its member and subslot indices
+10	996C	FindPartyMemberHoldingItem	Function	Searches each active party member's inventory for the masked item ID and returns the member and inventory-slot indices
 10	99B5	ValidateUniqueSelectionStateAndRepackRoster	Function	Rejects duplicate selection bytes and repacks the selected roster buffers through the lookup table
 10	9A87	ClearIndexedSelectionByteIfValid	Function	Clears the selected buffer byte unless its index is the $FF sentinel
 10	9A90	CopySecondaryRosterSpanToPrimaryMirror	Function	Copies the active secondary roster span into its primary mirror
@@ -699,27 +699,27 @@
 10	B5C8	MergeBattleEffectSelectionSources	Function	Combines selector state with current-slot and derived mask sources
 10	B5EB	RequireHighBattleSlotIndex	Function	Rejects battle slots below index four before applying descriptor gates
 10	B635	BuildBattleEffectAvailabilityMask	Function	Builds an availability mask from the active D6-indexed slot group and merges it into selection state
-10	B66F	RequireTacticGroupValuesNonzero	Function	Requires the selected tactic-group entries to be nonzero and merges the fallback mask when signed
-10	B69F	BuildInvertedHpThresholdMask	Function	Builds and inverts the tactic-group mask using the $E7 value and threshold-three HP test
-10	B6DC	RequireTacticGroupHpThreshold	Function	Requires each selected tactic-group entry to satisfy the $E7 value and threshold-three HP condition
-10	B717	RequireTacticGroupValueNotFF	Function	Accepts when the selected tactic-group value is not $FF, with a signed-selector fallback
-10	B742	BuildCurrentBattleEffectGroupMask	Function	Normalizes the selector and builds the current group mask through the slot-mask service
-10	B74A	BuildDefaultTacticGroupMask	Function	Builds the default tactic-group mask without selector normalization
-10	B74F	SeedCurrentSlotSelectorAndMask	Function	Seeds the current display-slot selector and folds the tactic-group service result into a candidate mask
+10	B66F	RequirePackedRecordFieldValuesNonzero	Function	Requires the selected packed-record-field entries to be nonzero and merges the fallback mask when signed
+10	B69F	BuildInvertedPackedFieldThresholdMask	Function	Builds and inverts the packed-record-field mask using the $E7 value and threshold-three test
+10	B6DC	RequirePackedRecordFieldThreshold	Function	Requires each selected packed-record-field entry to satisfy the $E7 value and threshold-three condition
+10	B717	RequirePackedRecordFieldValueNotFF	Function	Accepts when the selected packed-record-field value is not $FF, with a signed-selector fallback
+10	B742	BuildCurrentPackedRecordFieldMask	Function	Normalizes the packed-record-field selector and builds its current slot mask
+10	B74A	BuildDefaultPackedRecordFieldMask	Function	Builds the default packed-record-field mask without selector normalization
+10	B74F	SeedCurrentSlotAndPackedFieldMask	Function	Seeds the current display-slot selector and folds the packed-record-field result into a candidate mask
 10	B76F	TestSlotDescriptorBitGate	Function	Validates selector cardinality and the current slot descriptor or high-bit state
 10	B799	RequireSingleSlotSelector	Function	Accepts only a single selected slot
-10	B79F	TestTactic10CandidateIndex0WithMaskBuilder	Function	Seeds tactic selector $10 and candidate index zero before the mask-builder path
-10	B7A7	TestTactic10CandidateIndex0WithSlotScan	Function	Seeds tactic selector $10 and candidate index zero before the per-slot scan path
-10	B7AF	TestTactic11CandidateIndex1WithSlotScan	Function	Seeds tactic selector $11 and candidate index one before the per-slot scan path
+10	B79F	TestPackedField10CandidateIndex0WithMaskBuilder	Function	Seeds packed-record-field selector $10 and candidate index zero before the mask-builder path
+10	B7A7	TestPackedField10CandidateIndex0WithSlotScan	Function	Seeds packed-record-field selector $10 and candidate index zero before the per-slot scan path
+10	B7AF	TestPackedField11CandidateIndex1WithSlotScan	Function	Seeds packed-record-field selector $11 and candidate index one before the per-slot scan path
 10	B7C1	ApplySlotDescriptorFilterToCandidates	Function	Applies the current descriptor nibble and optional selector filter to the candidate mask
-10	B7D8	RequireThirdSlotSelectorWithTacticTest	Function	Accepts selector count three and reuses the shared tactic test
-10	B7DF	RequireThirdSlotSelectorWithSignedTacticTest	Function	Accepts selector count three and routes signed slots through the alternate tactic test
-10	B7F3	TestTactic14CandidateIndex4WithMaskBuilder	Function	Seeds tactic selector $14 and candidate index four before the mask-builder path
-10	B7FE	IntersectCandidatesByTactic10Index0AndState	Function	Intersects candidates through tactic $10, index zero, and the selected signed or unsigned state
+10	B7D8	RequireThirdSlotSelectorWithPackedFieldTest	Function	Accepts selector count three and reuses the shared packed-record-field test
+10	B7DF	RequireThirdSlotSelectorWithSignedPackedFieldTest	Function	Accepts selector count three and routes signed slots through the alternate packed-record-field test
+10	B7F3	TestPackedField14CandidateIndex4WithMaskBuilder	Function	Seeds packed-record-field selector $14 and candidate index four before the mask-builder path
+10	B7FE	IntersectCandidatesByPackedField10Index0AndState	Function	Intersects candidates through packed-record-field selector $10, index zero, and the selected signed or unsigned state
 10	B806	IntersectCandidatesByAlternateStatePair	Function	Uses the alternate state pair to intersect the candidate mask through signed or unsigned paths
 10	B84E	IntersectCandidatesByDualStatePairs	Function	Filters the candidate mask through the two paired state-selector sources while preserving source state
-10	B875	RequireTacticFilteredCandidateSurvives	Function	Prunes tactic-selected candidate bits and succeeds when at least one qualifying target remains
-10	B8DA	PruneCandidateMaskByTacticGroup	Function	Clears candidate bits whose per-slot tactic-group mask does not intersect the requested group
+10	B875	RequirePackedFieldFilteredCandidateSurvives	Function	Prunes packed-record-field-selected candidate bits and succeeds when at least one qualifying target remains
+10	B8DA	PruneCandidateMaskByPackedRecordField	Function	Clears candidate bits whose per-slot packed-record-field mask does not intersect the requested selector
 10	B903	IntersectCandidatesBySignedStateComplement	Function	Builds a complemented state mask from signed lookup data and intersects it into the candidate mask
 10	B91B	AcceptAndIntersectCandidateMask	Function	Sets carry and intersects A into the active candidate mask
 10	B91C	IntersectCandidateMaskWithAccumulator	Function	Intersects A into the candidate mask while preserving caller carry
@@ -1278,7 +1278,7 @@
 12	A475	SnapshotBattleFlyAwayOam	Function	Copies live OAM into the fly-away backup and clears paired high bytes
 12	A489	PulseBattleFlyAwayPalette	Function	Steps the fly-away animation's fixed four-palette sequence with three-frame delays
 12	A4A5	DispatchCharacterRecordBitOperation	Function	Dispatches one of nine character-record bit-write operation patterns
-12	A4B4	WriteCharacterRecordBitGroup	Function	Writes character-record bit fields six, five, and seven, then finalizes the update
+12	A4B4	ClearCharacterRecordBits05And06ThenSet07	Function	Clears character-record bit fields six and five, sets bit field seven, and finalizes the update
 12	A4C0	WriteConditionalCharacterRecordBitGroup	Function	Writes the character-record bit group only when the selected operation value is not one
 12	A4C9	TailCallWriteCharacterRecordBitTail	Function	Compatibility entry that tail-calls the trailing character-record bit write
 12	A4CC	WriteConditionalCharacterRecordBitTail	Function	Writes the trailing character-record fields only when the selected operation value is not one
@@ -1288,9 +1288,9 @@
 12	A4FC	RepeatConditionalCharacterRecordBitTail	Function	Repeats the conditional character-record bit-tail writer
 12	A509	RepeatCharacterRecordBitGateAndWrite	Function	Repeats the operation-value gate and character-record bit write
 12	A51B	LoadActivePartyCount	Function	Loads the active party-member count into Y for repeated character-record updates
-12	A520	SetCharacterRecordBit06	Function	Invokes character-record operation $45 for bit field six
-12	A525	ClearCharacterRecordBit07	Function	Invokes character-record operation $44 for bit field seven
-12	A52A	SetCharacterRecordBit05	Function	Invokes character-record operation $45 for bit field five
+12	A520	ClearCharacterRecordBit06	Function	Invokes character-record clear operation $45 for bit field six
+12	A525	SetCharacterRecordBit07	Function	Invokes character-record set operation $44 for bit field seven
+12	A52A	ClearCharacterRecordBit05	Function	Invokes character-record clear operation $45 for bit field five
 12	A52F	IsCharacterRecordOperationValueOne	Function	Returns carry when the current character-record operation value equals one
 12	A53A	FinalizeCharacterRecordBitWrite	Function	Runs the paired services that finalize a character-record bit update
 12	A553	RunFieldSpellCommand	Function	Selects a party member and field spell, applies eligibility and MP gates, and dispatches the spell
@@ -1435,7 +1435,7 @@
 13	8B24	Bank13_BattleAiValuesB	Table	One hundred three values indexed by a selector below $67
 13	8599	Bank13_BattleActionHandlerBasePointer	Table	Little-endian base of the action-ID-indexed handler table at $8B8B
 13	8B8B	Bank13_BattleActionHandlerPointers	Table	One hundred three real handler pointers; the apparent final entry overlaps following code at $8C59
-13	91A9	Bank13_SpecialBattleActionIds	Table	Eighteen action IDs searched by battle presentation routing
+13	91A9	Bank13_SpecialBattleActionIds	Table	Eighteen action IDs searched by the descending $11 index; the parallel handler table has only seventeen real entries, leaving action ID $60 without a real handler
 13	91CD	Bank13_SpecialBattleActionHandlerPointers	Table	Seventeen real handler pointers; the apparent final entry overlaps following code at $91EF
 13	A747	Bank13_ActionScoreRecordPointers	Table	Four pointers to terminated action-score record lists
 13	A74F	Bank13_ActionScoreRecords	Data	Four-byte action-score records terminated by $FF
@@ -1603,7 +1603,7 @@
 13	8275	AddScaledOffsetToBattleAiScoreE	Code	Adds the scaled record offset into BattleAiScoreE
 13	828A	AddScaledOffsetToBattleAiScoreF	Code	Adds the scaled record offset into BattleAiScoreF
 13	829F	AddScaledOffsetToBattleAiScoreG	Code	Adds the scaled record offset into BattleAiScoreG
-13	82B4	AddScaledOffsetToBattleAiScoreH	Code	Adds the scaled record offset into BattleAiScoreH
+13	82B4	AddScaledOffsetToBattleAiScoreH	Code	Adds the scaled record offset into battle-AI score slot H stored in shared work word $75BB-$75BC
 13	82C9	AddScaledOffsetToBattleAiScoreC	Code	Adds the scaled record offset into BattleAiScoreC
 13	82DE	AddScaledOffsetToBattleAiScoreD	Code	Adds the scaled record offset into BattleAiScoreD
 13	82F3	AddScaledOffsetToBattleAiScoreI	Code	Adds the scaled record offset into BattleAiScoreI
@@ -1822,10 +1822,10 @@
 13	9FB8	CheckBattleActionGateC	Code	Checks the third battle-action gate before applying follow-up logic
 13	9FC7	SelectBattleActionSlot	Code	Selects the battle-action slot and updates the resolved target state
 13	9FE2	SelectEligibleFallbackSlotAcrossFourRecords	Code	For nonclass-four actions passing the score threshold, scans four eligible records and updates the resolved target
-14	8000	Bank14_BattleTurnDirectory	Table	26 little-endian battle-turn service pointers
+14	8000	Bank14_BattleDisplayDirectory	Table	26 little-endian monster graphics and battle-display service pointers
 14	8034	Bank14_BattleDisplayServices	Code	Monster graphics decoding, display-slot placement, and battle-screen animation services
-14	812F	BattleDisplay_RefreshBattleTurnVisualState	Code	Refreshes display-side combatant state, decrements slot counters, reloads graphics, and redraws OAM
-14	81CF	BattleDisplay_RebuildBattleOamFromDisplaySlots	Code	Clears all OAM entries and redraws the eight queued turn sprites
+14	812F	BattleDisplay_RefreshCombatantVisualState	Code	Refreshes display-side combatant state, decrements slot counters, reloads graphics, and redraws OAM
+14	81CF	BattleDisplay_RebuildBattleOamFromDisplaySlots	Code	Clears all OAM entries and redraws the eight queued display-slot sprites
 14	81F4	BattleDisplay_CompactFrontCombatantSlots	Code	Shifts the four front combatant slots left and clears the tail slot
 14	8211	BattleDisplay_ClearResolvedDisplaySlot	Code	Resolves the current monster display slot, removes it from display state, and clears its reservation bit
 14	8220	BattleDisplay_RemoveResolvedDisplaySlot	Code	Resolves the current monster display slot, runs its removal path, and clears its reservation bit
@@ -2630,7 +2630,7 @@
 16	B55B	ComputeAvailablePartySlotCount	Function	Finds the first empty party slot and subtracts it from the active count
 16	B574	NormalizeFourSlotListAndCount	Function	Fills unused slots with $FF and clamps the active list count to four
 16	B590	MapRecordModeToWindowCount	Function	Maps record header mode bits zero through three through the table at $B59A
-16	B59D	SelectWindowCountForMapContext	Function	Returns two for local-map IDs $AE or $BC and three otherwise
+16	B59D	SelectWindowCountForBossContext	Function	Returns two for Necrosaro monster ID $AE or Esturk monster ID $BC and three otherwise
 16	B5B2	BuildPartySlotSelectionList	Function	Builds selected party-slot descriptors from the service-provided mask
 16	B61B	ReturnWindowConditionAsByte	Function	Invokes service $13/$1F and returns its carry flag as zero or one
 16	B622	ReturnWindowEntryCount4	Function	Returns entry count four
@@ -2660,7 +2660,7 @@
 16	B868	LoadWindowDisplayValueFromPartyCount	Function	Maps the active party count through the two-byte table at $B873 into $03C8
 16	B875	LoadWindowDisplayValueByMapMode	Function	Stores display value $82 for world mode or $87 for local-map mode in $03C8
 16	B882	LoadWindowDisplayPairByMapMode	Function	Selects display byte and attribute mask from $6BDE and stores them in $03C8-$03C9
-16	B8A0	LoadWindowDisplayPairByLeadSlotId	Function	Stores display byte $3C and selects an attribute mask from lead slot IDs $AE or $BC
+16	B8A0	LoadWindowDisplayPairByLeadMonster	Function	Stores display byte $3C and selects an attribute mask when the lead monster is Necrosaro ID $AE or Esturk ID $BC
 16	B8C2	TransformWindowResultThroughPartyContext	Function	Invokes service $2D/$0F with value $F8 and mode $03DD, then replaces $F8 with result $72
 16	B8D1	TransformWindowResultUsingFixedPartyContext	Function	Transforms result $F8 through the party lookup using fixed context $80
 16	B8D6	LoadF8IndexedListEntry	Function	Replaces $F8 with the indexed list entry from $07B0
@@ -2823,11 +2823,11 @@
 17	8A3F	InitializePokerChoiceCursorOam	Function	Copies the eight-byte casino choice-cursor template into OAM shadow
 17	8A56	ExitPokerWagerChoice	Function	Leaves the wager chooser through casino cleanup unless the cursor selects the first option
 17	8A6E	RestoreCasinoExitEntitySetup	Function	Restores entity setup state while leaving the casino game
-17	8A73	RestoreCasinoExitDisplayState	Function	Runs the display-reset service while leaving the casino game
-17	8A76	SuspendRenderingForCasinoExit	Function	Suspends rendering before restoring the field display
-17	8A7C	RestoreMapConfigurationAfterCasino	Function	Reloads the field map configuration after leaving the casino
-17	8A81	ReloadTrackedMapEntityAfterCasino	Function	Reloads the tracked map entity after leaving the casino
-17	8A87	RefreshMapEntitiesAfterCasino	Function	Refreshes map entities after restoring the casino display
+17	8A73	ReloadFullFontTilesAfterCasino	Function	Reloads all primary font glyphs after leaving the casino game
+17	8A76	RebuildMapTileUsageAfterCasino	Function	Suspends rendering and rebuilds the map tile-usage table after leaving the casino
+17	8A7C	ReloadTilesetGraphicsAfterCasino	Function	Reloads all logical tiles for the current tileset after leaving the casino
+17	8A81	ReloadSpecialMapTileGraphicsAfterCasino	Function	Reloads the fixed graphics for the tracked special map tile after leaving the casino
+17	8A87	ReloadMapPaletteAfterCasino	Function	Copies the default map palette colors after restoring casino graphics
 17	8A8A	ClearEntityHiddenFlagsAfterCasino	Function	Clears hidden-state bit $10 on active entities before the field refresh
 17	8AA0	FinishCasinoExitRendering	Function	Clears casino rendering mode and finishes restoring the field display
 17	8AAC	InitializePokerWager	Function	Rejects an empty coin balance, initializes wager from the saved amount, debits coins, and opens the wager loop
@@ -3456,8 +3456,8 @@
 10	AA34	SubtractAndFloorBattleRecordValue	Function	Subtracts a variable-width value from a battle-record field and floors underflow to zero
 10	AB62	AdvanceInlineBattleOperandAndReturn	Function	Advances the saved inline return address by Y bytes and returns through common battle-dispatch cleanup
 10	AFF2	StoreSelectedBattleActionOffset	Function	Stores the selected action-record offset in the current battle slot
-10	B831	ApplyTacticFilteredTargetMask	Function	Requires a surviving tactic-filtered target when applicable and applies the selected candidate mask
-10	B8B8	ApplyTacticGroupMaskToTargetSelection	Function	Builds the signed or direct tactic-group mask and intersects it with active target selection
+10	B831	ApplyPackedFieldFilteredTargetMask	Function	Requires a surviving packed-record-field-filtered target when applicable and applies the selected candidate mask
+10	B8B8	ApplyPackedRecordFieldMaskToTargetSelection	Function	Builds the signed or direct packed-record-field mask and intersects it with active target selection
 10	B993	IntersectBattleTargetMask	Function	Intersects the active battle target mask with A and returns carry set
 11	9C74	ResolveBattleOutcomeAndRewards	Function	Resolves the action outcome, records its marker, accumulates defeated-monster rewards, and advances battle phase
 11	9D6E	ApplyBattleEffectWithAlternateTargetCheck	Function	Stores the party-record operation and target index and applies it through the alternate target check
@@ -3470,7 +3470,7 @@
 12	8221	RemapMonsterArenaDefeatMessage	Function	Replaces battle message $001B, passes away, with Monster Arena message $006B, was defeated, for group zero
 12	83F1	NormalizeBattleSetupHandlerField	Function	Normalizes a signed setup handler field through the masked header table while preserving direct values
 12	9E76	CheckNewlyLearnedSpells	Function	For spell-learning characters, loads their spell tables and checks each spell against the newly reached level
-12	A4BA	WriteCharacterRecordBitTail	Function	Clears character-record bit field seven and finalizes the current record update
+12	A4BA	SetCharacterRecordBit07AndFinalize	Function	Sets character-record bit field seven and finalizes the current record update
 12	A79F	RunFieldSpellHealingChoiceScript	Function	Reads two field-spell script operands, presents the healing choice, prints the recovery line, and waits for acknowledgement
 12	AD1C	AdventureLog_ComputeIndexedRecordPointer	Function	Builds an indexed Adventure Log record pointer from base table data and Adventure Log index $8A
 12	AF39	ItemUse_RunSelectionConfirmation	Function	Waits, validates the primary item-use selection, prompts for correction, and selects the resulting mode
@@ -3618,88 +3618,88 @@
 1C	A035	HideMapEntityCoordinates	Function	Sets all four current and target coordinate fields for entity X to sentinel $80
 1C	A044	CompareMapEntityTimeToNightThreshold	Function	Compares SaveTimeOfDay with threshold $78
 1C	A04A	SetMapEntityCoordinates	Function	Stores A as entity X current/target X and Y as current/target Y
-1C	A058	ConfigureEntitiesForMapFlagState	Function	Positions entity zero at $07,$15 when applicable and hides configured groups based on save flags $627B
-1C	A0C6	HideMapEntitiesFourteenThroughSixteen	Function	Hides coordinate fields for entities fourteen, fifteen, and sixteen
-1C	A0D6	HidePrimaryEntitiesUnlessIntroState	Function	Hides entities zero and one unless bit $40 of state $6287 is set
-1C	A0E6	HidePrimaryScenePairAfterProgress	Function	Hides entities zero and one when save flag $03/$EB bit one is active
-1C	A0F7	HideDaytimeSceneActorForWorldState	Function	During daytime hides entity one when state $627E has bits one through three all set
-1C	A10B	ApplyChapterDependentEntityVisibility	Function	Hides entities zero, one, two, or ten according to chapter, time, and save-state flags
-1C	A149	ApplyAlternateChapterEntityVisibility	Function	Hides entity zero or entities three and six according to save flags $09,$04,$19,and $1A
-1C	A171	ApplyFlagDrivenEntityGroupVisibility	Function	Hides entities twelve through twenty, entity zero, or initializes entity zero at $18,$16 from save flags
-1C	A1AE	ApplyPrimaryProgressEntityVisibility	Function	Updates save state and hides entities one or two according to progress flag $03 bits $20 and $40
-1C	A1C4	HideEntityTwoBeforePrimaryProgress	Function	Hides entity two when progress flag $03 bit $40 is clear
-1C	A1CC	ApplyTimeDependentEntitySevenOrElevenVisibility	Function	Hides entity eleven or seven according to save flags and time of day
-1C	A1E3	HideEntityByTimeOfDay	Function	Hides entity eleven during daytime or entity seven at night
-1C	A1ED	ConfigureTownSceneEntityVisibility	Function	Updates entity source state and hides entities zero, one, or four from three progression flags and time of day
-1C	A227	ApplyMapEntityVisibilityFlagsAndVehicleState	Function	Adjusts entity visibility from save flag $07 and vehicle-related state bits
-1C	A24F	HideEntityTwoForNightFlagState	Function	Hides entity two when flag $07 bit $10 is clear at night and save state $03/$60 is active
-1C	A25E	HideEntityTwoAfterPrimaryProgressCheck	Function	Hides entity two when the preceding progress-flag check is nonzero
-1C	A266	ApplyLargeEntityGroupProgressVisibility	Function	Hides entities six through eight and conditionally entities zero through four from progress flag $08
-1C	A29A	ApplyDayNightEntityVisibilitySet	Function	Uses time and save flags $05,$09,$0A,and $0B to hide entities zero through fifteen
-1C	A326	HideEntityZeroForDaytimeFlagState	Function	Hides entity zero when flag $07 bit $10 and flag $0A bit one are clear during daytime
-1C	A33D	ConfigureChapterSceneVisibility	Function	Hides or activates configured entities according to chapter and state $6283
-1C	A36E	HideEntityZeroForChapterTwoState	Function	In chapter two hides entity zero when state $627B bit $40 is set
-1C	A380	ApplyChapterAndPlayerXEntityVisibility	Function	Outside chapter five hides entities eight through twelve according to player X=$16
-1C	A3A8	HideSecondaryScenePairAfterProgress	Function	Hides entities zero and one when save flag $0B/$EB bit two is active
-1C	A3B9	ApplyChapterTimeEntityVisibility	Function	Applies chapter, time, joined-character, and save-state visibility rules to entities zero, one, seven, and twelve
-1C	A40F	ApplyLargeSceneGroupProgressVisibility	Function	Hides the late scene entity or the preceding entity group according to progress flag $07
-1C	A454	ConfigureMultiStageTownSceneVisibility	Function	Hides entity zero, three, or four according to four progression flags and time of day
-1C	A489	ApplyPairedProgressEntityVisibility	Function	Hides scene entities according to progress flags $07 and $05
-1C	A4A0	HideCompletedTownEventActor	Function	Hides entity zero when save flag $09/$EB bit $20 marks its town event complete
-1C	A4AC	ApplyDayNightFlagEntityVisibility	Function	Hides entities zero, one, eight, or fifteen according to time and flags $07/$05
-1C	A4E2	ApplyTownProgressEntityVisibility	Function	Hides entities zero through three according to progress flags $07 and $0B and time of day
-1C	A51E	ApplyChapterEntityZeroAndFourVisibility	Function	Hides entities zero or four according to chapter, time, and save flag $13 bit $40
-1C	A549	HideEntityZeroForPairedProgress	Function	Hides entity zero unless the paired progress-flag state selects its visible path
-1C	A55B	HideUnavailableSceneActor	Function	Hides entity zero when world state $62AA bit $20 makes the actor unavailable
-1C	A568	AlignSceneCompanionWithPlayer	Function	When the player reaches column $0E, places entity one beside the scene entrance at row $09
-1C	A57F	ApplyChapterProgressEntityZeroVisibility	Function	Hides entity zero in selected chapters or when chapter-five progress flag $17 bit $40 is active
-1C	A5A0	HideFirstTwoEntitiesInChapterFive	Function	Hides entities zero and one during chapter five
-1C	A5B2	HideFirstThreeEntitiesAfterChapterProgress	Function	In chapter five, hides entities zero through two when progress flag $17 bit one is active
-1C	A5CF	InitializeEntitySixWhenPresentationIdle	Function	When no presentation is active, places entity six at $04,$10 with direction two and clears its event state
-1C	A5F6	ApplyRowSixProgressEntityConfiguration	Function	Repositions the scene actor at player row six and applies time and progress visibility rules
-1C	A683	ConfigureWorldStateEntityVisibility	Function	Hides entities zero through two according to state $62AA bit zero and presentation activity
-1C	A6A9	HideCompletedSceneSupportActor	Function	Hides entity two when save flag $18/$EB bit $20 marks its scene complete
-1C	A6B5	HideEntitiesThirteenThroughSixteenByTimeAndParty	Function	During daytime hides entities thirteen through sixteen when the joined-character high bit is set
-1C	A6CA	ApplyLateGameMapEntityVisibility	Function	Updates entities zero through six from flags $26,$16,$19,$17 and state $6294
-1C	A70E	ContinueLateProgressEntityVisibility	Function	Continues hiding entities three through six according to progress flags $19 and $17
-1C	A732	HideMapEntityThree	Function	Hides coordinate fields for entity three
-1C	A737	ApplyPartyProgressEntityGroupVisibility	Function	Hides configured entity groups according to party state, player position, and progress flags
-1C	A77C	HideEntitiesOneAndTwoByPlayerAndProgress	Function	Hides entities one and two unless party state, player position, and progress select visibility
-1C	A798	CopyEntityOneSourceToZeroOrHide	Function	Copies entity one's source to entity zero for flag $18 bit eight or hides entity zero from bit $10
-1C	A7C5	HideCompletedSceneActorGroup	Function	Hides entities zero through three when save flag $18/$EB bit one marks the group complete
-1C	A7D6	HideEntityZeroOrOneByFlagAndTime	Function	Hides entity zero when flag $07 bit $10 is set, otherwise entity one during daytime
-1C	A7EC	HideEntitiesEightAndNineAtNight	Function	Hides entities eight and nine at night when save flag $07 bit $10 is active
-1C	A802	ApplyNightProgressEntitySetup	Function	Hides the primary actor or positions the night actor according to progress flags and time
-1C	A830	ApplyDayNightProgressEntitySetup	Function	Hides one of the scene actors and clears another actor state according to time and progress
-1C	A850	HideDepartedSceneActorGroup	Function	Hides entities zero through three when save flag $18/$EB bit four marks their departure
-1C	A86B	HideEntityZeroForDaytimeProgress	Function	Hides entity zero during daytime while the corresponding progress flag is clear
-1C	A87C	HideEntityZeroForLateProgressPair	Function	Hides entity zero unless both late-game progress conditions select visibility
-1C	A88E	ApplyNightEntityThreeOrFourState	Function	Hides entity four at night or positions entity three at $0D,$0D from save state
-1C	A8B5	HideEntityZeroForStoryProgressPair	Function	Hides entity zero according to the paired story-progress conditions
-1C	A8C7	ApplyDayNightProgressEntityPositions	Function	Hides or positions the scene entities according to time and the active progress flag
-1C	A8FE	ApplyChapterFiveJoinedPartyEntities	Function	Configures entities one through nine from chapter, joined-character, and save flags
-1C	A957	HideMapEntitiesOneThroughThree	Function	Hides coordinate fields for entities one, two, and three
-1C	A967	HideEntityFiveOrSixAtNight	Function	At night hides entity five when flag $07 bit $10 is set, otherwise entity six
-1C	A97A	HideEntityThreeForDaytimeProgress	Function	Hides entity three during daytime when the corresponding progress flag is active
-1C	A98B	ApplyLateProgressEntityVisibility	Function	Hides the late scene pair or the primary actor according to progress flag $1D
-1C	A9A0	ConfigureWorldMapSceneEntities	Function	Configures event entities from progression flag $1D/$40, player position, and world-map state
-1C	A9A4	ConfigurePlayerDependentWorldMapEntities	Function	Hides entities three through five or refreshes entity five according to player X, presentation, and $6299
-1C	A9D8	ApplyLateProgressPairEntityVisibility	Function	Hides entities zero through two according to late-game progress flags and time
-1C	A9FE	ApplyLateProgressMaskEntityVisibility	Function	Hides one or both primary actors according to the masked late-game progress state
-1C	AA14	ApplyLateProgressEntityDirectionAndVisibility	Function	Changes the primary actor direction and hides the supporting pair according to late progress
-1C	AA41	HideDepartedPrimarySceneActor	Function	Hides entity zero when save flag $1D/$EB bit one marks the actor's departure
-1C	AA4D	ConfigureWorldMapEventPositions	Function	Hides or positions entities zero through two according to state $6298 and save flag $0E bit eight
-1C	AA82	ApplyEndingProgressEntityGroupConfiguration	Function	Hides the large ending entity group or positions the lead actor according to ending progress
-1C	AABE	HideCompletedPrimarySceneActor	Function	Hides entity zero when save flag $20/$EB bit $20 marks the actor's event complete
-1C	AAC9	ApplyFinalProgressEntityPositions	Function	Hides or positions the primary entity trio according to final progression state
-1C	AB01	PositionTimedEntityAtDaytimeLocation	Function	During daytime, positions the timed scene entity when its progress condition is active
-1C	AB16	PositionEntityZeroAtTriggerLocation	Function	When the player reaches the trigger row, places entity zero at its event location and refreshes the tile
-1C	AB37	ConfigureAlternateWorldStateEntityPositions	Function	When state $6289 is negative, places entity one at $10,$1A and hides entity zero
-1C	AB52	MoveEntityZeroAtPlayerTrigger	Function	Moves entity zero to its target row when the player reaches the trigger column
-1C	AB63	ApplyMorningProgressEntityPositions	Function	Positions the primary scene pair and initializes their state according to morning progress
-1C	ABAC	ApplyFinalProgressEntityPairVisibility	Function	Hides entities three and four or zero and one according to final progress
-1C	ABC6	UpdateEntityZeroAtPlayerTriggerColumn	Function	Updates entity-zero state and position when the player reaches its trigger column
-1C	ABDE	PositionEntityOneForEventProgress	Function	Sets entity one direction and event coordinates when its progress condition is active
+1C	A058	ApplyFrenorEntityVisibility	Function	For Frenor submap 0, positions entity zero at $07,$15 when applicable and hides configured groups from save flags $627B
+1C	A0C6	HideFrenorEntitiesFourteenThroughSixteen	Function	For Frenor submap 0, hides coordinate fields for entities fourteen through sixteen
+1C	A0D6	ApplyBrancaEndorTunnelEntityVisibility	Function	For Branca-Endor Tunnel submap 0, hides entities zero and one unless intro state $6287 bit $40 is set
+1C	A0E6	ApplyLochTowerEntityVisibility	Function	For Loch Tower submap 0, hides the primary scene pair after progress flag $03 bit one
+1C	A0F7	ApplySanteemSubmap2EntityVisibility	Function	For Santeem submap 2, hides the daytime scene actor when world-state bits one through three are set
+1C	A10B	ApplySanteemEntityVisibility	Function	For Santeem submap 0, hides entities zero, one, two, or ten according to chapter, time, and save state
+1C	A149	ApplySanteemSubmap1EntityVisibility	Function	For Santeem submap 1, hides entity zero or entities three and six according to story flags
+1C	A171	ApplyBurlandSubmap1EntityVisibility	Function	For Burland submap 1, hides entities twelve through twenty or initializes entity zero from story flags
+1C	A1AE	ApplyIzmitSubmap2EntityVisibility	Function	For Izmit submap 2, updates save state and hides entities one or two according to progress flags
+1C	A1C4	HideIzmitSubmap2EntityTwoBeforeProgress	Function	For Izmit submap 2, hides entity two while progress flag $03 bit $40 is clear
+1C	A1CC	ApplyBurlandEntityVisibility	Function	For Burland submap 0, hides entity eleven or seven according to story flags and time of day
+1C	A1E3	ApplyBurlandDayNightEntityVisibility	Function	For Burland submap 0, hides entity eleven during daytime or entity seven at night
+1C	A1ED	ApplyLakanabaSubmap1EntityVisibility	Function	For Lakanaba submap 1, updates entity source state and hides entities from progression flags and time
+1C	A227	ApplySecretPlaygroundSubmap3EntityVisibility	Function	For Secret Playground submap 3, adjusts entity visibility from story and vehicle state
+1C	A24F	ApplyBurlandSubmap3EntityVisibility	Function	For Burland submap 3, hides entity two from night and progress conditions
+1C	A25E	ContinueBurlandSubmap3EntityVisibility	Function	For Burland submap 3, hides entity two after the preceding progress check
+1C	A266	ApplyLochTowerSubmap4EntityVisibility	Function	For Loch Tower submap 4, hides entities six through eight and conditionally entities zero through four
+1C	A29A	ApplyLakanabaEntityVisibility	Function	For Lakanaba submap 0, applies day, night, and story visibility to entities zero through fifteen
+1C	A326	ApplyLakanabaSubmap2EntityVisibility	Function	For Lakanaba submap 2, hides entity zero from daytime story conditions
+1C	A33D	ApplyIzmitEntityVisibility	Function	For Izmit submap 0, hides or activates configured entities according to chapter and state $6283
+1C	A36E	ApplyFrenorSubmap1EntityVisibility	Function	For Frenor submap 1, hides entity zero in the chapter-two completed state
+1C	A380	ApplyEndorSubmap7EntityVisibility	Function	For Endor submap 7, hides entities eight through twelve according to chapter and player position
+1C	A3A8	ApplyBirdsongTowerEntityVisibility	Function	For Birdsong Tower submap 0, hides entities zero and one after progress flag $0B bit two
+1C	A3B9	ApplyEndorEntityVisibility	Function	For Endor submap 0, applies chapter, time, party, and save-state visibility rules
+1C	A40F	ApplyMonbarabaSubmap3EntityVisibility	Function	For Monbaraba submap 3, hides the late scene actor or preceding entity group from progress state
+1C	A454	ApplyKeeleonEntityVisibility	Function	For Keeleon submap 0, hides entities zero, three, or four according to progression and time
+1C	A489	ApplyBonmalmoEntityVisibility	Function	For Bonmalmo submap 0, hides scene entities according to paired progress flags
+1C	A4A0	ApplySphereOfSilenceCaveSubmap3EntityVisibility	Function	For Sphere of Silence Cave submap 3, hides the completed event actor
+1C	A4AC	ApplyBonmalmoSubmap1EntityVisibility	Function	For Bonmalmo submap 1, applies day, night, and story visibility to entities zero, one, eight, and fifteen
+1C	A4E2	ApplyEndorSubmap8EntityVisibility	Function	For Endor submap 8, hides entities zero through three according to progress and time
+1C	A51E	ApplyEndorSubmap11EntityVisibility	Function	For Endor submap 11, hides entity zero or four according to chapter, time, and story state
+1C	A549	ApplyFoxvilleSubmap1EntityVisibility	Function	For Foxville submap 1, hides entity zero unless paired progress state selects visibility
+1C	A55B	ApplySilverStatuetteCaveEntityVisibility	Function	For Silver Statuette Cave submap 0, hides the unavailable scene actor
+1C	A568	ApplySilverStatuetteCaveSubmap4EntityVisibility	Function	For Silver Statuette Cave submap 4, aligns the scene companion with the player at the entrance
+1C	A57F	ApplyEndorSubmap1EntityVisibility	Function	For Endor submap 1, hides entity zero according to chapter and chapter-five progress
+1C	A5A0	ApplyBrancaEndorTunnelSubmap1EntityVisibility	Function	For Branca-Endor Tunnel submap 1, hides entities zero and one during chapter five
+1C	A5B2	ApplyDesertInnEntityVisibility	Function	For Desert Inn submap 0, hides the first three entities after chapter progress
+1C	A5CF	ApplyHometownEntityVisibility	Function	For Hometown submap 0, initializes entity six when presentation is idle
+1C	A5F6	ApplyKonenberSubmap6EntityVisibility	Function	For Konenber submap 6, repositions the row-six actor and applies time and progress rules
+1C	A683	ApplyHometownSubmap1EntityVisibility	Function	For Hometown submap 1, hides entities zero through two according to world state
+1C	A6A9	ApplyLighthouseSubmap4EntityVisibility	Function	For Lighthouse submap 4, hides the completed scene support actor
+1C	A6B5	ApplyBrancaEntityVisibility	Function	For Branca submap 0, hides entities thirteen through sixteen according to time and party state
+1C	A6CA	ApplyMintosSubmap1EntityVisibility	Function	For Mintos submap 1, updates entities zero through six from late-game story state
+1C	A70E	ContinueMintosSubmap1EntityVisibility	Function	For Mintos submap 1, continues hiding entities three through six according to progress
+1C	A732	HideMintosSubmap1EntityThree	Function	For Mintos submap 1, hides entity three
+1C	A737	ApplyCaveOfBetrayalSubmap2EntityVisibility	Function	For Cave of Betrayal submap 2, hides entity groups according to party, player, and progress state
+1C	A77C	ApplyCaveOfBetrayalSubmap1EntityVisibility	Function	For Cave of Betrayal submap 1, hides entities one and two unless party and progress state select visibility
+1C	A798	ApplyLighthouseSubmap2EntityVisibility	Function	For Lighthouse submap 2, copies entity one to zero or hides entity zero from story state
+1C	A7C5	ApplyPadequiaCaveSubmap1EntityVisibility	Function	For Padequia Cave submap 1, hides the completed scene actor group
+1C	A7D6	ApplyHavilleEntityVisibility	Function	For Haville submap 0, hides entity zero or one according to story state and time
+1C	A7EC	ApplyHavilleSubmap1NightEntityVisibility	Function	For Haville submap 1, hides entities eight and nine at night when the story flag is active
+1C	A802	ApplyAktemtoEntityVisibility	Function	For Aktemto submap 0, hides the primary actor or positions the night actor according to progress
+1C	A830	ApplyKievsEntityVisibility	Function	For Kievs submap 0, hides one scene actor and clears another actor state according to time and progress
+1C	A850	ApplyLighthouseEntityVisibility	Function	For Lighthouse submap 0, hides the departed scene actor group when its progress flag is active
+1C	A86B	ApplyKievsSubmap1EntityVisibility	Function	For Kievs submap 1, hides entity zero during daytime while progress is incomplete
+1C	A87C	ApplyCaveOfBetrayalEntityVisibility	Function	For Cave of Betrayal submap 0, hides entity zero unless both late progress conditions select visibility
+1C	A88E	ApplyKeeleonSubmap2EntityVisibility	Function	For Keeleon submap 2, hides entity four at night or positions entity three from save state
+1C	A8B5	ApplyHouseOfProphecyEntityVisibility	Function	For House of Prophecy submap 0, hides entity zero according to paired story progress
+1C	A8C7	ApplyMonbarabaEntityVisibility	Function	For Monbaraba submap 0, hides or positions scene entities according to time and progress
+1C	A8FE	ApplyKeeleonSubmap1EntityVisibility	Function	For Keeleon submap 1, configures entities one through nine from chapter, party, and save flags
+1C	A957	HideKeeleonSubmap1EntitiesOneThroughThree	Function	For Keeleon submap 1, hides entities one through three
+1C	A967	ApplyMonbarabaSubmap1EntityVisibility	Function	For Monbaraba submap 1, hides entity five or six at night according to story state
+1C	A97A	ApplyBurlandSubmap2EntityVisibility	Function	For Burland submap 2, hides entity three during daytime after progress
+1C	A98B	ApplyGardenburSubmap1EntityVisibility	Function	For Gardenbur submap 1, hides the late scene pair or primary actor according to progress
+1C	A9A0	ApplyGardenburSubmap3EntityVisibility	Function	For Gardenbur submap 3, configures event entities from progress, player position, and world state
+1C	A9A4	ContinueGardenburSubmap3EntityVisibility	Function	For Gardenbur submap 3, hides entities three through five or refreshes entity five according to player position
+1C	A9D8	ApplyRosavilleEntityVisibility	Function	For Rosaville submap 0, hides entities zero through two according to late progress and time
+1C	A9FE	ApplyRosavilleSubmap3EntityVisibility	Function	For Rosaville submap 3, hides one or both primary actors according to late progress
+1C	AA14	ApplyAktemtoMineSubmap6EntityVisibility	Function	For Aktemto Mine submap 6, changes the primary actor direction and hides the supporting pair
+1C	AA41	ApplyAktemtoMineSubmap5EntityVisibility	Function	For Aktemto Mine submap 5, hides the departed primary actor
+1C	AA4D	ApplyBakorsHideoutEntityVisibility	Function	For Bakor's Hideout submap 0, hides or positions entities zero through two according to world state
+1C	AA82	ApplyDirePalaceSubmap1EntityVisibility	Function	For Dire Palace submap 1, hides the ending entity group or positions the lead actor
+1C	AABE	ApplyWorldTreeEntityVisibility	Function	For World Tree submap 0, hides the completed primary scene actor
+1C	AAC9	ApplyZenithiaSubmap1EntityVisibility	Function	For Zenithia submap 1, hides or positions the primary entity trio according to final progression
+1C	AB01	ApplyAneauxEntityVisibility	Function	For Aneaux submap 0, positions the timed scene entity during daytime when progress allows
+1C	AB16	ApplyStanciaSubmap6EntityVisibility	Function	For Stancia submap 6, positions entity zero when the player reaches the trigger row
+1C	AB37	ApplyRivertonEntityVisibility	Function	For Riverton submap 0, places entity one and hides entity zero in the alternate world state
+1C	AB52	ApplyAneauxSubmap2EntityVisibility	Function	For Aneaux submap 2, moves entity zero when the player reaches the trigger column
+1C	AB63	ApplyShrineOfColossusOutsideEntityVisibility	Function	For Shrine of Colossus Outside submap 0, positions the primary scene pair from morning progress
+1C	ABAC	ApplyZenithiaEntityVisibility	Function	For Zenithia submap 0, hides one of two entity pairs according to final progress
+1C	ABC6	ApplyFinalCaveSubmap2EntityVisibility	Function	For Final Cave submap 2, updates entity-zero state and position at the trigger column
+1C	ABDE	ApplyHavilleSubmap3EntityVisibility	Function	For Haville submap 3, sets entity one direction and event coordinates when progress is active
 1C	AD1E	CacheTileUnderMapEntity	Function	Reads and stores the map tile beneath entity X
 1C	AD32	ApplyChapterSpecificEntitySuppression	Function	Matches map/submap records and hides the configured entity when the chapter does not match
 1C	AD5F	DispatchMapEntityEventById	Function	Dispatches map event A through the fifty-one-entry pointer table
@@ -3869,13 +3869,13 @@
 1D	960D	RefreshEntityEightEventSprites	Function	Renders entity eight and runs the fixed OAM refresh helper
 1D	9616	InitializeSixteenMapEffectSprites	Function	Waits for prior sprites to clear, enables OAM mode, and initializes sixteen sprite coordinates
 1D	9697	DispatchCurrentMapSubmapInitializer	Function	Dispatches one of seven local-map initialization handlers by current map and submap
-1D	96DF	ClearMapEventTileState	Function	Clears the four map-event tile-state records
-1D	96EE	SetMapEventRecordFromPrimaryProgress	Function	Sets the event record when the primary progress condition is active
-1D	96FA	SetMapEventEntityRecordsFromSecondaryProgress	Function	Writes the event entity records when the secondary progress condition is active
-1D	9713	CopyMapTileClassWhenProgressSet	Function	Copies the map tile class into the event record when its progress condition is active
-1D	9724	SetLateProgressMapEventMarker	Function	Writes the late-progress event marker when its story condition is active
-1D	9730	ConfigureMapEventRecordForWorldState	Function	Writes five to $788F and $78AE when state $62A5 is negative
-1D	973E	InitializeSpecialMapEventGraphics	Function	Clears the caller return flag and runs PPU graphics, entity-record, and event-state initialization
+1D	96DF	InitializeFinalCaveSubmap7State	Function	For Final Cave submap 7, clears the four map-event tile-state records
+1D	96EE	InitializeSanteemSubmap2State	Function	For Santeem submap 2, sets the event record when story flag $04 bit two is active
+1D	96FA	InitializeCaveOfBetrayalState	Function	For Cave of Betrayal submap 0, writes the event entity records when story flag $0A bit $80 is active
+1D	9713	InitializeKeeleonSubmap1State	Function	For Keeleon submap 1, copies the map tile class into the event record when story flag $16 bit two is active
+1D	9724	InitializeCascadeCaveState	Function	For Cascade Cave submap 0, writes the event marker when story flag $26 bit $40 is active
+1D	9730	InitializeKievsState	Function	For Kievs submap 0, writes five to $788F and $78AE when world state $62A5 is negative
+1D	973E	InitializeIronSafeCaveSubmap4State	Function	For Iron Safe Cave submap 4, uploads special graphics, loads entity records, and initializes event state
 1D	9751	InitializeSpecialMapEventState	Function	Writes event entity indices, initializes $62A3/$62A0, and invokes service $1F/$DB/$BF
 1D	9771	LoadSpecialMapEventEntityRecords	Function	Copies twenty-four event bytes to $7664 and initializes six entity record flags
 1D	97A4	UploadSpecialMapEventPatternData	Function	Uploads 224 bytes of event pattern data to PPU address $1F20
@@ -3911,9 +3911,9 @@
 1D	9C26	IsMapTriggerPositionOccupied	Function	Returns carry set when the player or either of the first two entities occupies trigger coordinate $04,$03
 1D	9C34	IsMapTriggerBlockedByLeadingEntities	Function	Tests entity one and then entity zero for trigger coordinate $04,$03
 1D	9C40	IsEntityAtMapTriggerPosition	Function	Returns carry set when entity X occupies trigger coordinate $04,$03
-1D	9C52	HideNearbyMapEntityAndRefresh	Function	Hides entity $51 when within one tile of the player and refreshes map entity state
+1D	9C52	StartClayDollBattle	Function	When the selected entity is adjacent, hides it, normalizes map entities, and starts Clay Doll formation $06
 1D	9C93	NormalizeMapEntitiesAfterHide	Function	Clears high state bits, copies current to target coordinates for entities one through five, and clears $3E
-1D	9CB4	RunMapEventTrampoline05	Function	Jumps to fixed trampoline five
+1D	9CB4	SynchronizeFollowerFacingForMapEvent	Function	Tail-calls the fixed-bank follower-facing synchronization service
 1D	9CB7	HandlePairedMapTrigger	Function	Handles the two-column trigger at row $0E and updates save flag $1F through scripted services
 1D	9CDD	RunMapEntityFormationStateMachine	Function	Validates entity rows and columns, advances formation state, runs animations, and toggles state bit $40
 1D	9D9D	CommitMapFormationStateBit02	Function	Sets save flag $1F bit two and enters common formation-state completion
@@ -3932,7 +3932,7 @@
 1D	A0B3	RunFakePrincessImposterDialogue	Function	Runs the imposters' upstairs reveal and threat, then returns result value $1E in $51
 1D	A0C8	AnimateNineMapEffectPositions	Function	Runs nine coordinate effects, uploads a sixty-four-byte PPU block, and initializes entity-zero state $11
 1D	A164	MovePlayerUpAndToggleFirstEntities	Function	At player row $13, moves player/entity zero up and toggles state bit two for the first three entities
-1D	A176	RunTrampoline02AndToggleFirstEntities	Function	Runs fixed trampoline two and toggles state bit two for entities zero through two
+1D	A176	PropagateFollowerOffsetsAndToggleFirstEntities	Function	Propagates party follower offsets and toggles state bit two for entities zero through two
 1D	A179	ToggleFirstThreeEntityStateBits	Function	Toggles bit two and clears the high bit for entities zero through two
 1D	A18C	InitializeEntityDelayAndScriptTarget	Function	Sets a random entity delay and advances its map-object script pointer by two
 1D	A1AF	TransferAndHideMapEntity	Function	Copies entity X state into destination slot Y plus one, hides the source, and assigns destination direction
@@ -4017,7 +4017,7 @@
 1D	AD4C	ActivateMapEntitiesTwoThroughEight	Function	Sets event state $11 on entities two through eight except slot one
 1D	AD73	ShowFixedFourSpriteMapEvent	Function	Loads four fixed OAM entries, waits 120 frames, resets entity motion, and restores display state
 1D	AD9E	PromptMapButtonPress	Function	At entity-zero coordinate $11,$02, prompts to press the button, updates save state, changes submap, and hides the actor
-1D	ADD8	RunTrampoline07ThenEntityHideSequence	Function	Runs fixed trampoline seven before the shared scroll-pulse and entity-hide sequence
+1D	ADD8	InitializeMapDecoderThenHideEntitySequence	Function	Initializes the current map decoder before the shared scroll-pulse and entity-hide sequence
 1D	ADDC	RunEntityHideScrollPulseSequence	Function	Runs fixed trampoline one, pulses scroll 170 times, hides the saved entity, and returns result $1E
 1D	AE0C	RestoreMapEventResultAndReturnClear	Function	Restores $51 from the stack and returns carry clear
 1D	AE11	PulseVerticalScrollFromCounter	Function	Temporarily offsets $0509 by two through five from the high bits of X across two NMIs
@@ -4102,7 +4102,7 @@
 1D	BE8E	QueueDecodedMapTileValues	Function	Transforms map tile values from $04E0 and appends or replaces their PPU writes
 1D	BEC4	AppendOrReplaceMapTilePpuWrite	Function	Replaces an existing write at address $0E-$0F or appends a new three-byte PPU command
 1D	BF0A	CoalesceAdjacentTilePpuWrites	Function	Combines runs of adjacent three-byte PPU writes into compact variable-length commands
-1E	8000	Bank1E_MapInteractionDirectory	Table	72 little-endian map and entity interaction service pointers
+1E	8000	Bank1E_MapAndFieldServiceDirectory	Table	72 little-endian map transitions, tile updates, chapter setup, resume, field-command, treasure, movement, and entity-event service pointers
 1E	8090	RunFieldCommandMenu	Code	Opens field-command menu record $03 and dispatches TALK, SPELL, STATUS, ITEM, EQUIP, TACTICS, DOOR, or SEARCH
 1E	80BA	RunTalkCommand	Function	Runs TALK against the facing entity or tile and reports when nothing responds
 1E	8126	FindInteractableEntityAtCoordinates	Function	Scans active map entities $06-$1F for coordinates $51/$52 and returns the matching entity index with carry set
@@ -4119,10 +4119,10 @@
 1E	83D9	GetFacingTileBehavior	Function	Resolves the logical tile in front of the player and returns its cached behavior byte
 1E	83EC	FindFreeMapOverrideRecord	Function	Scans the forty four-byte map override records at $6C0C for a free $FF-marked slot
 1E	83FE	RunTacticsCommand	Function	Runs the remaining field-command menu handler inferred as TACTICS from the other seven verified slots
-1E	84B6	WaitForMapInteractionInputAndExit	Function	Waits for a fresh button press and returns to the upper fixed engine
+1E	84B6	WaitForFieldCommandInputAndExit	Function	Waits for a fresh button press and returns from the active field command
 1E	84BC	StartMapPresentationState	Function	Initializes presentation state $0530-$0533 from A with active flag one and zeroed phase counters
-1E	84CC	QueryMapInteractionOptionByContext	Function	Chooses context index one or two from $078A and invokes service $01/$6F/$FE
-1E	84DB	QueryMapInteractionCountBySaveState	Function	Selects service $62/$33 or $62/$23/$40 according to the special-save-state gate
+1E	84CC	QueryFieldCommandOptionByContext	Function	Chooses context index one or two from $078A and invokes the field-option service
+1E	84DB	QueryFieldCommandCountBySaveState	Function	Selects the party-count service according to the special-save-state gate
 1E	84F0	InitializeMapEntityFadeSequence	Function	Invokes service $58/$33 before entering the shared map-entity visibility animation
 1E	84F3	AnimateMapEntityVisibility	Function	Builds a phase mask, repeatedly updates entity visibility, renders map entities, and advances animation phase $3C
 1E	8547	HideMapEntitiesByPhaseMask	Function	Tests the phase mask selected by $058E and hides the corresponding map entity when the bit clears
@@ -4187,7 +4187,7 @@
 1E	8D0D	LoopMapEntityBlinkSequence	Function	Repeatedly hides, delays, and restores the selected entity during the blink sequence
 1E	8D18	HideMapEntityAndRefreshScene	Function	Sets the selected entity hidden bit and invokes service $0A/$6F while preserving Y
 1E	8D2C	ShowMapEntityAndDelay	Function	Clears the selected entity hidden bit, invokes service $0A/$6F, and delays by Y frames
-1E	8D5C	RenderMapInteractionMarkerSprites	Function	Builds four marker sprites from map coordinates and direction-specific offset tables
+1E	8D5C	AnimateCaveOfBetrayalSpecialTile	Function	When movement reaches the Cave of Betrayal special tile, updates the map tile and draws the four direction-offset sprites
 1E	8EC5	RefreshThenRunMapSceneTransition	Function	Refreshes map state through $959B before entering the shared scene-transition sequence
 1E	8EC8	PrepareMapSceneTransition	Function	Invokes service $08/$87 and runs the shared scene-transition preparation sequence
 1E	8ED6	RunMapSceneTransitionForValue	Function	Runs the shared scene-transition flow for value A and returns through the upper engine
@@ -4197,7 +4197,7 @@
 1E	8F6B	CheckTileBehaviorWallCodes	Function	Returns carry clear only for the four wall and door tile-behavior classes
 1E	8F7A	HideFirstSixMapEntitySprites	Function	Hides the four OAM sprites for each of map entity slots zero through five
 1E	8F85	HideMapEntityOamSprites	Function	Writes $F7 to all four OAM Y coordinates for one visible map entity
-1E	8FA5	UpdateMapInteractionPartyStateWhenFlag40	Function	When $6281 bit six and service thresholds pass, updates up to three map-party state slots
+1E	8FA5	UpdateMapPartyStateWhenFlag40	Function	During scene transition, updates up to three map-party state slots when $6281 bit six and service thresholds pass
 1E	8FBB	UpdateMapPartySlots	Function	Uses service $5E/$73 and selector state to update map-party slots zero through two
 1E	8FDF	RunMapSpecificPartyInteraction	Function	Invokes service $12/$2F with value eight only on map $37
 1E	8FEB	MatchAndApplyMapEventTrigger	Function	Matches chapter, map, submap, coordinates, entity, and target fields and initializes the event presentation state
@@ -4205,10 +4205,10 @@
 1E	906C	MatchAlternateMapEventTrigger	Function	Selects the alternate trigger record from service $0F/$EB/$08 and enters the shared matcher
 1E	907B	RefreshThenRunMapSceneTransitionForValue	Function	Refreshes map state through $959B before running the scene transition for A
 1E	9083	PrepareMapSceneForDirection	Function	Stores direction A in $3D, prepares rendering, and applies the signed or unsigned scene path
-1E	9090	PrepareMapSceneWithTrampoline07	Function	Runs trampoline seven, suspends rendering, and enters the shared display reset path
-1E	9097	PrepareMapSceneWithTrampoline01	Function	Runs trampoline one, restores display state, and returns through the fixed engine
+1E	9090	PrepareMapSceneWithCurrentMapDecoder	Function	Initializes the current map decoder, suspends rendering, and enters the shared display reset path
+1E	9097	PrepareMapSceneWithCurrentMapData	Function	Loads current map data, restores display state, and returns through the fixed engine
 1E	90A8	LoadCurrentMapTileClassAfterNmi	Function	Waits for NMI, runs both map trampolines, restores coordinates, and loads the current tile class
-1E	90AB	LoadCurrentMapTileClassWithTrampoline07	Function	Runs trampoline seven before the shared coordinate and tile-class refresh
+1E	90AB	LoadCurrentMapTileClassWithDecoderRefresh	Function	Initializes the current map decoder before the shared coordinate and tile-class refresh
 1E	90AF	LoadCurrentMapTileClass	Function	Runs trampoline one, restores player coordinates, and stores the current tile class in $46
 1E	90C8	ApplyMapScenePathForSignedValue	Function	Refreshes player coordinates and selects the signed or nonnegative map-scene rebuild path
 1E	90E2	SuspendAndRefreshMapRendering	Function	Suspends rendering, invokes services $00/$CF and $08/$CF, and restores display state
@@ -4229,7 +4229,7 @@
 1E	956F	RemovePanonFromParty	Function	Removes departing character ID $0D, Panon, from the party
 1E	9582	RemoveHectorFromParty	Function	Removes departing character ID $0C, Hector, from the party
 1E	958A	ResetMapDisplayAndMotionState	Function	Clears display latch $0539, resets display state, runs trampoline three, and resets entity motion
-1E	9592	RunTrampoline03AndResetMapMotion	Function	Runs fixed trampoline three, resets map entity motion, and returns through the upper engine
+1E	9592	RebuildViewportAndResetMapMotion	Function	Rebuilds the viewport with rendering suspended, resets map entity motion, and returns through the upper engine
 1E	959B	EnsureMapSceneInitialized	Function	Runs map initialization services when scene mode $0515 is zero, then refreshes display state
 1E	95A9	InitializeMapPartyEntityLayout	Function	Refreshes party entities, stores player direction, and initializes the map-party entity layout
 1E	95B7	BuildMapPartyEntityOrder	Function	Builds four party entity descriptors, compacts selected entries, and records slot indices in $053A-$053D
@@ -4274,7 +4274,7 @@
 1E	9E2F	RenderTwentyThreeMapEntityFrames	Function	Invokes service $0A/$6F and renders twenty-three consecutive map entity frames
 1E	9E3F	ResolveChapterMapServiceIndex	Function	Searches service $2B/$73 results for the chapter-selected value and falls back through service $2D/$0F
 1E	9E6B	AdvanceTransformCountdown	Function	Decrements SaveTransformSteps and refreshes active party entities when the countdown reaches zero
-1E	9E7A	ResolveMapInteractionValueOrFallback	Function	Uses service $26/$2F or the $2D/$0F fallback to resolve the current map interaction value
+1E	9E7A	FindHeroPartyOrdinalOrFallback	Function	During chapter startup, finds the Hero's active-party ordinal through service $26/$2F or falls back to selection service $2D/$0F
 1E	9E8C	SetMapTileAndRefreshRegion	Function	Writes tile value A at map coordinates X/Y and refreshes the corresponding visible nametable region
 1E	9E92	SetMapTileAtCoordinates	Function	Preserves A, resolves the map tile pointer for X/Y, and replaces only its low five tile bits
 1E	9EA2	ResolveMapTilePointer	Function	Computes the map tile pointer for coordinates X/Y and returns the current byte
@@ -4369,7 +4369,7 @@
 1E	B1CD	LoadSelectedCharacterRecordFlags	Function	Loads byte zero from the character record selected in pointer $79-$7A
 1E	B2A6	HandleFacingTileInteraction	Function	Classifies the facing tile behavior and runs its override, script, or rejection path
 1E	B2F8	HandleSpecialFacingTileBehavior	Function	Handles facing tile behaviors $2C and $30 and records successful interaction state in $6279
-1E	B325	CompleteMapInteractionWithCarry	Function	Runs fixed interaction cleanup and returns carry set
+1E	B325	CompleteDoorInteractionWithCarry	Function	Unused helper in the DOOR command path that waits for input and returns carry set
 1E	B33B	HandleConfiguredFacingTileOverride	Function	Classifies the facing tile and installs an override or routes through its configured script index
 1E	B35D	TestFacingTileBehaviorRange	Function	Loads facing tile behavior into $00 and returns carry set for values $14 through $23
 1E	B36E	ClassifyFacingTileBehaviorGroup	Function	Finds behavior $00 in the sixteen-value table and returns its four-entry group index minus one
@@ -4377,10 +4377,10 @@
 1E	B3E1	GiveFoundItemWithModeZero	Function	Clears found-item mode $6279 and dispatches item ID A
 1E	B3E5	GiveFoundItemWithModeForty	Function	Sets found-item mode $6279 to $40 and dispatches item ID A
 1E	B3EA	GiveFoundItemById	Function	Dispatches item ID A through the common found-item acquisition flow
-1E	B3ED	PrepareAndUseMapInteractionSelection	Function	Prepares the current interaction selection and executes its selected inventory action
+1E	B3ED	PrepareTreasureStoryFlagTest	Function	Resolves and tests the current treasure or search-object story flag
 1E	B3F3	HandleFacingTileActionAndWait	Function	Runs the facing tile action, waits for a fresh button press when not handled, and restores state
 1E	B3FE	DispatchFacingTileCommand	Function	Dispatches the facing tile object, scripted map event, or default command result
-1E	B47F	RunMapInteractionScriptByIndex	Function	Converts interaction index A to a forty-byte record offset and invokes its local or world-map script
+1E	B47F	RunTreasureSearchScriptByIndex	Function	Converts the treasure/search index to a forty-byte script record and invokes its local or world-map path
 1E	B4CE	ShowChestEmpty	Function	Prints that the treasure chest is empty and returns carry clear
 1E	B59E	ShowFoundItemPromptAndDispatch	Function	Prints the found-item prompt before dispatching item ID A
 1E	B5A3	GiveFoundItemToParty	Function	Stores item ID A, prints the found-item message, and finds a party member with inventory space
@@ -4388,27 +4388,27 @@
 1E	B650	PromptDiscardForFoundItem	Function	Asks which item to discard before giving the newly found item
 1E	8340	RunSearchCommand	Function	Runs SEARCH around the player's feet and reports when nothing is found
 1E	8343	RunDoorCommand	Function	Runs the DOOR command against the facing tile and reports missing key, failed lock, or missing door
-1E	B71E	SelectMapInteractionTargetFromThree	Function	Invokes selection service $2D/$0F with limit three and returns selection $72
-1E	B722	SelectMapInteractionTargetFromOne	Function	Invokes selection service $2D/$0F with limit one and returns selection $72
-1E	B72E	PrepareMapInteractionStoryFlag	Function	Invokes map interaction service $13/$87 before story-flag operations
+1E	B71E	SelectTreasureRecipientFromThree	Function	Invokes party selection with limit three and returns the selected treasure recipient
+1E	B722	SelectTreasureRecipientFromOne	Function	Invokes party selection with limit one and returns the selected treasure recipient
+1E	B72E	PrepareTreasureSearchStoryFlag	Function	Initializes the current treasure/search story-flag position before flag operations
 1E	B731	ResolveCurrentMapStoryFlagPosition	Function	Accumulates sorted map/submap record spans into story-flag offset $6278-$6279
 1E	B779	DecodeMapStoryFlagMask	Function	Decodes $6278-$6279 into SaveStoryFlags byte index X and bit mask A
 1E	B791	TestCurrentMapStoryFlag	Function	Returns carry set when the decoded current-map story flag is set
 1E	B79C	SetCurrentMapStoryFlag	Function	Sets the decoded current-map bit in SaveStoryFlags
 1E	B7A6	ClearCurrentMapStoryFlag	Function	Clears the decoded current-map bit in SaveStoryFlags
-1E	B7B2	LoadCurrentMapInteractionValue	Function	Loads the interaction value indexed by $6278-$6279 from the bank pointer table
+1E	B7B2	LoadCurrentTreasureSearchValue	Function	Loads the current treasure item, gold, or special search value indexed by $6278-$6279
 1E	B7CA	PlaceTrackedEntityOnPlayerTile	Function	Writes tracked entity index $0572 to the player tile and waits for NMI
 1E	B7D6	PlaceOtherTypeFourEntityOnPlayerTile	Function	Finds a type-four entity other than $0572, writes it to the player tile, and waits for NMI
 1E	B7F2	SetPlayerTileEntityIndex	Function	Sets the low five bits of the player tile to entity index A and refreshes the region
 1E	B7F6	SetMapTileEntityIndex	Function	Sets the low five bits of map tile X,Y to entity index A and refreshes the region
 1E	B807	SearchForBaronsHorn	Function	Searches for item $52, Baron's Horn, and initializes its story state when already active
 1E	B81B	SearchForIronSafe	Function	Searches for item $6B, the Iron Safe, and updates the player tile when its story flag is active
-1E	B830	CompleteIronSafeSearch	Function	Clears the Iron Safe story flag, updates the player tile, and runs the transfer services
+1E	B830	ReturnIronSafeAtCarvedMessage	Function	At the carved-message spot, confirms returning the Iron Safe, clears its story flag, restores the tile, and removes the item
 1E	B868	RevealMimicChest	Function	Prints the Mimic reveal message and reinitializes the map display for the chest encounter
 1E	B86F	RevealManEaterChest	Function	Prints the Man-Eater Chest reveal message and reinitializes the map display in mode $1B
 1E	B87C	ReplaceCompletedEventTile	Function	Validates event state and replaces map coordinate $14,$0B with entity tile index three
 1E	B8AD	AnimateAndReplaceEventTile	Function	Validates event state, animates OAM, and replaces map coordinate $0E,$04 with entity tile index three
-1E	B8D5	ShowMapInteractionMessage2C	Function	Runs prompt service $A7/$2B and message $2C/$2F, then returns carry set
+1E	B8D5	ShowSearchAroundFeetAndApplyExitRules	Function	Prints the searches-around-feet message, applies the map-exit rules, and returns carry set
 1E	B8DD	SearchForBirdsongNectar	Function	Checks its story conditions before giving item $75, Birdsong Nectar
 1E	B8F7	SearchForPadequiaSeed	Function	Gives item $7E, the Padequia Seed, when its story condition is clear
 1E	B90A	SearchForSymbolOfFaith	Function	Gives item $6F, the Symbol of Faith, and records completion
@@ -4430,7 +4430,7 @@
 1E	BB3B	HandleFacingBehavior2A	Function	Runs behavior-$2A service checks and dispatches map interaction result $A6
 1E	BB48	HandleFacingBehavior30	Function	Accepts behavior $30 only on map $37 and dispatches map interaction result $EC
 1E	BB52	HandleFacingBehavior28	Function	Looks up the front coordinate in local or world event records and dispatches its interaction result
-1E	BBA6	DispatchMapInteractionResultWithSlotTwo	Function	Dispatches interaction result A through service $04/$6F with slot two
+1E	BBA6	PrintSearchObjectResultWithSlotTwo	Function	Prints the drawer, jar, signpost, sturdy-door, or chest result using message slot two
 1E	BBE9	ResolveFacingTileInteractionResult	Function	Returns the configured result class for the player tile's current-map interaction record
 1E	BC1E	TestPartyInventoryForItem	Function	Stores item ID A and scans the party inventory for a matching entry
 1E	BC20	TestPartyInventoryForStoredItem	Function	Scans party inventory entries for item ID $51 and returns carry set when found

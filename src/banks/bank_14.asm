@@ -6,7 +6,7 @@ base $8000
 Bank14_Start:
 ; ----------------------------------------------------------------------------
 ; ----------------------------------------------------------------------------
-Bank14_BattleTurnDirectory:
+Bank14_BattleDisplayDirectory:
         db   $20,$82,$E9,$82,$C2,$83,$1C,$84 ; 8000 20 82 E9 82 C2 83 1C 84   .......
         db   $14,$84,$DF,$84,$2E,$85,$53,$86 ; 8008 14 84 DF 84 2E 85 53 86  ......S.
         db   $69,$86,$42,$86,$2F,$81,$37,$87 ; 8010 69 86 42 86 2F 81 37 87  i.B./.7.
@@ -156,7 +156,7 @@ BattleDisplay_Branch_811E:
         jsr     BattleDisplay_RebuildBattleOamFromDisplaySlots; 8129 20 CF 81    ..
         jmp     WaitForNmi                      ; 812C 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
-BattleDisplay_RefreshBattleTurnVisualState:
+BattleDisplay_RefreshCombatantVisualState:
         jsr     BattleDisplay_ResetBattleVisualState; 812F 20 D3 91              ..
         jsr     SuspendRenderingUpdates         ; 8132 20 AF C5                  ..
         jsr     BattleDisplay_InitializeBattleBackdropWindow; 8135 20 92 92      ..

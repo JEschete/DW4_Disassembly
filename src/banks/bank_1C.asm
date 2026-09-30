@@ -1941,7 +1941,7 @@ SetMapEntityCoordinates:
         sta     $6FC6,x                         ; A054 9D C6 6F                 ..o
         rts                                     ; A057 60                       `
 ; ----------------------------------------------------------------------------
-ConfigureEntitiesForMapFlagState:
+ApplyFrenorEntityVisibility:
         lda     PlayerLocalX                    ; A058 A5 44                    .D
         cmp     #$07                            ; A05A C9 07                    ..
         bne     MapEntitySystem_Branch_A07E     ; A05C D0 20                    .
@@ -1969,7 +1969,7 @@ MapEntitySystem_Branch_A07E:
         cmp     #$10                            ; A087 C9 10                    ..
         beq     MapEntitySystem_Branch_A0C3     ; A089 F0 38                    .8
         cmp     #$30                            ; A08B C9 30                    .0
-        bne     HideMapEntitiesFourteenThroughSixteen; A08D D0 37               .7
+        bne     HideFrenorEntitiesFourteenThroughSixteen; A08D D0 37            .7
         jsr     HideMapEntityCoordinates        ; A08F 20 35 A0                  5.
         lda     #$76                            ; A092 A9 76                    .v
         brk                                     ; A094 00                       .
@@ -1985,7 +1985,7 @@ MapEntitySystem_Branch_A0A0:
         ldx     #$05                            ; A0A5 A2 05                    ..
         jsr     HideMapEntityCoordinates        ; A0A7 20 35 A0                  5.
 MapEntitySystem_Branch_A0AA:
-        jsr     HideMapEntitiesFourteenThroughSixteen; A0AA 20 C6 A0             ..
+        jsr     HideFrenorEntitiesFourteenThroughSixteen; A0AA 20 C6 A0          ..
 MapEntitySystem_Branch_A0AD:
         ldx     #$03                            ; A0AD A2 03                    ..
         jsr     HideMapEntityCoordinates        ; A0AF 20 35 A0                  5.
@@ -1996,12 +1996,12 @@ MapEntitySystem_Branch_A0AD:
         brk                                     ; A0BC 00                       .
         db   $0A,$EB,$01                     ; A0BD 0A EB 01                 ...
 ; ----------------------------------------------------------------------------
-        bne     HideMapEntitiesFourteenThroughSixteen; A0C0 D0 04               ..
+        bne     HideFrenorEntitiesFourteenThroughSixteen; A0C0 D0 04            ..
         rts                                     ; A0C2 60                       `
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A0C3:
         jsr     HideMapEntityCoordinates        ; A0C3 20 35 A0                  5.
-HideMapEntitiesFourteenThroughSixteen:
+HideFrenorEntitiesFourteenThroughSixteen:
         ldx     #$10                            ; A0C6 A2 10                    ..
         jsr     HideMapEntityCoordinates        ; A0C8 20 35 A0                  5.
         ldx     #$0F                            ; A0CB A2 0F                    ..
@@ -2010,7 +2010,7 @@ HideMapEntitiesFourteenThroughSixteen:
         jsr     HideMapEntityCoordinates        ; A0D2 20 35 A0                  5.
         rts                                     ; A0D5 60                       `
 ; ----------------------------------------------------------------------------
-HidePrimaryEntitiesUnlessIntroState:
+ApplyBrancaEndorTunnelEntityVisibility:
         bit     $6287                           ; A0D6 2C 87 62                 ,.b
         bvs     MapEntitySystem_Branch_A0E5     ; A0D9 70 0A                    p.
         ldx     #$00                            ; A0DB A2 00                    ..
@@ -2020,7 +2020,7 @@ HidePrimaryEntitiesUnlessIntroState:
 MapEntitySystem_Branch_A0E5:
         rts                                     ; A0E5 60                       `
 ; ----------------------------------------------------------------------------
-HidePrimaryScenePairAfterProgress:
+ApplyLochTowerEntityVisibility:
         brk                                     ; A0E6 00                       .
         db   $03,$EB,$01                     ; A0E7 03 EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -2032,7 +2032,7 @@ HidePrimaryScenePairAfterProgress:
 MapEntitySystem_Branch_A0F6:
         rts                                     ; A0F6 60                       `
 ; ----------------------------------------------------------------------------
-HideDaytimeSceneActorForWorldState:
+ApplySanteemSubmap2EntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; A0F7 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A10A     ; A0FA B0 0E                    ..
         lda     $627E                           ; A0FC AD 7E 62                 .~b
@@ -2044,7 +2044,7 @@ HideDaytimeSceneActorForWorldState:
 MapEntitySystem_Branch_A10A:
         rts                                     ; A10A 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterDependentEntityVisibility:
+ApplySanteemEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A10B AD 5A 61                 .Za
         cmp     #$04                            ; A10E C9 04                    ..
         beq     MapEntitySystem_Branch_A129     ; A110 F0 17                    ..
@@ -2085,7 +2085,7 @@ MapEntitySystem_Branch_A143:
         jsr     HideMapEntityCoordinates        ; A145 20 35 A0                  5.
         rts                                     ; A148 60                       `
 ; ----------------------------------------------------------------------------
-ApplyAlternateChapterEntityVisibility:
+ApplySanteemSubmap1EntityVisibility:
         brk                                     ; A149 00                       .
         db   $09,$EB,$40                     ; A14A 09 EB 40                 ..@
 ; ----------------------------------------------------------------------------
@@ -2114,7 +2114,7 @@ MapEntitySystem_Branch_A167:
         ldx     #$03                            ; A16C A2 03                    ..
         jmp     HideMapEntityCoordinates        ; A16E 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyFlagDrivenEntityGroupVisibility:
+ApplyBurlandSubmap1EntityVisibility:
         brk                                     ; A171 00                       .
         db   $03,$EB,$10                     ; A172 03 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2151,7 +2151,7 @@ MapEntitySystem_Branch_A18D:
 MapEntitySystem_Branch_A1AD:
         rts                                     ; A1AD 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPrimaryProgressEntityVisibility:
+ApplyIzmitSubmap2EntityVisibility:
         brk                                     ; A1AE 00                       .
         db   $03,$EB,$20                     ; A1AF 03 EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -2168,18 +2168,18 @@ MapEntitySystem_Branch_A1C0:
         brk                                     ; A1C0 00                       .
         db   $03,$EB,$40                     ; A1C1 03 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-HideEntityTwoBeforePrimaryProgress:
+HideIzmitSubmap2EntityTwoBeforeProgress:
         bne     MapEntitySystem_Branch_A1CB     ; A1C4 D0 05                    ..
         ldx     #$02                            ; A1C6 A2 02                    ..
         jsr     HideMapEntityCoordinates        ; A1C8 20 35 A0                  5.
 MapEntitySystem_Branch_A1CB:
         rts                                     ; A1CB 60                       `
 ; ----------------------------------------------------------------------------
-ApplyTimeDependentEntitySevenOrElevenVisibility:
+ApplyBurlandEntityVisibility:
         brk                                     ; A1CC 00                       .
         db   $07,$EB,$10                     ; A1CD 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
-        bne     HideEntityByTimeOfDay           ; A1D0 D0 11                    ..
+        bne     ApplyBurlandDayNightEntityVisibility; A1D0 D0 11                ..
         brk                                     ; A1D2 00                       .
         db   $03,$EB,$60                     ; A1D3 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
@@ -2192,13 +2192,13 @@ MapEntitySystem_Branch_A1DD:
 MapEntitySystem_Branch_A1E2:
         rts                                     ; A1E2 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityByTimeOfDay:
+ApplyBurlandDayNightEntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; A1E3 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A1DD     ; A1E6 90 F5                    ..
         ldx     #$07                            ; A1E8 A2 07                    ..
         jmp     HideMapEntityCoordinates        ; A1EA 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ConfigureTownSceneEntityVisibility:
+ApplyLakanabaSubmap1EntityVisibility:
         brk                                     ; A1ED 00                       .
         db   $07,$EB,$10                     ; A1EE 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2236,7 +2236,7 @@ MapEntitySystem_Branch_A220:
 MapEntitySystem_Branch_A226:
         rts                                     ; A226 60                       `
 ; ----------------------------------------------------------------------------
-ApplyMapEntityVisibilityFlagsAndVehicleState:
+ApplySecretPlaygroundSubmap3EntityVisibility:
         brk                                     ; A227 00                       .
         db   $07,$EB,$10                     ; A228 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2261,7 +2261,7 @@ MapEntitySystem_Branch_A247:
         jsr     HideMapEntityCoordinates        ; A249 20 35 A0                  5.
         jmp     MapEntitySystem_Branch_A23C     ; A24C 4C 3C A2                 L<.
 ; ----------------------------------------------------------------------------
-HideEntityTwoForNightFlagState:
+ApplyBurlandSubmap3EntityVisibility:
         brk                                     ; A24F 00                       .
         db   $07,$EB,$10                     ; A250 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2271,14 +2271,14 @@ HideEntityTwoForNightFlagState:
         brk                                     ; A25A 00                       .
         db   $03,$EB,$60                     ; A25B 03 EB 60                 ..`
 ; ----------------------------------------------------------------------------
-HideEntityTwoAfterPrimaryProgressCheck:
+ContinueBurlandSubmap3EntityVisibility:
         beq     MapEntitySystem_Branch_A265     ; A25E F0 05                    ..
         ldx     #$02                            ; A260 A2 02                    ..
         jsr     HideMapEntityCoordinates        ; A262 20 35 A0                  5.
 MapEntitySystem_Branch_A265:
         rts                                     ; A265 60                       `
 ; ----------------------------------------------------------------------------
-ApplyLargeEntityGroupProgressVisibility:
+ApplyLochTowerSubmap4EntityVisibility:
         ldx     #$06                            ; A266 A2 06                    ..
         jsr     HideMapEntityCoordinates        ; A268 20 35 A0                  5.
         ldx     #$07                            ; A26B A2 07                    ..
@@ -2304,7 +2304,7 @@ ApplyLargeEntityGroupProgressVisibility:
 MapEntitySystem_Branch_A299:
         rts                                     ; A299 60                       `
 ; ----------------------------------------------------------------------------
-ApplyDayNightEntityVisibilitySet:
+ApplyLakanabaEntityVisibility:
         brk                                     ; A29A 00                       .
         db   $07,$EB,$10                     ; A29B 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2398,7 +2398,7 @@ MapEntitySystem_Branch_A321:
 ; ----------------------------------------------------------------------------
         rts                                     ; A325 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForDaytimeFlagState:
+ApplyLakanabaSubmap2EntityVisibility:
         brk                                     ; A326 00                       .
         db   $07,$EB,$10                     ; A327 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2414,7 +2414,7 @@ HideEntityZeroForDaytimeFlagState:
 MapEntitySystem_Branch_A33C:
         rts                                     ; A33C 60                       `
 ; ----------------------------------------------------------------------------
-ConfigureChapterSceneVisibility:
+ApplyIzmitEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A33D AD 5A 61                 .Za
         cmp     #$04                            ; A340 C9 04                    ..
         beq     MapEntitySystem_Branch_A36D     ; A342 F0 29                    .)
@@ -2440,7 +2440,7 @@ MapEntitySystem_Branch_A357:
 MapEntitySystem_Branch_A36D:
         rts                                     ; A36D 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForChapterTwoState:
+ApplyFrenorSubmap1EntityVisibility:
         bit     $627B                           ; A36E 2C 7B 62                 ,{b
         bvc     MapEntitySystem_Branch_A37F     ; A371 50 0C                    P.
         lda     SaveCurrentChapterMinus1        ; A373 AD 5A 61                 .Za
@@ -2451,7 +2451,7 @@ HideEntityZeroForChapterTwoState:
 MapEntitySystem_Branch_A37F:
         rts                                     ; A37F 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterAndPlayerXEntityVisibility:
+ApplyEndorSubmap7EntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A380 AD 5A 61                 .Za
         cmp     #$04                            ; A383 C9 04                    ..
         beq     MapEntitySystem_Branch_A3A7     ; A385 F0 20                    .
@@ -2474,7 +2474,7 @@ MapEntitySystem_Branch_A398:
 MapEntitySystem_Branch_A3A7:
         rts                                     ; A3A7 60                       `
 ; ----------------------------------------------------------------------------
-HideSecondaryScenePairAfterProgress:
+ApplyBirdsongTowerEntityVisibility:
         brk                                     ; A3A8 00                       .
         db   $0B,$EB,$02                     ; A3A9 0B EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -2486,7 +2486,7 @@ HideSecondaryScenePairAfterProgress:
 MapEntitySystem_Branch_A3B8:
         rts                                     ; A3B8 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterTimeEntityVisibility:
+ApplyEndorEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A3B9 AD 5A 61                 .Za
         cmp     #$01                            ; A3BC C9 01                    ..
         bne     MapEntitySystem_Branch_A3D1     ; A3BE D0 11                    ..
@@ -2537,7 +2537,7 @@ MapEntitySystem_Branch_A3FE:
         ldx     #$01                            ; A40A A2 01                    ..
         jmp     HideMapEntityCoordinates        ; A40C 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyLargeSceneGroupProgressVisibility:
+ApplyMonbarabaSubmap3EntityVisibility:
         ldx     #$0F                            ; A40F A2 0F                    ..
         brk                                     ; A411 00                       .
         db   $07,$EB,$10                     ; A412 07 EB 10                 ...
@@ -2576,7 +2576,7 @@ MapEntitySystem_Branch_A43C:
         jsr     CacheTileUnderMapEntity         ; A44E 20 1E AD                  ..
         jmp     MapEntitySystem_Branch_A41E     ; A451 4C 1E A4                 L..
 ; ----------------------------------------------------------------------------
-ConfigureMultiStageTownSceneVisibility:
+ApplyKeeleonEntityVisibility:
         brk                                     ; A454 00                       .
         db   $07,$EB,$10                     ; A455 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2613,7 +2613,7 @@ MapEntitySystem_Branch_A485:
 MapEntitySystem_Branch_A488:
         rts                                     ; A488 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPairedProgressEntityVisibility:
+ApplyBonmalmoEntityVisibility:
         brk                                     ; A489 00                       .
         db   $07,$EB,$10                     ; A48A 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2630,7 +2630,7 @@ MapEntitySystem_Branch_A494:
 MapEntitySystem_Branch_A49F:
         rts                                     ; A49F 60                       `
 ; ----------------------------------------------------------------------------
-HideCompletedTownEventActor:
+ApplySphereOfSilenceCaveSubmap3EntityVisibility:
         brk                                     ; A4A0 00                       .
         db   $09,$EB,$20                     ; A4A1 09 EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -2640,7 +2640,7 @@ HideCompletedTownEventActor:
 MapEntitySystem_Branch_A4AB:
         rts                                     ; A4AB 60                       `
 ; ----------------------------------------------------------------------------
-ApplyDayNightFlagEntityVisibility:
+ApplyBonmalmoSubmap1EntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; A4AC 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A4C8     ; A4AF 90 17                    ..
         brk                                     ; A4B1 00                       .
@@ -2676,7 +2676,7 @@ MapEntitySystem_Branch_A4DD:
         ldx     #$0F                            ; A4DD A2 0F                    ..
         jmp     HideMapEntityCoordinates        ; A4DF 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyTownProgressEntityVisibility:
+ApplyEndorSubmap8EntityVisibility:
         brk                                     ; A4E2 00                       .
         db   $07,$EB,$10                     ; A4E3 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -2714,7 +2714,7 @@ MapEntitySystem_Branch_A50E:
 MapEntitySystem_Branch_A51D:
         rts                                     ; A51D 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterEntityZeroAndFourVisibility:
+ApplyEndorSubmap11EntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A51E AD 5A 61                 .Za
         cmp     #$02                            ; A521 C9 02                    ..
         bne     MapEntitySystem_Branch_A53A     ; A523 D0 15                    ..
@@ -2741,7 +2741,7 @@ MapEntitySystem_Branch_A53A:
 MapEntitySystem_Branch_A548:
         rts                                     ; A548 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForPairedProgress:
+ApplyFoxvilleSubmap1EntityVisibility:
         brk                                     ; A549 00                       .
         db   $05,$EB,$02                     ; A54A 05 EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -2756,7 +2756,7 @@ MapEntitySystem_Branch_A555:
 MapEntitySystem_Branch_A55A:
         rts                                     ; A55A 60                       `
 ; ----------------------------------------------------------------------------
-HideUnavailableSceneActor:
+ApplySilverStatuetteCaveEntityVisibility:
         lda     $62AA                           ; A55B AD AA 62                 ..b
         and     #$20                            ; A55E 29 20                    )
         beq     MapEntitySystem_Branch_A567     ; A560 F0 05                    ..
@@ -2765,7 +2765,7 @@ HideUnavailableSceneActor:
 MapEntitySystem_Branch_A567:
         rts                                     ; A567 60                       `
 ; ----------------------------------------------------------------------------
-AlignSceneCompanionWithPlayer:
+ApplySilverStatuetteCaveSubmap4EntityVisibility:
         lda     PlayerLocalX                    ; A568 A5 44                    .D
         cmp     #$0E                            ; A56A C9 0E                    ..
         bne     MapEntitySystem_Branch_A57E     ; A56C D0 10                    ..
@@ -2778,7 +2778,7 @@ AlignSceneCompanionWithPlayer:
 MapEntitySystem_Branch_A57E:
         rts                                     ; A57E 60                       `
 ; ----------------------------------------------------------------------------
-ApplyChapterProgressEntityZeroVisibility:
+ApplyEndorSubmap1EntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A57F AD 5A 61                 .Za
         cmp     #$04                            ; A582 C9 04                    ..
         beq     MapEntitySystem_Branch_A599     ; A584 F0 13                    ..
@@ -2802,7 +2802,7 @@ MapEntitySystem_Branch_A599:
 MapEntitySystem_Branch_A59F:
         rts                                     ; A59F 60                       `
 ; ----------------------------------------------------------------------------
-HideFirstTwoEntitiesInChapterFive:
+ApplyBrancaEndorTunnelSubmap1EntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A5A0 AD 5A 61                 .Za
         cmp     #$04                            ; A5A3 C9 04                    ..
         bne     MapEntitySystem_Branch_A5B1     ; A5A5 D0 0A                    ..
@@ -2813,7 +2813,7 @@ HideFirstTwoEntitiesInChapterFive:
 MapEntitySystem_Branch_A5B1:
         rts                                     ; A5B1 60                       `
 ; ----------------------------------------------------------------------------
-HideFirstThreeEntitiesAfterChapterProgress:
+ApplyDesertInnEntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A5B2 AD 5A 61                 .Za
         cmp     #$04                            ; A5B5 C9 04                    ..
         bne     MapEntitySystem_Branch_A5CE     ; A5B7 D0 15                    ..
@@ -2830,7 +2830,7 @@ HideFirstThreeEntitiesAfterChapterProgress:
 MapEntitySystem_Branch_A5CE:
         rts                                     ; A5CE 60                       `
 ; ----------------------------------------------------------------------------
-InitializeEntitySixWhenPresentationIdle:
+ApplyHometownEntityVisibility:
         lda     $0530                           ; A5CF AD 30 05                 .0.
         bne     MapEntitySystem_Branch_A5F5     ; A5D2 D0 21                    .!
         ldx     #$06                            ; A5D4 A2 06                    ..
@@ -2849,7 +2849,7 @@ InitializeEntitySixWhenPresentationIdle:
 MapEntitySystem_Branch_A5F5:
         rts                                     ; A5F5 60                       `
 ; ----------------------------------------------------------------------------
-ApplyRowSixProgressEntityConfiguration:
+ApplyKonenberSubmap6EntityVisibility:
         lda     PlayerLocalY                    ; A5F6 A5 45                    .E
         cmp     #$06                            ; A5F8 C9 06                    ..
         bne     MapEntitySystem_Branch_A619     ; A5FA D0 1D                    ..
@@ -2930,7 +2930,7 @@ MapEntitySystem_Branch_A662:
         ldx     #$00                            ; A67E A2 00                    ..
         jmp     MapEntitySystem_Branch_A63F     ; A680 4C 3F A6                 L?.
 ; ----------------------------------------------------------------------------
-ConfigureWorldStateEntityVisibility:
+ApplyHometownSubmap1EntityVisibility:
         lda     $62AA                           ; A683 AD AA 62                 ..b
         lsr     a                               ; A686 4A                       J
         bcc     MapEntitySystem_Branch_A698     ; A687 90 0F                    ..
@@ -2951,7 +2951,7 @@ MapEntitySystem_Branch_A698:
 MapEntitySystem_Branch_A6A6:
         jmp     HideMapEntityCoordinates        ; A6A6 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-HideCompletedSceneSupportActor:
+ApplyLighthouseSubmap4EntityVisibility:
         brk                                     ; A6A9 00                       .
         db   $18,$EB,$20                     ; A6AA 18 EB 20                 ..
 ; ----------------------------------------------------------------------------
@@ -2962,7 +2962,7 @@ HideCompletedSceneSupportActor:
 MapEntitySystem_Branch_A6B4:
         rts                                     ; A6B4 60                       `
 ; ----------------------------------------------------------------------------
-HideEntitiesThirteenThroughSixteenByTimeAndParty:
+ApplyBrancaEntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; A6B5 20 44 A0              D.
         bcs     MapEntitySystem_Branch_A6C9     ; A6B8 B0 0F                    ..
         lda     SaveJoinedCharacterFlags        ; A6BA AD 92 62                 ..b
@@ -2976,7 +2976,7 @@ MapEntitySystem_Branch_A6C1:
 MapEntitySystem_Branch_A6C9:
         rts                                     ; A6C9 60                       `
 ; ----------------------------------------------------------------------------
-ApplyLateGameMapEntityVisibility:
+ApplyMintosSubmap1EntityVisibility:
         brk                                     ; A6CA 00                       .
         db   $26,$EB,$10                     ; A6CB 26 EB 10                 &..
 ; ----------------------------------------------------------------------------
@@ -3015,11 +3015,11 @@ MapEntitySystem_Branch_A70A:
         brk                                     ; A70A 00                       .
         db   $19,$EB,$40                     ; A70B 19 EB 40                 ..@
 ; ----------------------------------------------------------------------------
-ContinueLateProgressEntityVisibility:
+ContinueMintosSubmap1EntityVisibility:
         beq     MapEntitySystem_Branch_A728     ; A70E F0 18                    ..
         ldx     #$06                            ; A710 A2 06                    ..
         jsr     HideMapEntityCoordinates        ; A712 20 35 A0                  5.
-        jsr     HideMapEntityThree              ; A715 20 32 A7                  2.
+        jsr     HideMintosSubmap1EntityThree    ; A715 20 32 A7                  2.
         brk                                     ; A718 00                       .
         db   $17,$EB,$02                     ; A719 17 EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -3035,16 +3035,16 @@ MapEntitySystem_Branch_A728:
         db   $17,$EB,$10                     ; A729 17 EB 10                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A731     ; A72C F0 03                    ..
-        jmp     HideMapEntityThree              ; A72E 4C 32 A7                 L2.
+        jmp     HideMintosSubmap1EntityThree    ; A72E 4C 32 A7                 L2.
 ; ----------------------------------------------------------------------------
 MapEntitySystem_Branch_A731:
         rts                                     ; A731 60                       `
 ; ----------------------------------------------------------------------------
-HideMapEntityThree:
+HideMintosSubmap1EntityThree:
         ldx     #$03                            ; A732 A2 03                    ..
         jmp     HideMapEntityCoordinates        ; A734 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyPartyProgressEntityGroupVisibility:
+ApplyCaveOfBetrayalSubmap2EntityVisibility:
         lda     $6BE8                           ; A737 AD E8 6B                 ..k
         bpl     MapEntitySystem_Branch_A742     ; A73A 10 06                    ..
         lda     PlayerLocalX                    ; A73C A5 44                    .D
@@ -3082,7 +3082,7 @@ MapEntitySystem_Branch_A75D:
 MapEntitySystem_Branch_A77B:
         rts                                     ; A77B 60                       `
 ; ----------------------------------------------------------------------------
-HideEntitiesOneAndTwoByPlayerAndProgress:
+ApplyCaveOfBetrayalSubmap1EntityVisibility:
         lda     PlayerLocalX                    ; A77C A5 44                    .D
         cmp     #$12                            ; A77E C9 12                    ..
         bcs     MapEntitySystem_Branch_A78D     ; A780 B0 0B                    ..
@@ -3100,7 +3100,7 @@ MapEntitySystem_Branch_A78D:
 MapEntitySystem_Branch_A797:
         rts                                     ; A797 60                       `
 ; ----------------------------------------------------------------------------
-CopyEntityOneSourceToZeroOrHide:
+ApplyLighthouseSubmap2EntityVisibility:
         ldx     #$00                            ; A798 A2 00                    ..
         brk                                     ; A79A 00                       .
         db   $18,$EB,$08                     ; A79B 18 EB 08                 ...
@@ -3127,7 +3127,7 @@ MapEntitySystem_Branch_A7BB:
 MapEntitySystem_Branch_A7C4:
         rts                                     ; A7C4 60                       `
 ; ----------------------------------------------------------------------------
-HideCompletedSceneActorGroup:
+ApplyPadequiaCaveSubmap1EntityVisibility:
         brk                                     ; A7C5 00                       .
         db   $18,$EB,$01                     ; A7C6 18 EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3141,7 +3141,7 @@ MapEntitySystem_Branch_A7CD:
 MapEntitySystem_Branch_A7D5:
         rts                                     ; A7D5 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroOrOneByFlagAndTime:
+ApplyHavilleEntityVisibility:
         brk                                     ; A7D6 00                       .
         db   $07,$EB,$10                     ; A7D7 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3158,7 +3158,7 @@ MapEntitySystem_Branch_A7E7:
         ldx     #$00                            ; A7E7 A2 00                    ..
         jmp     HideMapEntityCoordinates        ; A7E9 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-HideEntitiesEightAndNineAtNight:
+ApplyHavilleSubmap1NightEntityVisibility:
         brk                                     ; A7EC 00                       .
         db   $07,$EB,$10                     ; A7ED 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3173,7 +3173,7 @@ HideEntitiesEightAndNineAtNight:
 MapEntitySystem_Branch_A801:
         rts                                     ; A801 60                       `
 ; ----------------------------------------------------------------------------
-ApplyNightProgressEntitySetup:
+ApplyAktemtoEntityVisibility:
         brk                                     ; A802 00                       .
         db   $07,$EB,$10                     ; A803 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3198,7 +3198,7 @@ ApplyNightProgressEntitySetup:
 MapEntitySystem_Branch_A82F:
         rts                                     ; A82F 60                       `
 ; ----------------------------------------------------------------------------
-ApplyDayNightProgressEntitySetup:
+ApplyKievsEntityVisibility:
         brk                                     ; A830 00                       .
         db   $07,$EB,$10                     ; A831 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3218,7 +3218,7 @@ MapEntitySystem_Branch_A84B:
         ldx     #$02                            ; A84B A2 02                    ..
         jmp     HideMapEntityCoordinates        ; A84D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-HideDepartedSceneActorGroup:
+ApplyLighthouseEntityVisibility:
         brk                                     ; A850 00                       .
         db   $18,$EB,$04                     ; A851 18 EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3234,7 +3234,7 @@ HideDepartedSceneActorGroup:
 MapEntitySystem_Branch_A86A:
         rts                                     ; A86A 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForDaytimeProgress:
+ApplyKievsSubmap1EntityVisibility:
         brk                                     ; A86B 00                       .
         db   $07,$EB,$10                     ; A86C 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3246,7 +3246,7 @@ HideEntityZeroForDaytimeProgress:
 MapEntitySystem_Branch_A87B:
         rts                                     ; A87B 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForLateProgressPair:
+ApplyCaveOfBetrayalEntityVisibility:
         brk                                     ; A87C 00                       .
         db   $26,$EB,$04                     ; A87D 26 EB 04                 &..
 ; ----------------------------------------------------------------------------
@@ -3261,7 +3261,7 @@ MapEntitySystem_Branch_A888:
 MapEntitySystem_Branch_A88D:
         rts                                     ; A88D 60                       `
 ; ----------------------------------------------------------------------------
-ApplyNightEntityThreeOrFourState:
+ApplyKeeleonSubmap2EntityVisibility:
         brk                                     ; A88E 00                       .
         db   $07,$EB,$10                     ; A88F 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3285,7 +3285,7 @@ MapEntitySystem_Branch_A89E:
 MapEntitySystem_Branch_A8B4:
         rts                                     ; A8B4 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityZeroForStoryProgressPair:
+ApplyHouseOfProphecyEntityVisibility:
         brk                                     ; A8B5 00                       .
         db   $1D,$EB,$01                     ; A8B6 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3300,7 +3300,7 @@ MapEntitySystem_Branch_A8C1:
 MapEntitySystem_Branch_A8C6:
         rts                                     ; A8C6 60                       `
 ; ----------------------------------------------------------------------------
-ApplyDayNightProgressEntityPositions:
+ApplyMonbarabaEntityVisibility:
         brk                                     ; A8C7 00                       .
         db   $07,$EB,$10                     ; A8C8 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3332,19 +3332,19 @@ MapEntitySystem_Branch_A8F4:
 MapEntitySystem_Branch_A8FB:
         jmp     HideMapEntityCoordinates        ; A8FB 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyChapterFiveJoinedPartyEntities:
+ApplyKeeleonSubmap1EntityVisibility:
         lda     SaveCurrentChapterMinus1        ; A8FE AD 5A 61                 .Za
         cmp     #$04                            ; A901 C9 04                    ..
         bne     MapEntitySystem_Branch_A956     ; A903 D0 51                    .Q
         lda     SaveJoinedCharacterFlags        ; A905 AD 92 62                 ..b
         and     #$1C                            ; A908 29 1C                    ).
         cmp     #$1C                            ; A90A C9 1C                    ..
-        bne     HideMapEntitiesOneThroughThree  ; A90C D0 49                    .I
+        bne     HideKeeleonSubmap1EntitiesOneThroughThree; A90C D0 49           .I
         brk                                     ; A90E 00                       .
         db   $16,$EB,$01                     ; A90F 16 EB 01                 ...
 ; ----------------------------------------------------------------------------
         beq     MapEntitySystem_Branch_A956     ; A912 F0 42                    .B
-        jsr     HideMapEntitiesOneThroughThree  ; A914 20 57 A9                  W.
+        jsr     HideKeeleonSubmap1EntitiesOneThroughThree; A914 20 57 A9         W.
         ldx     #$08                            ; A917 A2 08                    ..
         lda     #$14                            ; A919 A9 14                    ..
         sta     $6F66,x                         ; A91B 9D 66 6F                 .fo
@@ -3377,7 +3377,7 @@ MapEntitySystem_Branch_A94B:
 MapEntitySystem_Branch_A956:
         rts                                     ; A956 60                       `
 ; ----------------------------------------------------------------------------
-HideMapEntitiesOneThroughThree:
+HideKeeleonSubmap1EntitiesOneThroughThree:
         ldx     #$03                            ; A957 A2 03                    ..
         jsr     HideMapEntityCoordinates        ; A959 20 35 A0                  5.
         ldx     #$02                            ; A95C A2 02                    ..
@@ -3386,7 +3386,7 @@ HideMapEntitiesOneThroughThree:
         jsr     HideMapEntityCoordinates        ; A963 20 35 A0                  5.
         rts                                     ; A966 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityFiveOrSixAtNight:
+ApplyMonbarabaSubmap1EntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; A967 20 44 A0              D.
         bcc     MapEntitySystem_Branch_A979     ; A96A 90 0D                    ..
         ldx     #$05                            ; A96C A2 05                    ..
@@ -3401,7 +3401,7 @@ MapEntitySystem_Branch_A976:
 MapEntitySystem_Branch_A979:
         rts                                     ; A979 60                       `
 ; ----------------------------------------------------------------------------
-HideEntityThreeForDaytimeProgress:
+ApplyBurlandSubmap2EntityVisibility:
         brk                                     ; A97A 00                       .
         db   $07,$EB,$10                     ; A97B 07 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3413,7 +3413,7 @@ HideEntityThreeForDaytimeProgress:
 MapEntitySystem_Branch_A98A:
         rts                                     ; A98A 60                       `
 ; ----------------------------------------------------------------------------
-ApplyLateProgressEntityVisibility:
+ApplyGardenburSubmap1EntityVisibility:
         brk                                     ; A98B 00                       .
         db   $1D,$EB,$80                     ; A98C 1D EB 80                 ...
 ; ----------------------------------------------------------------------------
@@ -3427,11 +3427,11 @@ MapEntitySystem_Branch_A99B:
         ldx     #$01                            ; A99B A2 01                    ..
         jmp     HideMapEntityCoordinates        ; A99D 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ConfigureWorldMapSceneEntities:
+ApplyGardenburSubmap3EntityVisibility:
         brk                                     ; A9A0 00                       .
         db   $1D,$EB,$40                     ; A9A1 1D EB 40                 ..@
 ; ----------------------------------------------------------------------------
-ConfigurePlayerDependentWorldMapEntities:
+ContinueGardenburSubmap3EntityVisibility:
         bne     MapEntitySystem_Branch_A9AB     ; A9A4 D0 05                    ..
         ldx     #$03                            ; A9A6 A2 03                    ..
         jsr     HideMapEntityCoordinates        ; A9A8 20 35 A0                  5.
@@ -3466,7 +3466,7 @@ MapEntitySystem_Branch_A9D2:
         jsr     HideMapEntityCoordinates        ; A9D4 20 35 A0                  5.
         rts                                     ; A9D7 60                       `
 ; ----------------------------------------------------------------------------
-ApplyLateProgressPairEntityVisibility:
+ApplyRosavilleEntityVisibility:
         brk                                     ; A9D8 00                       .
         db   $16,$EB,$10                     ; A9D9 16 EB 10                 ...
 ; ----------------------------------------------------------------------------
@@ -3489,7 +3489,7 @@ MapEntitySystem_Branch_A9ED:
 MapEntitySystem_Branch_A9FD:
         rts                                     ; A9FD 60                       `
 ; ----------------------------------------------------------------------------
-ApplyLateProgressMaskEntityVisibility:
+ApplyRosavilleSubmap3EntityVisibility:
         brk                                     ; A9FE 00                       .
         db   $1D,$EB,$09                     ; A9FF 1D EB 09                 ...
 ; ----------------------------------------------------------------------------
@@ -3503,7 +3503,7 @@ ApplyLateProgressMaskEntityVisibility:
         ldx     #$00                            ; AA0F A2 00                    ..
         jmp     HideMapEntityCoordinates        ; AA11 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyLateProgressEntityDirectionAndVisibility:
+ApplyAktemtoMineSubmap6EntityVisibility:
         brk                                     ; AA14 00                       .
         db   $1D,$EB,$01                     ; AA15 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3529,7 +3529,7 @@ MapEntitySystem_Branch_AA2B:
 MapEntitySystem_Branch_AA40:
         rts                                     ; AA40 60                       `
 ; ----------------------------------------------------------------------------
-HideDepartedPrimarySceneActor:
+ApplyAktemtoMineSubmap5EntityVisibility:
         brk                                     ; AA41 00                       .
         db   $1D,$EB,$01                     ; AA42 1D EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3539,7 +3539,7 @@ HideDepartedPrimarySceneActor:
 MapEntitySystem_Branch_AA4C:
         rts                                     ; AA4C 60                       `
 ; ----------------------------------------------------------------------------
-ConfigureWorldMapEventPositions:
+ApplyBakorsHideoutEntityVisibility:
         ldx     #$00                            ; AA4D A2 00                    ..
         lda     $6298                           ; AA4F AD 98 62                 ..b
         bpl     MapEntitySystem_Branch_AA74     ; AA52 10 20                    .
@@ -3569,7 +3569,7 @@ MapEntitySystem_Branch_AA77:
         jsr     HideMapEntityCoordinates        ; AA7E 20 35 A0                  5.
         rts                                     ; AA81 60                       `
 ; ----------------------------------------------------------------------------
-ApplyEndingProgressEntityGroupConfiguration:
+ApplyDirePalaceSubmap1EntityVisibility:
         brk                                     ; AA82 00                       .
         db   $1A,$EB,$01                     ; AA83 1A EB 01                 ...
 ; ----------------------------------------------------------------------------
@@ -3603,7 +3603,7 @@ MapEntitySystem_Branch_AAAE:
 MapEntitySystem_Branch_AABD:
         rts                                     ; AABD 60                       `
 ; ----------------------------------------------------------------------------
-HideCompletedPrimarySceneActor:
+ApplyWorldTreeEntityVisibility:
         brk                                     ; AABE 00                       .
         db   $20,$EB,$20                     ; AABF 20 EB 20                  .
 ; ----------------------------------------------------------------------------
@@ -3611,7 +3611,7 @@ HideCompletedPrimarySceneActor:
         ldx     #$00                            ; AAC4 A2 00                    ..
         jmp     HideMapEntityCoordinates        ; AAC6 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-ApplyFinalProgressEntityPositions:
+ApplyZenithiaSubmap1EntityVisibility:
         brk                                     ; AAC9 00                       .
         db   $26,$EB,$20                     ; AACA 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
@@ -3647,7 +3647,7 @@ MapEntitySystem_Branch_AAE6:
         sta     $7006,x                         ; AAFD 9D 06 70                 ..p
         rts                                     ; AB00 60                       `
 ; ----------------------------------------------------------------------------
-PositionTimedEntityAtDaytimeLocation:
+ApplyAneauxEntityVisibility:
         jsr     CompareMapEntityTimeToNightThreshold; AB01 20 44 A0              D.
         bcs     MapEntitySystem_Branch_AB15     ; AB04 B0 0F                    ..
         brk                                     ; AB06 00                       .
@@ -3661,7 +3661,7 @@ PositionTimedEntityAtDaytimeLocation:
 MapEntitySystem_Branch_AB15:
         rts                                     ; AB15 60                       `
 ; ----------------------------------------------------------------------------
-PositionEntityZeroAtTriggerLocation:
+ApplyStanciaSubmap6EntityVisibility:
         lda     PlayerLocalY                    ; AB16 A5 45                    .E
         cmp     #$09                            ; AB18 C9 09                    ..
         bne     MapEntitySystem_Branch_AB36     ; AB1A D0 1A                    ..
@@ -3678,7 +3678,7 @@ PositionEntityZeroAtTriggerLocation:
 MapEntitySystem_Branch_AB36:
         rts                                     ; AB36 60                       `
 ; ----------------------------------------------------------------------------
-ConfigureAlternateWorldStateEntityPositions:
+ApplyRivertonEntityVisibility:
         lda     $6289                           ; AB37 AD 89 62                 ..b
         bpl     MapEntitySystem_Branch_AB36     ; AB3A 10 FA                    ..
         ldx     #$01                            ; AB3C A2 01                    ..
@@ -3691,7 +3691,7 @@ ConfigureAlternateWorldStateEntityPositions:
         ldx     #$00                            ; AB4D A2 00                    ..
         jmp     HideMapEntityCoordinates        ; AB4F 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-MoveEntityZeroAtPlayerTrigger:
+ApplyAneauxSubmap2EntityVisibility:
         lda     PlayerLocalX                    ; AB52 A5 44                    .D
         cmp     #$03                            ; AB54 C9 03                    ..
         bne     MapEntitySystem_Branch_AB62     ; AB56 D0 0A                    ..
@@ -3702,7 +3702,7 @@ MoveEntityZeroAtPlayerTrigger:
 MapEntitySystem_Branch_AB62:
         rts                                     ; AB62 60                       `
 ; ----------------------------------------------------------------------------
-ApplyMorningProgressEntityPositions:
+ApplyShrineOfColossusOutsideEntityVisibility:
         brk                                     ; AB63 00                       .
         db   $0A,$EB,$04                     ; AB64 0A EB 04                 ...
 ; ----------------------------------------------------------------------------
@@ -3740,7 +3740,7 @@ MapEntitySystem_Branch_AB9A:
         ldy     #$1A                            ; ABA7 A0 1A                    ..
         jmp     SetMapEntityCoordinates         ; ABA9 4C 4A A0                 LJ.
 ; ----------------------------------------------------------------------------
-ApplyFinalProgressEntityPairVisibility:
+ApplyZenithiaEntityVisibility:
         brk                                     ; ABAC 00                       .
         db   $26,$EB,$20                     ; ABAD 26 EB 20                 &.
 ; ----------------------------------------------------------------------------
@@ -3756,7 +3756,7 @@ MapEntitySystem_Branch_ABBC:
         ldx     #$01                            ; ABC1 A2 01                    ..
         jmp     HideMapEntityCoordinates        ; ABC3 4C 35 A0                 L5.
 ; ----------------------------------------------------------------------------
-UpdateEntityZeroAtPlayerTriggerColumn:
+ApplyFinalCaveSubmap2EntityVisibility:
         ldx     #$00                            ; ABC6 A2 00                    ..
         lda     $70E6,x                         ; ABC8 BD E6 70                 ..p
         ora     #$01                            ; ABCB 09 01                    ..
@@ -3770,7 +3770,7 @@ UpdateEntityZeroAtPlayerTriggerColumn:
 MapEntitySystem_Branch_ABDD:
         rts                                     ; ABDD 60                       `
 ; ----------------------------------------------------------------------------
-PositionEntityOneForEventProgress:
+ApplyHavilleSubmap3EntityVisibility:
         brk                                     ; ABDE 00                       .
         db   $0D,$EB,$01                     ; ABDF 0D EB 01                 ...
 ; ----------------------------------------------------------------------------

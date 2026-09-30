@@ -67,6 +67,19 @@ party joins, item searches, Repel, chapter endings, and debug-only chapter selec
 music and monster-palette regions. `scripts/check_audit6_labels.py` enforces ledger totals, key mappings, stale
 name families, global uniqueness, and routine-contract synchronization.
 
+The follow-up sweep corrected 14 residual findings: the Clay Doll battle entry at `$1D:$9C52`, three inverted
+character-record bit operations, the capped add at `$10:$865B`, inventory search at `$10:$996C`, packed-record
+selectors previously called tactics, and nine naming/data-context issues. All bank `$1C` and `$1D` map-specific
+initializers now use canonical location names from `assets/maps/index.json`; casino restoration, treasure/search,
+Iron Safe return, boss-ID, shared-RAM, trampoline, and battle-display wording are also explicit.
+
+An eight-regression correction fixed four shifted map-handler names around `$1C:$A850-$A88E`, Haville submap-one
+ownership, and six over-specific bank `$1E` names. The bank `$13:$91A9` note now distinguishes its eighteen IDs
+from the seventeen-entry handler table and records that action ID `$60` has no real handler.
+
+The final audit correction names `$1E:$9E7A` as the Hero party-ordinal lookup used by chapter startup and removes
+unsupported chapter-setup wording from the scene-transition helper at `$1E:$8FA5`.
+
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
 

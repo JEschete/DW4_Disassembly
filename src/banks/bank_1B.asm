@@ -4248,7 +4248,7 @@ AdvanceGeneratedPpuSourceFirstStride:
         adc     #$B0                            ; B14D 69 B0                    i.
         sta     $75C0                           ; B14F 8D C0 75                 ..u
         bcc     MapEventText_Branch_B157        ; B152 90 03                    ..
-        inc     BattleAiScoreH                  ; B154 EE BB 75                 ..u
+        inc     SharedWork75BB                  ; B154 EE BB 75                 ..u
 MapEventText_Branch_B157:
         rts                                     ; B157 60                       `
 ; ----------------------------------------------------------------------------
@@ -4266,9 +4266,9 @@ AdvanceGeneratedPpuSourceSecondStride:
         clc                                     ; B167 18                       .
         adc     #$33                            ; B168 69 33                    i3
         sta     $75C0                           ; B16A 8D C0 75                 ..u
-        lda     BattleAiScoreH                  ; B16D AD BB 75                 ..u
+        lda     SharedWork75BB                  ; B16D AD BB 75                 ..u
         adc     #$01                            ; B170 69 01                    i.
-        sta     BattleAiScoreH                  ; B172 8D BB 75                 ..u
+        sta     SharedWork75BB                  ; B172 8D BB 75                 ..u
         rts                                     ; B175 60                       `
 ; ----------------------------------------------------------------------------
 PatchSecondGeneratedPpuProgramBoundary:

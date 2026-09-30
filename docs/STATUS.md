@@ -67,6 +67,22 @@ The pass also separates CharacterRecord, BattlePartyRecord, and CombatantRecord 
 palette, handler-table, and debug-feature data classifications. `../scripts/check_audit6_labels.py` verifies the
 ledger totals and rejects stale audit names, duplicate labels, missing key mappings, and routine-contract drift.
 
+The 2026-09-29 follow-up sweep resolved 14 residual findings (1 High, 4 Medium, 9 Low). It moved the Clay Doll
+battle name to the actual `$1D:$9C52` entry, corrected character-record bit set/clear direction and the capped-add
+path at `$10:$865B`, replaced unsupported tactics terminology with packed-record-field selectors, and named the
+party inventory search. Canonical map identities now qualify all 82 bank `$1C` and seven bank `$1D` map-specific
+handlers. The remaining corrections cover treasure/search routines, casino display restoration, the Iron Safe
+return, boss-ID notes, shared RAM `$75BB`, named trampoline calls, and residual bank `$14` display terminology.
+
+The next verification sweep found eight regressions introduced by that pass. Four adjacent bank `$1C` handlers
+are now aligned with their actual Lighthouse, Kievs, Cave of Betrayal, and Keeleon table entries; Haville uses
+submap one. Bank `$1E` now distinguishes the Cave of Betrayal movement effect, map-transition party helpers,
+unused DOOR helper, map-exit SEARCH message, and general map/field directory. Bank `$13:$91A9` correctly records
+eighteen action IDs versus seventeen real handlers, leaving action ID `$60` without a handler entry.
+
+The final one-issue audit correction identifies `$1E:$9E7A` as `FindHeroPartyOrdinalOrFallback`, called only by
+chapter startup, and limits `$1E:$8FA5` to its verified scene-transition caller.
+
 The 2026-09-28 naming pass completed banks `$16-$1F`. Every bank now has zero generated routine-entry names in
 both generated assembly and the routine-interface inventory.
 

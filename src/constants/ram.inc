@@ -45,7 +45,7 @@ BattleAiScoreD           = $75B3
 BattleAiScoreE           = $75B5
 BattleAiScoreF           = $75B7
 BattleAiScoreG           = $75B9
-BattleAiScoreH           = $75BB
+SharedWork75BB           = $75BB
 BattleAiScoreI           = $75BD
 BattleAiScoreJ           = $75BF
 

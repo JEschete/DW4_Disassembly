@@ -509,7 +509,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 10	85BB	AccumulateBattleValueWithFallbackScan	Pointer $10:$9E5E (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A	A,P,X,Y	$00,$72,$73,$74,$75,$76	$870C,$87D7,$8A25,$8C04,$C3EA
 10	85FE	AccumulateFourBattleValuesWithFallbackScan	Pointer $10:$9E66 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X	A,P,X,Y	$00,$01,$72,$73,$74,$75,$76	$84F7,$870C,$87D7,$8A25,$8C04,$C3EA
 10	8632	LoadInventoryItemOrZero	Tail jump from $10:$852A	A	A,P	$72,$73	$84F7
-10	865B	SubtractPartyRecordCurrentValue	Pointer $10:$9E34 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($79),Y,$00+X,$0075+X,$06,$72+X	$83BA,$83BD,$83CF
+10	865B	AddToPartyRecordValueCappedAtCurrentLimit	Pointer $10:$9E34 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($79),Y,$00+X,$0075+X,$06,$72+X	$83BA,$83BD,$83CF
 10	8660	AddToPartyRecordValueCappedAtMaximum	Pointer $10:$9E42 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($79),Y,$00+X,$0075+X,$06,$72+X,$77	$83BA,$83BD,$83CF
 10	8669	AddToBattleValueCappedAt255	Pointer $10:$9E52 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E56 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E70 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E74 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E78 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($79),Y,$00+X,$0075+X,$03,$06,$72+X,$76	$83BA,$83BD
 10	866D	AddToBattleValueCappedAt99	Pointer $10:$9F08 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($79),Y,$00+X,$0075+X,$03,$06,$72+X,$76	$83BA,$83BD
@@ -631,7 +631,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 10	9849	FindEligibleMemberMatchingCurrentClassCode	Direct call from $10:$9325; Pointer $10:$9EF6 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	$07,$08,$0A,$0B,$0C,$0D,$6E,$6E0B,$6E0C,$72,$75,$76	$8198,$8241,$825F,$8278,$82F0,$8301,$831E,$8815,$982B
 10	98F7	SelectHighestEligibleMemberByRecordByte5	Pointer $10:$9EF8 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,Y	A,P,X,Y	$0A,$0B,$0C,$0D,$6E0B,$72,$75	$8198,$982B
 10	9936	FindFirstEligibleMemberWithFreeRosterSpace	Pointer $10:$9EFA (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X	A,P,X	$0A,$0C,$6E0B,$72	$8198,$8AD7,$982B
-10	996C	FindEligibleMemberByMaskedRecordByte	Pointer $10:$9EFC (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,Y	A,P,X,Y	$0A,$0C,$6E0B,$72,$73	$8198,$982B
+10	996C	FindPartyMemberHoldingItem	Pointer $10:$9EFC (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,Y	A,P,X,Y	$0A,$0C,$6E0B,$72,$73	$8198,$982B
 10	99B5	ValidateUniqueSelectionStateAndRepackRoster	Pointer $10:$9EEC (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B)	A,X,Y	A,P,X,Y	($0C),Y,$08,$09,$0A,$0C,$0D,$6BDD,$6E0A	$8241,$8498,$982B,$9A87,$9A90,$9AC3,$9ACD,$9AE0,$9B15,$9B58,$9C7C,$C813
 10	9A87	ClearIndexedSelectionByteIfValid	Direct call from $10:$9A4B; Direct call from $10:$9A50; Direct call from $10:$9A55; Direct call from $10:$9A5A	A,Y	A,P	($08),Y	
 10	9A90	CopySecondaryRosterSpanToPrimaryMirror	Direct call from $10:$9303; Direct call from $10:$93C7; Direct call from $10:$94A1; Direct call from $10:$9A6B; Direct call from $10:$9BCA; Direct call from $10:$9C6A	A,X,Y	A,P,X,Y	$0F,$616A+Y	$825F
@@ -794,29 +794,29 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 10	B5C8	MergeBattleEffectSelectionSources	Pointer $10:$B4CD (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B589 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B74F,$B8DA,$B957
 10	B5EB	RequireHighBattleSlotIndex	Pointer $10:$B4E9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	A,P		$AD4E
 10	B635	BuildBattleEffectAvailabilityMask	Pointer $10:$B4D9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y	$0D	$B84E
-10	B66F	RequireTacticGroupValuesNonzero	Pointer $10:$B4DB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y	$0D	$B875
-10	B69F	BuildInvertedHpThresholdMask	Pointer $10:$B4DD (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	A,P,X	$0D	
-10	B6DC	RequireTacticGroupHpThreshold	Pointer $10:$B4DF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X	A,P,X,Y	$09	
-10	B717	RequireTacticGroupValueNotFF	Pointer $10:$B4E1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X	A,P,X,Y	$09	
-10	B742	BuildCurrentBattleEffectGroupMask	Pointer $10:$B4D3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y	$09,$0D,$6F	$B84E,$B957
-10	B74A	BuildDefaultTacticGroupMask	Pointer $10:$B52D (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B52F (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B531 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	A,P,X,Y	$09,$0D,$6F	$B957
-10	B74F	SeedCurrentSlotSelectorAndMask	Direct call from $10:$B5D2	A	A,P,X	$0D,$6F	
+10	B66F	RequirePackedRecordFieldValuesNonzero	Pointer $10:$B4DB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y	$0D	$B875
+10	B69F	BuildInvertedPackedFieldThresholdMask	Pointer $10:$B4DD (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	A,P,X	$0D	
+10	B6DC	RequirePackedRecordFieldThreshold	Pointer $10:$B4DF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X	A,P,X,Y	$09	
+10	B717	RequirePackedRecordFieldValueNotFF	Pointer $10:$B4E1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X	A,P,X,Y	$09	
+10	B742	BuildCurrentPackedRecordFieldMask	Pointer $10:$B4D3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y	$09,$0D,$6F	$B84E,$B957
+10	B74A	BuildDefaultPackedRecordFieldMask	Pointer $10:$B52D (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B52F (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B531 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	A,P,X,Y	$09,$0D,$6F	$B957
+10	B74F	SeedCurrentSlotAndPackedFieldMask	Direct call from $10:$B5D2	A	A,P,X	$0D,$6F	
 10	B76F	TestSlotDescriptorBitGate	Pointer $10:$B4D7 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X		$B921
 10	B799	RequireSingleSlotSelector	Pointer $10:$B49B (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B49D (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B49F (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4AD (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4C1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X	$0D,$0E	$B903
-10	B79F	TestTactic10CandidateIndex0WithMaskBuilder	Pointer $10:$B4C9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875,$B903
-10	B7A7	TestTactic10CandidateIndex0WithSlotScan	Pointer $10:$B541 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	X	A,P,X	$0D,$0E	$B903
-10	B7AF	TestTactic11CandidateIndex1WithSlotScan	Pointer $10:$B547 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	X	A,P,X	$0D,$0E	$B903
+10	B79F	TestPackedField10CandidateIndex0WithMaskBuilder	Pointer $10:$B4C9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875,$B903
+10	B7A7	TestPackedField10CandidateIndex0WithSlotScan	Pointer $10:$B541 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	X	A,P,X	$0D,$0E	$B903
+10	B7AF	TestPackedField11CandidateIndex1WithSlotScan	Pointer $10:$B547 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	X	A,P,X	$0D,$0E	$B903
 10	B7C1	ApplySlotDescriptorFilterToCandidates	Pointer $10:$B4D5 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A	P		$AD4E
-10	B7D8	RequireThirdSlotSelectorWithTacticTest	Pointer $10:$B4A1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A5 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4AF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B5 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B7 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4C3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y		
-10	B7DF	RequireThirdSlotSelectorWithSignedTacticTest	Pointer $10:$B4A7 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4AB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y		
-10	B7F3	TestTactic14CandidateIndex4WithMaskBuilder	Pointer $10:$B4CF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875
-10	B7FE	IntersectCandidatesByTactic10Index0AndState	Pointer $10:$B4CB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B581 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B84E
+10	B7D8	RequireThirdSlotSelectorWithPackedFieldTest	Pointer $10:$B4A1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A5 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4AF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B5 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B7 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4C3 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y		
+10	B7DF	RequireThirdSlotSelectorWithSignedPackedFieldTest	Pointer $10:$B4A7 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4A9 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4AB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B4B1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,Y	A,P,X,Y		
+10	B7F3	TestPackedField14CandidateIndex4WithMaskBuilder	Pointer $10:$B4CF (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875
+10	B7FE	IntersectCandidatesByPackedField10Index0AndState	Pointer $10:$B4CB (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B581 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B84E
 10	B806	IntersectCandidatesByAlternateStatePair	Pointer $10:$B4D1 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel)	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B84E
-10	B831	ApplyTacticFilteredTargetMask	Tail jump from $10:$B7FB	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875
+10	B831	ApplyPackedFieldFilteredTargetMask	Tail jump from $10:$B7FB	A,X,Y	A,P,X,Y	$0D,$0E,$7C	$B875
 10	B84E	IntersectCandidatesByDualStatePairs	Direct call from $10:$AE04; Direct call from $10:$B639; Direct call from $10:$B746; Direct call from $10:$B812	A,X	A,P,X	$0D,$0E	$B903
-10	B875	RequireTacticFilteredCandidateSurvives	Direct call from $10:$B674; Direct call from $10:$B83E; Tail jump from $10:$B7DC	A	A,P,X,Y		
-10	B8B8	ApplyTacticGroupMaskToTargetSelection	Tail jump from $10:$B5E8	A	A,P,X,Y	$7C	
-10	B8DA	PruneCandidateMaskByTacticGroup	Direct call from $10:$B5DC	A	A,P	$0E,$7C	
+10	B875	RequirePackedFieldFilteredCandidateSurvives	Direct call from $10:$B674; Direct call from $10:$B83E; Tail jump from $10:$B7DC	A	A,P,X,Y		
+10	B8B8	ApplyPackedRecordFieldMaskToTargetSelection	Tail jump from $10:$B5E8	A	A,P,X,Y	$7C	
+10	B8DA	PruneCandidateMaskByPackedRecordField	Direct call from $10:$B5DC	A	A,P	$0E,$7C	
 10	B903	IntersectCandidatesBySignedStateComplement	Direct call from $10:$B7B7; Direct call from $10:$B85F; Direct call from $10:$B86B	A	A,P,X,Y	$7C	
 10	B91B	AcceptAndIntersectCandidateMask	Direct call from $10:$B618	A	A,P	$09	
 10	B91C	IntersectCandidateMaskWithAccumulator	Direct call from $10:$B8F6	A	A,P	$09	
@@ -1354,8 +1354,8 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	A475	SnapshotBattleFlyAwayOam	Direct call from $12:$A30A	A,X	A,P,X	$7600+X,$7601+X	
 12	A489	PulseBattleFlyAwayPalette	Direct call from $12:$A346	A,X	A,P,X	$05FC	$C5B9,$C90C
 12	A4A5	DispatchCharacterRecordBitOperation	Pointer $12:$8024 (50-entry code dispatch table; first target is $8064)	A,Y	A,P,Y	$00,$01	
-12	A4B4	WriteCharacterRecordBitGroup	Direct call from $12:$A4C5; Direct call from $12:$A4DA; Pointer $12:$A541 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A520,$A525,$A52A
-12	A4BA	WriteCharacterRecordBitTail	Tail jump from $12:$A4C9		P		$A525
+12	A4B4	ClearCharacterRecordBits05And06ThenSet07	Direct call from $12:$A4C5; Direct call from $12:$A4DA; Pointer $12:$A541 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A520,$A525,$A52A
+12	A4BA	SetCharacterRecordBit07AndFinalize	Tail jump from $12:$A4C9		P		$A525
 12	A4C0	WriteConditionalCharacterRecordBitGroup	Direct call from $12:$A4E7; Pointer $12:$A543 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A4B4,$A52F
 12	A4C9	TailCallWriteCharacterRecordBitTail	Direct call from $12:$A4F4; Pointer $12:$A545 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A525
 12	A4CC	WriteConditionalCharacterRecordBitTail	Direct call from $12:$A501; Pointer $12:$A547 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)		P		$A52F,$A53A
@@ -1365,9 +1365,9 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 12	A4FC	RepeatConditionalCharacterRecordBitTail	Pointer $12:$A54F (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)	X,Y	P,X,Y		$A4CC,$A51B
 12	A509	RepeatCharacterRecordBitGateAndWrite	Pointer $12:$A551 (Nine-entry setup operation handler table selected by doubled operation index at $A4A5-$A4B1)	X,Y	P,X,Y		$A51B,$A52A,$A52F
 12	A51B	LoadActivePartyCount	Direct call from $12:$A4D5; Direct call from $12:$A4E2; Direct call from $12:$A4EF; Direct call from $12:$A4FC; Direct call from $12:$A509		P		
-12	A520	SetCharacterRecordBit06	Direct call from $12:$A4B4		P		
-12	A525	ClearCharacterRecordBit07	Direct call from $12:$A4BA		P		
-12	A52A	SetCharacterRecordBit05	Direct call from $12:$A4B7; Direct call from $12:$A513		P		
+12	A520	ClearCharacterRecordBit06	Direct call from $12:$A4B4		P		
+12	A525	SetCharacterRecordBit07	Direct call from $12:$A4BA		P		
+12	A52A	ClearCharacterRecordBit05	Direct call from $12:$A4B7; Direct call from $12:$A513		P		
 12	A52F	IsCharacterRecordOperationValueOne	Direct call from $12:$A4C0; Direct call from $12:$A4CC; Direct call from $12:$A50E		P		
 12	A53A	FinalizeCharacterRecordBitWrite	Direct call from $12:$A4D1; Tail jump from $12:$A4BD		P		
 12	A553	RunFieldSpellCommand	Pointer $12:$8016 (50-entry code dispatch table; first target is $8064)		P		
@@ -1902,7 +1902,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 13	B949	MapActionTargetClassToOrdinal	Pointer $13:$801C (28-entry code dispatch table; first target is $8038)	A	A,P		$B953
 13	B953	LoadActionAttributes	Direct call from $13:$B90C; Direct call from $13:$B91D; Direct call from $13:$B931; Direct call from $13:$B938; Direct call from $13:$B949	A,X	A,P,X	$6E10	
 14	8034	Bank14_BattleDisplayServices	Pointer $14:$8020 (26-entry code dispatch table followed by code at $8034)	A,X	A,P,X	$0444+X,$05FC+X,$05FD,$06A0+X,$6E49+X,$C7,$C9,$CA	$8211,$C5AF
-14	812F	BattleDisplay_RefreshBattleTurnVisualState	Pointer $14:$8014 (26-entry code dispatch table followed by code at $8034)	A,X,Y	A,P,X,Y	$0440+X,$6E49+X,$C4,$C5,$C6,$C7	$81CF,$81F4,$85AB,$91D3,$926B,$9292,$92EF,$93AB,$93F2,$9439,$946E,$9496,$9682,$9686,$969C,$9ADD,$9B4E,$9C4A,$9C54,$9C71,$9F0C,$C5AF,$FF74
+14	812F	BattleDisplay_RefreshCombatantVisualState	Pointer $14:$8014 (26-entry code dispatch table followed by code at $8034)	A,X,Y	A,P,X,Y	$0440+X,$6E49+X,$C4,$C5,$C6,$C7	$81CF,$81F4,$85AB,$91D3,$926B,$9292,$92EF,$93AB,$93F2,$9439,$946E,$9496,$9682,$9686,$969C,$9ADD,$9B4E,$9C4A,$9C54,$9C71,$9F0C,$C5AF,$FF74
 14	81CF	BattleDisplay_RebuildBattleOamFromDisplaySlots	Direct call from $14:$8129; Direct call from $14:$81C6	A,X	A,P,X	$0200+X,$4014,$C7	$9822,$C58F
 14	81F4	BattleDisplay_CompactFrontCombatantSlots	Direct call from $14:$81B0	A,X	A,P,X	$6E45+X,$6E49+X	
 14	8211	BattleDisplay_ClearResolvedDisplaySlot	Direct call from $14:$8038	A,X	A,P,X	$738D+X,$C7	$82CC,$9ED1
@@ -2671,7 +2671,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 16	B55B	ComputeAvailablePartySlotCount	Guarded flow recovery: Coherent routine block immediately after RTS $B55A; 21 instructions, 2 BRK service calls, returns and merges into existing code; Pointer $16:$A753 (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)	A,Y	A,P,Y	$03D2	$BF8E
 16	B574	NormalizeFourSlotListAndCount	Guarded flow recovery: Coherent routine block immediately after RTS $B573; 23 instructions, 2 BRK service calls, returns and merges into existing code; Pointer $16:$A755 (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)	A,Y	A,P,Y	$07B0+Y	$BCEB,$BF8E
 16	B590	MapRecordModeToWindowCount	Guarded flow recovery: Coherent routine block immediately after RTS $B58F; 6 instructions, returns; Pointer $16:$A757 (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)	A,X,Y	A,P,X,Y		
-16	B59D	SelectWindowCountForMapContext	Pointer $16:$A759 (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)	X	A,P,X		
+16	B59D	SelectWindowCountForBossContext	Pointer $16:$A759 (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)	X	A,P,X		
 16	B5B2	BuildPartySlotSelectionList	Guarded flow recovery: Coherent routine block immediately after RTS $B5B1; 45 instructions, 4 BRK service calls, jumps and merges into existing code; Pointer $16:$A75B (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)		P,X		
 16	B61B	ReturnWindowConditionAsByte	Guarded flow recovery: Coherent routine block immediately after RTS $B61A; 3 instructions, 1 BRK service calls, merges into existing code; Pointer $16:$A75D (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)		P		
 16	B622	ReturnWindowEntryCount4	Pointer $16:$A75F (Thirty text/UI handlers selected through pointer base $A73B at $9798-$97AF, which pushes each value and returns to value+1)		A,P		
@@ -2702,7 +2702,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 16	B868	LoadWindowDisplayValueFromPartyCount	Pointer $16:$A78B (Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1)	A,X	A,P,X	$03C8	$BCEB
 16	B875	LoadWindowDisplayValueByMapMode	Pointer $16:$A78D (Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1)	A	A,P	$03C8	
 16	B882	LoadWindowDisplayPairByMapMode	Guarded flow recovery: Coherent routine block immediately after RTS $B881; 12 instructions, returns; Pointer $16:$A78F (Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1)	A,X	A,P,X	$03C8,$03C9	
-16	B8A0	LoadWindowDisplayPairByLeadSlotId	Pointer $16:$A791 (Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1)	A,Y	A,P,Y	$03C8,$03C9	
+16	B8A0	LoadWindowDisplayPairByLeadMonster	Pointer $16:$A791 (Six text/UI handlers dispatched through the RTS-stack helper at $A4DE, which pushes each value and returns to value+1)	A,Y	A,P,Y	$03C8,$03C9	
 16	B8C2	TransformWindowResultThroughPartyContext	Pointer $16:$A793 (Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1)	X	A,P,X	$6E	
 16	B8C5	TransformWindowResultThroughPartyLookup	Tail jump from $16:$B8D3	X	P,X	$6E	
 16	B8D1	TransformWindowResultUsingFixedPartyContext	Pointer $16:$A795 (Twelve text/UI handlers dispatched through the RTS-stack helpers at $A4E9/$A4F4, which push each value and return to value+1)	X	A,P,X	$6E	
@@ -2856,11 +2856,11 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 17	8A56	ExitPokerWagerChoice	Direct ROM analysis: Resume after two-byte inline BRK service at $8A53	A	A,P		$8A69,$C5BF,$C5C5
 17	8A69	RestoreFieldDisplayAfterCasino	Direct call from $17:$8A60		P,X		
 17	8A6E	RestoreCasinoExitEntitySetup	Direct ROM analysis: Resume after two-byte inline BRK service at $8A6B		P,X		
-17	8A73	RestoreCasinoExitDisplayState	Direct ROM analysis: Consecutive BRK service after the continuation at $8A6E		P		
-17	8A76	SuspendRenderingForCasinoExit	Direct ROM analysis: Resume after two-byte inline BRK service at $8A73		P		$C5AF
-17	8A7C	RestoreMapConfigurationAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A79		A,P		
-17	8A81	ReloadTrackedMapEntityAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A7E		A,P		
-17	8A87	RefreshMapEntitiesAfterCasino	Direct ROM analysis: Consecutive BRK service after the continuation at $8A81		P		
+17	8A73	ReloadFullFontTilesAfterCasino	Direct ROM analysis: Consecutive BRK service after the continuation at $8A6E		P		
+17	8A76	RebuildMapTileUsageAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A73		P		$C5AF
+17	8A7C	ReloadTilesetGraphicsAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A79		A,P		
+17	8A81	ReloadSpecialMapTileGraphicsAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A7E		A,P		
+17	8A87	ReloadMapPaletteAfterCasino	Direct ROM analysis: Consecutive BRK service after the continuation at $8A81		P		
 17	8A8A	ClearEntityHiddenFlagsAfterCasino	Direct ROM analysis: Resume after two-byte inline BRK service at $8A87	A,X	A,P,X	$7020+X	
 17	8AA0	FinishCasinoExitRendering	Direct ROM analysis: Resume after two-byte inline BRK service at $8A9D	A	A,P	$0553,$1F	
 17	8AAC	InitializePokerWager	Direct call from $17:$8087	A,X	A,P,X	$04F4,$0551,$0552,$29,$34,$36,$37,$38	$8BCD,$9242,$9266
@@ -3356,88 +3356,88 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1C	A035	HideMapEntityCoordinates	Direct call from $1C:$A08F; Direct call from $1C:$A0A2; Direct call from $1C:$A0A7; Direct call from $1C:$A0AF; Direct call from $1C:$A0B4; Direct call from $1C:$A0B9; Direct call from $1C:$A0C3; Direct call from $1C:$A0C8; Direct call from $1C:$A0CD; Direct call from $1C:$A0D2; Direct call from $1C:$A0DD; Direct call from $1C:$A0E2; Direct call from $1C:$A0EE; Direct call from $1C:$A0F3; Direct call from $1C:$A107; Direct call from $1C:$A125; Direct call from $1C:$A13B; Direct call from $1C:$A140; Direct call from $1C:$A145; Direct call from $1C:$A157; Direct call from $1C:$A169; Direct call from $1C:$A17B; Direct call from $1C:$A1B6; Direct call from $1C:$A1C8; Direct call from $1C:$A1DF; Direct call from $1C:$A200; Direct call from $1C:$A205; Direct call from $1C:$A234; Direct call from $1C:$A23E; Direct call from $1C:$A243; Direct call from $1C:$A249; Direct call from $1C:$A262; Direct call from $1C:$A268; Direct call from $1C:$A26D; Direct call from $1C:$A272; Direct call from $1C:$A27D; Direct call from $1C:$A282; Direct call from $1C:$A287; Direct call from $1C:$A28C; Direct call from $1C:$A291; Direct call from $1C:$A296; Direct call from $1C:$A2AE; Direct call from $1C:$A2C2; Direct call from $1C:$A2D2; Direct call from $1C:$A2DD; Direct call from $1C:$A2E2; Direct call from $1C:$A2EA; Direct call from $1C:$A31D; Direct call from $1C:$A339; Direct call from $1C:$A34F; Direct call from $1C:$A359; Direct call from $1C:$A35E; Direct call from $1C:$A37C; Direct call from $1C:$A38F; Direct call from $1C:$A394; Direct call from $1C:$A39A; Direct call from $1C:$A39F; Direct call from $1C:$A3A4; Direct call from $1C:$A3B0; Direct call from $1C:$A3B5; Direct call from $1C:$A3CE; Direct call from $1C:$A3EF; Direct call from $1C:$A3FA; Direct call from $1C:$A420; Direct call from $1C:$A425; Direct call from $1C:$A42A; Direct call from $1C:$A432; Direct call from $1C:$A467; Direct call from $1C:$A485; Direct call from $1C:$A491; Direct call from $1C:$A49C; Direct call from $1C:$A4A8; Direct call from $1C:$A4BF; Direct call from $1C:$A4D0; Direct call from $1C:$A4D5; Direct call from $1C:$A4F0; Direct call from $1C:$A4FA; Direct call from $1C:$A505; Direct call from $1C:$A510; Direct call from $1C:$A51A; Direct call from $1C:$A52D; Direct call from $1C:$A545; Direct call from $1C:$A557; Direct call from $1C:$A564; Direct call from $1C:$A5A9; Direct call from $1C:$A5AE; Direct call from $1C:$A5C1; Direct call from $1C:$A5C6; Direct call from $1C:$A5CB; Direct call from $1C:$A621; Direct call from $1C:$A62B; Direct call from $1C:$A63F; Direct call from $1C:$A65F; Direct call from $1C:$A68B; Direct call from $1C:$A690; Direct call from $1C:$A6A1; Direct call from $1C:$A6C1; Direct call from $1C:$A6D2; Direct call from $1C:$A6DA; Direct call from $1C:$A6E4; Direct call from $1C:$A712; Direct call from $1C:$A720; Direct call from $1C:$A725; Direct call from $1C:$A744; Direct call from $1C:$A749; Direct call from $1C:$A75F; Direct call from $1C:$A764; Direct call from $1C:$A769; Direct call from $1C:$A76E; Direct call from $1C:$A773; Direct call from $1C:$A778; Direct call from $1C:$A78F; Direct call from $1C:$A794; Direct call from $1C:$A7C1; Direct call from $1C:$A7CD; Direct call from $1C:$A7F9; Direct call from $1C:$A810; Direct call from $1C:$A83D; Direct call from $1C:$A858; Direct call from $1C:$A85D; Direct call from $1C:$A862; Direct call from $1C:$A867; Direct call from $1C:$A878; Direct call from $1C:$A88A; Direct call from $1C:$A8C3; Direct call from $1C:$A8CF; Direct call from $1C:$A8D4; Direct call from $1C:$A939; Direct call from $1C:$A93E; Direct call from $1C:$A943; Direct call from $1C:$A948; Direct call from $1C:$A953; Direct call from $1C:$A959; Direct call from $1C:$A95E; Direct call from $1C:$A963; Direct call from $1C:$A987; Direct call from $1C:$A993; Direct call from $1C:$A9A8; Direct call from $1C:$A9B8; Direct call from $1C:$A9D4; Direct call from $1C:$A9E0; Direct call from $1C:$A9EA; Direct call from $1C:$A9F5; Direct call from $1C:$A9FA; Direct call from $1C:$AA06; Direct call from $1C:$AA33; Direct call from $1C:$AA38; Direct call from $1C:$AA3D; Direct call from $1C:$AA49; Direct call from $1C:$AA5E; Direct call from $1C:$AA74; Direct call from $1C:$AA79; Direct call from $1C:$AA7E; Direct call from $1C:$AA8A; Direct call from $1C:$AA8F; Direct call from $1C:$AAB0; Direct call from $1C:$AAB5; Direct call from $1C:$AABA; Direct call from $1C:$AAE2; Direct call from $1C:$ABB4; Direct call from $1C:$ABBE; Direct call from $1C:$AD4F; Tail jump from $1C:$A1EA; Tail jump from $1C:$A40C; Tail jump from $1C:$A6A6; Tail jump from $1C:$A734; Tail jump from $1C:$AB4F	A,X	A,P	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
 1C	A044	CompareMapEntityTimeToNightThreshold	Direct call from $1C:$A099; Direct call from $1C:$A0F7; Direct call from $1C:$A118; Direct call from $1C:$A1D8; Direct call from $1C:$A1E3; Direct call from $1C:$A1F9; Direct call from $1C:$A255; Direct call from $1C:$A2A1; Direct call from $1C:$A2F3; Direct call from $1C:$A32C; Direct call from $1C:$A460; Direct call from $1C:$A4AC; Direct call from $1C:$A4F3; Direct call from $1C:$A513; Direct call from $1C:$A530; Direct call from $1C:$A53E; Direct call from $1C:$A5FC; Direct call from $1C:$A624; Direct call from $1C:$A642; Direct call from $1C:$A658; Direct call from $1C:$A6B5; Direct call from $1C:$A7DC; Direct call from $1C:$A7F2; Direct call from $1C:$A813; Direct call from $1C:$A836; Direct call from $1C:$A871; Direct call from $1C:$A894; Direct call from $1C:$A8D7; Direct call from $1C:$A8F4; Direct call from $1C:$A967; Direct call from $1C:$A980; Direct call from $1C:$A9E3; Direct call from $1C:$AB01	A	A,P		
 1C	A04A	SetMapEntityCoordinates	Direct call from $1C:$A06C; Direct call from $1C:$AA67; Direct call from $1C:$AA70; Direct call from $1C:$AAAA; Direct call from $1C:$AAEC; Direct call from $1C:$AAF5; Direct call from $1C:$AB12; Direct call from $1C:$AB42; Direct call from $1C:$ABA0; Direct call from $1C:$ABDA	A,X,Y	A,P	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
-1C	A058	ConfigureEntitiesForMapFlagState	Pointer $1C:$AC8A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035,$A0C6
-1C	A0C6	HideMapEntitiesFourteenThroughSixteen	Direct call analysis: Map-event routine called directly from bank $1C:$A0AA; Direct call from $1C:$A0AA		P,X		$A035
-1C	A0D6	HidePrimaryEntitiesUnlessIntroState	Pointer $1C:$AC8C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A035
-1C	A0E6	HidePrimaryScenePairAfterProgress	Pointer $1C:$AC8E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A0F7	HideDaytimeSceneActorForWorldState	Pointer $1C:$AC90 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035,$A044
-1C	A10B	ApplyChapterDependentEntityVisibility	Pointer $1C:$AC92 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P		
-1C	A149	ApplyAlternateChapterEntityVisibility	Pointer $1C:$AC94 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A171	ApplyFlagDrivenEntityGroupVisibility	Pointer $1C:$AC96 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A1AE	ApplyPrimaryProgressEntityVisibility	Pointer $1C:$AC98 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A1C4	HideEntityTwoBeforePrimaryProgress	Guarded flow recovery: Coherent routine block immediately after RTI $A1C3; 4 instructions, returns and merges into existing code		P,X		$A035
-1C	A1CC	ApplyTimeDependentEntitySevenOrElevenVisibility	Pointer $1C:$AC9A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A1E3	HideEntityByTimeOfDay	Guarded flow recovery: Coherent routine block immediately after RTS $A1E2; 6 instructions, jumps and merges into existing code	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035,$A044
-1C	A1ED	ConfigureTownSceneEntityVisibility	Pointer $1C:$AC9C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A227	ApplyMapEntityVisibilityFlagsAndVehicleState	Pointer $1C:$AC9E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A24F	HideEntityTwoForNightFlagState	Pointer $1C:$ACA0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A25E	HideEntityTwoAfterPrimaryProgressCheck	Guarded flow recovery: Coherent routine block immediately after RTS $A25D; 3 instructions, merges into existing code		P,X		$A035
-1C	A266	ApplyLargeEntityGroupProgressVisibility	Pointer $1C:$ACA2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A035
-1C	A29A	ApplyDayNightEntityVisibilitySet	Pointer $1C:$ACA4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A326	HideEntityZeroForDaytimeFlagState	Pointer $1C:$ACA6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A33D	ConfigureChapterSceneVisibility	Pointer $1C:$ACA8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7046+X	$A035
-1C	A36E	HideEntityZeroForChapterTwoState	Pointer $1C:$ACAA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A380	ApplyChapterAndPlayerXEntityVisibility	Pointer $1C:$ACAC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A3A8	HideSecondaryScenePairAfterProgress	Pointer $1C:$ACAE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A3B9	ApplyChapterTimeEntityVisibility	Pointer $1C:$ACB0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7046+X	$A035
-1C	A40F	ApplyLargeSceneGroupProgressVisibility	Pointer $1C:$ACB2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		
-1C	A454	ConfigureMultiStageTownSceneVisibility	Pointer $1C:$ACB4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A489	ApplyPairedProgressEntityVisibility	Pointer $1C:$ACB6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A4A0	HideCompletedTownEventActor	Pointer $1C:$ACB8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A4AC	ApplyDayNightFlagEntityVisibility	Pointer $1C:$ACBA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		$A044
-1C	A4E2	ApplyTownProgressEntityVisibility	Pointer $1C:$ACBC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A51E	ApplyChapterEntityZeroAndFourVisibility	Pointer $1C:$ACBE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035,$A044
-1C	A549	HideEntityZeroForPairedProgress	Pointer $1C:$ACC0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A55B	HideUnavailableSceneActor	Pointer $1C:$ACC2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A568	AlignSceneCompanionWithPlayer	Pointer $1C:$ACC4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
-1C	A57F	ApplyChapterProgressEntityZeroVisibility	Pointer $1C:$ACC6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
-1C	A5A0	HideFirstTwoEntitiesInChapterFive	Pointer $1C:$ACC8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A5B2	HideFirstThreeEntitiesAfterChapterProgress	Pointer $1C:$ACCA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P		
-1C	A5CF	InitializeEntitySixWhenPresentationIdle	Pointer $1C:$ACCC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7006+X,$7046+X	
-1C	A5F6	ApplyRowSixProgressEntityConfiguration	Pointer $1C:$ACCE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F86+X,$6FC6+X,$7006+X	$A044
-1C	A683	ConfigureWorldStateEntityVisibility	Pointer $1C:$ACD0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035
-1C	A6A9	HideCompletedSceneSupportActor	Pointer $1C:$ACD2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A6B5	HideEntitiesThirteenThroughSixteenByTimeAndParty	Pointer $1C:$ACD4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	X	A,P,X		$A035,$A044
-1C	A6CA	ApplyLateGameMapEntityVisibility	Pointer $1C:$ACD6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A70E	ContinueLateProgressEntityVisibility	Guarded flow recovery: Coherent routine block immediately after RTI $A70D; 6 instructions, 1 BRK service calls, merges into existing code		P,X		$A035,$A732
-1C	A732	HideMapEntityThree	Direct call from $1C:$A715	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
-1C	A737	ApplyPartyProgressEntityGroupVisibility	Pointer $1C:$ACD8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A77C	HideEntitiesOneAndTwoByPlayerAndProgress	Pointer $1C:$ACDA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A798	CopyEntityOneSourceToZeroOrHide	Pointer $1C:$ACDC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		
-1C	A7C5	HideCompletedSceneActorGroup	Pointer $1C:$ACDE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A7D6	HideEntityZeroOrOneByFlagAndTime	Pointer $1C:$ACE0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A7EC	HideEntitiesEightAndNineAtNight	Pointer $1C:$ACE2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A802	ApplyNightProgressEntitySetup	Pointer $1C:$ACE4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A830	ApplyDayNightProgressEntitySetup	Pointer $1C:$ACE6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A850	HideDepartedSceneActorGroup	Pointer $1C:$ACE8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A86B	HideEntityZeroForDaytimeProgress	Pointer $1C:$ACEA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A87C	HideEntityZeroForLateProgressPair	Pointer $1C:$ACEC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A88E	ApplyNightEntityThreeOrFourState	Pointer $1C:$ACEE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A8B5	HideEntityZeroForStoryProgressPair	Pointer $1C:$ACF0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A8C7	ApplyDayNightProgressEntityPositions	Pointer $1C:$ACF2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A8FE	ApplyChapterFiveJoinedPartyEntities	Pointer $1C:$ACF4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	A957	HideMapEntitiesOneThroughThree	Direct call from $1C:$A914		P,X		$A035
-1C	A967	HideEntityFiveOrSixAtNight	Pointer $1C:$ACF6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A044
-1C	A97A	HideEntityThreeForDaytimeProgress	Pointer $1C:$ACF8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A98B	ApplyLateProgressEntityVisibility	Pointer $1C:$ACFA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A9A0	ConfigureWorldMapSceneEntities	Pointer $1C:$ACFC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A9A4	ConfigurePlayerDependentWorldMapEntities	Guarded flow recovery: Coherent routine block immediately after RTI $A9A3; 4 instructions, merges into existing code	A,X,Y	A,P,X,Y		$A035,$B78E
-1C	A9D8	ApplyLateProgressPairEntityVisibility	Pointer $1C:$ACFE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	A9FE	ApplyLateProgressMaskEntityVisibility	Pointer $1C:$AD00 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AA14	ApplyLateProgressEntityDirectionAndVisibility	Pointer $1C:$AD02 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AA41	HideDepartedPrimarySceneActor	Pointer $1C:$AD04 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AA4D	ConfigureWorldMapEventPositions	Pointer $1C:$AD06 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
-1C	AA82	ApplyEndingProgressEntityGroupConfiguration	Pointer $1C:$AD08 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AABE	HideCompletedPrimarySceneActor	Pointer $1C:$AD0A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AAC9	ApplyFinalProgressEntityPositions	Pointer $1C:$AD0C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	AB01	PositionTimedEntityAtDaytimeLocation	Pointer $1C:$AD0E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		$A044
-1C	AB16	PositionEntityZeroAtTriggerLocation	Pointer $1C:$AD10 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$70E6+X	$AD1E
-1C	AB37	ConfigureAlternateWorldStateEntityPositions	Pointer $1C:$AD12 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X,Y	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7006+X	$A04A
-1C	AB52	MoveEntityZeroAtPlayerTrigger	Pointer $1C:$AD14 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F86+X,$6FC6+X	
-1C	AB63	ApplyMorningProgressEntityPositions	Pointer $1C:$AD16 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	ABAC	ApplyFinalProgressEntityPairVisibility	Pointer $1C:$AD18 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
-1C	ABC6	UpdateEntityZeroAtPlayerTriggerColumn	Pointer $1C:$AD1A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X,Y	$70E6+X	$A04A
-1C	ABDE	PositionEntityOneForEventProgress	Pointer $1C:$AD1C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A058	ApplyFrenorEntityVisibility	Pointer $1C:$AC8A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035,$A0C6
+1C	A0C6	HideFrenorEntitiesFourteenThroughSixteen	Direct call analysis: Map-event routine called directly from bank $1C:$A0AA; Direct call from $1C:$A0AA		P,X		$A035
+1C	A0D6	ApplyBrancaEndorTunnelEntityVisibility	Pointer $1C:$AC8C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A035
+1C	A0E6	ApplyLochTowerEntityVisibility	Pointer $1C:$AC8E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A0F7	ApplySanteemSubmap2EntityVisibility	Pointer $1C:$AC90 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035,$A044
+1C	A10B	ApplySanteemEntityVisibility	Pointer $1C:$AC92 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P		
+1C	A149	ApplySanteemSubmap1EntityVisibility	Pointer $1C:$AC94 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A171	ApplyBurlandSubmap1EntityVisibility	Pointer $1C:$AC96 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A1AE	ApplyIzmitSubmap2EntityVisibility	Pointer $1C:$AC98 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A1C4	HideIzmitSubmap2EntityTwoBeforeProgress	Guarded flow recovery: Coherent routine block immediately after RTI $A1C3; 4 instructions, returns and merges into existing code		P,X		$A035
+1C	A1CC	ApplyBurlandEntityVisibility	Pointer $1C:$AC9A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A1E3	ApplyBurlandDayNightEntityVisibility	Guarded flow recovery: Coherent routine block immediately after RTS $A1E2; 6 instructions, jumps and merges into existing code	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035,$A044
+1C	A1ED	ApplyLakanabaSubmap1EntityVisibility	Pointer $1C:$AC9C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A227	ApplySecretPlaygroundSubmap3EntityVisibility	Pointer $1C:$AC9E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A24F	ApplyBurlandSubmap3EntityVisibility	Pointer $1C:$ACA0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A25E	ContinueBurlandSubmap3EntityVisibility	Guarded flow recovery: Coherent routine block immediately after RTS $A25D; 3 instructions, merges into existing code		P,X		$A035
+1C	A266	ApplyLochTowerSubmap4EntityVisibility	Pointer $1C:$ACA2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A035
+1C	A29A	ApplyLakanabaEntityVisibility	Pointer $1C:$ACA4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A326	ApplyLakanabaSubmap2EntityVisibility	Pointer $1C:$ACA6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A33D	ApplyIzmitEntityVisibility	Pointer $1C:$ACA8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7046+X	$A035
+1C	A36E	ApplyFrenorSubmap1EntityVisibility	Pointer $1C:$ACAA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A380	ApplyEndorSubmap7EntityVisibility	Pointer $1C:$ACAC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A3A8	ApplyBirdsongTowerEntityVisibility	Pointer $1C:$ACAE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A3B9	ApplyEndorEntityVisibility	Pointer $1C:$ACB0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7046+X	$A035
+1C	A40F	ApplyMonbarabaSubmap3EntityVisibility	Pointer $1C:$ACB2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		
+1C	A454	ApplyKeeleonEntityVisibility	Pointer $1C:$ACB4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A489	ApplyBonmalmoEntityVisibility	Pointer $1C:$ACB6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A4A0	ApplySphereOfSilenceCaveSubmap3EntityVisibility	Pointer $1C:$ACB8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A4AC	ApplyBonmalmoSubmap1EntityVisibility	Pointer $1C:$ACBA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		$A044
+1C	A4E2	ApplyEndorSubmap8EntityVisibility	Pointer $1C:$ACBC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A51E	ApplyEndorSubmap11EntityVisibility	Pointer $1C:$ACBE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035,$A044
+1C	A549	ApplyFoxvilleSubmap1EntityVisibility	Pointer $1C:$ACC0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A55B	ApplySilverStatuetteCaveEntityVisibility	Pointer $1C:$ACC2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A568	ApplySilverStatuetteCaveSubmap4EntityVisibility	Pointer $1C:$ACC4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
+1C	A57F	ApplyEndorSubmap1EntityVisibility	Pointer $1C:$ACC6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
+1C	A5A0	ApplyBrancaEndorTunnelSubmap1EntityVisibility	Pointer $1C:$ACC8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A5B2	ApplyDesertInnEntityVisibility	Pointer $1C:$ACCA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P		
+1C	A5CF	ApplyHometownEntityVisibility	Pointer $1C:$ACCC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7006+X,$7046+X	
+1C	A5F6	ApplyKonenberSubmap6EntityVisibility	Pointer $1C:$ACCE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F86+X,$6FC6+X,$7006+X	$A044
+1C	A683	ApplyHometownSubmap1EntityVisibility	Pointer $1C:$ACD0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	$A035
+1C	A6A9	ApplyLighthouseSubmap4EntityVisibility	Pointer $1C:$ACD2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A6B5	ApplyBrancaEntityVisibility	Pointer $1C:$ACD4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	X	A,P,X		$A035,$A044
+1C	A6CA	ApplyMintosSubmap1EntityVisibility	Pointer $1C:$ACD6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A70E	ContinueMintosSubmap1EntityVisibility	Guarded flow recovery: Coherent routine block immediately after RTI $A70D; 6 instructions, 1 BRK service calls, merges into existing code		P,X		$A035,$A732
+1C	A732	HideMintosSubmap1EntityThree	Direct call from $1C:$A715	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X	
+1C	A737	ApplyCaveOfBetrayalSubmap2EntityVisibility	Pointer $1C:$ACD8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A77C	ApplyCaveOfBetrayalSubmap1EntityVisibility	Pointer $1C:$ACDA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A798	ApplyLighthouseSubmap2EntityVisibility	Pointer $1C:$ACDC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		
+1C	A7C5	ApplyPadequiaCaveSubmap1EntityVisibility	Pointer $1C:$ACDE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A7D6	ApplyHavilleEntityVisibility	Pointer $1C:$ACE0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A7EC	ApplyHavilleSubmap1NightEntityVisibility	Pointer $1C:$ACE2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A802	ApplyAktemtoEntityVisibility	Pointer $1C:$ACE4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A830	ApplyKievsEntityVisibility	Pointer $1C:$ACE6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A850	ApplyLighthouseEntityVisibility	Pointer $1C:$ACE8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A86B	ApplyKievsSubmap1EntityVisibility	Pointer $1C:$ACEA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A87C	ApplyCaveOfBetrayalEntityVisibility	Pointer $1C:$ACEC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A88E	ApplyKeeleonSubmap2EntityVisibility	Pointer $1C:$ACEE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A8B5	ApplyHouseOfProphecyEntityVisibility	Pointer $1C:$ACF0 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A8C7	ApplyMonbarabaEntityVisibility	Pointer $1C:$ACF2 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A8FE	ApplyKeeleonSubmap1EntityVisibility	Pointer $1C:$ACF4 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	A957	HideKeeleonSubmap1EntitiesOneThroughThree	Direct call from $1C:$A914		P,X		$A035
+1C	A967	ApplyMonbarabaSubmap1EntityVisibility	Pointer $1C:$ACF6 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P,X		$A044
+1C	A97A	ApplyBurlandSubmap2EntityVisibility	Pointer $1C:$ACF8 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A98B	ApplyGardenburSubmap1EntityVisibility	Pointer $1C:$ACFA (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A9A0	ApplyGardenburSubmap3EntityVisibility	Pointer $1C:$ACFC (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A9A4	ContinueGardenburSubmap3EntityVisibility	Guarded flow recovery: Coherent routine block immediately after RTI $A9A3; 4 instructions, merges into existing code	A,X,Y	A,P,X,Y		$A035,$B78E
+1C	A9D8	ApplyRosavilleEntityVisibility	Pointer $1C:$ACFE (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	A9FE	ApplyRosavilleSubmap3EntityVisibility	Pointer $1C:$AD00 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AA14	ApplyAktemtoMineSubmap6EntityVisibility	Pointer $1C:$AD02 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AA41	ApplyAktemtoMineSubmap5EntityVisibility	Pointer $1C:$AD04 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AA4D	ApplyBakorsHideoutEntityVisibility	Pointer $1C:$AD06 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A	A,P,X		$A035
+1C	AA82	ApplyDirePalaceSubmap1EntityVisibility	Pointer $1C:$AD08 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AABE	ApplyWorldTreeEntityVisibility	Pointer $1C:$AD0A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AAC9	ApplyZenithiaSubmap1EntityVisibility	Pointer $1C:$AD0C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	AB01	ApplyAneauxEntityVisibility	Pointer $1C:$AD0E (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		$A044
+1C	AB16	ApplyStanciaSubmap6EntityVisibility	Pointer $1C:$AD10 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$70E6+X	$AD1E
+1C	AB37	ApplyRivertonEntityVisibility	Pointer $1C:$AD12 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X,Y	$6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7006+X	$A04A
+1C	AB52	ApplyAneauxSubmap2EntityVisibility	Pointer $1C:$AD14 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X	$6F86+X,$6FC6+X	
+1C	AB63	ApplyShrineOfColossusOutsideEntityVisibility	Pointer $1C:$AD16 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	ABAC	ApplyZenithiaEntityVisibility	Pointer $1C:$AD18 (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
+1C	ABC6	ApplyFinalCaveSubmap2EntityVisibility	Pointer $1C:$AD1A (74-entry map/submap event handler table selected by the key scan at $A010-$A032)	A,X	A,P,X,Y	$70E6+X	$A04A
+1C	ABDE	ApplyHavilleSubmap3EntityVisibility	Pointer $1C:$AD1C (74-entry map/submap event handler table selected by the key scan at $A010-$A032)		P		
 1C	AD1E	CacheTileUnderMapEntity	Direct call from $1C:$A1AA; Direct call from $1C:$A44E; Direct call from $1C:$A92E; Direct call from $1C:$AB33	A,X,Y	A,P,X,Y	$7146+X	$D3E6
 1C	AD32	ApplyChapterSpecificEntitySuppression	Direct call from $1C:$9EB1	A,Y	A,P,X,Y		$A035
 1C	AD5F	DispatchMapEntityEventById	Pointer $1C:$800E (22-entry mixed map and entity service directory)	A,X	A,P,X	$00,$01	
@@ -3611,13 +3611,13 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	960D	RefreshEntityEightEventSprites	Direct call from $1D:$94E6; Direct call from $1D:$9591; Direct call from $1D:$95BC		P,X		$CBB4,$D804
 1D	9616	InitializeSixteenMapEffectSprites	Direct ROM analysis: Coherent dormant OAM/state update routine after RTS $9615 and ending at RTS $9696; Direct call from $1D:$9488	A,X,Y	A,P,X,Y	$0200,$0203,$0204,$0207,$0208,$020B,$020C,$020F,$0210,$0213,$0214,$0217,$0218,$021B,$021C,$021F,$0220,$0223,$0224,$0227,$0228,$022B,$022C,$022F,$0230,$0233,$0234,$0237,$0238,$023B,$023C,$023F,$1F	$FF74
 1D	9697	DispatchCurrentMapSubmapInitializer	Pointer $1D:$8006 (21-entry mixed map-event service directory)	A,X	A,P,X	$49,$4A	
-1D	96DF	ClearMapEventTileState	Pointer $1D:$96D1 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A	A,P	$7684,$7685,$7686,$7687	
-1D	96EE	SetMapEventRecordFromPrimaryProgress	Pointer $1D:$96D3 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
-1D	96FA	SetMapEventEntityRecordsFromSecondaryProgress	Pointer $1D:$96D5 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
-1D	9713	CopyMapTileClassWhenProgressSet	Pointer $1D:$96D7 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
-1D	9724	SetLateProgressMapEventMarker	Pointer $1D:$96DB (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
-1D	9730	ConfigureMapEventRecordForWorldState	Pointer $1D:$96DD (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A	A,P	$788F,$78AE	
-1D	973E	InitializeSpecialMapEventGraphics	Pointer $1D:$96D9 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A,X	A,P,X	$0108+X	$9751,$9771,$97A4
+1D	96DF	InitializeFinalCaveSubmap7State	Pointer $1D:$96D1 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A	A,P	$7684,$7685,$7686,$7687	
+1D	96EE	InitializeSanteemSubmap2State	Pointer $1D:$96D3 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
+1D	96FA	InitializeCaveOfBetrayalState	Pointer $1D:$96D5 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
+1D	9713	InitializeKeeleonSubmap1State	Pointer $1D:$96D7 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
+1D	9724	InitializeCascadeCaveState	Pointer $1D:$96DB (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)		P		
+1D	9730	InitializeKievsState	Pointer $1D:$96DD (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A	A,P	$788F,$78AE	
+1D	973E	InitializeIronSafeCaveSubmap4State	Pointer $1D:$96D9 (Seven-entry map/submap handler table selected by key pairs $96B5-$96C2 and dispatched at $96CE)	A,X	A,P,X	$0108+X	$9751,$9771,$97A4
 1D	9751	InitializeSpecialMapEventState	Direct call from $1D:$974D	A,X	A,P,X	$62A0,$62A3,$7876,$7877,$788D,$788E	
 1D	9771	LoadSpecialMapEventEntityRecords	Direct call from $1D:$974A	A,X	A,P,X	$6F59+X,$7664+X,$76D9+X	
 1D	97A4	UploadSpecialMapEventPatternData	Direct call from $1D:$9747	A,X	A,P,X	$2006,$2007	
@@ -3662,9 +3662,9 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	9C26	IsMapTriggerPositionOccupied	Pointer $1D:$B654 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X		$9C40
 1D	9C34	IsMapTriggerBlockedByLeadingEntities	Direct call from $1D:$9C19	A,X	A,P,X		$9C40
 1D	9C40	IsEntityAtMapTriggerPosition	Direct call from $1D:$9C36; Tail jump from $1D:$9C3D	A,X	A,P		
-1D	9C52	HideNearbyMapEntityAndRefresh	Pointer $1D:$B656 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$6F60+X,$6F80+X,$6FA0+X,$6FC0+X	$9C93
+1D	9C52	StartClayDollBattle	Pointer $1D:$B656 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$6F60+X,$6F80+X,$6FA0+X,$6FC0+X	$9C93
 1D	9C93	NormalizeMapEntitiesAfterHide	Direct call from $1D:$9C80	A,X	A,P,X	$3E,$6FA0+X,$6FC0+X,$7000+X	
-1D	9CB4	RunMapEventTrampoline05	Direct ROM scan: JMP to fixed trampoline $C010		P		
+1D	9CB4	SynchronizeFollowerFacingForMapEvent	Direct ROM scan: JMP to fixed trampoline $C010		P		
 1D	9CB7	HandlePairedMapTrigger	Pointer $1D:$B658 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
 1D	9CDD	RunMapEntityFormationStateMachine	Pointer $1D:$B65A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X		$9E2D,$9E42
 1D	9D29	TestMapFormationColumnOccupancy	Tail jump from $1D:$9D35	X	P,X		$9E42
@@ -3685,7 +3685,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	A0B3	RunFakePrincessImposterDialogue	Pointer $1D:$B664 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)		P		
 1D	A0C8	AnimateNineMapEffectPositions	Pointer $1D:$B666 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X,Y	$54	
 1D	A164	MovePlayerUpAndToggleFirstEntities	Pointer $1D:$B668 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$3E,$45,$6F80,$7001+X	$A179,$C007
-1D	A176	RunTrampoline02AndToggleFirstEntities	Direct ROM scan: JSR to fixed trampoline $C007	A,X	A,P,X	$7001+X	$C007
+1D	A176	PropagateFollowerOffsetsAndToggleFirstEntities	Direct ROM scan: JSR to fixed trampoline $C007	A,X	A,P,X	$7001+X	$C007
 1D	A179	ToggleFirstThreeEntityStateBits	Direct call from $1D:$A173	A,X	A,P,X	$7001+X	
 1D	A18C	InitializeEntityDelayAndScriptTarget	Pointer $1D:$B66A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$70A0+X,$70C0+X,$7180+X	$C891
 1D	A1AF	TransferAndHideMapEntity	Direct call from $1D:$ACB1; Direct call from $1D:$B8B3; Pointer $1D:$800C (21-entry mixed map-event service directory)	A,X,Y	A,P,Y	$00,$6F61+Y,$6F66+X,$6F81+Y,$6F86+X,$6FA1+Y,$6FA6+X,$6FC1+Y,$6FC6+X,$6FE1+Y,$7001+Y,$7021+Y	
@@ -3771,7 +3771,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1D	AD4C	ActivateMapEntitiesTwoThroughEight	Pointer $1D:$B6E2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$7046+X	
 1D	AD73	ShowFixedFourSpriteMapEvent	Pointer $1D:$B6E4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A,X	A,P,X	$0200+X	$C543,$C90C,$DFF1,$E501
 1D	AD9E	PromptMapButtonPress	Pointer $1D:$B6E6 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD)	A	A,P		
-1D	ADD8	RunTrampoline07ThenEntityHideSequence	Direct ROM scan: JSR to fixed trampoline $C016	X	P,X		$AE11,$C004,$C016
+1D	ADD8	InitializeMapDecoderThenHideEntitySequence	Direct ROM scan: JSR to fixed trampoline $C016	X	P,X		$AE11,$C004,$C016
 1D	ADDC	RunEntityHideScrollPulseSequence	Direct ROM scan: JSR to fixed trampoline $C004	X	P,X		$AE11,$C004
 1D	AE0C	RestoreMapEventResultAndReturnClear	Inline service continuation: PLA/restore/return tail after BRK service $00,$DB,$7F at $AE08	A	A,P	$51	
 1D	AE11	PulseVerticalScrollFromCounter	Direct call from $1D:$ADE1	A,X	A,P	$0509	$FF74
@@ -3874,10 +3874,10 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	83D9	GetFacingTileBehavior	Direct call from $1E:$8346; Direct call from $1E:$B35D; Direct call from $1E:$BAEE; Direct call from $1E:$BB0D; Pointer $1E:$8088 (72-entry map and entity interaction service directory)	A,X	A,P,X,Y		$81AE,$D3E6
 1E	83EC	FindFreeMapOverrideRecord	Direct ROM analysis: Coherent entity-operation routine called from the nearby handler at $835D and branching to decoded code at $84B6; Direct call from $1E:$8366; Direct call from $1E:$83BA	A,X	A,P,X		
 1E	83FE	RunTacticsCommand	Direct ROM analysis: Adjacent BRK-driven entity handler after RTS $83FD with local helper calls and branches to $84B6; Pointer $1E:$80B4 (Eight interaction handlers dispatched by LDA $80AB,X/$80AA,X and RTS at $80A6 for selectors below $80; the first entry resumes at $80BA, the executed code that ends the table)		P		
-1E	84B6	WaitForMapInteractionInputAndExit	Direct call from $1E:$9C07; Direct call from $1E:$A418		P		$C8CC
+1E	84B6	WaitForFieldCommandInputAndExit	Direct call from $1E:$9C07; Direct call from $1E:$A418		P		$C8CC
 1E	84BC	StartMapPresentationState	Direct call from $1E:$8494	A,X	P,X	$0530,$0531,$0532,$0533	
-1E	84CC	QueryMapInteractionOptionByContext	Direct call from $1E:$8410; Direct call from $1E:$842D; Direct call from $1E:$8447; Direct call from $1E:$8461; Direct call from $1E:$8470	A,X	A,P,X		
-1E	84DB	QueryMapInteractionCountBySaveState	Direct call from $1E:$8426; Direct call from $1E:$8440; Direct call from $1E:$845A		P		
+1E	84CC	QueryFieldCommandOptionByContext	Direct call from $1E:$8410; Direct call from $1E:$842D; Direct call from $1E:$8447; Direct call from $1E:$8461; Direct call from $1E:$8470	A,X	A,P,X		
+1E	84DB	QueryFieldCommandCountBySaveState	Direct call from $1E:$8426; Direct call from $1E:$8440; Direct call from $1E:$845A		P		
 1E	84F0	InitializeMapEntityFadeSequence	Pointer $1E:$8000 (72-entry map and entity interaction service directory)		P		
 1E	84F3	AnimateMapEntityVisibility	Direct call from $1E:$8594	A,X	A,P,X	$3C,$55	$8547,$B157,$CBB4,$D542,$D7D5,$E06E,$FF74
 1E	8547	HideMapEntitiesByPhaseMask	Direct call from $1E:$852A	A,X	A,P,X	$7020+X	$C007,$C010
@@ -3940,7 +3940,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	8D0F	RunMapEntityBlinkLoop	Tail jump from $1E:$8D15		P		$8D18,$8D2C
 1E	8D18	HideMapEntityAndRefreshScene	Direct call from $1E:$8D0F; Direct call from $1E:$8D4A	A,X,Y	A,P	$7020+X	
 1E	8D2C	ShowMapEntityAndDelay	Direct call from $1E:$8D12	A,X,Y	A,P	$7020+X	
-1E	8D5C	RenderMapInteractionMarkerSprites	Pointer $1E:$807E (72-entry map and entity interaction service directory)	A,X,Y	A,P,X,Y	$00,$03	$C73E,$C770
+1E	8D5C	AnimateCaveOfBetrayalSpecialTile	Pointer $1E:$807E (72-entry map and entity interaction service directory)	A,X,Y	A,P,X,Y	$00,$03	$C73E,$C770
 1E	8EC5	RefreshThenRunMapSceneTransition	Pointer $1E:$8002 (72-entry map and entity interaction service directory)		P		$959B
 1E	8EC8	PrepareMapSceneTransition	Pointer $1E:$8064 (72-entry map and entity interaction service directory)		P		
 1E	8ED6	RunMapSceneTransitionForValue	Pointer $1E:$803C (72-entry map and entity interaction service directory); Tail jump from $1E:$9080	A	P		
@@ -3950,17 +3950,17 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	8F6B	CheckTileBehaviorWallCodes	Direct call from $1E:$8F21	A,X	A,P,X		
 1E	8F7A	HideFirstSixMapEntitySprites	Direct call from $1E:$8F11	X	P,X		$8F85
 1E	8F85	HideMapEntityOamSprites	Direct call from $1E:$8F7C	A,X,Y	A,P,X	$0200+Y,$0204+Y,$0208+Y,$020C+Y	$C78C
-1E	8FA5	UpdateMapInteractionPartyStateWhenFlag40	Direct call from $1E:$8ECC		P,X		
+1E	8FA5	UpdateMapPartyStateWhenFlag40	Direct call from $1E:$8ECC		P,X		
 1E	8FBB	UpdateMapPartySlots	Direct call from $1E:$9043	Y	P	$71	
 1E	8FDF	RunMapSpecificPartyInteraction	Direct call from $1E:$8ECF	A	A,P		
 1E	8FEB	MatchAndApplyMapEventTrigger	Direct call from $1E:$9140	A,X,Y	A,P,X,Y	$0530,$0531,$0532,$0533	
 1E	906C	MatchAlternateMapEventTrigger	Direct call from $1E:$9143		P,X		
 1E	907B	RefreshThenRunMapSceneTransitionForValue	Pointer $1E:$800C (72-entry map and entity interaction service directory)	A	A,P		$959B
 1E	9083	PrepareMapSceneForDirection	Direct call from $1E:$8EF7; Direct call from $1E:$A47A; Pointer $1E:$8086 (72-entry map and entity interaction service directory)	A	A,P	$3D	$9090,$90C8
-1E	9090	PrepareMapSceneWithTrampoline07	Direct ROM scan: JSR to fixed trampoline $C016; Direct call from $1E:$9088; Pointer $1E:$8034 (72-entry map and entity interaction service directory)		A,P		$C004,$C016,$C54E,$C5AF
-1E	9097	PrepareMapSceneWithTrampoline01	Direct ROM scan: JSR to fixed trampoline $C004		A,P		$C004,$C54E
+1E	9090	PrepareMapSceneWithCurrentMapDecoder	Direct ROM scan: JSR to fixed trampoline $C016; Direct call from $1E:$9088; Pointer $1E:$8034 (72-entry map and entity interaction service directory)		A,P		$C004,$C016,$C54E,$C5AF
+1E	9097	PrepareMapSceneWithCurrentMapData	Direct ROM scan: JSR to fixed trampoline $C004		A,P		$C004,$C54E
 1E	90A8	LoadCurrentMapTileClassAfterNmi	Pointer $1E:$8038 (72-entry map and entity interaction service directory)	A	A,P,X,Y	$46,$47	$90EF,$A16B,$C004,$C016,$D3E6,$FF74
-1E	90AB	LoadCurrentMapTileClassWithTrampoline07	Direct ROM scan: JSR to fixed trampoline $C016	A	A,P,X,Y	$46,$47	$90EF,$A16B,$C004,$C016,$D3E6
+1E	90AB	LoadCurrentMapTileClassWithDecoderRefresh	Direct ROM scan: JSR to fixed trampoline $C016	A	A,P,X,Y	$46,$47	$90EF,$A16B,$C004,$C016,$D3E6
 1E	90AF	LoadCurrentMapTileClass	Direct ROM scan: JSR to fixed trampoline $C004	A	A,P,X,Y	$46,$47	$90EF,$A16B,$C004,$D3E6
 1E	90C8	ApplyMapScenePathForSignedValue	Direct call from $1E:$908C; Direct call from $1E:$9147; Pointer $1E:$8078 (72-entry map and entity interaction service directory)	A	A,P	$0539	$90E2,$90EF,$958A,$AAB4,$ACEA,$C00A,$C54E,$E501
 1E	90E2	SuspendAndRefreshMapRendering	Direct call from $1E:$90D2; Direct call from $1E:$90DB		P		$C5AF
@@ -3981,7 +3981,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	956F	RemovePanonFromParty	Direct call from $1E:$9515		P		
 1E	9582	RemoveHectorFromParty	Direct call from $1E:$9558		P		
 1E	958A	ResetMapDisplayAndMotionState	Direct call from $1E:$90DE; Direct call from $1E:$9465; Direct call from $1E:$A1CC; Pointer $1E:$8006 (72-entry map and entity interaction service directory)	A	A,P	$0539	$C00A,$C54E,$E501
-1E	9592	RunTrampoline03AndResetMapMotion	Direct ROM scan: JSR to fixed trampoline $C00A		P		$C00A,$E501
+1E	9592	RebuildViewportAndResetMapMotion	Direct ROM scan: JSR to fixed trampoline $C00A		P		$C00A,$E501
 1E	959B	EnsureMapSceneInitialized	Direct call from $1E:$8EC5; Direct call from $1E:$907C		A,P		
 1E	95A9	InitializeMapPartyEntityLayout	Direct call from $1E:$A465	A,X	A,P,X	$053A+X,$6FA0+X,$6FC0+X,$6FE1,$6FE2,$6FE3,$6FE4,$6FE5,$7000,$7020,$7020+X,$7021,$7022,$7023,$7024,$7025,$70E1,$70E2,$70E3,$70E4,$70E5	$95B7,$9648,$AAFF,$B157,$C58F
 1E	95B7	BuildMapPartyEntityOrder	Direct call from $1E:$96BA; Direct call from $1E:$AB90; Direct call from $1E:$AC8F	A,X	A,P,X	$6FE0+X,$70E0+X	
@@ -4026,7 +4026,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	9E2F	RenderTwentyThreeMapEntityFrames	Direct call from $1E:$98A4; Direct call from $1E:$98B0		P		
 1E	9E3F	ResolveChapterMapServiceIndex	Direct call from $1E:$950A; Direct call from $1E:$9BED; Direct call from $1E:$B136; Pointer $1E:$8016 (72-entry map and entity interaction service directory)	A,X	A,P,X	$00	
 1E	9E6B	AdvanceTransformCountdown	Direct call from $1E:$984C	X	P,X	$6296	$97B8
-1E	9E7A	ResolveMapInteractionValueOrFallback	Direct call from $1E:$A640		A,P		
+1E	9E7A	FindHeroPartyOrdinalOrFallback	Direct call from $1E:$A640		A,P		
 1E	9E8C	SetMapTileAndRefreshRegion	Direct call from $1E:$8363; Direct call from $1E:$8398; Direct call from $1E:$83A2; Direct call from $1E:$83AC; Direct call from $1E:$83B7; Direct call from $1E:$B9C0; Direct call from $1E:$B9C9; Direct call from $1E:$BA2D; Direct call from $1E:$BA39; Pointer $1E:$8012 (72-entry map and entity interaction service directory); Tail jump from $1E:$B804	A,X	A,P,X,Y	$00,$01,$02,$5F,$60	$9E92,$9F40,$C727
 1E	9E92	SetMapTileAtCoordinates	Direct call from $1E:$9E8C	A,Y	A,P	($04),Y	$9EA2
 1E	9EA2	ResolveMapTilePointer	Direct call from $1E:$9E93	A,X,Y	A,P,X,Y	$02,$03,$04,$05	$C813,$C81D,$C827
@@ -4128,7 +4128,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	B2A6	HandleFacingTileInteraction	Guarded flow recovery: Coherent routine block immediately after RTS $B2A5; 72 instructions, 14 BRK service calls, returns and jumps and merges into existing code; Tail jump from $1E:$8343		P		
 1E	B2DE	ValidateFacingTileInteractionClass	Tail jump from $1E:$B35A	A,X	A,P	$01,$6279	$835D,$B36E,$D1F3
 1E	B2F8	HandleSpecialFacingTileBehavior	Guarded flow recovery: Coherent routine block immediately after JMP $B2F5; 19 instructions, 4 BRK service calls, jumps and merges into existing code	A	A,P		
-1E	B325	CompleteMapInteractionWithCarry	Direct ROM analysis: Dormant JSR $C8E1 / SEC / RTS helper immediately before decoded code at $B32A		P		$C8E1
+1E	B325	CompleteDoorInteractionWithCarry	Direct ROM analysis: Dormant JSR $C8E1 / SEC / RTS helper immediately before decoded code at $B32A		P		$C8E1
 1E	B33B	HandleConfiguredFacingTileOverride	Pointer $1E:$806C (72-entry map and entity interaction service directory)	A,X	A,P,X	$01,$6279	$835D,$B35D,$B36E,$D1F3
 1E	B35D	TestFacingTileBehaviorRange	Direct call from $1E:$B2BB; Direct call from $1E:$B33B	A	P	$00	$83D9
 1E	B36E	ClassifyFacingTileBehaviorGroup	Direct call from $1E:$B2E0	A,Y	A,P,Y		
@@ -4136,38 +4136,38 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	B3E1	GiveFoundItemWithModeZero	Pointer $1E:$8024 (72-entry map and entity interaction service directory)	A,X	A,P,X	$6279,$627A,$F9	
 1E	B3E5	GiveFoundItemWithModeForty	Pointer $1E:$8074 (72-entry map and entity interaction service directory)	A,X	A,P,X	$6279,$627A,$F9	
 1E	B3EA	GiveFoundItemById	Direct call from $1E:$B45D; Direct call from $1E:$B809; Direct call from $1E:$B81D; Direct call from $1E:$B9FB	A	A,P	$627A,$F9	
-1E	B3ED	PrepareAndUseMapInteractionSelection	Direct call from $1E:$8D7D; Direct call from $1E:$A179; Direct call from $1E:$A1B6	A,X	A,P		$B731,$B779
+1E	B3ED	PrepareTreasureStoryFlagTest	Direct call from $1E:$8D7D; Direct call from $1E:$A179; Direct call from $1E:$A1B6	A,X	A,P		$B731,$B779
 1E	B3F3	HandleFacingTileActionAndWait	Direct ROM analysis: Coherent map-interaction routine block immediately after the entry at $B3ED; Tail jump from $1E:$8340		P		$B3FE,$C8CC
 1E	B3FE	DispatchFacingTileCommand	Direct call from $1E:$B3F3		P		
-1E	B47F	RunMapInteractionScriptByIndex	Direct call from $1E:$B584	A,X	A,P,X	$00,$01,$6F,$70,$71,$FD,$FE,$FF	$C827
+1E	B47F	RunTreasureSearchScriptByIndex	Direct call from $1E:$B584	A,X	A,P,X	$00,$01,$6F,$70,$71,$FD,$FE,$FF	$C827
 1E	B4CE	ShowChestEmpty	Pointer $1E:$BC3D (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		P		
 1E	B4D3	ShowSearchFailureMessages	Tail jump from $1E:$B8AA		P		
 1E	B59E	ShowFoundItemPromptAndDispatch	Direct call from $1E:$B8F2	A	P		
 1E	B5A3	GiveFoundItemToParty	Direct call from $1E:$B436; Direct call from $1E:$B58A; Direct call from $1E:$B8FF; Direct call from $1E:$B90C; Direct call from $1E:$B927; Direct call from $1E:$B93C; Direct call from $1E:$B95B; Direct call from $1E:$B974; Direct call from $1E:$B9E4; Direct call from $1E:$BCD8; Tail jump from $1E:$B3EA	A	A,P	$627A,$F9	
 1E	B5B6	PromptInventorySpaceForFoundItem	Inline service continuation: Code resumes after the three operands consumed by BRK service $65,$23 at $B5B2	A	A,P	$6E	
 1E	B650	PromptDiscardForFoundItem	Direct ROM analysis: Dormant BRK $D2,$2B block after the terminal JMP at $B64D; its continuation merges into decoded code at $B653		P		
-1E	B71E	SelectMapInteractionTargetFromThree	Direct call from $1E:$B40A; Direct call from $1E:$B5EA; Direct call from $1E:$B5F5; Direct call from $1E:$B619; Direct call from $1E:$B697; Direct call from $1E:$B6E5; Direct call from $1E:$B701; Direct call from $1E:$BAFF	X	A,P,X	$6E	
-1E	B722	SelectMapInteractionTargetFromOne	Pointer $1E:$808C (72-entry map and entity interaction service directory)	X	A,P,X	$6E	
-1E	B72E	PrepareMapInteractionStoryFlag	Direct call from $1E:$B447; Direct call from $1E:$BBF6		P		
+1E	B71E	SelectTreasureRecipientFromThree	Direct call from $1E:$B40A; Direct call from $1E:$B5EA; Direct call from $1E:$B5F5; Direct call from $1E:$B619; Direct call from $1E:$B697; Direct call from $1E:$B6E5; Direct call from $1E:$B701; Direct call from $1E:$BAFF	X	A,P,X	$6E	
+1E	B722	SelectTreasureRecipientFromOne	Pointer $1E:$808C (72-entry map and entity interaction service directory)	X	A,P,X	$6E	
+1E	B72E	PrepareTreasureSearchStoryFlag	Direct call from $1E:$B447; Direct call from $1E:$BBF6		P		
 1E	B731	ResolveCurrentMapStoryFlagPosition	Direct call from $1E:$B3ED; Direct call from $1E:$B813; Direct call from $1E:$B84A	A,Y	A,P,Y	$01,$02,$03,$04,$6278,$6279	
 1E	B741	ScanMapStoryFlagOffsets	Tail jump from $1E:$B776	A,Y	A,P,Y	$01,$02,$03,$04,$6278,$6279	
 1E	B779	DecodeMapStoryFlagMask	Direct call from $1E:$B791; Direct call from $1E:$B79C; Direct call from $1E:$B7A6	A,Y	A,P,X,Y		
 1E	B791	TestCurrentMapStoryFlag	Direct call from $1E:$B44A; Direct call from $1E:$B80C; Direct call from $1E:$B820; Direct call from $1E:$BBF9; Tail jump from $1E:$B3F0	A,X	A,P		$B779
 1E	B79C	SetCurrentMapStoryFlag	Direct ROM analysis: Coherent story-flag helper block calling the decoded bit-selector at $B779; Direct call from $1E:$B455; Direct call from $1E:$B816	A,X	A,P	$625D+X	$B779
 1E	B7A6	ClearCurrentMapStoryFlag	Direct call from $1E:$B67F; Direct call from $1E:$B84D	A,X	A,P	$625D+X	$B779
-1E	B7B2	LoadCurrentMapInteractionValue	Direct call from $1E:$B458; Direct call from $1E:$BBFE	A,Y	A,P,Y	$03,$04	
+1E	B7B2	LoadCurrentTreasureSearchValue	Direct call from $1E:$B458; Direct call from $1E:$BBFE	A,Y	A,P,Y	$03,$04	
 1E	B7CA	PlaceTrackedEntityOnPlayerTile	Direct ROM analysis: Coherent map-interaction routine block immediately after RTS $B7C9 and before decoded entry $BAD7; Direct call from $1E:$B44F		A,P		$B7F2
 1E	B7D6	PlaceOtherTypeFourEntityOnPlayerTile	Direct call from $1E:$B67C	A,X	A,P,X		$B7F2
 1E	B7F2	SetPlayerTileEntityIndex	Direct call from $1E:$B7CD; Direct call from $1E:$B7EC; Direct call from $1E:$B82B; Direct call from $1E:$B842	A,X	A,P,X,Y	$00,$01,$02,$5F,$60,$7140	$9E92,$9F40,$C727
 1E	B7F6	SetMapTileEntityIndex	Direct call from $1E:$B8A5; Direct call from $1E:$BAA1	A,X	A,P,X,Y	$00,$01,$02,$5F,$60,$7140	$9E92,$9F40,$C727
 1E	B807	SearchForBaronsHorn	Direct ROM analysis: Coherent map-interaction handler family after the terminal JMP at $B804 and branching into existing code at $BA04; Pointer $1E:$BC43 (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		A,P		$B3EA,$B731,$B791,$B79C
 1E	B81B	SearchForIronSafe	Direct ROM analysis: Coherent adjacent map-interaction handler after RTS $B81A; Pointer $1E:$BC45 (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		A,P		$B3EA,$B791
-1E	B830	CompleteIronSafeSearch	Direct ROM analysis: Coherent BRK-based map-interaction handler after RTS $B82F; Pointer $1E:$BC62 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		P		
+1E	B830	ReturnIronSafeAtCarvedMessage	Direct ROM analysis: Coherent BRK-based map-interaction handler after RTS $B82F; Pointer $1E:$BC62 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		P		
 1E	B868	RevealMimicChest	Direct ROM analysis: Coherent BRK-based handler falling into the decoded carry-return block at $B87A; Pointer $1E:$BC3F (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		P		
 1E	B86F	RevealManEaterChest	Direct ROM analysis: Dormant alternate BRK path skipped by the forced branch at $B86D and rejoining at $B874; Pointer $1E:$BC41 (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		P		
 1E	B87C	ReplaceCompletedEventTile	Direct ROM analysis: Coherent map-interaction handler after the carry-return block at $B87A-$B87B; Pointer $1E:$BC64 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		A,P		
 1E	B8AD	AnimateAndReplaceEventTile	Direct ROM analysis: Coherent map-interaction handler after the terminal failure jump at $B8AA; Pointer $1E:$BC66 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)	A	A,P,X,Y		$D3E6
-1E	B8D5	ShowMapInteractionMessage2C	Direct ROM analysis: Compact two-service map-interaction handler after RTS $B8D4; Pointer $1E:$BC68 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		P		
+1E	B8D5	ShowSearchAroundFeetAndApplyExitRules	Direct ROM analysis: Compact two-service map-interaction handler after RTS $B8D4; Pointer $1E:$BC68 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		P		
 1E	B8DD	SearchForBirdsongNectar	Direct ROM analysis: Coherent parameterized map-interaction handler after RTS $B8DC; Pointer $1E:$BC6C (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D)		P		
 1E	B8F7	SearchForPadequiaSeed	Direct ROM analysis: Independent parameterized map-interaction handler after RTS $B8F6; Pointer $1E:$BC49 (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		P		
 1E	B90A	SearchForSymbolOfFaith	Direct ROM analysis: Coherent adjacent map-interaction handler after RTS $B909; Pointer $1E:$BC4B (Eight-entry signed map-event handler table selected by keys $BC35-$BC3C and dispatched through $0000 at $B476)		A,P		$B5A3
@@ -4190,7 +4190,7 @@ Bank	Address	Name	CallingConvention	RegisterInputs	RegisterOutputs	DirectMemoryW
 1E	BB3B	HandleFacingBehavior2A	Pointer $1E:$BBB0 (Four-entry map-interaction handler table selected by keys $BBAA-$BBAD and dispatched through $0000 at $BB2B)		P		
 1E	BB48	HandleFacingBehavior30	Pointer $1E:$BBB4 (Four-entry map-interaction handler table selected by keys $BBAA-$BBAD and dispatched through $0000 at $BB2B)	A	A,P,X		
 1E	BB52	HandleFacingBehavior28	Pointer $1E:$BBB2 (Four-entry map-interaction handler table selected by keys $BBAA-$BBAD and dispatched through $0000 at $BB2B); Tail jump from $1E:$BB04	A	A,P,X		
-1E	BBA6	DispatchMapInteractionResultWithSlotTwo	Direct ROM analysis: Dormant selector branch skipped by the forced branch at $BBA4 and rejoining the dispatch tail at $BB9B		P,X		
+1E	BBA6	PrintSearchObjectResultWithSlotTwo	Direct ROM analysis: Dormant selector branch skipped by the forced branch at $BBA4 and rejoining the dispatch tail at $BB9B		P,X		
 1E	BBE9	ResolveFacingTileInteractionResult	Pointer $1E:$8080 (72-entry map and entity interaction service directory)	A,X,Y	A,P,X,Y		$B72E,$B791,$B7B2
 1E	BC1E	TestPartyInventoryForItem	Pointer $1E:$808E (72-entry map and entity interaction service directory)	A	P	$51	
 1E	BC20	TestPartyInventoryForStoredItem	Direct call from $1E:$B42F		P		

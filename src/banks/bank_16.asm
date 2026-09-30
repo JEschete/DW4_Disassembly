@@ -6934,7 +6934,7 @@ MapRecordModeToWindowCount:
 ; ----------------------------------------------------------------------------
         db   $06,$03                         ; B59B 06 03                    ..
 ; ----------------------------------------------------------------------------
-SelectWindowCountForMapContext:
+SelectWindowCountForBossContext:
         lda     #$03                            ; B59D A9 03                    ..
         ldx     $6BDE                           ; B59F AE DE 6B                 ..k
         bpl     TextUiSystem_Branch_B5B1        ; B5A2 10 0D                    ..
@@ -7363,7 +7363,7 @@ LoadWindowDisplayPairByMapMode:
         db   $5A,$52                         ; B89C 5A 52                    ZR
         db   $30,$10                         ; B89E 30 10                    0.
 ; ----------------------------------------------------------------------------
-LoadWindowDisplayPairByLeadSlotId:
+LoadWindowDisplayPairByLeadMonster:
         lda     #$3C                            ; B8A0 A9 3C                    .<
         sta     $03C8                           ; B8A2 8D C8 03                 ...
         ldy     #$00                            ; B8A5 A0 00                    ..

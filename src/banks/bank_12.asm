@@ -4937,22 +4937,22 @@ DispatchCharacterRecordBitOperation:
         sta     $01                             ; A4AF 85 01                    ..
         jmp     ($0000)                         ; A4B1 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-WriteCharacterRecordBitGroup:
-        jsr     SetCharacterRecordBit06         ; A4B4 20 20 A5                   .
-        jsr     SetCharacterRecordBit05         ; A4B7 20 2A A5                  *.
-WriteCharacterRecordBitTail:
-        jsr     ClearCharacterRecordBit07       ; A4BA 20 25 A5                  %.
+ClearCharacterRecordBits05And06ThenSet07:
+        jsr     ClearCharacterRecordBit06       ; A4B4 20 20 A5                   .
+        jsr     ClearCharacterRecordBit05       ; A4B7 20 2A A5                  *.
+SetCharacterRecordBit07AndFinalize:
+        jsr     SetCharacterRecordBit07         ; A4BA 20 25 A5                  %.
         jmp     FinalizeCharacterRecordBitWrite ; A4BD 4C 3A A5                 L:.
 ; ----------------------------------------------------------------------------
 WriteConditionalCharacterRecordBitGroup:
         jsr     IsCharacterRecordOperationValueOne; A4C0 20 2F A5                /.
         bcs     FieldCommand_Branch_A4C8        ; A4C3 B0 03                    ..
-        jsr     WriteCharacterRecordBitGroup    ; A4C5 20 B4 A4                  ..
+        jsr     ClearCharacterRecordBits05And06ThenSet07; A4C5 20 B4 A4          ..
 FieldCommand_Branch_A4C8:
         rts                                     ; A4C8 60                       `
 ; ----------------------------------------------------------------------------
 TailCallWriteCharacterRecordBitTail:
-        jmp     WriteCharacterRecordBitTail     ; A4C9 4C BA A4                 L..
+        jmp     SetCharacterRecordBit07AndFinalize; A4C9 4C BA A4               L..
 ; ----------------------------------------------------------------------------
 WriteConditionalCharacterRecordBitTail:
         jsr     IsCharacterRecordOperationValueOne; A4CC 20 2F A5                /.
@@ -4965,7 +4965,7 @@ RepeatCharacterRecordBitGroup:
         jsr     LoadActivePartyCount            ; A4D5 20 1B A5                  ..
         ldx     #$00                            ; A4D8 A2 00                    ..
 FieldCommand_Branch_A4DA:
-        jsr     WriteCharacterRecordBitGroup    ; A4DA 20 B4 A4                  ..
+        jsr     ClearCharacterRecordBits05And06ThenSet07; A4DA 20 B4 A4          ..
         inx                                     ; A4DD E8                       .
         dey                                     ; A4DE 88                       .
         bne     FieldCommand_Branch_A4DA        ; A4DF D0 F9                    ..
@@ -5007,7 +5007,7 @@ RepeatCharacterRecordBitGateAndWrite:
 FieldCommand_Branch_A50E:
         jsr     IsCharacterRecordOperationValueOne; A50E 20 2F A5                /.
         bcs     FieldCommand_Branch_A516        ; A511 B0 03                    ..
-        jsr     SetCharacterRecordBit05         ; A513 20 2A A5                  *.
+        jsr     ClearCharacterRecordBit05       ; A513 20 2A A5                  *.
 FieldCommand_Branch_A516:
         inx                                     ; A516 E8                       .
         dey                                     ; A517 88                       .
@@ -5021,19 +5021,19 @@ LoadActivePartyCount:
         tay                                     ; A51E A8                       .
         rts                                     ; A51F 60                       `
 ; ----------------------------------------------------------------------------
-SetCharacterRecordBit06:
+ClearCharacterRecordBit06:
         brk                                     ; A520 00                       .
         db   $45,$93,$06                     ; A521 45 93 06                 E..
 ; ----------------------------------------------------------------------------
         rts                                     ; A524 60                       `
 ; ----------------------------------------------------------------------------
-ClearCharacterRecordBit07:
+SetCharacterRecordBit07:
         brk                                     ; A525 00                       .
         db   $44,$93,$07                     ; A526 44 93 07                 D..
 ; ----------------------------------------------------------------------------
         rts                                     ; A529 60                       `
 ; ----------------------------------------------------------------------------
-SetCharacterRecordBit05:
+ClearCharacterRecordBit05:
         brk                                     ; A52A 00                       .
         db   $45,$93,$05                     ; A52B 45 93 05                 E..
 ; ----------------------------------------------------------------------------
