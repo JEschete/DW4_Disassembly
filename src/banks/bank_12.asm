@@ -1665,7 +1665,7 @@ BattleSetup_ExitTransitionMmc1Mode:
 ; ----------------------------------------------------------------------------
 BattleSetup_QueuePaletteUpdateAndWait:
         sta     $16                             ; 8A1A 85 16                    ..
-        jsr     BuildPaletteUpdateCommand       ; 8A1C 20 DE C5                  ..
+        jsr     BuildPaletteCommandFromUniversalAndTwentyFourColors       ; 8A1C 20 DE C5                  ..
         jmp     WaitForNmi                      ; 8A1F 4C 74 FF                 Lt.
 ; ----------------------------------------------------------------------------
 BattleSetup_RestoreSpriteOamFromBackup:
@@ -3382,10 +3382,10 @@ AnimateLighthouseFireExtinguishing:
         sec                                     ; 97C5 38                       8
         sbc     #$0B                            ; 97C6 E9 0B                    ..
         sta     $08                             ; 97C8 85 08                    ..
-        jsr     PrimeLighthouseFireSpriteBuffer ; 97CA 20 5A 98                  Z.
+        jsr     PrimeLighthouseFirePaletteBuffer ; 97CA 20 5A 98                  Z.
         jsr     RunLighthouseFireRevealLoop     ; 97CD 20 87 98                  ..
         ldx     #$06                            ; 97D0 A2 06                    ..
-        jsr     LoadLighthouseFireSpriteFrame   ; 97D2 20 F6 98                  ..
+        jsr     LoadLighthouseFirePaletteFrame   ; 97D2 20 F6 98                  ..
         jsr     FadePaletteToBlack              ; 97D5 20 C5 C5                  ..
         lda     #$3C                            ; 97D8 A9 3C                    .<
         jsr     ConvertSpriteIndexToOamOffset   ; 97DA 20 8C C7                  ..
@@ -3394,12 +3394,12 @@ AnimateLighthouseFireExtinguishing:
         sta     $0203,y                         ; 97E2 99 03 02                 ...
         ldx     #$06                            ; 97E5 A2 06                    ..
         jsr     WaitFrames                      ; 97E7 20 0C C9                  ..
-        jsr     CopyLighthouseFireOamTemplate   ; 97EA 20 1A 99                  ..
+        jsr     CopyLighthouseFirePaletteTemplate   ; 97EA 20 1A 99                  ..
         jsr     FadePaletteFromBlack            ; 97ED 20 BF C5                  ..
         lda     #$03                            ; 97F0 A9 03                    ..
         sta     $05                             ; 97F2 85 05                    ..
         ldx     #$00                            ; 97F4 A2 00                    ..
-        jsr     QueueLighthouseFireAttributeDiffs; 97F6 20 3E 99                 >.
+        jsr     QueueLighthouseFireAttributeCoordinatesFromScript; 97F6 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 97F9 20 26 C6                  &.
         ldx     #$06                            ; 97FC A2 06                    ..
         jsr     WaitFrames                      ; 97FE 20 0C C9                  ..
@@ -3410,7 +3410,7 @@ AnimateLighthouseFireExtinguishing:
         inx                                     ; 9809 E8                       .
         stx     $06                             ; 980A 86 06                    ..
 LighthouseFire_Branch_980C:
-        jsr     QueueLighthouseFireAttributeDiffs; 980C 20 3E 99                 >.
+        jsr     QueueLighthouseFireAttributeCoordinatesFromScript; 980C 20 3E 99                 >.
         lda     $06                             ; 980F A5 06                    ..
         cmp     #$08                            ; 9811 C9 08                    ..
         bne     LighthouseFire_Branch_981E      ; 9813 D0 09                    ..
@@ -3454,7 +3454,7 @@ LighthouseFire_Branch_984E:
 LighthouseFire_Branch_9859:
         rts                                     ; 9859 60                       `
 ; ----------------------------------------------------------------------------
-PrimeLighthouseFireSpriteBuffer:
+PrimeLighthouseFirePaletteBuffer:
         lda     #$0F                            ; 985A A9 0F                    ..
         ldx     #$03                            ; 985C A2 03                    ..
 LighthouseFire_Branch_985E:
@@ -3494,7 +3494,7 @@ LighthouseFire_Branch_9898:
         dec     $06                             ; 9898 C6 06                    ..
         beq     LighthouseFire_Branch_98AC      ; 989A F0 10                    ..
         ldx     $06                             ; 989C A6 06                    ..
-        jsr     QueueLighthouseFireAttributeDiffs; 989E 20 3E 99                 >.
+        jsr     QueueLighthouseFireAttributeCoordinatesFromScript; 989E 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 98A1 20 26 C6                  &.
         ldx     #$05                            ; 98A4 A2 05                    ..
         jsr     RunLighthouseFireSpritePulse    ; 98A6 20 1C 9B                  ..
@@ -3510,12 +3510,12 @@ LighthouseFire_Branch_98AF:
         lda     $98EA,y                         ; 98B1 B9 EA 98                 ...
         sta     $05                             ; 98B4 85 05                    ..
         ldx     $98DE,y                         ; 98B6 BE DE 98                 ...
-        jsr     QueueLighthouseFireAttributeDiffs; 98B9 20 3E 99                 >.
+        jsr     QueueLighthouseFireAttributeCoordinatesFromScript; 98B9 20 3E 99                 >.
         jsr     RequestPpuUpdate                ; 98BC 20 26 C6                  &.
         jsr     WaitForNmi                      ; 98BF 20 74 FF                  t.
         ldy     $0A                             ; 98C2 A4 0A                    ..
         ldx     $98D2,y                         ; 98C4 BE D2 98                 ...
-        jsr     LoadLighthouseFireSpriteFrame   ; 98C7 20 F6 98                  ..
+        jsr     LoadLighthouseFirePaletteFrame   ; 98C7 20 F6 98                  ..
         ldy     $0A                             ; 98CA A4 0A                    ..
         iny                                     ; 98CC C8                       .
         cpy     #$0C                            ; 98CD C0 0C                    ..
@@ -3529,7 +3529,7 @@ LighthouseFire_Branch_98AF:
         db   $01,$01,$02,$02,$01,$01,$01,$02 ; 98EA 01 01 02 02 01 01 01 02  ........
         db   $02,$02,$01,$01                 ; 98F2 02 02 01 01              ....
 ; ----------------------------------------------------------------------------
-LoadLighthouseFireSpriteFrame:
+LoadLighthouseFirePaletteFrame:
         ldy     #$02                            ; 98F6 A0 02                    ..
 LighthouseFire_Branch_98F8:
         lda     $9911,x                         ; 98F8 BD 11 99                 ...
@@ -3548,7 +3548,7 @@ L990E = $+ 1
         db   $05,$28,$17,$15,$38,$27,$04,$18 ; 9911 05 28 17 15 38 27 04 18  .(..8'..
         db   $07                             ; 9919 07                       .
 ; ----------------------------------------------------------------------------
-CopyLighthouseFireOamTemplate:
+CopyLighthouseFirePaletteTemplate:
         ldy     #$18                            ; 991A A0 18                    ..
 LighthouseFire_Branch_991C:
         lda     $9925,y                         ; 991C B9 25 99                 .%.
@@ -3561,7 +3561,7 @@ LighthouseFire_Branch_991C:
         db   $0F,$07,$18,$04,$30,$12,$19,$30 ; 992E 0F 07 18 04 30 12 19 30  ....0..0
         db   $17,$26,$30,$24,$13,$30,$26,$04 ; 9936 17 26 30 24 13 30 26 04  .&0$.0&.
 ; ----------------------------------------------------------------------------
-QueueLighthouseFireAttributeDiffs:
+QueueLighthouseFireAttributeCoordinatesFromScript:
         lda     $99B6,x                         ; 993E BD B6 99                 ...
         sta     $02                           ; 9941 85 02                    ..
         txa                                     ; 9943 8A                       .
@@ -3942,7 +3942,7 @@ LevelGrowth_Branch_9CC8:
         sta     $62D5                           ; 9CCD 8D D5 62                 ..b
         lda     $6BDE                           ; 9CD0 AD DE 6B                 ..k
         bmi     LevelGrowth_Branch_9CE3         ; 9CD3 30 0E                    0.
-        jsr     WaitForButtonPress              ; 9CD5 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; 9CD5 20 E1 C8                  ..
         lda     $6E03                           ; 9CD8 AD 03 6E                 ..n
         beq     LevelGrowth_Branch_9CE3         ; 9CDB F0 06                    ..
         brk                                     ; 9CDD 00                       .
@@ -5123,7 +5123,7 @@ FieldCommand_Branch_A5A5:
         db   $D0,$2B                         ; A5AA D0 2B                    .+
 ; ----------------------------------------------------------------------------
 FieldCommand_Branch_A5AC:
-        jsr     WaitForButtonPress              ; A5AC 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; A5AC 20 E1 C8                  ..
         jmp     FieldCommand_Branch_A58E        ; A5AF 4C 8E A5                 L..
 ; ----------------------------------------------------------------------------
 QueryFieldSpellSelector:
@@ -5163,7 +5163,7 @@ FieldCommand_Branch_A5CE:
         db   $C1,$2B                         ; A5D3 C1 2B                    .+
 ; ----------------------------------------------------------------------------
 FieldCommand_Branch_A5D5:
-        jsr     WaitForButtonPress              ; A5D5 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; A5D5 20 E1 C8                  ..
         sec                                     ; A5D8 38                       8
         rts                                     ; A5D9 60                       `
 ; ----------------------------------------------------------------------------
@@ -5292,7 +5292,7 @@ FieldSpell_Branch_A676:
         brk                                     ; A681 00                       .
         db   $F4,$3B                         ; A682 F4 3B                    .;
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A684 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A684 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
         db   $60                             ; A687 60                       `
         db   $33,$1F,$1E,$1D,$13,$0E,$0F,$40 ; A688 33 1F 1E 1D 13 0E 0F 40  3......@
@@ -5334,7 +5334,7 @@ CastFieldSpellOrReportLowCeiling:
         brk                                     ; A6C7 00                       .
         db   $C4,$2B                         ; A6C8 C4 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     WaitForButtonPress              ; A6CA 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; A6CA 20 E1 C8                  ..
 FieldSpell_Branch_A6CD:
         rts                                     ; A6CD 60                       `
 ; ----------------------------------------------------------------------------
@@ -5350,7 +5350,7 @@ FieldSpell_Branch_A6D0:
         db   $F4,$3B                         ; A6DC F4 3B                    .;
 ; ----------------------------------------------------------------------------
 FieldSpell_Branch_A6DE:
-        jmp     WaitForButtonPress              ; A6DE 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A6DE 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
         db   $36,$0F,$1E,$1F,$1C,$18,$40     ; A6E1 36 0F 1E 1F 1C 18 40     6.....@
 ; ----------------------------------------------------------------------------
@@ -5384,7 +5384,7 @@ FieldSpell_Branch_A70B:
         db   $04,$6F                         ; A70F 04 6F                    .o
 ; ----------------------------------------------------------------------------
 FieldSpell_Branch_A711:
-        jmp     WaitForButtonPress              ; A711 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A711 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 CastStepGuardFieldSpell:
         jsr     FieldSpell_LatchOperands        ; A714 20 3B A9                  ;.
@@ -5448,13 +5448,13 @@ FieldSpell_Branch_A777:
         brk                                     ; A777 00                       .
         db   $C5,$2B                         ; A778 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A77A 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A77A 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 FieldSpell_Branch_A77D:
         brk                                     ; A77D 00                       .
         db   $4B,$0B                         ; A77E 4B 0B                    K.
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A780 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A780 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 HandleBlankFieldSpellEntry:
         jsr     FieldSpell_LatchOperands        ; A783 20 3B A9                  ;.
@@ -5509,7 +5509,7 @@ FieldSpell_Branch_A7BD:
         brk                                     ; A7CA 00                       .
         db   $07,$6F,$10                     ; A7CB 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A7CE 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A7CE 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 FieldSpell_RunChoiceFromScriptOffset2:
         jsr     FieldSpell_LatchOperands        ; A7D1 20 3B A9                  ;.
@@ -5587,13 +5587,13 @@ FieldSpell_Branch_A829:
         brk                                     ; A84B 00                       .
         db   $07,$6F,$10                     ; A84C 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A84F 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A84F 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 ReportFieldSpellFailureAndReturn:
         brk                                     ; A852 00                       .
         db   $C5,$2B                         ; A853 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A855 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A855 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 CurePartyMemberNumbness:
         jsr     FieldSpell_LatchOperands        ; A858 20 3B A9                  ;.
@@ -5665,7 +5665,7 @@ FieldSpell_Branch_A8AF:
         inx                                     ; A8AF E8                       .
         dec     $00                           ; A8B0 C6 00                    ..
         bne     FieldSpell_Branch_A871          ; A8B2 D0 BD                    ..
-        jmp     WaitForButtonPress              ; A8B4 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A8B4 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 CurePartyMemberPoison:
         jsr     FieldSpell_LatchOperands        ; A8B7 20 3B A9                  ;.
@@ -5680,7 +5680,7 @@ CurePartyMemberPoison:
         brk                                     ; A8CA 00                       .
         db   $CC,$2B                         ; A8CB CC 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A8CD 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A8CD 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 TryRevivePartyMemberRandomly:
         jsr     FieldSpell_LatchOperands        ; A8D0 20 3B A9                  ;.
@@ -5698,7 +5698,7 @@ FieldSpell_Branch_A8DD:
         brk                                     ; A8E8 00                       .
         db   $CE,$2B                         ; A8E9 CE 2B                    .+
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A8EB 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A8EB 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 RevivePartyMember:
         jsr     FieldSpell_LatchOperands        ; A8EE 20 3B A9                  ;.
@@ -5759,7 +5759,7 @@ FieldSpell_Branch_A935:
         brk                                     ; A935 00                       .
         db   $27,$0F                         ; A936 27 0F                    '.
 ; ----------------------------------------------------------------------------
-        jmp     WaitForButtonPress              ; A938 4C E1 C8                 L..
+        jmp     WaitForPrimaryControllerButtonPress              ; A938 4C E1 C8                 L..
 ; ----------------------------------------------------------------------------
 FieldSpell_LatchOperands:
         pha                                     ; A93B 48                       H
@@ -6555,7 +6555,7 @@ ItemUse_Branch_AE36:
         sta     $FE                             ; AE3F 85 FE                    ..
         sta     $FF                             ; AE41 85 FF                    ..
         lda     #$2C                            ; AE43 A9 2C                    .,
-        jsr     ItemUse_ReadPrimarySelectionIndex; AE45 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; AE45 20 26 B5                &.
         sta     $00                           ; AE48 85 00                    ..
         brk                                     ; AE4A 00                       .
         db   $35,$0F                         ; AE4B 35 0F                    5.
@@ -6626,7 +6626,7 @@ ItemUse_Branch_AEA5:
         brk                                     ; AEB2 00                       .
         db   $C5,$2B                         ; AEB3 C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     WaitForButtonPress              ; AEB5 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; AEB5 20 E1 C8                  ..
         jmp     ItemUse_Branch_AE8E             ; AEB8 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_AEBB:
@@ -6634,11 +6634,11 @@ ItemUse_Branch_AEBB:
         lda     $6279                           ; AEBD AD 79 62                 .yb
         sta     $6F                             ; AEC0 85 6F                    .o
         lda     #$2C                            ; AEC2 A9 2C                    .,
-        jsr     ItemUse_ReadPrimarySelectionIndex; AEC4 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; AEC4 20 26 B5                &.
         lda     $73                             ; AEC7 A5 73                    .s
         bmi     ItemUse_Branch_AED8             ; AEC9 30 0D                    0.
         lda     #$32                            ; AECB A9 32                    .2
-        jsr     ItemUse_ReadPrimarySelectionIndex; AECD 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; AECD 20 26 B5                &.
         bpl     ItemUse_Branch_AEDE             ; AED0 10 0C                    ..
         ldx     #$01                            ; AED2 A2 01                    ..
         lda     #$9F                            ; AED4 A9 9F                    ..
@@ -6656,7 +6656,7 @@ ItemUse_Branch_AEE6:
         brk                                     ; AEE6 00                       .
         db   $04,$6F                         ; AEE7 04 6F                    .o
 ; ----------------------------------------------------------------------------
-        jsr     WaitForButtonPress              ; AEE9 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; AEE9 20 E1 C8                  ..
         clc                                     ; AEEC 18                       .
         jmp     ItemUse_Branch_AE8E             ; AEED 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
@@ -6670,14 +6670,14 @@ ItemUse_Branch_AEF0:
         brk                                     ; AEFB 00                       .
         db   $C5,$2B                         ; AEFC C5 2B                    .+
 ; ----------------------------------------------------------------------------
-        jsr     WaitForButtonPress              ; AEFE 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; AEFE 20 E1 C8                  ..
         jmp     ItemUse_Branch_AE8E             ; AF01 4C 8E AE                 L..
 ; ----------------------------------------------------------------------------
 ItemUse_LoadSelectionRowState:
         lda     $6279                           ; AF04 AD 79 62                 .yb
         sta     $6F                             ; AF07 85 6F                    .o
         lda     #$30                            ; AF09 A9 30                    .0
-        jsr     ItemUse_ReadPrimarySelectionIndex; AF0B 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; AF0B 20 26 B5                &.
 ItemUse_Branch_AF0E:
         rts                                     ; AF0E 60                       `
 ; ----------------------------------------------------------------------------
@@ -6700,18 +6700,18 @@ ItemUse_Branch_AF11:
         sta     $01                             ; AF2B 85 01                    ..
         jmp     ($0000)                         ; AF2D 6C 00 00                 l..
 ; ----------------------------------------------------------------------------
-ItemUse_RunSelectionConfirmationLoop:
+UseLunch:
         jsr     PrintItemUseMessage0            ; AF30 20 71 B5                  q.
-        jmp     ItemUse_RunSelectionConfirmation; AF33 4C 39 AF                 L9.
+        jmp     ItemUse_ApplyHerbRecovery       ; AF33 4C 39 AF                 L9.
 ; ----------------------------------------------------------------------------
-ItemUse_RunSelectionConfirmationLoopFromReload:
+UseMedicalHerb:
         jsr     PrintItemUseMessage0            ; AF36 20 71 B5                  q.
-ItemUse_RunSelectionConfirmation:
+ItemUse_ApplyHerbRecovery:
         jsr     ItemUse_WaitTwentyFrames        ; AF39 20 EF B5                  ..
         lda     #$01                            ; AF3C A9 01                    ..
-        jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; AF3E 20 33 B5  3.
+        jsr     ItemUse_TestRecipientStatusResult; AF3E 20 33 B5                 3.
         bcs     ItemUse_Branch_AF6D             ; AF41 B0 2A                    .*
-        jsr     ItemUse_SeedSelectionPromptOperands; AF43 20 5A AF               Z.
+        jsr     ItemUse_RollHerbRecoveryAmount  ; AF43 20 5A AF                  Z.
         jsr     PrintItemUseMessage1            ; AF46 20 6D B5                  m.
 ItemUse_Branch_AF49:
         brk                                     ; AF49 00                       .
@@ -6723,19 +6723,19 @@ ItemUse_Branch_AF49:
         db   $07,$6F,$10                     ; AF52 07 6F 10                 .o.
 ; ----------------------------------------------------------------------------
 ItemUse_WaitForSelectionConfirmation:
-        jsr     WaitForButtonPress              ; AF55 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; AF55 20 E1 C8                  ..
         sec                                     ; AF58 38                       8
         rts                                     ; AF59 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_SeedSelectionPromptOperands:
+ItemUse_RollHerbRecoveryAmount:
         lda     #$0B                            ; AF5A A9 0B                    ..
-        jsr     ItemUse_ReadChoiceValue         ; AF5C 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; AF5C 20 21 B5                  !.
         adc     #$1E                            ; AF5F 69 1E                    i.
         sta     $6F                             ; AF61 85 6F                    .o
         lda     #$00                            ; AF63 A9 00                    ..
         sta     $70                             ; AF65 85 70                    .p
         lda     #$02                            ; AF67 A9 02                    ..
-        jsr     ItemUse_ReadSecondarySelectionIndex; AF69 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; AF69 20 2C B5           ,.
         rts                                     ; AF6C 60                       `
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_AF6D:
@@ -6747,7 +6747,7 @@ ItemUse_ProjectCurrentValueIntoPrompt:
         stx     $627A                           ; AF75 8E 7A 62                 .zb
         lda     $72                             ; AF78 A5 72                    .r
         sta     $6279                           ; AF7A 8D 79 62                 .yb
-        jsr     ItemUse_SeedSelectionPromptOperands; AF7D 20 5A AF               Z.
+        jsr     ItemUse_RollHerbRecoveryAmount  ; AF7D 20 5A AF                  Z.
         lda     $6279                           ; AF80 AD 79 62                 .yb
         sta     $6F                             ; AF83 85 6F                    .o
         brk                                     ; AF85 00                       .
@@ -6755,18 +6755,18 @@ ItemUse_ProjectCurrentValueIntoPrompt:
 ; ----------------------------------------------------------------------------
         rts                                     ; AF88 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_RunSelectionRefreshFlow:
+UseAntidoteHerb:
         jsr     PrintItemUseMessage0            ; AF89 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; AF8C 20 EF B5                  ..
         lda     #$05                            ; AF8F A9 05                    ..
         sta     $6F                             ; AF91 85 6F                    .o
         lda     #$45                            ; AF93 A9 45                    .E
-        jsr     ItemUse_ReadSecondarySelectionIndex; AF95 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; AF95 20 2C B5           ,.
         bcc     ItemUse_Branch_AF6D             ; AF98 90 D3                    ..
         jsr     PrintItemUseMessage1            ; AF9A 20 6D B5                  m.
         jmp     ItemUse_WaitForSelectionConfirmation; AF9D 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_HandleSelectionConfirmResult:
+UseWingOfWyvern:
         ldx     $F6                             ; AFA0 A6 F6                    ..
         brk                                     ; AFA2 00                       .
         db   $07,$6F,$16                     ; AFA3 07 6F 16                 .o.
@@ -6793,7 +6793,7 @@ ItemUse_HandleSelectionConfirmResult:
 ; ----------------------------------------------------------------------------
         jsr     PrintItemUseMessage1            ; AFC8 20 6D B5                  m.
 ItemUse_WaitForSelectionInputAndCancel:
-        jsr     WaitForButtonPress              ; AFCB 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; AFCB 20 E1 C8                  ..
 ItemUse_Branch_AFCE:
         clc                                     ; AFCE 18                       .
         rts                                     ; AFCF 60                       `
@@ -6820,21 +6820,21 @@ ItemUse_Branch_AFD9:
         db   $3B,$13,$18,$11,$00,$19,$10,$00 ; AFEA 3B 13 18 11 00 19 10 00  ;.......
         db   $3B,$23,$20,$0F,$1C,$18,$40     ; AFF2 3B 23 20 0F 1C 18 40     ;# ...@
 ; ----------------------------------------------------------------------------
-ItemUse_StartPrimaryChoicePrompt:
+UseStrengthSeed:
         lda     #$11                            ; AFF9 A9 11                    ..
         bne     ItemUse_Branch_B003             ; AFFB D0 06                    ..
-ItemUse_StartAlternateChoicePrompt:
+UseAgilitySeed:
         lda     #$13                            ; AFFD A9 13                    ..
         bne     ItemUse_Branch_B003             ; AFFF D0 02                    ..
-ItemUse_RunDefaultChoicePrompt:
+UseLuckSeed:
         lda     #$24                            ; B001 A9 24                    .$
 ItemUse_Branch_B003:
         pha                                     ; B003 48                       H
         jsr     PrintItemUseMessage0            ; B004 20 71 B5                  q.
-        jsr     ItemUse_InitializeChoicePrompt  ; B007 20 21 B0                  !.
+        jsr     ItemUse_RollSeedGrowthAmount    ; B007 20 21 B0                  !.
         jsr     ItemUse_WaitTwentyFrames        ; B00A 20 EF B5                  ..
         pla                                     ; B00D 68                       h
-        jsr     ItemUse_ReadSecondarySelectionIndex; B00E 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B00E 20 2C B5           ,.
         beq     ItemUse_Branch_B01B             ; B011 F0 08                    ..
         sta     MessageNumberArgument           ; B013 85 FD                    ..
         jsr     PrintItemUseMessage1            ; B015 20 6D B5                  m.
@@ -6846,9 +6846,9 @@ ItemUse_Branch_B01B:
 ; ----------------------------------------------------------------------------
         jmp     ItemUse_WaitForSelectionConfirmation; B01E 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_InitializeChoicePrompt:
+ItemUse_RollSeedGrowthAmount:
         lda     #$03                            ; B021 A9 03                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B023 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B023 20 21 B5                  !.
         adc     #$01                            ; B026 69 01                    i.
         sta     $6F                             ; B028 85 6F                    .o
         lda     #$00                            ; B02A A9 00                    ..
@@ -6857,18 +6857,18 @@ ItemUse_InitializeChoicePrompt:
         sta     $FF                             ; B030 85 FF                    ..
         rts                                     ; B032 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_RunBasicChoice:
+UseLifeforceNuts:
         jsr     PrintItemUseMessage0            ; B033 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B036 20 EF B5                  ..
         lda     #$03                            ; B039 A9 03                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B03B 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B03B 20 21 B5                  !.
         adc     #$04                            ; B03E 69 04                    i.
         sta     $6F                             ; B040 85 6F                    .o
         lda     #$00                            ; B042 A9 00                    ..
         sta     $70                             ; B044 85 70                    .p
         lda     #$03                            ; B046 A9 03                    ..
 ItemUse_Branch_B048:
-        jsr     ItemUse_ReadSecondarySelectionIndex; B048 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B048 20 2C B5           ,.
         beq     ItemUse_Branch_B05B             ; B04B F0 0E                    ..
         sta     MessageNumberArgument           ; B04D 85 FD                    ..
         lda     #$00                            ; B04F A9 00                    ..
@@ -6883,22 +6883,22 @@ ItemUse_Branch_B05B:
 ; ----------------------------------------------------------------------------
         jmp     ItemUse_WaitForSelectionConfirmation; B05E 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_RunExtendedChoice:
+UseMysticAcorns:
         jsr     PrintItemUseMessage0            ; B061 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B064 20 EF B5                  ..
         lda     #$03                            ; B067 A9 03                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B069 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B069 20 21 B5                  !.
         adc     #$03                            ; B06C 69 03                    i.
         sta     $6F                             ; B06E 85 6F                    .o
         lda     #$0A                            ; B070 A9 0A                    ..
         bne     ItemUse_Branch_B048             ; B072 D0 D4                    ..
-ItemUse_RunChoiceWithSuccessEffect:
+UseFullMoonHerb:
         jsr     PrintItemUseMessage0            ; B074 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B077 20 EF B5                  ..
         lda     #$06                            ; B07A A9 06                    ..
         sta     $6F                             ; B07C 85 6F                    .o
         lda     #$45                            ; B07E A9 45                    .E
-        jsr     ItemUse_ReadSecondarySelectionIndex; B080 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B080 20 2C B5           ,.
         bcc     ItemUse_Branch_B08E             ; B083 90 09                    ..
         jsr     PrintItemUseMessage1            ; B085 20 6D B5                  m.
         brk                                     ; B088 00                       .
@@ -6912,10 +6912,10 @@ ItemUse_Branch_B08E:
 ; ----------------------------------------------------------------------------
         jmp     ItemUse_WaitForSelectionConfirmation; B091 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_RunChoiceWithPostcheck:
+UseWizardsRing:
         jsr     PrintItemUseMessage0            ; B094 20 71 B5                  q.
         lda     #$0B                            ; B097 A9 0B                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B099 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B099 20 21 B5                  !.
         adc     #$14                            ; B09C 69 14                    i.
         sta     $6F                             ; B09E 85 6F                    .o
         lda     #$00                            ; B0A0 A9 00                    ..
@@ -6923,7 +6923,7 @@ ItemUse_RunChoiceWithPostcheck:
         sta     $FE                             ; B0A4 85 FE                    ..
         sta     $FF                             ; B0A6 85 FF                    ..
         lda     #$09                            ; B0A8 A9 09                    ..
-        jsr     ItemUse_ReadSecondarySelectionIndex; B0AA 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B0AA 20 2C B5           ,.
         sta     MessageNumberArgument           ; B0AD 85 FD                    ..
         beq     ItemUse_Branch_B0B7             ; B0AF F0 06                    ..
         jsr     PrintItemUseMessage1            ; B0B1 20 6D B5                  m.
@@ -6933,7 +6933,7 @@ ItemUse_Branch_B0B7:
         jsr     PrintItemUseMessage2            ; B0B7 20 69 B5                  i.
 ItemUse_Branch_B0BA:
         lda     #$08                            ; B0BA A9 08                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B0BC 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B0BC 20 21 B5                  !.
         bne     ItemUse_Branch_B0CA             ; B0BF D0 09                    ..
         brk                                     ; B0C1 00                       .
         db   $83,$2B                         ; B0C2 83 2B                    .+
@@ -6944,14 +6944,14 @@ ItemUse_Branch_B0BA:
 ItemUse_Branch_B0CA:
         jmp     ItemUse_WaitForSelectionInputAndCancel; B0CA 4C CB AF           L..
 ; ----------------------------------------------------------------------------
-ItemUse_RunChoiceWithPrimaryGate:
+UseMagicPotion:
         jsr     PrintItemUseMessage0            ; B0CD 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B0D0 20 EF B5                  ..
         lda     #$01                            ; B0D3 A9 01                    ..
-        jsr     ItemUse_CheckPrimarySelectionAgainstCurrentValue; B0D5 20 33 B5  3.
+        jsr     ItemUse_TestRecipientStatusResult; B0D5 20 33 B5                 3.
         bcs     ItemUse_Branch_B101             ; B0D8 B0 27                    .'
         lda     #$06                            ; B0DA A9 06                    ..
-        jsr     ItemUse_ReadChoiceValue         ; B0DC 20 21 B5                  !.
+        jsr     ItemUse_RollRandomBelowLimit    ; B0DC 20 21 B5                  !.
         adc     #$0A                            ; B0DF 69 0A                    i.
         sta     $6F                             ; B0E1 85 6F                    .o
         lda     #$00                            ; B0E3 A9 00                    ..
@@ -6959,7 +6959,7 @@ ItemUse_RunChoiceWithPrimaryGate:
         sta     $FE                             ; B0E7 85 FE                    ..
         sta     $FF                             ; B0E9 85 FF                    ..
         lda     #$09                            ; B0EB A9 09                    ..
-        jsr     ItemUse_ReadSecondarySelectionIndex; B0ED 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B0ED 20 2C B5           ,.
         sta     MessageNumberArgument           ; B0F0 85 FD                    ..
         tax                                     ; B0F2 AA                       .
         beq     ItemUse_Branch_B0FB             ; B0F3 F0 06                    ..
@@ -6974,16 +6974,16 @@ ItemUse_Branch_B101:
         jsr     PrintItemUseMessage3            ; B101 20 65 B5                  e.
         jmp     ItemUse_WaitForSelectionConfirmation; B104 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_RunNestedChoice:
+UseLeafOfWorldTree:
         jsr     PrintItemUseMessage0            ; B107 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B10A 20 EF B5                  ..
         lda     #$07                            ; B10D A9 07                    ..
         sta     $6F                             ; B10F 85 6F                    .o
         lda     #$44                            ; B111 A9 44                    .D
-        jsr     ItemUse_ReadSecondarySelectionIndex; B113 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B113 20 2C B5           ,.
         bcc     ItemUse_Branch_B144             ; B116 90 2C                    .,
         lda     #$05                            ; B118 A9 05                    ..
-        jsr     ItemUse_ReadSecondarySelectionIndex; B11A 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B11A 20 2C B5           ,.
         jsr     PrintItemUseMessage1            ; B11D 20 6D B5                  m.
         brk                                     ; B120 00                       .
         db   $27,$0F                         ; B121 27 0F                    '.
@@ -7020,7 +7020,7 @@ ItemUse_Branch_B144:
         jsr     PrintItemUseMessage2            ; B144 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionConfirmation; B147 4C 55 AF             LU.
 ; ----------------------------------------------------------------------------
-ItemUse_ClearTransitionFlag0539:
+UseFlyingShoes:
         jsr     PrintItemUseMessage0            ; B14A 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B14D 20 EF B5                  ..
         lda     #$00                            ; B150 A9 00                    ..
@@ -7049,7 +7049,7 @@ ItemUse_Branch_B171:
         jsr     PrintItemUseMessage2            ; B175 20 69 B5                  i.
         jmp     ItemUse_WaitForSelectionInputAndCancel; B178 4C CB AF           L..
 ; ----------------------------------------------------------------------------
-ItemUse_CountSelectionIterationsInto6E:
+UseDewOfWorldTree:
         jsr     PrintItemUseMessage0            ; B17B 20 71 B5                  q.
         jsr     ItemUse_WaitTwentyFrames        ; B17E 20 EF B5                  ..
         brk                                     ; B181 00                       .
@@ -7118,7 +7118,7 @@ ItemUse_Branch_B1D9:
         db   $1D,$18,$1D,$19,$1D,$17,$1E,$17 ; B1E7 1D 18 1D 19 1D 17 1E 17  ........
         db   $1F,$17,$20,$17,$21,$17,$22     ; B1EF 1F 17 20 17 21 17 22     .. .!."
 ; ----------------------------------------------------------------------------
-ItemUse_ForceState7F:
+UseFairyWater:
         lda     #$7F                            ; B1F6 A9 7F                    ..
         sta     RepelStepCounter                ; B1F8 8D 41 6E                 .An
         jsr     PrintItemUseMessage0            ; B1FB 20 71 B5                  q.
@@ -7621,29 +7621,29 @@ ItemUse_Branch_B518:
 ; ----------------------------------------------------------------------------
         jmp     ItemUse_WaitForSelectionInputAndCancel; B51E 4C CB AF           L..
 ; ----------------------------------------------------------------------------
-ItemUse_ReadChoiceValue:
+ItemUse_RollRandomBelowLimit:
         brk                                     ; B521 00                       .
         db   $17,$0F                         ; B522 17 0F                    ..
 ; ----------------------------------------------------------------------------
         clc                                     ; B524 18                       .
         rts                                     ; B525 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_ReadPrimarySelectionIndex:
+ItemUse_ApplyRecordOperationToUser:
         ldx     $6278                           ; B526 AE 78 62                 .xb
-        jmp     ItemUse_ReadSelectionIndexValue ; B529 4C 2F B5                 L/.
+        jmp     ItemUse_ApplyRecordOperationToMember; B529 4C 2F B5             L/.
 ; ----------------------------------------------------------------------------
-ItemUse_ReadSecondarySelectionIndex:
+ItemUse_ApplyRecordOperationToRecipient:
         ldx     $627A                           ; B52C AE 7A 62                 .zb
-ItemUse_ReadSelectionIndexValue:
+ItemUse_ApplyRecordOperationToMember:
         brk                                     ; B52F 00                       .
         db   $00,$13                         ; B530 00 13                    ..
 ; ----------------------------------------------------------------------------
         rts                                     ; B532 60                       `
 ; ----------------------------------------------------------------------------
-ItemUse_CheckPrimarySelectionAgainstCurrentValue:
+ItemUse_TestRecipientStatusResult:
         pha                                     ; B533 48                       H
         lda     #$42                            ; B534 A9 42                    .B
-        jsr     ItemUse_ReadSecondarySelectionIndex; B536 20 2C B5               ,.
+        jsr     ItemUse_ApplyRecordOperationToRecipient; B536 20 2C B5           ,.
         pla                                     ; B539 68                       h
         cmp     $72                             ; B53A C5 72                    .r
         beq     ItemUse_Branch_B55A             ; B53C F0 1C                    ..
@@ -7744,14 +7744,14 @@ ItemUse_Branch_B5C1:
         lda     $6279                           ; B5C1 AD 79 62                 .yb
         sta     $6F                             ; B5C4 85 6F                    .o
         lda     #$2C                            ; B5C6 A9 2C                    .,
-        jsr     ItemUse_ReadPrimarySelectionIndex; B5C8 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; B5C8 20 26 B5                &.
         jmp     ItemUse_Branch_B5E3             ; B5CB 4C E3 B5                 L..
 ; ----------------------------------------------------------------------------
 ItemUse_Branch_B5CE:
         lda     $6279                           ; B5CE AD 79 62                 .yb
         sta     $6F                             ; B5D1 85 6F                    .o
         lda     #$2C                            ; B5D3 A9 2C                    .,
-        jsr     ItemUse_ReadPrimarySelectionIndex; B5D5 20 26 B5                 &.
+        jsr     ItemUse_ApplyRecordOperationToUser; B5D5 20 26 B5                &.
         sta     $FA                             ; B5D8 85 FA                    ..
         lda     $6278                           ; B5DA AD 78 62                 .xb
         jmp     ItemUse_Branch_B5E3             ; B5DD 4C E3 B5                 L..

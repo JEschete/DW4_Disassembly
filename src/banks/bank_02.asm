@@ -2534,7 +2534,7 @@ Bank02_TextGroup_35:
         db   $E5,$39,$7B,$8F,$EA,$39,$F8,$55 ; BFC3 E5 39 7B 8F EA 39 F8 55  .9{..9.U
         db   $C8,$A0,$79,$E8,$45,$03,$CF,$44 ; BFCB C8 A0 79 E8 45 03 CF 44  ..y.E..D
         db   $5E,$37,$E1,$62,$BF             ; BFD3 5E 37 E1 62 BF           ^7.b.
-Bank02_TextStreamRollover:
+Bank02_CompatibilityResetStub:
         db   $78,$EE,$DF,$BF,$4C,$8E,$FF,$80 ; BFD8 78 EE DF BF 4C 8E FF 80  x...L...
 Bank02_TitleSignature:
         db   $20,$44,$52,$41,$47,$4F,$4E,$20 ; BFE0 20 44 52 41 47 4F 4E 20   DRAGON

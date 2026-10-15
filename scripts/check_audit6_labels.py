@@ -84,6 +84,7 @@ for name in sorted(legacy_names.intersection(by_name) - allowed_legacy_names):
 
 required = {
     ("10", "8421"): "AddToPartyRecordValueCapped",
+    ("10", "9613"): "FindFirstPackedStatusOrdinal",
     ("11", "8E96"): "PrintActionMessageStep0",
     ("12", "82FC"): "LookupActionStepMessage",
     ("12", "A773"): "RunDayNightSpellTransition",
@@ -97,12 +98,12 @@ required = {
     ("18", "A0BA"): "ApplyRepelEffect",
     ("1B", "AAF9"): "DispatchChapterCompletionCheck",
     ("1C", "B29E"): "AddCharacterToParty",
-    ("1D", "B4B1"): "RequireHeroWearingZenithianSet",
+    ("1D", "B4B1"): "RequireHeroEquippedSwordAlternativeAndZenithianSet",
     ("1D", "9C52"): "StartClayDollBattle",
     ("1E", "8090"): "RunFieldCommandMenu",
     ("1E", "B5A3"): "GiveFoundItemToParty",
     ("1F", "C000"): "DebugFeatureFlags",
-    ("1F", "CEA9"): "TryRandomEncounterAfterStep",
+    ("1F", "CEA9"): "TryRandomEncounterAfterStepOrDebugStart",
     ("1F", "CF38"): "EnterMapAtWorldTriggerIfAny",
     ("1F", "DE42"): "BranchMapObjectScriptRelativeCommand",
     ("1F", "F104"): "DebugOnly_InitializeChapterSelectionMenu",

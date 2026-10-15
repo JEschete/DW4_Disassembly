@@ -6056,7 +6056,7 @@ ItemEffectInventory_Branch_B73D:
         brk                                     ; B754 00                       .
         db   $09,$CF                         ; B755 09 CF                    ..
 ; ----------------------------------------------------------------------------
-        jsr     ResetMapEntityMotionState       ; B757 20 01 E5                  ..
+        jsr     ResetEntityOamAllocationState       ; B757 20 01 E5                  ..
         jsr     WaitForNmi                      ; B75A 20 74 FF                  t.
         jsr     FadePaletteFromBlack            ; B75D 20 BF C5                  ..
         brk                                     ; B760 00                       .

@@ -1264,7 +1264,7 @@
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$C5DE BuildPaletteUpdateCommand
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$C5DE BuildPaletteCommandFromUniversalAndTwentyFourColors
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0300+Y,$050A,$050B,$18,$1F
 - Evidence: Static interface analysis at $0F:$C5DE: Direct call from $0F:$C5CC; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -2146,7 +2146,7 @@
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D459 SelectOutOfBoundsMapTile
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D459 SelectOutOfBoundsDecompressedMapTile
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $0F:$D459: Direct call from $0F:$D416; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -2164,7 +2164,7 @@
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D4D9 AccumulateWorldMapNeighborBit
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D4D9 AccumulateWorldMapNeighborTypeBit
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $59; Direct calls: $D251
 - Evidence: Static interface analysis at $0F:$D4D9: Direct call from $0F:$D4B9; Direct call from $0F:$D4C0; Direct call from $0F:$D4C7; Direct call from $0F:$D4CE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -2389,7 +2389,7 @@
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D752 GetEntityFacingCoordinates
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D752 GetCurrentScriptEntityFacingCoordinates
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $52,$53
 - Evidence: Static interface analysis at $0F:$D752: Direct call from $0F:$D685; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -2407,7 +2407,7 @@
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D7D5 RenderPartyMapEntities
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D7D5 RenderMapEntityColumnAtSixSlotStride
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $D7F1
 - Evidence: Static interface analysis at $0F:$D7D5: Direct call from $0F:$CA05; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -2506,7 +2506,7 @@
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D8DD RandomizeEntityFacingCommand
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$D8DD RandomizeEntityFacingAvoidingReverseWithThreeAttempts
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $68,$7000+X; Direct calls: $C891,$DDE3
 - Evidence: Static interface analysis at $0F:$D8DD: Pointer $0F:$DF06 (49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -3208,7 +3208,7 @@
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Byte-identical lower-fixed implementation of bank $1F:$E501 ResetMapEntityMotionState
+- Outputs: Byte-identical lower-fixed implementation of bank $1F:$E501 ResetEntityOamAllocationState
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $07BC,$61,$62,$7000+X
 - Evidence: Static interface analysis at $0F:$E501: Guarded flow recovery: Coherent routine block immediately after RTS $E500; 20 instructions, returns and jumps; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4410,11 +4410,11 @@
 - Side effects: Direct memory writes: $06
 - Evidence: Static interface analysis at $10:$83BD: Direct call from $10:$8421; Direct call from $10:$842F; Direct call from $10:$8463; Direct call from $10:$86B4; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## PointBattleOperandToComparisonBuffer (`$10:$83C6`)
+## SetBattleAddCapTo999 ($10:$83C6)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Seeds the primary arithmetic operand pointer with scratch address $03E7
+- Outputs: Stores #$E7 in $03 and #$03 in $04, i.e. the numeric cap $03E7=999. Shared $8421 treats $03 onward as the cap in cap-minus-current-minus-increment arithmetic, not as a pointer to scratch memory.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $03,$04
 - Evidence: Static interface analysis at $10:$83C6: Direct call from $10:$871B; Direct call from $10:$9602; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4626,11 +4626,11 @@
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$03,$06,$72+X,$76; Direct calls: $83BA,$83BD
 - Evidence: Static interface analysis at $10:$866D: Pointer $10:$9F08 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AddExperienceCappedBelowTenMillion (`$10:$867B`)
+## AddExperienceCappedAtTenMillion ($10:$867B)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Adds the requested experience through the shared capped-add path with a maximum below 10,000,000
+- Outputs: Cap bytes $80,$96,$98 form $989680=10,000,000. Shared $8421 allows equality and substitutes cap-current on overflow, so the maximum is exactly ten million, not below it.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$03,$04,$05,$06,$72+X; Direct calls: $83BA,$83BD
 - Evidence: Static interface analysis at $10:$867B: Pointer $10:$9E7E (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4644,11 +4644,11 @@
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$03,$04,$05,$06,$72,$72+X,$73,$74; Direct calls: $83BA,$83BD
 - Evidence: Static interface analysis at $10:$868D: Pointer $10:$9EC6 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## SubtractBattleValueWithoutBorrowMode (`$10:$86AD`)
+## ClearHighWorkOperandAndSubtractFromInlineRecord ($10:$86AD)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Clears subtraction mode before subtracting the current battle value from the pointed record
+- Outputs: STA $77 clears the high arithmetic operand byte, then falls through $86B1 to $8460, which subtracts $76 onward from $72 onward. $77 is an operand, not a subtraction-mode flag.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$0071+X,$06,$77; Direct calls: $83BD
 - Evidence: Static interface analysis at $10:$86AD: Pointer $10:$9E46 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4662,20 +4662,20 @@
 - Side effects: Direct memory writes: ($79),Y,$0071+X,$06; Direct calls: $83BD
 - Evidence: Static interface analysis at $10:$86B1: Pointer $10:$9E38 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## SubtractBattleValueSpanIntoInlineRecord (`$10:$86B4`)
+## SubtractWorkSpanFromBattleValueIntoInlineRecordIfNonnegative ($10:$86B4)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Subtracts $72 onward from $76 onward and writes a nonnegative result to the inline record
+- Outputs: LDA $72,X / SBC $76,X computes $72-$76, the reverse of the note. Borrow skips all stores; otherwise the difference is copied through ($79),Y.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$06; Direct calls: $83BD
 - Evidence: Static interface analysis at $10:$86B4: Pointer $10:$9EC8 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## LoadTwoBitBattleValueFromBankedTable (`$10:$86D5`)
+## LoadTenBitBattleValueFromBankedTable ($10:$86D5)
 
 - Calling convention: pointer-dispatched entry; JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: For an eligible target, loads a banked byte, masks it to two bits, and zero-extends the result
+- Outputs: Selector 1 produces the low byte in $72; bank $18 offset $0F is masked with #$03 and stored in HIGH byte $73; only $74-$75 are cleared. This is a ten-bit result, not a zero-extended two-bit result.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $72,$73,$74,$75; Direct calls: $870C,$87D7,$C3EA
 - Evidence: Static interface analysis at $10:$86D5: Direct call from $10:$83E6; Direct call from $10:$87BE; Pointer $10:$9E32 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4698,20 +4698,20 @@
 - Side effects: Direct memory writes: $6E59; Direct calls: $A6A2
 - Evidence: Static interface analysis at $10:$870C: Direct call from $10:$84F1; Direct call from $10:$85E5; Direct call from $10:$8642; Direct call from $10:$86DD; Direct call from $10:$86FE; Direct call from $10:$8750; Direct call from $10:$8781; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CompareBattleValueAgainstScratchRecord (`$10:$8717`)
+## AddToBattleValueCappedAt999 (`$10:$8717`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Clears comparison mode and compares the current battle value against the record at $03E7
+- Outputs: Clears $77, sets the $03E7 (999) cap and adds the operand to the selected record value; operation 3 uses it for maximum HP
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$06,$72+X,$77; Direct calls: $83BA,$83BD,$83C6
 - Evidence: Static interface analysis at $10:$8717: Pointer $10:$9E36 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CompareHeroBattleValueAgainstScratch (`$10:$8721`)
+## AddToSpellcasterValueCappedAt999 (`$10:$8721`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Runs the scratch-record comparison only for the first five playable character IDs
+- Outputs: Runs the 999-capped add only when the party character ID is below five (Hero, Cristo, Nara, Mara, Brey); operation 0A uses it for maximum MP
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$06,$72+X,$77; Direct calls: $83BA,$83BD,$83C6
 - Evidence: Static interface analysis at $10:$8721: Pointer $10:$9E44 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4770,11 +4770,11 @@
 - Side effects: Direct memory writes: $615B
 - Evidence: Static interface analysis at $10:$879B: Pointer $10:$9ECC (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## SubtractPartyRecordWordFromWorkByte (`$10:$87A1`)
+## ComparePartyRecordWordWithWorkByte ($10:$87A1)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Subtracts work byte $76 from the selected-party-record word at offsets three and four
+- Outputs: SEC; record[3]-$76; record[4]-borrow; RTS. The subtraction direction is record word minus work byte, opposite the label; no record write occurs, and carry reports the comparison.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $10:$87A1: Pointer $10:$9E48 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -4959,38 +4959,38 @@
 - Side effects: Direct memory writes: ($79),Y,$07; Direct calls: $8AE7
 - Evidence: Static interface analysis at $10:$89AA: Direct call from $10:$8944; Direct call from $10:$8993; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountEquippedWeapons (`$10:$89CD`)
+## CountInventoryWeapons ($10:$89CD)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts inventory entries classified as weapons
+- Outputs: Seeds equipment type 0 and branches to $89DB: scans all nonempty inventory entries and increments $08 for a type match, without testing their equipped bit.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $07,$08,$72,$75; Direct calls: $87D7,$8A5D,$8A7A,$8A97,$8A9E,$8AA6,$8AE7
 - Evidence: Static interface analysis at $10:$89CD: Pointer $10:$9E9E (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountEquippedArmor (`$10:$89D1`)
+## CountInventoryArmor ($10:$89D1)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts inventory entries classified as armor
+- Outputs: Seeds equipment type 1 and branches to $89DB: counts all armor-type entries, not only equipped armor; no high-bit equipment test gates the count.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $07,$08,$72,$75; Direct calls: $87D7,$8A5D,$8A7A,$8A97,$8A9E,$8AA6,$8AE7
 - Evidence: Static interface analysis at $10:$89D1: Pointer $10:$9EA0 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountEquippedShields (`$10:$89D5`)
+## CountInventoryShields ($10:$89D5)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts inventory entries classified as shields
+- Outputs: Seeds equipment type 2 and branches to $89DB: counts all shield-type entries, not only equipped shields; no high-bit equipment test gates the count.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $07,$08,$72,$75; Direct calls: $87D7,$8A5D,$8A7A,$8A97,$8A9E,$8AA6,$8AE7
 - Evidence: Static interface analysis at $10:$89D5: Pointer $10:$9EA2 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountEquippedHelmets (`$10:$89D9`)
+## CountInventoryHelmets ($10:$89D9)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts inventory entries classified as helmets
+- Outputs: Seeds equipment type 3; scans raw slots $13-$1A or resolved slots 0-7; increments $08 on CPX $07 equality regardless of equipped bit, stores count in $75 and resolves the requested item into $72.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $07,$08,$72,$75; Direct calls: $87D7,$8A5D,$8A7A,$8A97,$8A9E,$8AA6,$8AE7
 - Evidence: Static interface analysis at $10:$89D9: Pointer $10:$9EA4 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -5283,20 +5283,20 @@
 - Side effects: Direct calls: $8490
 - Evidence: Static interface analysis at $10:$905A: Direct call from $10:$8F08; Direct call from $10:$8F42; Direct call from $10:$8F92; Direct call from $10:$9007; Direct call from $10:$9048; Direct call from $10:$90DB; Direct call from $10:$90E5; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountMatchingClassBitsInTwelveEntryWindow (`$10:$9078`)
+## FindClassEntryInEighteenOrTwelveEntryWindow ($10:$9078)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts matches for $77 across the selected twelve-entry class table window
+- Outputs: Searches for $77 in $9119,X, stops at FIRST equality and returns relative bit index in X with carry set; not a match count. Class zero uses LDY #$12 (18 entries), other class windows use #$0C (12).
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $10:$9078: Direct call from $10:$90D6; Direct call from $10:$90EC; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountMatchingClassBitsInEightEntryWindow (`$10:$90A4`)
+## FindClassEntryInEightEntryWindow ($10:$90A4)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts matches for $77 across the selected eight-entry class table window
+- Outputs: Searches $915B,X for FIRST equality with $77 in an eight-entry window; returns adjusted bit index in X/carry set, carry clear on exhaustion. It does not count matches.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $10:$90A4: Direct call from $10:$90E0; Direct call from $10:$90F4; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -5544,11 +5544,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $10:$9601: Pointer $10:$9E58 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E60 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E68 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CompareBattleValueAgainstScratch (`$10:$9602`)
+## AddToBattleValueCappedAt999Entry ($10:$9602)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Compares the current battle value against the scratch record at $03E7
+- Outputs: Calls $83C6 to load cap $03E7=999, then JMP $8421, which adds $76 onward to the current record value and writes it capped. It is not a read-only comparison against scratch $03E7.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$06,$72+X; Direct calls: $83BA,$83BD,$83C6
 - Evidence: Static interface analysis at $10:$9602: Pointer $10:$9E62 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E6A (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -5562,20 +5562,20 @@
 - Side effects: Direct calls: $8460
 - Evidence: Static interface analysis at $10:$9608: Pointer $10:$9E5C (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E64 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); Pointer $10:$9E6C (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CompareBattleSpanAgainstFFThresholdEntry (`$10:$960C`)
+## AddToBattleValueCappedAt255ThresholdEntry ($10:$960C)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Seeds threshold $FF and enters shared battle-span comparison
+- Outputs: Loads #$FF into $03 and JMPs $8421, the cap-and-add implementation that writes ($79),Y; the note incorrectly describes a comparison-only entry.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($79),Y,$00+X,$0075+X,$03,$06,$72+X; Direct calls: $83BA,$83BD
 - Evidence: Static interface analysis at $10:$960C: Pointer $10:$9E5A (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CountMatchingBattleValuesAcrossSixSlots (`$10:$9613`)
+## FindFirstPackedStatusOrdinal (`$10:$9613`)
 
 - Calling convention: pointer-dispatched entry; JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Probes a six-byte table and returns the number of matching battle values in $72
+- Outputs: Returns ordinal 1 in $72 when packed selector seven (alive) is clear, otherwise ordinal 2-7 for the first set selector probed from $9644, or ordinal 0 when none is set
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $72,$76; Direct calls: $9731
 - Evidence: Static interface analysis at $10:$9613: Direct call from $10:$8554; Pointer $10:$9EB4 (113-entry battle-action handler table selected by $6E0B and dispatched at $822E-$823B); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -6039,20 +6039,20 @@
 - Side effects: Direct memory writes: $00+X,$01+X; Direct calls: $A1BF,$A23D
 - Evidence: Static interface analysis at $10:$A1D4: Pointer $10:$8030 (64-entry code dispatch table followed by code at $8080); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RollSixteenNibbleRandomWord (`$10:$A202`)
+## RollSixteenFiveBitRandomByteStoredAsWord ($10:$A202)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sums sixteen random nibbles into a nonzero two-byte result
+- Outputs: Seeds mask #$1F and loop count #$10, not a nibble mask. Shared $A210 sums sixteen masked samples plus initial 8, subtracts $80, retries unless the high result is zero, then returns $8B=0; low byte zero is allowed.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0F,$8A,$8B; Direct calls: $A23D
 - Evidence: Static interface analysis at $10:$A202: Pointer $10:$8032 (64-entry code dispatch table followed by code at $8080); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RollThirtyTwoNibbleRandomWord (`$10:$A20A`)
+## RollThirtyTwoNibbleRandomByteStoredAsWord ($10:$A20A)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sums thirty-two random nibbles into a nonzero two-byte result
+- Outputs: Uses mask #$0F/count #$20, initial total 16, subtracts $80, retries when the high subtraction result is nonzero and returns $8B=0. The note incorrectly claims a nonzero result: an adjusted low result of zero is accepted.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0F,$8A,$8B; Direct calls: $A23D
 - Evidence: Static interface analysis at $10:$A20A: Pointer $10:$8034 (64-entry code dispatch table followed by code at $8080); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -6084,11 +6084,11 @@
 - Side effects: Advances RNG state when the input is nonzero
 - Evidence: Eight-iteration count at $A25E-$A273; selected index returned through $0F at $A287-$A29F; FCEUX observed input $01 returning index $00
 
-## SelectRandomSetBitCore (`$10:$A268`)
+## SelectRandomSetBitUsingQuantizedBuckets ($10:$A268)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Counts set bits, chooses one uniformly through the RNG, and returns its bit index
+- Outputs: Counts set bits, divides $00FF by that count, and compares cumulative integer bucket thresholds with one random byte; this is not exactly uniform as the note claims. With two set bits the first threshold is 128, giving 129 versus 127 possible random-byte outcomes.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0C,$0D,$0E,$0F; Direct calls: $A23D,$C851
 - Evidence: Static interface analysis at $10:$A268: Direct call from $10:$A24A; Direct call from $10:$A260; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -6318,11 +6318,11 @@
 - Side effects: Direct memory writes: $7E
 - Evidence: Static interface analysis at $10:$A702: Pointer $10:$AB00 (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ExtractBattleRecordMiddleTwoBits (`$10:$A70A`)
+## ExtractBattleRecordBitsTwoThroughFour ($10:$A70A)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Extracts packed bits two and three from work byte $7E
+- Outputs: Masks $7E with $1C and shifts right twice, extracting original bits 2 through 4 as a three-bit value.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $7E
 - Evidence: Static interface analysis at $10:$A70A: Pointer $10:$AB02 (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -6480,20 +6480,20 @@
 - Side effects: Direct memory writes: ($84),Y,$04+X,$05,$7E,$7F,$82,$83; Direct calls: $A65A,$A725
 - Evidence: Static interface analysis at $10:$A95E: Direct call from $10:$A9C2; Pointer $10:$AAB0 (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## LoadTailBitsAndDispatchBattleSpanUpdate (`$10:$A966`)
+## LoadMaximumHpAndUpdateCurrentHpSelector5 ($10:$A966)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Loads packed byte and tail bits before entering the common five-byte span update
+- Outputs: Calls the ten-bit packed-stat loader then loads A=5 as a FIELD SELECTOR. $A65A tables give selector 5 offset $0A and width 2; it is not a five-byte span as the note claims.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($84),Y,$04+X,$05,$7E,$7F,$82,$83; Direct calls: $A65A,$A725
 - Evidence: Static interface analysis at $10:$A966: Pointer $10:$AAAA (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AddPackedPartyStatCappedAt255 (`$10:$A96E`)
+## RestoreBattleSlotMpToMaximum ($10:$A96E)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Loads a packed party-stat byte, seeds a maximum of 255, and enters the shared capped-add path
+- Outputs: Seeds increment $82=$FF, then $A972 clears $83, loads packed maximum MP into cap $7E, and selects field 6 (offset $0C,width 1) for $A9DC. The cap is the loaded maximum, not constant 255.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($84),Y,$04+X,$05,$7E,$7F,$82,$83; Direct calls: $A65A,$A721
 - Evidence: Static interface analysis at $10:$A96E: Pointer $10:$AAC0 (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -6588,11 +6588,11 @@
 - Side effects: Direct memory writes: ($84),Y,$82,$83; Direct calls: $A95E
 - Evidence: Static interface analysis at $10:$A9C2: Pointer $10:$AAB2 (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClearMaximumHpLowByte (`$10:$A9D5`)
+## ClearBattleRecordMpByte ($10:$A9D5)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Clears the low byte of the selected party record Maximum HP field at offset $0C
+- Outputs: LDY #$0C; LDA #0; STA ($84),Y. $84 is the combatant record pointer, not persistent character pointer $79. Record initialization $A3D5 fills offset $0C from selector 8, while HP is the word at $0A-$0B. Not Maximum HP low byte.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: ($84),Y
 - Evidence: Static interface analysis at $10:$A9D5: Pointer $10:$AABE (48-entry battle-record operation table selected by $6E59 and dispatched at $A66E-$A680); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -7596,11 +7596,11 @@
 - Side effects: Direct memory writes: $09,$0D; Direct calls: $AD26,$AD4E,$AD57; BRK services (operand bytes): $29/$C3/$00,$29/$C3/$0D,$29/$C3/$0E,$2D/$B3
 - Evidence: Static interface analysis at $10:$BB7E: Pointer $10:$B569 (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); Pointer $10:$B56B (120-entry battle-effect handler table selected by $0B and dispatched at $B468-$B496; $F7 is handled as a sentinel); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClearCandidateBitByIndex (`$10:$BBC5`)
+## ClearCandidateBitByAccumulatorIndex ($10:$BBC5)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Clears the candidate bit indexed by Y
+- Outputs: Entry TAY overwrites Y with incoming A, then builds an inverted one-hot mask and ANDs $09. Index is supplied in A, not Y as stated in the note.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $09
 - Evidence: Static interface analysis at $10:$BBC5: Direct call from $10:$AE35; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -8595,11 +8595,11 @@
 - Side effects: Direct memory writes: $00,$01,$7363,$FA; Direct calls: $90DB,$938A,$939C,$97E6,$9817,$9851,$9878,$9916,$A63E,$A69F,$A6E3,$A78B,$A7C4,$ACBF,$B31F,$BF2E; BRK services (operand bytes): $00/$53,$06/$1F,$07/$1F,$0F/$53,$1B/$0F,$29/$C3/$04,$29/$C3/$05,$2B/$53,$2D/$A3,$46/$93/$14,$46/$93/$15,$68/$73,$E4/$D3/$06,$E4/$D3/$07,$E4/$D3/$49,$F2/$D3/$04
 - Evidence: Static interface analysis at $11:$970C: Direct call from $11:$96EE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ReportBattleMissForTargetSide (`$11:$97E6`)
+## CompareBattleTargetSideWithC0 ($11:$97E6)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Prints the target-side miss message and returns the service-prefixed comparison result for A below $C0
+- Outputs: At EXACT $97E6: BRK inline $1B,$0F; CMP #$C0; RTS. It emits no message. The miss-message/sound code starts after that RTS at $97EC and is not reached by this entry.
 - Clobbers: flags (conservative static analysis)
 - Side effects: BRK services (operand bytes): $1B/$0F
 - Evidence: Static interface analysis at $11:$97E6: Direct call from $11:$9726; Direct call from $11:$9786; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -8964,11 +8964,11 @@
 - Side effects: Direct memory writes: $6F,$7C; BRK services (operand bytes): $07/$1F,$2A/$A3,$44/$53,$E6/$D3/$01,$E6/$D3/$02
 - Evidence: Static interface analysis at $11:$9D15: Pointer $11:$A454 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplyMaximumHpEffectWhenAllowed (`$11:$9D1C`)
+## ApplyParalysisCureEffect (`$11:$9D1C`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Applies the Maximum HP operation when carry and overflow gates permit it
+- Outputs: Clears packed status selector six (paralysis) through $9D6E with message index $0D; handler for action $2E and the Full Moon Herb action $98
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$7C; BRK services (operand bytes): $07/$1F,$2B/$A3,$45/$53,$E4/$D3/$1A,$E6/$D3/$01,$E6/$D3/$02
 - Evidence: Static interface analysis at $11:$9D1C: Pointer $11:$A466 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A53A (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -9477,29 +9477,29 @@
 - Side effects: Direct memory writes: $6E0F,$7324+X; Direct calls: $A3B5
 - Evidence: Static interface analysis at $11:$A339: Pointer $11:$8014 (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ReadBattleSlotDescriptorHighNibble (`$11:$A34A`)
+## ReadBattleSlotDescriptorStateBits4Through6 ($11:$A34A)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Returns the current slot descriptor's high-nibble ordinal
+- Outputs: Loads descriptor then tail-calls $A35C, which shifts four times and ANDs #$07. Bit 7 is discarded; output is the three-bit state field, not the entire high nibble.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F
 - Evidence: Static interface analysis at $11:$A34A: Pointer $11:$8008 (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ReadBattleSlotStateHighNibble (`$11:$A354`)
+## ReadBattleSlotStateBits4Through6 ($11:$A354)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Returns computed slot state high-nibble ordinal
+- Outputs: Loads computed $7300,X and falls through $A35C: four LSRs and AND #$07 discard bit 7 and return only bits 4-6.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F; Direct calls: $A3B5
 - Evidence: Static interface analysis at $11:$A354: Pointer $11:$800A (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ExtractBattleSlotStateHighNibble (`$11:$A35C`)
+## ExtractBattleSlotStateBits4Through6 ($11:$A35C)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Extracts the three-bit high state field from a battle slot descriptor or state byte
+- Outputs: Four LSRs followed by AND #$07 returns three bits (original bits 4-6), not the four-bit high nibble; the note correctly calls it a three-bit field.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F
 - Evidence: Static interface analysis at $11:$A35C: Tail jump from $11:$A351; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -9513,29 +9513,29 @@
 - Side effects: Direct memory writes: $6E0F
 - Evidence: Static interface analysis at $11:$A362: Tail jump from $11:$A2E1; Tail jump from $11:$A30E; Tail jump from $11:$A336; Tail jump from $11:$A347; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WriteBattleSlotDescriptorHighNibble (`$11:$A36B`)
+## WriteBattleSlotDescriptorStateFieldPreservingSignAndLowNibble ($11:$A36B)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Writes a high nibble to the slot descriptor while preserving its low nibble
+- Outputs: Shifts A left four times, masks old descriptor with #$8F and ORs the shifted value. It preserves old sign bit 7 as well as the low nibble, so cannot replace the entire high nibble.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F,$72F4+X
 - Evidence: Static interface analysis at $11:$A36B: Pointer $11:$8010 (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WriteBattleSlotStateHighNibble (`$11:$A37E`)
+## WriteBattleSlotStateFieldPreservingSignAndLowNibble ($11:$A37E)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Writes a high nibble to slot state $7300 while preserving its low nibble
+- Outputs: Computes row/offset index, shifts A left four, ANDs old $7300,X with #$8F, ORs new field and stores. Old bit 7 is preserved, not replaced as a full high-nibble write would require.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F,$7300+X; Direct calls: $A3C2
 - Evidence: Static interface analysis at $11:$A37E: Pointer $11:$8018 (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## FindBattleSlotByDescriptorLowNibble (`$11:$A394`)
+## FindBattleSlotByMaskedDescriptorKey ($11:$A394)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Finds a non-full descriptor whose low nibble matches the request
+- Outputs: Skips descriptors whose bits 4-6 equal #$70, then compares (descriptor AND #$8F) with request. Bit 7 participates in equality; it does not compare the low nibble alone.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6E0F
 - Evidence: Static interface analysis at $11:$A394: Pointer $11:$8012 (25-entry code dispatch table; first target is $8032); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -9855,11 +9855,11 @@
 - Side effects: Direct memory writes: $00,$C7; Direct calls: $ACB0,$BF2E; BRK services (operand bytes): $06/$1F,$07/$1F,$14/$4F,$15/$4F,$29/$C3/$0A,$E4/$D3/$83
 - Evidence: Static interface analysis at $11:$AC79: Direct call from $11:$8969; Direct call from $11:$89CE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TestFourBattleTargetMasks (`$11:$ACB0`)
+## AnyBattleTargetMaskMatches ($11:$ACB0)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Tests four battle target masks and returns clear only when one matches
+- Outputs: Tests X=3 down to 0 through BRK $29,$C3,$0A. A carry-clear service result branches to $ACBD: SEC; RTS. Exhausting all four tests returns CLC. The note reverses the result polarity.
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: BRK services (operand bytes): $29/$C3/$0A
 - Evidence: Static interface analysis at $11:$ACB0: Direct call from $11:$ACA2; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -10035,11 +10035,11 @@
 - Side effects: Direct calls: $9204,$BF2E; BRK services (operand bytes): $07/$1F,$07/$2F,$2B/$C3/$0F,$B2/$D3/$01
 - Evidence: Static interface analysis at $11:$AE8B: Pointer $11:$A5B0 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AdvanceAlternateBattleResultBy101 (`$11:$AE9D`)
+## RollAlternateBattleAmount500To600AndConditionallyDouble ($11:$AE9D)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Seeds alternate result pair $7C-$7D to 500, adds 101, and advances it left
+- Outputs: Seeds $7C-$7D=$01F4 (500), loads A=$65 then BRK $17,$0F (bank-10 random-below-A service), adds the returned 0..100 with AddByteToPointer and conditionally doubles. It does not add fixed 101 as the note claims.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7C,$7D; Direct calls: $A01F,$C813; BRK services (operand bytes): $02/$A3,$07/$1F,$17/$0F,$E6/$D3/$01
 - Evidence: Static interface analysis at $11:$AE9D: Pointer $11:$A48A (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -10098,11 +10098,11 @@
 - Side effects: Direct memory writes: $6E7F,$72E7,$7E; Direct calls: $9316,$9D4F; BRK services (operand bytes): $29/$C3/$0A,$29/$C3/$0D,$29/$C3/$0E,$5D/$33,$62/$23/$0B,$62/$23/$4B
 - Evidence: Static interface analysis at $11:$AFF4: Direct call from $11:$A84C; Pointer $11:$A4B4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A5AC (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ProjectBattleStatusFromSelectionFlags (`$11:$AFFF`)
+## RemoveUsedBattleItem (`$11:$AFFF`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Projects pending selection byte $7355 into battle status when chapter and state gates pass
+- Outputs: Removes the item a party member just used (action mode two) through operations $31/$30 when its $10:$8CE4 flags have bit $04 set and bit $10 clear; runs before the targeting loop
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $00; BRK services (operand bytes): $05/$1F,$06/$1F,$0D/$0F,$0E/$0F,$30/$73,$31/$73
 - Evidence: Static interface analysis at $11:$AFFF: Direct call from $11:$88FF; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -10161,11 +10161,11 @@
 - Side effects: BRK services (operand bytes): $05/$3F,$07/$1F,$09/$73,$09/$B3,$66/$D3/$01,$E4/$D3/$1A
 - Evidence: Static interface analysis at $11:$B07E: Direct call from $11:$B055; Direct call from $11:$B077; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## QueueNoEffectForActiveTarget (`$11:$B0A4`)
+## ApplyPoisonCureEffect (`$11:$B0A4`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Prints But nothing happens and queues the default no-effect outcome for the active target
+- Outputs: Clears packed status selector five (poison) through $9D6E for a party target and prints But nothing happens for a monster target; Antidote Herb action $A7
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$7C; BRK services (operand bytes): $07/$1F,$2B/$A3,$45/$53,$E4/$D3/$1A,$E6/$D3/$01,$E6/$D3/$02
 - Evidence: Static interface analysis at $11:$B0A4: Pointer $11:$A558 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -10260,11 +10260,11 @@
 - Side effects: Direct memory writes: $70,$7D; BRK services (operand bytes): $07/$1F,$0F/$A3,$10/$B3,$11/$A3,$12/$53,$13/$A3,$14/$B3,$15/$73,$15/$B3,$16/$73,$17/$53,$17/$A3,$18/$B3,$19/$73,$19/$A3,$1A/$73,$1B/$53,$1D/$73,$1E/$73,$2B/$C3/$0C,$45/$93/$1C
 - Evidence: Static interface analysis at $11:$B11F: Direct call from $11:$AED0; Direct call from $11:$AF30; Direct call from $11:$B105; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClearBattleActionModeBitZeroDirect (`$11:$B17C`)
+## RunPhysicalAttackEntry ($11:$B17C)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Clears bit zero in battle action state $72E7
+- Outputs: JSR RunPhysicalAttack ($96DB); RTS. Callee clears flag bit 0, then probes and resolves physical hits, so this is a full physical-attack wrapper rather than a direct bit-clear-only routine.
 - Clobbers: flags (conservative static analysis)
 - Side effects: Direct calls: $96DB
 - Evidence: Static interface analysis at $11:$B17C: Pointer $11:$A4F4 (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); Pointer $11:$A50E (266-entry battle-action dispatch table consumed through the indirect jump at $8CFC-$8D0C); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -11790,11 +11790,11 @@
 - Side effects: Direct memory writes: $00,$01; Direct calls: $C727
 - Evidence: Static interface analysis at $12:$982F: Direct call from $12:$981B; Direct call from $12:$988F; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## PrimeLighthouseFireSpriteBuffer (`$12:$985A`)
+## PrimeLighthouseFirePaletteBuffer ($12:$985A)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Initializes the Lighthouse fire sprite buffer, queues the update, and waits for NMI
+- Outputs: Fills $0602-$0605 with #$0F, calls SubmitPaletteWithoutFade and WaitForNmi. These are palette-buffer bytes, not sprite/OAM staging.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0602+X; Direct calls: $C5B9,$FF74
 - Evidence: Static interface analysis at $12:$985A: Direct call from $12:$97CA; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -11826,29 +11826,29 @@
 - Side effects: Direct memory writes: $05,$0A; Direct calls: $98F6,$993E,$C626,$FF74
 - Evidence: Static interface analysis at $12:$98AD: Direct call from $12:$9801; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## LoadLighthouseFireSpriteFrame (`$12:$98F6`)
+## LoadLighthouseFirePaletteFrame ($12:$98F6)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Copies the selected Lighthouse fire frame bytes into the sprite staging buffer
+- Outputs: Copies three indexed bytes to $0606-$0608 and a fourth to $0602, calls SubmitPaletteWithoutFade, then waits six frames. This changes palette colors, not sprite frames.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0602,$0606+Y; Direct calls: $C5B9,$C90C
 - Evidence: Static interface analysis at $12:$98F6: Direct call from $12:$97D2; Direct call from $12:$98C7; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CopyLighthouseFireOamTemplate (`$12:$991A`)
+## CopyLighthouseFirePaletteTemplate ($12:$991A)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Copies the 24-byte Lighthouse fire OAM template into sprite buffer $05FC
+- Outputs: Copies 24 bytes using Y=$18 down to 1 from $9925+Y into $05FC+Y ($05FD-$0614); $05FC itself is not written. Destination is palette buffer, not OAM/sprite memory $0200.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $05FC+Y
 - Evidence: Static interface analysis at $12:$991A: Direct call from $12:$97EA; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## QueueLighthouseFireAttributeDiffs (`$12:$993E`)
+## QueueLighthouseFireAttributeCoordinatesFromScript ($12:$993E)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Compares packed attribute nibbles and queues only changed Lighthouse fire attributes
+- Outputs: Reads packed coordinate bytes through ($03),Y, splits high/low nibbles, applies $07/$08 offsets and bounds, then queues attribute value $05. No existing attribute values are read or compared; the note incorrectly describes changed-attribute comparison.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$02,$03,$04,$09; Direct calls: $C626,$C727,$FF74
 - Evidence: Static interface analysis at $12:$993E: Direct call from $12:$97F6; Direct call from $12:$980C; Direct call from $12:$989E; Direct call from $12:$98B9; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -12996,29 +12996,29 @@
 - Side effects: Direct memory writes: $00,$01,$6DF9; Jumps not followed: ($0000)
 - Evidence: Static interface analysis at $12:$AF0F: Direct call from $12:$AE86; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunSelectionConfirmationLoop (`$12:$AF30`)
+## UseLunch (`$12:$AF30`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Starts the item-use selection confirmation loop
+- Outputs: Lunch handler (item $74): prints its opening message and joins the Medical Herb recovery path at $AF39
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $AF5A,$B533,$B569,$B56D,$B571,$B5EF,$C8E1,$C90C; BRK services (operand bytes): $07/$6F/$10,$27/$0F
 - Evidence: Static interface analysis at $12:$AF30: Pointer $12:$B6A8 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunSelectionConfirmationLoopFromReload (`$12:$AF36`)
+## UseMedicalHerb (`$12:$AF36`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Alternate entry into item-use confirmation after state reload
+- Outputs: Medical Herb handler (item $53): prints its opening message and restores [0,11)+$1E HP to a living recipient
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $AF5A,$B533,$B569,$B56D,$B571,$B5EF,$C8E1,$C90C; BRK services (operand bytes): $07/$6F/$10,$27/$0F
 - Evidence: Static interface analysis at $12:$AF36: Pointer $12:$B67A (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunSelectionConfirmation (`$12:$AF39`)
+## ItemUse_ApplyHerbRecovery (`$12:$AF39`)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Waits, validates the primary item-use selection, prompts for correction, and selects the resulting mode
+- Outputs: Waits twenty frames, prints message two for a dead recipient (operation $42 result one), otherwise rolls and adds herb HP and prints message one
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $AF5A,$B533,$B569,$B56D,$B5EF,$C8E1,$C90C; BRK services (operand bytes): $07/$6F/$10,$27/$0F
 - Evidence: Static interface analysis at $12:$AF39: Tail jump from $12:$AF33; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -13032,11 +13032,11 @@
 - Side effects: Direct calls: $C8E1
 - Evidence: Static interface analysis at $12:$AF55: Tail jump from $12:$AF9D; Tail jump from $12:$B104; Tail jump from $12:$B147; Tail jump from $12:$B1FE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_SeedSelectionPromptOperands (`$12:$AF5A`)
+## ItemUse_RollHerbRecoveryAmount (`$12:$AF5A`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Builds item-use prompt operands from selector $0B into $6F-$70
+- Outputs: Rolls [0,11)+$1E into $6F-$70 and applies record operation two (HP capped at maximum HP) to the recipient
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$70; Direct calls: $B521,$B52C
 - Evidence: Static interface analysis at $12:$AF5A: Direct call from $12:$AF43; Direct call from $12:$AF7D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -13050,20 +13050,20 @@
 - Side effects: Direct memory writes: $6279,$627A,$6F; Direct calls: $AF5A; BRK services (operand bytes): $30/$33
 - Evidence: Static interface analysis at $12:$AF73: Pointer $12:$8052 (50-entry code dispatch table; first target is $8064); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunSelectionRefreshFlow (`$12:$AF89`)
+## UseAntidoteHerb (`$12:$AF89`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs alternate item-use confirmation with selector five and value $45
+- Outputs: Antidote Herb handler (item $54): clears packed status selector five (poison) on the recipient through operation $45; message two when it was already clear
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F; Direct calls: $B52C,$B569,$B56D,$B571,$B5EF,$C8E1
 - Evidence: Static interface analysis at $12:$AF89: Pointer $12:$B67C (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_HandleSelectionConfirmResult (`$12:$AFA0`)
+## UseWingOfWyvern (`$12:$AFA0`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Handles item-use confirmation and copies the accepted fifteen-byte record into $0554
+- Outputs: Wing of Wyvern handler (item $56): opens the Return destination window, applies Return map restrictions ($A974) and BRK 24/EF travel, and keeps the wing unless travel completes
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0539,$0554+X,$F6; Direct calls: $A974,$B56D,$B571,$C8E1,$C90C; BRK services (operand bytes): $07/$6F/$16,$07/$6F/$50,$24/$EF,$F4/$3B
 - Evidence: Static interface analysis at $12:$AFA0: Pointer $12:$B67E (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -13077,110 +13077,110 @@
 - Side effects: Direct calls: $C8E1
 - Evidence: Static interface analysis at $12:$AFCB: Tail jump from $12:$B0CA; Tail jump from $12:$B26D; Tail jump from $12:$B32B; Tail jump from $12:$B365; Tail jump from $12:$B3B8; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_StartPrimaryChoicePrompt (`$12:$AFF9`)
+## UseStrengthSeed (`$12:$AFF9`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Starts the shared item-use prompt flow with primary selector $11
+- Outputs: Strength Seed handler (item $61): enters the shared growth path with record operation $11
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $FD; Direct calls: $B021,$B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $C5/$2B
 - Evidence: Static interface analysis at $12:$AFF9: Pointer $12:$B680 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_StartAlternateChoicePrompt (`$12:$AFFD`)
+## UseAgilitySeed (`$12:$AFFD`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Starts the shared item-use prompt flow with alternate selector $13
+- Outputs: Agility Seed handler (item $62): enters the shared growth path with record operation $13
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $FD; Direct calls: $B021,$B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $C5/$2B
 - Evidence: Static interface analysis at $12:$AFFD: Pointer $12:$B682 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunDefaultChoicePrompt (`$12:$B001`)
+## UseLuckSeed (`$12:$B001`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs the default item-use choice flow and commits its nonzero result or failure service
+- Outputs: Luck Seed handler (item $63): applies the rolled growth with record operation $24, printing the amount or the no-effect message
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $FD; Direct calls: $B021,$B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $C5/$2B
 - Evidence: Static interface analysis at $12:$B001: Pointer $12:$B684 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_InitializeChoicePrompt (`$12:$B021`)
+## ItemUse_RollSeedGrowthAmount (`$12:$B021`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Seeds item-use prompt state from mode three and clears the extended result bytes
+- Outputs: Rolls [0,3)+1 into $6F and clears $70 and $FE-$FF for a growth-seed record operation
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$70,$FE,$FF; Direct calls: $B521
 - Evidence: Static interface analysis at $12:$B021: Direct call from $12:$B007; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunBasicChoice (`$12:$B033`)
+## UseLifeforceNuts (`$12:$B033`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs the basic item-use choice flow and commits its nonzero result
+- Outputs: Lifeforce Nuts handler (item $64): rolls [0,3)+4 and applies record operation three (maximum HP capped at 999)
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$70,$FD,$FE,$FF; Direct calls: $B521,$B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $C5/$2B
 - Evidence: Static interface analysis at $12:$B033: Pointer $12:$B686 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunExtendedChoice (`$12:$B061`)
+## UseMysticAcorns (`$12:$B061`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs the extended item-use choice flow and commits its nonzero result
+- Outputs: Mystic Acorns handler (item $65): rolls [0,3)+3 and applies record operation $0A (maximum MP for character IDs below five)
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$FD,$FE,$FF; Direct calls: $B521,$B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $27/$EF,$C5/$2B
 - Evidence: Static interface analysis at $12:$B061: Pointer $12:$B688 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunChoiceWithSuccessEffect (`$12:$B074`)
+## UseFullMoonHerb (`$12:$B074`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs the prompt-seeded item choice and dispatches its success or failure effect
+- Outputs: Full Moon Herb handler (item $58): clears packed status selector six (paralysis) on the recipient through operation $45
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F; Direct calls: $B52C,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $27/$EF,$C5/$2B
 - Evidence: Static interface analysis at $12:$B074: Pointer $12:$B68A (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunChoiceWithPostcheck (`$12:$B094`)
+## UseWizardsRing (`$12:$B094`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Builds item-use choice state, reads the secondary action index, and applies its follow-up availability check
+- Outputs: Wizard's Ring handler (item $59): restores [0,11)+$14 MP through operation nine, then keeps the ring unless a [0,8) roll is zero
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$70,$FD,$FE,$FF; Direct calls: $B521,$B52C,$B565,$B569,$B56D,$B571,$C8E1; BRK services (operand bytes): $83/$2B
 - Evidence: Static interface analysis at $12:$B094: Pointer $12:$B68C (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunChoiceWithPrimaryGate (`$12:$B0CD`)
+## UseMagicPotion (`$12:$B0CD`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Checks the primary item choice, builds secondary state, and chooses the resulting input behavior
+- Outputs: Magic Potion handler (item $5A): prints message three for a dead recipient, otherwise restores [0,6)+$0A MP through operation nine
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6F,$70,$FD,$FE,$FF; Direct calls: $B521,$B52C,$B533,$B565,$B569,$B56D,$B571,$B5EF,$C8E1
 - Evidence: Static interface analysis at $12:$B0CD: Pointer $12:$B68E (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_RunNestedChoice (`$12:$B107`)
+## UseLeafOfWorldTree (`$12:$B107`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Runs the primary item choice followed by its nested secondary-action gate
+- Outputs: Leaf of World Tree handler (item $57): sets the alive selector through operation $44, then copies maximum HP into HP with operation five
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $6F; Direct calls: $B52C,$B569,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $0D/$87,$23/$EF,$26/$EF,$27/$0F,$27/$EF,$45/$EF,$6A/$73
 - Evidence: Static interface analysis at $12:$B107: Pointer $12:$B690 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ClearTransitionFlag0539 (`$12:$B14A`)
+## UseFlyingShoes (`$12:$B14A`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Clears item-use transition flag $0539 and conditionally clears save-state bit two
+- Outputs: Flying Shoes handler (item $6C): requests BRK 24/EF travel with selector FF, then FE on success, clears $627B bit two and keeps the shoes
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0539,$627B; Direct calls: $B569,$B56D,$B571,$B5EF,$C8E1; BRK services (operand bytes): $07/$6F/$50,$24/$EF
 - Evidence: Static interface analysis at $12:$B14A: Pointer $12:$B692 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_CountSelectionIterationsInto6E (`$12:$B17B`)
+## UseDewOfWorldTree (`$12:$B17B`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Loads a service loop count and accumulates it into item-use byte $6E
+- Outputs: Dew of World Tree handler (item $5B): applies operation five (HP to maximum) to each living primary-roster member counted with mask one
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $00,$6E; Direct calls: $B56D,$B571,$B5EF,$C8E1,$C90C; BRK services (operand bytes): $05/$23/$01,$07/$6F/$10,$27/$0F,$62/$23/$01
 - Evidence: Static interface analysis at $12:$B17B: Pointer $12:$B694 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -13194,11 +13194,11 @@
 - Side effects: Direct memory writes: $627D; Direct calls: $B571,$C8E1,$C90C,$D218; BRK services (operand bytes): $4B/$0B,$AA/$FB
 - Evidence: Static interface analysis at $12:$B19B: Pointer $12:$B6A4 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ForceState7F (`$12:$B1F6`)
+## UseFairyWater (`$12:$B1F6`)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Sets item-use state $6E41 to $7F and enters the success tail
+- Outputs: Fairy Water handler (item $55): writes $7F to RepelStepCounter $6E41, a 127-step countdown with the Fairy Water identity bit clear
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6E41; Direct calls: $B571,$C8E1
 - Evidence: Static interface analysis at $12:$B1F6: Pointer $12:$B6A6 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -13338,47 +13338,47 @@
 - Side effects: Direct calls: $B56D,$B571,$B5EF,$C5C5,$C8E1; BRK services (operand bytes): $07/$9F,$09/$9F,$34/$FB,$3E/$EF,$4B/$0B,$6F/$33
 - Evidence: Static interface analysis at $12:$B4ED: Pointer $12:$B6B2 (33-entry map-transition handler table selected through the parallel terminated ID list at $B6BC and dispatched at $AF0F-$AF2D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ReadChoiceValue (`$12:$B521`)
+## ItemUse_RollRandomBelowLimit (`$12:$B521`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Queries the current item-use choice value and returns carry clear
+- Outputs: Returns a random value in [0,A) through bank $10 service $17 ($A1BF) with carry clear
 - Clobbers: flags (conservative static analysis)
 - Side effects: BRK services (operand bytes): $17/$0F
 - Evidence: Static interface analysis at $12:$B521: Direct call from $12:$AF5C; Direct call from $12:$B023; Direct call from $12:$B03B; Direct call from $12:$B069; Direct call from $12:$B099; Direct call from $12:$B0BC; Direct call from $12:$B0DC; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ReadPrimarySelectionIndex (`$12:$B526`)
+## ItemUse_ApplyRecordOperationToUser (`$12:$B526`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Reads the service value indexed by primary item selection $6278
+- Outputs: Applies bank $10 record operation A to the item user $6278 and returns its result
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: BRK services (operand bytes): $00/$13
 - Evidence: Static interface analysis at $12:$B526: Direct call from $12:$AE45; Direct call from $12:$AEC4; Direct call from $12:$AECD; Direct call from $12:$AF0B; Direct call from $12:$B5C8; Direct call from $12:$B5D5; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ReadSecondarySelectionIndex (`$12:$B52C`)
+## ItemUse_ApplyRecordOperationToRecipient (`$12:$B52C`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Reads the service value indexed by secondary item selection $627A
+- Outputs: Applies bank $10 record operation A to the item recipient $627A and returns its result
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: BRK services (operand bytes): $00/$13
 - Evidence: Static interface analysis at $12:$B52C: Direct call from $12:$AF69; Direct call from $12:$AF95; Direct call from $12:$B00E; Direct call from $12:$B048; Direct call from $12:$B080; Direct call from $12:$B0AA; Direct call from $12:$B0ED; Direct call from $12:$B113; Direct call from $12:$B11A; Direct call from $12:$B536; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_ReadSelectionIndexValue (`$12:$B52F`)
+## ItemUse_ApplyRecordOperationToMember (`$12:$B52F`)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Reads the item-use selection value identified by X through service $00/$13
+- Outputs: Applies bank $10 record operation A to party member X through BRK 00/13 and returns its result
 - Clobbers: flags (conservative static analysis)
 - Side effects: BRK services (operand bytes): $00/$13
 - Evidence: Static interface analysis at $12:$B52F: Tail jump from $12:$B529; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ItemUse_CheckPrimarySelectionAgainstCurrentValue (`$12:$B533`)
+## ItemUse_TestRecipientStatusResult (`$12:$B533`)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Compares a saved item selector with the current secondary-selection service result
+- Outputs: Returns carry set when record operation $42 on the recipient yields A; one means the recipient is dead
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct calls: $B52C
 - Evidence: Static interface analysis at $12:$B533: Direct call from $12:$AF3E; Direct call from $12:$B0D5; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -21801,11 +21801,11 @@
 ## Bank16_SelectTextGroup (`$16:$874C`)
 
 - Calling convention: JSR; returns with RTS
-- Inputs: Text ID/group selector in caller state
-- Outputs: Compressed-text bank and group pointer selected
-- Clobbers: A,X,Y,flags,text stream state
-- Side effects: May switch the active text bank
-- Evidence: Threshold and pointer lookup at $874C-$87A7
+- Inputs: Text ID in A; lookup selector in X
+- Outputs: Loads the selected text-group pointer into $49/$4A; saves X in $0595
+- Clobbers: A,Y,flags (X preserved)
+- Side effects: Writes $0595,$49,$4A,$5F
+- Evidence: Assembly $16:$874C-$8768 computes a text-group pointer-table offset from A/X and loads $49/$4A; physical-bank selection is separate at $16:$8769-$8785
 
 ## SelectTextBankForGroup (`$16:$8769`)
 
@@ -27981,11 +27981,11 @@
 - Side effects: Direct memory writes: $02,$04
 - Evidence: Static interface analysis at $18:$AFB9: Direct call from $18:$AF47; Direct call from $18:$AF6D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## DecodeSignedBattleAnimationOffset (`$18:$AFC9`)
+## NegateBattleAnimationOffset ($18:$AFC9)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Converts the encoded signed animation coordinate in A to magnitude
+- Outputs: Both paths compute A := (-A) modulo 256 and retain original A in X: nonnegative input uses EOR #$FF / CLC / ADC #$01; negative input uses SEC / SBC #$01 / EOR #$FF. The note claiming magnitude is false (input $01 returns $FF, not $01).
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $18:$AFC9: Direct call from $18:$AEFC; Direct call from $18:$AF06; Direct call from $18:$AF51; Direct call from $18:$AF70; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32022,20 +32022,20 @@
 - Side effects: Direct calls: $8F85,$8FC2,$8FC3,$8FD3,$9021,$908C,$90B2,$FF74
 - Evidence: Static interface analysis at $1D:$8F6A: Direct call from $1D:$8F5B; Tail jump from $1D:$8F82; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WriteTwoScanlineScrollPasses (`$1D:$8F85`)
+## WriteOneScanlineScrollPass ($1D:$8F85)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Writes two complete sixty-four-line scroll-buffer passes to PPUSCROLL
+- Outputs: LDY #$01 falls into $8F87; DEY/BNE repeats the 64-line pass Y times, so this entry performs one pass, not two.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $2005
 - Evidence: Static interface analysis at $1D:$8F85: Direct call from $1D:$8F73; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WriteScanlineScrollBuffer (`$1D:$8F87`)
+## WriteYScanlineScrollBufferPasses ($1D:$8F87)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Writes one sixty-four-line scroll-buffer pass to PPUSCROLL with cycle-timed delays
+- Outputs: The pass ends DEY/BNE $8F87; callers $925C and $9450 supply Y=$03. The note claiming one pass is not valid for this entry.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $2005
 - Evidence: Static interface analysis at $1D:$8F87: Direct call from $1D:$926D; Direct call from $1D:$9461; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32049,11 +32049,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1D:$8FC2: Direct call from $1D:$8F76; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WaitForMapEffectVblank (`$1D:$8FC3`)
+## WaitForMapEffectSpriteZeroHit ($1D:$8FC3)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: X,Y
-- Outputs: Runs a fixed delay and waits for PPU vblank
+- Outputs: BIT PPUSTATUS followed by BVC tests status bit 6 (sprite-zero hit), not bit 7 (vblank), after the fixed delay.
 - Clobbers: flags,X,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1D:$8FC3: Direct call from $1D:$8F70; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32148,11 +32148,11 @@
 - Side effects: Direct calls: $91F0
 - Evidence: Static interface analysis at $1D:$91AE: Direct call from $1D:$9197; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## BlankSecondaryNametableRowsReverse (`$1D:$91B9`)
+## BlankPpuRowsReverseAtCurrentAddress ($1D:$91B9)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: Y
-- Outputs: Blanks fifteen rows in descending width order starting at PPU address $240E
+- Outputs: Only LDY #$0E initializes the reverse pass; $00-$01 are inherited, not initialized to $240E. After $91C4 they have advanced to $25EE.
 - Clobbers: flags,Y (conservative static analysis)
 - Side effects: Direct calls: $91D7
 - Evidence: Static interface analysis at $1D:$91B9: Direct call from $1D:$9191; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32292,20 +32292,20 @@
 - Side effects: Direct memory writes: $52,$53,$7F00+Y,$7F40+Y
 - Evidence: Static interface analysis at $1D:$938D: Direct call from $1D:$925F; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## BuildMapEffectPaletteBuffer (`$1D:$93CA`)
+## BuildMapEffectPaletteBufferThroughSourceIndex31 ($1D:$93CA)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Builds the thirty-two-byte effect buffer from setup bytes $05FC-$060B
+- Outputs: Loop termination compares Y with $20, not X. Every fourth output decrements Y; 42 bytes are written to $0300-$0329 using $05FC through $061B, not a 32-byte buffer from $05FC-$060B.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0300+X,$51,$52,$53
 - Evidence: Static interface analysis at $1D:$93CA: Direct call from $1D:$922A; Direct call from $1D:$942B; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplyContractingMapEffectPhase (`$1D:$93F0`)
+## ApplyContractingMapEffectThroughSourceIndex15 ($1D:$93F0)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Offsets the first sixteen effect bytes according to contracting phase $53
+- Outputs: CPY #$10 controls termination and every fourth output decrements Y; the loop writes 22 bytes, not the first sixteen effect bytes.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0300+X,$54
 - Evidence: Static interface analysis at $1D:$93F0: Direct call from $1D:$9265; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32355,11 +32355,11 @@
 - Side effects: Writes PPU and transition state
 - Evidence: Pointer $944E installs this callback at RAM $0503-$0504
 
-## ApplyExpandingMapEffectPhase (`$1D:$9476`)
+## ApplyExpandingMapEffectThroughSourceIndex15 ($1D:$9476)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Offsets the first sixteen effect bytes after expanding phase $53 reaches $20
+- Outputs: After phase $20 this jumps into $93FA, whose Y-index termination writes 22 bytes; the note claiming sixteen bytes is incorrect.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0300+X,$54
 - Evidence: Static interface analysis at $1D:$9476: Direct call from $1D:$9459; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32490,11 +32490,11 @@
 - Side effects: Direct calls: $CBB4,$D804
 - Evidence: Static interface analysis at $1D:$960D: Direct call from $1D:$94E6; Direct call from $1D:$9591; Direct call from $1D:$95BC; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InitializeSixteenMapEffectSprites (`$1D:$9616`)
+## WaitForVisibleSpritesThenInitializeSixteenEffectSprites ($1D:$9616)
 
 - Calling convention: JSR entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Waits for prior sprites to clear, enables OAM mode, and initializes sixteen sprite coordinates
+- Outputs: The wait repeats only when all three OAM Y values $02D0/$02E0/$02F0 equal hidden value $F7, and exits when any differs; it waits for visibility, not for prior sprites to clear.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0200,$0203,$0204,$0207,$0208,$020B,$020C,$020F,$0210,$0213,$0214,$0217,$0218,$021B,$021C,$021F,$0220,$0223,$0224,$0227,$0228,$022B,$022C,$022F,$0230,$0233,$0234,$0237,$0238,$023B,$023C,$023F,$1F; Direct calls: $FF74
 - Evidence: Static interface analysis at $1D:$9616: Direct ROM analysis: Coherent dormant OAM/state update routine after RTS $9615 and ending at RTS $9696; Direct call from $1D:$9488; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32643,11 +32643,11 @@
 - Side effects: Direct calls: $98F9,$9906,$9916,$9926,$992F
 - Evidence: Static interface analysis at $1D:$98E1: Direct call from $1D:$98CE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## FindPassableUnoccupiedEntityMove (`$1D:$98E7`)
+## ScanCandidateOffsetsUntilBlockedOrPlayerReached ($1D:$98E7)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Tests alternate movement offsets until it finds a passable tile not occupied by the player
+- Outputs: Adds the second alternate offset each iteration, exits carry clear on impassable terrain, loops on player-coordinate mismatch, and discards a return address when the player is reached; it does not find a passable unoccupied destination.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct calls: $9906,$9916,$9926
 - Evidence: Static interface analysis at $1D:$98E7: Tail jump from $1D:$98D8; Tail jump from $1D:$98DE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32724,11 +32724,11 @@
 - Side effects: Direct memory writes: $6F66+X,$6F86+X,$6FA6+X,$6FC6+X
 - Evidence: Static interface analysis at $1D:$9963: Direct call from $1D:$A712; Direct call from $1D:$B052; Direct call from $1D:$B057; Direct call from $1D:$B05C; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplyPlayerPositionEventCounterBonus (`$1D:$9970`)
+## ApplyPlayerPositionScriptPointerBonus ($1D:$9970)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Matches player entity coordinates against three pairs and adds the corresponding bonus to entity $51's counter
+- Outputs: The matched bonus is added to EntityScriptPointerLow and carry increments EntityScriptPointerHigh; the note calls this a counter rather than a script pointer.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $7060+X,$7080+X
 - Evidence: Static interface analysis at $1D:$9970: Pointer $1D:$B62A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32769,11 +32769,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1D:$99E1: Pointer $1D:$B632 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## UpdateSubmapZeroDirectionalTriggerFlags (`$1D:$99F1`)
+## UpdateFirstSixDirectionalTriggerFlags ($1D:$99F1)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Matches ten player coordinate/facing records and updates the corresponding bits in $627C
+- Outputs: Starts X=$00; the scanner exits when incremented X reaches $06, so this entry checks six records, not ten. The X=$06 alternate entry handles the other four.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $627C; Direct calls: $9B6B
 - Evidence: Static interface analysis at $1D:$99F1: Pointer $1D:$B634 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -32940,29 +32940,29 @@
 - Side effects: Direct calls: $9C34; BRK services (operand bytes): $02/$EB/$08
 - Evidence: Static interface analysis at $1D:$9C07: Pointer $1D:$B652 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## IsMapTriggerPositionOccupied (`$1D:$9C26`)
+## IsMapTriggerOccupiedByPlayerOrEntitiesSixSeven ($1D:$9C26)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Returns carry set when the player or either of the first two entities occupies trigger coordinate $04,$03
+- Outputs: The helper compares $6F66,X and $6F86,X with X=$01 then $00, i.e. entities seven and six, not entities one and zero.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $9C40
 - Evidence: Static interface analysis at $1D:$9C26: Pointer $1D:$B654 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## IsMapTriggerBlockedByLeadingEntities (`$1D:$9C34`)
+## IsMapTriggerBlockedByEntitiesSixSeven ($1D:$9C34)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Tests entity one and then entity zero for trigger coordinate $04,$03
+- Outputs: X=$01 then $00 indexes bases $6F66/$6F86 in $9C40; those are entity seven and six coordinates, not the leading entities.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $9C40
 - Evidence: Static interface analysis at $1D:$9C34: Direct call from $1D:$9C19; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## IsEntityAtMapTriggerPosition (`$1D:$9C40`)
+## IsEntitySixPlusXAtMapTriggerPosition ($1D:$9C40)
 
 - Calling convention: JSR entry; tail-jump entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Returns carry set when entity X occupies trigger coordinate $04,$03
+- Outputs: Coordinates are read from $6F66,X/$6F86,X; these select entity 6+X, not entity X.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1D:$9C40: Direct call from $1D:$9C36; Tail jump from $1D:$9C3D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33165,38 +33165,38 @@
 - Side effects: Direct memory writes: $0300,$0301,$0302,$0303+X,$050B,$54,$7046+X; Direct calls: $C62D,$C90C; BRK services (operand bytes): $09/$EF
 - Evidence: Static interface analysis at $1D:$A0C8: Pointer $1D:$B666 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## MovePlayerUpAndToggleFirstEntities (`$1D:$A164`)
+## MovePlayerUpAndToggleFollowerEntities ($1D:$A164)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: At player row $13, moves player/entity zero up and toggles state bit two for the first three entities
+- Outputs: The player and entity-zero Y are decremented, but the toggle helper indexes $7001,X for X=2..0, changing entities three through one, not zero through two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $3E,$45,$6F80,$7001+X; Direct calls: $A179,$C007
 - Evidence: Static interface analysis at $1D:$A164: Pointer $1D:$B668 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## PropagateFollowerOffsetsAndToggleFirstEntities (`$1D:$A176`)
+## PropagateFollowerOffsetsAndToggleEntitiesOneToThree ($1D:$A176)
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,N,V,Z
-- Outputs: Propagates party follower offsets and toggles state bit two for entities zero through two
+- Outputs: After the follower trampoline it falls into a loop over $7001,X, X=2..0; the note says entities zero through two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7001+X; Direct calls: $C007
 - Evidence: Static interface analysis at $1D:$A176: Direct ROM scan: JSR to fixed trampoline $C007; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ToggleFirstThreeEntityStateBits (`$1D:$A179`)
+## ToggleEntityOneToThreeStateBits ($1D:$A179)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Toggles bit two and clears the high bit for entities zero through two
+- Outputs: EOR #$02/AND #$7F writes $7001,X with X=2..0: entities three, two and one, not zero, one and two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7001+X
 - Evidence: Static interface analysis at $1D:$A179: Direct call from $1D:$A173; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InitializeEntityDelayAndScriptTarget (`$1D:$A18C`)
+## InitializeEntityDelayAndLoopTarget ($1D:$A18C)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets a random entity delay and advances its map-object script pointer by two
+- Outputs: Stores current script pointer plus two to $70C0,X/$70A0,X; it does not advance current EntityScriptPointerLow/High ($7080/$7060).
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $70A0+X,$70C0+X,$7180+X; Direct calls: $C891
 - Evidence: Static interface analysis at $1D:$A18C: Pointer $1D:$B66A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33246,11 +33246,11 @@
 - Side effects: Direct memory writes: $0530,$0531,$0532,$0533,$7060+X,$7080+X; Direct calls: $98BD,$A21C
 - Evidence: Static interface analysis at $1D:$A213: Pointer $1D:$B672 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AssignScriptToOpenEntityAndStartScene (`$1D:$A21C`)
+## AssignScriptWhenEntityScanReachesPlayerAndStartScene ($1D:$A21C)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Finds an open entity, assigns entity seven's script pointer, and starts the scene
+- Outputs: The $98BD scan returns carry set by reaching the player and carry clear on blocked terrain; this is not an open-entity search. It assigns entity seven pointer plus one on carry set.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0530,$0531,$0532,$0533,$7060+X,$7080+X; Direct calls: $98BD
 - Evidence: Static interface analysis at $1D:$A21C: Direct call from $1D:$A215; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33291,11 +33291,11 @@
 - Side effects: Direct memory writes: $51,$6F48,$6F49,$6F4C,$6F4D,$6F58,$7040+X; Direct calls: $995E,$A2F3,$B16B,$D1F3; BRK services (operand bytes): $07/$6F/$48,$0E/$CB/$04,$0E/$DB/$FB,$0E/$EB/$04,$A6/$FB,$B3/$3B
 - Evidence: Static interface analysis at $1D:$A27A: Pointer $1D:$B676 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## HandleEntityZeroCoordinateEventAfterFlagTest (`$1D:$A2A8`)
+## SkipEntityZeroEventWhenFlagAlreadySet ($1D:$A2A8)
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags read on a decoded path before any decoded write: Z; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Enters the entity-zero coordinate event after the save-flag test succeeds
+- Outputs: BNE $A296 exits when the preceding flag test is nonzero; the event at $A2AA is entered on zero, not on a set flag.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $51,$6F48,$6F49,$6F4C,$6F4D,$6F58,$7040+X; Direct calls: $995E,$A2F3,$B16B,$D1F3; BRK services (operand bytes): $07/$6F/$48,$0E/$CB/$04,$A6/$FB,$B3/$3B
 - Evidence: Static interface analysis at $1D:$A2A8: Inline service continuation: Conditional branch resumes after BRK service $0E,$EB,$04 at $A2A4; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33309,11 +33309,11 @@
 - Side effects: Direct memory writes: $51,$6F48,$6F49,$6F4C,$6F4D,$6F58,$7040+X; Direct calls: $995E,$A2F3,$B16B,$D1F3; BRK services (operand bytes): $07/$6F/$48,$0E/$CB/$04,$A6/$FB,$B3/$3B
 - Evidence: Static interface analysis at $1D:$A2AA: Direct ROM analysis: Dormant event branch skipped by BRK service $0E,$EB at $A2A4; calls local helper $A2F3 and rejoins at $A296; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InitializeMapEventEntityBelowPlayer (`$1D:$A2F3`)
+## InitializeMapEventEntityAbovePlayer ($1D:$A2F3)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Places entity X at horizontal coordinate Y and two rows above entity zero with state $11
+- Outputs: SEC/SBC #$02 sets the entity row two above entity zero; the label says Below.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6F60+X,$6F80+X,$6FA0+X,$6FC0+X,$7040+X
 - Evidence: Static interface analysis at $1D:$A2F3: Direct call from $1D:$A2CA; Direct call from $1D:$A2D0; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33327,11 +33327,11 @@
 - Side effects: Direct calls: $A313; BRK services (operand bytes): $09/$EF
 - Evidence: Static interface analysis at $1D:$A30C: Pointer $1D:$B678 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RenderMapEventEntityAtCurrentCoordinates (`$1D:$A313`)
+## RenderMapEventEntityAtTargetCoordinates ($1D:$A313)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Invokes map effect $18 at entity X's current coordinates
+- Outputs: Reads $6FC0,X/$6FA0,X (target coordinate columns), not current $6F80,X/$6F60,X, before tile service $09/$EF.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: BRK services (operand bytes): $09/$EF
 - Evidence: Static interface analysis at $1D:$A313: Direct call from $1D:$A30E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33354,11 +33354,11 @@
 - Side effects: Direct memory writes: $7000+X
 - Evidence: Static interface analysis at $1D:$A343: Pointer $1D:$B67C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TestEntityZeroAt0E_03ForEvent (`$1D:$A352`)
+## TestEntityZeroInColumns0E0FAtRow03ForEvent ($1D:$A352)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Routes to the special event only when entity zero is at X=$0E,Y=$03
+- Outputs: AND #$FE before CMP #$0E accepts X=$0E and $0F; the name/note imply only X=$0E.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: BRK services (operand bytes): $03/$4F,$12/$2F,$27/$0F
 - Evidence: Static interface analysis at $1D:$A352: Pointer $1D:$B67E (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33462,11 +33462,11 @@
 - Side effects: Direct memory writes: $3E,$44,$45,$6F60,$6F80
 - Evidence: Static interface analysis at $1D:$A509: Direct call from $1D:$A4EB; Direct call from $1D:$B16B; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateEntityFromQueuedSlot (`$1D:$A51F`)
+## ActivateEntitySixPlusXFromQueuedSlot ($1D:$A51F)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Copies queued coordinates from slot Y plus one to active entity X, hides the queued slot, and advances Y
+- Outputs: Destination stores index $6F66/$6FA6/$6F86/$6FC6 with X, selecting entity 6+X, not entity X; source is slot Y+1.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$7021+Y
 - Evidence: Static interface analysis at $1D:$A51F: Direct call from $1D:$A4E8; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33480,20 +33480,20 @@
 - Side effects: Direct memory writes: $51; BRK services (operand bytes): $12/$5F
 - Evidence: Static interface analysis at $1D:$A53E: Pointer $1D:$B692 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TransferEntitySeventeenToSeven (`$1D:$A549`)
+## TransferEntityTwentyThreeToThirteen ($1D:$A549)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Moves entity seventeen coordinates into entity seven, hides the source, initializes entities seven and sixteen, and clears presentation
+- Outputs: Y=$11 and X=$07 index coordinate bases ending in $66/$86/$A6/$C6: source entity 23, destination 13. State $7046,X is set for entities 13 and 22, not 7 and 16.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0530,$6F66+X,$6F66+Y,$6F86+X,$6F86+Y,$6FA6+X,$6FA6+Y,$6FC6+X,$6FC6+Y,$7046+X; BRK services (operand bytes): $08/$DB/$DF
 - Evidence: Static interface analysis at $1D:$A549: Pointer $1D:$B694 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateEntitiesFourThroughElevenAtRow19 (`$1D:$A588`)
+## ActivateEntitiesTenThroughSeventeenAtRow19 ($1D:$A588)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Sets event state $11 on entities four through eleven when the player reaches row $19
+- Outputs: Table indices $04-$0B write $7046,X, i.e. entities 10 through 17; the title/note say entities four through eleven.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$A588: Pointer $1D:$B696 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33507,11 +33507,11 @@
 - Side effects: Direct memory writes: $51,$6E,$6F,$70,$7046+X,$71; Direct calls: $995E,$A612,$D1F3,$D20A,$D210; BRK services (operand bytes): $01/$6F/$0B,$04/$6F,$08/$2F,$0A/$CB/$04,$27/$33,$85/$FB
 - Evidence: Static interface analysis at $1D:$A5A7: Pointer $1D:$B698 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## Bank1D_QueueExperienceDigitsUpdate (`$1D:$A612`)
+## QueueExperienceDigitsWhenCommandCursorZero ($1D:$A612)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Queues the eight-byte experience counter update at its nametable position
+- Outputs: Copies the experience digits only when the command cursor starts at zero; the loop termination tests the command cursor, not the source index.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$0300+X,$0301+X,$0302+X,$0303+X,$050B,$12,$1F; Direct calls: $C662,$C913; BRK services (operand bytes): $0C/$6F,$25/$73
 - Evidence: Static interface analysis at $1D:$A612: Direct call from $1D:$A5E7; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33552,20 +33552,20 @@
 - Side effects: Direct memory writes: $51; BRK services (operand bytes): $07/$CF
 - Evidence: Static interface analysis at $1D:$A6DF: Pointer $1D:$B6A0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RunEntityZeroInteractionAndHideEntity15 (`$1D:$A6EA`)
+## RunEntityZeroInteractionAndHideEntityTwentyOne ($1D:$A6EA)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Sets entity-zero direction one, runs the scripted interaction, hides entity fifteen, and activates entity fourteen
+- Outputs: The coordinate helper $9963 uses $6F66,X with X=$0F, hiding entity 21; $7046,X with X=$0E activates entity 20, not entities 15 and 14.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $51,$7000,$7046+X; Direct calls: $995E,$9963,$D20A; BRK services (operand bytes): $07/$6F/$48,$62/$3B,$63/$3B,$64/$3B
 - Evidence: Static interface analysis at $1D:$A6EA: Pointer $1D:$B6A2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateMapEntitiesElevenAndTwelve (`$1D:$A724`)
+## ActivateMapEntitiesTwentyThreeAndTwentyFour ($1D:$A724)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets event state $11 on entities eleven and twelve
+- Outputs: X=$12 then $11 writes $7046,X, activating entity 24 then 23, not eleven and twelve.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$A724: Pointer $1D:$B6A4 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33606,11 +33606,11 @@
 - Side effects: Direct memory writes: $0527,$0593,$0594,$7006+X; Direct calls: $A7F7; BRK services (operand bytes): $00/$EB/$02,$0E/$CB/$08,$0E/$DB/$F7
 - Evidence: Static interface analysis at $1D:$A7B1: Pointer $1D:$B6AA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## FinalizeGateMapEffectDirections (`$1D:$A7E8`)
+## FinalizeGateMapEffectDirectionsForEntitiesSixSeven ($1D:$A7E8)
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Sets save flag $0E bit eight when needed and clears direction bits for entity records zero and one
+- Outputs: The called helper masks $7006,X with X=0 and 1, clearing entity six and seven directions, not entity zero and one.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7006+X; Direct calls: $A7F7; BRK services (operand bytes): $0E/$CB/$08
 - Evidence: Static interface analysis at $1D:$A7E8: Inline service continuation: Nested service and entity-flag update path after BRK service $0E,$DB,$F7 at $A7E4; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33642,11 +33642,11 @@
 - Side effects: Direct memory writes: $7000+Y; BRK services (operand bytes): $08/$CB/$04,$08/$EB/$04,$08/$EB/$08
 - Evidence: Static interface analysis at $1D:$A817: Pointer $1D:$B6AE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## StartPresentation84AndTransferEntityPairs (`$1D:$A858`)
+## StartPresentation84AndCopyEntityEightNineScriptsToSixSeven ($1D:$A858)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: At player row $0C, starts presentation $84 and copies queued entity pairs two and three into active slots zero and one
+- Outputs: The helper reads and writes script bases $7066/$7086, so X=0/1 and Y=2/3 copy entities eight/nine to six/seven, not two/three to zero/one.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $7006+X,$7046+X,$7066+X,$7086+X; Direct calls: $A23A,$A874; BRK services (operand bytes): $0B/$EB/$02
 - Evidence: Static interface analysis at $1D:$A858: Pointer $1D:$B6B0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33660,11 +33660,11 @@
 - Side effects: Direct memory writes: $7006+X,$7046+X,$7066+X,$7086+X
 - Evidence: Static interface analysis at $1D:$A874: Direct call from $1D:$A86D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TransferQueuedMapEventActors (`$1D:$A893`)
+## TransferQueuedActorsToEntitiesNineteenAndTwenty ($1D:$A893)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: At entity-zero coordinate $0E,$0C, transfers queued actors into slots $0D-$0E and runs the paired event scripts
+- Outputs: X=$0D/$0E in $A90D indexes destination coordinate bases $6F66 etc., selecting entities 19 and 20 rather than slots 13 and 14.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $51,$7000; Direct calls: $A8CE,$A90D; BRK services (operand bytes): $0C/$DB/$F8,$0D/$87
 - Evidence: Static interface analysis at $1D:$A893: Pointer $1D:$B6B2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33678,11 +33678,11 @@
 - Side effects: Direct calls: $995E,$D1F3,$D218; BRK services (operand bytes): $27/$0F,$53/$73,$7E/$3B,$7F/$3B
 - Evidence: Static interface analysis at $1D:$A8CE: Direct call from $1D:$A8C7; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TransferQueuedEntityToActiveSlot (`$1D:$A90D`)
+## TransferQueuedEntityToSlotSixPlusX ($1D:$A90D)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Copies coordinates and source index from entity Y to X, hides the source, and advances Y
+- Outputs: Source reads entity Y from base $6F60 etc.; destination stores to bases $6F66 etc., selecting entity 6+X, not X.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $6F60+Y,$6F66+X,$6F80+Y,$6F86+X,$6FA0+Y,$6FA6+X,$6FC0+Y,$6FC6+X,$6FE6+X
 - Evidence: Static interface analysis at $1D:$A90D: Direct call from $1D:$A8B3; Direct call from $1D:$A8B8; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33723,20 +33723,20 @@
 - Side effects: Direct memory writes: $059A,$059B; BRK services (operand bytes): $0D/$87
 - Evidence: Static interface analysis at $1D:$A9A3: Pointer $1D:$B6B8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateMapEntitySix (`$1D:$A9C1`)
+## ActivateMapEntityTwelve ($1D:$A9C1)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets event state $11 on entity six
+- Outputs: X=$06 writes $7046,X = $704C, entity twelve movement/event state, not entity six.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$A9C1: Pointer $1D:$B6BA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateMapEntitiesThirteenAndFourteen (`$1D:$A9CA`)
+## ActivateMapEntitiesNineteenAndTwenty ($1D:$A9CA)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets event state $11 on entities thirteen and fourteen
+- Outputs: X=$0D/$0E writes $7046,X, selecting entities 19 and 20, not thirteen and fourteen.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$A9CA: Pointer $1D:$B6BC (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33831,20 +33831,20 @@
 - Side effects: Direct memory writes: $62ED,$6FE6+X,$7006+X; Direct calls: $995E,$D1F3,$D218; BRK services (operand bytes): $01/$8F,$0A/$6F,$0F/$CB/$04,$A7/$3B
 - Evidence: Static interface analysis at $1D:$AB98: Pointer $1D:$B6CC (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TransferEntityTwoToSix (`$1D:$ABC8`)
+## TransferEntityTwoToTwelve ($1D:$ABC8)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Copies entity two coordinates and direction to entity six, hides entity two, and activates entity six
+- Outputs: X=$06 writes destination $6F66,X/$7006,X/$7046,X, selecting entity twelve, not six; source is entity two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6F62,$6F66+X,$6F82,$6F86+X,$6FA2,$6FA6+X,$6FC2,$6FC6+X,$7002,$7006+X,$7046+X; BRK services (operand bytes): $51/$73
 - Evidence: Static interface analysis at $1D:$ABC8: Pointer $1D:$B6CE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ReloadMapEventAtArrivalPosition (`$1D:$AC0B`)
+## ReloadMapEventViaTile0F0EAtArrivalPosition ($1D:$AC0B)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Runs a temporary tile lookup at $0F,$0F, restores the player to $0A,$13, and activates four entities
+- Outputs: Temporary player coordinates are $0F,$0F, but GetMapTileAtCoordinates receives X=$0F,Y=$0E; the note conflates the player position and tile lookup.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $058E,$3D,$44,$45,$51,$7046+X; Direct calls: $D3E6; BRK services (operand bytes): $03/$BF,$0F/$CB/$08,$12/$87
 - Evidence: Static interface analysis at $1D:$AC0B: Pointer $1D:$B6D0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33885,11 +33885,11 @@
 - Side effects: BRK services (operand bytes): $0B/$EB/$04
 - Evidence: Static interface analysis at $1D:$ACC8: Pointer $1D:$B6D8 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TransferEntityOneToZero (`$1D:$ACD2`)
+## TransferEntityOneToSix ($1D:$ACD2)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Copies entity one coordinates into entity zero, hides entity one, and sets source index one
+- Outputs: X=$00 stores to $6F66/$6FA6/$6F86/$6FC6/$6FE6; destination is entity six, not entity zero.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6F66+X,$6F86+X,$6FA6+X,$6FC6+X,$6FE6+X,$7021; BRK services (operand bytes): $0A/$6F
 - Evidence: Static interface analysis at $1D:$ACD2: Pointer $1D:$B6DA (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -33921,11 +33921,11 @@
 - Side effects: Direct memory writes: $0530,$0531,$0532,$0533,$0554,$0555
 - Evidence: Static interface analysis at $1D:$AD1A: Pointer $1D:$B6E0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateMapEntitiesTwoThroughEight (`$1D:$AD4C`)
+## ActivateMapEntitiesEightThroughFourteen ($1D:$AD4C)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets event state $11 on entities two through eight except slot one
+- Outputs: Indices X=$02-$08 write state at $7046,X, selecting entities eight through fourteen, not two through eight.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$AD4C: Pointer $1D:$B6E2 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34020,11 +34020,11 @@
 - Side effects: Direct memory writes: $70E0+Y; BRK services (operand bytes): $0D/$87
 - Evidence: Static interface analysis at $1D:$AEBF: Pointer $1D:$B6EE (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ActivateMapEntityTwo (`$1D:$AED3`)
+## ActivateMapEntityEight ($1D:$AED3)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Sets event state $11 on entity two
+- Outputs: X=$02 writes $7046,X = $7048, entity eight state, not entity two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X
 - Evidence: Static interface analysis at $1D:$AED3: Pointer $1D:$B6F0 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34110,11 +34110,11 @@
 - Side effects: Direct memory writes: $51,$7000,$7000+X,$7060+X,$7080+X; BRK services (operand bytes): $09/$5F
 - Evidence: Static interface analysis at $1D:$AFCA: Pointer $1D:$B702 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CopyQueuedEntityScriptPointersToActiveEntity (`$1D:$B001`)
+## CopyEntitySixPlusYScriptPointerToEntityX ($1D:$B001)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Copies queued script-pointer fields $7060/$7080 from slot Y into active entity X
+- Outputs: Source reads $7066,Y/$7086,Y, i.e. entity 6+Y; the note names the unoffset $7060/$7080 fields.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $7060+X,$7080+X
 - Evidence: Static interface analysis at $1D:$B001: Direct call from $1D:$B023; Direct call from $1D:$B02A; Direct call from $1D:$B031; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34191,20 +34191,20 @@
 - Side effects: Direct memory writes: $0530,$0531,$0532,$0533; BRK services (operand bytes): $17/$EB/$04
 - Evidence: Static interface analysis at $1D:$B18D: Pointer $1D:$B710 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RunDirectionalMapEventAndSetFlag19 (`$1D:$B1AC`)
+## SetPlayerFacingOneAndRunFlag19Event ($1D:$B1AC)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Sets entity-zero direction one, runs the scripted event, clears presentation, and sets save flag $19 bit $20
+- Outputs: ORA #$01 on $7000 does not clear the other direction bit and can produce direction three; only $3D is unconditionally assigned one.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0530,$3D,$51,$7000,$F9; Direct calls: $995E,$D20A; BRK services (operand bytes): $0B/$EF,$19/$CB/$20,$F0/$3B,$F1/$3B
 - Evidence: Static interface analysis at $1D:$B1AC: Pointer $1D:$B712 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## StartDualRegionActorPresentation (`$1D:$B1DA`)
+## StartDualRegionPresentationAndActivateEntitiesEightNine ($1D:$B1DA)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Activates entities two and three and starts presentation $8F at the two configured player regions
+- Outputs: X=3 and 2 stores to $7046,X, activating entities nine and eight, not three and two.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X; Direct calls: $A23A
 - Evidence: Static interface analysis at $1D:$B1DA: Pointer $1D:$B714 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34236,20 +34236,20 @@
 - Side effects: Direct memory writes: $51; Direct calls: $D20A; BRK services (operand bytes): $31/$73,$62/$23/$40,$AD/$4B,$AE/$4B
 - Evidence: Static interface analysis at $1D:$B2AC: Inline service continuation: Nested BRK service $62,$23,$40 path restoring $51 and returning before entry $B2CD; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## PositionSelectedEntityByFacing (`$1D:$B2CD`)
+## PositionSelectedEntityAndHideEntitiesSeventeenEight ($1D:$B2CD)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Positions entity $51 from a facing-selected record and hides queued entities eleven and two
+- Outputs: X=$0B and $02 stores $80 to $6F66,X/$6FA6,X: entities seventeen and eight, not eleven and two.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $6F66+X,$6FA6+X,$7000+Y,$71A0+Y,$71C0+Y
 - Evidence: Static interface analysis at $1D:$B2CD: Pointer $1D:$B71A (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## StartAlternateArrivalPresentation (`$1D:$B308`)
+## StartAlternateArrivalPresentationForEntitiesNineteenTwenty ($1D:$B308)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: At either configured arrival position, activates entities thirteen and fourteen and starts presentation $8F
+- Outputs: X=$0D/$0E stores to $7046,X, activating entities nineteen and twenty; the target written at $71A6,X is also entity twenty.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7046+X,$71A6+X,$71C6+X; Direct calls: $A23A
 - Evidence: Static interface analysis at $1D:$B308: Pointer $1D:$B71C (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34317,20 +34317,20 @@
 - Side effects: BRK services (operand bytes): $03/$4F,$12/$2F,$27/$0F
 - Evidence: Static interface analysis at $1D:$B479: Pointer $1D:$B728 (128-entry low-half map-event handler table selected by event ID and dispatched at $98AD); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## StartPhaseFourPresentationForMovingEntities (`$1D:$B48C`)
+## StartPhaseFourPresentationForEntitiesElevenTwelve ($1D:$B48C)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Synchronizes active entities, starts presentation $8F phase four, and activates entities five and six
+- Outputs: X=5 and 6 writes $7046,X, activating entities eleven and twelve rather than five and six.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0531,$7046+X; Direct calls: $A23A,$B16B
 - Evidence: Static interface analysis at $1D:$B48C: Pointer $1D:$B72A (Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RequireHeroWearingZenithianSet (`$1D:$B4B1`)
+## RequireHeroEquippedSwordAlternativeAndZenithianSet ($1D:$B4B1)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Requires the Hero to have the Zenithian Sword, Armor, Shield, and Helm equipped before continuing
+- Outputs: The body accepts item $94 via $B4E3 and only requires $A1 when that fails, then checks $C4,$B7,$CB. The note describes an unconditional four-item set and omits the alternative sword check.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0530; Direct calls: $A23A,$B4E3,$B4E7; BRK services (operand bytes): $26/$2F
 - Evidence: Static interface analysis at $1D:$B4B1: Pointer $1D:$B72C (Ten-entry high-half map-event handler table selected by event ID and dispatched at $98BA); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34434,11 +34434,11 @@
 - Side effects: Direct memory writes: $6F60+X,$6F80+X,$6FA0+X,$6FA2,$6FA3,$6FC0+X,$6FC2,$6FC3,$7020+X,$7022,$7023; Direct calls: $A1AF; BRK services (operand bytes): $0A/$6F,$0B/$EB/$04,$0D/$87,$13/$EB/$40,$13/$EB/$80,$52/$73,$62/$23/$40,$62/$33
 - Evidence: Static interface analysis at $1D:$B73E: Direct call from $1D:$A44D; Pointer $1D:$800E (21-entry mixed map-event service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplySpecialMapEntityConfiguration (`$1D:$B78A`)
+## ApplySpecialMapConfigurationWithGenericOffsets36AndAbove ($1D:$B78A)
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Handles configuration offsets $12,$24,$2A,$30,$36,and $42 with save-dependent entity setup
+- Outputs: CPY #$36/BCC routes every offset >=$36 through the generic path ending RTS; the later CPY #$42 block is not reachable from this entry, despite the note listing $42 as specially handled.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $6F60+X,$6F80+X,$6FA0+X,$6FA2,$6FA3,$6FC0+X,$6FC2,$6FC3,$7020+X,$7022,$7023; Direct calls: $A1AF; BRK services (operand bytes): $0A/$6F,$0B/$EB/$04,$0D/$87,$13/$EB/$40,$13/$EB/$80,$52/$73,$62/$23/$40,$62/$33
 - Evidence: Static interface analysis at $1D:$B78A: Inline service continuation: Coherent map-event code resumes after BRK service $52,$73 at $B787 and rejoins decoded code at $B893; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34569,11 +34569,11 @@
 - Side effects: Direct memory writes: $0300+Y,$0301+Y,$0302+Y,$0303+Y,$0304+Y,$0305+Y,$0306+Y,$0307+Y,$0308+Y,$0309+Y,$030A+Y,$050B
 - Evidence: Static interface analysis at $1D:$BB69: Direct call from $1D:$BB46; Direct call from $1D:$BB4B; Direct call from $1D:$BB55; Direct call from $1D:$BB5A; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## UploadMapEventPatternPages (`$1D:$BBF4`)
+## UploadTwoMapEventPatternPages ($1D:$BBF4)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Queues three pattern-data segments around synchronized PPU updates and temporary rendering mode
+- Outputs: Calls $BC13 and $BC5D once each; each queues two commands containing 96 source bytes. This is two pages/four segments, not three pattern-data segments.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $1F; Direct calls: $BC13,$BC5D,$BC9C,$C62D
 - Evidence: Static interface analysis at $1D:$BBF4: Pointer $1D:$800A (21-entry mixed map-event service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34614,11 +34614,11 @@
 - Side effects: Direct memory writes: $12,$1B,$1F; Direct calls: $BD87,$BDAF,$BDB8,$BDE0,$BF0A,$C913
 - Evidence: Static interface analysis at $1D:$BD69: Pointer $1D:$8026 (21-entry mixed map-event service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## QueueTileRowsToOppositeNametable (`$1D:$BD6D`)
+## QueueTileRowsToAlternateNametable ($1D:$BD6D)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Queues tile rows and attributes after toggling the horizontal nametable selection
+- Outputs: The $BD87 helper XORs $1C with $04 or $08 according to $0500 bit zero. The note describes only horizontal nametable toggling.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $12,$1B,$1F; Direct calls: $BD87,$BDAF,$BDB8,$BDE0,$BF0A,$C913
 - Evidence: Static interface analysis at $1D:$BD6D: Pointer $1D:$8028 (21-entry mixed map-event service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -34686,11 +34686,11 @@
 - Side effects: Direct memory writes: $02,$0300+X,$050A,$050B,$1C,$1D
 - Evidence: Static interface analysis at $1D:$BE38: Direct call from $1D:$BDF2; Direct call from $1D:$BDF8; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## QueueDecodedMapTileValues (`$1D:$BE8E`)
+## QueueDecodedMapAttributeValues ($1D:$BE8E)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Transforms map tile values from $04E0 and appends or replaces their PPU writes
+- Outputs: Reads $04E0,X, calls SetNametableAttributePalette, then appends/replaces the resulting attribute-address write; these are attribute values rather than tile-value writes.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $04,$18,$19,$1A,$1C,$1D; Direct calls: $BEC4,$C6BF
 - Evidence: Static interface analysis at $1D:$BE8E: Direct call from $1D:$BE01; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35127,20 +35127,20 @@
 - Side effects: Direct memory writes: $46; Direct calls: $8A68,$8A9A,$D3E6
 - Evidence: Static interface analysis at $1E:$8795: Direct call from $1E:$8763; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AnimateMapTransitionScroll (`$1E:$87AE`)
+## Animate120MapTransitionFrames ($1E:$87AE)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Initializes scroll parameters and renders $77 transition frames while updating PPU and OAM state
+- Outputs: The saved outer X counter starts at $78 and decrements to zero: 120 frames, not $77 (119).
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $058E,$058F,$7B; Direct calls: $87D7,$880C,$8870,$8928,$C62D
 - Evidence: Static interface analysis at $1E:$87AE: Direct call from $1E:$8743; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ShiftOamYForMapTransition (`$1E:$87D7`)
+## ShiftOamXForMapTransition ($1E:$87D7)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Maps scroll phase A to a signed Y delta and applies it to every OAM sprite Y coordinate
+- Outputs: Adds the signed table delta to $0508 and subtracts it from $0203,Y at stride four; OAM +3 is X, not Y.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0203+Y,$0508
 - Evidence: Static interface analysis at $1E:$87D7: Direct call from $1E:$87CB; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35163,11 +35163,11 @@
 - Side effects: Direct memory writes: $0509
 - Evidence: Static interface analysis at $1E:$8870: Direct call from $1E:$87BE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ShiftOamXByTransitionDelta (`$1E:$888A`)
+## ShiftOamYByTransitionDelta ($1E:$888A)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Adds signed transition delta X to every non-$F7 OAM X coordinate
+- Outputs: The code adds X to $0200,X at stride four and skips hidden $F7 entries; OAM +0 is Y, not X.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0200+X,$7D
 - Evidence: Static interface analysis at $1E:$888A: Direct call from $1E:$8771; Direct call from $1E:$8916; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35199,11 +35199,11 @@
 - Side effects: Direct calls: $888A,$8928,$C001,$FF74
 - Evidence: Static interface analysis at $1E:$891C: Direct ROM scan: JSR to fixed trampoline $C001; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClampAndShiftOamXByTransitionDelta (`$1E:$8928`)
+## ClampAndShiftOamYByTransitionDelta ($1E:$8928)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Applies transition delta $7E to OAM X coordinates while clamping wrapped values around limit $7B
+- Outputs: All clamped coordinate reads and writes are $0200,X at stride four: OAM Y, not X.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0200+X
 - Evidence: Static interface analysis at $1E:$8928: Direct call from $1E:$87C6; Direct call from $1E:$8919; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35289,11 +35289,11 @@
 - Side effects: Direct memory writes: $51,$52,$53,$55; Direct calls: $8AFB,$C78C,$FF74
 - Evidence: Static interface analysis at $1E:$8ABC: Direct call from $1E:$ADB3; Direct call from $1E:$AEE8; Direct call from $1E:$B00E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ShiftOneOamSpriteXForFade (`$1E:$8AFB`)
+## ShiftOneOamSpriteYForFade ($1E:$8AFB)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Subtracts fade step $51 from one OAM X coordinate or hides the sprite on underflow
+- Outputs: Subtracts $51 from $0200,Y and writes $F7 on underflow; that field is OAM Y, not X.
 - Clobbers: A,flags,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0200+Y
 - Evidence: Static interface analysis at $1E:$8AFB: Direct call from $1E:$8ADA; Direct call from $1E:$8ADD; Direct call from $1E:$8AE0; Direct call from $1E:$8AE3; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35379,11 +35379,11 @@
 - Side effects: Direct memory writes: $51
 - Evidence: Static interface analysis at $1E:$8BAF: Direct call from $1E:$8B5D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InitializeMapEntityWaveOffsets (`$1E:$8BB4`)
+## InitializeMapEntityWaveOffsetsFromOamY ($1E:$8BB4)
 
 - Calling convention: JSR entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Initializes per-entity wave-table indices from their current OAM X positions
+- Outputs: Table indices are derived by four LSRs from $0200,Y, the entity OAM Y coordinate, not its X position.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $59+X,$7B+X; Direct calls: $C78C
 - Evidence: Static interface analysis at $1E:$8BB4: Direct ROM analysis: Coherent map-animation table initializer after RTS $8BB3; loop ends at RTS $8BD0; Direct call from $1E:$8B18; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35523,11 +35523,11 @@
 - Side effects: Direct memory writes: $0527,$053E,$053F,$0540,$0541,$12,$41,$45; Direct calls: $835D,$8F63,$8F6B,$8F7A,$9083,$C5BF,$C913,$D3E6; BRK services (operand bytes): $02/$BF,$03/$BF,$09/$9F,$0A/$6F,$A9/$FB
 - Evidence: Static interface analysis at $1E:$8EEA: Direct call from $1E:$86C8; Direct call from $1E:$86D1; Pointer $1E:$8062 (72-entry map and entity interaction service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## LoadTileBehaviorAtCoordinates (`$1E:$8F63`)
+## LoadTileIndexAndCheckBehaviorAtCoordinates ($1E:$8F63)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Loads the map tile at X/Y, maps it through $6F40, and stores its behavior in $0541
+- Outputs: GetMapTileAtCoordinates result is AND #$1F and stored in $0541 before $8F6B maps it through $6F40; $0541 holds the tile index, not behavior.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0541; Direct calls: $D3E6
 - Evidence: Static interface analysis at $1E:$8F63: Direct call from $1E:$8F0C; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -35712,11 +35712,11 @@
 - Side effects: Direct memory writes: $16,$17,$44,$45,$6281,$64,$6F60+X,$6FA0+X,$EC; Direct calls: $8EE5,$91E1,$9290,$9825,$C5C5,$C5DE,$C90C; BRK services (operand bytes): $0E/$BF,$82/$FB
 - Evidence: Static interface analysis at $1E:$9155: Pointer $1E:$8004 (72-entry map and entity interaction service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CheckMapCoordinateExclusionRecords (`$1E:$91E1`)
+## CheckMapCoordinateAllowedRegions ($1E:$91E1)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Scans six-byte map/submap coordinate records and returns carry set inside an excluded rectangle
+- Outputs: The scanner returns SEC on coordinates below the lower bounds or at/above the upper bounds. Inside each allowed record it advances to the next; the note incorrectly says carry set inside the rectangle.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6F42
 - Evidence: Static interface analysis at $1E:$91E1: Direct call from $1E:$9161; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36000,11 +36000,11 @@
 - Side effects: Direct calls: $991F,$C891; BRK services (operand bytes): $0E/$DB/$EF
 - Evidence: Static interface analysis at $1E:$9902: Direct call from $1E:$98DB; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClearPartyTransformFlagAndHideEntity (`$1E:$991F`)
+## ClearPartyTransformFlagAndMarkMappedEntityState ($1E:$991F)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Clears transform bit $20 for party slot X and sets its mapped entity hidden flag
+- Outputs: Clears $20 in $6BE7,X, then ORs $80 into $70E0 for the mapped entity. It does not set the hidden flag in $7020.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $6BE7+X,$70E0+X; BRK services (operand bytes): $45/$73
 - Evidence: Static interface analysis at $1E:$991F: Direct call from $1E:$983B; Direct call from $1E:$9915; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36018,11 +36018,11 @@
 - Side effects: Direct memory writes: $6F6A+Y,$6F8A+Y,$6FAA+Y,$6FCA+Y,$6FE9+Y,$700A+Y,$702A+Y
 - Evidence: Static interface analysis at $1E:$9939: Direct call from $1E:$98A1; Direct call from $1E:$98AD; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ClearVehicleFlagWhenNoMatchingTileBehavior (`$1E:$9956`)
+## ClearVehicleFlagWhenNoFirstSixTileBehaviorMatches ($1E:$9956)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Clears save-state bit $40 when no active map entity uses tile behavior one or two
+- Outputs: Checks $7140,X for X=5..0 without testing entity active/hidden flags; the note restricts the scan to active entities.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $627F
 - Evidence: Static interface analysis at $1E:$9956: Direct call from $1E:$98BE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36207,11 +36207,11 @@
 - Side effects: Direct memory writes: $51,$6F60+X,$6F80+X,$7000+X; Direct calls: $DC4B
 - Evidence: Static interface analysis at $1E:$9DBD: Direct call from $1E:$9DAA; Direct call from $1E:$9DB0; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ComputeTwoForwardMapEntityTargets (`$1E:$9E08`)
+## ComputeTwoRearwardMapEntityTargets ($1E:$9E08)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Computes the first and second world coordinates ahead of the player into $71AA-$71CB
+- Outputs: EOR #$02 reverses $3D before the direction-table additions, placing both targets behind the player rather than ahead.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $71AA,$71AB,$71CA,$71CB
 - Evidence: Static interface analysis at $1E:$9E08: Direct call from $1E:$9D05; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36504,11 +36504,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1E:$A44D: Direct call from $1E:$A424; Direct call from $1E:$A434; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## EnterChapterMapScene (`$1E:$A461`)
+## EnterChapterLocalMapScene ($1E:$A461)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Switches to world-map state, initializes party entities and presentation mask, and prepares the scene direction
+- Outputs: Stores $80 in $41; the local-map branches throughout this bank test BMI on $41. The note calls this world-map state.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $41,$51,$6BDE,$7140+X; Direct calls: $9083,$95A9,$A232,$D3E6; BRK services (operand bytes): $07/$87
 - Evidence: Static interface analysis at $1E:$A461: Direct call from $1E:$A3C9; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36648,11 +36648,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1E:$A684: Direct call from $1E:$A3A1; Direct call from $1E:$A657; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## LoadChapterMapPositionRecord (`$1E:$A690`)
+## LoadChapterFiveBytePositionAndSevenByteWorldRecord ($1E:$A690)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Loads map, submap, local coordinates, facing, and saved world coordinates from the selected seven-byte record
+- Outputs: Map, submap, local X/Y and facing are read at $A763,X through $A767,X (five-byte record). Saved world coordinates are separately loaded through a seven-byte record pointer; they are not all from one seven-byte record.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $3D,$44,$45,$51,$52,$6195,$6196,$6197,$6198,$63,$64,$65; Direct calls: $C827; BRK services (operand bytes): $01/$87,$09/$87,$1A/$EB/$01,$56/$33
 - Evidence: Static interface analysis at $1E:$A690: Direct call from $1E:$A3A4; Direct call from $1E:$A65A; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -36855,11 +36855,11 @@
 - Side effects: Direct memory writes: $1C,$1D; Direct calls: $C6BF
 - Evidence: Static interface analysis at $1E:$A980: Direct call from $1E:$A964; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## FlushMapPpuBufferAtTwelveCommands (`$1E:$A994`)
+## FlushMapPpuBufferAtEighteenCommands ($1E:$A994)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Flushes the map PPU buffer when command count $050B reaches eighteen bytes
+- Outputs: Compares command count $050B with #$12, decimal eighteen. The label says twelve commands and the note incorrectly calls the count eighteen bytes.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $1F; Direct calls: $FF74
 - Evidence: Static interface analysis at $1E:$A994: Direct call from $1E:$A820; Direct call from $1E:$A83D; Direct call from $1E:$A858; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -37242,29 +37242,29 @@
 - Side effects: Direct calls: $B731,$B779
 - Evidence: Static interface analysis at $1E:$B3ED: Direct call from $1E:$8D7D; Direct call from $1E:$A179; Direct call from $1E:$A1B6; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## HandleFacingTileActionAndWait (`$1E:$B3F3`)
+## HandlePlayerTileActionAndWait ($1E:$B3F3)
 
 - Calling convention: tail-jump entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Runs the facing tile action, waits for a fresh button press when not handled, and restores state
+- Outputs: The dispatched action reads $7140 (cached player tile) in $B3FE; no front-coordinate offset is performed. The label/note describe a facing tile.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0539; Direct calls: $B3FE,$C8CC; BRK services (operand bytes): $07/$6F/$FF
 - Evidence: Static interface analysis at $1E:$B3F3: Direct ROM analysis: Coherent map-interaction routine block immediately after the entry at $B3ED; Tail jump from $1E:$8340; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## DispatchFacingTileCommand (`$1E:$B3FE`)
+## DispatchPlayerTileSearchCommand ($1E:$B3FE)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Dispatches the facing tile object, scripted map event, or default command result
+- Outputs: Reads $7140 AND #$1F and maps it through $6F40; it searches the player tile, not the facing tile.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$0E,$51,$6272+X,$6278,$6279,$627A,$6E,$6F,$70,$71,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF; Direct calls: $9E8C,$B3EA,$B47F,$B5A3,$B71E,$B72E,$B791,$B79C,$B7A6,$B7B2,$B7CA,$B7D6,$BB07,$BB0D,$BC20,$C827,$D1F3,$D3E6; BRK services (operand bytes): $01/$6F/$4A,$02/$B7,$04/$6F,$07/$6F/$43,$07/$6F/$48,$07/$6F/$4F,$07/$9F,$09/$9F,$0C/$0F,$0E/$0F,$12/$FB,$2B/$33,$2C/$33,$2D/$0F,$2E/$0F,$2E/$33,$2E/$73,$30/$33,$3A/$0F,$46/$33,$46/$73,$4B/$33,$62/$23/$08,$62/$33,$65/$23/$08,$65/$23/$09,$8A/$FB,$97/$2B,$98/$2B,$9B/$2B,$9C/$2B,$9D/$2B,$9E/$2B,$9F/$2B,$A1/$2B,$A2/$2B,$A6/$2B,$A7/$2B,$A8/$2B,$AA/$2B,$B9/$3B,$BA/$3B,$C6/$4B,$C9/$1B,$D2/$2B,$DC/$2B,$EA/$3B; Jumps not followed: ($0000)
 - Evidence: Static interface analysis at $1E:$B3FE: Direct call from $1E:$B3F3; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RunTreasureSearchScriptByIndex (`$1E:$B47F`)
+## AwardSearchGoldByIndex ($1E:$B47F)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Converts the treasure/search index to a forty-byte script record and invokes its local or world-map path
+- Outputs: AND #$7F, two ASLs and multiplication by $0A produce index times 40 as a numeric amount in $6F-$71 and $FD-$FF, not a forty-byte script pointer. Inline $4B/$33 selects bank $10 service $03; handler index $4B resolves through $9EC6-$9EC7 to $868D, which adds gold with a 99,999 cap.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $00,$01,$6F,$70,$71,$FD,$FE,$FF; Direct calls: $C827; BRK services (operand bytes): $4B/$33,$62/$33,$B9/$3B,$BA/$3B
 - Evidence: Static interface analysis at $1E:$B47F: Direct call from $1E:$B584; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -37584,11 +37584,11 @@
 - Side effects: Direct memory writes: $6277,$6F,$70,$71,$FD,$FE,$FF; Direct calls: $B5A3; BRK services (operand bytes): $13/$CB/$08,$4B/$33,$9E/$3B,$A6/$2B,$A7/$2B,$C3/$1B
 - Evidence: Static interface analysis at $1E:$B964: Direct ROM analysis: Dormant parallel condition handler skipped by the forced branch at $B962; Pointer $1E:$BC70 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## HandleMapEventFlag01 (`$1E:$B97D`)
+## AwardFiftyGoldAndSetMapEventFlag01 ($1E:$B97D)
 
 - Calling convention: pointer-dispatched entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Runs the coordinate-backed script and sets map-event flag $01 on success
+- Outputs: With facing zero and flag $6277 bit zero clear, loads decimal 50 into $6F/$FD with other amount bytes zero, invokes $4B/$33 (bank $10 handler $868D adds gold), prints message $C3/$1B, then sets flag $01. This is not a coordinate-backed script.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $6277,$6F,$70,$71,$FD,$FE,$FF; BRK services (operand bytes): $13/$CB/$08,$4B/$33,$9E/$3B,$A6/$2B,$A7/$2B,$C3/$1B
 - Evidence: Static interface analysis at $1E:$B97D: Direct ROM analysis: Final dormant condition handler converging on the shared success path at $B9A3; Pointer $1E:$BC72 (Twelve-entry map-object handler table selected by IDs $BC56-$BC61 and dispatched through $0000 at $B54D); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -37728,11 +37728,11 @@
 - Side effects: BRK services (operand bytes): $04/$6F
 - Evidence: Static interface analysis at $1E:$BBA6: Direct ROM analysis: Dormant selector branch skipped by the forced branch at $BBA4 and rejoining the dispatch tail at $BB9B; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ResolveFacingTileInteractionResult (`$1E:$BBE9`)
+## ResolvePlayerTileInteractionResult ($1E:$BBE9)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Returns the configured result class for the player tile's current-map interaction record
+- Outputs: Reads cached player tile $7140 and treasure flag/value helpers; it does not obtain the facing tile as the label claims.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct calls: $B72E,$B791,$B7B2
 - Evidence: Static interface analysis at $1E:$BBE9: Pointer $1E:$8080 (72-entry map and entity interaction service directory); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38196,11 +38196,11 @@
 - Side effects: Direct memory writes: $16,$17; Direct calls: $C5DE,$C90C
 - Evidence: Static interface analysis at $1F:$C5C5: Direct call from $11:$80A3; Direct call from $12:$8732; Direct call from $12:$97D5; Direct call from $12:$A349; Direct call from $12:$AADF; Direct call from $12:$B507; Direct call from $15:$B743; Direct call from $17:$8052; Direct call from $17:$8A5D; Direct call from $17:$9C00; Direct call from $17:$9C25; Direct call from $1B:$8082; Direct call from $1B:$A547; Direct call from $1B:$A754; Direct call from $1B:$A77B; Direct call from $1B:$AB6A; Direct call from $1B:$AC79; Direct call from $1B:$B54C; Direct call from $1C:$AED8; Direct call from $1C:$B0FC; Direct call from $1C:$B120; Direct call from $1C:$B81C; Direct call from $1C:$B8AF; Direct call from $1C:$BE6C; Direct call from $1C:$BE98; Direct call from $1D:$8DF4; Direct call from $1D:$8E20; Direct call from $1D:$A25D; Direct call from $1D:$A74B; Direct call from $1D:$A9F1; Direct call from $1D:$AA55; Direct call from $1D:$AB17; Direct call from $1D:$ACFF; Direct call from $1D:$B078; Direct call from $1D:$B37F; Direct call from $1D:$B39C; Direct call from $1D:$B52C; Direct call from $1D:$B971; Direct call from $1E:$86B6; Direct call from $1E:$86D7; Direct call from $1E:$9108; Direct call from $1E:$918F; Direct call from $1E:$929A; Direct call from $1E:$9C0A; Direct call from $1E:$9CEE; Direct call from $1E:$A1D2; Direct call from $1E:$A4E7; Direct call from $1E:$A563; Direct call from $1E:$ADB6; Direct call from $1E:$B014; Tail jump from $1E:$95A6; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## BuildPaletteUpdateCommand (`$1F:$C5DE`)
+## BuildPaletteCommandFromUniversalAndTwentyFourColors ($1F:$C5DE)
 
 - Calling convention: JSR entry; tail-jump entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Builds a 32-byte palette update command in the $0300 PPU queue from $05FC-$061C
+- Outputs: Builds 32 outputs using $05FC at every fourth position and consumes $05FD,X only for the other 24 positions, so the source range actually used is $05FC-$0614, not $05FC-$061C as the note states.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0300+Y,$050A,$050B,$18,$1F
 - Evidence: Static interface analysis at $1F:$C5DE: Direct call from $12:$8A1C; Direct call from $1B:$9165; Direct call from $1B:$A83D; Direct call from $1B:$ADE1; Direct call from $1B:$B0A0; Direct call from $1F:$C5CC; Tail jump from $1E:$A27D; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38430,11 +38430,11 @@
 - Side effects: Direct calls: $C8EC,$FF74
 - Evidence: Static interface analysis at $1F:$C8CC: Direct call from $10:$81E8; Direct call from $10:$8206; Direct call from $12:$872F; Direct call from $12:$9418; Direct call from $15:$9905; Direct call from $15:$9F68; Direct call from $15:$A4C3; Direct call from $17:$83D3; Direct call from $1D:$8E1D; Direct call from $1E:$81FF; Direct call from $1E:$821F; Direct call from $1E:$8233; Direct call from $1E:$84B6; Direct call from $1E:$B3F8; Direct call from $1F:$D1F0; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## WaitForButtonPress (`$1F:$C8E1`)
+## WaitForPrimaryControllerButtonPress ($1F:$C8E1)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Waits on NMI and controller polling until either controller reports a pressed button
+- Outputs: ReadControllers polls both ports, but the wait tests only ButtonsPressed at $14; it never ORs or tests second-controller byte $15, contrary to the note claiming either controller.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct calls: $C8EC,$FF74
 - Evidence: Static interface analysis at $1F:$C8E1: Direct call from $12:$9CD5; Direct call from $12:$A5AC; Direct call from $12:$A5D5; Direct call from $12:$A6CA; Direct call from $12:$AEB5; Direct call from $12:$AEE9; Direct call from $12:$AEFE; Direct call from $12:$AF55; Direct call from $12:$AFCB; Direct call from $1B:$A751; Direct call from $1E:$B2D6; Direct call from $1E:$B325; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38691,11 +38691,11 @@
 - Side effects: Direct memory writes: $6FE9
 - Evidence: Static interface analysis at $1F:$CD52: Direct call from $1F:$CD4E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplyFacingToFollowerEntity (`$1F:$CD78`)
+## ApplyFacingAndSetFollowerMovementBit ($1F:$CD78)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Replaces one follower entity's facing bits with player facing $3D and marks it visible
+- Outputs: Masks $7006,Y with $FC, ORs player facing and $80, and stores it back. The $80 is in direction/movement state, not the visibility bit tested at $70E0 by $D7FC.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $7006+Y
 - Evidence: Static interface analysis at $1F:$CD78: Direct call from $1F:$CCD5; Direct call from $1F:$CCDD; Direct call from $1F:$CCE1; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38709,11 +38709,11 @@
 - Side effects: Direct memory writes: $0539,$6E,$F9; Direct calls: $D1F0,$D1FD; BRK services (operand bytes): $04/$6F,$07/$6F/$FF,$2B/$63/$41,$2E/$0F
 - Evidence: Static interface analysis at $1F:$CD85: Direct call from $1F:$CBC2; Direct call from $1F:$CBCE; Direct call from $1F:$CBDC; Direct call from $1F:$CBEA; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## FinalizePlayerMovement (`$1F:$CDC9`)
+## CacheFollowerFacingAndFinalizePlayerMovement ($1F:$CDC9)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Caches player facing, initializes step distance, updates entities, and advances time of day
+- Outputs: Caches low two bits of $7001 (entity one, not player entity zero) into $0528, initializes $3E=$10, calls entity-update trampoline and time-of-day update.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0528,$3E; Direct calls: $C007,$CDDC
 - Evidence: Static interface analysis at $1F:$CDC9: Tail jump from $1F:$CC8E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38736,29 +38736,29 @@
 - Side effects: Direct memory writes: $0515,$0527,$0534,$0539,$07CA,$6CDC,$6CDD,$6FA0,$6FC0; Direct calls: $CE72,$CEA9,$CEBE,$CF03,$CF38,$CF41,$CF56,$CF5F,$CF8D,$D1FD,$D218; BRK services (operand bytes): $00/$BF,$00/$EF,$04/$EF,$07/$6F/$FF,$07/$EF,$09/$FB; Jumps not followed: $6CAD
 - Evidence: Static interface analysis at $1F:$CE09: Direct ROM analysis: Coherent fixed-bank event routine immediately after RTS $CE08 with calls into the adjacent CFxx helper family; Direct call from $1F:$CA02; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## CompleteActiveEntityPath (`$1F:$CE72`)
+## ClearPendingTransitionAndShowCompletionMessage ($1F:$CE72)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Clears active path state and invokes path completion with operands $0593-$0594
+- Outputs: Clears $0527, loads message ID/group from $0593/$0594, and JMPs $D207, which opens a field message and enters a timed close sequence; it does not invoke a path-completion operation with those bytes.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $0527,$0539; Direct calls: $D1FD,$D218; BRK services (operand bytes): $07/$6F/$FF
 - Evidence: Static interface analysis at $1F:$CE72: Direct call from $1F:$CE2E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ProcessInteriorMapInput (`$1F:$CE80`)
+## ProcessWorldMapInput ($1F:$CE80)
 
 - Calling convention: reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Processes interior movement completion, map events, special terrain, and frame exit
+- Outputs: The caller tests $41 and reaches $CE80 on BPL, the world-map branch. It calls world-terrain pair, world-coordinate trigger and chapter-four world-Y handlers; the Interior name/note describe the opposite map context.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0515,$0534,$07CA,$6CDC,$6CDD; Direct calls: $CEA9,$CF03,$CF38,$CF41,$CF56; BRK services (operand bytes): $00/$EF,$04/$EF,$09/$FB; Jumps not followed: $6CAD
 - Evidence: Static interface analysis at $1F:$CE80: Direct ROM analysis: Coherent fixed-bank event helper after the terminal jump at $CE7D and before RTS $CEBD; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## TryRandomEncounterAfterStep (`$1F:$CEA9`)
+## TryRandomEncounterAfterStepOrDebugStart ($1F:$CEA9)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Runs the post-step random-encounter initialization unless the debug feature flags or Start input bypass it
+- Outputs: DebugFeatureFlags AND $40 nonzero enters encounter service $00/$8F. If that flag is clear, Start bit $08 must be set to enter it; Start enables this debug encounter path rather than bypassing an encounter.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $051B; BRK services (operand bytes): $00/$8F
 - Evidence: Static interface analysis at $1F:$CEA9: Direct call from $1F:$CE4A; Direct call from $1F:$CEA3; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -38799,11 +38799,11 @@
 - Side effects: Direct calls: $D207
 - Evidence: Static interface analysis at $1F:$CF41: Direct ROM analysis: Coherent chapter and coordinate event helper called by the recovered helper at $CEA1; Direct call from $1F:$CEA0; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InvokeStepEventWhenOnWorldMap (`$1F:$CF56`)
+## InvokeStepEventWhenMapModeZero ($1F:$CF56)
 
 - Calling convention: JSR entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis; entry flags not traced beyond a BRK service or unresolved transfer: C,V
-- Outputs: Invokes step-event service $16/$EF when map mode $0515 is zero
+- Outputs: Only tests $0515 for zero; both the local-map path ($CE31) and world-map path ($CE80) call it. This is a map-mode-zero guard, not a world-map-only guard as the name claims.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: BRK services (operand bytes): $16/$EF
 - Evidence: Static interface analysis at $1F:$CF56: Direct ROM analysis: Compact BRK-backed event helper called by recovered routines at $CE31/$CE80; Direct call from $1F:$CE31; Direct call from $1F:$CE47; Direct call from $1F:$CE80; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39069,11 +39069,11 @@
 - Side effects: Direct memory writes: $00,$01; Direct calls: $D459
 - Evidence: Static interface analysis at $1F:$D437: Guarded flow recovery: Coherent routine block immediately after RTS $D436; 19 instructions, returns and merges into existing code; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## SelectOutOfBoundsMapTile (`$1F:$D459`)
+## SelectOutOfBoundsDecompressedMapTile ($1F:$D459)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Selects the fallback tile for out-of-bounds overworld coordinates using wrap masks and map state
+- Outputs: Reached from decompressed-map bounds failure at $D410; selects $058C or $0520 using $0550 and the low-three-bit coordinate masks. This is the decompressed-map fallback, not a compressed overworld-coordinate decoder.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1F:$D459: Direct call from $1F:$D416; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39096,11 +39096,11 @@
 - Side effects: Direct memory writes: $53,$54,$59; Direct calls: $D4D9
 - Evidence: Static interface analysis at $1F:$D4B5: Direct call from $1F:$D48A; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AccumulateWorldMapNeighborBit (`$1F:$D4D9`)
+## AccumulateWorldMapNeighborTypeBit ($1F:$D4D9)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Reads one neighboring world-map tile and shifts its passability result into mask $59
+- Outputs: Reads a neighboring tile and appends zero for tile IDs $00/$16/$0A, one for all others, to $59. It does not inspect a passability flag or terrain behavior table as the note implies.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $59; Direct calls: $D251
 - Evidence: Static interface analysis at $1F:$D4D9: Direct call from $1F:$D4B9; Direct call from $1F:$D4C0; Direct call from $1F:$D4C7; Direct call from $1F:$D4CE; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39159,11 +39159,11 @@
 - Side effects: Direct calls: $D5EE,$D607
 - Evidence: Static interface analysis at $1F:$D57F: Direct call from $1F:$D571; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ApplyMapObjectMotionFlag (`$1F:$D59D`)
+## PromotePendingMotionBitToEntityMovementFlag ($1F:$D59D)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Copies pending motion bit $40 from slot state $052A into entity state $7004
+- Outputs: AND #$40 on $052A,X, then ASL converts that bit to $80 before ORing $7004,X; this is not copying bit $40 unchanged into entity state.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $7004+X
 - Evidence: Static interface analysis at $1F:$D59D: Direct call from $1F:$D59A; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39321,11 +39321,11 @@
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1F:$D724: Direct call from $1F:$D07B; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## GetEntityFacingCoordinates (`$1F:$D752`)
+## GetCurrentScriptEntityFacingCoordinates ($1F:$D752)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Adds entity X's facing delta to its current coordinates and stores the result in $52/$53
+- Outputs: Immediately loads X from $51, then uses that entity state and coordinates plus the direction delta table to write $52/$53. The incoming X is not the selected entity as the note implies.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $52,$53
 - Evidence: Static interface analysis at $1F:$D752: Direct call from $1F:$D685; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39339,11 +39339,11 @@
 - Side effects: Direct memory writes: $0201+X,$0202+X,$0205+X,$0206+X,$0209+X,$020A+X,$020D+X,$020E+X,$54,$6F60+X,$6F80+X,$6FA0+X,$6FC0+X,$7000+X,$71E0+X; Direct calls: $C78C,$D864,$D876
 - Evidence: Static interface analysis at $1F:$D76E: Tail jump from $1F:$D61E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RenderPartyMapEntities (`$1F:$D7D5`)
+## RenderMapEntityColumnAtSixSlotStride ($1F:$D7D5)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A
-- Outputs: Renders up to five consecutive party entity slots selected by the low nibble of $3C
+- Outputs: Calls $D7F1 five times. Successful render at $D804 returns X plus six, not X plus one, so the pass renders one column of the six-slot groups rather than five consecutive entity slots.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct calls: $D7F1
 - Evidence: Static interface analysis at $1F:$D7D5: Direct call from $1E:$8537; Direct call from $1E:$86E0; Direct call from $1E:$9D99; Direct call from $1F:$CA05; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39447,11 +39447,11 @@
 - Side effects: Direct calls: $DA47
 - Evidence: Static interface analysis at $1F:$D8D7: Pointer $1F:$DF56 (49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## RandomizeEntityFacingCommand (`$1F:$D8DD`)
+## RandomizeEntityFacingAvoidingReverseWithThreeAttempts ($1F:$D8DD)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Advances the script and selects a random facing direction distinct from the current opposite pair when possible
+- Outputs: After advancing the script, $D8E0 chooses low-two-bit random facing; compares against the original facing XOR $02 and retries at most three times. It may retain the original direction, so it does not avoid the whole opposite pair.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $68,$7000+X; Direct calls: $C891,$DDE3
 - Evidence: Static interface analysis at $1F:$D8DD: Pointer $1F:$DF06 (49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39771,11 +39771,11 @@
 - Side effects: Direct memory writes: $4D,$4E,$52,$53,$54,$57; Direct calls: $C891,$DDE3,$DDF3; Jumps not followed: ($0052)
 - Evidence: Static interface analysis at $1F:$DC4B: Direct call from $1E:$9DD7; Pointer $1F:$DF08 (49-entry map-object command table selected at $D8A3-$D8B7; out-of-range values use entry zero); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## MoveEntityTowardExplicitTarget (`$1F:$DC9F`)
+## ChooseEntityFacingTowardExplicitTarget ($1F:$DC9F)
 
 - Calling convention: tail-jump entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Builds valid directions toward explicit target coordinates and selects the next facing
+- Outputs: Builds a direction mask from $71A0/$71C0 versus current coordinates, applies selected facing through $DDF3 and returns carry set; it does not itself write new entity coordinates.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $4D,$4E,$52,$53,$57; Direct calls: $C891,$DDE3,$DDF3; Jumps not followed: ($0052)
 - Evidence: Static interface analysis at $1F:$DC9F: Tail jump from $1F:$DD03; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -39960,11 +39960,11 @@
 - Side effects: Direct memory writes: $52,$53; Jumps not followed: ($0052)
 - Evidence: Static interface analysis at $1F:$DE92: Pointer $1F:$DF70 (Eleven-entry high-bit map-object command table selected and dispatched at $D8BA-$D8C8); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AdvanceScriptPointerAtLocalCoordinate (`$1F:$DEA9`)
+## AdvanceScriptPointerByUnsignedOffsetAtLocalCoordinate ($1F:$DEA9)
 
 - Calling convention: pointer-dispatched entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y; entry flags not traced beyond a BRK service or unresolved transfer: V
-- Outputs: Adds a signed operand to the script pointer only at local coordinate $0A,$1E
+- Outputs: Only at player local $0A,$1E, adds operand byte two to pointer low and ADC #$00 to high. Unlike signed-offset entry $DE42 it never decrements high for a negative operand; the offset is unsigned, not signed.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $4D,$4E,$52,$53,$57,$7060+X,$7080+X; Jumps not followed: ($0052)
 - Evidence: Static interface analysis at $1F:$DEA9: Pointer $1F:$DEA5 (Two-entry map-object operation table selected and dispatched at $DE92-$DEA2); semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40041,11 +40041,11 @@
 - Side effects: Direct memory writes: $00,$01,$0200+Y,$0203+Y,$0204+Y,$0207+Y,$0208+Y,$020B+Y,$020C+Y,$020F+Y; Direct calls: $C78C
 - Evidence: Static interface analysis at $1F:$E147: Direct call from $1F:$E029; Direct call from $1F:$E06E; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## HideEntityWithoutSpriteDefinition (`$1F:$E160`)
+## HideAllocatedEntityOamBlock ($1F:$E160)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,Y
-- Outputs: Derives sprite selection from entity state and hides its OAM block when no sprite is selected
+- Outputs: AND #$3C extracts OAM allocation from $E4. Nonzero branches into the hide/release path at $E1A9; zero returns. The name/note claim hiding when no sprite is selected, which is the returning case.
 - Clobbers: A,flags (conservative static analysis)
 - Side effects: Direct memory writes: $0200+Y,$0203+Y,$0204+Y,$0207+Y,$0208+Y,$020B+Y,$020C+Y,$020F+Y,$E2,$E4; Direct calls: $C78C,$E4BB
 - Evidence: Static interface analysis at $1F:$E160: Direct call from $1F:$E060; Direct call from $1F:$E0D6; Direct call from $1F:$E106; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40149,11 +40149,11 @@
 - Side effects: Direct memory writes: $0200+X
 - Evidence: Static interface analysis at $1F:$E4F6: Direct call from $15:$B751; Direct call from $1F:$DFFA; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ResetMapEntityMotionState (`$1F:$E501`)
+## ResetEntityOamAllocationState ($1F:$E501)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Clears entity occupancy masks and per-entity motion bits, then initializes the map sprite offset
+- Outputs: Clears occupancy masks $61/$62 and ANDs each active $7000,X with $C3, removing allocation bits $3C while retaining movement bit $80 and facing. It resets OAM allocation, not per-entity motion bits.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $07BC,$61,$62,$7000+X
 - Evidence: Static interface analysis at $1F:$E501: Direct call from $15:$B757; Direct call from $1C:$BBCB; Direct call from $1D:$AD86; Direct call from $1E:$8769; Direct call from $1E:$878F; Direct call from $1E:$9595; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40590,11 +40590,11 @@
 - Side effects: Direct memory writes: $00B5+Y,$00B8+Y,$10,$11,$4002+Y,$4003+Y,$400E,$400F,$6BFD+X,$A0,$A1,$A2,$A3,$A4,$A5,$B4,$B8+X; Direct calls: $ED4B
 - Evidence: Static interface analysis at $1F:$EAFC: Direct call from $1F:$E757; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ReturnIfAudioNoteUnchanged (`$1F:$EC45`)
+## ReturnIfAudioDurationChangedElseCheckRegisterUpdate ($1F:$EC45)
 
 - Calling convention: verified routine entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Compares current and prior note duration and returns immediately when unchanged
+- Outputs: CMP $0621,X with $0620,X branches on equality to $EC50, which checks update mask $B4 and may write registers; inequality reaches RTS at $EC4F. The stated immediate-return condition is reversed.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $10,$11,$4002+Y,$4003+Y; Direct calls: $ED4B
 - Evidence: Static interface analysis at $1F:$EC45: Guarded flow recovery: Coherent routine block immediately after RTS $EC44; 5 instructions, returns and merges into existing code; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40608,20 +40608,20 @@
 - Side effects: Direct memory writes: $10,$11,$4002+Y,$4003+Y; Direct calls: $ED4B
 - Evidence: Static interface analysis at $1F:$EC59: Direct call from $1F:$EA31; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## ComputeAudioPeriodTableIndex (`$1F:$ED4B`)
+## ComputeAudioPeriodIndexWithTriangleHighNoteRemap ($1F:$ED4B)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Combines note ID and channel pitch offset, applies noise-channel wrapping, and returns a word-table index
+- Outputs: After applying channel pitch offset, special wrapping/remapping is guarded by CPX #$04. Audio processing uses X=$04,Y=$02 for triangle; noise uses X=$06,Y=$03. The note assigns the remap to the wrong channel.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: No direct memory writes, calls, or BRK services identified by static interface analysis
 - Evidence: Static interface analysis at $1F:$ED4B: Direct call from $1F:$EBC2; Direct call from $1F:$EC60; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## SilenceAudioChannel (`$1F:$ED69`)
+## UpdateAudioChannelEnvelopeOrSilence ($1F:$ED69)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Selects channel-specific silence control and clears timer or length registers as required
+- Outputs: For a live duration and gating state it interprets envelope bytes, advances envelope phase and writes duty/volume to $4000 plus channel offset. Silence is only one branch; this entry is also the normal active-channel envelope updater.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $063C+X,$10,$11,$4000+Y,$6BFD+X,$A0,$A1,$A2; Direct calls: $EE8C,$EE8E
 - Evidence: Static interface analysis at $1F:$ED69: Direct call from $1F:$E75A; Direct call from $1F:$EAC7; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40671,11 +40671,11 @@
 - Side effects: Direct memory writes: $10,$B0
 - Evidence: Static interface analysis at $1F:$EED5: Tail jump from $1F:$C028; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## AdvanceAudioFadeState (`$1F:$EEE2`)
+## AdvanceAudioFadeEveryFiveTicks ($1F:$EEE2)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Ticks audio fade state $BB and adjusts the global low-nibble level at thirty-two-tick boundaries
+- Outputs: DEC $BB waits for low five bits to reach zero, then ORA #$05 rearms five ticks. Subsequent volume changes occur every five ticks, not every thirty-two ticks as the note says.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $B0,$BB; Direct calls: $EEB9
 - Evidence: Static interface analysis at $1F:$EEE2: Direct call from $1F:$E6EF; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40869,11 +40869,11 @@
 - Side effects: Direct memory writes: $0300+X,$0301+X,$0302+X,$0303+X,$0304+X,$0305+X,$0306+X,$0307+X,$0308+X,$0309+X,$050A,$050B
 - Evidence: Static interface analysis at $1F:$F231: Direct call from $1F:$F1EC; Direct call from $1F:$F1FA; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InitializeFixedGraphicsReveal (`$1F:$F271`)
+## InitializeFixedGraphicsRevealWithAscendingTiles ($1F:$F271)
 
 - Calling convention: JSR entry; reviewed static-analysis entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X
-- Outputs: Initializes source pointer, nametable address, and descending tile values for the reveal
+- Outputs: Loads X=$FC, stores $52, then three INXs produce $53=$FD,$54=$FE,$55=$FF. The initial tile values ascend, contrary to the note claiming descending values.
 - Clobbers: A,flags,X (conservative static analysis)
 - Side effects: Direct memory writes: $49,$4A,$51,$52,$53,$54,$55; Direct calls: $C662,$F293
 - Evidence: Static interface analysis at $1F:$F271: Direct ROM analysis: Coherent routine after RTS $F270 that loads the $F29C stream pointer into $49/$4A and calls $F293 and $C662; Direct call from $1F:$F1C7; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
@@ -40950,47 +40950,47 @@
 - Side effects: Direct calls: $FE0B,$FE27,$FE52,$FE6B
 - Evidence: Static interface analysis at $1F:$FDFB: Direct call from $1D:$B61F; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## MoveFourEffectSpritesRight (`$1F:$FE0B`)
+## MoveFourEffectSpritesDown ($1F:$FE0B)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: X
-- Outputs: Moves four sprites right twice per frame for eight frames
+- Outputs: Calls $FE1A twice per NMI for eight iterations; that helper increments $0210/$0214/$0218/$021C, the OAM Y fields, not X fields. The motion is downward, not rightward.
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: Direct calls: $FE1A,$FF74
 - Evidence: Static interface analysis at $1F:$FE0B: Direct call from $1F:$FE07; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## IncrementFourEffectSpriteX (`$1F:$FE1A`)
+## IncrementFourEffectSpriteY ($1F:$FE1A)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Increments the X coordinate of four effect sprites
+- Outputs: INC $0210/$0214/$0218/$021C updates byte zero of four OAM records. X would be byte three ($0213/$0217/$021B/$021F).
 - Clobbers: flags (conservative static analysis)
 - Side effects: Direct memory writes: $0210,$0214,$0218,$021C
 - Evidence: Static interface analysis at $1F:$FE1A: Direct call from $1F:$FE0D; Direct call from $1F:$FE10; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## InstallFourEffectSpriteTiles (`$1F:$FE27`)
+## InstallEightEffectSpriteTilesAndAttributes ($1F:$FE27)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: A,X,Y
-- Outputs: Copies tile and attribute pairs into OAM entries $10-$2F
+- Outputs: Starts OAM offset $10 and advances four bytes per loop until $30, writing eight tile/attribute pairs across eight OAM entries. The Four name understates the number of sprite entries.
 - Clobbers: A,flags,X,Y (conservative static analysis)
 - Side effects: Direct memory writes: $0200+Y
 - Evidence: Static interface analysis at $1F:$FE27: Direct call from $1F:$FE01; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## MoveFourEffectSpritesLeft (`$1F:$FE52`)
+## MoveFourEffectSpritesUp ($1F:$FE52)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: Conservative decoded-body register reads: X
-- Outputs: Moves four sprites left once per frame for sixteen frames
+- Outputs: Sixteen iterations call $FE5E then wait for NMI; $FE5E decrements four OAM Y fields. This moves upward, not leftward.
 - Clobbers: flags,X (conservative static analysis)
 - Side effects: Direct calls: $FE5E,$FF74
 - Evidence: Static interface analysis at $1F:$FE52: Direct call from $1F:$FDFE; Direct call from $1F:$FE04; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits
 
-## DecrementFourEffectSpriteX (`$1F:$FE5E`)
+## DecrementFourEffectSpriteY ($1F:$FE5E)
 
 - Calling convention: JSR entry; exits according to decoded control flow
 - Inputs: No register reads identified by static interface analysis
-- Outputs: Decrements the X coordinate of four effect sprites
+- Outputs: DEC $0210/$0214/$0218/$021C updates four OAM Y fields, not the X fields claimed by the name/note.
 - Clobbers: flags (conservative static analysis)
 - Side effects: Direct memory writes: $0210,$0214,$0218,$021C
 - Evidence: Static interface analysis at $1F:$FE5E: Direct call from $1F:$FE54; semantic behavior comes from the curated label note reviewed in the 2026-09-28/29 all-body naming audits

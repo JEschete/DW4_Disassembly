@@ -2429,7 +2429,7 @@ Bank03_TextGroup_40:
         db   $A4,$FB,$16,$25,$40,$6F,$87,$4F ; BFC3 A4 FB 16 25 40 6F 87 4F  ...%@o.O
         db   $CF,$BC,$48,$A2,$11,$CD,$A3,$3C ; BFCB CF BC 48 A2 11 CD A3 3C  ..H....<
         db   $E7,$B8,$DE,$32,$D1             ; BFD3 E7 B8 DE 32 D1           ...2.
-Bank03_TextStreamRollover:
+Bank03_CompatibilityResetStub:
         db   $78,$EE,$DF,$BF,$4C,$8E,$FF,$80 ; BFD8 78 EE DF BF 4C 8E FF 80  x...L...
 Bank03_TitleSignature:
         db   $20,$44,$52,$41,$47,$4F,$4E,$20 ; BFE0 20 44 52 41 47 4F 4E 20   DRAGON

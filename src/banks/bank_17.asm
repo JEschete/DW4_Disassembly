@@ -350,7 +350,7 @@ WritePokerCategoryText:
         lda     $83AA,x                         ; 8291 BD AA 83                 ...
         sta     $01                             ; 8294 85 01                    ..
 CasinoSystem_Branch_8296:
-        lda     Bank17_UiStrings,y              ; 8296 B9 EC 82                 ...
+        lda     Bank17_PokerCategoryAndPromptStrings,y              ; 8296 B9 EC 82                 ...
         cmp     #$FF                            ; 8299 C9 FF                    ..
         beq     CasinoSystem_Branch_82A6        ; 829B F0 09                    ..
         jsr     QueueNametableTileUpdate        ; 829D 20 5A C6                  Z.
@@ -401,7 +401,7 @@ CasinoSystem_Branch_82DE:
 Bank17_UiStringOffsets:
         db   $00,$0C,$18,$27,$33,$3E,$44,$4D ; 82E3 00 0C 18 27 33 3E 44 4D  ...'3>DM
         db   $59                             ; 82EB 59                       Y
-Bank17_UiStrings:
+Bank17_PokerCategoryAndPromptStrings:
         db   $36,$19,$23,$0B,$16,$00,$2A,$16 ; 82EC 36 19 23 0B 16 00 2A 16  6.#...*.
         db   $1F,$1D,$12,$FF,$06,$00,$19,$10 ; 82F4 1F 1D 12 FF 06 00 19 10  ........
         db   $00,$0B,$00,$2F,$13,$18,$0E,$FF ; 82FC 00 0B 00 2F 13 18 0E FF  .../....
@@ -2667,7 +2667,7 @@ CasinoSystem_Branch_9217:
         lda     Bank17_PpuAddressTable,x        ; 921D BD 48 92                 .H.
         sta     PPUADDR                         ; 9220 8D 06 20                 ..
 CasinoSystem_Branch_9223:
-        lda     Bank17_UiStrings,y              ; 9223 B9 EC 82                 ...
+        lda     Bank17_PokerCategoryAndPromptStrings,y              ; 9223 B9 EC 82                 ...
         cmp     #$FF                            ; 9226 C9 FF                    ..
         beq     CasinoSystem_Branch_9231        ; 9228 F0 07                    ..
         sta     PPUDATA                         ; 922A 8D 07 20                 ..
@@ -3546,7 +3546,7 @@ LoadCasinoSymbolPayoutValue:
         and     #$07                            ; 9E33 29 07                    ).
         asl     a                               ; 9E35 0A                       .
         tax                                     ; 9E36 AA                       .
-        lda     Bank17_MapValues,x              ; 9E37 BD 58 9E                 .X.
+        lda     Bank17_CasinoSymbolPayoutValues,x              ; 9E37 BD 58 9E                 .X.
         sta     $32                             ; 9E3A 85 32                    .2
         adc     MessageNumberArgument           ; 9E3C 65 FD                    e.
         sta     MessageNumberArgument           ; 9E3E 85 FD                    ..
@@ -3564,7 +3564,7 @@ LoadCasinoSymbolPayoutValue:
 CasinoSystem_Branch_9E57:
         rts                                     ; 9E57 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapValues:
+Bank17_CasinoSymbolPayoutValues:
         db   $05                             ; 9E58 05                       .
         db   $00,$0A,$00,$14,$00,$32,$00,$64 ; 9E59 00 0A 00 14 00 32 00 64  .....2.d
         db   $00,$C8,$00,$F4,$01,$E8,$03     ; 9E61 00 C8 00 F4 01 E8 03     .......
@@ -3621,7 +3621,7 @@ CasinoSystem_Branch_9EA8:
         rts                                     ; 9EB7 60                       `
 ; ----------------------------------------------------------------------------
 EvaluateCasinoResultLine:
-        ldx     Bank17_MapComparisonTables,y    ; 9EB8 BE D7 9E                 ...
+        ldx     Bank17_CasinoPaylineSymbolIndices,y    ; 9EB8 BE D7 9E                 ...
         lda     $7B,x                           ; 9EBB B5 7B                    .{
         ldx     $9EDC,y                         ; 9EBD BE DC 9E                 ...
         cmp     $7B,x                           ; 9EC0 D5 7B                    .{
@@ -3640,7 +3640,7 @@ CasinoSystem_Branch_9ED4:
         lda     #$00                            ; 9ED4 A9 00                    ..
         rts                                     ; 9ED6 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapComparisonTables:
+Bank17_CasinoPaylineSymbolIndices:
         db   $03,$06,$00,$06,$00             ; 9ED7 03 06 00 06 00           .....
         db   $04,$07,$01,$04,$04             ; 9EDC 04 07 01 04 04           .....
         db   $05,$08,$02,$02,$08             ; 9EE1 05 08 02 02 08           .....
@@ -3794,7 +3794,7 @@ InitializeCasinoResultMarker:
         lda     #$03                            ; 9FCC A9 03                    ..
 WriteCasinoResultMarkerOam:
         pha                                     ; 9FCE 48                       H
-        lda     Bank17_MapOamYPositions,y       ; 9FCF B9 F7 9F                 ...
+        lda     Bank17_CasinoResultMarkerYPositions,y       ; 9FCF B9 F7 9F                 ...
         sta     $0200,x                         ; 9FD2 9D 00 02                 ...
         lda     #$0C                            ; 9FD5 A9 0C                    ..
         sta     $0201,x                         ; 9FD7 9D 01 02                 ...
@@ -3819,7 +3819,7 @@ CasinoSystem_Branch_9FEA:
         bcc     CasinoSystem_Branch_9FEA        ; 9FF4 90 F4                    ..
         rts                                     ; 9FF6 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapOamYPositions:
+Bank17_CasinoResultMarkerYPositions:
         db   $5B,$3B,$7B,$1B,$9B             ; 9FF7 5B 3B 7B 1B 9B           [;{..
 ; ----------------------------------------------------------------------------
 BuildCasinoCoinDigitSprites:
@@ -3861,7 +3861,7 @@ CasinoSystem_Branch_A02A:
         sta     $0201,y                         ; A032 99 01 02                 ...
         lda     #$22                            ; A035 A9 22                    ."
         sta     $0202,y                         ; A037 99 02 02                 ...
-        lda     Bank17_MapOamXPositions,x       ; A03A BD 4A A0                 .J.
+        lda     Bank17_CasinoCoinDigitXPositions,x       ; A03A BD 4A A0                 .J.
         sta     $0203,y                         ; A03D 99 03 02                 ...
         iny                                     ; A040 C8                       .
         iny                                     ; A041 C8                       .
@@ -3872,7 +3872,7 @@ CasinoSystem_Branch_A02A:
         bcc     CasinoSystem_Branch_A02A        ; A047 90 E1                    ..
         rts                                     ; A049 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapOamXPositions:
+Bank17_CasinoCoinDigitXPositions:
         db   $58,$60,$68,$70,$78,$80         ; A04A 58 60 68 70 78 80        X`hpx.
 ; ----------------------------------------------------------------------------
 WaitForCasinoConfirmRelease:
@@ -3993,7 +3993,7 @@ MapSystem_Branch_A10E:
         ora     #$08                            ; A117 09 08                    ..
 MapSystem_Branch_A119:
         tay                                     ; A119 A8                       .
-        lda     Bank17_MapTimingTable,y         ; A11A B9 4A A1                 .J.
+        lda     Bank17_CasinoReelDecelerationTiming,y         ; A11A B9 4A A1                 .J.
         bne     MapSystem_Branch_A122           ; A11D D0 03                    ..
         jsr     SelectCasinoReelDecelerationDelay; A11F 20 5B A1                 [.
 MapSystem_Branch_A122:
@@ -4025,7 +4025,7 @@ MapSystem_Branch_A145:
         inx                                     ; A145 E8                       .
         cpx     #$03                            ; A146 E0 03                    ..
         bcc     CasinoSystem_Branch_A0F5        ; A148 90 AB                    ..
-Bank17_MapTimingTable:
+Bank17_CasinoReelDecelerationTiming:
         rts                                     ; A14A 60                       `
 ; ----------------------------------------------------------------------------
         db   $00,$20,$18,$12,$0C,$08,$06,$00 ; A14B 00 20 18 12 0C 08 06 00  . ......
@@ -4100,7 +4100,7 @@ InitializeCasinoReelDelayByIndex:
         cpx     #$02                            ; A1C2 E0 02                    ..
         beq     MapSystem_Branch_A1D8           ; A1C4 F0 12                    ..
         ldy     $04FF                           ; A1C6 AC FF 04                 ...
-        lda     Bank17_MapBehaviorTables,y      ; A1C9 B9 EB A4                 ...
+        lda     Bank17_CasinoReelDelayBehaviorTables,y      ; A1C9 B9 EB A4                 ...
         jmp     MapSystem_Branch_A1DE           ; A1CC 4C DE A1                 L..
 ; ----------------------------------------------------------------------------
 MapSystem_Branch_A1CF:
@@ -4265,13 +4265,13 @@ MapSystem_Branch_A2C2:
         adc     $00                             ; A2C8 65 00                    e.
         asl     a                               ; A2CA 0A                       .
         asl     a                               ; A2CB 0A                       .
-        adc     Bank17_MapOamOffsets,x          ; A2CC 7D 39 A3                 }9.
+        adc     Bank17_CasinoReelOamOffsets,x          ; A2CC 7D 39 A3                 }9.
         ldy     $02                             ; A2CF A4 02                    ..
         tax                                     ; A2D1 AA                       .
         lda     #$2B                            ; A2D2 A9 2B                    .+
         sta     $0200,x                         ; A2D4 9D 00 02                 ...
         sta     $0204,x                         ; A2D7 9D 04 02                 ...
-        lda     Bank17_MapOamLookups,y          ; A2DA B9 67 A5                 .g.
+        lda     Bank17_CasinoSymbolOamLookups,y          ; A2DA B9 67 A5                 .g.
         sta     $0203,x                         ; A2DD 9D 03 02                 ...
         lda     $A56A,y                         ; A2E0 B9 6A A5                 .j.
         sta     $0207,x                         ; A2E3 9D 07 02                 ...
@@ -4304,7 +4304,7 @@ MapSystem_Branch_A2C2:
 MoveCasinoReelSpritesDown:
         txa                                     ; A315 8A                       .
         pha                                     ; A316 48                       H
-        lda     Bank17_MapOamOffsets,x          ; A317 BD 39 A3                 .9.
+        lda     Bank17_CasinoReelOamOffsets,x          ; A317 BD 39 A3                 .9.
         tax                                     ; A31A AA                       .
         lda     #$0C                            ; A31B A9 0C                    ..
         sta     $00                             ; A31D 85 00                    ..
@@ -4326,7 +4326,7 @@ MapSystem_Branch_A32E:
         tax                                     ; A337 AA                       .
         rts                                     ; A338 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapOamOffsets:
+Bank17_CasinoReelOamOffsets:
         db   $40,$70,$A0                     ; A339 40 70 A0                 @p.
 ; ----------------------------------------------------------------------------
 RenderAllCasinoReels:
@@ -4346,7 +4346,7 @@ RenderCasinoReelColumn:
         ora     $53,x                           ; A357 15 53                    .S
         tay                                     ; A359 A8                       .
         lda     ($51),y                         ; A35A B1 51                    .Q
-        ldy     Bank17_MapPatternMetadata,x     ; A35C BC B8 A3                 ...
+        ldy     Bank17_CasinoReelPatternMetadata,x     ; A35C BC B8 A3                 ...
         jsr     RenderCasinoSymbolSpriteGroup   ; A35F 20 16 A5                  ..
         inc     $01                             ; A362 E6 01                    ..
         ldx     $00                             ; A364 A6 00                    ..
@@ -4381,7 +4381,7 @@ LoadCasinoReelPatternConfiguration:
         ldy     $A511,x                         ; A394 BC 11 A5                 ...
         ldx     #$00                            ; A397 A2 00                    ..
 MapSystem_Branch_A399:
-        lda     Bank17_MapMasks,y               ; A399 B9 09 A5                 ...
+        lda     Bank17_CasinoReelWrapConfiguration,y               ; A399 B9 09 A5                 ...
         sta     $53,x                           ; A39C 95 53                    .S
         iny                                     ; A39E C8                       .
         inx                                     ; A39F E8                       .
@@ -4400,7 +4400,7 @@ MapSystem_Branch_A399:
         tax                                     ; A3B6 AA                       .
         rts                                     ; A3B7 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapPatternMetadata:
+Bank17_CasinoReelPatternMetadata:
         db   $40,$70,$A0                     ; A3B8 40 70 A0                 @p.
         db   $50,$80,$B0                     ; A3BB 50 80 B0                 P..
         db   $60,$90,$C0                     ; A3BE 60 90 C0                 `..
@@ -4443,20 +4443,20 @@ Bank17_MapPatternMetadata:
         db   $02,$02,$05,$02,$02,$03,$02,$02 ; A4DA 02 02 05 02 02 03 02 02  ........
         db   $01,$01,$01,$02,$02,$02,$01,$01 ; A4E2 01 01 01 02 02 02 01 01  ........
         db   $01                             ; A4EA 01                       .
-Bank17_MapBehaviorTables:
+Bank17_CasinoReelDelayBehaviorTables:
         db   $00,$01,$00,$00,$02             ; A4EB 00 01 00 00 02           .....
         db   $00,$02,$02,$02,$02             ; A4F0 00 02 02 02 02           .....
         db   $00,$01,$00,$00,$02             ; A4F5 00 01 00 00 02           .....
         db   $00,$02,$01,$01,$02             ; A4FA 00 02 01 01 02           .....
         db   $02,$00,$01,$00,$02             ; A4FF 02 00 01 00 02           .....
         db   $00,$00,$02,$02,$02             ; A504 00 00 02 02 02           .....
-Bank17_MapMasks:
+Bank17_CasinoReelWrapConfiguration:
         db   $00,$10,$20,$0F,$00,$20,$40,$1F ; A509 00 10 20 0F 00 20 40 1F  .. .. @.
         db   $00,$00,$00,$00,$04             ; A511 00 00 00 00 04           .....
 ; ----------------------------------------------------------------------------
 RenderCasinoSymbolSpriteGroup:
         pha                                     ; A516 48                       H
-        lda     Bank17_MapOamLookups,x          ; A517 BD 67 A5                 .g.
+        lda     Bank17_CasinoSymbolOamLookups,x          ; A517 BD 67 A5                 .g.
         sta     $0203,y                         ; A51A 99 03 02                 ...
         sta     $020B,y                         ; A51D 99 0B 02                 ...
         lda     $A56A,x                         ; A520 BD 6A A5                 .j.
@@ -4494,7 +4494,7 @@ RenderCasinoSymbolSpriteGroup:
         sta     $020D,y                         ; A563 99 0D 02                 ...
         rts                                     ; A566 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapOamLookups:
+Bank17_CasinoSymbolOamLookups:
         db   $38,$68,$98                     ; A567 38 68 98                 8h.
         db   $40,$70,$A0                     ; A56A 40 70 A0                 @p.
         db   $77,$57,$37                     ; A56D 77 57 37                 wW7
@@ -4529,7 +4529,7 @@ UploadFiveSlotCasinoNametable:
         ldx     #$00                            ; A5A1 A2 00                    ..
         stx     PPUADDR                         ; A5A3 8E 06 20                 ..
 MapSystem_Branch_A5A6:
-        lda     Bank17_MapTileIndices,x         ; A5A6 BD 50 A6                 .P.
+        lda     Bank17_CasinoNametablePatternIndices,x         ; A5A6 BD 50 A6                 .P.
         jsr     WriteRleMapTilePattern          ; A5A9 20 2E A6                  ..
         inx                                     ; A5AC E8                       .
         cpx     #$1F                            ; A5AD E0 1F                    ..
@@ -4547,7 +4547,7 @@ MapSystem_Branch_A5BD:
         lda     $03                             ; A5C5 A5 03                    ..
         sta     PPUADDR                         ; A5C7 8D 06 20                 ..
         ldx     $05                             ; A5CA A6 05                    ..
-        lda     Bank17_MapRowTiles,x            ; A5CC BD 03 A7                 ...
+        lda     Bank17_CasinoNametableRowPatterns,x            ; A5CC BD 03 A7                 ...
         beq     MapSystem_Branch_A5EC           ; A5CF F0 1B                    ..
         tax                                     ; A5D1 AA                       .
         jsr     WriteRleMapTilePattern          ; A5D2 20 2E A6                  ..
@@ -4568,18 +4568,18 @@ MapSystem_Branch_A5EC:
 MapSystem_Branch_A5EE:
         lda     PPUSTATUS                       ; A5EE AD 02 20                 ..
         iny                                     ; A5F1 C8                       .
-        lda     Bank17_MapPpuCommands,y         ; A5F2 B9 12 A7                 ...
+        lda     Bank17_CasinoNametablePpuCommands,y         ; A5F2 B9 12 A7                 ...
         cmp     #$FF                            ; A5F5 C9 FF                    ..
         beq     MapSystem_Branch_A613           ; A5F7 F0 1A                    ..
         pha                                     ; A5F9 48                       H
         iny                                     ; A5FA C8                       .
-        lda     Bank17_MapPpuCommands,y         ; A5FB B9 12 A7                 ...
+        lda     Bank17_CasinoNametablePpuCommands,y         ; A5FB B9 12 A7                 ...
         sta     PPUADDR                         ; A5FE 8D 06 20                 ..
         pla                                     ; A601 68                       h
         sta     PPUADDR                         ; A602 8D 06 20                 ..
 MapSystem_Branch_A605:
         iny                                     ; A605 C8                       .
-        lda     Bank17_MapPpuCommands,y         ; A606 B9 12 A7                 ...
+        lda     Bank17_CasinoNametablePpuCommands,y         ; A606 B9 12 A7                 ...
         cmp     #$FF                            ; A609 C9 FF                    ..
         beq     MapSystem_Branch_A5EE           ; A60B F0 E1                    ..
         sta     PPUDATA                         ; A60D 8D 07 20                 ..
@@ -4593,7 +4593,7 @@ MapSystem_Branch_A613:
         sta     PPUADDR                         ; A61D 8D 06 20                 ..
         ldy     #$00                            ; A620 A0 00                    ..
 MapSystem_Branch_A622:
-        lda     Bank17_MapAttributes,y          ; A622 B9 D8 A7                 ...
+        lda     Bank17_CasinoNametableAttributes,y          ; A622 B9 D8 A7                 ...
         sta     PPUDATA                         ; A625 8D 07 20                 ..
         iny                                     ; A628 C8                       .
         cpy     #$26                            ; A629 C0 26                    .&
@@ -4603,7 +4603,7 @@ MapSystem_Branch_A622:
 WriteRleMapTilePattern:
         asl     a                               ; A62E 0A                       .
         tay                                     ; A62F A8                       .
-        lda     Bank17_MapTilePointers,y        ; A630 B9 6F A6                 .o.
+        lda     Bank17_CasinoNametablePatternPointers,y        ; A630 B9 6F A6                 .o.
         sta     $00                             ; A633 85 00                    ..
         lda     $A670,y                         ; A635 B9 70 A6                 .p.
         sta     $01                             ; A638 85 01                    ..
@@ -4623,18 +4623,18 @@ MapSystem_Branch_A646:
 MapSystem_Branch_A64F:
         rts                                     ; A64F 60                       `
 ; ----------------------------------------------------------------------------
-Bank17_MapTileIndices:
+Bank17_CasinoNametablePatternIndices:
         db   $00,$00,$00,$01,$01,$01,$01,$01 ; A650 00 00 00 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$01,$01,$01,$01 ; A658 01 01 01 01 01 01 01 01  ........
         db   $01,$01,$01,$01,$00,$00,$02,$03 ; A660 01 01 01 01 00 00 02 03  ........
         db   $04,$0A,$0A,$0B,$0C,$0C,$0D     ; A668 04 0A 0A 0B 0C 0C 0D     .......
-Bank17_MapTilePointers:
+Bank17_CasinoNametablePatternPointers:
         db   $8B                             ; A66F 8B                       .
         db   $A6,$8E,$A6,$99,$A6,$A4,$A6,$AF ; A670 A6 8E A6 99 A6 A4 A6 AF  ........
         db   $A6,$BA,$A6,$C3,$A6,$CC,$A6,$D5 ; A678 A6 BA A6 C3 A6 CC A6 D5  ........
         db   $A6,$DC,$A6,$E3,$A6,$EE,$A6,$F9 ; A680 A6 DC A6 E3 A6 EE A6 F9  ........
         db   $A6,$FC,$A6                     ; A688 A6 FC A6                 ...
-Bank17_MapTileRle:
+Bank17_CasinoNametableTileRle:
         db   $20,$8E,$00,$17,$8E,$01,$B6,$06 ; A68B 20 8E 00 17 8E 01 B6 06   .......
         db   $8F,$01,$B7,$01,$8E,$00,$03,$BC ; A693 8F 01 B7 01 8E 00 03 BC  ........
         db   $01,$86,$18,$85,$01,$89,$03,$BC ; A69B 01 86 18 85 01 89 03 BC  ........
@@ -4650,10 +4650,10 @@ Bank17_MapTileRle:
         db   $03,$8F,$00,$03,$8F,$01,$87,$18 ; A6EB 03 8F 00 03 8F 01 87 18  ........
         db   $8A,$01,$8B,$03,$8F,$00,$20,$8F ; A6F3 8A 01 8B 03 8F 00 20 8F  ...... .
         db   $00,$28,$FF,$08,$0F,$10,$00,$00 ; A6FB 00 28 FF 08 0F 10 00 00  .(......
-Bank17_MapRowTiles:
+Bank17_CasinoNametableRowPatterns:
         db   $08,$06,$05,$05,$05,$05,$05,$05 ; A703 08 06 05 05 05 05 05 05  ........
         db   $05,$05,$05,$05,$07,$09,$00     ; A70B 05 05 05 05 07 09 00     .......
-Bank17_MapPpuCommands:
+Bank17_CasinoNametablePpuCommands:
         db   $48,$20,$90,$91,$92,$93,$94,$95 ; A712 48 20 90 91 92 93 94 95  H ......
         db   $96,$97,$98,$99,$9A,$9B,$FF,$68 ; A71A 96 97 98 99 9A 9B FF 68  .......h
         db   $20,$9C,$9D,$9E,$9F,$A0,$A1,$A2 ; A722 20 9C 9D 9E 9F A0 A1 A2   .......
@@ -4681,7 +4681,7 @@ Bank17_MapPpuCommands:
         db   $CF,$D0,$D2,$FF,$D8,$20,$C9,$C9 ; A7C1 CF D0 D2 FF D8 20 C9 C9  ..... ..
         db   $C9,$CF,$D5,$D2,$FF,$98,$20,$C8 ; A7C9 C9 CF D5 D2 FF 98 20 C8  ...... .
         db   $C8,$C8,$CF,$D4,$D2,$FF,$FF     ; A7D1 C8 C8 CF D4 D2 FF FF     .......
-Bank17_MapAttributes:
+Bank17_CasinoNametableAttributes:
         db   $FF,$FF,$0F,$0F,$0F,$FF,$FF,$FF ; A7D8 FF FF 0F 0F 0F FF FF FF  ........
         db   $FF,$3F,$CF,$0F,$3F,$CF,$FF,$FF ; A7E0 FF 3F CF 0F 3F CF FF FF  .?..?...
         db   $FF,$33,$CC,$00,$33,$CC,$FF,$FF ; A7E8 FF 33 CC 00 33 CC FF FF  .3..3...

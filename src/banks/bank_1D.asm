@@ -963,17 +963,17 @@ InitializeMapDisplacementAnimation:
 RunMapDisplacementAnimationLoop:
         jsr     AdvanceMapDisplacementWave      ; 8F6A 20 B2 90                  ..
         jsr     RotateMapDisplacementBuffers    ; 8F6D 20 8C 90                  ..
-        jsr     WaitForMapEffectVblank          ; 8F70 20 C3 8F                  ..
-        jsr     WriteTwoScanlineScrollPasses    ; 8F73 20 85 8F                  ..
+        jsr     WaitForMapEffectSpriteZeroHit          ; 8F70 20 C3 8F                  ..
+        jsr     WriteOneScanlineScrollPass    ; 8F73 20 85 8F                  ..
         jsr     NoOpMapDisplacementCallback     ; 8F76 20 C2 8F                  ..
         jsr     QueueMapDisplacementPpuCommand  ; 8F79 20 D3 8F                  ..
         jsr     WaitForNmi                      ; 8F7C 20 74 FF                  t.
         jsr     FinishMapDisplacementAtPhase40  ; 8F7F 20 21 90                  !.
         jmp     RunMapDisplacementAnimationLoop ; 8F82 4C 6A 8F                 Lj.
 ; ----------------------------------------------------------------------------
-WriteTwoScanlineScrollPasses:
+WriteOneScanlineScrollPass:
         ldy     #$01                            ; 8F85 A0 01                    ..
-WriteScanlineScrollBuffer:
+WriteYScanlineScrollBufferPasses:
         ldx     #$00                            ; 8F87 A2 00                    ..
 MapEventSystem_Branch_8F89:
         lda     $7F00,x                         ; 8F89 BD 00 7F                 ...
@@ -1011,13 +1011,13 @@ MapEventSystem_Branch_8FB0:
         cpx     #$40                            ; 8FBA E0 40                    .@
         bne     MapEventSystem_Branch_8F89      ; 8FBC D0 CB                    ..
         dey                                     ; 8FBE 88                       .
-        bne     WriteScanlineScrollBuffer       ; 8FBF D0 C6                    ..
+        bne     WriteYScanlineScrollBufferPasses       ; 8FBF D0 C6                    ..
         rts                                     ; 8FC1 60                       `
 ; ----------------------------------------------------------------------------
 NoOpMapDisplacementCallback:
         rts                                     ; 8FC2 60                       `
 ; ----------------------------------------------------------------------------
-WaitForMapEffectVblank:
+WaitForMapEffectSpriteZeroHit:
         ldy     #$05                            ; 8FC3 A0 05                    ..
         ldx     #$00                            ; 8FC5 A2 00                    ..
 MapEventSystem_Branch_8FC7:
@@ -1222,7 +1222,7 @@ Bank1D_MapMotionDeltas:
 ; ----------------------------------------------------------------------------
 RunSymmetricPpuBlankWipe:
         jsr     BlankSecondaryNametableRowsForward; 918E 20 C4 91                ..
-        jsr     BlankSecondaryNametableRowsReverse; 9191 20 B9 91                ..
+        jsr     BlankPpuRowsReverseAtCurrentAddress; 9191 20 B9 91                ..
         jsr     BlankPrimaryNametableRowsForward; 9194 20 9B 91                  ..
         jsr     BlankPpuRowsReverse             ; 9197 20 AE 91                  ..
         rts                                     ; 919A 60                       `
@@ -1249,7 +1249,7 @@ MapEventSystem_Branch_91B0:
         bne     MapEventSystem_Branch_91B0      ; 91B6 D0 F8                    ..
         rts                                     ; 91B8 60                       `
 ; ----------------------------------------------------------------------------
-BlankSecondaryNametableRowsReverse:
+BlankPpuRowsReverseAtCurrentAddress:
         ldy     #$0E                            ; 91B9 A0 0E                    ..
 MapEventSystem_Branch_91BB:
         jsr     BlankPpuRowAndAdvance           ; 91BB 20 D7 91                  ..
@@ -1321,7 +1321,7 @@ Bank1D_PpuBlankWidths:
         db   $08,$07,$06,$06,$05,$05,$04     ; 9223 08 07 06 06 05 05 04     .......
 ; ----------------------------------------------------------------------------
 RunContractingMapDisplacementEffect:
-        jsr     BuildMapEffectPaletteBuffer     ; 922A 20 CA 93                  ..
+        jsr     BuildMapEffectPaletteBufferThroughSourceIndex31     ; 922A 20 CA 93                  ..
         jsr     InitializeOamShadow             ; 922D 20 43 C5                  C.
         jsr     WaitForNmi                      ; 9230 20 74 FF                  t.
         jsr     InstallMapDisplacementCallbackA ; 9233 20 40 92                  @.
@@ -1354,11 +1354,11 @@ RunContractingMapDisplacementLoop:
         jsr     WaitForMapEffectPpuTimingWindow ; 925C 20 82 92                  ..
         jsr     RetreatMapDisplacementWave      ; 925F 20 8D 93                  ..
         jsr     RotateMapDisplacementBuffers    ; 9262 20 8C 90                  ..
-        jsr     ApplyContractingMapEffectPhase  ; 9265 20 F0 93                  ..
+        jsr     ApplyContractingMapEffectThroughSourceIndex15  ; 9265 20 F0 93                  ..
         tsx                                     ; 9268 BA                       .
         stx     $0F                             ; 9269 86 0F                    ..
         ldy     #$03                            ; 926B A0 03                    ..
-        jsr     WriteScanlineScrollBuffer       ; 926D 20 87 8F                  ..
+        jsr     WriteYScanlineScrollBufferPasses       ; 926D 20 87 8F                  ..
 WaitForContractingDisplacementNmi:
         jmp     WaitForContractingDisplacementNmi; 9270 4C 70 92                Lp.
 ; ----------------------------------------------------------------------------
@@ -1511,7 +1511,7 @@ MapEventSystem_Branch_93C2:
         bne     MapEventSystem_Branch_93C2      ; 93C7 D0 F9                    ..
         rts                                     ; 93C9 60                       `
 ; ----------------------------------------------------------------------------
-BuildMapEffectPaletteBuffer:
+BuildMapEffectPaletteBufferThroughSourceIndex31:
         lda     $059D                           ; 93CA AD 9D 05                 ...
         sta     $51                             ; 93CD 85 51                    .Q
         ldx     #$00                            ; 93CF A2 00                    ..
@@ -1536,7 +1536,7 @@ MapEventSystem_Branch_93E6:
         bcc     MapEventSystem_Branch_93D7      ; 93ED 90 E8                    ..
         rts                                     ; 93EF 60                       `
 ; ----------------------------------------------------------------------------
-ApplyContractingMapEffectPhase:
+ApplyContractingMapEffectThroughSourceIndex15:
         lda     $53                             ; 93F0 A5 53                    .S
         cmp     #$08                            ; 93F2 C9 08                    ..
         bcs     MapEventSystem_Branch_9422      ; 93F4 B0 2C                    .,
@@ -1579,7 +1579,7 @@ RunExpandingMapDisplacementEffect:
         lda     #$00                            ; 9423 A9 00                    ..
         sta     $059D                           ; 9425 8D 9D 05                 ...
         jsr     InitializeMapDisplacementBuffers; 9428 20 73 90                  s.
-        jsr     BuildMapEffectPaletteBuffer     ; 942B 20 CA 93                  ..
+        jsr     BuildMapEffectPaletteBufferThroughSourceIndex31     ; 942B 20 CA 93                  ..
         jsr     InitializeOamShadow             ; 942E 20 43 C5                  C.
         jsr     WaitForNmi                      ; 9431 20 74 FF                  t.
         jsr     InstallMapDisplacementCallbackB ; 9434 20 41 94                  A.
@@ -1605,11 +1605,11 @@ RunExpandingMapDisplacementLoop:
         jsr     WaitForMapEffectPpuTimingWindow ; 9450 20 82 92                  ..
         jsr     AdvanceMapDisplacementWave      ; 9453 20 B2 90                  ..
         jsr     RotateMapDisplacementBuffers    ; 9456 20 8C 90                  ..
-        jsr     ApplyExpandingMapEffectPhase    ; 9459 20 76 94                  v.
+        jsr     ApplyExpandingMapEffectThroughSourceIndex15    ; 9459 20 76 94                  v.
         tsx                                     ; 945C BA                       .
         stx     $0F                             ; 945D 86 0F                    ..
         ldy     #$03                            ; 945F A0 03                    ..
-        jsr     WriteScanlineScrollBuffer       ; 9461 20 87 8F                  ..
+        jsr     WriteYScanlineScrollBufferPasses       ; 9461 20 87 8F                  ..
 WaitForExpandingDisplacementNmi:
         jmp     WaitForExpandingDisplacementNmi ; 9464 4C 64 94                 Ld.
 ; ----------------------------------------------------------------------------
@@ -1623,7 +1623,7 @@ Bank1D_NmiCallbackB:
         jsr     FinishMapDisplacementAtPhase40  ; 9470 20 21 90                  !.
         jmp     RunExpandingMapDisplacementLoop ; 9473 4C 50 94                 LP.
 ; ----------------------------------------------------------------------------
-ApplyExpandingMapEffectPhase:
+ApplyExpandingMapEffectThroughSourceIndex15:
         lda     $53                             ; 9476 A5 53                    .S
         cmp     #$20                            ; 9478 C9 20                    .
         bcc     MapEventSystem_Branch_9483      ; 947A 90 07                    ..
@@ -1638,7 +1638,7 @@ RunScriptedMapEntityOamSequence:
         brk                                     ; 9484 00                       .
         db   $16,$CB,$10                     ; 9485 16 CB 10                 ...
 ; ----------------------------------------------------------------------------
-        jsr     InitializeSixteenMapEffectSprites; 9488 20 16 96                 ..
+        jsr     WaitForVisibleSpritesThenInitializeSixteenEffectSprites; 9488 20 16 96                 ..
         jsr     RunEventSpriteMotionUntilPhase40; 948B 20 B6 95                  ..
         jsr     PlayMapEventJingleAndWait       ; 948E 20 AF 95                  ..
         jsr     SetSaroScenePropTile            ; 9491 20 A2 95                  ..
@@ -1860,7 +1860,7 @@ RefreshEntityEightEventSprites:
         jsr     AdvancePlayerAnimationCounter   ; 9612 20 B4 CB                  ..
         rts                                     ; 9615 60                       `
 ; ----------------------------------------------------------------------------
-InitializeSixteenMapEffectSprites:
+WaitForVisibleSpritesThenInitializeSixteenEffectSprites:
         jsr     WaitForNmi                      ; 9616 20 74 FF                  t.
         lda     #$F7                            ; 9619 A9 F7                    ..
         cmp     $02D0                           ; 961B CD D0 02                 ...
@@ -1868,7 +1868,7 @@ InitializeSixteenMapEffectSprites:
         cmp     $02E0                           ; 9620 CD E0 02                 ...
         bne     MapEventSystem_Branch_962A      ; 9623 D0 05                    ..
         cmp     $02F0                           ; 9625 CD F0 02                 ...
-        beq     InitializeSixteenMapEffectSprites; 9628 F0 EC                   ..
+        beq     WaitForVisibleSpritesThenInitializeSixteenEffectSprites; 9628 F0 EC                   ..
 MapEventSystem_Branch_962A:
         lda     $1F                             ; 962A A5 1F                    ..
         ora     #$08                            ; 962C 09 08                    ..
@@ -2138,21 +2138,21 @@ FindOpenEntityMovementCandidate:
 TestForwardEntityMovementCandidate:
         jsr     LoadEntityCandidateCoordinates  ; 98D2 20 F9 98                  ..
         jsr     ApplyDirectionOffsetToCandidate ; 98D5 20 35 99                  5.
-        jmp     FindPassableUnoccupiedEntityMove; 98D8 4C E7 98                 L..
+        jmp     ScanCandidateOffsetsUntilBlockedOrPlayerReached; 98D8 4C E7 98                 L..
 ; ----------------------------------------------------------------------------
 TestCurrentEntityMovementCandidate:
         jsr     LoadEntityCandidateCoordinates  ; 98DB 20 F9 98                  ..
-        jmp     FindPassableUnoccupiedEntityMove; 98DE 4C E7 98                 L..
+        jmp     ScanCandidateOffsetsUntilBlockedOrPlayerReached; 98DE 4C E7 98                 L..
 ; ----------------------------------------------------------------------------
 TestAlternateEntityMovementCandidate:
         jsr     LoadEntityCandidateCoordinates  ; 98E1 20 F9 98                  ..
         jsr     ApplyFirstAlternateDirectionOffset; 98E4 20 2F 99                /.
-FindPassableUnoccupiedEntityMove:
+ScanCandidateOffsetsUntilBlockedOrPlayerReached:
         jsr     ApplySecondAlternateDirectionOffset; 98E7 20 26 99               &.
         jsr     IsCandidateTileImpassable       ; 98EA 20 16 99                  ..
         bcs     MapEventSystem_Branch_98F7      ; 98ED B0 08                    ..
         jsr     IsPlayerAtCandidateCoordinates  ; 98EF 20 06 99                  ..
-        bcc     FindPassableUnoccupiedEntityMove; 98F2 90 F3                    ..
+        bcc     ScanCandidateOffsetsUntilBlockedOrPlayerReached; 98F2 90 F3                    ..
         pla                                     ; 98F4 68                       h
         pla                                     ; 98F5 68                       h
         rts                                     ; 98F6 60                       `
@@ -2235,7 +2235,7 @@ SetEntityCoordinateColumns:
         sta     $6FC6,x                         ; 996C 9D C6 6F                 ..o
         rts                                     ; 996F 60                       `
 ; ----------------------------------------------------------------------------
-ApplyPlayerPositionEventCounterBonus:
+ApplyPlayerPositionScriptPointerBonus:
         ldy     #$00                            ; 9970 A0 00                    ..
 MapEventSystem_Branch_9972:
         lda     $6FA0                           ; 9972 AD A0 6F                 ..o
@@ -2334,7 +2334,7 @@ MapEventSystem_Branch_99EF:
         clc                                     ; 99EF 18                       .
         rts                                     ; 99F0 60                       `
 ; ----------------------------------------------------------------------------
-UpdateSubmapZeroDirectionalTriggerFlags:
+UpdateFirstSixDirectionalTriggerFlags:
         lda     CurrentSubmapNumber             ; 99F1 A5 64                    .d
         cmp     #$00                            ; 99F3 C9 00                    ..
         bne     MapEventSystem_Branch_9A23      ; 99F5 D0 2C                    .,
@@ -2677,7 +2677,7 @@ TestPlayerAndEntityBlockMapEvent:
         cmp     #$03                            ; 9C15 C9 03                    ..
         beq     MapEventSystem_Branch_9C24      ; 9C17 F0 0B                    ..
 MapEventSystem_Branch_9C19:
-        jsr     IsMapTriggerBlockedByLeadingEntities; 9C19 20 34 9C              4.
+        jsr     IsMapTriggerBlockedByEntitiesSixSeven; 9C19 20 34 9C              4.
         bcs     MapEventSystem_Branch_9C24      ; 9C1C B0 06                    ..
         lda     $56                             ; 9C1E A5 56                    .V
         bmi     MapEventSystem_Branch_9C24      ; 9C20 30 02                    0.
@@ -2688,25 +2688,25 @@ MapEventSystem_Branch_9C24:
         clc                                     ; 9C24 18                       .
         rts                                     ; 9C25 60                       `
 ; ----------------------------------------------------------------------------
-IsMapTriggerPositionOccupied:
+IsMapTriggerOccupiedByPlayerOrEntitiesSixSeven:
         lda     PlayerLocalX                    ; 9C26 A5 44                    .D
         cmp     #$04                            ; 9C28 C9 04                    ..
-        bne     IsMapTriggerBlockedByLeadingEntities; 9C2A D0 08                ..
+        bne     IsMapTriggerBlockedByEntitiesSixSeven; 9C2A D0 08                ..
         lda     PlayerLocalY                    ; 9C2C A5 45                    .E
         cmp     #$03                            ; 9C2E C9 03                    ..
-        bne     IsMapTriggerBlockedByLeadingEntities; 9C30 D0 02                ..
+        bne     IsMapTriggerBlockedByEntitiesSixSeven; 9C30 D0 02                ..
 MapEventSystem_Branch_9C32:
         sec                                     ; 9C32 38                       8
         rts                                     ; 9C33 60                       `
 ; ----------------------------------------------------------------------------
-IsMapTriggerBlockedByLeadingEntities:
+IsMapTriggerBlockedByEntitiesSixSeven:
         ldx     #$01                            ; 9C34 A2 01                    ..
-        jsr     IsEntityAtMapTriggerPosition    ; 9C36 20 40 9C                  @.
+        jsr     IsEntitySixPlusXAtMapTriggerPosition    ; 9C36 20 40 9C                  @.
         bcs     MapEventSystem_Branch_9C32      ; 9C39 B0 F7                    ..
         ldx     #$00                            ; 9C3B A2 00                    ..
-        jmp     IsEntityAtMapTriggerPosition    ; 9C3D 4C 40 9C                 L@.
+        jmp     IsEntitySixPlusXAtMapTriggerPosition    ; 9C3D 4C 40 9C                 L@.
 ; ----------------------------------------------------------------------------
-IsEntityAtMapTriggerPosition:
+IsEntitySixPlusXAtMapTriggerPosition:
         lda     $6F66,x                         ; 9C40 BD 66 6F                 .fo
         cmp     #$04                            ; 9C43 C9 04                    ..
         bne     MapEventSystem_Branch_9C50      ; 9C45 D0 09                    ..
@@ -3459,7 +3459,7 @@ MapEventSystem_Branch_A0FA:
         db   $80,$58,$78,$74,$40,$80,$1C,$BC ; A154 80 58 78 74 40 80 1C BC  .Xxt@...
         db   $7C,$A6,$86,$88,$BE,$7E,$E0,$7C ; A15C 7C A6 86 88 BE 7E E0 7C  |....~.|
 ; ----------------------------------------------------------------------------
-MovePlayerUpAndToggleFirstEntities:
+MovePlayerUpAndToggleFollowerEntities:
         lda     PlayerLocalY                    ; A164 A5 45                    .E
         cmp     #$13                            ; A166 C9 13                    ..
         bne     MapEventSystem_Branch_A18A      ; A168 D0 20                    .
@@ -3467,10 +3467,10 @@ MovePlayerUpAndToggleFirstEntities:
         dec     $6F80                           ; A16C CE 80 6F                 ..o
         lda     #$00                            ; A16F A9 00                    ..
         sta     $3E                             ; A171 85 3E                    .>
-        jsr     ToggleFirstThreeEntityStateBits ; A173 20 79 A1                  y.
-PropagateFollowerOffsetsAndToggleFirstEntities:
+        jsr     ToggleEntityOneToThreeStateBits ; A173 20 79 A1                  y.
+PropagateFollowerOffsetsAndToggleEntitiesOneToThree:
         jsr     PropagatePartyFollowerOffsetsTrampoline; A176 20 07 C0           ..
-ToggleFirstThreeEntityStateBits:
+ToggleEntityOneToThreeStateBits:
         ldx     #$02                            ; A179 A2 02                    ..
 MapEventSystem_Branch_A17B:
         lda     $7001,x                         ; A17B BD 01 70                 ..p
@@ -3486,7 +3486,7 @@ MapEventSystem_Branch_A18A:
         clc                                     ; A18A 18                       .
         rts                                     ; A18B 60                       `
 ; ----------------------------------------------------------------------------
-InitializeEntityDelayAndScriptTarget:
+InitializeEntityDelayAndLoopTarget:
         jsr     NextRandomByte                  ; A18C 20 91 C8                  ..
         and     #$07                            ; A18F 29 07                    ).
         ldx     $51                             ; A191 A6 51                    .Q
@@ -3560,10 +3560,10 @@ MapEventSystem_Branch_A206:
 ; ----------------------------------------------------------------------------
 AssignEntityScriptOffsetAndStartScene:
         ldx     #$0B                            ; A213 A2 0B                    ..
-        jsr     AssignScriptToOpenEntityAndStartScene; A215 20 1C A2             ..
+        jsr     AssignScriptWhenEntityScanReachesPlayerAndStartScene; A215 20 1C A2             ..
         bcs     MapEventSystem_Branch_A24B      ; A218 B0 31                    .1
         ldx     #$0A                            ; A21A A2 0A                    ..
-AssignScriptToOpenEntityAndStartScene:
+AssignScriptWhenEntityScanReachesPlayerAndStartScene:
         txa                                     ; A21C 8A                       .
         pha                                     ; A21D 48                       H
         jsr     FindOpenEntityMovementCandidate ; A21E 20 BD 98                  ..
@@ -3651,7 +3651,7 @@ MapEventSystem_Branch_A29C:
         brk                                     ; A2A4 00                       .
         db   $0E,$EB,$04                     ; A2A5 0E EB 04                 ...
 ; ----------------------------------------------------------------------------
-HandleEntityZeroCoordinateEventAfterFlagTest:
+SkipEntityZeroEventWhenFlagAlreadySet:
         bne     MapEventSystem_Branch_A296      ; A2A8 D0 EC                    ..
 RunEntityZeroCoordinateEvent:
         brk                                     ; A2AA 00                       .
@@ -3674,10 +3674,10 @@ RunEntityZeroCoordinateEvent:
         and     #$FE                            ; A2C5 29 FE                    ).
         tay                                     ; A2C7 A8                       .
         ldx     #$07                            ; A2C8 A2 07                    ..
-        jsr     InitializeMapEventEntityBelowPlayer; A2CA 20 F3 A2               ..
+        jsr     InitializeMapEventEntityAbovePlayer; A2CA 20 F3 A2               ..
         iny                                     ; A2CD C8                       .
         ldx     #$08                            ; A2CE A2 08                    ..
-        jsr     InitializeMapEventEntityBelowPlayer; A2D0 20 F3 A2               ..
+        jsr     InitializeMapEventEntityAbovePlayer; A2D0 20 F3 A2               ..
         ldx     #$09                            ; A2D3 A2 09                    ..
         sta     $7040,x                         ; A2D5 9D 40 70                 .@p
         lda     #$00                            ; A2D8 A9 00                    ..
@@ -3693,7 +3693,7 @@ MapEventSystem_Branch_A2E9:
         db   $14                             ; A2EF 14                       .
         db   $0A,$08,$0E                     ; A2F0 0A 08 0E                 ...
 ; ----------------------------------------------------------------------------
-InitializeMapEventEntityBelowPlayer:
+InitializeMapEventEntityAbovePlayer:
         tya                                     ; A2F3 98                       .
         sta     $6F60,x                         ; A2F4 9D 60 6F                 .`o
         sta     $6FA0,x                         ; A2F7 9D A0 6F                 ..o
@@ -3708,9 +3708,9 @@ InitializeMapEventEntityBelowPlayer:
 ; ----------------------------------------------------------------------------
 RenderMapEventEntitiesSevenAndEight:
         ldx     #$07                            ; A30C A2 07                    ..
-        jsr     RenderMapEventEntityAtCurrentCoordinates; A30E 20 13 A3          ..
+        jsr     RenderMapEventEntityAtTargetCoordinates; A30E 20 13 A3          ..
         ldx     #$08                            ; A311 A2 08                    ..
-RenderMapEventEntityAtCurrentCoordinates:
+RenderMapEventEntityAtTargetCoordinates:
         ldy     $6FC0,x                         ; A313 BC C0 6F                 ..o
         lda     $6FA0,x                         ; A316 BD A0 6F                 ..o
         tax                                     ; A319 AA                       .
@@ -3756,7 +3756,7 @@ MapEventSystem_Branch_A345:
         sec                                     ; A350 38                       8
         rts                                     ; A351 60                       `
 ; ----------------------------------------------------------------------------
-TestEntityZeroAt0E_03ForEvent:
+TestEntityZeroInColumns0E0FAtRow03ForEvent:
         lda     $6FA0                           ; A352 AD A0 6F                 ..o
         and     #$FE                            ; A355 29 FE                    ).
         cmp     #$0E                            ; A357 C9 0E                    ..
@@ -3998,7 +3998,7 @@ MapEventSystem_Branch_A4CE:
         sta     $7001                           ; A4E4 8D 01 70                 ..p
         iny                                     ; A4E7 C8                       .
 MapEventSystem_Branch_A4E8:
-        jsr     ActivateEntityFromQueuedSlot    ; A4E8 20 1F A5                  ..
+        jsr     ActivateEntitySixPlusXFromQueuedSlot    ; A4E8 20 1F A5                  ..
         jsr     SynchronizePlayerWithEntityZero ; A4EB 20 09 A5                  ..
         lda     $51                             ; A4EE A5 51                    .Q
         pha                                     ; A4F0 48                       H
@@ -4034,7 +4034,7 @@ SynchronizePlayerWithEntityZero:
         sec                                     ; A51D 38                       8
         rts                                     ; A51E 60                       `
 ; ----------------------------------------------------------------------------
-ActivateEntityFromQueuedSlot:
+ActivateEntitySixPlusXFromQueuedSlot:
         lda     $6FA1,y                         ; A51F B9 A1 6F                 ..o
         sta     $6F66,x                         ; A522 9D 66 6F                 .fo
         lda     $6FA1,y                         ; A525 B9 A1 6F                 ..o
@@ -4059,7 +4059,7 @@ UpdateMapEventActorState:
         sec                                     ; A547 38                       8
         rts                                     ; A548 60                       `
 ; ----------------------------------------------------------------------------
-TransferEntitySeventeenToSeven:
+TransferEntityTwentyThreeToThirteen:
         ldx     #$07                            ; A549 A2 07                    ..
         ldy     #$11                            ; A54B A0 11                    ..
         lda     $6F66,y                         ; A54D B9 66 6F                 .fo
@@ -4087,7 +4087,7 @@ TransferEntitySeventeenToSeven:
         sec                                     ; A586 38                       8
         rts                                     ; A587 60                       `
 ; ----------------------------------------------------------------------------
-ActivateEntitiesFourThroughElevenAtRow19:
+ActivateEntitiesTenThroughSeventeenAtRow19:
         lda     PlayerLocalY                    ; A588 A5 45                    .E
         cmp     #$19                            ; A58A C9 19                    ..
         bne     MapEventSystem_Branch_A5A5      ; A58C D0 17                    ..
@@ -4151,7 +4151,7 @@ MapEventSystem_Branch_A5D3:
         brk                                     ; A5E4 00                       .
         db   $85,$FB                         ; A5E5 85 FB                    ..
 ; ----------------------------------------------------------------------------
-        jsr     Bank1D_QueueExperienceDigitsUpdate; A5E7 20 12 A6                ..
+        jsr     QueueExperienceDigitsWhenCommandCursorZero; A5E7 20 12 A6                ..
         pla                                     ; A5EA 68                       h
         tax                                     ; A5EB AA                       .
         dex                                     ; A5EC CA                       .
@@ -4182,7 +4182,7 @@ MapEventSystem_Branch_A60B:
 ; ----------------------------------------------------------------------------
         db   $18,$60                         ; A610 18 60                    .`
 ; ----------------------------------------------------------------------------
-Bank1D_QueueExperienceDigitsUpdate:
+QueueExperienceDigitsWhenCommandCursorZero:
         lda     #$13                            ; A612 A9 13                    ..
         sta     $00                             ; A614 85 00                    ..
         lda     #$1A                            ; A616 A9 1A                    ..
@@ -4314,7 +4314,7 @@ DispatchMapEntityEvent02:
         clc                                     ; A6E8 18                       .
         rts                                     ; A6E9 60                       `
 ; ----------------------------------------------------------------------------
-RunEntityZeroInteractionAndHideEntity15:
+RunEntityZeroInteractionAndHideEntityTwentyOne:
         lda     $7000                           ; A6EA AD 00 70                 ..p
         and     #$FC                            ; A6ED 29 FC                    ).
         ora     #$01                            ; A6EF 09 01                    ..
@@ -4352,7 +4352,7 @@ MapEventSystem_Branch_A70B:
         sec                                     ; A722 38                       8
         rts                                     ; A723 60                       `
 ; ----------------------------------------------------------------------------
-ActivateMapEntitiesElevenAndTwelve:
+ActivateMapEntitiesTwentyThreeAndTwentyFour:
         lda     #$11                            ; A724 A9 11                    ..
         ldx     #$12                            ; A726 A2 12                    ..
         sta     $7046,x                         ; A728 9D 46 70                 .Fp
@@ -4485,7 +4485,7 @@ MapEventSystem_Branch_A7D7:
         brk                                     ; A7E4 00                       .
         db   $0E,$DB,$F7                     ; A7E5 0E DB F7                 ...
 ; ----------------------------------------------------------------------------
-FinalizeGateMapEffectDirections:
+FinalizeGateMapEffectDirectionsForEntitiesSixSeven:
         cpy     #$22                            ; A7E8 C0 22                    ."
         beq     MapEventSystem_Branch_A7FF      ; A7EA F0 13                    ..
         brk                                     ; A7EC 00                       .
@@ -4563,7 +4563,7 @@ MapEventSystem_Branch_A84D:
         db   $10                             ; A850 10                       .
         db   $01,$0C,$10,$01,$0A,$11,$02     ; A851 01 0C 10 01 0A 11 02     .......
 ; ----------------------------------------------------------------------------
-StartPresentation84AndTransferEntityPairs:
+StartPresentation84AndCopyEntityEightNineScriptsToSixSeven:
         brk                                     ; A858 00                       .
         db   $0B,$EB,$02                     ; A859 0B EB 02                 ...
 ; ----------------------------------------------------------------------------
@@ -4596,7 +4596,7 @@ MapEventSystem_Branch_A891:
         clc                                     ; A891 18                       .
         rts                                     ; A892 60                       `
 ; ----------------------------------------------------------------------------
-TransferQueuedMapEventActors:
+TransferQueuedActorsToEntitiesNineteenAndTwenty:
         lda     $6FA0                           ; A893 AD A0 6F                 ..o
         cmp     #$0E                            ; A896 C9 0E                    ..
         bne     MapEventSystem_Branch_A90B      ; A898 D0 71                    .q
@@ -4612,9 +4612,9 @@ TransferQueuedMapEventActors:
 ; ----------------------------------------------------------------------------
         ldx     #$0D                            ; A8AF A2 0D                    ..
         ldy     #$01                            ; A8B1 A0 01                    ..
-        jsr     TransferQueuedEntityToActiveSlot; A8B3 20 0D A9                  ..
+        jsr     TransferQueuedEntityToSlotSixPlusX; A8B3 20 0D A9                  ..
         ldx     #$0E                            ; A8B6 A2 0E                    ..
-        jsr     TransferQueuedEntityToActiveSlot; A8B8 20 0D A9                  ..
+        jsr     TransferQueuedEntityToSlotSixPlusX; A8B8 20 0D A9                  ..
         lda     $51                             ; A8BB A5 51                    .Q
         pha                                     ; A8BD 48                       H
         tay                                     ; A8BE A8                       .
@@ -4676,7 +4676,7 @@ MapEventSystem_Branch_A90B:
         clc                                     ; A90B 18                       .
         rts                                     ; A90C 60                       `
 ; ----------------------------------------------------------------------------
-TransferQueuedEntityToActiveSlot:
+TransferQueuedEntityToSlotSixPlusX:
         lda     $6F60,y                         ; A90D B9 60 6F                 .`o
         sta     $6F66,x                         ; A910 9D 66 6F                 .fo
         lda     $6FA0,y                         ; A913 B9 A0 6F                 ..o
@@ -4777,14 +4777,14 @@ LoadMapEventVariantPointer:
 ; ----------------------------------------------------------------------------
         db   $3B,$14,$3A,$39,$42             ; A9BC 3B 14 3A 39 42           ;.:9B
 ; ----------------------------------------------------------------------------
-ActivateMapEntitySix:
+ActivateMapEntityTwelve:
         ldx     #$06                            ; A9C1 A2 06                    ..
         lda     #$11                            ; A9C3 A9 11                    ..
         sta     $7046,x                         ; A9C5 9D 46 70                 .Fp
         sec                                     ; A9C8 38                       8
         rts                                     ; A9C9 60                       `
 ; ----------------------------------------------------------------------------
-ActivateMapEntitiesThirteenAndFourteen:
+ActivateMapEntitiesNineteenAndTwenty:
         lda     #$11                            ; A9CA A9 11                    ..
         ldx     #$0D                            ; A9CC A2 0D                    ..
         sta     $7046,x                         ; A9CE 9D 46 70                 .Fp
@@ -5087,7 +5087,7 @@ StartBalzackKeeleonConfrontation:
 ; ----------------------------------------------------------------------------
         rts                                     ; ABC7 60                       `
 ; ----------------------------------------------------------------------------
-TransferEntityTwoToSix:
+TransferEntityTwoToTwelve:
         ldx     #$06                            ; ABC8 A2 06                    ..
         lda     $6F62                           ; ABCA AD 62 6F                 .bo
         sta     $6F66,x                         ; ABCD 9D 66 6F                 .fo
@@ -5117,7 +5117,7 @@ TransferEntityTwoToSix:
         sec                                     ; AC09 38                       8
         rts                                     ; AC0A 60                       `
 ; ----------------------------------------------------------------------------
-ReloadMapEventAtArrivalPosition:
+ReloadMapEventViaTile0F0EAtArrivalPosition:
         lda     $51                             ; AC0B A5 51                    .Q
         pha                                     ; AC0D 48                       H
         lda     #$03                            ; AC0E A9 03                    ..
@@ -5250,7 +5250,7 @@ MapEventSystem_Branch_ACD0:
         clc                                     ; ACD0 18                       .
         rts                                     ; ACD1 60                       `
 ; ----------------------------------------------------------------------------
-TransferEntityOneToZero:
+TransferEntityOneToSix:
         ldx     #$00                            ; ACD2 A2 00                    ..
         lda     $6F61                           ; ACD4 AD 61 6F                 .ao
         sta     $6F66,x                         ; ACD7 9D 66 6F                 .fo
@@ -5322,7 +5322,7 @@ MapEventSystem_Branch_AD2A:
         db   $54                             ; AD4A 54                       T
         db   $05                             ; AD4B 05                       .
 ; ----------------------------------------------------------------------------
-ActivateMapEntitiesTwoThroughEight:
+ActivateMapEntitiesEightThroughFourteen:
         lda     #$11                            ; AD4C A9 11                    ..
         ldx     #$05                            ; AD4E A2 05                    ..
         sta     $7046,x                         ; AD50 9D 46 70                 .Fp
@@ -5351,7 +5351,7 @@ MapEventSystem_Branch_AD78:
         bpl     MapEventSystem_Branch_AD78      ; AD7F 10 F7                    ..
         ldx     #$78                            ; AD81 A2 78                    .x
         jsr     WaitFrames                      ; AD83 20 0C C9                  ..
-        jsr     ResetMapEntityMotionState       ; AD86 20 01 E5                  ..
+        jsr     ResetEntityOamAllocationState       ; AD86 20 01 E5                  ..
         jsr     InitializeMapEntityRendering    ; AD89 20 F1 DF                  ..
         sec                                     ; AD8C 38                       8
         rts                                     ; AD8D 60                       `
@@ -5553,7 +5553,7 @@ MarkAndRenderSelectedMapEntity:
         sec                                     ; AED1 38                       8
         rts                                     ; AED2 60                       `
 ; ----------------------------------------------------------------------------
-ActivateMapEntityTwo:
+ActivateMapEntityEight:
         ldx     #$02                            ; AED3 A2 02                    ..
         lda     #$11                            ; AED5 A9 11                    ..
         sta     $7046,x                         ; AED7 9D 46 70                 .Fp
@@ -5767,9 +5767,9 @@ MapEventSystem_Branch_AFE0:
         ldy     #$00                            ; AFF7 A0 00                    ..
         lda     PlayerLocalX                    ; AFF9 A5 44                    .D
         cmp     #$0F                            ; AFFB C9 0F                    ..
-        bcc     CopyQueuedEntityScriptPointersToActiveEntity; AFFD 90 02        ..
+        bcc     CopyEntitySixPlusYScriptPointerToEntityX; AFFD 90 02        ..
         ldy     #$01                            ; AFFF A0 01                    ..
-CopyQueuedEntityScriptPointersToActiveEntity:
+CopyEntitySixPlusYScriptPointerToEntityX:
         lda     $7066,y                         ; B001 B9 66 70                 .fp
         sta     EntityScriptPointerHigh,x       ; B004 9D 60 70                 .`p
         lda     $7086,y                         ; B007 B9 86 70                 ..p
@@ -5788,13 +5788,13 @@ AssignRegionalActorScriptsAndStartScene:
         bcs     MapEventSystem_Branch_B03B      ; B01D B0 1C                    ..
         ldy     #$04                            ; B01F A0 04                    ..
         ldx     #$06                            ; B021 A2 06                    ..
-        jsr     CopyQueuedEntityScriptPointersToActiveEntity; B023 20 01 B0      ..
+        jsr     CopyEntitySixPlusYScriptPointerToEntityX; B023 20 01 B0      ..
         ldy     #$05                            ; B026 A0 05                    ..
         ldx     #$07                            ; B028 A2 07                    ..
-        jsr     CopyQueuedEntityScriptPointersToActiveEntity; B02A 20 01 B0      ..
+        jsr     CopyEntitySixPlusYScriptPointerToEntityX; B02A 20 01 B0      ..
         ldy     #$06                            ; B02D A0 06                    ..
         ldx     #$08                            ; B02F A2 08                    ..
-        jsr     CopyQueuedEntityScriptPointersToActiveEntity; B031 20 01 B0      ..
+        jsr     CopyEntitySixPlusYScriptPointerToEntityX; B031 20 01 B0      ..
         lda     #$8F                            ; B034 A9 8F                    ..
         jsr     StartMapEventPresentation       ; B036 20 3A A2                  :.
         sec                                     ; B039 38                       8
@@ -6039,7 +6039,7 @@ MapEventSystem_Branch_B1AA:
         clc                                     ; B1AA 18                       .
         rts                                     ; B1AB 60                       `
 ; ----------------------------------------------------------------------------
-RunDirectionalMapEventAndSetFlag19:
+SetPlayerFacingOneAndRunFlag19Event:
         lda     $51                             ; B1AC A5 51                    .Q
         pha                                     ; B1AE 48                       H
         lda     $7000                           ; B1AF AD 00 70                 ..p
@@ -6069,7 +6069,7 @@ RunDirectionalMapEventAndSetFlag19:
         sec                                     ; B1D8 38                       8
         rts                                     ; B1D9 60                       `
 ; ----------------------------------------------------------------------------
-StartDualRegionActorPresentation:
+StartDualRegionPresentationAndActivateEntitiesEightNine:
         lda     PlayerLocalY                    ; B1DA A5 45                    .E
         and     #$FE                            ; B1DC 29 FE                    ).
         cmp     #$0C                            ; B1DE C9 0C                    ..
@@ -6226,7 +6226,7 @@ MapEventSystem_Branch_B2C5:
         sec                                     ; B2CB 38                       8
         rts                                     ; B2CC 60                       `
 ; ----------------------------------------------------------------------------
-PositionSelectedEntityByFacing:
+PositionSelectedEntityAndHideEntitiesSeventeenEight:
         ldx     #$00                            ; B2CD A2 00                    ..
         lda     $3D                             ; B2CF A5 3D                    .=
         beq     MapEventSystem_Branch_B2D5      ; B2D1 F0 02                    ..
@@ -6255,7 +6255,7 @@ MapEventSystem_Branch_B2D5:
         db   $09                             ; B303 09                       .
         db   $01,$10,$0B,$02                 ; B304 01 10 0B 02              ....
 ; ----------------------------------------------------------------------------
-StartAlternateArrivalPresentation:
+StartAlternateArrivalPresentationForEntitiesNineteenTwenty:
         lda     PlayerLocalX                    ; B308 A5 44                    .D
         cmp     #$11                            ; B30A C9 11                    ..
         bne     MapEventSystem_Branch_B335      ; B30C D0 27                    .'
@@ -6492,7 +6492,7 @@ MapEventSystem_Branch_B48A:
         clc                                     ; B48A 18                       .
         rts                                     ; B48B 60                       `
 ; ----------------------------------------------------------------------------
-StartPhaseFourPresentationForMovingEntities:
+StartPhaseFourPresentationForEntitiesElevenTwelve:
         lda     $3E                             ; B48C A5 3E                    .>
         beq     MapEventSystem_Branch_B4AF      ; B48E F0 1F                    ..
         jsr     SynchronizeActiveEntitiesToTargets; B490 20 6B B1                k.
@@ -6513,7 +6513,7 @@ MapEventSystem_Branch_B4AF:
         clc                                     ; B4AF 18                       .
         rts                                     ; B4B0 60                       `
 ; ----------------------------------------------------------------------------
-RequireHeroWearingZenithianSet:
+RequireHeroEquippedSwordAlternativeAndZenithianSet:
         lda     $3D                             ; B4B1 A5 3D                    .=
         bne     MapEventSystem_Branch_B4E1      ; B4B3 D0 2C                    .,
         lda     #$8F                            ; B4B5 A9 8F                    ..
@@ -6871,7 +6871,7 @@ MapEventSystem_Branch_B782:
         brk                                     ; B787 00                       .
         db   $52,$73                         ; B788 52 73                    Rs
 ; ----------------------------------------------------------------------------
-ApplySpecialMapEntityConfiguration:
+ApplySpecialMapConfigurationWithGenericOffsets36AndAbove:
         cpy     #$12                            ; B78A C0 12                    ..
         bne     MapEventSystem_Branch_B7CD      ; B78C D0 3F                    .?
         lda     $6283                           ; B78E AD 83 62                 ..b
@@ -7417,7 +7417,7 @@ AppendEightByteMapEventPpuCommand:
         db   $01,$B3,$0C,$02,$01,$01,$E6,$98 ; BBEB 01 B3 0C 02 01 01 E6 98  ........
         db   $06                             ; BBF3 06                       .
 ; ----------------------------------------------------------------------------
-UploadMapEventPatternPages:
+UploadTwoMapEventPatternPages:
         jsr     RequestPpuUpdateAndWait         ; BBF4 20 2D C6                  -.
         jsr     InitializeMapEventPatternPointer; BBF7 20 9C BC                  ..
         jsr     QueueFirstMapEventPatternPage   ; BBFA 20 13 BC                  ..
@@ -7542,7 +7542,7 @@ InitializeMapEventPatternPointer:
 QueueTileRowsWithoutAttributes:
         lda     #$40                            ; BD69 A9 40                    .@
         bne     MapEventSystem_Branch_BD73      ; BD6B D0 06                    ..
-QueueTileRowsToOppositeNametable:
+QueueTileRowsToAlternateNametable:
         lda     #$80                            ; BD6D A9 80                    ..
         bne     MapEventSystem_Branch_BD73      ; BD6F D0 02                    ..
 QueueTileRowsToCurrentNametable:
@@ -7634,7 +7634,7 @@ MapEventSystem_Branch_BDE4:
         pha                                     ; BDFD 48                       H
         lda     $1D                             ; BDFE A5 1D                    ..
         pha                                     ; BE00 48                       H
-        jsr     QueueDecodedMapTileValues       ; BE01 20 8E BE                  ..
+        jsr     QueueDecodedMapAttributeValues       ; BE01 20 8E BE                  ..
         pla                                     ; BE04 68                       h
         sta     $1D                             ; BE05 85 1D                    ..
         pla                                     ; BE07 68                       h
@@ -7715,7 +7715,7 @@ MapEventSystem_Branch_BE75:
 MapEventSystem_Branch_BE8D:
         rts                                     ; BE8D 60                       `
 ; ----------------------------------------------------------------------------
-QueueDecodedMapTileValues:
+QueueDecodedMapAttributeValues:
         bit     $1B                             ; BE8E 24 1B                    $.
         bvs     MapEventSystem_Branch_BEC3      ; BE90 70 31                    p1
         lda     $04F3                           ; BE92 AD F3 04                 ...

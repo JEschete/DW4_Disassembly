@@ -3482,12 +3482,12 @@ MonsterBattleFont_Branch_AEDE:
         sbc     #$01                            ; AEF6 E9 01                    ..
         sta     $04                             ; AEF8 85 04                    ..
         lda     ($DC),y                         ; AEFA B1 DC                    ..
-        jsr     DecodeSignedBattleAnimationOffset; AEFC 20 C9 AF                 ..
+        jsr     NegateBattleAnimationOffset; AEFC 20 C9 AF                 ..
         clc                                     ; AEFF 18                       .
         adc     #$10                            ; AF00 69 10                    i.
         sta     $00                             ; AF02 85 00                    ..
         lda     ($DE),y                         ; AF04 B1 DE                    ..
-        jsr     DecodeSignedBattleAnimationOffset; AF06 20 C9 AF                 ..
+        jsr     NegateBattleAnimationOffset; AF06 20 C9 AF                 ..
         clc                                     ; AF09 18                       .
         adc     #$0E                            ; AF0A 69 0E                    i.
         sta     $01                             ; AF0C 85 01                    ..
@@ -3530,7 +3530,7 @@ MonsterBattleFont_Branch_AF47:
         adc     #$0E                            ; AF4B 69 0E                    i.
         sta     $01                             ; AF4D 85 01                    ..
         lda     ($DE),y                         ; AF4F B1 DE                    ..
-        jsr     DecodeSignedBattleAnimationOffset; AF51 20 C9 AF                 ..
+        jsr     NegateBattleAnimationOffset; AF51 20 C9 AF                 ..
         clc                                     ; AF54 18                       .
         adc     #$10                            ; AF55 69 10                    i.
         sta     $00                             ; AF57 85 00                    ..
@@ -3547,7 +3547,7 @@ MonsterBattleFont_Branch_AF66:
         jsr     QueueBattleAnimationRegion      ; AF6A 20 D8 AF                  ..
 MonsterBattleFont_Branch_AF6D:
         jsr     DecodeMirroredBattleAnimationCommand; AF6D 20 B9 AF              ..
-        jsr     DecodeSignedBattleAnimationOffset; AF70 20 C9 AF                 ..
+        jsr     NegateBattleAnimationOffset; AF70 20 C9 AF                 ..
         clc                                     ; AF73 18                       .
         adc     #$0E                            ; AF74 69 0E                    i.
         sta     $01                             ; AF76 85 01                    ..
@@ -3601,7 +3601,7 @@ DecodeMirroredBattleAnimationCommand:
         lda     ($DC),y                         ; AFC6 B1 DC                    ..
         rts                                     ; AFC8 60                       `
 ; ----------------------------------------------------------------------------
-DecodeSignedBattleAnimationOffset:
+NegateBattleAnimationOffset:
         tax                                     ; AFC9 AA                       .
         bmi     MonsterBattleFont_Branch_AFD2   ; AFCA 30 06                    0.
         eor     #$FF                            ; AFCC 49 FF                    I.

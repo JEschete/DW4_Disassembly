@@ -2394,7 +2394,7 @@ Bank04_TextGroup_4A:
         db   $6E,$FC,$57,$D3,$F0,$A6,$16,$B1 ; BFC4 6E FC 57 D3 F0 A6 16 B1  n.W.....
         db   $90,$0B,$F1,$EF,$43,$08,$BC,$6F ; BFCC 90 0B F1 EF 43 08 BC 6F  ....C..o
         db   $C2,$DC,$2D,$D7                 ; BFD4 C2 DC 2D D7              ..-.
-Bank04_TextStreamRollover:
+Bank04_CompatibilityResetStub:
         db   $78,$EE,$DF,$BF,$4C,$8E,$FF,$80 ; BFD8 78 EE DF BF 4C 8E FF 80  x...L...
 Bank04_TitleSignature:
         db   $20,$44,$52,$41,$47,$4F,$4E,$20 ; BFE0 20 44 52 41 47 4F 4E 20   DRAGON

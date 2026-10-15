@@ -2532,7 +2532,7 @@ Bank01_TextGroup_26:
         db   $7E,$F7,$61,$D5,$63,$15,$D6,$10 ; BFC5 7E F7 61 D5 63 15 D6 10  ~.a.c...
         db   $CB,$08,$4B,$5A,$B9,$4E,$79,$D0 ; BFCD CB 08 4B 5A B9 4E 79 D0  ..KZ.Ny.
         db   $E5,$21,$9A                     ; BFD5 E5 21 9A                 .!.
-Bank01_TextStreamRollover:
+Bank01_CompatibilityResetStub:
         db   $78,$EE,$DF,$BF,$4C,$8E,$FF,$80 ; BFD8 78 EE DF BF 4C 8E FF 80  x...L...
 Bank01_TitleSignature:
         db   $20,$44,$52,$41,$47,$4F,$4E,$20 ; BFE0 20 44 52 41 47 4F 4E 20   DRAGON
