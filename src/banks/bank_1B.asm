@@ -1115,7 +1115,7 @@ MapEventText_Branch_914E:
         lda     $52                             ; 915F A5 52                    .R
         cmp     #$81                            ; 9161 C9 81                    ..
         bcc     MapEventText_Branch_914E        ; 9163 90 E9                    ..
-        jsr     BuildPaletteUpdateCommand       ; 9165 20 DE C5                  ..
+        jsr     BuildPaletteCommandFromUniversalAndTwentyFourColors       ; 9165 20 DE C5                  ..
         lda     $52                             ; 9168 A5 52                    .R
         and     #$03                            ; 916A 29 03                    ).
         bne     MapEventText_Branch_9175        ; 916C D0 07                    ..
@@ -1754,7 +1754,7 @@ Bank1B_SpriteLayouts:
         db   $00,$00,$00,$D3,$D4,$D5,$BD,$00 ; 9678 00 00 00 D3 D4 D5 BD 00  ........
         db   $D6,$D7,$D8,$C0,$C1,$D9,$DA,$DB ; 9680 D6 D7 D8 C0 C1 D9 DA DB  ........
         db   $DC,$DD,$F9,$FA,$FB,$FC,$E2,$00 ; 9688 DC DD F9 FA FB FC E2 00  ........
-Bank1B_SpriteGraphics:
+Bank1B_SpriteGraphicsContinuation:
         db   $00,$82,$44,$18,$20,$40,$00,$00 ; 9690 00 82 44 18 20 40 00 00  ..D. @..
         db   $83,$C6,$7C,$38,$64,$C2,$00,$00 ; 9698 83 C6 7C 38 64 C2 00 00  ..|8d...
         db   $00,$00,$00,$40,$24,$18,$04,$00 ; 96A0 00 00 00 40 24 18 04 00  ...@$...
@@ -2982,7 +2982,7 @@ MapEventText_Branch_A732:
 MapEventText_Branch_A74C:
         lda     $6BF9                           ; A74C AD F9 6B                 ..k
         beq     MapEventText_Branch_A74C        ; A74F F0 FB                    ..
-        jsr     WaitForButtonPress              ; A751 20 E1 C8                  ..
+        jsr     WaitForPrimaryControllerButtonPress              ; A751 20 E1 C8                  ..
 MapEventText_Branch_A754:
         jsr     FadePaletteToBlack              ; A754 20 C5 C5                  ..
         brk                                     ; A757 00                       .
@@ -3098,7 +3098,7 @@ FadeOutChapterTitlePalette:
         jsr     AdvanceChapterTitlePaletteFade  ; A837 20 3D A8                  =.
         jsr     AdvanceChapterTitlePaletteFade  ; A83A 20 3D A8                  =.
 AdvanceChapterTitlePaletteFade:
-        jsr     BuildPaletteUpdateCommand       ; A83D 20 DE C5                  ..
+        jsr     BuildPaletteCommandFromUniversalAndTwentyFourColors       ; A83D 20 DE C5                  ..
         jsr     AdvanceRasterScrollEffect       ; A840 20 10 FF                  ..
         jsr     AdvanceRasterScrollEffect       ; A843 20 10 FF                  ..
         jsr     AdvanceRasterScrollEffect       ; A846 20 10 FF                  ..
@@ -3886,7 +3886,7 @@ FadeScriptedMapEventPalette:
         jsr     AdvanceScriptedMapEventPaletteFade; ADDB 20 E1 AD                ..
         jsr     AdvanceScriptedMapEventPaletteFade; ADDE 20 E1 AD                ..
 AdvanceScriptedMapEventPaletteFade:
-        jsr     BuildPaletteUpdateCommand       ; ADE1 20 DE C5                  ..
+        jsr     BuildPaletteCommandFromUniversalAndTwentyFourColors       ; ADE1 20 DE C5                  ..
         jsr     AdvanceRasterScrollEffect       ; ADE4 20 10 FF                  ..
         jsr     AdvanceRasterScrollEffect       ; ADE7 20 10 FF                  ..
         jsr     AdvanceRasterScrollEffect       ; ADEA 20 10 FF                  ..
@@ -4151,7 +4151,7 @@ MapEventText_Branch_B062:
 AdvanceDayNightTransitionPalette:
         jsr     AdvanceDayNightTransitionForward; B09A 20 DC B0                  ..
         jsr     RestoreNmiCallbackAfterGeneratedTransfer; B09D 20 2E B3          ..
-        jsr     BuildPaletteUpdateCommand       ; B0A0 20 DE C5                  ..
+        jsr     BuildPaletteCommandFromUniversalAndTwentyFourColors       ; B0A0 20 DE C5                  ..
         lda     $16                             ; B0A3 A5 16                    ..
         clc                                     ; B0A5 18                       .
         adc     #$10                            ; B0A6 69 10                    i.

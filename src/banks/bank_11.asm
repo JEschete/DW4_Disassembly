@@ -1478,7 +1478,7 @@ BattleActionServices_Branch_88D7:
         jsr     DispatchBattleActionHandlerBySortedId; 88F7 20 E5 8D             ..
         jsr     ReportBattleActionRequirementFailure; 88FA 20 B5 AB              ..
         bcc     BattleActionServices_Branch_8924; 88FD 90 25                    .%
-        jsr     ProjectBattleStatusFromSelectionFlags; 88FF 20 FF AF             ..
+        jsr     RemoveUsedBattleItem            ; 88FF 20 FF AF                  ..
         jsr     CheckBattleActionIdBelowDispatchThreshold; 8902 20 49 8C         I.
         bcc     BattleActionServices_Branch_8924; 8905 90 1D                    ..
         jsr     ResolveMouthCoverInterruption   ; 8907 20 F5 B2                  ..
@@ -3971,7 +3971,7 @@ BattleActionServices_Branch_971B:
         db   $29,$C3,$04                     ; 9721 29 C3 04                 )..
 ; ----------------------------------------------------------------------------
         bcc     BattleActionServices_Branch_972B; 9724 90 05                    ..
-        jsr     ReportBattleMissForTargetSide   ; 9726 20 E6 97                  ..
+        jsr     CompareBattleTargetSideWithC0   ; 9726 20 E6 97                  ..
         bcc     BattleActionServices_Branch_9789; 9729 90 5E                    .^
 BattleActionServices_Branch_972B:
         jsr     ResolveNimbleEvasionReaction    ; 972B 20 3E A6                  >.
@@ -4033,7 +4033,7 @@ BattleActionServices_Branch_9775:
         db   $46,$93,$14                     ; 9781 46 93 14                 F..
 ; ----------------------------------------------------------------------------
         bcc     BattleActionServices_Branch_978B; 9784 90 05                    ..
-        jsr     ReportBattleMissForTargetSide   ; 9786 20 E6 97                  ..
+        jsr     CompareBattleTargetSideWithC0   ; 9786 20 E6 97                  ..
 BattleActionServices_Branch_9789:
         bcc     BattleActionServices_Branch_97EC; 9789 90 61                    .a
 BattleActionServices_Branch_978B:
@@ -4096,7 +4096,7 @@ BattleActionServices_Branch_97DA:
 BattleActionServices_Branch_97E5:
         rts                                     ; 97E5 60                       `
 ; ----------------------------------------------------------------------------
-ReportBattleMissForTargetSide:
+CompareBattleTargetSideWithC0:
         brk                                     ; 97E6 00                       .
         db   $1B,$0F                         ; 97E7 1B 0F                    ..
 ; ----------------------------------------------------------------------------
@@ -5051,7 +5051,7 @@ ApplySelectedTargetStatusEffect:
         ldx     #$05                            ; 9D17 A2 05                    ..
         jmp     ApplyBattleEffectOperationAndPrintResult; 9D19 4C 4F 9D         LO.
 ; ----------------------------------------------------------------------------
-ApplyMaximumHpEffectWhenAllowed:
+ApplyParalysisCureEffect:
         brk                                     ; 9D1C 00                       .
         db   $07,$1F                         ; 9D1D 07 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -6326,19 +6326,19 @@ WriteBattleSlotActionCode:
         sta     $7324,x                         ; A344 9D 24 73                 .$s
         jmp     ReturnBattleSlotFieldValue      ; A347 4C 62 A3                 Lb.
 ; ----------------------------------------------------------------------------
-ReadBattleSlotDescriptorHighNibble:
+ReadBattleSlotDescriptorStateBits4Through6:
         txa                                     ; A34A 8A                       .
         pha                                     ; A34B 48                       H
         ldx     $96                             ; A34C A6 96                    ..
         lda     BattleSlotDescriptors,x         ; A34E BD F4 72                 ..r
-        jmp     ExtractBattleSlotStateHighNibble; A351 4C 5C A3                 L\.
+        jmp     ExtractBattleSlotStateBits4Through6; A351 4C 5C A3                 L\.
 ; ----------------------------------------------------------------------------
-ReadBattleSlotStateHighNibble:
+ReadBattleSlotStateBits4Through6:
         txa                                     ; A354 8A                       .
         pha                                     ; A355 48                       H
         jsr     ComputeBattleSlotIndexFromRowAndCurrentSlot; A356 20 B5 A3       ..
         lda     $7300,x                         ; A359 BD 00 73                 ..s
-ExtractBattleSlotStateHighNibble:
+ExtractBattleSlotStateBits4Through6:
         lsr     a                               ; A35C 4A                       J
         lsr     a                               ; A35D 4A                       J
         lsr     a                               ; A35E 4A                       J
@@ -6351,7 +6351,7 @@ ReturnBattleSlotFieldValue:
         lda     $6E0F                           ; A367 AD 0F 6E                 ..n
         rts                                     ; A36A 60                       `
 ; ----------------------------------------------------------------------------
-WriteBattleSlotDescriptorHighNibble:
+WriteBattleSlotDescriptorStateFieldPreservingSignAndLowNibble:
         asl     a                               ; A36B 0A                       .
         asl     a                               ; A36C 0A                       .
         asl     a                               ; A36D 0A                       .
@@ -6363,7 +6363,7 @@ WriteBattleSlotDescriptorHighNibble:
         sta     BattleSlotDescriptors,x         ; A37A 9D F4 72                 ..r
         rts                                     ; A37D 60                       `
 ; ----------------------------------------------------------------------------
-WriteBattleSlotStateHighNibble:
+WriteBattleSlotStateFieldPreservingSignAndLowNibble:
         jsr     ComputeBattleSlotIndexFromRowAndOffset; A37E 20 C2 A3            ..
         asl     a                               ; A381 0A                       .
         asl     a                               ; A382 0A                       .
@@ -6376,7 +6376,7 @@ WriteBattleSlotStateHighNibble:
         sta     $7300,x                         ; A390 9D 00 73                 ..s
         rts                                     ; A393 60                       `
 ; ----------------------------------------------------------------------------
-FindBattleSlotByDescriptorLowNibble:
+FindBattleSlotByMaskedDescriptorKey:
         sta     $6E0F                           ; A394 8D 0F 6E                 ..n
         ldx     #$00                            ; A397 A2 00                    ..
 BattleActionServices_Branch_A399:
@@ -6461,7 +6461,7 @@ RedrawBattleUiRecords2BAnd4D:
 BattleActionServices_Branch_A409:
         rts                                     ; A409 60                       `
 ; ----------------------------------------------------------------------------
-Bank11_BattleActionPointers:
+Bank11_BattleActionAndVectorPointerTables:
         db   $E2,$9A,$E2,$9A,$E2,$9A,$E2,$9A ; A40A E2 9A E2 9A E2 9A E2 9A  ........
         db   $E2,$9A,$E2,$9A,$E2,$9A,$E2,$9A ; A412 E2 9A E2 9A E2 9A E2 9A  ........
         db   $E2,$9A,$E2,$9A,$E2,$9A,$E2,$9A ; A41A E2 9A E2 9A E2 9A E2 9A  ........
@@ -7718,7 +7718,7 @@ BattleActionServices_Branch_AC8C:
         brk                                     ; AC9F 00                       .
         db   $14,$4F                         ; ACA0 14 4F                    .O
 ; ----------------------------------------------------------------------------
-        jsr     TestFourBattleTargetMasks       ; ACA2 20 B0 AC                  ..
+        jsr     AnyBattleTargetMaskMatches       ; ACA2 20 B0 AC                  ..
         bcc     BattleActionServices_Branch_ACAE; ACA5 90 07                    ..
         stx     $C7                             ; ACA7 86 C7                    ..
         brk                                     ; ACA9 00                       .
@@ -7731,7 +7731,7 @@ BattleActionServices_Branch_ACAE:
         sec                                     ; ACAE 38                       8
         rts                                     ; ACAF 60                       `
 ; ----------------------------------------------------------------------------
-TestFourBattleTargetMasks:
+AnyBattleTargetMaskMatches:
         ldx     #$03                            ; ACB0 A2 03                    ..
 BattleActionServices_Branch_ACB2:
         brk                                     ; ACB2 00                       .
@@ -8092,7 +8092,7 @@ AdvanceBattlePhaseAndMarkResult:
 ; ----------------------------------------------------------------------------
         jmp     BattleActionServices_Branch_AE74; AE9A 4C 74 AE                 Lt.
 ; ----------------------------------------------------------------------------
-AdvanceAlternateBattleResultBy101:
+RollAlternateBattleAmount500To600AndConditionallyDouble:
         lda     #$F4                            ; AE9D A9 F4                    ..
         sta     $7C                             ; AE9F 85 7C                    .|
         lda     #$01                            ; AEA1 A9 01                    ..
@@ -8367,7 +8367,7 @@ QueueBattleResultAndRefreshModes:
 BattleActionServices_Branch_AFFE:
         rts                                     ; AFFE 60                       `
 ; ----------------------------------------------------------------------------
-ProjectBattleStatusFromSelectionFlags:
+RemoveUsedBattleItem:
         brk                                     ; AFFF 00                       .
         db   $06,$1F                         ; B000 06 1F                    ..
 ; ----------------------------------------------------------------------------
@@ -8519,7 +8519,7 @@ BattleActionServices_Branch_B09D:
         pla                                     ; B0A2 68                       h
         rts                                     ; B0A3 60                       `
 ; ----------------------------------------------------------------------------
-QueueNoEffectForActiveTarget:
+ApplyPoisonCureEffect:
         lda     BattleTargetSelector            ; B0A4 AD 63 73                 .cs
         bmi     BattleActionServices_Branch_B0AE; B0A7 30 05                    0.
         lda     #$05                            ; B0A9 A9 05                    ..
@@ -8706,7 +8706,7 @@ BattleActionServices_Branch_B150:
 ; ----------------------------------------------------------------------------
         rts                                     ; B17B 60                       `
 ; ----------------------------------------------------------------------------
-ClearBattleActionModeBitZeroDirect:
+RunPhysicalAttackEntry:
         jsr     RunPhysicalAttack               ; B17C 20 DB 96                  ..
         rts                                     ; B17F 60                       `
 ; ----------------------------------------------------------------------------

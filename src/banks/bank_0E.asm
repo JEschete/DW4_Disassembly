@@ -1962,7 +1962,7 @@ Bank0E_CharacterSpriteGraphics:
         db   $03,$06,$3C,$68,$74,$7C,$5A,$2C ; BABF 03 06 3C 68 74 7C 5A 2C  ..<ht|Z,
         db   $00,$78,$BC,$7C,$F0,$B4,$02,$51 ; BAC7 00 78 BC 7C F0 B4 02 51  .x.|...Q
         db   $00,$78,$AC,$44,$E8,$3C,$06,$03 ; BACF 00 78 AC 44 E8 3C 06 03  .x.D.<..
-Bank0E_SpriteGraphicsEnd:
+Bank0E_CharacterSpriteGraphicsTail:
         db   $00,$01,$11,$10,$1A,$1F,$07,$23 ; BAD7 00 01 11 10 1A 1F 07 23  .......#
         db   $03,$06,$16,$17,$1F,$FD,$7C,$1F ; BADF 03 06 16 17 1F FD 7C 1F  ......|.
         db   $23,$11,$20,$49,$1E,$3F,$7F,$EB ; BAE7 23 11 20 49 1E 3F 7F EB  #. I.?..

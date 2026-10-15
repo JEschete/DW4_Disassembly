@@ -560,7 +560,7 @@ BattlePartyServices_Branch_83BE:
         ldx     #$00                            ; 83C3 A2 00                    ..
         rts                                     ; 83C5 60                       `
 ; ----------------------------------------------------------------------------
-PointBattleOperandToComparisonBuffer:
+SetBattleAddCapTo999:
         lda     #$E7                            ; 83C6 A9 E7                    ..
         sta     $03                             ; 83C8 85 03                    ..
         lda     #$03                            ; 83CA A9 03                    ..
@@ -583,7 +583,7 @@ BattlePartyServices_Branch_83D6:
 BattlePartyServices_Branch_83E2:
         cpy     #$0C                            ; 83E2 C0 0C                    ..
         bne     BattlePartyServices_Branch_83F1 ; 83E4 D0 0B                    ..
-        jsr     LoadTwoBitBattleValueFromBankedTable; 83E6 20 D5 86              ..
+        jsr     LoadTenBitBattleValueFromBankedTable; 83E6 20 D5 86              ..
         jsr     CopyBattleResultTripletToPrimaryBuffer; 83E9 20 03 84            ..
         ldy     #$01                            ; 83EC A0 01                    ..
         jmp     BattlePartyServices_Branch_8410 ; 83EE 4C 10 84                 L..
@@ -824,7 +824,7 @@ BattlePartyServices_Branch_8550:
 ForceBattleValue80WhenTargetEligible:
         lda     $72                             ; 8551 A5 72                    .r
         pha                                     ; 8553 48                       H
-        jsr     CountMatchingBattleValuesAcrossSixSlots; 8554 20 13 96           ..
+        jsr     FindFirstPackedStatusOrdinal    ; 8554 20 13 96                  ..
         lda     $72                             ; 8557 A5 72                    .r
         sta     $75                             ; 8559 85 75                    .u
         jsr     CheckPartyMemberClassAtLeastNine; 855B 20 D7 87                  ..
@@ -1006,7 +1006,7 @@ BattlePartyServices_Branch_8673:
         ldy     $6E0E                           ; 8675 AC 0E 6E                 ..n
         jmp     AddToPartyRecordValueCapped     ; 8678 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-AddExperienceCappedBelowTenMillion:
+AddExperienceCappedAtTenMillion:
         lda     #$80                            ; 867B A9 80                    ..
         sta     $03                             ; 867D 85 03                    ..
         lda     #$96                            ; 867F A9 96                    ..
@@ -1032,13 +1032,13 @@ AddGoldCappedAt99999:
         ldy     #$00                            ; 86A8 A0 00                    ..
         jmp     AddToPartyRecordValueCapped     ; 86AA 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-SubtractBattleValueWithoutBorrowMode:
+ClearHighWorkOperandAndSubtractFromInlineRecord:
         lda     #$00                            ; 86AD A9 00                    ..
         sta     $77                             ; 86AF 85 77                    .w
 SubtractBattleSpanFromRecord:
         jmp     SubtractBattleWorkSpanIntoInlineRecord; 86B1 4C 60 84           L`.
 ; ----------------------------------------------------------------------------
-SubtractBattleValueSpanIntoInlineRecord:
+SubtractWorkSpanFromBattleValueIntoInlineRecordIfNonnegative:
         jsr     PrimeBattleWorkSpanForSubtraction; 86B4 20 BD 83                 ..
 BattlePartyServices_Branch_86B7:
         lda     $72,x                           ; 86B7 B5 72                    .r
@@ -1061,7 +1061,7 @@ BattlePartyServices_Branch_86C8:
 BattlePartyServices_Branch_86D4:
         rts                                     ; 86D4 60                       `
 ; ----------------------------------------------------------------------------
-LoadTwoBitBattleValueFromBankedTable:
+LoadTenBitBattleValueFromBankedTable:
         jsr     CheckPartyMemberClassAtLeastNine; 86D5 20 D7 87                  ..
         bcs     BattlePartyServices_Branch_86DB ; 86D8 B0 01                    ..
         rts                                     ; 86DA 60                       `
@@ -1103,18 +1103,18 @@ DispatchPartyRecordByteThroughSelector:
         jsr     LoadBattleRecordSpanFromBankedTable; 8713 20 A2 A6               ..
         rts                                     ; 8716 60                       `
 ; ----------------------------------------------------------------------------
-CompareBattleValueAgainstScratchRecord:
+AddToBattleValueCappedAt999:
         lda     #$00                            ; 8717 A9 00                    ..
         sta     $77                             ; 8719 85 77                    .w
-        jsr     PointBattleOperandToComparisonBuffer; 871B 20 C6 83              ..
+        jsr     SetBattleAddCapTo999; 871B 20 C6 83              ..
         jmp     AddToPartyRecordValueCapped     ; 871E 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-CompareHeroBattleValueAgainstScratch:
+AddToSpellcasterValueCappedAt999:
         ldy     $6E0C                           ; 8721 AC 0C 6E                 ..n
         lda     SavePartyCharacter1,y           ; 8724 B9 6A 61                 .ja
         and     #$7F                            ; 8727 29 7F                    ).
         cmp     #$05                            ; 8729 C9 05                    ..
-        bcc     CompareBattleValueAgainstScratchRecord; 872B 90 EA              ..
+        bcc     AddToBattleValueCappedAt999     ; 872B 90 EA                    ..
         rts                                     ; 872D 60                       `
 ; ----------------------------------------------------------------------------
 LoadOrDerivePartyRecordPair:
@@ -1195,7 +1195,7 @@ CacheBattleSelectionByte:
         sta     $615B                           ; 879D 8D 5B 61                 .[a
         rts                                     ; 87A0 60                       `
 ; ----------------------------------------------------------------------------
-SubtractPartyRecordWordFromWorkByte:
+ComparePartyRecordWordWithWorkByte:
         ldy     #$03                            ; 87A1 A0 03                    ..
         sec                                     ; 87A3 38                       8
         lda     ($79),y                         ; 87A4 B1 79                    .y
@@ -1216,7 +1216,7 @@ ClearPartyRecordPairAtSelection:
 SubtractDividedBattleValueFromInlinePair:
         jsr     CheckPartyMemberClassAtLeastNine; 87B9 20 D7 87                  ..
         bcc     BattlePartyServices_Branch_87C1 ; 87BC 90 03                    ..
-        jsr     LoadTwoBitBattleValueFromBankedTable; 87BE 20 D5 86              ..
+        jsr     LoadTenBitBattleValueFromBankedTable; 87BE 20 D5 86              ..
 BattlePartyServices_Branch_87C1:
         lda     $76                             ; 87C1 A5 76                    .v
         ldx     #$72                            ; 87C3 A2 72                    .r
@@ -1581,16 +1581,16 @@ BattlePartyServices_Branch_89C7:
         pla                                     ; 89CB 68                       h
         rts                                     ; 89CC 60                       `
 ; ----------------------------------------------------------------------------
-CountEquippedWeapons:
+CountInventoryWeapons:
         lda     #$00                            ; 89CD A9 00                    ..
         beq     BattlePartyServices_Branch_89DB ; 89CF F0 0A                    ..
-CountEquippedArmor:
+CountInventoryArmor:
         lda     #$01                            ; 89D1 A9 01                    ..
         bne     BattlePartyServices_Branch_89DB ; 89D3 D0 06                    ..
-CountEquippedShields:
+CountInventoryShields:
         lda     #$02                            ; 89D5 A9 02                    ..
         bne     BattlePartyServices_Branch_89DB ; 89D7 D0 02                    ..
-CountEquippedHelmets:
+CountInventoryHelmets:
         lda     #$03                            ; 89D9 A9 03                    ..
 BattlePartyServices_Branch_89DB:
         sta     $07                             ; 89DB 85 07                    ..
@@ -2394,7 +2394,7 @@ BattlePartyServices_Branch_9073:
         tax                                     ; 9076 AA                       .
         rts                                     ; 9077 60                       `
 ; ----------------------------------------------------------------------------
-CountMatchingClassBitsInTwelveEntryWindow:
+FindClassEntryInEighteenOrTwelveEntryWindow:
         lda     #$00                            ; 9078 A9 00                    ..
         ldy     #$12                            ; 907A A0 12                    ..
         ldx     $72                             ; 907C A6 72                    .r
@@ -2430,7 +2430,7 @@ BattlePartyServices_Branch_909A:
         sec                                     ; 90A2 38                       8
         rts                                     ; 90A3 60                       `
 ; ----------------------------------------------------------------------------
-CountMatchingClassBitsInEightEntryWindow:
+FindClassEntryInEightEntryWindow:
         lda     #$00                            ; 90A4 A9 00                    ..
         ldy     #$08                            ; 90A6 A0 08                    ..
         ldx     $72                             ; 90A8 A6 72                    .r
@@ -2471,12 +2471,12 @@ BattlePartyServices_Branch_90CA:
 ; ----------------------------------------------------------------------------
 TestCurrentMemberClassRosterBits:
         jsr     ResolveCurrentMemberClassCodeIntoResult; 90D3 20 15 88           ..
-        jsr     CountMatchingClassBitsInTwelveEntryWindow; 90D6 20 78 90         x.
+        jsr     FindClassEntryInEighteenOrTwelveEntryWindow; 90D6 20 78 90         x.
         bcc     BattlePartyServices_Branch_90E0 ; 90D9 90 05                    ..
         jsr     TestRosterBitAtIndex            ; 90DB 20 5A 90                  Z.
         bcs     BattlePartyServices_Branch_90E8 ; 90DE B0 08                    ..
 BattlePartyServices_Branch_90E0:
-        jsr     CountMatchingClassBitsInEightEntryWindow; 90E0 20 A4 90          ..
+        jsr     FindClassEntryInEightEntryWindow; 90E0 20 A4 90          ..
         bcc     BattlePartyServices_Branch_90E8 ; 90E3 90 03                    ..
         jsr     TestRosterBitAtIndex            ; 90E5 20 5A 90                  Z.
 BattlePartyServices_Branch_90E8:
@@ -2485,11 +2485,11 @@ BattlePartyServices_Branch_90E8:
 SetCurrentMemberClassRosterBits:
         jsr     ResolveCurrentMemberClassCodeIntoResult; 90E9 20 15 88           ..
 SetResolvedClassRosterBits:
-        jsr     CountMatchingClassBitsInTwelveEntryWindow; 90EC 20 78 90         x.
+        jsr     FindClassEntryInEighteenOrTwelveEntryWindow; 90EC 20 78 90         x.
         bcc     BattlePartyServices_Branch_90F4 ; 90EF 90 03                    ..
         jsr     SetRosterBitAtIndex             ; 90F1 20 FD 90                  ..
 BattlePartyServices_Branch_90F4:
-        jsr     CountMatchingClassBitsInEightEntryWindow; 90F4 20 A4 90          ..
+        jsr     FindClassEntryInEightEntryWindow; 90F4 20 A4 90          ..
         bcc     BattlePartyServices_Branch_90FC ; 90F7 90 03                    ..
         jsr     SetRosterBitAtIndex             ; 90F9 20 FD 90                  ..
 BattlePartyServices_Branch_90FC:
@@ -3176,20 +3176,20 @@ BattlePartyServices_Branch_95B3:
 ReturnNoBattleAction:
         rts                                     ; 9601 60                       `
 ; ----------------------------------------------------------------------------
-CompareBattleValueAgainstScratch:
-        jsr     PointBattleOperandToComparisonBuffer; 9602 20 C6 83              ..
+AddToBattleValueCappedAt999Entry:
+        jsr     SetBattleAddCapTo999; 9602 20 C6 83              ..
         jmp     AddToPartyRecordValueCapped     ; 9605 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
 SubtractBattleWorkSpanIntoInlineRecordEntry:
         jsr     SubtractBattleWorkSpanIntoInlineRecord; 9608 20 60 84            `.
         rts                                     ; 960B 60                       `
 ; ----------------------------------------------------------------------------
-CompareBattleSpanAgainstFFThresholdEntry:
+AddToBattleValueCappedAt255ThresholdEntry:
         lda     #$FF                            ; 960C A9 FF                    ..
         sta     $03                             ; 960E 85 03                    ..
         jmp     AddToPartyRecordValueCapped     ; 9610 4C 21 84                 L!.
 ; ----------------------------------------------------------------------------
-CountMatchingBattleValuesAcrossSixSlots:
+FindFirstPackedStatusOrdinal:
         lda     #$07                            ; 9613 A9 07                    ..
         sta     $76                             ; 9615 85 76                    .v
         jsr     ResolvePartyRecordPackedSelector; 9617 20 31 97                  1.
@@ -4839,12 +4839,12 @@ BattlePartyServices_Branch_A1F4:
         sta     $00,x                         ; A1FF 95 00                    ..
         rts                                     ; A201 60                       `
 ; ----------------------------------------------------------------------------
-RollSixteenNibbleRandomWord:
+RollSixteenFiveBitRandomByteStoredAsWord:
         lda     #$1F                            ; A202 A9 1F                    ..
         sta     $0F                             ; A204 85 0F                    ..
         ldx     #$10                            ; A206 A2 10                    ..
         bne     BattlePartyServices_Branch_A210 ; A208 D0 06                    ..
-RollThirtyTwoNibbleRandomWord:
+RollThirtyTwoNibbleRandomByteStoredAsWord:
         lda     #$0F                            ; A20A A9 0F                    ..
         sta     $0F                             ; A20C 85 0F                    ..
         ldx     #$20                            ; A20E A2 20                    .
@@ -4888,7 +4888,7 @@ SelectRandomSetBitLowNibble:
         txa                                     ; A246 8A                       .
         pha                                     ; A247 48                       H
         ldx     #$04                            ; A248 A2 04                    ..
-        jsr     SelectRandomSetBitCore          ; A24A 20 68 A2                  h.
+        jsr     SelectRandomSetBitUsingQuantizedBuckets          ; A24A 20 68 A2                  h.
         pla                                     ; A24D 68                       h
         tax                                     ; A24E AA                       .
         lda     $0F                             ; A24F A5 0F                    ..
@@ -4906,13 +4906,13 @@ SelectRandomSetBit:
         txa                                     ; A25C 8A                       .
         pha                                     ; A25D 48                       H
         ldx     #$08                            ; A25E A2 08                    ..
-        jsr     SelectRandomSetBitCore          ; A260 20 68 A2                  h.
+        jsr     SelectRandomSetBitUsingQuantizedBuckets          ; A260 20 68 A2                  h.
         pla                                     ; A263 68                       h
         tax                                     ; A264 AA                       .
         lda     $0F                             ; A265 A5 0F                    ..
         rts                                     ; A267 60                       `
 ; ----------------------------------------------------------------------------
-SelectRandomSetBitCore:
+SelectRandomSetBitUsingQuantizedBuckets:
         tya                                     ; A268 98                       .
         pha                                     ; A269 48                       H
         ldy     #$00                            ; A26A A0 00                    ..
@@ -5648,7 +5648,7 @@ ExtractBattleRecordLowTwoBits:
         sec                                     ; A708 38                       8
         rts                                     ; A709 60                       `
 ; ----------------------------------------------------------------------------
-ExtractBattleRecordMiddleTwoBits:
+ExtractBattleRecordBitsTwoThroughFour:
         lda     $7E                             ; A70A A5 7E                    .~
         and     #$1C                            ; A70C 29 1C                    ).
         lsr     a                               ; A70E 4A                       J
@@ -6079,12 +6079,12 @@ RestoreBattleSlotHpToMaximum:
         sta     $82                             ; A960 85 82                    ..
         lda     #$03                            ; A962 A9 03                    ..
         sta     $83                             ; A964 85 83                    ..
-LoadTailBitsAndDispatchBattleSpanUpdate:
+LoadMaximumHpAndUpdateCurrentHpSelector5:
         jsr     LoadBattleRecordTenBitStat      ; A966 20 25 A7                  %.
         lda     #$05                            ; A969 A9 05                    ..
         jmp     AddAndClampBattleRecordValue    ; A96B 4C DC A9                 L..
 ; ----------------------------------------------------------------------------
-AddPackedPartyStatCappedAt255:
+RestoreBattleSlotMpToMaximum:
         lda     #$FF                            ; A96E A9 FF                    ..
         sta     $82                             ; A970 85 82                    ..
 LoadPackedByteAndDispatchBattleSpanUpdate:
@@ -6154,7 +6154,7 @@ SetBattleSlotHpToHalfMaximum:
         sta     ($84),y                         ; A9D2 91 84                    ..
         rts                                     ; A9D4 60                       `
 ; ----------------------------------------------------------------------------
-ClearMaximumHpLowByte:
+ClearBattleRecordMpByte:
         ldy     #$0C                            ; A9D5 A0 0C                    ..
         lda     #$00                            ; A9D7 A9 00                    ..
         sta     ($84),y                         ; A9D9 91 84                    ..
@@ -6809,7 +6809,7 @@ BattlePartyServices_Branch_AE2D:
 BattlePartyServices_Branch_AE33:
         pla                                     ; AE33 68                       h
         pha                                     ; AE34 48                       H
-        jsr     ClearCandidateBitByIndex        ; AE35 20 C5 BB                  ..
+        jsr     ClearCandidateBitByAccumulatorIndex        ; AE35 20 C5 BB                  ..
 BattlePartyServices_Branch_AE38:
         pla                                     ; AE38 68                       h
         tax                                     ; AE39 AA                       .
@@ -9087,7 +9087,7 @@ BattlePartyServices_Branch_BBC3:
         clc                                     ; BBC3 18                       .
         rts                                     ; BBC4 60                       `
 ; ----------------------------------------------------------------------------
-ClearCandidateBitByIndex:
+ClearCandidateBitByAccumulatorIndex:
         tay                                     ; BBC5 A8                       .
         clc                                     ; BBC6 18                       .
         lda     #$FF                            ; BBC7 A9 FF                    ..

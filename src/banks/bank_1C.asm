@@ -6047,7 +6047,7 @@ MapEntitySystem_Branch_BB79:
         brk                                     ; BBC8 00                       .
         db   $0D,$87                         ; BBC9 0D 87                    ..
 ; ----------------------------------------------------------------------------
-        jsr     ResetMapEntityMotionState       ; BBCB 20 01 E5                  ..
+        jsr     ResetEntityOamAllocationState       ; BBCB 20 01 E5                  ..
         brk                                     ; BBCE 00                       .
         db   $0A,$6F                         ; BBCF 0A 6F                    .o
 ; ----------------------------------------------------------------------------
