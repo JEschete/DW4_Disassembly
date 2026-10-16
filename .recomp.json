@@ -1,0 +1,8 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "Dragon Warrior 4",
+  "wikidata": "Q2310470",
+  "system": "NES",
+  "type": "decomp",
+  "status": "complete"
+}
